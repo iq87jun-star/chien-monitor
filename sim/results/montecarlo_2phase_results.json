@@ -1,0 +1,108 @@
+{
+  "config": {
+    "N_SIMS": 30000,
+    "RISK_PCT": 0.004,
+    "RR": 1.8,
+    "regime": {
+      "P_STAY": 0.8,
+      "REGIME_EDGE": 0.1,
+      "note": "2状態マルコフで連敗をクラスタリング。Phase間でレジーム継続。"
+    },
+    "guards": {
+      "EA_DAILY_STOP": 4000.0,
+      "EA_EQUITY_FLOOR": 92000.0
+    },
+    "tail": {
+      "p": 0.03,
+      "mult": 2.0
+    }
+  },
+  "scenarios": [
+    {
+      "label": "現実コスト $7/lot / SL28pips / 連敗相関あり",
+      "comm_rt": 7.0,
+      "sl_pips": 28.0,
+      "grid": [
+        {
+          "win_rate": 0.4,
+          "seq_pass_pct": 20.54,
+          "p1_fail_dd_pct": 0.0,
+          "p2_fail_dd_pct": 0.0,
+          "any_dd_fail_pct": 0.0,
+          "timeout_pct": 79.46,
+          "avg_days_seq_pass": 78.8
+        },
+        {
+          "win_rate": 0.45,
+          "seq_pass_pct": 65.39,
+          "p1_fail_dd_pct": 0.0,
+          "p2_fail_dd_pct": 0.0,
+          "any_dd_fail_pct": 0.0,
+          "timeout_pct": 34.61,
+          "avg_days_seq_pass": 70.8
+        },
+        {
+          "win_rate": 0.5,
+          "seq_pass_pct": 93.26,
+          "p1_fail_dd_pct": 0.0,
+          "p2_fail_dd_pct": 0.0,
+          "any_dd_fail_pct": 0.0,
+          "timeout_pct": 6.74,
+          "avg_days_seq_pass": 56.3
+        },
+        {
+          "win_rate": 0.55,
+          "seq_pass_pct": 99.34,
+          "p1_fail_dd_pct": 0.0,
+          "p2_fail_dd_pct": 0.0,
+          "any_dd_fail_pct": 0.0,
+          "timeout_pct": 0.66,
+          "avg_days_seq_pass": 42.6
+        }
+      ]
+    },
+    {
+      "label": "保守コスト $105/lot / SL60pips / 連敗相関あり",
+      "comm_rt": 105.0,
+      "sl_pips": 60.0,
+      "grid": [
+        {
+          "win_rate": 0.4,
+          "seq_pass_pct": 2.3,
+          "p1_fail_dd_pct": 0.0,
+          "p2_fail_dd_pct": 0.0,
+          "any_dd_fail_pct": 0.0,
+          "timeout_pct": 97.7,
+          "avg_days_seq_pass": 77.3
+        },
+        {
+          "win_rate": 0.45,
+          "seq_pass_pct": 21.76,
+          "p1_fail_dd_pct": 0.0,
+          "p2_fail_dd_pct": 0.0,
+          "any_dd_fail_pct": 0.0,
+          "timeout_pct": 78.24,
+          "avg_days_seq_pass": 78.3
+        },
+        {
+          "win_rate": 0.5,
+          "seq_pass_pct": 65.59,
+          "p1_fail_dd_pct": 0.0,
+          "p2_fail_dd_pct": 0.0,
+          "any_dd_fail_pct": 0.0,
+          "timeout_pct": 34.41,
+          "avg_days_seq_pass": 70.4
+        },
+        {
+          "win_rate": 0.55,
+          "seq_pass_pct": 93.74,
+          "p1_fail_dd_pct": 0.0,
+          "p2_fail_dd_pct": 0.0,
+          "any_dd_fail_pct": 0.0,
+          "timeout_pct": 6.26,
+          "avg_days_seq_pass": 56.0
+        }
+      ]
+    }
+  ]
+}

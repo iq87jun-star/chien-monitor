@@ -13,7 +13,8 @@ FundedNext「Stellar 2-Step」チャレンジ（$100,000 / Phase1）を、規則
 | [`docs/02_strategy_spec.md`](docs/02_strategy_spec.md) | ② 戦略仕様（タイプ比較・銘柄/時間足・エントリー・SL/TP・ガード階層・コスト・通過逆算） |
 | [`mql5/FundedNext_Stellar_EA.mq5`](mql5/FundedNext_Stellar_EA.mq5) | ③ EA本体（多層ハードガード・固定%リスク・SL必須・全パラメータ入力化・ニュースフィルタ） |
 | [`mql5/presets/EURUSD_default.set`](mql5/presets/EURUSD_default.set) | EURUSD 既定プリセット（MT5 で読み込み） |
-| [`sim/montecarlo_challenge.py`](sim/montecarlo_challenge.py) | チャレンジ動態モンテカルロ（依存なし） |
+| [`sim/montecarlo_challenge.py`](sim/montecarlo_challenge.py) | チャレンジ動態モンテカルロ（Phase1単体・依存なし） |
+| [`sim/montecarlo_2phase.py`](sim/montecarlo_2phase.py) | P1→P2連続＋連敗自己相関ストレスのモンテカルロ |
 | [`docs/03_validation_report.md`](docs/03_validation_report.md) | ④ 検証レポート（MC実数値＋実価格WFA設計＋過剰最適化点検） |
 
 ## 検証ハイライト（モンテカルロ 50,000×3シナリオ）
