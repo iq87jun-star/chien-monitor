@@ -22,9 +22,11 @@ FundedNext「Stellar 2-Step」チャレンジ（$100,000 / Phase1）を、規則
 - **全シナリオ・全勝率で 日次DD失格＝0.000% / 最大DD失格＝0.000%**（ガードの構造的成果）。
 - 通過はエッジ依存: 現実コスト下で **勝率45%/RR1.8 → 通過率80%超、勝率50% → 約98%**。
 - 高コスト($105/lot)はSL拡大(スイング化)で緩和（勝率50%: 22% → 82%）。
+- **連敗自己相関(マルコフ)＋P1→P2連結ストレスでも失格 0.000%**。連続通過は現実コスト・勝率50%で約93%。
 
 ```bash
-python3 sim/montecarlo_challenge.py   # 再現（シード固定）
+python3 sim/montecarlo_challenge.py   # Phase1単体（シード固定）
+python3 sim/montecarlo_2phase.py      # P1→P2連続＋連敗相関ストレス
 ```
 
 ## 使い方（MT5）
