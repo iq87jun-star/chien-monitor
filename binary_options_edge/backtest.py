@@ -115,11 +115,27 @@ def equity_curve(result: BacktestResult, start_equity: float = 10_000.0,
     return pd.DataFrame(rows)
 
 
+_SUMMARY_KEYS = (
+    "label", "n_trades", "mean_pnl_points_after_cost", "boot_ci95",
+    "boot_p(mean<=0)", "t_pvalue_mean>0", "win_rate", "avg_breakeven_prob",
+    "win_rate_minus_breakeven", "sharpe_per_trade", "deflated_sharpe(>0.95=signif)",
+    "n_hypotheses_tried", "edge_detected_after_cost",
+)
+
+
 def summarize(result: BacktestResult, label: str = "") -> dict:
-    """コスト控除後の総括統計（CI, t検定, Deflated Sharpe）。"""
+    """コスト控除後の総括統計（CI, t検定, Deflated Sharpe）。
+
+    トレード0件でも常に同じキー集合を返す（呼び出し側の DataFrame 列選択を壊さないため）。
+    """
     pnl = result.pnl
     if result.n == 0:
-        return {"label": label, "n_trades": 0, "note": "no trades"}
+        # 全キーをNaN/Falseで埋める。「トレード機会なし=エッジ検出なし」が正しい結論。
+        empty = {k: float("nan") for k in _SUMMARY_KEYS}
+        empty.update(label=label, n_trades=0,
+                     n_hypotheses_tried=result.n_hypotheses_tried,
+                     edge_detected_after_cost=False, boot_ci95=(float("nan"), float("nan")))
+        return empty
     boot = stats_tests.moving_block_bootstrap_mean(pnl)
     dsr = stats_tests.deflated_sharpe_ratio(pnl, n_trials=result.n_hypotheses_tried)
     win_rate = float(np.mean([t.won for t in result.trades]))
