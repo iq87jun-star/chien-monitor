@@ -22,14 +22,16 @@ def main() -> None:
 
     u = GBMUnderlying(days=12)
     cal = EmptyCalendar()
-    contracts = make_contracts(u, n=600, assumed_spread=4.0)
+    contracts = make_contracts(u, n=1000, assumed_spread=4.0)
     print(f"# 合成提示数: {len(contracts)} (assumed spread = 4.0 pt, エッジ無しDGP)")
-    print("# 市場=真のボラでフェア付け / モデル=短窓実現ボラ推定(ノイズ有り) -> ズレでトレード発生\n")
+    print("# 市場=真のボラでフェア付け / モデル=短窓(60s)実現ボラ推定(ノイズ有り) -> ズレでトレード発生")
+    print("# エッジ無しDGPなので、約定トレードのコスト控除後EVは負(≈-半スプレッド)に収束するのが正解。\n")
 
     hyps = default_hypotheses()
     n_tried = len(hyps)
-    # 短い vol_lookback で推定ノイズを大きくし、(エッジ無しの)トレードを発生させる
-    vol_lb = 600.0
+    # 短い vol_lookback で推定ノイズを大きくし、(エッジ無しの)トレードを発生させる。
+    # ノイズは清算結果と無相関なので、トレードは出るが期待値は負(=エッジ無し)に留まる。
+    vol_lb = 60.0
 
     summaries = []
     pvalues = {}

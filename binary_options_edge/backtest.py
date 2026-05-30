@@ -94,7 +94,7 @@ def equity_curve(result: BacktestResult, start_equity: float = 10_000.0,
     """固定比率サイジング＋DD/連敗停止＋マーチンゲール監視でエクイティ曲線を生成。"""
     equity = start_equity
     dd = DrawdownGuard(start_equity, max_drawdown_frac=max_drawdown_frac)
-    mart = MartingaleGuard(base_stake=risk_fraction * start_equity)
+    mart = MartingaleGuard(max_risk_fraction=risk_fraction)
     rows = []
     last_won: bool | None = None
     for t in result.trades:
@@ -105,10 +105,9 @@ def equity_curve(result: BacktestResult, start_equity: float = 10_000.0,
         max_loss_per_unit = t.contract.ask if t.side == "buy" else (100.0 - t.contract.bid)
         units = position_size(equity, max_loss_per_unit, risk_fraction)
         stake = units * max_loss_per_unit
-        mart.check(stake)                 # 倍賭けなら例外
+        mart.check(stake, equity)         # 固定比率上限を超えたら例外（倍賭け検出）
         # pnl_points は1枚あたり。100ポイント=1単位額面と仮定し units 枚分。
         equity += units * t.pnl_points
-        mart.record_result(t.won)
         last_won = t.won
         rows.append({"decision_time": t.contract.decision_time, "equity": equity,
                      "units": units, "pnl": units * t.pnl_points, "halted": False})

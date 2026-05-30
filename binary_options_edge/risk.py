@@ -46,21 +46,23 @@ class MartingaleError(RuntimeError):
 
 @dataclass
 class MartingaleGuard:
-    """負け後にステークを増やしていないか監視。倍賭けは禁止。"""
-    base_stake: float
+    """固定比率（アンチマーチンゲール）からの逸脱を検出する。
+
+    マーチンゲールは「負け後に賭金を増やして取り返す」手法で、必然的に
+    『賭金 ≤ 固定比率 × 現在資金』という上限を破る。各取引でこの不変条件を検証すれば、
+    倍賭けは構造的に不可能になる。固定比率サイジングは常にこの条件を満たすので誤検知しない
+    （※「直前の絶対ステークと比較」では、銘柄ごとに1枚あたり損失が違うため固定比率でも
+    ステークが増減し誤検知する。比較すべきは資金に対する比率である）。
+    """
+    max_risk_fraction: float
     tolerance: float = 1e-9
-    _last_was_loss: bool = field(default=False, init=False)
-    _last_stake: float = field(default=0.0, init=False)
 
-    def check(self, stake: float) -> None:
-        if self._last_was_loss and stake > self._last_stake + self.tolerance:
+    def check(self, stake: float, equity: float) -> None:
+        if equity > 0 and stake > (self.max_risk_fraction + self.tolerance) * equity:
             raise MartingaleError(
-                "負け後のステーク増額（マーチンゲール）を検出。明示的に禁止: "
+                f"賭金 {stake:.2f} が固定比率上限 {self.max_risk_fraction:.4f}×資金 "
+                f"{equity:.2f} を超過。マーチンゲール（負け後の倍賭け）を明示的に禁止: "
                 "賭金が幾何級数的に増大し破産確率のみ上昇、期待値は改善しない。")
-        self._last_stake = stake
-
-    def record_result(self, won: bool) -> None:
-        self._last_was_loss = not won
 
 
 @dataclass
