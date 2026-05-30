@@ -19,21 +19,20 @@ def test_fractional_kelly_negative_edge_zero():
     assert 0 < f < 1
 
 
-def test_martingale_guard_blocks_doubling():
-    g = risk.MartingaleGuard(base_stake=50)
-    g.check(50)
-    g.record_result(won=False)   # 負け
+def test_martingale_guard_blocks_exceeding_fixed_fraction():
+    # 固定比率0.5% = 資金10000で上限50。これを超える賭金（=倍賭け）は禁止。
+    g = risk.MartingaleGuard(max_risk_fraction=0.005)
+    g.check(50, equity=10_000)        # 上限ちょうどはOK
     with pytest.raises(risk.MartingaleError):
-        g.check(100)             # 倍賭けは禁止
+        g.check(100, equity=10_000)   # 上限超過 → 倍賭けとして拒否
 
 
-def test_martingale_guard_allows_constant_after_loss():
-    g = risk.MartingaleGuard(base_stake=50)
-    g.check(50)
-    g.record_result(won=False)
-    g.check(50)                  # 同額は許可
-    g.record_result(won=True)
-    g.check(50)
+def test_martingale_guard_allows_fixed_fractional_after_loss():
+    # 負けて資金が減れば固定比率では賭金も減る（アンチマーチンゲール）。誤検知しない。
+    g = risk.MartingaleGuard(max_risk_fraction=0.005)
+    g.check(50, equity=10_000)
+    g.check(45, equity=9_000)         # 0.005*9000=45。資金減で賭金も減 → 許可
+    g.check(45, equity=9_000)
 
 
 def test_drawdown_guard_halts():
