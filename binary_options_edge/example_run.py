@@ -69,10 +69,28 @@ def main() -> None:
         if eq["halted"].iloc[-1]:
             print(f"   停止理由: {eq['reason'].iloc[-1]}")
 
+    # 自動エントリーsignal: 検証ゲートを通った仮説の証明書を作り、提示に対し signal を出す
+    from .signals import SignalEngine, certify_edges
+    certs = certify_edges(summaries, rejected, min_trades=200, min_dsr=0.95)
+    engine = SignalEngine(underlying=u, certificates=certs, hypotheses=hyps,
+                          calendar=cal, vol_lookback_seconds=vol_lb)
+    signals = engine.generate_batch(contracts)
+    n_actionable = sum(s.actionable for s in signals)
+    print("\n## 自動エントリーsignal")
+    print(f"  発行された証明書(検証済みエッジ): {len(certs)} 件 -> {list(certs.keys())}")
+    print(f"  エントリーsignal(buy/sell): {n_actionable} 件 / hold: {len(signals) - n_actionable} 件")
+    if n_actionable == 0:
+        print("  => 検証済みエッジが無いため、自動シグナルは全て『エントリーなし(hold)』。")
+        print("     これは合成(エッジ無し)データに対する客観的に正しい挙動。")
+        # holdの代表理由を1つ表示
+        if signals:
+            print(f"     例: {signals[0].reason}")
+
     print("\n## 結論の読み方")
     print("  - edge_detected_after_cost が False かつ DSR<=0.95 なら『コスト控除後エッジ無し』。")
     print("  - 合成（エッジ無し）データでは平均EVが負になるのが正しい挙動。")
     print("  - 実データで偶然 True が出ても、BH/DSR/レジーム一貫性/OOS乖離で必ず裏取りすること。")
+    print("  - 自動エントリーは『検証済みエッジの証明書』が無い限り hold。捏造は構造的に不可能。")
 
 
 if __name__ == "__main__":
