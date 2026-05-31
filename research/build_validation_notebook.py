@@ -60,6 +60,10 @@ md("## 1. 設定 / データ読込\n\n"
    "`DATA_DIR` を CSV のある場所に。Colab なら Drive をマウントしてパス指定。")
 code(r"""import os, math, numpy as np, pandas as pd
 import matplotlib.pyplot as plt
+import warnings
+# np.datetime64 のタイムゾーン警告で出力が埋まるのを防ぐ(結果に影響なし)
+warnings.filterwarnings("ignore", message="no explicit representation of timezones")
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 # --- データ場所 (Colab: '/content/drive/MyDrive/.../data' 等に変更可) ---
 DATA_DIR = os.environ.get("DATA_DIR", "data")
@@ -152,7 +156,10 @@ def load_h1(pair):
         raise ValueError(f"{os.path.basename(path)}: 列が見つかりません {miss} / 実際の列={list(df.columns)}")
     out=df[["__t",o,h,l,c]].copy()
     out.columns=["time","open","high","low","close"]
-    out=out.dropna(subset=["time"]).set_index("time").sort_index()
+    out=out.dropna(subset=["time"])
+    # UTCのままtz情報だけ外す(値は不変)。これで np.searchsorted の tz警告を根絶。
+    out["time"]=out["time"].dt.tz_localize(None)
+    out=out.set_index("time").sort_index()
     out=out[~out.index.duplicated(keep="first")]
     return out[["open","high","low","close"]].astype(float)
 
@@ -223,9 +230,25 @@ for p in PAIRS:
 AVAIL = [r["pair"] for r in _rows if r.get("h1_bars",0)>0]
 display(pd.DataFrame(_rows))
 print("利用可能ペア:", AVAIL)
+
+# データ年数チェック: 2年前後なら「Yahooサンプル」=本番ではない、と大きく警告
+_yrs=[r["years"] for r in _rows if r.get("years")]
+_maxyr=max(_yrs) if _yrs else 0
+print("\n" + "="*64)
+if _maxyr < 5:
+    print("🔴 注意: 読み込んだデータは最長", _maxyr, "年です。")
+    print("   これは Yahoo の研究用サンプル(約2.8年)とみられます。")
+    print("   → 当初の強い結果(順列p≈0 等)は Dukascopy 10年/2016-20 由来。")
+    print("     本番判定にはなりません。")
+    print("   【対処】Dukascopy 10年の H1 CSV を下記フォルダに置いて再実行:")
+    print("        DATA_DIR =", os.path.abspath(DATA_DIR))
+    print("     Colabなら左の📁から data/ にアップロード、または Drive をマウントして")
+    print("     第1章の DATA_DIR をそのパスに変更。既存CSVがあれば自動取得はスキップ。")
+else:
+    print("✅ データ年数 OK (最長", _maxyr, "年)。本番判定として読めます。")
+print("="*64)
 if not AVAIL:
-    print("\n⚠ データが1つもありません。ネット制限の場合は、手動でCSVを")
-    print("  DATA_DIR に置いてこのセルを再実行してください(列: timestamp,open,high,low,close)。")
+    print("\n⚠ データが1つもありません。ネット制限の場合は手動でCSVを DATA_DIR に置いて再実行。")
 """)
 
 # ---------------------------------------------------------------- 2. シグナル
