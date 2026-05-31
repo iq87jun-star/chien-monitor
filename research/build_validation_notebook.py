@@ -18,8 +18,8 @@ md(r"""# FundedNext v4 (H4順張り) 検証 — 自己完結ノート
 このノートは **外部依存なしで単体実行できる** v4 戦略検証ハーネスです。
 
 ### 🚀 本番(Dukascopy 10年)の使い方 — これだけ
-1. Google Drive に好きな名前のフォルダを作り、Dukascopy の H1 CSV を入れる
-   （例: `マイドライブ/fundednext_data/USDJPY_*.csv ...`）。
+1. Google Drive に好きな名前のフォルダを作り、H1 データを入れる
+   （**`.parquet` も `.csv` も対応**。例: `マイドライブ/fundednext_data/EURJPY_1h_10y.parquet ...`）。
 2. **0.5セル**の `DRIVE_SUBDIR` をそのフォルダ名にして実行 → 認証許可。
 3. 「すべてのセルを実行」。第1章のバナーが **緑(✅ years≈10)** なら本番判定。
 
@@ -155,19 +155,24 @@ _TIMECOLS = ["timestamp","time","datetime","date","gmt time","gmttime",
              "local time","localtime","date time"]
 
 def _find_file(pair):
-    # DATA_DIR から pair に対応するCSVを柔軟に探す。
-    # <PAIR>_h1.csv を最優先、無ければペア名を含む任意のcsv。
-    exact=os.path.join(DATA_DIR,f"{pair}_h1.csv")
-    if os.path.exists(exact): return exact
+    # DATA_DIR から pair に対応するデータファイルを柔軟に探す。
+    # 対応: .parquet / .csv。<PAIR>_h1.* を最優先、無ければペア名を含む任意ファイル。
+    for ext in (".parquet",".csv"):
+        exact=os.path.join(DATA_DIR,f"{pair}_h1{ext}")
+        if os.path.exists(exact): return exact
     cands=[]
-    for f in glob.glob(os.path.join(DATA_DIR,"*.csv")):
-        base=os.path.basename(f).upper()
-        if pair.upper() in base.replace("/",""):
-            cands.append(f)
-    if not cands: return exact   # 存在しないパスを返す→上位でエラー扱い
-    # H1/60min/1_Hour を含むものを優先
-    h1=[f for f in cands if re.search(r"(_H1|1_HOUR|60M|HOURLY|H1)", os.path.basename(f).upper())]
-    return (h1 or cands)[0]
+    for ext in ("*.parquet","*.csv"):
+        for f in glob.glob(os.path.join(DATA_DIR,ext)):
+            base=os.path.basename(f).upper()
+            if pair.upper() in base.replace("/",""):
+                cands.append(f)
+    if not cands:
+        return os.path.join(DATA_DIR,f"{pair}_h1.csv")  # 存在しないパス→上位でエラー扱い
+    # parquetを優先、次にH1/60min/1_Hour 表記を優先
+    pq=[f for f in cands if f.lower().endswith(".parquet")]
+    pool=pq or cands
+    h1=[f for f in pool if re.search(r"(_H1|1_?H|1_HOUR|60M|HOURLY|H1|_1H)", os.path.basename(f).upper())]
+    return (h1 or pool)[0]
 
 def _pick(cols_lower, candidates):
     for c in candidates:
@@ -175,22 +180,35 @@ def _pick(cols_lower, candidates):
     return None
 
 def load_h1(pair):
-    # Dukascopy / Yahoo / 汎用CSVを自動判別して H1 OHLC(UTC) を返す。
+    # Dukascopy / Yahoo / 汎用の CSV・Parquet を自動判別して H1 OHLC(UTC, tz-naive) を返す。
+    #  - 形式: .parquet と .csv の両対応
+    #  - 時刻: 専用列(timestamp等) または index(DatetimeIndex) を自動検出
     #  - 列名: Open/High/Low/Close の大小・bid/ask接頭辞を吸収
-    #  - 時刻: 'dd.mm.yyyy HH:MM:SS.000'(Dukascopy) や ISO を自動パース
     path=_find_file(pair)
-    df=pd.read_csv(path)
-    cols_lower={c.strip().lower():c for c in df.columns}
+    if path.lower().endswith(".parquet"):
+        df=pd.read_parquet(path)
+    else:
+        df=pd.read_csv(path)
+    # 時刻がindexに入っている形式(Parquetで多い)を先に処理
+    idx_is_time = isinstance(df.index, pd.DatetimeIndex) or \
+                  (df.index.name and str(df.index.name).lower() in _TIMECOLS)
+    if idx_is_time:
+        df=df.reset_index()
+    cols_lower={str(c).strip().lower():c for c in df.columns}
     # 時刻列
     tcol=_pick(cols_lower,_TIMECOLS)
     if tcol is None: tcol=df.columns[0]    # 先頭列を時刻とみなす
-    s=df[tcol].astype(str).str.strip()
-    # Dukascopy 'dd.mm.yyyy HH:MM:SS.000' を明示的に試す→ダメなら汎用
-    t=pd.to_datetime(s, format="%d.%m.%Y %H:%M:%S.%f", errors="coerce", utc=True)
-    if t.isna().mean()>0.5:
-        t=pd.to_datetime(s, format="%d.%m.%Y %H:%M:%S", errors="coerce", utc=True)
-    if t.isna().mean()>0.5:
-        t=pd.to_datetime(s, errors="coerce", utc=True, format="mixed")
+    s=df[tcol]
+    if pd.api.types.is_datetime64_any_dtype(s):
+        t=pd.to_datetime(s, utc=True, errors="coerce")
+    else:
+        s=s.astype(str).str.strip()
+        # Dukascopy 'dd.mm.yyyy HH:MM:SS.000' を明示的に試す→ダメなら汎用
+        t=pd.to_datetime(s, format="%d.%m.%Y %H:%M:%S.%f", errors="coerce", utc=True)
+        if t.isna().mean()>0.5:
+            t=pd.to_datetime(s, format="%d.%m.%Y %H:%M:%S", errors="coerce", utc=True)
+        if t.isna().mean()>0.5:
+            t=pd.to_datetime(s, errors="coerce", utc=True, format="mixed")
     df["__t"]=t
     # OHLC列
     o=_pick(cols_lower,_COLMAP["open"]); h=_pick(cols_lower,_COLMAP["high"])
