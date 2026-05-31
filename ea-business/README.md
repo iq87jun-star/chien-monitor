@@ -14,17 +14,25 @@ MQL5/MT5 の EA・インジ・ツールを商品化し、人間の判断・承�
 
 ## 確定方針
 - 販売チャネル：**二段構え**（MQL5 Market + 自前LP/Gumroad）
-- 課金：**買い切りのみ**（RiskGuard **$49**、主力EA $99〜199 想定）
-- 既存EAロジック流用：**全面承認**（`products/breakout-pro` で活用）
+- 課金：**買い切りのみ**
+- **商品戦略：補助ツール中心**（「機能を売る」ため広告が事実ベースで誇大化しない）。戦略EA（`breakout-pro`）は成績訴求のリスクから**販売は棚上げ候補**、当面は補助ツールで品揃え。
 - ライセンスホスト（既定）：`https://api.riskguard.app/verify`（実デプロイ時に差し替え）
+
+## 商品ラインナップ（補助ツール）
+| 商品 | 内容 | 価格 | 状態 |
+|---|---|---|---|
+| `risk-guard` | リスク%ロット計算＋執行・管理 | $49 | 実装済 |
+| `trade-closer` | 決済・ポジション管理（全/部分/勝敗別/バスケット/PANIC） | $39 | 実装済 |
+| `breakout-pro` | 戦略EAスキャフォールド | $99〜199 | 棚上げ候補 |
 
 ## ディレクトリ
 ```
 ea-business/
 ├── docs/                     設計・報告ドキュメント（phase0-2, main-ea-plan）
 ├── products/
-│   ├── risk-guard/           MVP商品（src / manual(ja,en) / reports）
-│   └── breakout-pro/         主力EA商品化スキャフォールド
+│   ├── risk-guard/           リスク%ロット計算＋執行・管理ツール
+│   ├── trade-closer/         決済・ポジション管理ツール
+│   └── breakout-pro/         戦略EAスキャフォールド（棚上げ候補）
 ├── licensing/                ライセンス検証 + 決済Webhook発行（買い切り）
 ├── landing/                  自前LP
 ├── marketing/                コピー・SEO・Market出品メタ・記事ドラフト(content)・SNS(social)
