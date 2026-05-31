@@ -1,7 +1,10 @@
 # Secrets & license data — never commit
 .env
-.env.*
+.env.local
+.env.*.local
+!.env.example
 licensing/licenses.json
+licensing/issued-keys.log
 licensing/*.local.json
 
 # Build artifacts
