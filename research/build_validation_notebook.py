@@ -19,8 +19,10 @@ md(r"""# FundedNext v4 (H4順張り) 検証 — 自己完結ノート
 **データが無ければ自動でYahoo Financeから取得**します（研究用2年）。Colabで開いて
 「すべてのセルを実行」するだけで全結果が出ます。
 
-> **本番**は Dukascopy 10年の `data/<PAIR>_h1.csv`（列: `timestamp,open,high,low,close`）を
-> `DATA_DIR` に置いて再実行してください。既存CSVがあれば自動取得はスキップされます。
+> **本番**は Dukascopy 10年の H1 CSV を `DATA_DIR` に置いて再実行してください。
+> ファイル名は **ペア名を含めばOK**（例 `USDJPY_Candlestick_1_Hour_BID_...csv` や `USDJPY_h1.csv`）。
+> **列名(Open/High/Low/Close, bid/ask接頭辞)と時刻形式(`dd.mm.yyyy HH:MM:SS.000` 等)は自動判別**
+> します。既存CSVがあれば自動取得はスキップされます。
 
 ## このノートが答える問い
 v3(D1逆張り)は不採用。手元データで「同じ4条件を**順張り(符号反転)**で読む」と
@@ -91,16 +93,68 @@ P = dict(
 print("設定OK  Momentum =", P["Momentum"], " K =", P["VotesRequired"])
 """)
 
-code(r"""def pip_size(pair): return 0.01 if pair.endswith("JPY") else 0.0001
+code(r"""import glob, re
+def pip_size(pair): return 0.01 if pair.endswith("JPY") else 0.0001
+
+# 列名のゆらぎを吸収するマップ(小文字化して照合)
+_COLMAP = {
+    "open":["open","o","bidopen","openbid","open_bid","askopen"],
+    "high":["high","h","bidhigh","highbid","high_bid","askhigh"],
+    "low": ["low","l","bidlow","lowbid","low_bid","asklow"],
+    "close":["close","c","bidclose","closebid","close_bid","askclose","price"],
+}
+_TIMECOLS = ["timestamp","time","datetime","date","gmt time","gmttime",
+             "local time","localtime","date time"]
+
+def _find_file(pair):
+    # DATA_DIR から pair に対応するCSVを柔軟に探す。
+    # <PAIR>_h1.csv を最優先、無ければペア名を含む任意のcsv。
+    exact=os.path.join(DATA_DIR,f"{pair}_h1.csv")
+    if os.path.exists(exact): return exact
+    cands=[]
+    for f in glob.glob(os.path.join(DATA_DIR,"*.csv")):
+        base=os.path.basename(f).upper()
+        if pair.upper() in base.replace("/",""):
+            cands.append(f)
+    if not cands: return exact   # 存在しないパスを返す→上位でエラー扱い
+    # H1/60min/1_Hour を含むものを優先
+    h1=[f for f in cands if re.search(r"(_H1|1_HOUR|60M|HOURLY|H1)", os.path.basename(f).upper())]
+    return (h1 or cands)[0]
+
+def _pick(cols_lower, candidates):
+    for c in candidates:
+        if c in cols_lower: return cols_lower[c]
+    return None
 
 def load_h1(pair):
-    path = os.path.join(DATA_DIR, f"{pair}_h1.csv")
-    df = pd.read_csv(path)
-    tcol = "timestamp" if "timestamp" in df.columns else "time"
-    df["time"] = pd.to_datetime(df[tcol], utc=True)
-    df = df.dropna(subset=["time"]).set_index("time").sort_index()
-    df = df[~df.index.duplicated(keep="first")]
-    return df[["open","high","low","close"]].astype(float)
+    # Dukascopy / Yahoo / 汎用CSVを自動判別して H1 OHLC(UTC) を返す。
+    #  - 列名: Open/High/Low/Close の大小・bid/ask接頭辞を吸収
+    #  - 時刻: 'dd.mm.yyyy HH:MM:SS.000'(Dukascopy) や ISO を自動パース
+    path=_find_file(pair)
+    df=pd.read_csv(path)
+    cols_lower={c.strip().lower():c for c in df.columns}
+    # 時刻列
+    tcol=_pick(cols_lower,_TIMECOLS)
+    if tcol is None: tcol=df.columns[0]    # 先頭列を時刻とみなす
+    s=df[tcol].astype(str).str.strip()
+    # Dukascopy 'dd.mm.yyyy HH:MM:SS.000' を明示的に試す→ダメなら汎用
+    t=pd.to_datetime(s, format="%d.%m.%Y %H:%M:%S.%f", errors="coerce", utc=True)
+    if t.isna().mean()>0.5:
+        t=pd.to_datetime(s, format="%d.%m.%Y %H:%M:%S", errors="coerce", utc=True)
+    if t.isna().mean()>0.5:
+        t=pd.to_datetime(s, errors="coerce", utc=True, format="mixed")
+    df["__t"]=t
+    # OHLC列
+    o=_pick(cols_lower,_COLMAP["open"]); h=_pick(cols_lower,_COLMAP["high"])
+    l=_pick(cols_lower,_COLMAP["low"]);  c=_pick(cols_lower,_COLMAP["close"])
+    miss=[k for k,v in dict(open=o,high=h,low=l,close=c).items() if v is None]
+    if miss:
+        raise ValueError(f"{os.path.basename(path)}: 列が見つかりません {miss} / 実際の列={list(df.columns)}")
+    out=df[["__t",o,h,l,c]].copy()
+    out.columns=["time","open","high","low","close"]
+    out=out.dropna(subset=["time"]).set_index("time").sort_index()
+    out=out[~out.index.duplicated(keep="first")]
+    return out[["open","high","low","close"]].astype(float)
 
 def resample_h4(h1):
     o=h1["open"].resample("4h",label="left",closed="left").first()
@@ -145,14 +199,16 @@ def ensure_data(pairs=PAIRS, data_dir=DATA_DIR):
         except Exception as e:
             print(f"[{p}] 取得失敗(ネット制限?): {type(e).__name__} {str(e)[:50]}")
 
-# 既存CSVが1つも無ければ自動取得を試みる(Dukascopyを置いていればスキップされる)
-_have=[p for p in PAIRS if os.path.exists(os.path.join(DATA_DIR,f"{p}_h1.csv"))]
+# 既存CSVが1つも無ければ自動取得を試みる(Dukascopy等を置いていればスキップ)
+# _find_file はロングファイル名(USDJPY_Candlestick_..._BID_...csv 等)も拾う
+_have=[p for p in PAIRS if os.path.exists(_find_file(p))]
 if not _have:
     print("DATA_DIR にCSV無し → Yahooから自動取得を試行(研究用2年データ)...")
     print("※ 本番は Dukascopy 10年CSV を", DATA_DIR, "に置いて再実行してください。")
+    print("  (ファイル名は <PAIR>を含めばOK。例 USDJPY_*.csv / 列名・時刻形式は自動判別)")
     ensure_data()
 else:
-    print(f"既存CSV {len(_have)} ペアを使用:", _have)
+    print(f"既存CSV {len(_have)} ペアを検出:", _have)
 
 # データ点検
 _rows=[]
