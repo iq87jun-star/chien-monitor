@@ -87,6 +87,21 @@ def text_w(draw, s, f):
     return b[2] - b[0]
 
 
+def wrap_jp(draw, s, f, max_w):
+    """Wrap Japanese text by character to fit max_w (no spaces in JP)."""
+    lines, cur = [], ""
+    for ch in s:
+        if ch == "\n":
+            lines.append(cur); cur = ""; continue
+        if text_w(draw, cur + ch, f) > max_w and cur:
+            lines.append(cur); cur = ch
+        else:
+            cur += ch
+    if cur:
+        lines.append(cur)
+    return lines
+
+
 def draw_checks(draw, x, y, items, f, gap=58):
     for i, it in enumerate(items):
         cy = y + i * gap
@@ -138,19 +153,26 @@ def make_image(spec: dict, size: tuple[int, int], variant: str) -> Image.Image:
     img = vgradient(w, h)
     d = ImageDraw.Draw(img)
 
-    # left text column
-    lx = 48
-    d.text((lx, 54), spec["name"], font=font(76), fill=FG)
-    d.text((lx, 150), spec["tag"], font=font(30), fill=MUTED)
-
-    draw_checks(d, lx, 232, spec["features"], font(28))
-
-    price_badge(d, lx, 232 + len(spec["features"]) * 58 + 18, spec["price"])
-
-    # right column: panel mock (only on wide enough)
+    # right column: panel mock
     panel_w = 430
     px = w - panel_w - 48
     py = 150
+
+    # left text column — bounded so it never overlaps the panel
+    lx = 48
+    left_max = px - lx - 32
+    d.text((lx, 54), spec["name"], font=font(76), fill=FG)
+
+    tagf = font(30)
+    ty = 150
+    for line in wrap_jp(d, spec["tag"], tagf, left_max):
+        d.text((lx, ty), line, font=tagf, fill=MUTED)
+        ty += 40
+
+    draw_checks(d, lx, ty + 14, spec["features"], font(28))
+
+    price_badge(d, lx, ty + 14 + len(spec["features"]) * 58 + 18, spec["price"])
+
     draw_panel_mock(d, px, py, panel_w, spec["buttons"])
 
     # "MT5 / 補助ツール" tag top-right
