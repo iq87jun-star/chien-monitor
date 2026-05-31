@@ -39,19 +39,22 @@ AMBER    = (255, 217, 138)
 
 
 def find_font() -> str:
+    """Locate a Japanese-capable TrueType/OpenType font.
+
+    Override with env RG_FONT. Falls back through common system locations
+    (IPA Gothic etc.). Pillow needs a CJK font to render Japanese.
+    """
     candidates = [
-        "/usr/lib/python3.11/site-packages/japanize_matplotlib/data/IPAexGothic.ttf",
+        os.environ.get("RG_FONT", ""),
+        "/usr/share/fonts/opentype/ipafont-gothic/ipagp.ttf",
+        "/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf",
+        "/usr/share/fonts/truetype/fonts-japanese-gothic.ttf",
+        "/etc/alternatives/fonts-japanese-gothic.ttf",
     ]
-    try:
-        import japanize_matplotlib  # noqa
-        base = Path(japanize_matplotlib.__file__).parent / "data" / "IPAexGothic.ttf"
-        candidates.insert(0, str(base))
-    except Exception:
-        pass
     for c in candidates:
-        if os.path.exists(c):
+        if c and os.path.exists(c):
             return c
-    raise SystemExit("Japanese font not found. Run: pip install japanize-matplotlib")
+    raise SystemExit("Japanese font not found. Set RG_FONT or install IPA gothic fonts.")
 
 
 FONT_PATH = find_font()
