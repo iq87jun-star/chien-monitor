@@ -37,7 +37,9 @@
 //#define RG_BUILD_MARKET
 
 #include <Trade/Trade.mqh>
-#include "../../risk-guard/src/LicenseClient.mqh"
+// LicenseClient.mqh is shared with RiskGuard. Keep a copy of it in this same
+// folder when compiling TradeCloser (single-folder drop), or adjust the path.
+#include "LicenseClient.mqh"
 
 //+------------------------------------------------------------------+
 //| Inputs                                                           |
