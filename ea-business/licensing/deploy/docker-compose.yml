@@ -1,0 +1,34 @@
+# RiskGuard licensing — local/prod compose
+#
+# Two services off one image: the public verify API and the payment webhook.
+# Secrets come from a .env file (gitignored). A named volume holds the license
+# store so keys survive restarts. Put this behind an HTTPS reverse proxy
+# (Caddy/Nginx/Cloud load balancer) — MT5 WebRequest requires HTTPS.
+
+services:
+  verify:
+    build: .
+    command: ["node", "server.js"]
+    env_file: ../.env
+    environment:
+      - PORT=8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - license-data:/data
+    restart: unless-stopped
+
+  webhook:
+    build: .
+    command: ["node", "webhook.js"]
+    env_file: ../.env
+    environment:
+      - WEBHOOK_PORT=8090
+    ports:
+      - "8090:8090"
+    volumes:
+      - license-data:/data
+    restart: unless-stopped
+
+volumes:
+  license-data:

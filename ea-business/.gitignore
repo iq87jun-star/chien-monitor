@@ -17,3 +17,7 @@ reports/raw/
 
 # Node
 node_modules/
+
+# Sales exports / customer data — never commit
+analytics/sales/
+*.sales.csv

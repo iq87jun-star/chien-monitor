@@ -1,0 +1,23 @@
+# Caddy reverse proxy — automatic HTTPS for the license API.
+#
+# Caddy obtains and renews TLS certificates automatically. Point the DNS
+# A/AAAA record of api.riskguard.app at this host first.
+#
+#   /verify          -> verify service (8080)   (called by the EA via WebRequest)
+#   /webhook/*       -> webhook service (8090)   (called by Gumroad/Stripe)
+#   /health          -> verify health
+#
+# Run:  caddy run --config Caddyfile
+
+api.riskguard.app {
+	encode gzip
+
+	@webhook path /webhook/*
+	handle @webhook {
+		reverse_proxy localhost:8090
+	}
+
+	handle {
+		reverse_proxy localhost:8080
+	}
+}
