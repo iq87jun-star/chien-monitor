@@ -16,8 +16,11 @@ def code(s):cells.append(new_code_cell(s))
 md(r"""# FundedNext v4 (H4順張り) 検証 — 自己完結ノート
 
 このノートは **外部依存なしで単体実行できる** v4 戦略検証ハーネスです。
-`data/<PAIR>_h1.csv`（列: `timestamp,open,high,low,close`）さえ置けば、
-上から順に「すべてのセルを実行」するだけで全結果が出ます。
+**データが無ければ自動でYahoo Financeから取得**します（研究用2年）。Colabで開いて
+「すべてのセルを実行」するだけで全結果が出ます。
+
+> **本番**は Dukascopy 10年の `data/<PAIR>_h1.csv`（列: `timestamp,open,high,low,close`）を
+> `DATA_DIR` に置いて再実行してください。既存CSVがあれば自動取得はスキップされます。
 
 ## このノートが答える問い
 v3(D1逆張り)は不採用。手元データで「同じ4条件を**順張り(符号反転)**で読む」と
@@ -107,6 +110,50 @@ def resample_h4(h1):
     h4=pd.concat([o,h,l,c],axis=1); h4.columns=["open","high","low","close"]
     return h4.dropna()
 
+# --- データ自動取得フォールバック ---------------------------------------
+# DATA_DIR に <PAIR>_h1.csv が無ければ Yahoo Finance から取得してキャッシュ。
+# これで「Colabで開いて実行するだけ」で必ず動く。Dukascopy 10年を使う場合は
+# その CSV を DATA_DIR に置けば、こちらは取得をスキップする(既存ファイル優先)。
+def ensure_data(pairs=PAIRS, data_dir=DATA_DIR):
+    import urllib.request, json, csv, time as _t, datetime as _dt
+    os.makedirs(data_dir, exist_ok=True)
+    ymap={"EURUSD":"EURUSD=X","GBPUSD":"GBPUSD=X","USDJPY":"USDJPY=X","AUDUSD":"AUDUSD=X",
+          "USDCHF":"USDCHF=X","USDCAD":"USDCAD=X","NZDUSD":"NZDUSD=X",
+          "EURJPY":"EURJPY=X","GBPJPY":"GBPJPY=X"}
+    for p in pairs:
+        path=os.path.join(data_dir,f"{p}_h1.csv")
+        if os.path.exists(path):                      # 既存(=Dukascopy等)優先
+            continue
+        sym=ymap.get(p)
+        if not sym:
+            print(f"[{p}] Yahooシンボル未定義→スキップ"); continue
+        try:
+            u=(f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}"
+               f"?interval=1h&range=730d")
+            req=urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"})
+            d=json.loads(urllib.request.urlopen(req,timeout=25).read())
+            r=d["chart"]["result"][0]; ts=r["timestamp"]; q=r["indicators"]["quote"][0]
+            rows=[]
+            for i,t in enumerate(ts):
+                o,h,l,c=q["open"][i],q["high"][i],q["low"][i],q["close"][i]
+                if None in (o,h,l,c): continue
+                rows.append((_dt.datetime.utcfromtimestamp(t).strftime("%Y-%m-%d %H:%M:%S"),o,h,l,c))
+            with open(path,"w",newline="") as f:
+                w=csv.writer(f); w.writerow(["timestamp","open","high","low","close"]); w.writerows(rows)
+            print(f"[{p}] Yahoo取得 {len(rows)}本 -> {path}")
+            _t.sleep(0.8)
+        except Exception as e:
+            print(f"[{p}] 取得失敗(ネット制限?): {type(e).__name__} {str(e)[:50]}")
+
+# 既存CSVが1つも無ければ自動取得を試みる(Dukascopyを置いていればスキップされる)
+_have=[p for p in PAIRS if os.path.exists(os.path.join(DATA_DIR,f"{p}_h1.csv"))]
+if not _have:
+    print("DATA_DIR にCSV無し → Yahooから自動取得を試行(研究用2年データ)...")
+    print("※ 本番は Dukascopy 10年CSV を", DATA_DIR, "に置いて再実行してください。")
+    ensure_data()
+else:
+    print(f"既存CSV {len(_have)} ペアを使用:", _have)
+
 # データ点検
 _rows=[]
 for p in PAIRS:
@@ -120,6 +167,9 @@ for p in PAIRS:
 AVAIL = [r["pair"] for r in _rows if r.get("h1_bars",0)>0]
 display(pd.DataFrame(_rows))
 print("利用可能ペア:", AVAIL)
+if not AVAIL:
+    print("\n⚠ データが1つもありません。ネット制限の場合は、手動でCSVを")
+    print("  DATA_DIR に置いてこのセルを再実行してください(列: timestamp,open,high,low,close)。")
 """)
 
 # ---------------------------------------------------------------- 2. シグナル
@@ -297,8 +347,8 @@ fig,ax=plt.subplots(figsize=(11,5))
 for pair,e in eqs_off.items():
     if len(e): ax.plot(e.index, e["equity"].values, lw=1, label=pair)
 ax.axhline(P["InitialBalance"],color="k",lw=0.6,ls="--")
-ax.axhline(P["InitialBalance"]*(1-P["EquityFloorDDPct"]/100),color="r",lw=0.6,ls=":",label="-10% 失格線")
-ax.set_title("halt-OFF 連続equity (真の姿)"); ax.set_ylabel("equity USD")
+ax.axhline(P["InitialBalance"]*(1-P["EquityFloorDDPct"]/100),color="r",lw=0.6,ls=":",label="-10% fail line")
+ax.set_title("halt-OFF continuous equity (true picture)"); ax.set_ylabel("equity USD")
 ax.legend(fontsize=8,ncol=2); ax.grid(alpha=0.3)
 plt.tight_layout(); plt.savefig(os.path.join(OUT_DIR,"halt_off_equity.png"),dpi=110); plt.show()
 print("\n読み: OFF_total_pct>0 かつ OFF_trueMaxDD>-10% のペアだけが、+8%合格の裏に")
