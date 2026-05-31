@@ -56,7 +56,7 @@ input long   InpMagic          = 770001; // Magic number
 
 input group "=== Licensing (self-hosted build only) ==="
 input string InpLicenseKey     = "";                         // License key
-input string InpLicenseServer  = "https://license.example.com/verify"; // License API URL
+input string InpLicenseServer  = "https://api.riskguard.app/verify"; // License API URL
 
 //+------------------------------------------------------------------+
 //| Globals                                                          |

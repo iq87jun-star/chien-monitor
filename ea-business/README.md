@@ -4,25 +4,28 @@ MQL5/MT5 の EA・インジ・ツールを商品化し、人間の判断・承�
 
 ## フェーズ
 - **Phase 0（承認済）** — 設計：[docs/phase0-design.md](docs/phase0-design.md)
-- **Phase 1（進行中）** — MVP：単機能ツール `RiskGuard` の商品化（コード＋マニュアル＋LP＋ライセンス）→ [docs/phase1-report.md](docs/phase1-report.md)
-- Phase 2 — 販売基盤（ライセンス・決済・サポート整備）
-- Phase 3 — 集客自動化（コンテンツ／SNS）
+- **Phase 1（完了）** — MVP：単機能ツール `RiskGuard` 商品化 → [docs/phase1-report.md](docs/phase1-report.md)
+- **Phase 2（完了）** — 販売基盤：決済→ライセンス発行・Market出品メタ・サポート自動化・主力EAスキャフォールド → [docs/phase2-report.md](docs/phase2-report.md)
+- **Phase 3（次）** — 集客自動化（コンテンツ／SNS）
 - Phase 4 — 運用最適化
 
-## 確定方針（2026-05-31 承認）
+## 確定方針
 - 販売チャネル：**二段構え**（MQL5 Market + 自前LP/Gumroad）
-- 課金：**買い切りのみ**
-- 既存EAロジック流用：**全面承認**（Phase 2 以降の主力EAで活用）
+- 課金：**買い切りのみ**（RiskGuard **$49**、主力EA $99〜199 想定）
+- 既存EAロジック流用：**全面承認**（`products/breakout-pro` で活用）
+- ライセンスホスト（既定）：`https://api.riskguard.app/verify`（実デプロイ時に差し替え）
 
 ## ディレクトリ
 ```
 ea-business/
-├── docs/                     設計・報告ドキュメント
-├── products/risk-guard/      MVP商品（src / manual(ja,en) / reports）
-├── licensing/                自前ライセンスサーバ（買い切り・WebRequest）
+├── docs/                     設計・報告ドキュメント（phase0-2, main-ea-plan）
+├── products/
+│   ├── risk-guard/           MVP商品（src / manual(ja,en) / reports）
+│   └── breakout-pro/         主力EA商品化スキャフォールド
+├── licensing/                ライセンス検証 + 決済Webhook発行（買い切り）
 ├── landing/                  自前LP
-├── marketing/                セールスコピー・SEO
-├── support/                  サポートテンプレ・対応フロー
+├── marketing/                セールスコピー・SEO・Market出品メタ
+├── support/                  サポートテンプレ・対応フロー・FAQボットKB
 └── scripts/                  バックテスト資料 自動生成
 ```
 

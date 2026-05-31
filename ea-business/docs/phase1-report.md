@@ -1,7 +1,13 @@
 # Phase 1 — MVP 報告：RiskGuard
 
-> ステータス：**初版実装完了 → レビュー/承認待ち**
-> 商品：`RiskGuard`（MT5・リスク%ベースのロット計算＋トレード執行/管理アシスタント・買い切り）
+> ステータス：**完了**（価格 $49・Market出品方針を確定、Phase 2 へ継続）
+> 商品：`RiskGuard`（MT5・リスク%ベースのロット計算＋トレード執行/管理アシスタント・買い切り $49）
+
+## 確定事項（「すべて決めて進めて」指示）
+- 商品コンセプト：RiskGuard で確定
+- 価格：**$49 買い切り**
+- MQL5 Market 出品：**実施**（`RG_BUILD_MARKET` ビルド、メタデータは `marketing/mql5-market-listing.md`）
+- 自前LP/サーバ：`riskguard.app` / `api.riskguard.app`（実デプロイ時に人間が差し替え）
 
 ---
 

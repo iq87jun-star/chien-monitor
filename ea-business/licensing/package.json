@@ -1,0 +1,15 @@
+{
+  "name": "riskguard-licensing",
+  "version": "1.0.0",
+  "description": "RiskGuard buy-once license verification + issuance (self-hosted channel)",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "verify-server": "node server.js",
+    "webhook": "node webhook.js",
+    "keygen": "node keygen.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
