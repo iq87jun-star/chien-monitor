@@ -1,5 +1,13 @@
 # 12. v6 — 月曜シーズナリティ(週明けJPYクロス・ドリフト): 初の全フィルタ通過エッジ
 
+> ⚠️ **重要(2026-05-31 追記)**: 独立検証ノート(Colab・実bid/ask・ガード付き・
+> Bonferroni・スワップ感応)で、本docの「採用」結論に**2つの運用上の致命的欠陥**が
+> 判明した。**→ 必ず `docs/13_v6_independent_verification.md` を先に読むこと。**
+> 要約: ①3ペア合算はFundedNext Phase1を**FAIL(合算DD 11.81% > 10%制限)**。
+> ②スワップが支払い側(-1pip/泊)に振れると純益が半減しDD 18.4%で同じく失格。
+> エッジ自体(月曜効果)は独立再現で確認されたが、**3ペア同時運用は不可**。
+> 単一ペア(EURJPY, maxDD 4.42%, p=0.0000)運用が現実的な落としどころ。
+
 > **数値の出所**: 本ファイルの全数値は `research/seasonality_monday.py` の実出力
 > （本番10年 USDJPY/EURJPY/GBPJPY, 往復~2pipコスト後）と一致する。再現:
 > `DATA_DIR=<real> python3 research/seasonality_monday.py` →
