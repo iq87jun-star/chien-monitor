@@ -16,11 +16,16 @@ def code(s):cells.append(new_code_cell(s))
 md(r"""# FundedNext v4 (H4順張り) 検証 — 自己完結ノート
 
 このノートは **外部依存なしで単体実行できる** v4 戦略検証ハーネスです。
-**データが無ければ自動でYahoo Financeから取得**します（研究用2年）。Colabで開いて
-「すべてのセルを実行」するだけで全結果が出ます。
 
-> **本番**は Dukascopy 10年の H1 CSV を `DATA_DIR` に置いて再実行してください。
-> ファイル名は **ペア名を含めばOK**（例 `USDJPY_Candlestick_1_Hour_BID_...csv` や `USDJPY_h1.csv`）。
+### 🚀 本番(Dukascopy 10年)の使い方 — これだけ
+1. Google Drive に好きな名前のフォルダを作り、Dukascopy の H1 CSV を入れる
+   （例: `マイドライブ/fundednext_data/USDJPY_*.csv ...`）。
+2. **0.5セル**の `DRIVE_SUBDIR` をそのフォルダ名にして実行 → 認証許可。
+3. 「すべてのセルを実行」。第1章のバナーが **緑(✅ years≈10)** なら本番判定。
+
+> Driveにデータが無い/Colab以外なら、`data` フォルダ → 無ければ **Yahoo 2.8年を自動取得**
+> （研究用フォールバック。この場合バナーは赤で「本番判定にならない」と警告）。
+> CSVファイル名は **ペア名を含めばOK**（`USDJPY_Candlestick_1_Hour_BID_...csv` 等）。
 > **列名(Open/High/Low/Close, bid/ask接頭辞)と時刻形式(`dd.mm.yyyy HH:MM:SS.000` 等)は自動判別**
 > します。既存CSVがあれば自動取得はスキップされます。
 
@@ -55,9 +60,42 @@ FundedNext Phase1 は「+8%到達で合格・終了」。これをそのまま�
 > 研究用。最終判断は実 bid/ask ハーネスとフォワード/デモで再確認すること。
 """)
 
+# ---------------------------------------------------------------- 0.5 Driveマウント
+md("## 0.5 Google Drive マウント（Dukascopy 10年データ用）\n\n"
+   "**ここだけ設定すれば本番データで動きます。** 手順:\n"
+   "1. 下の `DRIVE_SUBDIR` を、Drive上でCSVを入れたフォルダ名に書き換える。\n"
+   "2. このセルを実行 → 認証を許可。\n\n"
+   "CSVファイル名はペア名(USDJPY等)を含めば何でもOK。列名・時刻形式は自動判別。\n\n"
+   "> Colab以外(ローカル/Jupyter)で動かす場合はこのセルは自動でスキップされ、"
+   "次セルの `DATA_DIR` 既定値('data')か環境変数が使われます。")
+code(r"""# ★★ ここを自分のDriveフォルダ名に変更 ★★
+# 例: マイドライブ直下に 'fundednext_data' を作ってCSVを入れたなら下記のまま。
+DRIVE_SUBDIR = "fundednext_data"     # MyDrive/<ここ> にCSVを置く
+
+DRIVE_DATA_DIR = None
+try:
+    from google.colab import drive   # Colabでのみ成功
+    drive.mount('/content/drive')
+    DRIVE_DATA_DIR = f"/content/drive/MyDrive/{DRIVE_SUBDIR}"
+    import os as _os
+    if _os.path.isdir(DRIVE_DATA_DIR):
+        _n=len([f for f in _os.listdir(DRIVE_DATA_DIR) if f.lower().endswith('.csv')])
+        print(f"✅ Driveマウント成功: {DRIVE_DATA_DIR}  (CSV {_n}個)")
+        if _n==0:
+            print("   ⚠ このフォルダにCSVがありません。Drive上のフォルダ名/中身を確認してください。")
+    else:
+        print(f"⚠ フォルダが見つかりません: {DRIVE_DATA_DIR}")
+        print("   Drive内に '"+DRIVE_SUBDIR+"' フォルダを作りCSVを入れるか、DRIVE_SUBDIRを修正。")
+        print("   マウント直後はDrive反映に数秒かかることがあります(再実行で解決する場合あり)。")
+except Exception as e:
+    print("Colab環境ではないためDriveマウントはスキップ:", type(e).__name__)
+    print("→ 次セルの DATA_DIR(既定 'data' または環境変数) を使います。")
+""")
+
 # ---------------------------------------------------------------- 1. 設定
 md("## 1. 設定 / データ読込\n\n"
-   "`DATA_DIR` を CSV のある場所に。Colab なら Drive をマウントしてパス指定。")
+   "`DATA_DIR` の決定順: ①0.5でDriveにCSVが見つかればそれ → ②環境変数 DATA_DIR → "
+   "③既定 'data'(無ければYahoo 2.8年を自動取得=研究用)。")
 code(r"""import os, math, numpy as np, pandas as pd
 import matplotlib.pyplot as plt
 import warnings
@@ -65,10 +103,16 @@ import warnings
 warnings.filterwarnings("ignore", message="no explicit representation of timezones")
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-# --- データ場所 (Colab: '/content/drive/MyDrive/.../data' 等に変更可) ---
-DATA_DIR = os.environ.get("DATA_DIR", "data")
+# --- データ場所の決定 (Drive優先) ---
+# DRIVE_DATA_DIR は 0.5セルで設定済み(Colab時)。それが実在すれば最優先。
+_drive = globals().get("DRIVE_DATA_DIR")
+if _drive and os.path.isdir(_drive):
+    DATA_DIR = _drive
+else:
+    DATA_DIR = os.environ.get("DATA_DIR", "data")
 OUT_DIR  = os.environ.get("OUT_DIR", ".")
 os.makedirs(OUT_DIR, exist_ok=True)
+print("使用 DATA_DIR =", os.path.abspath(DATA_DIR))
 
 PAIRS = ["USDJPY","EURJPY","GBPJPY","USDCHF","GBPUSD","EURUSD","AUDUSD","NZDUSD","USDCAD"]
 
