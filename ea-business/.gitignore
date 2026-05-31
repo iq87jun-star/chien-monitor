@@ -1,0 +1,16 @@
+# Secrets & license data — never commit
+.env
+.env.*
+licensing/licenses.json
+licensing/*.local.json
+
+# Build artifacts
+*.ex5
+*.ex4
+
+# MT5 tester exports (raw)
+*.htm
+reports/raw/
+
+# Node
+node_modules/
