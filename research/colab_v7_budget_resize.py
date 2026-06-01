@@ -275,6 +275,116 @@ def typical_lots(base, Pp, usdjpy_h1):
     out["_per_shot_risk_pct"]=round(per_pct,4); out["_risk_usd_per_shot"]=round(Pp["InitialBalance"]*per_pct/100.0,2)
     return out
 
+# ============================================================================
+# 業者プラン比較シミュレーション(安全性の高い老舗業者 × v7)
+# 手数料/分配は2026時点の概算。改定されるので★必ず購入画面で最新を確認し編集すること。
+# dd_type: static=初期残高基準フロア(block_mcのpeak基準より実際は緩い→pass率は表より高め傾向)
+#          trailing=ピーク基準(block_mcと一致)
+# phases : 各フェーズ利益目標%のリスト([8,5]=2段, [10]=1段)
+# ============================================================================
+PLANS = [
+    dict(firm="FTMO(2015)",        plan="2-Step",        size=100000, phases=[10,5],
+         daily_pct=5.0, max_loss_pct=10.0, dd_type="static",
+         fee=580, fee_refunded=True,  eval_bonus_pct=0.0,  split=0.80, min_days=4),
+    dict(firm="FTMO(2015)",        plan="1-Step",        size=100000, phases=[10],
+         daily_pct=3.0, max_loss_pct=10.0, dd_type="trailing",
+         fee=580, fee_refunded=True,  eval_bonus_pct=0.0,  split=0.90, min_days=4),
+    dict(firm="FundedNext(2022)",  plan="Stellar 2-Step",size=100000, phases=[8,5],
+         daily_pct=5.0, max_loss_pct=10.0, dd_type="static",
+         fee=549, fee_refunded=True,  eval_bonus_pct=15.0, split=0.90, min_days=5),
+    dict(firm="FundedNext(2022)",  plan="Stellar 1-Step",size=100000, phases=[10],
+         daily_pct=3.0, max_loss_pct=6.0,  dd_type="static",
+         fee=599, fee_refunded=True,  eval_bonus_pct=15.0, split=0.90, min_days=2),
+    dict(firm="FundedNext(2022)",  plan="Stellar Lite",  size=100000, phases=[8,4],
+         daily_pct=4.0, max_loss_pct=8.0,  dd_type="static",
+         fee=399, fee_refunded=False, eval_bonus_pct=0.0,  split=0.80, min_days=5),
+    dict(firm="The5ers(2016)",     plan="High Stakes",   size=100000, phases=[10,5],
+         daily_pct=99.0, max_loss_pct=6.0, dd_type="static",
+         fee=495, fee_refunded=False, eval_bonus_pct=0.0,  split=0.80, min_days=3),
+]
+# 予算選択の候補(低DDプラン用に低予算も用意)。MARGIN=最大DDに対する安全余裕。
+PLAN_BUDGETS = [1.00,0.85,0.75,0.60,0.50,0.40,0.30,0.25,0.20,0.15]
+
+def _maxdd_at(base, usdjpy_h1, wr):
+    Pp=copy.deepcopy(P); Pp["WeeklyRiskPct"]=wr
+    eq_raw,tdf=portfolio_equity(base,Pp,usdjpy_h1,apply_guards=False)
+    if len(eq_raw)==0: return 0.0, 0.0, 0.0
+    _,dd=max_drawdown(eq_raw,P["InitialBalance"])
+    net=(eq_raw.iloc[-1]-P["InitialBalance"])/P["InitialBalance"]*100
+    return round(dd,2), round(net,2), tdf
+
+def compare_firms(base, usdjpy_h1, span_years):
+    print("\n"+"="*96)
+    print("【業者プラン比較】安全性の高い老舗業者 × v7(週次予算は各プランの最大DDに収まる最大値を自動選択)")
+    print("  方針: 各プランの最大DDに対し安全余裕(margin=max(2.5%, 0.3×最大DD))を取り、")
+    print("        その内側に収まる最大の週次予算を選択 → その予算で Phase別MC合格率/失格率/期待値を算出。")
+    print("="*96)
+    # 予算ごとの全期間maxDD/netを1度だけ計算(予算間で使い回し)
+    dd_cache={wr:_maxdd_at(base,usdjpy_h1,wr) for wr in PLAN_BUDGETS}
+    hdr=(f"{'業者/プラン':<26}{'予算%':>6}{'10yDD%':>7}{'最大DD':>7}{'P1%':>6}{'P2%':>6}"
+         f"{'資金化%':>7}{'試行':>5}{'到達月':>6}{'期待手数料$':>10}{'月収益$':>8}{'回収月':>6}")
+    print(hdr); print("-"*len(hdr))
+    results=[]
+    for pl in PLANS:
+        ml=pl["max_loss_pct"]; margin=max(2.5, 0.30*ml); cap=ml-margin
+        # capを満たす最大予算(降順で最初にcap以下になるもの)
+        chosen=None
+        for wr in PLAN_BUDGETS:
+            dd,net,_=dd_cache[wr]
+            if dd<=cap: chosen=wr; chosen_dd=dd; chosen_net=net; break
+        if chosen is None:
+            wr=PLAN_BUDGETS[-1]; chosen=wr; chosen_dd,chosen_net,_=dd_cache[wr]
+        Pp=copy.deepcopy(P); Pp["WeeklyRiskPct"]=chosen; Pp["MaxLossLimitPct"]=ml; Pp["DailyStopPct"]=min(pl["daily_pct"],4.0)
+        # Phase別MC(各フェーズ目標で先着判定)
+        p_pass=1.0; tot_weeks=0.0; phase_rates=[]; fails=[]
+        for i,tgt in enumerate(pl["phases"]):
+            mc=block_mc(base,Pp,usdjpy_h1,target_pct=float(tgt),seed=MC_SEED+i)
+            phase_rates.append(mc["pass_rate"]); fails.append(mc["fail_rate"])
+            p_pass*=mc["pass_rate"]/100.0
+            tot_weeks+=(mc["med_weeks"] or 0)
+        funded_pct=round(p_pass*100,1)
+        attempts=round(1.0/p_pass,2) if p_pass>0 else 999
+        months_to_fund=round(tot_weeks/4.345,1) if tot_weeks>0 else None
+        # 期待手数料(資金化までに払う総額)。返金は合格分の手数料を1回戻す。
+        exp_fee=pl["fee"]*attempts if p_pass>0 else None
+        net_fee_cost=(pl["fee"]*(attempts-(1.0 if pl["fee_refunded"] else 0.0))) if p_pass>0 else None
+        # 資金化後の月次期待収益(=10y raw net を年率化×分配×口座サイズ)。netは予算に線形。
+        monthly_net_pct=chosen_net/(span_years*12.0)
+        monthly_payout=monthly_net_pct/100.0*pl["size"]*pl["split"]
+        # eval合格ボーナス(FundedNext: eval利益の15%)。eval利益≈最終フェーズ目標%。
+        eval_bonus=pl["eval_bonus_pct"]/100.0*(pl["phases"][-1]/100.0)*pl["size"]
+        recoup_months=round((net_fee_cost-eval_bonus)/monthly_payout,1) if (monthly_payout>0 and net_fee_cost is not None and (net_fee_cost-eval_bonus)>0) else 0.0
+        results.append(dict(firm=pl["firm"],plan=pl["plan"],budget=chosen,dd=chosen_dd,max_loss=ml,
+                            p1=phase_rates[0],p2=(phase_rates[1] if len(phase_rates)>1 else None),
+                            funded_pct=funded_pct,attempts=attempts,months_to_fund=months_to_fund,
+                            exp_fee=round(exp_fee) if exp_fee else None,monthly_payout=round(monthly_payout),
+                            recoup_months=recoup_months,fail1=fails[0],fee=pl["fee"],
+                            refunded=pl["fee_refunded"],split=pl["split"]))
+        p2s=f"{phase_rates[1]:>6}" if len(phase_rates)>1 else f"{'—':>6}"
+        print(f"{pl['firm']+'/'+pl['plan']:<26}{chosen:>6.2f}{chosen_dd:>7.2f}{ml:>7.0f}"
+              f"{phase_rates[0]:>6}{p2s}{funded_pct:>7}{attempts:>5}"
+              f"{str(months_to_fund):>6}{(round(exp_fee) if exp_fee else 0):>10}{round(monthly_payout):>8}{recoup_months:>6}")
+    print("-"*len(hdr))
+    # 推奨: 資金化%が高く・期待手数料が低く・回収月が短いプラン
+    valid=[r for r in results if r["funded_pct"]>0]
+    if valid:
+        best=max(valid, key=lambda r:(r["funded_pct"]/max(1,r["recoup_months"] or 1)))
+        print(f"\n>>> v7に最も相性が良いプラン: 【{best['firm']} / {best['plan']}】")
+        print(f"    週次予算 {best['budget']}%(10y全期間DD {best['dd']}% ≤ 最大{best['max_loss']}%)。")
+        print(f"    資金化確率 {best['funded_pct']}%(=平均{best['attempts']}回購入で1回ファンド)。")
+        print(f"    到達まで中央 約{best['months_to_fund']}ヶ月 / 期待手数料総額 ${best['exp_fee']}"
+              f"{'(合格で返金あり)' if best['refunded'] else '(返金なし)'}。")
+        print(f"    ファンド後 月次期待収益 ≈ ${best['monthly_payout']}(分配{int(best['split']*100)}%後) → 期待手数料の回収 約{best['recoup_months']}ヶ月。")
+    print("\n  ★読み方:")
+    print("   ・『資金化%』= 1回の購入でファンド口座に到達する確率(Phase合格率の積)。")
+    print("   ・『試行』= 資金化に必要な平均購入回数(=1/資金化%)。失敗分の手数料は埋没。")
+    print("   ・『期待手数料$』= 資金化までに払う手数料総額の期待値(= 1回手数料×試行)。")
+    print("   ・『回収月』= ファンド後の月次期待収益で、払った手数料(返金/eval賞与控除後)を取り戻す月数。")
+    print("   ・最大DDが6%の超タイト枠(The5ers/FN 1-Step)はv7のDDに対し予算を絞らざるを得ず、")
+    print("     到達が遅く資金化%も落ちる=v7と相性が悪い。10%静的枠(FTMO/FN 2-Step)が本命。")
+    print("   ⚠ 手数料/分配は概算。最新値をPLANSに入れて再実行で精度が上がる。staticDD枠は表の値より実pass率は高めに出る(block_mcはpeak基準で保守的)。")
+    return results
+
 def run():
     usdjpy_h1=H1("USDJPY")
     base=build_all_shots(P)
@@ -325,6 +435,8 @@ def run():
     print(f"    ★解釈: 『未決(horizon内未到達)』は失格でなく『時間無制限なら最終到達=遅いだけ』。失格率だけが本当の不合格。")
     print(f"    既定0.60の妥当性: 上表0.60行の maxDD が −10%に十分マージン・失格率~0・到達月数が現実的かを確認。")
     print(f"    (10年で1.5%は maxDD~14.8%/失格17%付近になり SAFE_DD で除外される想定。)")
+    # ★業者プラン比較シミュレーション
+    out["firm_compare"]=compare_firms(base, usdjpy_h1, span)
     try:
         path=(H1_DIR.format(base=DRIVE_BASE)+"/v7_budget_resize.json") if USE_DRIVE else "research/results/v7_budget_resize.json"
         os.makedirs(os.path.dirname(path),exist_ok=True)
