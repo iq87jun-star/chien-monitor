@@ -1,0 +1,204 @@
+{
+  "A_CHF_Thu_PM_SHORT": {
+    "entry_weekday": "Thu",
+    "net_pct": 5.6,
+    "win_pct": 52.0,
+    "maxDD_pct": -3.1,
+    "n": 146,
+    "perm_p": 0.1364,
+    "IS_net": 0.0,
+    "OOS_net": 5.6,
+    "OOS_perm_p": 0.0608,
+    "jackknife_max_p": 0.483,
+    "cost": {
+      "1pip": 7.4,
+      "2pip": 5.6,
+      "3pip": 3.8,
+      "4pip": 2.0
+    },
+    "corr_to_yen": 0.06,
+    "weekday_placebo": {
+      "Mon": [
+        -4.0,
+        0.769
+      ],
+      "Tue": [
+        -3.5,
+        0.743
+      ],
+      "Wed": [
+        -3.9,
+        0.729
+      ],
+      "Thu": [
+        5.6,
+        0.136
+      ],
+      "Fri": [
+        -1.6,
+        0.606
+      ]
+    },
+    "combined_with_yen": {
+      "net_pct": 8.9,
+      "win_pct": 60.0,
+      "maxDD_pct": -1.1,
+      "n": 146,
+      "yen_only_dd": -1.8
+    },
+    "grade": "LEAD"
+  },
+  "B_YEN_Fri_SHORT_intraday": {
+    "entry_weekday": "Fri",
+    "net_pct": 1.2,
+    "win_pct": 44.0,
+    "maxDD_pct": -2.7,
+    "n": 146,
+    "perm_p": 0.3742,
+    "IS_net": 0.6,
+    "OOS_net": 0.6,
+    "OOS_perm_p": 0.407,
+    "jackknife_max_p": 0.474,
+    "cost": {
+      "1pip": 2.1,
+      "2pip": 1.2,
+      "3pip": 0.3,
+      "4pip": -0.5
+    },
+    "corr_to_yen": -0.01,
+    "weekday_placebo": {
+      "Mon": [
+        -9.0,
+        1.0
+      ],
+      "Tue": [
+        -2.7,
+        0.791
+      ],
+      "Wed": [
+        -5.4,
+        0.954
+      ],
+      "Thu": [
+        -1.6,
+        0.641
+      ],
+      "Fri": [
+        1.2,
+        0.374
+      ]
+    },
+    "combined_with_yen": {
+      "net_pct": 6.7,
+      "win_pct": 59.0,
+      "maxDD_pct": -1.3,
+      "n": 146,
+      "yen_only_dd": -1.8
+    },
+    "grade": "REJECT"
+  },
+  "C_YEN_Fri_SHORT_24h": {
+    "entry_weekday": "Fri",
+    "net_pct": -0.8,
+    "win_pct": 43.0,
+    "maxDD_pct": -4.5,
+    "n": 145,
+    "perm_p": 0.525,
+    "IS_net": -0.3,
+    "OOS_net": -0.5,
+    "OOS_perm_p": 0.5438,
+    "jackknife_max_p": 0.66,
+    "cost": {
+      "1pip": 0.0,
+      "2pip": -0.8,
+      "3pip": -1.7,
+      "4pip": -2.5
+    },
+    "corr_to_yen": 0.08,
+    "weekday_placebo": {
+      "Mon": [
+        -12.5,
+        0.996
+      ],
+      "Tue": [
+        -9.5,
+        0.941
+      ],
+      "Wed": [
+        2.1,
+        0.366
+      ],
+      "Thu": [
+        -3.2,
+        0.722
+      ],
+      "Fri": [
+        -0.8,
+        0.525
+      ]
+    },
+    "combined_with_yen": {
+      "net_pct": 5.7,
+      "win_pct": 51.0,
+      "maxDD_pct": -2.9,
+      "n": 146,
+      "yen_only_dd": -1.8
+    },
+    "grade": "REJECT"
+  },
+  "D_LATE_USD_SHORT_Fri": {
+    "entry_weekday": "Fri",
+    "net_pct": 2.2,
+    "win_pct": 52.0,
+    "maxDD_pct": -3.5,
+    "n": 145,
+    "perm_p": 0.2958,
+    "IS_net": -2.3,
+    "OOS_net": 4.6,
+    "OOS_perm_p": 0.0968,
+    "jackknife_max_p": 0.508,
+    "cost": {
+      "1pip": 3.9,
+      "2pip": 2.2,
+      "3pip": 0.6,
+      "4pip": -1.1
+    },
+    "corr_to_yen": 0.04,
+    "weekday_placebo": {
+      "Mon": [
+        -6.3,
+        0.927
+      ],
+      "Tue": [
+        0.3,
+        0.462
+      ],
+      "Wed": [
+        -4.1,
+        0.783
+      ],
+      "Thu": [
+        -2.9,
+        0.725
+      ],
+      "Fri": [
+        2.2,
+        0.296
+      ]
+    },
+    "combined_with_yen": {
+      "net_pct": 7.8,
+      "win_pct": 58.0,
+      "maxDD_pct": -1.2,
+      "n": 146,
+      "yen_only_dd": -1.8
+    },
+    "grade": "REJECT"
+  },
+  "_yen_monday_ref": {
+    "net_pct": 12.6,
+    "win_pct": 61.0,
+    "maxDD_pct": -1.8,
+    "n": 143
+  }
+}

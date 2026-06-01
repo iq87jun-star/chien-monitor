@@ -1,5 +1,12 @@
 # 16. v7 — 月曜シーズナリティ「マルチショット・ポートフォリオ」(数を打って成績を上げる)
 
+> ⚠️ **重要訂正(→ docs/18 を先に読む)**: 本ファイルの最大DD「−4.9%」等は committed
+> **2.8年**の数値で、**10年実データ検証(ユーザー提供Colab)では maxDD ~14.8%(年次最悪
+> ~10.5%)と約3倍**だった。エッジと多ショット分散は10年でもCONFIRM(EURJPY月曜p=0.0000,
+> SR 3shot→12shotで2.69→7.26)だが、**週次予算1.5%では FundedNext 失格**。
+> → **新既定 `InpWeeklyRiskPct=0.60`(10年maxDD~5.9%と外挿)に改定済み**。以下の2.8年数値は
+> 「定性は正しいがDD絶対値は楽観」として読むこと。詳細・10年実測表は docs/18。
+
 > **出所**: 全数値は `research/v7_portfolio_multishot.py` の実出力
 > `research/results/v7_portfolio_multishot.json` を **JSON直読/単一スカラmarkerで検証**
 > (docs/15で犯した表示破損転記ミスの再発防止)。data = committed H1(2023-08〜2026-05,
