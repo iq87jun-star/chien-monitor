@@ -41,24 +41,34 @@ P = dict(InitialBalance=100000.0, ProfitTargetPct=8.0, MaxLossLimitPct=10.0,
          MaxSpreadPips=3.0, SlippagePoints=20, SwapPipsPerNight=0.0)
 
 # ---------- データ ----------
+# Driveマウントを頑健化(既マウント検知+例外でも継続)。USE_DRIVEフラグに依らずパスは常に探索する。
 if USE_DRIVE:
     try:
-        from google.colab import drive; drive.mount("/content/drive", force_remount=False)
+        if not os.path.exists("/content/drive/MyDrive"):
+            from google.colab import drive; drive.mount("/content/drive", force_remount=False)
     except Exception as e:
-        print("Drive不可:", e); USE_DRIVE=False
+        print("Drive mount注意(継続):", e)
+DRIVE_OK = os.path.exists("/content/drive/MyDrive")
+print(f"[データ] Driveマウント={DRIVE_OK} / 探索基点 {H1_DIR.format(base=DRIVE_BASE)} と {LOCAL_FALLBACK}")
 
 def pip_size(p): return 0.01 if p.endswith("JPY") else 0.0001
 def point_size(p): return 0.001 if p.endswith("JPY") else 0.00001
 def _resolve(pair):
-    c=[]
-    if USE_DRIVE:
-        b=H1_DIR.format(base=DRIVE_BASE); c+=[f"{b}/{pair}_h1.csv", f"{b}/{pair}.csv"]
-    c+=[f"{LOCAL_FALLBACK}/{pair}_h1.csv"]
+    # ★USE_DRIVEに依存せず、Drive/ローカル両方の候補を常に試す(フラグ取りこぼし対策)
+    b=H1_DIR.format(base=DRIVE_BASE)
+    c=[f"{b}/{pair}_h1.csv", f"{b}/{pair}.csv",
+       f"{LOCAL_FALLBACK}/{pair}_h1.csv", f"{LOCAL_FALLBACK}/{pair}.csv"]
     for x in c:
         if os.path.exists(x): return x
-    raise FileNotFoundError(f"{pair}: {c}")
+    return None
 def load_pair(pair):
-    df=pd.read_csv(_resolve(pair)); df.columns=[c.strip().lower() for c in df.columns]
+    path=_resolve(pair)
+    if path is None:
+        raise FileNotFoundError(
+            f"{pair} のH1 CSVが見つかりません。Driveマウント={os.path.exists('/content/drive/MyDrive')}。"
+            f" 期待パス例: {H1_DIR.format(base=DRIVE_BASE)}/{pair}_h1.csv "
+            f"(edge2/3/4が読めた場所と同じ。DRIVE_BASE/H1_DIRを確認)")
+    df=pd.read_csv(path); df.columns=[c.strip().lower() for c in df.columns]
     tcol=next((c for c in ["time","timestamp","date","datetime","gmt time"] if c in df.columns), df.columns[0])
     df["t"]=pd.to_datetime(df[tcol],utc=True,errors="coerce")
     df=df.dropna(subset=["t"]).sort_values("t").set_index("t")
