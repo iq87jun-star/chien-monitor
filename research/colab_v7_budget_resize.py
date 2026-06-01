@@ -19,7 +19,7 @@ import os, json, copy, numpy as np, pandas as pd, warnings
 warnings.filterwarnings("ignore")
 
 # ---------- 設定(あなたの環境) ----------
-USE_DRIVE  = True
+USE_DRIVE  = False
 DRIVE_BASE = "/content/drive/MyDrive/forex_ml"
 H1_DIR     = "{base}/dukascopy_data_h1"
 LOCAL_FALLBACK = "./research/data"
@@ -27,7 +27,7 @@ LOCAL_FALLBACK = "./research/data"
 PAIRS  = ["EURJPY","GBPJPY","USDJPY"]
 HOURS  = [4,6,8,10]
 BUDGETS = [1.50,1.00,0.75,0.60,0.50,0.40]   # 週次リスク%スイープ
-MC_PATHS = 2000
+MC_PATHS = 800
 MC_HORIZON_WEEKS = 156      # ★時間無制限ゆえ旧104より長く(=低予算でも+8%到達機会を与える)
 MC_SEED = 7
 CONTRACT = 100000.0
@@ -127,6 +127,16 @@ def build_all_shots(Pp):
     if not allrows: return pd.DataFrame()
     return pd.concat(allrows,ignore_index=True).sort_values("ent_time").reset_index(drop=True)
 
+def attach_usd_conv(base, usdjpy_h1):
+    """各ショットの quote→USD 換算を【一度だけ】ベクトル計算して列に保持(MC内の reindex を撲滅)。
+       損益/lot あたり額は usd_conv に比例。全ペアJPYクロス: USDJPY=1/mid, それ以外=1/USDJPY(同時刻)。"""
+    if len(base)==0: return base
+    uj=usdjpy_h1["close"].reindex(pd.DatetimeIndex(base["ent_time"]), method="ffill").to_numpy()
+    uj=np.where(np.isnan(uj),150.0,uj)
+    conv=np.where(base["pair"].values=="USDJPY", 1.0/base["mid"].values, 1.0/uj)
+    base=base.copy(); base["usd_conv"]=conv
+    return base
+
 def usdjpy_at(t, usdjpy_h1):
     sub=usdjpy_h1["close"].reindex([t],method="ffill"); v=sub.iloc[0] if len(sub) else np.nan
     return float(v) if v==v else 150.0
@@ -154,14 +164,14 @@ def portfolio_equity(shots, Pp, usdjpy_h1, apply_guards=True):
             if equity>=target_eq: break
             if day_blocked: continue
         pair=r["pair"]; mid=r["mid"]
-        ujpy=None if pair=="USDJPY" else usdjpy_at(r["ent_time"],usdjpy_h1)
+        conv=r["usd_conv"] if "usd_conv" in r and r["usd_conv"]==r["usd_conv"] else quote_to_usd(pair,mid,None if pair=="USDJPY" else usdjpy_at(r["ent_time"],usdjpy_h1))
         risk_money=Pp["InitialBalance"]*per_pct/100.0
-        loss_per_lot=r["stop_pips"]*pip_size(pair)*CONTRACT*quote_to_usd(pair,mid,ujpy)
+        loss_per_lot=r["stop_pips"]*pip_size(pair)*CONTRACT*conv
         if loss_per_lot<=0: continue
         lots=np.floor((risk_money/loss_per_lot)/0.01)*0.01
         lots=max(0.0,min(lots,Pp["MaxLot"]))
         if lots<Pp["MinLot"]: continue
-        pnl=r["ret_pips"]*pip_size(pair)*lots*CONTRACT*quote_to_usd(pair,mid,ujpy)
+        pnl=r["ret_pips"]*pip_size(pair)*lots*CONTRACT*conv
         equity+=pnl
         if apply_guards and (equity-day_start_eq)<=-Pp["InitialBalance"]*Pp["DailyStopPct"]/100.0:
             day_blocked=True
@@ -194,45 +204,75 @@ def phase1_path(tdf, Pp):
         if eq>=target: return "PASS", r["ent_time"]
     return "UNDET", None
 
-def block_mc(shots, Pp, usdjpy_h1, n_paths=MC_PATHS, horizon=MC_HORIZON_WEEKS, seed=MC_SEED):
-    """週ブロック・ブートストラップ。週単位で相関を保ちつつ復元抽出し各パスでPhase1合否。"""
+def block_mc(shots, Pp, usdjpy_h1, n_paths=MC_PATHS, horizon=MC_HORIZON_WEEKS, seed=MC_SEED,
+             target_pct=None):
+    """週ブロック・ブートストラップ。週単位で相関を保ちつつ復元抽出し各パスで合否+到達週数。
+       target_pct=利益目標%(既定=ProfitTargetPct=Phase1の8%)。Phase2再測時は5を渡す。"""
     df=shots.copy(); df["week"]=df["ent_time"].dt.to_period("W")
-    weeks=sorted(df["week"].unique()); by={w:g for w,g in df.groupby("week")}
-    if len(weeks)==0: return dict(pass_rate=0,fail_rate=0,undetermined=0)
-    rng=np.random.default_rng(seed); wk_arr=np.array(weeks,dtype=object)
-    npass=nfail=nundet=0; init=Pp["InitialBalance"]
-    target=init*(1+Pp["ProfitTargetPct"]/100.0); floor_fail=Pp["MaxLossLimitPct"]
-    per_pct=Pp["WeeklyRiskPct"]/max(1,Pp["ShotsPerWeek"])
+    weeks=sorted(df["week"].unique())
+    if len(weeks)==0: return dict(pass_rate=0,fail_rate=0,undetermined=0,med_weeks=None,med_months=None,p25_weeks=None,p75_weeks=None)
+    init=Pp["InitialBalance"]; per_pct=Pp["WeeklyRiskPct"]/max(1,Pp["ShotsPerWeek"])
+    risk_money=init*per_pct/100.0; minlot=Pp["MinLot"]
+    # ★各週の (損失/lot=denom, 利益/lot=gain) を numpy配列で事前計算 → 内側ループは純算術のみ
+    pipv=df["pair"].map(pip_size).to_numpy(); convv=df["usd_conv"].to_numpy()
+    df["_denom"]=df["stop_pips"].to_numpy()*pipv*CONTRACT*convv
+    df["_gain"]=df["ret_pips"].to_numpy()*pipv*CONTRACT*convv
+    wk_blocks=[ (g["_denom"].to_numpy(), g["_gain"].to_numpy()) for _,g in df.groupby("week") ]
+    nW=len(wk_blocks)
+    rng=np.random.default_rng(seed); npass=nfail=nundet=0
+    tgt=Pp["ProfitTargetPct"] if target_pct is None else target_pct
+    target=init*(1+tgt/100.0); floor_fail=Pp["MaxLossLimitPct"]; wk_to_pass=[]
     for _ in range(n_paths):
-        pick=rng.choice(len(wk_arr), size=horizon, replace=True)
-        equity=init; peak=init; done=None
+        pick=rng.integers(0,nW,size=horizon)
+        equity=init; peak=init; done=None; wks=0
         for wi in pick:
-            g=by[wk_arr[wi]]
-            for _,r in g.iterrows():
-                pair=r["pair"]; mid=r["mid"]
-                ujpy=None if pair=="USDJPY" else usdjpy_at(r["ent_time"],usdjpy_h1)
-                lpl=r["stop_pips"]*pip_size(pair)*CONTRACT*quote_to_usd(pair,mid,ujpy)
-                if lpl<=0: continue
-                lots=np.floor((init*per_pct/100.0/lpl)/0.01)*0.01
-                if lots<Pp["MinLot"]: continue
-                equity+=r["ret_pips"]*pip_size(pair)*lots*CONTRACT*quote_to_usd(pair,mid,ujpy)
-                peak=max(peak,equity)
+            wks+=1; denom,gain=wk_blocks[wi]
+            for k in range(len(denom)):
+                d=denom[k]
+                if d<=0: continue
+                lots=np.floor((risk_money/d)/0.01)*0.01
+                if lots<minlot: continue
+                equity+=gain[k]*lots
+                if equity>peak: peak=equity
                 if (peak-equity)/peak*100>=floor_fail: done="FAIL"; break
                 if equity>=target: done="PASS"; break
             if done: break
-        if done=="PASS": npass+=1
+        if done=="PASS": npass+=1; wk_to_pass.append(wks)
         elif done=="FAIL": nfail+=1
         else: nundet+=1
+    w=np.array(wk_to_pass) if wk_to_pass else None
+    medw=float(np.median(w)) if w is not None else None
     return dict(pass_rate=round(npass/n_paths*100,1), fail_rate=round(nfail/n_paths*100,1),
-               undetermined=round(nundet/n_paths*100,1))
+               undetermined=round(nundet/n_paths*100,1),
+               med_weeks=medw, med_months=(round(medw/4.345,1) if medw else None),
+               p25_weeks=(float(np.percentile(w,25)) if w is not None else None),
+               p75_weeks=(float(np.percentile(w,75)) if w is not None else None))
+
+def typical_lots(base, Pp, usdjpy_h1):
+    """推奨予算での1ショット実ロット枚数(中央値/10-90%帯)とストップ幅をペア別に集計。"""
+    per_pct=Pp["WeeklyRiskPct"]/max(1,Pp["ShotsPerWeek"]); rm=Pp["InitialBalance"]*per_pct/100.0
+    pipv=base["pair"].map(pip_size).to_numpy(); convv=base["usd_conv"].to_numpy()
+    lpl=base["stop_pips"].to_numpy()*pipv*CONTRACT*convv
+    lots=np.where(lpl>0, np.floor((rm/np.where(lpl>0,lpl,1))/0.01)*0.01, 0.0)
+    d=pd.DataFrame(dict(pair=base["pair"].values, lots=lots, stop_pips=base["stop_pips"].values))
+    d=d[d["lots"]>0]
+    if len(d)==0: return {}
+    out={}
+    for pair,g in d.groupby("pair"):
+        out[pair]=dict(med_lots=round(float(g["lots"].median()),2),
+                       lot_p10_p90=[round(float(g["lots"].quantile(.1)),2), round(float(g["lots"].quantile(.9)),2)],
+                       med_stop_pips=round(float(g["stop_pips"].median()),1))
+    out["_per_shot_risk_pct"]=round(per_pct,4); out["_risk_usd_per_shot"]=round(Pp["InitialBalance"]*per_pct/100.0,2)
+    return out
 
 def run():
     usdjpy_h1=H1("USDJPY")
     base=build_all_shots(P)
+    base=attach_usd_conv(base, usdjpy_h1)
     span=(base["ent_time"].max()-base["ent_time"].min()).days/365.25
     print(f"総ショット {len(base)} / 期間 {span:.1f}年 / ペア{PAIRS}×時刻{HOURS}")
     out={"meta":dict(n_shots=len(base), span_years=round(span,1), mc_horizon_weeks=MC_HORIZON_WEEKS, mc_paths=MC_PATHS),"sweep":[]}
-    print(f"\n{'予算%':>6} {'純益%':>8} {'maxDD%':>8} {'年次最悪%':>9} {'通しPhase1':>10} {'MC合格%':>8} {'MC失格%':>8} {'MC未決%':>8}")
+    print(f"\n{'予算%':>6} {'純益%':>8} {'maxDD%':>8} {'年次最悪%':>9} {'通しP1':>7} {'P1合格%':>7} {'P1失格%':>7} {'P1中央月':>8} {'P2合格%':>7} {'通算合格%':>8}")
     for wr in BUDGETS:
         Pp=copy.deepcopy(P); Pp["WeeklyRiskPct"]=wr
         eq_raw,tdf_raw=portfolio_equity(base,Pp,usdjpy_h1,apply_guards=False)
@@ -240,25 +280,40 @@ def run():
         _,dd=max_drawdown(eq_raw,P["InitialBalance"]); yw=yearly_worst_dd(tdf_raw,P["InitialBalance"])
         _,tdf_g=portfolio_equity(base,Pp,usdjpy_h1,apply_guards=True)
         ph,_=phase1_path(tdf_g,Pp)
-        mc=block_mc(base,Pp,usdjpy_h1)
+        mc1=block_mc(base,Pp,usdjpy_h1)                        # Phase1: +8%
+        mc2=block_mc(base,Pp,usdjpy_h1,target_pct=Pp["ProfitTargetPct"]*0+5.0, seed=MC_SEED+1)  # Phase2: +5%
+        combined=round(mc1["pass_rate"]*mc2["pass_rate"]/100.0,1)
+        comb_med_months=round(((mc1["med_weeks"] or 0)+(mc2["med_weeks"] or 0))/4.345,1) if (mc1["med_weeks"] and mc2["med_weeks"]) else None
         row=dict(weekly_pct=wr, net_pct=net, maxDD_pct=round(dd,2), yearly_worst_pct=yw,
-                 single_path_phase1=ph, **{f"mc_{k}":v for k,v in mc.items()})
+                 single_path_phase1=ph, phase1={f"{k}":v for k,v in mc1.items()},
+                 phase2={f"{k}":v for k,v in mc2.items()},
+                 combined_pass_pct=combined, combined_median_months=comb_med_months)
         out["sweep"].append(row)
-        print(f"{wr:>6.2f} {net:>8.1f} {dd:>8.2f} {yw:>9.2f} {ph:>10} {mc['pass_rate']:>8} {mc['fail_rate']:>8} {mc['undetermined']:>8}")
+        print(f"{wr:>6.2f} {net:>8.1f} {dd:>8.2f} {yw:>9.2f} {ph:>7} {mc1['pass_rate']:>7} {mc1['fail_rate']:>7} {str(mc1['med_months']):>8} {mc2['pass_rate']:>7} {combined:>8}")
     # ★推奨ロジック: FundedNextは時間無制限ゆえ「未決(horizon内未到達)」は失格でなく"遅いだけ"。
     #   よって (1)全期間maxDD<=7%(−10%に3%マージン) かつ (2)MC失格率<=5%(DD抵触を稀に) を満たす中で
     #   (3)MC合格率最大(=最も速い) の予算を選ぶ。安全を確保した上で到達速度を最大化。
     SAFE_DD=7.0; MAX_FAIL=5.0
-    safe=[r for r in out["sweep"] if r["maxDD_pct"]<=SAFE_DD and r["mc_fail_rate"]<=MAX_FAIL]
-    rec=max(safe, key=lambda r:r["mc_pass_rate"]) if safe else None
+    safe=[r for r in out["sweep"] if r["maxDD_pct"]<=SAFE_DD and r["phase1"]["fail_rate"]<=MAX_FAIL]
+    rec=max(safe, key=lambda r:r["phase1"]["pass_rate"]) if safe else None
     out["recommendation"]=rec; out["rule"]=dict(safe_maxDD_pct=SAFE_DD, max_fail_pct=MAX_FAIL)
-    print(f"\n>>> 推奨(maxDD<={SAFE_DD}% かつ MC失格率<={MAX_FAIL}% の中で MC合格率最大=最速):")
+    print(f"\n>>> 推奨(全期間maxDD<={SAFE_DD}% かつ Phase1失格率<={MAX_FAIL}% の中で 合格率最大=最速):")
     if rec:
-        print(f"    週次予算 {rec['weekly_pct']}%  (maxDD {rec['maxDD_pct']}% / 失格 {rec['mc_fail_rate']}% / 合格 {rec['mc_pass_rate']}%)")
+        p1=rec["phase1"]
+        print(f"    週次予算 {rec['weekly_pct']}%  (全期間maxDD {rec['maxDD_pct']}% / 年次最悪 {rec['yearly_worst_pct']}%)")
+        print(f"    Phase1: 合格{p1['pass_rate']}% / 失格{p1['fail_rate']}% / 到達中央 {p1['med_weeks']}週≈{p1['med_months']}ヶ月 (p25-p75: {p1['p25_weeks']}-{p1['p75_weeks']}週)")
+        print(f"    通算(Phase1×2): 合格{rec['combined_pass_pct']}% / 中央 約{rec['combined_median_months']}ヶ月")
+        # ★実ロット枚数を推奨予算で算出
+        Pr=copy.deepcopy(P); Pr["WeeklyRiskPct"]=rec["weekly_pct"]
+        lots=typical_lots(base,Pr,usdjpy_h1); out["lots_at_recommendation"]=lots
+        print(f"\n    ◆実ロット(週次予算{rec['weekly_pct']}% / 1ショット={lots.get('_per_shot_risk_pct')}%=${lots.get('_risk_usd_per_shot')}):")
+        for pair in PAIRS:
+            if pair in lots:
+                d=lots[pair]; print(f"      {pair}: 中央 {d['med_lots']}lot (10-90%帯 {d['lot_p10_p90']}) / 典型ストップ {d['med_stop_pips']}pips")
     else:
         print("    該当なし → さらに低予算を BUDGETS に追加。")
-    print(f"    ★解釈: 『未決%』は失格でなく『時間無制限なら最終的に到達』。失格率だけが本当の不合格。")
-    print(f"    既定0.60の妥当性: 上表0.60行の maxDD が −10%に十分マージンを残し、失格率~0 かを確認。")
+    print(f"    ★解釈: 『未決(horizon内未到達)』は失格でなく『時間無制限なら最終到達=遅いだけ』。失格率だけが本当の不合格。")
+    print(f"    既定0.60の妥当性: 上表0.60行の maxDD が −10%に十分マージン・失格率~0・到達月数が現実的かを確認。")
     print(f"    (10年で1.5%は maxDD~14.8%/失格17%付近になり SAFE_DD で除外される想定。)")
     try:
         path=(H1_DIR.format(base=DRIVE_BASE)+"/v7_budget_resize.json") if USE_DRIVE else "research/results/v7_budget_resize.json"
