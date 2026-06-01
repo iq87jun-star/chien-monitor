@@ -19,7 +19,7 @@ import os, json, copy, numpy as np, pandas as pd, warnings
 warnings.filterwarnings("ignore")
 
 # ---------- 設定(あなたの環境) ----------
-USE_DRIVE  = False
+USE_DRIVE  = True
 DRIVE_BASE = "/content/drive/MyDrive/forex_ml"
 H1_DIR     = "{base}/dukascopy_data_h1"
 LOCAL_FALLBACK = "./research/data"
