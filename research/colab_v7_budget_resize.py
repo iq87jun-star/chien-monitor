@@ -283,24 +283,30 @@ def typical_lots(base, Pp, usdjpy_h1):
 # phases : 各フェーズ利益目標%のリスト([8,5]=2段, [10]=1段)
 # ============================================================================
 PLANS = [
-    dict(firm="FTMO(2015)",        plan="2-Step",        size=100000, phases=[10,5],
+    # ---- 評価型(チャレンジ): 合格→ファンド。手数料は合格で返金が多い。最大DDは緩め ----
+    dict(model="評価型", firm="FTMO(2015)",       plan="2-Step",        size=100000, phases=[10,5],
          daily_pct=5.0, max_loss_pct=10.0, dd_type="static",
          fee=580, fee_refunded=True,  eval_bonus_pct=0.0,  split=0.80, min_days=4),
-    dict(firm="FTMO(2015)",        plan="1-Step",        size=100000, phases=[10],
+    dict(model="評価型", firm="FTMO(2015)",       plan="1-Step",        size=100000, phases=[10],
          daily_pct=3.0, max_loss_pct=10.0, dd_type="trailing",
          fee=580, fee_refunded=True,  eval_bonus_pct=0.0,  split=0.90, min_days=4),
-    dict(firm="FundedNext(2022)",  plan="Stellar 2-Step",size=100000, phases=[8,5],
+    dict(model="評価型", firm="FundedNext(2022)", plan="Stellar 2-Step",size=100000, phases=[8,5],
          daily_pct=5.0, max_loss_pct=10.0, dd_type="static",
          fee=549, fee_refunded=True,  eval_bonus_pct=15.0, split=0.90, min_days=5),
-    dict(firm="FundedNext(2022)",  plan="Stellar 1-Step",size=100000, phases=[10],
-         daily_pct=3.0, max_loss_pct=6.0,  dd_type="static",
-         fee=599, fee_refunded=True,  eval_bonus_pct=15.0, split=0.90, min_days=2),
-    dict(firm="FundedNext(2022)",  plan="Stellar Lite",  size=100000, phases=[8,4],
+    dict(model="評価型", firm="FundedNext(2022)", plan="Stellar Lite",  size=100000, phases=[8,4],
          daily_pct=4.0, max_loss_pct=8.0,  dd_type="static",
          fee=399, fee_refunded=False, eval_bonus_pct=0.0,  split=0.80, min_days=5),
-    dict(firm="The5ers(2016)",     plan="High Stakes",   size=100000, phases=[10,5],
+    dict(model="評価型", firm="The5ers(2016)",    plan="High Stakes",   size=100000, phases=[10,5],
          daily_pct=99.0, max_loss_pct=6.0, dd_type="static",
          fee=495, fee_refunded=False, eval_bonus_pct=0.0,  split=0.80, min_days=3),
+    # ---- インスタント(即時資金): テスト無しで即口座。手数料返金なし・DDタイト・口座小さめ ----
+    #   phases=[5] は『+5%到達で初回出金』。资金化%=「6%トレ破綻前に+5%到達できる確率」。
+    dict(model="インスタント", firm="FundedNext(2022)", plan="Stellar Instant 20k", size=20000, phases=[5],
+         daily_pct=99.0, max_loss_pct=6.0, dd_type="trailing",
+         fee=599, fee_refunded=False, eval_bonus_pct=0.0, split=0.70, min_days=0),
+    dict(model="インスタント", firm="FundedNext(2022)", plan="Stellar Instant 10k", size=10000, phases=[5],
+         daily_pct=99.0, max_loss_pct=6.0, dd_type="trailing",
+         fee=299, fee_refunded=False, eval_bonus_pct=0.0, split=0.70, min_days=0),
 ]
 # 予算選択の候補(低DDプラン用に低予算も用意)。MARGIN=最大DDに対する安全余裕。
 PLAN_BUDGETS = [1.00,0.85,0.75,0.60,0.50,0.40,0.30,0.25,0.20,0.15]
@@ -321,8 +327,8 @@ def compare_firms(base, usdjpy_h1, span_years):
     print("="*96)
     # 予算ごとの全期間maxDD/netを1度だけ計算(予算間で使い回し)
     dd_cache={wr:_maxdd_at(base,usdjpy_h1,wr) for wr in PLAN_BUDGETS}
-    hdr=(f"{'業者/プラン':<26}{'予算%':>6}{'10yDD%':>7}{'最大DD':>7}{'P1%':>6}{'P2%':>6}"
-         f"{'資金化%':>7}{'試行':>5}{'到達月':>6}{'期待手数料$':>10}{'月収益$':>8}{'回収月':>6}")
+    hdr=(f"{'型':<6}{'業者/プラン':<28}{'予算%':>6}{'10yDD%':>7}{'枠DD':>6}{'P1%':>6}{'P2%':>6}"
+         f"{'到達%':>6}{'試行':>5}{'到達月':>6}{'期待手数料$':>10}{'月収益$':>8}{'回収月':>6}")
     print(hdr); print("-"*len(hdr))
     results=[]
     for pl in PLANS:
@@ -354,15 +360,16 @@ def compare_firms(base, usdjpy_h1, span_years):
         # eval合格ボーナス(FundedNext: eval利益の15%)。eval利益≈最終フェーズ目標%。
         eval_bonus=pl["eval_bonus_pct"]/100.0*(pl["phases"][-1]/100.0)*pl["size"]
         recoup_months=round((net_fee_cost-eval_bonus)/monthly_payout,1) if (monthly_payout>0 and net_fee_cost is not None and (net_fee_cost-eval_bonus)>0) else 0.0
-        results.append(dict(firm=pl["firm"],plan=pl["plan"],budget=chosen,dd=chosen_dd,max_loss=ml,
+        results.append(dict(model=pl["model"],size=pl["size"],firm=pl["firm"],plan=pl["plan"],budget=chosen,dd=chosen_dd,max_loss=ml,
                             p1=phase_rates[0],p2=(phase_rates[1] if len(phase_rates)>1 else None),
                             funded_pct=funded_pct,attempts=attempts,months_to_fund=months_to_fund,
                             exp_fee=round(exp_fee) if exp_fee else None,monthly_payout=round(monthly_payout),
                             recoup_months=recoup_months,fail1=fails[0],fee=pl["fee"],
                             refunded=pl["fee_refunded"],split=pl["split"]))
         p2s=f"{phase_rates[1]:>6}" if len(phase_rates)>1 else f"{'—':>6}"
-        print(f"{pl['firm']+'/'+pl['plan']:<26}{chosen:>6.2f}{chosen_dd:>7.2f}{ml:>7.0f}"
-              f"{phase_rates[0]:>6}{p2s}{funded_pct:>7}{attempts:>5}"
+        mdl="即時" if pl["model"]=="インスタント" else "評価"
+        print(f"{mdl:<6}{pl['firm']+'/'+pl['plan']:<28}{chosen:>6.2f}{chosen_dd:>7.2f}{ml:>6.0f}"
+              f"{phase_rates[0]:>6}{p2s}{funded_pct:>6}{attempts:>5}"
               f"{str(months_to_fund):>6}{(round(exp_fee) if exp_fee else 0):>10}{round(monthly_payout):>8}{recoup_months:>6}")
     print("-"*len(hdr))
     # 推奨: 資金化%が高く・期待手数料が低く・回収月が短いプラン
@@ -376,13 +383,17 @@ def compare_firms(base, usdjpy_h1, span_years):
               f"{'(合格で返金あり)' if best['refunded'] else '(返金なし)'}。")
         print(f"    ファンド後 月次期待収益 ≈ ${best['monthly_payout']}(分配{int(best['split']*100)}%後) → 期待手数料の回収 約{best['recoup_months']}ヶ月。")
     print("\n  ★読み方:")
-    print("   ・『資金化%』= 1回の購入でファンド口座に到達する確率(Phase合格率の積)。")
-    print("   ・『試行』= 資金化に必要な平均購入回数(=1/資金化%)。失敗分の手数料は埋没。")
-    print("   ・『期待手数料$』= 資金化までに払う手数料総額の期待値(= 1回手数料×試行)。")
+    print("   ・型『評価』=チャレンジ合格→ファンド。『即時』=テスト無しで即口座(インスタント)。")
+    print("   ・『到達%』= 評価型は『Phase合格率の積(=資金化確率)』。即時は『6%トレ破綻前に+5%到達し初回出金できる確率』。")
+    print("   ・『試行』= 到達に必要な平均購入回数(=1/到達%)。失敗/破綻分の手数料は埋没。")
+    print("   ・『期待手数料$』= 到達までに払う手数料総額の期待値(= 1回手数料×試行)。即時は返金なしで全額コスト。")
     print("   ・『回収月』= ファンド後の月次期待収益で、払った手数料(返金/eval賞与控除後)を取り戻す月数。")
-    print("   ・最大DDが6%の超タイト枠(The5ers/FN 1-Step)はv7のDDに対し予算を絞らざるを得ず、")
-    print("     到達が遅く資金化%も落ちる=v7と相性が悪い。10%静的枠(FTMO/FN 2-Step)が本命。")
-    print("   ⚠ 手数料/分配は概算。最新値をPLANSに入れて再実行で精度が上がる。staticDD枠は表の値より実pass率は高めに出る(block_mcはpeak基準で保守的)。")
+    print("   ・『月収益$』『回収月』は口座サイズに比例 → 即時は口座が小さい($10-20k)ため評価型($100k)より絶対額は小さい。")
+    print("\n  ★評価型 vs インスタント(v7視点):")
+    print("   - 評価型10%静的枠(FTMO/FN 2-Step): DDに余裕→予算を取れ到達速い・手数料返金=本命。")
+    print("   - インスタント(6%トレDD・返金なし): 即トレード/最短出金は利点だが、v7のDDに対しタイトで")
+    print("     破綻確率が上がり、手数料も埋没。口座も小さい→絶対回収額は小。v7とは相性が悪め。")
+    print("   ⚠ 手数料/分配/口座サイズは2026概算。最新値をPLANSに入れて再実行で精度UP。staticDD枠は表より実pass率は高めに出る(block_mcはpeak基準で保守的)。")
     return results
 
 def run():
