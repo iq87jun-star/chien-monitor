@@ -1,0 +1,23 @@
+# Secrets & license data — never commit
+.env
+.env.local
+.env.*.local
+!.env.example
+licensing/licenses.json
+licensing/issued-keys.log
+licensing/*.local.json
+
+# Build artifacts
+*.ex5
+*.ex4
+
+# MT5 tester exports (raw)
+*.htm
+reports/raw/
+
+# Node
+node_modules/
+
+# Sales exports / customer data — never commit
+analytics/sales/
+*.sales.csv

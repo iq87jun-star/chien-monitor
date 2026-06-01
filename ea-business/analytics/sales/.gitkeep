@@ -1,0 +1,3 @@
+# Place exported sales CSVs here (Gumroad/Stripe/MQL5).
+# This directory is gitignored — files with customer data must NOT be committed.
+# Analyze with: python3 ../../scripts/analyze_sales.py *.csv

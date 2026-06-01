@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RiskGuard — リスク%ベースのロット計算＆トレード管理ツール (MT5)</title>
+<meta name="description" content="MetaTrader 5 用の手動トレード補助ツール。口座リスク%から自動でロット計算、SL/TP・建値移動・トレーリングを自動管理。買い切り。" />
+<style>
+  :root{--bg:#0b1020;--card:#141b30;--line:#243152;--fg:#e6ecff;--muted:#9fb0d9;--accent:#3b82f6;--accent2:#22c55e}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Hiragino Sans","Noto Sans JP",sans-serif;background:var(--bg);color:var(--fg);line-height:1.7}
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px}
+  header{padding:64px 0 40px;text-align:center}
+  h1{font-size:2.2rem;margin:0 0 12px}
+  .sub{color:var(--muted);font-size:1.1rem;max-width:620px;margin:0 auto}
+  .cta{display:inline-block;margin-top:28px;background:var(--accent);color:#fff;text-decoration:none;padding:14px 30px;border-radius:10px;font-weight:700}
+  .price{margin-top:14px;color:var(--muted)}
+  section{padding:36px 0;border-top:1px solid var(--line)}
+  h2{font-size:1.4rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .card h3{margin:0 0 8px;font-size:1.05rem}
+  .card p{margin:0;color:var(--muted);font-size:.95rem}
+  ul.checks{list-style:none;padding:0}
+  ul.checks li{padding:6px 0 6px 28px;position:relative;color:var(--muted)}
+  ul.checks li::before{content:"✓";position:absolute;left:0;color:var(--accent2);font-weight:700}
+  .disclaimer{background:#1a1205;border:1px solid #5a4410;border-radius:12px;padding:18px;color:#ffd98a;font-size:.9rem}
+  details{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:10px}
+  summary{cursor:pointer;font-weight:600}
+  footer{padding:40px 0;color:var(--muted);font-size:.85rem;text-align:center}
+  .lang{font-size:.85rem;color:var(--muted);text-align:right;padding-top:16px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="lang">JA / <a href="#en">EN below ↓</a></div>
+
+  <header>
+    <h1>RiskGuard</h1>
+    <p class="sub">MetaTrader 5 用の<strong>手動トレード補助ツール</strong>。口座残高に対する<strong>リスク%から自動でロットを計算</strong>し、SL/TP の設定・建値移動・トレーリングまで管理します。エントリー判断はあなた、リスク管理はRiskGuard。</p>
+    <a class="cta" href="#buy">購入する — $49（買い切り）</a>
+    <div class="price">買い切り・永続ライセンス（$49）／ デモ環境で検証可能</div>
+  </header>
+
+  <section>
+    <h2>何ができるか</h2>
+    <div class="grid">
+      <div class="card"><h3>リスク%でロット自動計算</h3><p>残高・SL幅・銘柄スペックから適正ロットを算出。固定ロットにも切替可。</p></div>
+      <div class="card"><h3>ワンクリック発注</h3><p>BUY / SELL ボタンで SL・TP 付きの注文を即時発注。</p></div>
+      <div class="card"><h3>建値移動 & トレーリング</h3><p>含み益に応じて自動でSLを建値へ、さらにトレーリングで利益を追従。</p></div>
+      <div class="card"><h3>スプレッドガード</h3><p>スプレッドが広い局面ではエントリーを抑止。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>こんな方に</h2>
+    <ul class="checks">
+      <li>毎回のロット計算・SL/TP入力を自動化したい</li>
+      <li>リスク%を固定して資金管理を機械化したい</li>
+      <li>ブレイクアウトなど裁量エントリーの執行を速くしたい</li>
+      <li>建値移動・トレーリングを手放しで効かせたい</li>
+    </ul>
+  </section>
+
+  <section id="buy">
+    <h2>購入 — $49（買い切り）</h2>
+    <p class="sub" style="margin:0">永続ライセンス。MQL5 Market 版／自前販売版（Gumroad/Stripe）でご購入いただけます。購入後にライセンスキーを発行します。</p>
+    <p style="margin-top:14px"><a class="cta" href="#">購入する（決済リンク：接続準備中）</a></p>
+  </section>
+
+  <section>
+    <h2>よくある質問</h2>
+    <details><summary>自動で売買しますか？</summary><p>いいえ。エントリー判断はあなたが行います。RiskGuard は計算・発注・管理を補助します。</p></details>
+    <details><summary>必ず勝てますか？</summary><p>いいえ。相場予測も利益保証もしません。リスク管理を機械化する補助ツールです。</p></details>
+    <details><summary>対応プラットフォームは？</summary><p>MetaTrader 5。3桁/5桁クォートに対応。まずデモ口座での確認を推奨します。</p></details>
+  </section>
+
+  <section>
+    <div class="disclaimer">
+      <strong>リスク開示・免責：</strong>レバレッジ取引には高いリスクが伴い、投資元本を上回る損失が生じる可能性があります。RiskGuard はポジションサイズ計算と注文管理の補助ツールであり、売買シグナルの生成・相場予測・利益保証は行いません。<strong>過去の成績は将来の結果を保証しません。</strong>ご利用は自己責任でお願いします。
+    </div>
+  </section>
+
+  <hr style="border-color:var(--line)" id="en"/>
+
+  <header>
+    <h1>RiskGuard (EN)</h1>
+    <p class="sub">A <strong>manual-trading assistant</strong> for MetaTrader 5. It sizes your position from a fixed <strong>account-risk %</strong>, attaches SL/TP, and manages the trade with break-even and trailing. You decide the entry — RiskGuard handles the risk mechanics.</p>
+  </header>
+
+  <section>
+    <h2>What it does</h2>
+    <ul class="checks">
+      <li>Risk-% based lot sizing (or fixed lot)</li>
+      <li>One-click BUY/SELL with SL & TP</li>
+      <li>Automatic break-even and trailing stop</li>
+      <li>Spread guard to skip wide-spread entries</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="disclaimer">
+      <strong>Risk disclosure / disclaimer:</strong> Trading leveraged products carries a high level of risk and can result in losses exceeding your deposit. RiskGuard is a position-sizing and order-management assistant. It does not generate signals, predict markets, or guarantee profit. <strong>Past performance does not guarantee future results.</strong> Use at your own risk.
+    </div>
+  </section>
+
+  <footer>
+    © RiskGuard. All product names and trademarks are property of their respective owners. MetaTrader 5 is a trademark of MetaQuotes Ltd.
+  </footer>
+
+</div>
+</body>
+</html>
