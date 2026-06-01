@@ -327,8 +327,9 @@ def _maxdd_at(base, usdjpy_h1, wr):
 # 速度×失格率トレードオフ分析(FundedNext Stellar 2-Step / v7)
 #   ★手数料/分配/賞与は2026概算。購入画面の最新値で FN_* を必ず更新して再実行。
 # ============================================================================
-SPEED_BUDGETS = [1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0]   # 週次リスク%スイープ
-TARGET_MONTHS = 3.0          # ★狙いたい到達月数(これに最も近い予算を強調表示)
+SPEED_BUDGETS = [0.4, 0.5, 0.6, 0.75, 1.0, 1.5, 2.0, 2.5, 3.0]  # 週次リスク%スイープ(1%未満=DD安全帯も探索)
+TARGET_MONTHS = 3.0          # ★狙いたい到達月数(これに最も近い"DD安全"予算を強調表示)
+DD_MARGIN     = 3.0          # −10%上限への安全余裕%。全期DD<=(FN_MAXLOSS-DD_MARGIN) を"安全(OK)"と判定
 
 # --- あなたの実プラン(FundedNext Stellar 2-Step) ---
 FN_P1_PCT     = 8.0          # Phase1 利益目標%
@@ -359,7 +360,9 @@ def run_speed_vs_fail():
     print(f"  現在残高 ${CURRENT_EQUITY:,.2f} → P1目標 ${p1_target_usd:,.0f}(+{FN_P1_PCT:.0f}%) まで残り +{remain_pct:.2f}%(MCは新規スタート基準≈現在地)")
     print(f"  プラン: P1+{FN_P1_PCT:.0f}%/P2+{FN_P2_PCT:.0f}% 最大DD{FN_MAXLOSS:.0f}% 手数料${FN_FEE}{'(返金)' if FN_REFUND else '(返金なし)'} 賞与{FN_BONUS_PCT:.0f}% 分配{int(FN_SPLIT*100)}%")
     print("="*112)
-    hdr=(f"{'週次%':>6}{'全期DD%':>8}{'年最悪%':>8}{'1回risk$':>9}"
+    safe_dd=FN_MAXLOSS-DD_MARGIN
+    print(f"  ★DD判定: 全期間maxDD <= {safe_dd:.0f}%(=−{FN_MAXLOSS:.0f}%上限に{DD_MARGIN:.0f}%余裕) を『OK』、超過は『✕破綻』(10年実シーケンスで−{FN_MAXLOSS:.0f}%抵触リスク)")
+    hdr=(f"{'週次%':>6}{'全期DD%':>8}{'判定':>8}{'年最悪%':>8}{'1回risk$':>9}"
          f"{'P1合格%':>8}{'P1失格%':>8}{'P1月(中)':>9}{'P1[25-75]':>13}"
          f"{'P2合格%':>8}{'通算funded%':>11}{'通算月(中)':>10}{'期待購入':>8}{'純手数料$':>10}")
     print(hdr); print("-"*len(hdr))
@@ -384,43 +387,55 @@ def run_speed_vs_fail():
         exp_buys=round(100.0/funded,2) if funded>0 else None
         net_fee=round((exp_buys-1)*FN_FEE) if (exp_buys and FN_REFUND) else (round(exp_buys*FN_FEE) if exp_buys else None)
         p25=_fmt_m(mc1["p25_weeks"]); p75=_fmt_m(mc1["p75_weeks"])
-        print(f"{wr:>6.1f}{dd:>8.2f}{yw:>8.2f}{risk:>9.0f}"
+        viable=(dd<=safe_dd); judge="OK" if viable else "✕破綻"
+        print(f"{wr:>6.2f}{dd:>8.2f}{judge:>8}{yw:>8.2f}{risk:>9.0f}"
               f"{mc1['pass_rate']:>8}{mc1['fail_rate']:>8}{str(_fmt_m(mc1['med_weeks'])):>9}{('['+str(p25)+'-'+str(p75)+']'):>13}"
               f"{mc2['pass_rate']:>8}{funded:>11}{str(comb_m):>10}{str(exp_buys):>8}{str(net_fee):>10}")
-        row=dict(weekly_pct=wr, maxDD_pct=round(dd,2), yearly_worst_pct=yw, risk_usd_per_shot=round(risk),
+        row=dict(weekly_pct=wr, maxDD_pct=round(dd,2), viable=viable, yearly_worst_pct=yw, risk_usd_per_shot=round(risk),
                  phase1=mc1, phase2=mc2, funded_pct=funded, p1_med_months=_fmt_m(mc1["med_weeks"]),
                  combined_median_months=comb_m, expected_buys=exp_buys, net_fee_cost=net_fee)
         out["sweep"].append(row); rows.append(row)
-    # ★TARGET_MONTHS に最も近い予算(P1到達中央)を強調
+    # ★速度狙いの予算(target最近)と、DD安全な最速予算を別々に提示
     cand=[r for r in rows if r["p1_med_months"] is not None]
-    pick=min(cand, key=lambda r:abs(r["p1_med_months"]-TARGET_MONTHS)) if cand else None
-    out["target_months"]=TARGET_MONTHS; out["pick_for_target"]=pick
-    print("\n>>> 目標『約{:.0f}ヶ月でPhase1到達』に最も近い予算:".format(TARGET_MONTHS))
-    if pick:
-        p=pick["phase1"]
-        bust_1_in=round(100.0/p["fail_rate"],1) if p["fail_rate"]>0 else None
-        print(f"    週次予算 {pick['weekly_pct']}% (1ショット約${pick['risk_usd_per_shot']}リスク)")
-        print(f"    Phase1到達 中央 約{pick['p1_med_months']}ヶ月 / 失格率 {p['fail_rate']}%(=約{bust_1_in}回に1回−10%破綻)")
-        print(f"    全期間maxDD {pick['maxDD_pct']}%(上限{FN_MAXLOSS:.0f}%) / 通算funded {pick['funded_pct']}% / 通算到達中央 約{pick['combined_median_months']}ヶ月")
-        print(f"    速度を買うコスト: 期待購入 {pick['expected_buys']}回 → 純手数料 約${pick['net_fee_cost']}(失敗分は埋没/成功で返金)")
-        # 推奨予算での実ロット
-        Pr=copy.deepcopy(P); Pr["WeeklyRiskPct"]=pick["weekly_pct"]
-        lots=typical_lots(base,Pr,usdjpy); out["lots_at_pick"]=lots
-        print(f"    ◆実ロット(週次{pick['weekly_pct']}% / 1ショット={lots.get('_per_shot_risk_pct')}%=${lots.get('_risk_usd_per_shot')}):")
-        for pair in PAIRS:
-            if pair in lots:
-                d=lots[pair]; print(f"      {pair}: 中央 {d['med_lots']}lot (10-90%帯 {d['lot_p10_p90']}) / 典型ストップ {d['med_stop_pips']}pips")
+    safe=[r for r in cand if r["viable"]]                       # DD安全(−10%上限に余裕)な予算のみ
+    fast_pick=min(cand, key=lambda r:abs(r["p1_med_months"]-TARGET_MONTHS)) if cand else None   # 速度最優先(DD無視)
+    # DD安全帯で TARGET に最も近い(=安全な範囲で最速)。無ければ最速の安全予算。
+    safe_pick=(min(safe, key=lambda r:abs(r["p1_med_months"]-TARGET_MONTHS)) if safe else None)
+    safe_fastest=(min(safe, key=lambda r:r["p1_med_months"]) if safe else None)
+    target_viable=(fast_pick is not None and fast_pick["viable"])
+    out.update(target_months=TARGET_MONTHS, pick_for_target=fast_pick,
+               safe_pick=safe_pick, safe_fastest=safe_fastest, safe_dd=safe_dd, target_viable=target_viable)
+
+    def _detail(label, r):
+        if not r: print(f"\n>>> {label}: 該当なし"); return
+        p=r["phase1"]; bust=round(100.0/p["fail_rate"],1) if p["fail_rate"]>0 else None
+        flag="OK(DD安全)" if r["viable"] else f"✕破綻(全期DD {r['maxDD_pct']}%>−{FN_MAXLOSS:.0f}%)"
+        print(f"\n>>> {label}: 週次{r['weekly_pct']}%  [{flag}]")
+        print(f"    Phase1到達 中央 約{r['p1_med_months']}ヶ月 (1ショット約${r['risk_usd_per_shot']}) / MC失格率 {p['fail_rate']}%(≈{bust}回に1回)")
+        print(f"    全期間maxDD {r['maxDD_pct']}% / 年最悪 {r['yearly_worst_pct']}% / 通算funded {r['funded_pct']}% / 通算到達中央 約{r['combined_median_months']}ヶ月")
+        print(f"    速度を買うコスト: 期待購入 {r['expected_buys']}回 → 純手数料 約${r['net_fee_cost']}")
+        Pr=copy.deepcopy(P); Pr["WeeklyRiskPct"]=r["weekly_pct"]; lots=typical_lots(base,Pr,usdjpy)
+        out.setdefault("lots",{})[str(r["weekly_pct"])]=lots
+        print(f"    ◆実ロット(1ショット=${lots.get('_risk_usd_per_shot')}): " +
+              " / ".join(f"{pr} {lots[pr]['med_lots']}lot@{lots[pr]['med_stop_pips']}pips" for pr in PAIRS if pr in lots))
+
+    print("\n"+"="*112)
+    print(f">>> あなたの要望『約{TARGET_MONTHS:.0f}ヶ月でPhase1到達』への回答:")
+    if fast_pick and not fast_pick["viable"]:
+        print(f"    ★{TARGET_MONTHS:.0f}ヶ月に必要な週次{fast_pick['weekly_pct']}%は【全期間DD {fast_pick['maxDD_pct']}% ≫ −{FN_MAXLOSS:.0f}%上限】=10年実データでは口座が破綻。")
+        print(f"      → 『失格率を上げて{TARGET_MONTHS:.0f}ヶ月』は実データ上【ほぼ確実に−10%抵触で口座消滅】。現実には到達不能。")
+    _detail(f"(参考)速度最優先={TARGET_MONTHS:.0f}ヶ月狙いの予算※DD無視", fast_pick)
+    _detail("◎現実的な最速=DD安全帯で最も速い予算", safe_fastest)
     print("\n  ★読み方:")
-    print("   ・『P1月(中)』=Phase1を【合格する経路の】到達月数中央値。予算↑で速くなるが『P1失格%』が同時に上昇。")
-    print("   ・『失格%』=−10%最大DDに抵触し破綻=手数料$549を失い再購入。『通算funded%』=P1×P2合格率。")
-    print("   ・『期待購入』=funded到達まで平均何回チャレンジを買うか(=100/funded)。『純手数料$』=失敗分の埋没コスト期待値。")
-    print("   ・『年最悪%』=年単位の最悪DD。10年運用ではこの規模の下振れが繰り返し来る前提で予算を選ぶこと。")
-    print("\n  ★結論(速度 vs 安全):")
-    print(f"   - 約{TARGET_MONTHS:.0f}ヶ月到達には週次{pick['weekly_pct'] if pick else '?'}%付近が必要だが、失格率が安全予算(1%)の数倍に跳ねる。")
-    print("   - ⚠ この表が約2.8年データなら楽観。【10年ではDD約3倍】→週次2%超は10年実データで−10%超=ほぼ確実破綻。")
-    print("     『3ヶ月狙い』は短期相場が穏やかな前提のギャンブル。長期EV最大は週次1%(安全)。")
-    print("   - 速度を出すなら『1%安全口座を複数並行』が全滅回避＋実質短縮で現実的。")
-    print(f"   ⚠ 手数料/分配/賞与は2026概算。FN_* を購入画面の最新値に更新し、必ずDriveの10年H1で再実行して全期間maxDDを確認。")
+    print(f"   ・『判定』=全期間maxDDが−{FN_MAXLOSS:.0f}%上限に{DD_MARGIN:.0f}%余裕を持つか。✕破綻は10年の実シーケンスで−10%に当たる=口座消滅。")
+    print("   ・『P1月(中)』=合格する経路の到達月数中央値。予算↑で速いが『全期DD』も比例で増え、ある所で✕破綻に転落。")
+    print("   ・『MC失格率』はpeak基準で保守的(FNの−10%はstatic=やや緩い)。但し『全期DD』が上限超なら実口座は確実に破綻。")
+    print("   ・『年最悪%』=年単位の最悪DD。10年では毎年この規模の下振れが来る前提で予算を選ぶ。")
+    print("\n  ★結論:")
+    print(f"   - 【確定(10年実データ)】速度を出す高予算ほど全期DDが−10%上限を突破し、{TARGET_MONTHS:.0f}ヶ月狙いは口座破綻=到達不能。")
+    print(f"   - 安全に出せる最速は上記『◎』予算(中央 約{safe_fastest['p1_med_months'] if safe_fastest else '?'}ヶ月)。これ以上速くするとDDが上限を超える。")
+    print("   - もっと速くしたいなら『同一の安全予算で複数口座を並行』。1口座を無理させるより全滅リスクを避けて実質短縮できる。")
+    print(f"   ⚠ 手数料/分配/賞与は2026概算 → FN_* を購入画面の最新値に更新して再実行で精度UP。これはシミュレーション。")
     try:
         path=(H1_DIR.format(base=DRIVE_BASE)+"/v7_speed_vs_fail.json") if USE_DRIVE else "research/results/v7_speed_vs_fail.json"
         os.makedirs(os.path.dirname(path),exist_ok=True)
