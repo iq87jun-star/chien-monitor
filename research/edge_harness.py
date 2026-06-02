@@ -148,8 +148,8 @@ class GateResult:
     placebo_pass: Optional[bool]   # ④ 呼び出し側判定（None=未評価）
     cost_survives: bool            # ⑤
     corr_v7: float                 # ⑥
-    max_dd_at_budget: float        # 器(II) 実測 maxDD（採用予算）
-    risk_budget_pct: float
+    max_dd_equal_notional: float   # 等名目アグリゲートのDD（形状の目安。予算較正ではない）
+    risk_budget_pct: float         # 器(II) stage-2 で較正に使う「意図する週次予算%」
     extra: dict = field(default_factory=dict)
 
     def gates(self) -> dict:
@@ -216,7 +216,7 @@ def evaluate_edge(
         placebo_pass=placebo,
         cost_survives=(net_profit > 0 and p_net < alpha),
         corr_v7=rho,
-        max_dd_at_budget=dd,
+        max_dd_equal_notional=dd,
         risk_budget_pct=risk_budget_pct,
         extra={"jackknife_by_year": jk["by_year"],
                "worst_year_excluded": jk["worst_year_excluded"]},
@@ -229,7 +229,7 @@ def write_result_json(result: GateResult, path: str) -> None:
         json.dump(result.to_json(), f, ensure_ascii=False, indent=2)
     print(f"[WROTE] {path}  grade={result.grade()}  "
           f"p_net={result.perm_p_net:.4f}  net={result.net_profit_10y:+.4f}  "
-          f"corr_v7={result.corr_v7:+.3f}  maxDD={result.max_dd_at_budget:.4f}")
+          f"corr_v7={result.corr_v7:+.3f}  ddEqNotional={result.max_dd_equal_notional:.4f}")
 
 
 if __name__ == "__main__":
