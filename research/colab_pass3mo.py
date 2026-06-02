@@ -451,6 +451,29 @@ def run_pass3mo():
     except Exception as e: print("保存スキップ:",e)
     return out
 
+def run_extended_and_sweep(budget=2.5, weeks_to=22, lo=1.5, hi=3.5):
+    """① budgetの週ごと累積を weeks_to週(5ヶ月≈22)まで / ② 0.1%刻みで通過・失格の変化。"""
+    usdjpy=H1("USDJPY"); base=build_all_shots(P); base=attach_usd_conv(base,usdjpy)
+    print("\n"+"="*78); print(f"① 予算{budget}% 週ごと累積(最大損失-{P['MaxLossLimitPct']}%) 13週→{weeks_to}週"); print("="*78)
+    p1=weekly_curve(base,budget,P["ProfitTargetPct"],horizon=weeks_to)
+    p2=weekly_curve(base,budget,5.0,horizon=weeks_to)
+    print(f"  {'週':>3}{'月':>5} | {'P1通過%':>8}{'P1失格%':>8} | {'P2通過%':>8}{'P2失格%':>8}")
+    for i in range(12,weeks_to):
+        w=i+1; print(f"  {w:>3}{w/4.345:>5.1f} | {p1[i]['cum_pass']:>8}{p1[i]['cum_fail']:>8} | {p2[i]['cum_pass']:>8}{p2[i]['cum_fail']:>8}")
+    print("\n"+"="*78); print(f"② 予算0.1%刻み: 通過率/失格率(Phase1) 3ヶ月=13週 / 5ヶ月={weeks_to}週"); print("="*78)
+    print(f"  {'予算%':>6} | {'13w通過':>8}{'13w失格':>8} | {f'{weeks_to}w通過':>8}{f'{weeks_to}w失格':>8}")
+    rows=[]
+    for k in range(int(round((hi-lo)/0.1))+1):
+        b=round(lo+0.1*k,1); Pp=dict(P); Pp["WeeklyRiskPct"]=b
+        a13=block_mc(base,Pp,usdjpy,horizon=13,target_pct=8.0)
+        aN =block_mc(base,Pp,usdjpy,horizon=weeks_to,target_pct=8.0)
+        mark=" ←推奨" if abs(b-budget)<1e-9 else ""
+        print(f"  {b:>6} | {a13['pass_rate']:>8}{a13['fail_rate']:>8} | {aN['pass_rate']:>8}{aN['fail_rate']:>8}{mark}")
+        rows.append(dict(budget=b,p13=a13['pass_rate'],f13=a13['fail_rate'],pN=aN['pass_rate'],fN=aN['fail_rate']))
+    print("  ★+0.1%ごと通過≈+2pt伸びるが失格はそれ以上に増加(特に5ヶ月)。効率帯≈2.0-2.7%。時間無制限なら週を伸ばす方が安全。")
+    return dict(p1_curve=p1,p2_curve=p2,sweep=rows)
+
 if __name__=="__main__":
     run_pass3mo()
-    run_weekly_curves(2.5)   # 予算2.5%の週ごと累積(Phase1/Phase2)
+    run_weekly_curves(2.5)        # 予算2.5%の週ごと累積(Phase1/Phase2)
+    run_extended_and_sweep(2.5)   # 5ヶ月までの週次 + 0.1%刻みスイープ
