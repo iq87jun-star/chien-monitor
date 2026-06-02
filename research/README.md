@@ -22,6 +22,7 @@ research/
   edge3c_carry_10y.py    # E3C 横断キャリー（スポットのみ・de-swap）
   edge3d_session_10y.py  # E3D ボラ条件付きセッション・ブレイク
   smoke_test.py          # 合成データで4 runner を端から端まで実行（動作確認のみ）
+notebooks/edge3_run.ipynb # ★Colab で開いて上から実行 → 4本を回し結果サマリまで出す
 docs/                    # 事前登録・検定結果の転記
 reports/                 # PDF 化した検証結果
 ```
