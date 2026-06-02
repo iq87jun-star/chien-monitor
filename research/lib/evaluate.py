@@ -14,8 +14,18 @@
   REJECT = それ以外
 """
 import json
+import os
 
 from . import stats
+
+_REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+
+def reports_path(filename: str) -> str:
+    """リポジトリ直下 reports/ の絶対パス。CWD に依存せず常に同じ場所へ書く。"""
+    d = os.path.join(_REPO_ROOT, "reports")
+    os.makedirs(d, exist_ok=True)
+    return os.path.join(d, filename)
 
 
 GATE_NAMES = ["G1_net_positive", "G2_perm_p", "G3_jackknife", "G4_placebo", "G5_cost", "G6_v7_corr"]

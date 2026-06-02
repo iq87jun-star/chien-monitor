@@ -55,9 +55,9 @@ def main():
     )
     res["mc_pass_rate_0.6pct"] = engine.mc_pass_rate(d, per_shot_risk_pct=0.6)
     evaluate.print_summary(res)
-    os.makedirs("reports", exist_ok=True)
-    evaluate.dump_json(res, "reports/edge3_result.json")
-    print("-> reports/edge3_result.json")
+    out = evaluate.reports_path("edge3_result.json")
+    evaluate.dump_json(res, out)
+    print("->", out)
 
 
 if __name__ == "__main__":
