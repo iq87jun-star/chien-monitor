@@ -270,5 +270,44 @@ def run():
     except Exception as e: print("保存スキップ:",e)
     return out
 
+# ---------- v7 vs MA2 フェア比較(同一120ヶ月・ボラ正規化) ----------
+def _cmp_metrics(s, ann=12):
+    s=pd.Series(s).dropna(); eq=(1+s).cumprod()
+    dd=((eq-eq.cummax())/eq.cummax()).min()*100
+    mu=s.mean()*ann; vol=s.std()*np.sqrt(ann); shp=mu/vol if vol>0 else 0.0
+    cagr=(eq.iloc[-1]**(ann/len(s))-1)*100 if len(s)>0 else 0.0
+    return dict(months=len(s),CAGR=round(cagr,1),vol=round(vol*100,1),Sharpe=round(shp,2),
+                maxDD=round(dd,1),win=round((s>0).mean()*100,0),best=round(s.max()*100,1),worst=round(s.min()*100,1))
+def _volmatch(s, target=0.10, ann=12):
+    s=pd.Series(s).dropna(); v=s.std()*np.sqrt(ann); return s*(target/v) if v>0 else s
+
+def compare_v7_ma2(target_vol=0.10):
+    """v7(円月曜LONGの月次再現) と MA2(金+指数TSMOM) を同一土俵で比較。Driveなら10年×10年でフェア。"""
+    v7=yen_monday_monthly()
+    ma2=tsmom(METALS_IDX); ma2=ma2.groupby(ma2.index.to_period("M")).sum()
+    if len(v7)==0 or len(ma2)==0:
+        print("比較不可: v7またはMA2の月次が空(FX H1/多資産データ未配置?)"); return None
+    v7.index=v7.index.to_timestamp("M"); ma2.index=ma2.index.to_timestamp("M")
+    print("\n"+"="*84); print("v7 vs MA2 比較(月次リターン・ユニットリスク)"); print("="*84)
+    for nm,s in [("v7  円月曜LONG",v7),("MA2 金+指数TSMOM",ma2)]:
+        d=_cmp_metrics(s); print(f"\n{nm}: {s.index.min().date()}..{s.index.max().date()}")
+        print("  "+" / ".join(f"{k}={v}" for k,v in d.items()))
+    print(f"\n--- ボラ{int(target_vol*100)}%/年に正規化した素の質(サイジング差を消去) ---")
+    v7v=_cmp_metrics(_volmatch(v7,target_vol)); ma2v=_cmp_metrics(_volmatch(ma2,target_vol))
+    print(f"  {'指標':<8}{'v7':>10}{'MA2':>10}")
+    for k in ["CAGR","Sharpe","maxDD","win","best","worst"]:
+        print(f"  {k:<8}{str(v7v[k]):>10}{str(ma2v[k]):>10}")
+    j=pd.concat([v7.rename('v7'),ma2.rename('ma2')],axis=1).dropna()
+    corr=round(float(j['v7'].corr(j['ma2'])),3) if len(j)>2 else None
+    print(f"\n--- 重複{len(j)}ヶ月 月次相関 = {corr} (負=分散効果) ---")
+    if len(j)>=12:
+        for w in (0.0,0.15,0.30,0.50):
+            comb=(1-w)*_volmatch(j['v7'],target_vol)+w*_volmatch(j['ma2'],target_vol)
+            c=_cmp_metrics(comb)
+            print(f"  v7:{int((1-w)*100)}/MA2:{int(w*100)}  Sharpe={c['Sharpe']} CAGR={c['CAGR']}% maxDD={c['maxDD']}% win={c['win']}%")
+        print("  ★Sharpe最大の配分が分散効果のスイートスポット(MA2はLEAD=デモ追検後に少量から)。")
+    return dict(v7=_cmp_metrics(v7),ma2=_cmp_metrics(ma2),corr=corr)
+
 if __name__=="__main__":
     run()
+    compare_v7_ma2()
