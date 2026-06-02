@@ -328,6 +328,51 @@ def v7_week_returns(shots, Pp):
         out.append(pnl/init)
     return np.array(out)
 
+def weekly_curve(base, budget, target_pct, floor_pct=None, horizon=HORIZON_3MO, n_paths=6000, seed=7):
+    """予算budgetで【週ごとの累積通過率/累積失格率】を返す。Phase1=target_pct8 / Phase2=5。"""
+    Pp=dict(P); Pp["WeeklyRiskPct"]=budget
+    floor=Pp["MaxLossLimitPct"] if floor_pct is None else floor_pct
+    df=base.copy(); df["week"]=df["ent_time"].dt.to_period("W")
+    init=Pp["InitialBalance"]; per_pct=budget/max(1,Pp["ShotsPerWeek"])
+    risk_money=init*per_pct/100.0; minlot=Pp["MinLot"]
+    pipv=df["pair"].map(pip_size).to_numpy(); convv=df["usd_conv"].to_numpy()
+    df["_d"]=df["stop_pips"].to_numpy()*pipv*CONTRACT*convv
+    df["_g"]=df["ret_pips"].to_numpy()*pipv*CONTRACT*convv
+    blocks=[(g["_d"].to_numpy(),g["_g"].to_numpy()) for _,g in df.groupby("week")]
+    nW=len(blocks); rng=np.random.default_rng(seed); target=init*(1+target_pct/100.0)
+    pw=np.zeros(n_paths,int); fw=np.zeros(n_paths,int)
+    for p in range(n_paths):
+        pick=rng.integers(0,nW,size=horizon); eq=init; peak=init; done=None
+        for wi_i,wi in enumerate(pick,1):
+            d,gn=blocks[wi]
+            for k in range(len(d)):
+                if d[k]<=0: continue
+                lots=np.floor((risk_money/d[k])/0.01)*0.01
+                if lots<minlot: continue
+                eq+=gn[k]*lots
+                if eq>peak: peak=eq
+                if (peak-eq)/peak*100>=floor: done=("F",wi_i); break
+                if eq>=target: done=("P",wi_i); break
+            if done: break
+        if done and done[0]=="P": pw[p]=done[1]
+        elif done and done[0]=="F": fw[p]=done[1]
+    rows=[]
+    for w in range(1,horizon+1):
+        cp=round(float(np.mean((pw>0)&(pw<=w))*100),1); cf=round(float(np.mean((fw>0)&(fw<=w))*100),1)
+        rows.append(dict(week=w, cum_pass=cp, cum_fail=cf, pending=round(100-cp-cf,1)))
+    return rows
+
+def run_weekly_curves(budget=2.5):
+    usdjpy=H1("USDJPY"); base=build_all_shots(P); base=attach_usd_conv(base,usdjpy)
+    print("\n"+"="*72); print(f"予算{budget}% 週ごと累積(通過/失格) 最大損失-{P['MaxLossLimitPct']}% / 13週"); print("="*72)
+    out={}
+    for label,tgt in [("Phase1(目標+8%)",P["ProfitTargetPct"]),("Phase2(目標+5%)",5.0)]:
+        print(f"\n--- {label} ---\n  {'週':>3}{'累積通過%':>10}{'累積失格%':>10}{'未達%':>9}")
+        rows=weekly_curve(base,budget,tgt)
+        for r in rows: print(f"  {r['week']:>3}{r['cum_pass']:>10}{r['cum_fail']:>10}{r['pending']:>9}")
+        out[label]=rows
+    return out
+
 def combined_mc(v7_weeks, ma2_monthly, alloc, init, target_pct=8.0, floor_pct=10.0,
                 horizon=HORIZON_3MO, n_paths=2000, seed=11):
     """v7週次 + MA2月次(配分alloc)の合成口座を13週シミュレート。+8%先着=PASS/-10%先着=FAIL。"""
@@ -408,3 +453,4 @@ def run_pass3mo():
 
 if __name__=="__main__":
     run_pass3mo()
+    run_weekly_curves(2.5)   # 予算2.5%の週ごと累積(Phase1/Phase2)
