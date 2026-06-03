@@ -165,6 +165,35 @@ def e5_monthly(bps=5.0):
     s=pd.Series(out).sort_index().dropna()
     return s   # 既にmonthly index
 
+# ---------- 多資産日足の自動取得(Driveに未配置なら Yahoo から10年取得して配置) ----------
+_YH={"XAUUSD":"GC=F","US500":"^GSPC","NAS100":"^IXIC","GER40":"^GDAXI"}
+def ensure_multiasset():
+    import urllib.request, json as _json, time, csv, datetime as _dt
+    out_dir = (DAILY_DIR.format(base=DRIVE_BASE) if DRIVE_OK else LOCAL_FALLBACK)
+    os.makedirs(out_dir, exist_ok=True)
+    for name in METALS_IDX:
+        if _resolve(name, daily=True) is not None:
+            continue
+        sym=_YH.get(name)
+        if not sym: continue
+        try:
+            u=f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval=1d&range=10y"
+            req=urllib.request.Request(u, headers={"User-Agent":"Mozilla/5.0"})
+            d=_json.loads(urllib.request.urlopen(req, timeout=25).read())
+            r=d["chart"]["result"][0]; ts=r["timestamp"]; q=r["indicators"]["quote"][0]
+            p=os.path.join(out_dir, f"{name}_d.csv")
+            with open(p,"w",newline="") as f:
+                w=csv.writer(f); w.writerow(["timestamp","open","high","low","close"])
+                for i,t in enumerate(ts):
+                    o,h,l,c=q["open"][i],q["high"][i],q["low"][i],q["close"][i]
+                    if None in (o,h,l,c): continue
+                    w.writerow([_dt.datetime.utcfromtimestamp(t).strftime("%Y-%m-%d %H:%M:%S"),o,h,l,c])
+            CACHE.pop(("d",name),None)   # 再読込
+            print(f"  [取得] {name} <- {sym} → {p}")
+            time.sleep(1.0)
+        except Exception as e:
+            print(f"  [取得失敗] {name} ({sym}): {type(e).__name__} {str(e)[:60]}")
+
 # ---------- 比較指標 ----------
 def volmatch(s,t=0.10,ann=12):
     s=pd.Series(s).dropna(); v=s.std()*np.sqrt(ann); return s*(t/v) if v>0 else s
@@ -178,9 +207,21 @@ def M(s,ann=12):
                 Calmar=round(calmar,2),win=round((s>0).mean()*100,0),worst=round(s.min()*100,2))
 
 def run():
+    # 多資産日足がDriveに無ければ自動取得(E5空の最頻原因)
+    miss=[a for a in METALS_IDX if _resolve(a, daily=True) is None]
+    if miss:
+        print(f"[診断] 多資産日足が未配置: {miss} → Yahooから10年取得を試みます")
+        ensure_multiasset()
+    # 可用性レポート
+    h1ok=[p for p in PAIRS if H1(p) is not None]
+    dok =[a for a in METALS_IDX if DCLOSE(a) is not None]
+    print(f"[診断] v7用H1={h1ok} / E5用日足={dok}")
     v7=v7_monthly(); e5=e5_monthly()
-    if len(v7)==0 or len(e5)==0:
-        print("計算不可: v7またはE5の月次が空(データ配置を確認)"); return
+    print(f"[診断] v7月次={len(v7)}ヶ月 / E5月次={len(e5)}ヶ月")
+    if len(v7)==0:
+        print("計算不可: v7月次が空 → dukascopy_data_h1 のEURJPY/GBPJPY/USDJPY_h1.csv配置を確認"); return
+    if len(e5)==0:
+        print("計算不可: E5月次が空 → multiasset_daily の取得/配置に失敗(上の取得ログ確認)"); return
     j=pd.concat([v7.rename("v7"),e5.rename("e5")],axis=1).dropna()
     corr=round(float(j["v7"].corr(j["e5"])),3) if len(j)>2 else None
     span=f"{j.index.min().date()}..{j.index.max().date()} ({len(j)}ヶ月)"
