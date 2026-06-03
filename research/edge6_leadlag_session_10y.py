@@ -37,10 +37,11 @@ edge6_leadlag_session_10y.py — 3本目・4本目エッジの事前登録ハー
   G_plac  : プラセボ(方向ランダム化)が非有意(p>0.05) かつ 対象の純益>プラセボ純益
   G_cost  : 往復コストを 1→4pip までスイープしても全て純益>0
 
-データの置き場（Colab=Drive / ローカル=フォールバック。edge5 と同一規約）:
-  - FX H1   : DRIVE_BASE/dukascopy_data_h1/<PAIR>_h1.csv  （無ければ ./research/data/）
-  - 多資産日足: DRIVE_BASE/multiasset_daily/<NAME>_d.csv   （無ければ ./research/data/）
-  ※ 多資産日足が未取得なら edge5 の「データ取得セル」(fetch_multiasset) を先に実行。
+データの置き場（Colab=Drive / ローカル=フォールバック）:
+  - 全資産 H1: DRIVE_BASE/dukascopy_data_h1/<NAME>_h1.csv  （XAUUSD/US500 もここにH1で存在）
+  - 日足が別保管なら: DRIVE_BASE/multiasset_daily/<NAME>_d.csv（無ければ ./research/data/）
+  ※ XAUUSD/US500 も dukascopy_data_h1 にH1であるため、Yahoo再取得(fetch)は不要。
+    本ハーネスはH1を日次/週次にリサンプルして使う（マウント→Run all だけで完結）。
 
 ⚠ シミュレーション。日足終値モデル/週次・セッション・スプレッド近似。LEAD は検証済みエッジ
    ではない。本資金即投入は禁止。ADOPT が出ても縮小サイズ＋デモ前進検証が前提（docs/25）。
@@ -78,14 +79,14 @@ if USE_DRIVE:
 def is_fx(a):  return a in FX_ALL
 def pip(p):    return 0.01 if p.endswith("JPY") else 0.0001
 
-def _resolve(name, daily=False):
+def _resolve(name):
+    """H1(dukascopy_data_h1) を最優先で探し、無ければ日足(multiasset_daily)→ローカル。
+       XAUUSD/US500 等も dukascopy_data_h1 に H1 で存在するため、Yahoo再取得は不要。"""
     c = []
     if USE_DRIVE:
-        if daily:
-            b = DAILY_DIR.format(base=DRIVE_BASE); c += [f"{b}/{name}_d.csv", f"{b}/{name}.csv"]
-        else:
-            b = H1_DIR.format(base=DRIVE_BASE);    c += [f"{b}/{name}_h1.csv", f"{b}/{name}.csv"]
-    c += [f"{LOCAL_FALLBACK}/{name}_d.csv"] if daily else [f"{LOCAL_FALLBACK}/{name}_h1.csv"]
+        h = H1_DIR.format(base=DRIVE_BASE); d = DAILY_DIR.format(base=DRIVE_BASE)
+        c += [f"{h}/{name}_h1.csv", f"{h}/{name}.csv", f"{d}/{name}_d.csv", f"{d}/{name}.csv"]
+    c += [f"{LOCAL_FALLBACK}/{name}_h1.csv", f"{LOCAL_FALLBACK}/{name}_d.csv"]
     for x in c:
         if os.path.exists(x): return x
     return None
@@ -100,9 +101,9 @@ def _read_close(path):
 
 CACHE = {}
 def series(name):
-    """FXはH1終値、多資産は日足終値を返す(無ければNone)。"""
+    """利用可能な最細粒度の終値(通常H1)を返す(無ければNone)。"""
     if name not in CACHE:
-        p = _resolve(name, daily=not is_fx(name))
+        p = _resolve(name)
         CACHE[name] = _read_close(p) if p else None
     return CACHE[name]
 def have(a):  return series(a) is not None
@@ -111,7 +112,7 @@ def avail(xs): return [a for a in xs if have(a)]
 def daily_close(name):
     s = series(name)
     if s is None: return None
-    return s.resample("1D").last().dropna() if is_fx(name) else s
+    return s.resample("1D").last().dropna()   # H1/日足いずれでも日次終値に統一
 
 def weekly_close(name):
     d = daily_close(name)
