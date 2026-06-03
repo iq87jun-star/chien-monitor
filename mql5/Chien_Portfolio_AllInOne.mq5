@@ -110,6 +110,30 @@ int SplitHours(string csv, int &arr[])
 }
 double PipOf(string s){ return (StringFind(s,"JPY")>=0)? 0.01 : 0.0001; }
 
+// 業者で銘柄名が違う問題に対応: 指定名＋主要別名＋サフィックスを総当りで実在銘柄を解決。
+string ResolveSymbol(string want)
+{
+   string suf[]={"",".cash",".r",".c",".pro","m",".spot","-cash",".sd","+",".i","_SB"};
+   string bases[]; ArrayResize(bases,20); int nb=0;
+   bases[nb++]=want;
+   string U=want; StringToUpper(U);
+   if(StringFind(U,"XAU")>=0 || StringFind(U,"GOLD")>=0){
+      bases[nb++]="XAUUSD"; bases[nb++]="GOLD"; bases[nb++]="GOLDUSD"; }
+   else if(StringFind(U,"SPX")>=0 || StringFind(U,"500")>=0){
+      bases[nb++]="US500"; bases[nb++]="SPX500"; bases[nb++]="SP500"; bases[nb++]="USA500"; bases[nb++]="US500Cash"; }
+   else if(StringFind(U,"NAS")>=0 || StringFind(U,"USTEC")>=0 || StringFind(U,"NDX")>=0 || StringFind(U,"US100")>=0 || StringFind(U,"TECH")>=0){
+      bases[nb++]="NAS100"; bases[nb++]="USTEC"; bases[nb++]="US100"; bases[nb++]="NDX100"; bases[nb++]="USTECH"; }
+   else if(StringFind(U,"GER")>=0 || StringFind(U,"DAX")>=0 || StringFind(U,"DE40")>=0 || StringFind(U,"DE30")>=0 || StringFind(U,"40")>=0){
+      bases[nb++]="GER40"; bases[nb++]="DE40"; bases[nb++]="DAX40"; bases[nb++]="GER30"; bases[nb++]="DE30"; }
+   ArrayResize(bases,nb);
+   for(int b=0;b<nb;b++)
+      for(int s=0;s<ArraySize(suf);s++){
+         string cand=bases[b]+suf[s];
+         if(SymbolSelect(cand,true)) return cand;
+      }
+   return "";
+}
+
 void ResolveScenario()
 {
    g_weeklyRisk=InpWeeklyRiskPct; g_e5leg=InpE5LegRiskPct;
@@ -141,12 +165,18 @@ int OnInit()
    ArrayResize(g_lastShot,ny*nh); ArrayInitialize(g_lastShot,0);
    ArrayResize(g_lastMonth,ne); ArrayInitialize(g_lastMonth,0);
    for(int i=0;i<ny;i++){
-      if(!SymbolSelect(g_yen[i],true)) PrintFormat("⚠ %s をMarketWatchに追加できず",g_yen[i]);
+      string r=ResolveSymbol(g_yen[i]); g_atrH1[i]=INVALID_HANDLE;
+      if(r==""){ PrintFormat("⚠ v7銘柄 %s が見つからず(別名総当り不可)→スキップ",g_yen[i]); continue; }
+      if(r!=g_yen[i]) PrintFormat("[銘柄解決] v7 %s → %s",g_yen[i],r);
+      g_yen[i]=r;
       g_atrH1[i]=iATR(g_yen[i],PERIOD_H1,InpAtrPeriodH1);
       if(g_atrH1[i]==INVALID_HANDLE) PrintFormat("⚠ ATR(H1) handle失敗 %s",g_yen[i]);
    }
    for(int i=0;i<ne;i++){
-      if(!SymbolSelect(g_e5[i],true)) PrintFormat("⚠ %s をMarketWatchに追加できず(銘柄名確認)",g_e5[i]);
+      string r=ResolveSymbol(g_e5[i]); g_atrMN1[i]=INVALID_HANDLE;
+      if(r==""){ PrintFormat("⚠ E5銘柄 %s が見つからず(別名総当り不可)→スキップ",g_e5[i]); continue; }
+      if(r!=g_e5[i]) PrintFormat("[銘柄解決] E5 %s → %s",g_e5[i],r);
+      g_e5[i]=r;
       g_atrMN1[i]=iATR(g_e5[i],PERIOD_MN1,InpAtrPeriodMN1);
       if(g_atrMN1[i]==INVALID_HANDLE) PrintFormat("⚠ ATR(MN1) handle失敗 %s",g_e5[i]);
    }
