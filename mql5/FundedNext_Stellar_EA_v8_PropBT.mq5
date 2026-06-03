@@ -34,7 +34,7 @@
 #property copyright "chien-monitor research"
 #property version   "8.00"
 #property strict
-#property description "v7 multi-shot (Monday JPY seasonality) + dual-firm preset: Current-Prop 2.5x / Instant 1.5x. Risk-budgeted, LONG only, time-exit."
+#property description "DROP-IN v7 for PROP breakthrough (default=Current-Prop 2.5x). Auto-balance. Attach to EURJPY/GBPJPY/USDJPY H1."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -49,7 +49,7 @@ enum ENUM_FIRM_PRESET
 };
 
 input group "=== 業者プリセット（最重要・これ1つで倍率とルールを切替）==="
-input ENUM_FIRM_PRESET InpFirmPreset = FIRM_INSTANT_1_5X; // ★運用先を選ぶ
+input ENUM_FIRM_PRESET InpFirmPreset = FIRM_CURRENT_PROP_2_5X; // ★既定=プロップ突破(ドロップインで完了)
 
 input group "=== 口座 ==="
 input double InpInitialBalance   = 0.0;     // 0=口座残高を自動取得(推奨) / 手動なら口座額を入力

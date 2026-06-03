@@ -62,21 +62,26 @@
 > 本資金投入はデモ前進検証(docs/29)の合格後・小サイズから。倍率/比率は審査と運用で変えてよい。
 
 ## 5. MT5 セットアップ手順（①プロップ突破 / ③インスタント）
-### 事前
-1. MetaEditorで `FundedNext_Stellar_EA_v8_dualfirm.mq5` と `Chien_E5_RP_Trend_EA.mq5` をコンパイル(F7)→ `MQL5/Experts/` に .ex5。
-2. `mql5/presets/*.set` を `MQL5/Presets/` にコピー（チャートのInputsタブ→Loadで読み込み）。
-3. ツールバーの「アルゴリズム取引(AutoTrading)」をON。
 
-### ①プロップ突破（FundedNext $100k・MT5）
-- **v7**: EURJPY / GBPJPY / USDJPY の **H1チャート**を3枚開き、各に v8_dualfirm をドラッグ →
-  preset `v7_prop_breakthrough_2.5x.set` を Load（FirmPreset=CURRENT_PROP_2_5X / InitialBalance=100000）。
-- **E5**: XAUUSD / US500 / NAS100 / GER40 のチャートを4枚開き、各に Chien_E5_RP_Trend をドラッグ →
-  preset `e5_prop_breakthrough_65_35.set` を Load（legRisk=1.23 / InitialBalance=100000）。
-- 各チャートで「Allow Algo Trading」にチェック。Magic: v7=920580 / E5=930610（自動で衝突しない）。
+### ★ドロップだけで完了（input操作ゼロ・推奨）
+EAを改修し、**口座残高は自動取得・シナリオは既定で内蔵**にした。**該当EAをチャートに乗せるだけ**で完了する。
+（.set読み込みは不要。InitialBalanceも入力不要。）
 
-### ③インスタント運用（Blueberry $50k）
-- **v7**: 同じ3つのJPY H1チャートに `v7_instant_1.5x.set`（FirmPreset=INSTANT_1_5X / InitialBalance=50000）。
-- **E5**: 同じ4銘柄に `e5_instant_75_25.set`（legRisk=0.46 / InitialBalance=50000）。
+| シナリオ | 使うEA(コンパイルしてドロップ) | アタッチ先 |
+|---|---|---|
+| **③インスタント** | `FundedNext_Stellar_EA_v8_dualfirm`（既定=インスタント）<br>`Chien_E5_RP_Trend_EA`（既定=運用75:25/legRisk0.46） | v7→EURJPY/GBPJPY/USDJPY(H1)<br>E5→XAUUSD/US500/NAS100/GER40 |
+| **①プロップ突破** | `FundedNext_Stellar_EA_v8_PropBT`（既定=プロップ2.5倍）<br>`Chien_E5_RP_Trend_PropBT`（既定=突破65:35/legRisk1.23） | 同上 |
+
+手順:
+1. MetaEditorで上記4ファイル（使う2つでよい）をコンパイル(F7)。
+2. 「アルゴリズム取引」ON。各チャートにEAをドラッグ → 「Allow Algo Trading」にチェック → OK。**入力は触らない。**
+3. それだけ。残高は口座から自動採用、legRisk/倍率/ルールは既定で正しい値が入る。
+- 資金化後（①→②）は、プロップ口座のEAを **`_PropBT`版から無印版（既定インスタント=1.5倍トレーリング…ではない）**…
+  ではなく、**v7のInpFirmPresetをMANUAL/1.5%へ、E5のInpScenarioをINSTANT_FUNDED(75:25)へ**切替（資金化後の項=§0②）。
+  ※②は静的−10%・無目標のため、簡便には「v7 InpFirmPreset=MANUAL + InpWeeklyRiskPct=1.5 + InpUseProfitStop=false」。
+
+### （参考）手動/.setで設定する場合
+入力を明示したい場合は §1/§2 の表、または `mql5/presets/*.set` を Load。ドロップイン版を使うなら不要。
 
 ### ★必ず確認（重要）
 - **プラットフォーム**: これらは **MT5専用EA**。FundedNext Stellar は MT5 提供あり(①OK)。

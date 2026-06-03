@@ -28,7 +28,7 @@
 #property copyright "chien-monitor research"
 #property version   "1.00"
 #property strict
-#property description "E5 risk-parity multi-asset TSMOM (gold+indices). LEAD/DEMO satellite — NOT a confirmed edge. Monthly, long/short, risk-budgeted."
+#property description "DROP-IN E5 for PROP breakthrough (default 65:35 legRisk1.23). LEAD/DEMO. Attach to XAUUSD/US500/NAS100/GER40."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -42,7 +42,7 @@ enum ENUM_E5_SCENARIO
 };
 
 input group "=== シナリオ（これ1つでlegRisk自動）==="
-input ENUM_E5_SCENARIO InpScenario = E5_INSTANT_FUNDED_75_25; // ★運用先(=v7と揃える)
+input ENUM_E5_SCENARIO InpScenario = E5_PROP_BREAKTHROUGH_65_35; // ★既定=プロップ突破65:35(ドロップインで完了)
 
 input group "=== ステータス警告 ==="
 input bool   InpAcknowledgeLEAD   = true;   // これはLEAD(未検証)。デモ/極小サイズのみ=trueで承認
