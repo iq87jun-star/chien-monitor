@@ -1,0 +1,63 @@
+{
+  "name": "H3_gold_london_session",
+  "alpha": 0.0167,
+  "verdict": "REJECT",
+  "final": "REJECT",
+  "robust_split_half": false,
+  "robustness": {
+    "first": {
+      "years": "2016-2020",
+      "p": 0.0368,
+      "sharpe": -0.988
+    },
+    "second": {
+      "years": "2021-2025",
+      "p": 0.2235,
+      "sharpe": -0.606
+    },
+    "both_significant": false
+  },
+  "gates": {
+    "G1_net_positive": false,
+    "G2_perm_p": true,
+    "G3_jackknife": true,
+    "G4_placebo": false,
+    "G5_cost": false,
+    "G6_v7_corr": true
+  },
+  "scalars": {
+    "net_R": -70.6227,
+    "net_R_cost": -70.6227,
+    "sharpe": -0.7986,
+    "perm_p": 0.0158,
+    "observed_stat": -0.7986,
+    "jackknife_max_p": 0.0792,
+    "v7_corr": -0.0135,
+    "placebo_target": -0.7986,
+    "placebo_best": -0.4416
+  },
+  "jackknife_by_year": {
+    "2016": 0.0384,
+    "2017": 0.0236,
+    "2018": 0.0408,
+    "2019": 0.0448,
+    "2020": 0.0148,
+    "2021": 0.0792,
+    "2022": 0.0444,
+    "2023": 0.0248,
+    "2024": 0.0116,
+    "2025": 0.0016
+  },
+  "placebo": {
+    "target": -0.7986,
+    "placebos": {
+      "asia_session": -0.4416
+    },
+    "standout": false,
+    "margin": -0.357
+  },
+  "mc_pass_rate_0.6pct": {
+    "pass_rate": 0.0004,
+    "median_days": 46.5
+  }
+}
