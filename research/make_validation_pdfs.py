@@ -296,8 +296,10 @@ p4_size = os.path.getsize(p4)
 p5 = os.path.join(OUT, "e5_demo_plan.pdf")
 with PdfPages(p5) as pdf:
     text_page(pdf, "E5（リスクパリティ多資産トレンド）デモ追検計画", [
-        "対象: docs/27の唯一筋の良いLEAD=E5(金+株価指数のTSMOMを逆ボラ加重・月次)。",
-        "ステータス: LEAD（検証済みエッジではない）。本資金禁止＝デモ/極小サイズの衛星のみ。",
+        "対象: E5(金+株価指数のTSMOMを逆ボラ加重・月次)。docs/31でSTRONG-LEADに昇格。",
+        "ステータス: STRONG-LEAD（検証済みエッジではない）。本資金禁止＝デモ/極小サイズの衛星のみ。",
+        "確度(docs/31, v7同等7ゲート)=5/7: WF5/5期+・全変種net>0・プラセボ崩壊・OOS減衰なし・v7相関−0.15。",
+        "未達は厳格な有意水準(Bonferroni/JK)の2つのみ＝過去検証は出し切った、残るはデモ。",
         "実装: mql5/Chien_E5_RP_Trend_EA.mq5（XAUUSD/US500/NAS100/GER40に各1アタッチ）。",
         "",
         "## 素の10年（月次）",
