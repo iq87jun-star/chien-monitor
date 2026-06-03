@@ -1,0 +1,46 @@
+{
+  "edge_id": "B2_value",
+  "period": "2016-01..2025-12",
+  "alpha": 0.0167,
+  "n_trades": 70,
+  "net_profit_10y": -0.016680798313541176,
+  "perm_p_net": 0.5510724463776812,
+  "perm_p_gross": 0.5288735563221839,
+  "jackknife_max_p": 0.8018599070046498,
+  "placebo_pass": null,
+  "cost_survives": false,
+  "corr_v7": 0.08399870453262834,
+  "max_dd_equal_notional": 0.13806641463553984,
+  "risk_budget_pct": 0.6,
+  "extra": {
+    "jackknife_by_year": {
+      "2020": 0.8018599070046498,
+      "2021": 0.6694665266736664,
+      "2022": 0.4618769061546923,
+      "2023": 0.4301784910754462,
+      "2024": 0.5298735063246838,
+      "2025": 0.42357882105894706
+    },
+    "worst_year_excluded": 2020
+  },
+  "gates": {
+    "g1_profit": false,
+    "g2_perm_p": false,
+    "g3_jackknife": false,
+    "g4_placebo": false,
+    "g5_cost": false,
+    "g6_independent": true,
+    "g4_beta_neutral": false,
+    "g7_dsr": false,
+    "g8_pbo": false
+  },
+  "grade": "REJECT",
+  "beta": -0.21176021200269252,
+  "alpha_weekly": -0.0016820595877223166,
+  "t_alpha": -0.33480185804343204,
+  "hedged_sharpe": -0.10720766169515776,
+  "dsr": 0.2533202950412812,
+  "sr0": 0.10947401137682829,
+  "pbo": NaN,
+  "n_variants": 9
+}
