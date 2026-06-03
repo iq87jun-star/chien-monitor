@@ -11,13 +11,23 @@
   },
   {
     "id": "E4",
-    "verdict": "ERROR",
-    "reason": "Timestamp('2016-06-06 00:00:00+0000', tz='UTC')"
+    "name": "E4_rates_to_USDJPY",
+    "verdict": "REJECT",
+    "gates_passed": 1,
+    "perm_p": 0.76325,
+    "jackknife_max_p": 0.9772,
+    "v7_corr": 0.0798,
+    "net_R_cost": -80.9171
   },
   {
     "id": "E5",
-    "verdict": "SKIP",
-    "reason": "[Errno 2] No such file or directory: '/home/user/chien-monitor/research/data/events_cb_d.csv'"
+    "name": "E5_cb_event_drift_USDJPY",
+    "verdict": "REJECT",
+    "gates_passed": 1,
+    "perm_p": 0.64227,
+    "jackknife_max_p": 0.9284,
+    "v7_corr": -0.0342,
+    "net_R_cost": -15.0112
   },
   {
     "id": "E6",

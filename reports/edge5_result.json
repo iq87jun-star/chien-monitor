@@ -1,0 +1,48 @@
+{
+  "name": "E5_cb_event_drift_USDJPY",
+  "alpha": 0.0125,
+  "verdict": "REJECT",
+  "gates": {
+    "G1_net_positive": false,
+    "G2_perm_p": false,
+    "G3_jackknife": false,
+    "G4_placebo": false,
+    "G5_cost": false,
+    "G6_v7_corr": true
+  },
+  "scalars": {
+    "net_R": -6.4644,
+    "net_R_cost": -15.0112,
+    "sharpe": -0.7996,
+    "perm_p": 0.64227,
+    "observed_stat": -0.7996,
+    "jackknife_max_p": 0.9284,
+    "v7_corr": -0.0342,
+    "placebo_target": -0.7996,
+    "placebo_best": 0.1248
+  },
+  "jackknife_by_year": {
+    "2016": 0.5874,
+    "2017": 0.5334,
+    "2018": 0.5662,
+    "2019": 0.2487,
+    "2020": 0.3758,
+    "2021": 0.7237,
+    "2022": 0.7477,
+    "2023": 0.5998,
+    "2024": 0.8185,
+    "2025": 0.9284
+  },
+  "placebo": {
+    "target": -0.7996,
+    "placebos": {
+      "random_days": 0.1248
+    },
+    "standout": false,
+    "margin": -0.9243
+  },
+  "mc_pass_rate_0.6pct": {
+    "pass_rate": 0.231,
+    "median_days": 33.0
+  }
+}
