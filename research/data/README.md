@@ -15,7 +15,8 @@ EDGE_DATA_DIR=<置き場> python3 research/build_v7_weekly.py     # v7 相関基
   **インストルメント・コードは live で全件動作確認済み。** 10年×16銘柄は数十分かかる。
 - `build_v7_weekly.py`: v7 ルール（月曜04/06/08/10UTC・JPYクロスLONG・24h）を H1 から再現し
   `v7_weekly_returns.csv` を生成（ゲート⑥の相関基準）。
-- **要手動整備**: `policy_rates_monthly.csv`（E3C のみ。BIS等から実値を埋める。テンプレ同梱）。
+- `build_policy_rates.py`: **BIS WS_CBPOL（政策金利・月次）から G10 を自動取得**し
+  `policy_rates_monthly.csv` を生成（E3C用）。手作業不要。実値の committed 版も同梱済み。
 - `costs.csv`: 往復スプレッド/スワップの**暫定値**を同梱。本番判定前にブローカー実値で要更新。
 
 ## 期間

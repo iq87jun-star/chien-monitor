@@ -17,11 +17,12 @@
 research/
   fetch_data.py          # Dukascopy から FX13+指数3 の H1 を取得（live 動作確認済）
   build_v7_weekly.py     # v7 を H1 から再現し v7_weekly_returns.csv を生成（ゲート⑥基準）
+  build_policy_rates.py  # BIS から G10 政策金利を自動取得（E3C用・live 動作確認済）
   edge_harness.py        # 汎用6ゲート検定エンジン（候補非依存・実装済・自己テスト済）
   data_io.py             # Drive/ローカル両対応のデータロード（EDGE_DATA_DIR / EDGE_REPORTS_DIR）
   data/README.md         # データ取得手順＋要件
   data/costs.csv         # 往復コスト/スワップ（暫定値・要ブローカー実値）
-  data/policy_rates_monthly.csv  # E3C 用テンプレ（実値を手動で埋める）
+  data/policy_rates_monthly.csv  # E3C 用・BIS実値（build_policy_rates.py 生成・committed）
   edge3a_eqmr_10y.py     # E3A 株価指数 短期MR
   edge3b_leadlag_10y.py  # E3B クロスアセット・リードラグ
   edge3c_carry_10y.py    # E3C 横断キャリー（スポットのみ・de-swap）
