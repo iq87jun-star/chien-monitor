@@ -1,0 +1,39 @@
+{
+  "basis": "p95 block-bootstrap maxDD, original leverage convention (docs/29)",
+  "grid": {
+    "0.4": {
+      "p95_maxDD": 4.36,
+      "net_10y": 10.9
+    },
+    "0.5": {
+      "p95_maxDD": 5.4,
+      "net_10y": 13.7
+    },
+    "0.6": {
+      "p95_maxDD": 6.44,
+      "net_10y": 16.7
+    },
+    "0.7": {
+      "p95_maxDD": 7.42,
+      "net_10y": 19.7
+    },
+    "0.75": {
+      "p95_maxDD": 7.9,
+      "net_10y": 21.2
+    },
+    "1.0": {
+      "p95_maxDD": 10.33,
+      "net_10y": 29.0
+    },
+    "1.5": {
+      "p95_maxDD": 14.86,
+      "net_10y": 45.9
+    },
+    "2.5": {
+      "p95_maxDD": 23.31,
+      "net_10y": 85.1
+    }
+  },
+  "recommend_static_minus10": 0.6,
+  "recommend_trailing_minus10": 0.5
+}
