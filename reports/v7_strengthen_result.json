@@ -1,0 +1,62 @@
+{
+  "weekly_risk_pct": 1.5,
+  "rows": [
+    {
+      "name": "baseline",
+      "n_trade_days": 519,
+      "net_total_pct": 150.36,
+      "maxDD_pct": -17.08,
+      "calmar": 0.56,
+      "sharpe": 1.861,
+      "mc_pass": 0.7632,
+      "half1_maxDD": -17.08,
+      "half1_calmar": 0.19,
+      "half2_maxDD": -8.0,
+      "half2_calmar": 2.05
+    },
+    {
+      "name": "VF1_vix_skip",
+      "n_trade_days": 427,
+      "net_total_pct": 91.87,
+      "maxDD_pct": -21.33,
+      "calmar": 0.32,
+      "sharpe": 1.619,
+      "mc_pass": 0.7306,
+      "half1_maxDD": -21.33,
+      "half1_calmar": 0.06,
+      "half2_maxDD": -7.68,
+      "half2_calmar": 1.65
+    },
+    {
+      "name": "VF2_trend_ma50",
+      "n_trade_days": 390,
+      "net_total_pct": 49.51,
+      "maxDD_pct": -18.36,
+      "calmar": 0.22,
+      "sharpe": 1.345,
+      "mc_pass": 0.6546,
+      "half1_maxDD": -18.36,
+      "half1_calmar": -0.09,
+      "half2_maxDD": -8.0,
+      "half2_calmar": 1.29
+    },
+    {
+      "name": "VF3_pairvol_skip",
+      "n_trade_days": 479,
+      "net_total_pct": 62.91,
+      "maxDD_pct": -17.36,
+      "calmar": 0.29,
+      "sharpe": 1.211,
+      "mc_pass": 0.646,
+      "half1_maxDD": -17.36,
+      "half1_calmar": 0.13,
+      "half2_maxDD": -8.0,
+      "half2_calmar": 0.99
+    }
+  ],
+  "verdict": {
+    "VF1_vix_skip": "不採用",
+    "VF2_trend_ma50": "不採用",
+    "VF3_pairvol_skip": "不採用"
+  }
+}
