@@ -288,8 +288,76 @@ def run_weekly_mode(scenarios, ratio_e5=0.35, fx=159.0):
     except Exception as e: print("保存スキップ:",e)
     return out
 
+# ===== 目的別 比率×倍率 2軸スイープ =====
+def _blend_series(weekly, w):
+    """v7を週次%で建て、E5を比率w(=E5シェア)でリスク加重して足した月次系列。"""
+    v7=v7_monthly_budget(weekly=weekly)
+    if w<=0: return v7.dropna()
+    e5=e5_monthly(); v7vol=v7.std()*np.sqrt(12); e5vol=e5.std()*np.sqrt(12)
+    if v7vol<=0 or e5vol<=0: return v7.dropna()
+    e5s=e5*((w/(1-w))*v7vol/e5vol)
+    j=pd.concat([v7.rename("v"),e5s.rename("e")],axis=1).dropna()
+    return (j.v+j.e)
+
+def _first_passage(series, target, breach=-0.10, n=20000, block=3, cap=60, seed=5):
+    """月次系列(実μ・実形)から初回到達MC。中央到達月と審査中失格率を返す。"""
+    s=pd.Series(series).dropna();
+    if len(s)<12: return None,None
+    mu=s.mean(); res=(s-mu).values; L=len(res); rng=np.random.default_rng(seed); mo=[]; fails=0
+    for _ in range(n):
+        eq=1.0; peak=1.0; p=[]
+        while len(p)<cap:
+            i=rng.integers(0,L); p.extend(res[i:i+block])
+        for k in range(cap):
+            eq*=(1+mu+p[k]); peak=max(peak,eq)
+            if (eq-peak)/peak<=breach: fails+=1; break
+            if eq>=1+target: mo.append(k+1); break
+    mo=np.array(mo)
+    return (int(np.median(mo)) if len(mo) else None, round(100*fails/n,1))
+
+def sweep_ratio_operation(weeklies=(1.5,2.0,2.5), ratios=(0.0,0.15,0.25,0.35,0.5), acc=50000, split=0.8, fx=159.0):
+    """運用: 各倍率で『年次失格率(5年累積)最小』の比率を探す。手取りも併記。"""
+    print("\n"+"="*78); print("=== 【運用最適】倍率×比率 → 5年累積失格 最小の比率 (手取りはacc/split/fx基準) ==="); print("="*78)
+    out={}
+    for wk in weeklies:
+        rowbest=None; rows=[]
+        for w in ratios:
+            s=_blend_series(wk,w); dd=maxdd(s); af,cf=mc_annual_fail(s)
+            cagr=((1+s).cumprod().iloc[-1]**(12/len(s))-1)*100; take=acc*cagr/100*split*fx
+            rows.append(dict(e5=w,maxDD=round(dd,1),annual=af,cum5=cf,CAGR=round(cagr,1),take=round(take)))
+            if cf is not None and (rowbest is None or cf<rowbest["cum5"]): rowbest=rows[-1]
+        print(f"\n 倍率{wk} (推奨=★):")
+        for r in rows:
+            star=" ★" if r is rowbest else ""
+            print(f"   v7:{int((1-r['e5'])*100)}/E5:{int(r['e5']*100):>3}  maxDD{r['maxDD']:>6}% 年失格{r['annual']}% 5年{r['cum5']}% 年率{r['CAGR']}% 手取り¥{r['take']:,}{star}")
+        out[wk]=dict(rows=rows, best_e5=rowbest["e5"] if rowbest else None)
+    return out
+
+def sweep_ratio_breakthrough(weeklies=(1.5,2.0,2.5), ratios=(0.0,0.15,0.25,0.35,0.5)):
+    """突破: 各倍率で『Phase1到達 最速(同点は審査中失格最小)』の比率を探す。"""
+    print("\n"+"="*78); print("=== 【突破最適】倍率×比率 → Phase1+8%最速 & 審査中失格 の比率 ==="); print("="*78)
+    out={}
+    for wk in weeklies:
+        rowbest=None; rows=[]
+        for w in ratios:
+            s=_blend_series(wk,w); p1,p1f=_first_passage(s,0.08); p2,_=_first_passage(s,0.05,seed=6)
+            tot=(p1+p2) if (p1 and p2) else None
+            rows.append(dict(e5=w,P1=p1,P2=p2,total=tot,inchal_fail=p1f))
+            key=(p1 if p1 else 99, p1f if p1f else 99)
+            bkey=(rowbest["P1"] if rowbest and rowbest["P1"] else 99, rowbest["inchal_fail"] if rowbest and rowbest["inchal_fail"] else 99) if rowbest else (99,99)
+            if rowbest is None or key<bkey: rowbest=rows[-1]
+        print(f"\n 倍率{wk} (推奨=★):")
+        for r in rows:
+            star=" ★" if r is rowbest else ""
+            print(f"   v7:{int((1-r['e5'])*100)}/E5:{int(r['e5']*100):>3}  Phase1中央{r['P1']}ヶ月 Phase2{r['P2']}ヶ月 合計≈{r['total']}ヶ月 審査中失格{r['inchal_fail']}%{star}")
+        out[wk]=dict(rows=rows, best_e5=rowbest["e5"] if rowbest else None)
+    return out
+
 if __name__=="__main__":
     run()
     # 当初倍率での確定試算(プロップ2.5% / インスタント1.5% ・ 比率65:35)
     run_weekly_mode([("FundedNext $100k",100000,2.5,0.80),
                      ("Blueberry $50k", 50000,1.5,0.80)], ratio_e5=0.35, fx=159.0)
+    # 目的別の比率最適化(倍率×比率の2軸スイープ)
+    sweep_ratio_operation()
+    sweep_ratio_breakthrough()
