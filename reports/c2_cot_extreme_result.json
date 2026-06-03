@@ -1,0 +1,50 @@
+{
+  "edge_id": "C2_cot_extreme",
+  "period": "2016-01..2025-12",
+  "alpha": 0.0167,
+  "n_trades": 160,
+  "net_profit_10y": 0.15438531955091922,
+  "perm_p_net": 0.09659517024148792,
+  "perm_p_gross": 0.0751462426878656,
+  "jackknife_max_p": 0.1768411579421029,
+  "placebo_pass": null,
+  "cost_survives": false,
+  "corr_v7": -0.04493279908044312,
+  "max_dd_equal_notional": 0.06686807250145617,
+  "risk_budget_pct": 0.6,
+  "extra": {
+    "jackknife_by_year": {
+      "2017": 0.09854507274636268,
+      "2018": 0.1768411579421029,
+      "2019": 0.08034598270086496,
+      "2020": 0.07619619019049048,
+      "2021": 0.11179441027948603,
+      "2022": 0.14099295035248238,
+      "2023": 0.13174341282935853,
+      "2024": 0.06904654767261637,
+      "2025": 0.10144492775361232,
+      "2026": 0.09649517524123793
+    },
+    "worst_year_excluded": 2018
+  },
+  "gates": {
+    "g1_profit": true,
+    "g2_perm_p": false,
+    "g3_jackknife": false,
+    "g4_placebo": false,
+    "g5_cost": false,
+    "g6_independent": true,
+    "g4_beta_neutral": false,
+    "g7_dsr": false,
+    "g8_pbo": false
+  },
+  "grade": "LEAD",
+  "beta": -0.2747641765405319,
+  "alpha_weekly": 0.0011576036650537646,
+  "t_alpha": 1.4551713479058033,
+  "hedged_sharpe": 0.11548676281184872,
+  "dsr": 0.5297220467062074,
+  "sr0": 0.10947401137682829,
+  "pbo": 0.5952380952380952,
+  "n_variants": 9
+}
