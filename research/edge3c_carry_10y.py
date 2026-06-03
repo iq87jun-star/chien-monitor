@@ -29,7 +29,7 @@ RISK_BUDGET_PCT = 0.6
 
 def load_policy_rates() -> pd.DataFrame:
     """policy_rates_monthly.csv: date, ccy, rate（対USDの差は USD 行から算出）。"""
-    df = pd.read_csv(os.path.join(DATA_DIR, "policy_rates_monthly.csv"))
+    df = pd.read_csv(os.path.join(DATA_DIR, "policy_rates_monthly.csv"), comment="#")
     df["date"] = pd.to_datetime(df["date"], utc=True)
     return df.pivot(index="date", columns="ccy", values="rate").sort_index()
 

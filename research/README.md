@@ -5,8 +5,9 @@
 
 ## 状態（2026-06-02）
 - **3本目・4本目エッジ**を探索中。事前登録 `docs/26` は **LOCKED（2026-06-02 承認済）**。
-- E3A〜E3D の runner 実装済み。合成データで端から端まで `smoke_test.py` PASS（落ちずに JSON 出力）。
-  **拘束力ある判定は未実施** — ユーザーが Drive の実10年データで実行して初めて確定。
+- E3A〜E3D の runner 実装済み。`smoke_test.py`（合成）PASS、かつ **実 Dukascopy データ（2020上期）で
+  端から端まで動作確認済**（fetch→v7→4本→JSON）。**拘束力ある10年判定は未実施** — 10年フル取得後に確定。
+- データ未存在問題は解消: `fetch_data.py` で Dukascopy から自前取得する方式に。
 - 既存の検証済みコア = **v7**（月曜JPYクロスLONG多ショット）。詳細は提供PDF。
 - 注: 前セッションの `docs/14〜25`・旧 `research/*.py`・`reports/*.pdf` は本リポジトリに
   未コミットで存在しない。現状は提供資料（PDF2/EA2/引き継ぎ）から再構成。
@@ -14,9 +15,13 @@
 ## レイアウト
 ```
 research/
+  fetch_data.py          # Dukascopy から FX13+指数3 の H1 を取得（live 動作確認済）
+  build_v7_weekly.py     # v7 を H1 から再現し v7_weekly_returns.csv を生成（ゲート⑥基準）
   edge_harness.py        # 汎用6ゲート検定エンジン（候補非依存・実装済・自己テスト済）
   data_io.py             # Drive/ローカル両対応のデータロード（EDGE_DATA_DIR / EDGE_REPORTS_DIR）
-  data/README.md         # 10年データ要件（Drive 配置）
+  data/README.md         # データ取得手順＋要件
+  data/costs.csv         # 往復コスト/スワップ（暫定値・要ブローカー実値）
+  data/policy_rates_monthly.csv  # E3C 用テンプレ（実値を手動で埋める）
   edge3a_eqmr_10y.py     # E3A 株価指数 短期MR
   edge3b_leadlag_10y.py  # E3B クロスアセット・リードラグ
   edge3c_carry_10y.py    # E3C 横断キャリー（スポットのみ・de-swap）

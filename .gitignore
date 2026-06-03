@@ -1,3 +1,5 @@
 __pycache__/
 *.pyc
-research/data/*.csv
+# bulk market data is fetched, not committed
+research/data/*_h1.csv
+research/data/v7_weekly_returns.csv

@@ -1,7 +1,22 @@
-# research/data — データ要件（ユーザーが Drive に配置）
+# research/data — データ要件と取得
 
-> 拘束力ある10年検定はユーザーの Google Drive / Colab 実行が前提。本環境にはデータが無いため、
-> ハーネスは Drive・ローカル両対応で書く（パスを環境変数 `EDGE_DATA_DIR` で切替）。
+> 拘束力ある10年検定はユーザーの Google Drive / Colab 実行が前提。パスは環境変数
+> `EDGE_DATA_DIR` で切替。**前セッションのデータは永続化されておらず存在しないため、
+> 下記 `fetch_data.py` で Dukascopy から取得して構築する。**
+
+## 0. データ取得（自動・Dukascopy）
+```
+pip install dukascopy-python
+EDGE_DATA_DIR=<置き場> python3 research/fetch_data.py --start 2016-01-01 --end 2025-12-31
+EDGE_DATA_DIR=<置き場> python3 research/build_v7_weekly.py     # v7 相関基準を再生成
+```
+- `fetch_data.py`: FX13ペア＋指数3（US500=USA500.IDX, NAS100=USATECH.IDX, JP225=JPN.IDX）を
+  H1 で取得。BID OHLC＋bid_close/ask_close。既存ファイルはスキップ（`--force`で上書き）。
+  **インストルメント・コードは live で全件動作確認済み。** 10年×16銘柄は数十分かかる。
+- `build_v7_weekly.py`: v7 ルール（月曜04/06/08/10UTC・JPYクロスLONG・24h）を H1 から再現し
+  `v7_weekly_returns.csv` を生成（ゲート⑥の相関基準）。
+- **要手動整備**: `policy_rates_monthly.csv`（E3C のみ。BIS等から実値を埋める。テンプレ同梱）。
+- `costs.csv`: 往復スプレッド/スワップの**暫定値**を同梱。本番判定前にブローカー実値で要更新。
 
 ## 期間
 全データ **2016-01-01 〜 2025-12-31**（10年）。短期サブ期間は参考併記のみ（規律2）。
