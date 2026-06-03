@@ -149,6 +149,42 @@ def fetch_dukascopy_h1(out: str):
             print(f"  [ERR] {name} H1: {type(e).__name__}: {e}")
 
 
+def fetch_fomc_events(out: str):
+    """E5 用イベント日: FOMC 声明発表日を federalreserve.gov 公式から抽出（捏造なし）。
+    声明 URL `monetaryYYYYMMDD*.htm` のリンクを各カレンダー/historical ページから拾う。
+    BOJ は機械可読な一次ソースが乏しく未対応（必要なら手動で行追加）。
+    """
+    import re
+    import urllib.request
+    print("== FOMC イベント日 (federalreserve.gov) ==")
+    pages = ["https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"]
+    for y in range(int(START[:4]), 2021):
+        pages.append(f"https://www.federalreserve.gov/monetarypolicy/fomchistorical{y}.htm")
+    dates = set()
+    for u in pages:
+        try:
+            req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"})
+            h = urllib.request.urlopen(req, timeout=25).read().decode("utf-8", "replace")
+        except Exception as e:  # noqa: BLE001
+            print(f"  [WARN] {u.split('/')[-1]}: {e}")
+            continue
+        dates.update(re.findall(r"monetary(\d{8})[a-z]?\d?\.htm", h))
+    dts = sorted(d for d in dates if START[:4] <= d[:4] <= END[:4])
+    if not dts:
+        print("  [WARN] FOMC 日が取れず（E5 は SKIP）")
+        return
+    df = pd.DataFrame({"time": pd.to_datetime(dts, format="%Y%m%d", utc=True), "kind": "FOMC"})
+    df = df.drop_duplicates("time").sort_values("time")
+    path = os.path.join(out, "events_cb_d.csv")
+    # 既存に手動の BOJ 行などがあれば残してマージ
+    if os.path.exists(path):
+        old = pd.read_csv(path)
+        old["time"] = pd.to_datetime(old["time"], utc=True)
+        df = pd.concat([old[old["kind"] != "FOMC"], df]).drop_duplicates("time").sort_values("time")
+    df.to_csv(path, index=False)
+    print(f"  [OK] FOMC {len(dts)} 日 -> {path}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-h1", action="store_true", help="円クロス H1（Dukascopy）を取得しない")
@@ -162,15 +198,9 @@ def main():
         os.system(f"{sys.executable} -m pip -q install yfinance")
     fetch_yf_daily(out)
     fetch_fred_us2y(out)
+    fetch_fomc_events(out)
     if not args.no_h1:
         fetch_dukascopy_h1(out)
-    print("\n== events_cb_d.csv (E5用・中銀イベント) ==")
-    ev = os.path.join(out, "events_cb_d.csv")
-    if os.path.exists(ev):
-        print(f"  [OK] 既存: {ev}")
-    else:
-        print(f"  [TODO] 自動取得せず（日付の捏造を避けるため）。{ev} を手動で用意。")
-        print("         列: time,kind  kind∈{FOMC,BOJ}。未用意なら E5 は SKIP されます。")
     print("\n完了。次: python3 research/run_all.py")
 
 
