@@ -55,6 +55,59 @@ def D(n):
 def H(p):
     if ("h",p) not in CACHE: CACHE[("h",p)]=_close(p,False)
     return CACHE[("h",p)]
+
+# ---- v7予算校正エンジン(H1足内・SL込み)。週次リスク%を指定してv7月次を作る ----
+def _load_h1_ohlc(pair):
+    p=_resolve(pair,False)
+    if p is None: return None
+    df=pd.read_csv(p); df.columns=[c.strip().lower() for c in df.columns]
+    tc=next((c for c in ["time","timestamp","date","datetime","gmt time"] if c in df.columns), df.columns[0])
+    df["t"]=pd.to_datetime(df[tc],utc=True,errors="coerce"); df=df.dropna(subset=["t"]).sort_values("t").set_index("t")
+    def pk(*n):
+        for x in n:
+            if x in df.columns: return x
+        return None
+    o,h,l,c=pk("open","bidopen","o"),pk("high","bidhigh","h"),pk("low","bidlow","l"),pk("close","bidclose","c")
+    out=pd.DataFrame(index=df.index)
+    out["open"]=df[o].astype(float); out["high"]=df[h].astype(float)
+    out["low"]=df[l].astype(float); out["close"]=df[c].astype(float)
+    return out.dropna()
+def H1OHLC(p):
+    if ("ohlc",p) not in CACHE: CACHE[("ohlc",p)]=_load_h1_ohlc(p)
+    return CACHE[("ohlc",p)]
+def _atr_w(h1,period=24):
+    h,l,c=h1["high"],h1["low"],h1["close"]; pc=c.shift(1)
+    tr=pd.concat([(h-l),(h-pc).abs(),(l-pc).abs()],axis=1).max(axis=1)
+    return tr.ewm(alpha=1.0/period,adjust=False).mean()
+def v7_monthly_budget(weekly=0.60, shots=12, catatr=2.5, minstop=10.0, maxstop=400.0, maxspread=3.0):
+    """週次リスク%を指定したv7月次(=各ショット ret/stop × (weekly/shots))。budget校正版。"""
+    legs=[]
+    for pair in YEN:
+        h1=H1OHLC(pair)
+        if h1 is None: continue
+        pipv=pip_size(pair); slip=20*(0.001 if pair.endswith("JPY") else 0.00001)
+        T=h1.index.values; O=h1["open"].to_numpy(); L=h1["low"].to_numpy(); C=h1["close"].to_numpy()
+        atr=_atr_w(h1).to_numpy(); aidx=h1.index.values; idx=h1.index
+        per_shot=(weekly/100.0)/shots
+        for hr in HOURS:
+            pos=np.where((idx.dayofweek==0)&(idx.hour==hr))[0]
+            for a in pos:
+                ai=int(np.searchsorted(aidx,T[a],side="right"))-1
+                if ai<0 or not (atr[ai]==atr[ai]) or atr[ai]<=0: continue
+                sd=catatr*atr[ai]; sp=sd/pipv
+                if sp<minstop: sp=minstop; sd=sp*pipv
+                if sp>maxstop: continue
+                entry=O[a]+slip; sl=entry-sd
+                until=T[a]+np.timedelta64(24,"h"); b=int(np.searchsorted(T,until,side="left")); b=max(b,a+1)
+                ll=L[a:b]
+                if len(ll)>0 and (ll<=sl).any(): ex=sl
+                else: ex=O[b] if b<len(O) else C[-1]
+                ret_pips=(ex-entry)/pipv
+                frac=(ret_pips/sp)*per_shot
+                t=pd.Timestamp(T[a]); legs.append((t.tz_localize("UTC") if t.tz is None else t, frac))
+    if not legs: return pd.Series(dtype=float)
+    s=pd.Series([f for _,f in legs],index=[t for t,_ in legs]).sort_index()
+    m=s.groupby(s.index.to_period("M")).sum(); m.index=m.index.to_timestamp("M"); return m
 _YH={"XAUUSD":"GC=F","US500":"^GSPC","NAS100":"^IXIC","GER40":"^GDAXI"}
 def ensure_multiasset():
     import urllib.request, json as J, time, csv, datetime as DT
@@ -198,5 +251,45 @@ def run():
     except Exception as e: print("保存スキップ:",e)
     return out
 
+def run_weekly_mode(scenarios, ratio_e5=0.35, fx=159.0):
+    """当初倍率(週次%)を直接指定し、v7+E5(比率)の 合成maxDD/CAGR/年次失格率/手取り を確定。
+       scenarios: [(ラベル, 口座$, 週次%, 分配)] 例 [("Blueberry $50k",50000,1.5,0.8),...]"""
+    if [a for a in METALS_IDX if _resolve(a,True) is None]:
+        ensure_multiasset()
+    e5=e5_monthly()
+    if len(e5)==0: print("E5空: データ確認"); return
+    e5vol=float(e5.std()*np.sqrt(12))
+    print("\n"+"="*78)
+    print(f"=== 週次指定モード: v7+E5 比率 {int((1-ratio_e5)*100)}:{int(ratio_e5*100)} / 当初倍率 ===")
+    print("="*78)
+    out=[]
+    for label,acc,wk,split in scenarios:
+        v7=v7_monthly_budget(weekly=wk)
+        if len(v7)==0: print(f"{label}: v7空(H1未配置?)"); continue
+        v7vol=float(v7.std()*np.sqrt(12))
+        # E5を 比率に合わせてスケール: E5vol = (e5_share/v7_share) × v7vol
+        tgt_e5vol=(ratio_e5/(1-ratio_e5))*v7vol
+        e5s=e5*(tgt_e5vol/e5vol if e5vol>0 else 0.0)
+        j=pd.concat([v7.rename("v7"),e5s.rename("e5")],axis=1).dropna()
+        comb=(j.v7+j.e5)
+        # 単体(v7のみ, 同重複)も比較
+        for nm,series in [("v7単体",j.v7),("v7+E5",comb)]:
+            dd=maxdd(series); cagr=((1+series).cumprod().iloc[-1]**(12/len(series))-1)*100
+            af,cf=mc_annual_fail(series)
+            take=acc*cagr/100*split*fx
+            print(f"  [{label} 週次{wk}% {nm:6s}] 年率{cagr:5.1f}% maxDD{dd:6.1f}% 年失格{af}% 5年累積{cf}% 手取り¥{take:,.0f}")
+            out.append(dict(account=label,weekly=wk,mode=nm,CAGR=round(cagr,1),maxDD=round(dd,1),
+                            annual_fail=af,cum5y_fail=cf,take_home_jpy=round(take)))
+    try:
+        path=(H1_DIR.format(base=DRIVE_BASE)+"/v7e5_weekly_mode.json") if DRIVE_OK else "research/results/v7e5_weekly_mode.json"
+        os.makedirs(os.path.dirname(path),exist_ok=True)
+        with open(path,"w") as f: json.dump(out,f,ensure_ascii=False,indent=2,default=str)
+        print("保存:",path)
+    except Exception as e: print("保存スキップ:",e)
+    return out
+
 if __name__=="__main__":
     run()
+    # 当初倍率での確定試算(プロップ2.5% / インスタント1.5% ・ 比率65:35)
+    run_weekly_mode([("FundedNext $100k",100000,2.5,0.80),
+                     ("Blueberry $50k", 50000,1.5,0.80)], ratio_e5=0.35, fx=159.0)
