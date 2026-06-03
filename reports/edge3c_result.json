@@ -1,0 +1,40 @@
+{
+  "edge_id": "E3C_carry_spot",
+  "period": "2016-01..2025-12",
+  "alpha": 0.0125,
+  "n_trades": 3132,
+  "net_profit_10y": -0.22836574752065888,
+  "perm_p_net": 0.6534673266336684,
+  "perm_p_gross": 0.4215789210539473,
+  "jackknife_max_p": 0.728163591820409,
+  "placebo_pass": false,
+  "cost_survives": false,
+  "corr_v7": 0.04286173618158129,
+  "max_dd_equal_notional": 0.5389269537057809,
+  "risk_budget_pct": 0.6,
+  "extra": {
+    "jackknife_by_year": {
+      "2016": 0.728163591820409,
+      "2017": 0.6370181490925454,
+      "2018": 0.5191740412979351,
+      "2019": 0.6977151142442878,
+      "2020": 0.5386230688465576,
+      "2021": 0.7243637818109094,
+      "2022": 0.6338683065846707,
+      "2023": 0.6770161491925404,
+      "2024": 0.6618169091545423,
+      "2025": 0.6028198590070496,
+      "2026": 0.6531173441327933
+    },
+    "worst_year_excluded": 2016
+  },
+  "gates": {
+    "g1_profit": false,
+    "g2_perm_p": false,
+    "g3_jackknife": false,
+    "g4_placebo": false,
+    "g5_cost": false,
+    "g6_independent": true
+  },
+  "grade": "REJECT"
+}
