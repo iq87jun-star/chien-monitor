@@ -1,0 +1,49 @@
+{
+  "name": "E3_REVALIDATE_dukascopy_spot",
+  "alpha": 0.0125,
+  "verdict": "REJECT",
+  "gates": {
+    "G1_net_positive": true,
+    "G2_perm_p": false,
+    "G3_jackknife": false,
+    "G4_placebo": true,
+    "G5_cost": true,
+    "G6_v7_corr": true
+  },
+  "scalars": {
+    "net_R": 28.1931,
+    "net_R_cost": 12.5748,
+    "sharpe": 0.8963,
+    "perm_p": 0.15637,
+    "observed_stat": 0.8963,
+    "jackknife_max_p": 0.3687,
+    "v7_corr": 0.0725,
+    "placebo_target": 0.8963,
+    "placebo_best": -1.0659
+  },
+  "jackknife_by_year": {
+    "2017": 0.1847,
+    "2018": 0.3139,
+    "2019": 0.1563,
+    "2020": 0.1096,
+    "2021": 0.1695,
+    "2022": 0.0408,
+    "2024": 0.2811,
+    "2025": 0.3687
+  },
+  "placebo": {
+    "target": 0.8963,
+    "placebos": {
+      "low_vol_regime": -1.0659
+    },
+    "standout": true,
+    "margin": 1.9622
+  },
+  "data_source": "Dukascopy XAUUSD spot H1->daily",
+  "gold_spread_frac": 0.00018430893818714475,
+  "v7_corr_source": "H1",
+  "mc_pass_rate_0.6pct": {
+    "pass_rate": 0.1828,
+    "median_days": 45.0
+  }
+}
