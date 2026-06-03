@@ -1,0 +1,47 @@
+{
+  "name": "E6_index_meanrev_SPX",
+  "alpha": 0.0125,
+  "verdict": "REJECT",
+  "gates": {
+    "G1_net_positive": false,
+    "G2_perm_p": false,
+    "G3_jackknife": false,
+    "G4_placebo": false,
+    "G5_cost": false,
+    "G6_v7_corr": true
+  },
+  "scalars": {
+    "net_R": -25.1189,
+    "net_R_cost": -65.3709,
+    "sharpe": -0.7471,
+    "perm_p": 0.28554,
+    "observed_stat": -0.7471,
+    "jackknife_max_p": 0.7513,
+    "v7_corr": 0.0217,
+    "placebo_target": -0.7471,
+    "placebo_best": 0.1485
+  },
+  "jackknife_by_year": {
+    "2017": 0.3247,
+    "2018": 0.1831,
+    "2019": 0.2735,
+    "2020": 0.7513,
+    "2021": 0.1128,
+    "2022": 0.2547,
+    "2023": 0.3383,
+    "2024": 0.2839,
+    "2025": 0.6098
+  },
+  "placebo": {
+    "target": -0.7471,
+    "placebos": {
+      "momentum_instead": 0.1485
+    },
+    "standout": false,
+    "margin": -0.8955
+  },
+  "mc_pass_rate_0.6pct": {
+    "pass_rate": 0.047,
+    "median_days": 44.0
+  }
+}

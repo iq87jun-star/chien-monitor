@@ -72,21 +72,37 @@ def fetch_yf_daily(out: str):
 
 # ----------------------------------------------------------------- FRED US2Y
 def fetch_fred_us2y(out: str):
+    # 全期間一括は 504 になりやすいので年次チャンクで取得して結合。
+    import io
+    import time
+    import urllib.request
     print("== FRED US2Y (DGS2) ==")
-    url = (f"https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2"
-           f"&cosd={START}&coed={END}")
-    try:
-        d = pd.read_csv(url)
-        tcol, vcol = d.columns[0], d.columns[1]
-        d = d.rename(columns={tcol: "time", vcol: "v"})
-        d["time"] = pd.to_datetime(d["time"], utc=True)
-        d["v"] = pd.to_numeric(d["v"].replace(".", np.nan), errors="coerce")
-        d = d.dropna(subset=["v"]).reset_index(drop=True)
-        out_df = pd.DataFrame({"time": d["time"], "open": d["v"], "high": d["v"],
-                               "low": d["v"], "close": d["v"]})
-        _save(out_df, os.path.join(out, "US2Y_d.csv"), "US2Y")
-    except Exception as e:  # noqa: BLE001
-        print(f"  [ERR] US2Y: {type(e).__name__}: {e}")
+    frames = []
+    for y in range(int(START[:4]), int(END[:4]) + 1):
+        url = (f"https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2"
+               f"&cosd={y}-01-01&coed={y}-12-31")
+        raw = None
+        for i in range(4):
+            try:
+                raw = urllib.request.urlopen(url, timeout=20).read()
+                break
+            except Exception:  # noqa: BLE001
+                time.sleep(1.5 * (i + 1))
+        if raw is None:
+            print(f"  [WARN] US2Y {y} 取得失敗")
+            continue
+        frames.append(pd.read_csv(io.BytesIO(raw)))
+    if not frames:
+        print("  [ERR] US2Y 全滅")
+        return
+    d = pd.concat(frames, ignore_index=True)
+    d.columns = ["time", "v"]
+    d["time"] = pd.to_datetime(d["time"], utc=True)
+    d["v"] = pd.to_numeric(d["v"].replace(".", np.nan), errors="coerce")
+    d = d.dropna(subset=["v"]).drop_duplicates("time").sort_values("time").reset_index(drop=True)
+    out_df = pd.DataFrame({"time": d["time"], "open": d["v"], "high": d["v"],
+                           "low": d["v"], "close": d["v"]})
+    _save(out_df, os.path.join(out, "US2Y_d.csv"), "US2Y")
 
 
 # ----------------------------------------------------------------- Dukascopy H1

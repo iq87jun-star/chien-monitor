@@ -1,0 +1,32 @@
+[
+  {
+    "id": "E3",
+    "name": "E3_vol_regime_XAUUSD",
+    "verdict": "REJECT",
+    "gates_passed": 3,
+    "perm_p": 0.09638,
+    "jackknife_max_p": 0.2831,
+    "v7_corr": 0.0391,
+    "net_R_cost": -3.677
+  },
+  {
+    "id": "E4",
+    "verdict": "ERROR",
+    "reason": "Timestamp('2016-06-06 00:00:00+0000', tz='UTC')"
+  },
+  {
+    "id": "E5",
+    "verdict": "SKIP",
+    "reason": "[Errno 2] No such file or directory: '/home/user/chien-monitor/research/data/events_cb_d.csv'"
+  },
+  {
+    "id": "E6",
+    "name": "E6_index_meanrev_SPX",
+    "verdict": "REJECT",
+    "gates_passed": 1,
+    "perm_p": 0.28554,
+    "jackknife_max_p": 0.7513,
+    "v7_corr": 0.0217,
+    "net_R_cost": -65.3709
+  }
+]

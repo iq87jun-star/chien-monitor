@@ -1,0 +1,48 @@
+{
+  "name": "E4_rates_to_USDJPY",
+  "alpha": 0.0125,
+  "verdict": "REJECT",
+  "gates": {
+    "G1_net_positive": false,
+    "G2_perm_p": false,
+    "G3_jackknife": false,
+    "G4_placebo": false,
+    "G5_cost": false,
+    "G6_v7_corr": true
+  },
+  "scalars": {
+    "net_R": -9.421,
+    "net_R_cost": -80.9171,
+    "sharpe": -0.196,
+    "perm_p": 0.76325,
+    "observed_stat": -0.196,
+    "jackknife_max_p": 0.9772,
+    "v7_corr": 0.0798,
+    "placebo_target": -0.196,
+    "placebo_best": 0.0326
+  },
+  "jackknife_by_year": {
+    "2016": 0.5018,
+    "2017": 0.8369,
+    "2018": 0.9072,
+    "2019": 0.9212,
+    "2020": 0.3307,
+    "2021": 0.9772,
+    "2022": 0.475,
+    "2023": 0.7589,
+    "2024": 0.7401,
+    "2025": 0.9744
+  },
+  "placebo": {
+    "target": -0.196,
+    "placebos": {
+      "shuffled_direction": 0.0326
+    },
+    "standout": false,
+    "margin": -0.2286
+  },
+  "mc_pass_rate_0.6pct": {
+    "pass_rate": 0.1148,
+    "median_days": 41.0
+  }
+}

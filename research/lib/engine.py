@@ -72,7 +72,8 @@ def event_trades_daily(
     vol = ret.rolling(vol_window).std()
     idx = px.index
     rows = []
-    for t in pd.DatetimeIndex(entries):
+    for t0 in pd.DatetimeIndex(entries):
+        t = t0
         if t not in px.index:
             pos = idx.searchsorted(t)
             if pos >= len(idx):
@@ -85,7 +86,13 @@ def event_trades_daily(
         if epos >= len(idx):
             continue
         entry, exit_px = float(px.loc[t]), float(px.iloc[epos])
-        d_ = direction_map[t] if hasattr(direction_map, "__getitem__") and not isinstance(direction_map, int) else direction_map
+        if isinstance(direction_map, int):
+            d_ = direction_map
+        else:
+            # スナップ前(t0)・スナップ後(t)どちらのキーでも引けるように get で吸収
+            d_ = direction_map.get(t0, direction_map.get(t, 0))
+        if d_ == 0:
+            continue
         r = d_ * (exit_px / entry - 1.0) - 2.0 * cost_frac
         rows.append((t, r / v))
     return pd.DataFrame(rows, columns=["time", "ret_R"])
