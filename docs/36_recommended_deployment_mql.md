@@ -60,3 +60,38 @@
 
 > 免責: E5はSTRONG-LEAD(未検証)。数値はシミュレーション(月次MC・Yahoo日足含む)で将来を保証しない。
 > 本資金投入はデモ前進検証(docs/29)の合格後・小サイズから。倍率/比率は審査と運用で変えてよい。
+
+## 5. MT5 セットアップ手順（①プロップ突破 / ③インスタント）
+### 事前
+1. MetaEditorで `FundedNext_Stellar_EA_v8_dualfirm.mq5` と `Chien_E5_RP_Trend_EA.mq5` をコンパイル(F7)→ `MQL5/Experts/` に .ex5。
+2. `mql5/presets/*.set` を `MQL5/Presets/` にコピー（チャートのInputsタブ→Loadで読み込み）。
+3. ツールバーの「アルゴリズム取引(AutoTrading)」をON。
+
+### ①プロップ突破（FundedNext $100k・MT5）
+- **v7**: EURJPY / GBPJPY / USDJPY の **H1チャート**を3枚開き、各に v8_dualfirm をドラッグ →
+  preset `v7_prop_breakthrough_2.5x.set` を Load（FirmPreset=CURRENT_PROP_2_5X / InitialBalance=100000）。
+- **E5**: XAUUSD / US500 / NAS100 / GER40 のチャートを4枚開き、各に Chien_E5_RP_Trend をドラッグ →
+  preset `e5_prop_breakthrough_65_35.set` を Load（legRisk=1.23 / InitialBalance=100000）。
+- 各チャートで「Allow Algo Trading」にチェック。Magic: v7=920580 / E5=930610（自動で衝突しない）。
+
+### ③インスタント運用（Blueberry $50k）
+- **v7**: 同じ3つのJPY H1チャートに `v7_instant_1.5x.set`（FirmPreset=INSTANT_1_5X / InitialBalance=50000）。
+- **E5**: 同じ4銘柄に `e5_instant_75_25.set`（legRisk=0.46 / InitialBalance=50000）。
+
+### ★必ず確認（重要）
+- **プラットフォーム**: これらは **MT5専用EA**。FundedNext Stellar は MT5 提供あり(①OK)。
+  **Blueberry Funded は TradeLocker 等の可能性**があり、MT5非対応プランだと .ex5 は動かない。
+  申込前に**MT5が使えるプラン/サーバか確認**（不可ならEAの移植が別途必要）。
+- **銘柄名**: 業者ごとに指数/金の名称が異なる（US500=SPX500/US500, NAS100=USTEC/NAS100,
+  GER40=DE40/GER40, XAUUSD=GOLD 等）。実銘柄名に合わせてE5を当てる。
+- **ニュースフィルタ**: MT5の経済指標カレンダーが有効な口座で動作（v7のInpUseNewsFilter）。
+- まず**デモ**で1〜2週、約定・スプレッド・スワップ・実DDを確認してから本番。
+
+## 6. 業者情報（公式）
+- **FundedNext**（プロップ・①②）: https://fundednext.com/ （Stellar 2-Step / MT5提供）
+- **Blueberry Funded**（インスタント・③）: https://blueberryfunded.com/
+  - インスタント: https://blueberryfunded.com/instant-funding/ （Instant Elite / Instant Lite）
+- ⚠ **クーポン**: docs/25 の「30%クーポン」は**コスト試算用に置いた仮定**で、実在の有効コードではない。
+  割引コードは propfirmmatch.com 等のアグリゲータが掲載（時期で変動・"40% OFF"等の表示あり）するが、
+  **当方は有効性を検証できない**。**購入時に公式決済画面で実際の割引額を必ず確認**すること。
+  捏造コードは載せない（誤情報防止）。
