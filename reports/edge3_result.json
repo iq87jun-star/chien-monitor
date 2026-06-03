@@ -2,45 +2,62 @@
   "name": "E3_vol_regime_XAUUSD",
   "alpha": 0.0125,
   "verdict": "REJECT",
+  "final": "REJECT",
+  "robust_split_half": true,
+  "robustness": {
+    "first": {
+      "years": "2016-2020",
+      "p": 0.0004,
+      "sharpe": -5.791
+    },
+    "second": {
+      "years": "2021-2025",
+      "p": 0.0004,
+      "sharpe": -6.363
+    },
+    "both_significant": true
+  },
   "gates": {
-    "G1_net_positive": true,
-    "G2_perm_p": false,
-    "G3_jackknife": false,
+    "G1_net_positive": false,
+    "G2_perm_p": true,
+    "G3_jackknife": true,
     "G4_placebo": true,
     "G5_cost": false,
     "G6_v7_corr": true
   },
   "scalars": {
-    "net_R": 35.0337,
-    "net_R_cost": -3.677,
-    "sharpe": 1.1285,
-    "perm_p": 0.09638,
-    "observed_stat": 1.1285,
-    "jackknife_max_p": 0.2831,
-    "v7_corr": 0.0391,
-    "placebo_target": 1.1285,
-    "placebo_best": -1.3904
+    "net_R": -557.4497,
+    "net_R_cost": -2838.8908,
+    "sharpe": -6.0917,
+    "perm_p": 0.0002,
+    "observed_stat": -6.0917,
+    "jackknife_max_p": 0.0004,
+    "v7_corr": -0.0437,
+    "placebo_target": -6.0917,
+    "placebo_best": -30.2207
   },
   "jackknife_by_year": {
-    "2017": 0.1168,
-    "2018": 0.11,
-    "2019": 0.1216,
-    "2020": 0.074,
-    "2021": 0.1108,
-    "2022": 0.0632,
-    "2024": 0.1963,
-    "2025": 0.2831
+    "2016": 0.0004,
+    "2017": 0.0004,
+    "2018": 0.0004,
+    "2019": 0.0004,
+    "2020": 0.0004,
+    "2021": 0.0004,
+    "2022": 0.0004,
+    "2023": 0.0004,
+    "2024": 0.0004,
+    "2025": 0.0004
   },
   "placebo": {
-    "target": 1.1285,
+    "target": -6.0917,
     "placebos": {
-      "low_vol_regime": -1.3904
+      "low_vol_regime": -30.2207
     },
     "standout": true,
-    "margin": 2.5189
+    "margin": 24.129
   },
   "mc_pass_rate_0.6pct": {
-    "pass_rate": 0.2226,
-    "median_days": 44.0
+    "pass_rate": 0.0,
+    "median_days": null
   }
 }

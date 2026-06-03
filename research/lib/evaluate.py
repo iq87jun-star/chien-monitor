@@ -42,6 +42,7 @@ def evaluate(
     p_val, obs = stats.block_sign_perm_pvalue(daily, index, block=block, n_perm=n_perm)
     p_jack, jack_detail = stats.jackknife_year_pvalues(daily, index, block=block, n_perm=max(1000, n_perm // 2))
     placebo = stats.placebo_standout(daily, placebo_dailies)
+    split = stats.split_half_pvalues(daily, index, block=block, n_perm=max(2000, n_perm // 2))
     cost_series = daily_cost_adjusted if daily_cost_adjusted is not None else daily
     net_cost = float(sum(cost_series))
 
@@ -67,10 +68,20 @@ def evaluate(
     else:
         verdict = "REJECT"
 
+    # 期間頑健性の必須デューデリ（6ゲートとは別。レジーム集中の見かけADOPTを検出）。
+    robust = bool(split.get("both_significant"))
+    if verdict == "ADOPT" and not robust:
+        final = "ADOPT_BUT_FRAGILE"   # ゲートは通るが前後半で頑健でない → 本資金不可
+    else:
+        final = verdict
+
     return {
         "name": name,
         "alpha": alpha,
         "verdict": verdict,
+        "final": final,
+        "robust_split_half": robust,
+        "robustness": split,
         "gates": gates,
         "scalars": {
             "net_R": round(net, 4),
@@ -98,8 +109,14 @@ def dump_json(result: dict, path: str | None = None) -> str:
 
 def print_summary(result: dict):
     s = result["scalars"]
-    print(f"=== {result['name']}  [{result['verdict']}]  (alpha={result['alpha']}) ===")
+    tag = result.get("final", result["verdict"])
+    print(f"=== {result['name']}  [{tag}]  (alpha={result['alpha']}) ===")
     for k, v in result["gates"].items():
         print(f"  {'PASS' if v else 'FAIL'}  {k}")
     print(f"  net_R={s['net_R']}  cost_net_R={s['net_R_cost']}  sharpe={s['sharpe']}")
     print(f"  perm_p={s['perm_p']}  jackknife_max_p={s['jackknife_max_p']}  v7_corr={s['v7_corr']}")
+    r = result.get("robustness") or {}
+    if r.get("first"):
+        print(f"  split-half: {r['first']['years']} p={r['first']['p']}(Sh{r['first']['sharpe']}) | "
+              f"{r['second']['years']} p={r['second']['p']}(Sh{r['second']['sharpe']})  "
+              f"both_sig={result.get('robust_split_half')}")

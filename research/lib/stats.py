@@ -102,6 +102,28 @@ def jackknife_year_pvalues(
     return float(pmax), detail
 
 
+def split_half_pvalues(daily, index, block: str = "M", n_perm: int = 5000,
+                       metric: str = "sharpe", seed: int = 0):
+    """前半/後半に2分割して各々の順列 p を返す。多年にまたぐレジーム集中
+    （1年抜きジャックナイフでは見抜けない）を検出するための頑健性チェック。
+    返り値: {first:{years,p,sharpe}, second:{...}, both_significant:bool@0.10}
+    """
+    s = pd.Series(np.asarray(daily, dtype=float), index=pd.DatetimeIndex(index))
+    years = sorted(set(s.index.year))
+    if len(years) < 4:
+        return {"first": None, "second": None, "both_significant": None}
+    mid = years[len(years) // 2 - 1]
+    a = s[s.index.year <= mid]
+    b = s[s.index.year > mid]
+    pa, _ = block_sign_perm_pvalue(a.values, a.index, block, n_perm, metric, seed)
+    pb, _ = block_sign_perm_pvalue(b.values, b.index, block, n_perm, metric, seed)
+    return {
+        "first": {"years": f"{years[0]}-{mid}", "p": round(pa, 4), "sharpe": round(sharpe(a.values), 3)},
+        "second": {"years": f"{mid+1}-{years[-1]}", "p": round(pb, 4), "sharpe": round(sharpe(b.values), 3)},
+        "both_significant": bool(pa <= 0.10 and pb <= 0.10),
+    }
+
+
 def placebo_standout(target_daily, placebo_dailies: dict, metric: str = "sharpe"):
     """対象だけが突出しているか。placebo_dailies = {名前: daily系列}。
     返り値: {target, placebos:{...}, standout:bool, margin}

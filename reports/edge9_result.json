@@ -1,0 +1,61 @@
+{
+  "name": "F3_riskoff_haven_USDJPY",
+  "alpha": 0.0167,
+  "verdict": "REJECT",
+  "final": "REJECT",
+  "robust_split_half": false,
+  "robustness": {
+    "first": {
+      "years": "2017-2020",
+      "p": 0.6825,
+      "sharpe": -0.461
+    },
+    "second": {
+      "years": "2021-2025",
+      "p": 0.1731,
+      "sharpe": -1.908
+    },
+    "both_significant": false
+  },
+  "gates": {
+    "G1_net_positive": false,
+    "G2_perm_p": false,
+    "G3_jackknife": false,
+    "G4_placebo": true,
+    "G5_cost": false,
+    "G6_v7_corr": true
+  },
+  "scalars": {
+    "net_R": -37.8833,
+    "net_R_cost": -77.7473,
+    "sharpe": -1.2561,
+    "perm_p": 0.16897,
+    "observed_stat": -1.2561,
+    "jackknife_max_p": 0.4578,
+    "v7_corr": -0.0163,
+    "placebo_target": -1.2561,
+    "placebo_best": -4.1874
+  },
+  "jackknife_by_year": {
+    "2017": 0.1283,
+    "2018": 0.1311,
+    "2019": 0.2855,
+    "2020": 0.1455,
+    "2021": 0.1711,
+    "2022": 0.4578,
+    "2024": 0.2195,
+    "2025": 0.1695
+  },
+  "placebo": {
+    "target": -1.2561,
+    "placebos": {
+      "low_vol_regime": -4.1874
+    },
+    "standout": true,
+    "margin": 2.9313
+  },
+  "mc_pass_rate_0.6pct": {
+    "pass_rate": 0.0536,
+    "median_days": 40.0
+  }
+}

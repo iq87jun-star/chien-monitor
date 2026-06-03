@@ -2,46 +2,62 @@
   "name": "E6_index_meanrev_SPX",
   "alpha": 0.0125,
   "verdict": "REJECT",
+  "final": "REJECT",
+  "robust_split_half": true,
+  "robustness": {
+    "first": {
+      "years": "2016-2020",
+      "p": 0.0004,
+      "sharpe": -7.055
+    },
+    "second": {
+      "years": "2021-2025",
+      "p": 0.0004,
+      "sharpe": -6.618
+    },
+    "both_significant": true
+  },
   "gates": {
     "G1_net_positive": false,
-    "G2_perm_p": false,
-    "G3_jackknife": false,
+    "G2_perm_p": true,
+    "G3_jackknife": true,
     "G4_placebo": false,
     "G5_cost": false,
     "G6_v7_corr": true
   },
   "scalars": {
-    "net_R": -25.1189,
-    "net_R_cost": -65.3709,
-    "sharpe": -0.7471,
-    "perm_p": 0.28554,
-    "observed_stat": -0.7471,
-    "jackknife_max_p": 0.7513,
-    "v7_corr": 0.0217,
-    "placebo_target": -0.7471,
-    "placebo_best": 0.1485
+    "net_R": -287.3994,
+    "net_R_cost": -1386.7898,
+    "sharpe": -6.8088,
+    "perm_p": 0.0002,
+    "observed_stat": -6.8088,
+    "jackknife_max_p": 0.0004,
+    "v7_corr": -0.0394,
+    "placebo_target": -6.8088,
+    "placebo_best": -6.1886
   },
   "jackknife_by_year": {
-    "2017": 0.3247,
-    "2018": 0.1831,
-    "2019": 0.2735,
-    "2020": 0.7513,
-    "2021": 0.1128,
-    "2022": 0.2547,
-    "2023": 0.3383,
-    "2024": 0.2839,
-    "2025": 0.6098
+    "2016": 0.0004,
+    "2017": 0.0004,
+    "2018": 0.0004,
+    "2019": 0.0004,
+    "2020": 0.0004,
+    "2021": 0.0004,
+    "2022": 0.0004,
+    "2023": 0.0004,
+    "2024": 0.0004,
+    "2025": 0.0004
   },
   "placebo": {
-    "target": -0.7471,
+    "target": -6.8088,
     "placebos": {
-      "momentum_instead": 0.1485
+      "momentum_instead": -6.1886
     },
     "standout": false,
-    "margin": -0.8955
+    "margin": -0.6202
   },
   "mc_pass_rate_0.6pct": {
-    "pass_rate": 0.047,
-    "median_days": 44.0
+    "pass_rate": 0.0,
+    "median_days": null
   }
 }

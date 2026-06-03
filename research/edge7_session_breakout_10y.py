@@ -25,46 +25,41 @@ EXIT_HOUR = 20
 
 def build(direction_sign=+1):
     """direction_sign=+1: ブレイク方向に順張り（本仮説）。-1: 逆張り（プラセボ）。"""
-    h1 = data.load_h1("USDJPY")
-    px = h1["close"].astype(float)
-    hi = h1["high"].astype(float)
-    lo = h1["low"].astype(float)
-    idx = h1.index
-    days = pd.DatetimeIndex(idx).normalize()
+    h1 = data.load_h1("USDJPY").copy()
+    df = h1[["high", "low", "close"]].astype(float)
+    df["hour"] = pd.DatetimeIndex(df.index).hour
+    df["day"] = pd.DatetimeIndex(df.index).normalize()
     rows = []
-    for day, sub_idx in pd.Series(idx, index=days).groupby(level=0):
-        ii = pd.DatetimeIndex(sub_idx.values)
-        hh = ii.hour
-        tok = ii[np.isin(hh, list(TOKYO))]
+    for day, g in df.groupby("day"):
+        tok = g[g["hour"].isin(list(TOKYO))]
         if len(tok) < 3:
             continue
-        t_hi = hi.loc[tok].max()
-        t_lo = lo.loc[tok].min()
+        t_hi, t_lo = tok["high"].max(), tok["low"].min()
         rng = t_hi - t_lo
         if not (rng > 0):
             continue
+        win = g[g["hour"].isin(ENTRY_HOURS)]
         entered = None
-        for t in ii[np.isin(hh, ENTRY_HOURS)]:
-            c = float(px.loc[t])
-            if c > t_hi:
+        for t, row in win.iterrows():
+            if row["close"] > t_hi:
                 entered = (t, +1); break
-            if c < t_lo:
+            if row["close"] < t_lo:
                 entered = (t, -1); break
         if entered is None:
             continue
         et, brk_dir = entered
         d_ = brk_dir * direction_sign
-        exits = ii[ii.hour == EXIT_HOUR]
-        exits = exits[exits > et]
-        if len(exits) == 0:
-            exits = ii[ii > et]
-            if len(exits) == 0:
+        after = g[g.index > et]
+        ex_rows = after[after["hour"] == EXIT_HOUR]
+        if len(ex_rows) == 0:
+            if len(after) == 0:
                 continue
-        ex = exits[-1] if exits[-1].hour == EXIT_HOUR else exits[0]
-        entry_px, exit_px = float(px.loc[et]), float(px.loc[ex])
+            ex_t = after.index[-1]
+        else:
+            ex_t = ex_rows.index[0]
+        entry_px, exit_px = float(g.loc[et, "close"]), float(g.loc[ex_t, "close"])
         cost = RT_COST_PIPS * PIP
-        r = (d_ * (exit_px - entry_px) - cost) / rng
-        rows.append((et, r))
+        rows.append((et, (d_ * (exit_px - entry_px) - cost) / rng))
     return engine.daily_R(pd.DataFrame(rows, columns=["time", "ret_R"]))
 
 
