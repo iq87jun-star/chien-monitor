@@ -72,14 +72,18 @@ def fetch_yf_daily(out: str):
 
 # ----------------------------------------------------------------- FRED US2Y
 def fetch_fred_us2y(out: str):
+    fetch_fred_series(out, "DGS2", "US2Y")
+
+
+def fetch_fred_series(out: str, series_id: str, name: str):
     # 全期間一括は 504 になりやすいので年次チャンクで取得して結合。
     import io
     import time
     import urllib.request
-    print("== FRED US2Y (DGS2) ==")
+    print(f"== FRED {name} ({series_id}) ==")
     frames = []
     for y in range(int(START[:4]), int(END[:4]) + 1):
-        url = (f"https://fred.stlouisfed.org/graph/fredgraph.csv?id=DGS2"
+        url = (f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
                f"&cosd={y}-01-01&coed={y}-12-31")
         raw = None
         for i in range(4):
@@ -89,11 +93,11 @@ def fetch_fred_us2y(out: str):
             except Exception:  # noqa: BLE001
                 time.sleep(1.5 * (i + 1))
         if raw is None:
-            print(f"  [WARN] US2Y {y} 取得失敗")
+            print(f"  [WARN] {name} {y} 取得失敗")
             continue
         frames.append(pd.read_csv(io.BytesIO(raw)))
     if not frames:
-        print("  [ERR] US2Y 全滅")
+        print(f"  [ERR] {name} 全滅")
         return
     d = pd.concat(frames, ignore_index=True)
     d.columns = ["time", "v"]
@@ -102,7 +106,7 @@ def fetch_fred_us2y(out: str):
     d = d.dropna(subset=["v"]).drop_duplicates("time").sort_values("time").reset_index(drop=True)
     out_df = pd.DataFrame({"time": d["time"], "open": d["v"], "high": d["v"],
                            "low": d["v"], "close": d["v"]})
-    _save(out_df, os.path.join(out, "US2Y_d.csv"), "US2Y")
+    _save(out_df, os.path.join(out, f"{name}_d.csv"), name)
 
 
 # ----------------------------------------------------------------- Dukascopy H1
@@ -237,7 +241,8 @@ def main():
         print("[setup] pip install yfinance ...")
         os.system(f"{sys.executable} -m pip -q install yfinance")
     fetch_yf_daily(out)
-    fetch_fred_us2y(out)
+    fetch_fred_series(out, "DGS2", "US2Y")
+    fetch_fred_series(out, "DGS10", "US10Y")
     fetch_fomc_events(out)
     fetch_boj_events(out)
     if not args.no_h1:
