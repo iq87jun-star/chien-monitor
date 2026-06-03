@@ -29,10 +29,27 @@ tests/smoke_test.py            合成データでの動作確認（検定では�
 | `<SYM>_d.csv` | 日足/多資産（XAUUSD/SPX/VIX/US2Y/USDJPY） | `time,open,high,low,close` |
 | `events_cb_d.csv` | 中銀イベント（E5） | `time,kind`（kind∈FOMC,BOJ） |
 
+## データ取得（公開ソース）
+
+10年データは公開ソースから取得できる（出典は docs/26 と整合: Yahoo 日足 / FRED 金利 / Dukascopy 円H1）。
+
+```bash
+export CHIEN_DATA_DIR=/content/drive/MyDrive/chien-monitor/data   # Colab
+python3 research/fetch_data.py            # 全部（日足+US2Y+円H1）
+python3 research/fetch_data.py --no-h1    # 日足のみ（v7相関は日足プロキシで代替）
+```
+
+- 日足: SPX(^GSPC) VIX(^VIX) XAUUSD(GC=F) USDJPY(JPY=X) EURJPY(EURJPY=X) GBPJPY(GBPJPY=X)
+- US2Y: FRED DGS2（CSV 直 DL、キー不要）
+- 円H1: Dukascopy（`pip install dukascopy-python`。失敗時は日足プロキシ）
+- `events_cb_d.csv`（E5）は**日付捏造を避けるため手動**。未用意なら E5 は SKIP。
+
 ## 実行（★事前登録の承認後）
 
 ```bash
 export CHIEN_DATA_DIR=/content/drive/MyDrive/chien-monitor/data   # Colab
+python3 research/run_all.py                      # 4候補一括（推奨）
+# 個別:
 python3 research/edge3_vol_regime_10y.py        # -> reports/edge3_result.json
 python3 research/edge4_rates_jpy_leadlag_10y.py
 python3 research/edge5_event_drift_10y.py

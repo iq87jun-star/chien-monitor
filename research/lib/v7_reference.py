@@ -45,12 +45,52 @@ def v7_weekly_R(pairs=V7_PAIRS, atr_mult: float = 2.5, spread_pips: float = 1.0)
     return weekly
 
 
+def v7_weekly_R_daily_proxy(pairs=V7_PAIRS, vol_window: int = 20):
+    """円クロス H1 が無い場合の v7 相関用プロキシ。
+    日足の月曜終値→翌営業日終値を LONG 保有し、直近ボラで正規化した R を週次集約。
+    ※あくまで【相関ゲート(G6)用の近似】。v7 自体の検証は H1 が前提（docs/18）。
+    """
+    parts = []
+    for p in pairs:
+        if not _data.available(p, "d"):
+            continue
+        c = _data.load_daily(p)["close"].astype(float)
+        ret = np.log(c / c.shift())
+        vol = ret.rolling(vol_window).std()
+        idx = c.index
+        mondays = idx[pd.DatetimeIndex(idx).dayofweek == 0]
+        rows = []
+        for t in mondays:
+            pos = idx.searchsorted(t)
+            if pos + 1 >= len(idx):
+                continue
+            v = float(vol.iloc[pos]) if not np.isnan(vol.iloc[pos]) else np.nan
+            if not (v > 0):
+                continue
+            rows.append((idx[pos], (float(c.iloc[pos + 1] / c.iloc[pos]) - 1.0) / v))
+        if rows:
+            parts.append(pd.Series([r for _, r in rows],
+                                   index=pd.DatetimeIndex([t for t, _ in rows])))
+    if not parts:
+        return pd.Series(dtype=float)
+    allp = pd.concat(parts).groupby(level=0).sum()
+    return allp.groupby(pd.Grouper(freq="W-MON", label="left")).sum()
+
+
+def v7_weekly_R_auto():
+    """H1 があれば精密版、無ければ日足プロキシ。返り値: (weekly, source)。"""
+    w = v7_weekly_R()
+    if not w.empty:
+        return w, "H1"
+    return v7_weekly_R_daily_proxy(), "daily_proxy"
+
+
 def corr_with_v7(strategy_daily_R: pd.Series) -> float:
     """戦略の日次 R を週次に集約し v7 週次 R と相関を取る。
-    v7 データが無ければ NaN（G6 は不可＝保守側に倒れる）。
+    H1 が無ければ日足プロキシで代替。どちらも無ければ NaN（G6 は保守側に倒れる）。
     """
     from . import stats as _stats
-    v7w = v7_weekly_R()
+    v7w, _src = v7_weekly_R_auto()
     if v7w.empty or strategy_daily_R is None or len(strategy_daily_R) == 0:
         return float("nan")
     sw = strategy_daily_R.groupby(pd.Grouper(freq="W-MON", label="left")).sum()
