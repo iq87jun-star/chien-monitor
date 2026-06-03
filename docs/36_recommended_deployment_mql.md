@@ -80,8 +80,21 @@ EAを改修し、**口座残高は自動取得・シナリオは既定で内蔵*
   ではなく、**v7のInpFirmPresetをMANUAL/1.5%へ、E5のInpScenarioをINSTANT_FUNDED(75:25)へ**切替（資金化後の項=§0②）。
   ※②は静的−10%・無目標のため、簡便には「v7 InpFirmPreset=MANUAL + InpWeeklyRiskPct=1.5 + InpUseProfitStop=false」。
 
+### ★★ 完全オールインワン（1チャートに1つだけ・本当にアタッチ1回）
+`mql5/Chien_Portfolio_AllInOne.mq5` — **1つのEAで全7銘柄（v7=円3クロス＋E5=金+指数4銘柄）を内部運用**。
+- 手順: コンパイル(F7) → **どれでもいいチャート1枚に1つだけドロップ** → `InpScenario` を選ぶだけ
+  （`PORT_INSTANT`=③ / `PORT_PROP_BREAKTHROUGH`=① / 既定はPORT_INSTANT）→ OK。残高・倍率・比率・ルール自動。
+- 内部で全銘柄を `SymbolSelect` して扱う。チャートを7枚開く必要なし。Magic=940700 単一で全レッグ管理。
+- **銘柄名**は業者仕様に合わせ `InpYenSymbols` / `InpE5Symbols` を編集（US500=SPX500, NAS100=USTEC,
+  GER40=DE40, XAUUSD=GOLD 等）。ここだけは要確認。
+- ⚠ **本EAは1チャートに1つだけ**。**per-symbol版(v8/E5単体)と同口座で併用しない**（Magic衝突・二重発注）。
+- ニュースフィルタは本版では省略（単体EA版にはあり）。E5はLEAD＝デモ前提は同じ。
+
+> まとめ: 「7チャートにドロップ（per-symbol版・ニュースフィルタ有）」か「1チャートにドロップ
+> （AllInOne版・最小手間）」のどちらでも同じ運用。手間最小は AllInOne。
+
 ### （参考）手動/.setで設定する場合
-入力を明示したい場合は §1/§2 の表、または `mql5/presets/*.set` を Load。ドロップイン版を使うなら不要。
+入力を明示したい場合は §1/§2 の表、または `mql5/presets/*.set` を Load。ドロップイン版/AllInOne版を使うなら不要。
 
 ### ★必ず確認（重要）
 - **プラットフォーム**: これらは **MT5専用EA**。FundedNext Stellar は MT5 提供あり(①OK)。
