@@ -17,18 +17,6 @@ ALPHA = 0.0167
 VOLW = 20
 
 
-def _tom_mask(idx: pd.DatetimeIndex):
-    """月末最終営業日(=その月の最後)＋翌月第1〜3営業日 を True。"""
-    s = pd.Series(0, index=idx)
-    months = idx.to_period("M")
-    # 各月の最終営業日
-    last = pd.Series(idx, index=idx).groupby(months).max()
-    s.loc[last.values] = 1
-    # 各月の最初の3営業日
-    for _, g in pd.Series(idx, index=idx).groupby(months):
-        for t in g.values[:3]:
-            s.loc[t] = 1
-    return s.astype(bool)
 
 
 def build(window="tom"):
@@ -36,20 +24,21 @@ def build(window="tom"):
     ret = spx.pct_change()
     vol = np.log(spx / spx.shift()).rolling(VOLW).std()
     idx = pd.DatetimeIndex(spx.index)
-    tom = _tom_mask(idx)
-    if window == "tom":
-        mask = tom
-    else:  # プラセボ: 月の中旬(第8〜12営業日)
-        mid = pd.Series(False, index=idx)
-        for _, g in pd.Series(idx, index=idx).groupby(idx.to_period("M")):
-            for t in g.values[7:12]:
-                mid.loc[t] = True
-        mask = mid
+    g = pd.Series(idx, index=idx)
+    sel = pd.Series(False, index=idx)
+    for _, grp in g.groupby(idx.to_period("M")):
+        labels = list(grp.index)              # tz-aware ラベルのまま扱う
+        if window == "tom":
+            picks = [labels[-1]] + labels[:3]  # 月末最終日 + 第1〜3営業日
+        else:                                  # プラセボ: 月中(第8〜12営業日)
+            picks = labels[7:12]
+        for t in picks:
+            sel.loc[t] = True
     j = pd.concat([ret.rename("ret"), vol.rename("vol")], axis=1)
-    j["m"] = mask.values
-    sel = j[j["m"] & (j["vol"] > 0)].dropna()
-    d = (sel["ret"] / sel["vol"])
-    d.index = pd.DatetimeIndex(sel.index)
+    j["m"] = sel.values
+    s = j[j["m"] & (j["vol"] > 0)].dropna()
+    d = (s["ret"] / s["vol"])
+    d.index = pd.DatetimeIndex(s.index)
     return d.sort_index()
 
 

@@ -1,0 +1,63 @@
+{
+  "name": "I1_equity_turn_of_month_SPX",
+  "alpha": 0.0167,
+  "verdict": "REJECT",
+  "final": "REJECT",
+  "robust_split_half": false,
+  "robustness": {
+    "first": {
+      "years": "2016-2020",
+      "p": 0.1511,
+      "sharpe": 1.588
+    },
+    "second": {
+      "years": "2021-2025",
+      "p": 0.6813,
+      "sharpe": 0.451
+    },
+    "both_significant": false
+  },
+  "gates": {
+    "G1_net_positive": true,
+    "G2_perm_p": false,
+    "G3_jackknife": false,
+    "G4_placebo": false,
+    "G5_cost": true,
+    "G6_v7_corr": true
+  },
+  "scalars": {
+    "net_R": 33.328,
+    "net_R_cost": 33.328,
+    "sharpe": 1.0239,
+    "perm_p": 0.19016,
+    "observed_stat": 1.0239,
+    "jackknife_max_p": 0.529,
+    "v7_corr": -0.0533,
+    "placebo_target": 1.0239,
+    "placebo_best": 1.7883
+  },
+  "jackknife_by_year": {
+    "2016": 0.1228,
+    "2017": 0.3391,
+    "2018": 0.2003,
+    "2019": 0.1519,
+    "2020": 0.529,
+    "2021": 0.2287,
+    "2022": 0.1491,
+    "2023": 0.2127,
+    "2024": 0.1004,
+    "2025": 0.2147
+  },
+  "placebo": {
+    "target": 1.0239,
+    "placebos": {
+      "mid_month": 1.7883
+    },
+    "standout": false,
+    "margin": -0.7644
+  },
+  "mc_pass_rate_0.6pct": {
+    "pass_rate": 0.2088,
+    "median_days": 45.0
+  }
+}
