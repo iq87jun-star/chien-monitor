@@ -185,6 +185,46 @@ def fetch_fomc_events(out: str):
     print(f"  [OK] FOMC {len(dts)} 日 -> {path}")
 
 
+def fetch_boj_events(out: str):
+    """E5 用イベント日: BOJ 金融政策決定会合(MPM)の決定日を boj.or.jp 議事要旨から網羅取得。
+    `mpmsche_minu/minu_{year}/index.htm` の全会合を拾い、決定日=会合2日目に補正
+    （月跨ぎ "October 31 and November 1" 対応）。既存 events に BOJ 行をマージ。
+    """
+    import re
+    import urllib.request
+    print("== BOJ イベント日 (boj.or.jp 議事要旨) ==")
+    mon = {m: i + 1 for i, m in enumerate(
+        ["January", "February", "March", "April", "May", "June", "July",
+         "August", "September", "October", "November", "December"])}
+    days = set()
+    for y in range(int(START[:4]), int(END[:4]) + 1):
+        u = f"https://www.boj.or.jp/en/mopo/mpmsche_minu/minu_{y}/index.htm"
+        try:
+            req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"})
+            h = urllib.request.urlopen(req, timeout=25).read().decode("utf-8", "replace")
+        except Exception as e:  # noqa: BLE001
+            print(f"  [WARN] BOJ {y}: {e}")
+            continue
+        for m1, d1, m2, d2, yr in re.findall(r"([A-Z][a-z]+) (\d{1,2}) and ([A-Z][a-z]+) (\d{1,2}), (\d{4})", h):
+            days.add(f"{yr}-{mon[m2]:02d}-{int(d2):02d}")
+        for m, d1, d2, yr in re.findall(r"([A-Z][a-z]+) (\d{1,2}) and (\d{1,2}), (\d{4})", h):
+            days.add(f"{yr}-{mon[m]:02d}-{int(d2):02d}")
+        for m, d, yr in re.findall(r"Meeting on ([A-Z][a-z]+) (\d{1,2}), (\d{4})", h):
+            days.add(f"{yr}-{mon[m]:02d}-{int(d):02d}")
+    days = sorted(d for d in days if START[:4] <= d[:4] <= END[:4])
+    if not days:
+        print("  [WARN] BOJ 日が取れず")
+        return
+    df = pd.DataFrame({"time": pd.to_datetime(days, utc=True), "kind": "BOJ"})
+    path = os.path.join(out, "events_cb_d.csv")
+    if os.path.exists(path):
+        old = pd.read_csv(path)
+        old["time"] = pd.to_datetime(old["time"], utc=True)
+        df = pd.concat([old[old["kind"] != "BOJ"], df]).drop_duplicates("time").sort_values("time")
+    df.to_csv(path, index=False)
+    print(f"  [OK] BOJ {len(days)} 日 -> {path}")
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-h1", action="store_true", help="円クロス H1（Dukascopy）を取得しない")
@@ -199,6 +239,7 @@ def main():
     fetch_yf_daily(out)
     fetch_fred_us2y(out)
     fetch_fomc_events(out)
+    fetch_boj_events(out)
     if not args.no_h1:
         fetch_dukascopy_h1(out)
     print("\n完了。次: python3 research/run_all.py")

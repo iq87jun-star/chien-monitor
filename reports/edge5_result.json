@@ -11,38 +11,38 @@
     "G6_v7_corr": true
   },
   "scalars": {
-    "net_R": -6.4644,
-    "net_R_cost": -15.0112,
-    "sharpe": -0.7996,
-    "perm_p": 0.64227,
-    "observed_stat": -0.7996,
-    "jackknife_max_p": 0.9284,
-    "v7_corr": -0.0342,
-    "placebo_target": -0.7996,
-    "placebo_best": 0.1248
+    "net_R": -27.2031,
+    "net_R_cost": -43.4581,
+    "sharpe": -2.0692,
+    "perm_p": 0.11518,
+    "observed_stat": -2.0692,
+    "jackknife_max_p": 0.4122,
+    "v7_corr": 0.0525,
+    "placebo_target": -2.0692,
+    "placebo_best": -1.0454
   },
   "jackknife_by_year": {
-    "2016": 0.5874,
-    "2017": 0.5334,
-    "2018": 0.5662,
-    "2019": 0.2487,
-    "2020": 0.3758,
-    "2021": 0.7237,
-    "2022": 0.7477,
-    "2023": 0.5998,
-    "2024": 0.8185,
-    "2025": 0.9284
+    "2016": 0.1295,
+    "2017": 0.0496,
+    "2018": 0.1371,
+    "2019": 0.0304,
+    "2020": 0.0528,
+    "2021": 0.2031,
+    "2022": 0.3295,
+    "2023": 0.0844,
+    "2024": 0.2775,
+    "2025": 0.4122
   },
   "placebo": {
-    "target": -0.7996,
+    "target": -2.0692,
     "placebos": {
-      "random_days": 0.1248
+      "random_days": -1.0454
     },
     "standout": false,
-    "margin": -0.9243
+    "margin": -1.0238
   },
   "mc_pass_rate_0.6pct": {
-    "pass_rate": 0.231,
-    "median_days": 33.0
+    "pass_rate": 0.0554,
+    "median_days": 35.0
   }
 }
