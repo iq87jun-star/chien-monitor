@@ -152,6 +152,41 @@ def bootstrap_pass_rate(weekly: np.ndarray, n_paths=2000, block=4,
     return passes / decided if decided else float("nan")
 
 
+def original_convention_weekly(lev: float) -> pd.Series:
+    """原典 colab_v7_multishot_validation.py の方式を再現:
+    生の24hリターン−コスト、週次 = (lev/n_shots)×Σ。ストップ/ATR較正なし。
+    """
+    PIP, COST_PIP = 0.01, 2.0
+    cols = {}
+    for p in PAIRS:
+        cv = load_h1(p)["close"]; idx = cv.index; v = cv.values
+        a = np.where((idx.dayofweek == 0) & (np.isin(idx.hour, HOURS)))[0]
+        a = a[a + HOLD_H < len(v)]
+        for h in HOURS:
+            ah = a[idx[a].hour == h]
+            s = pd.Series((v[ah + HOLD_H] - v[ah]) / v[ah] - COST_PIP * PIP / v[ah],
+                          index=idx[ah].tz_localize(None).to_period("W"))
+            cols[f"{p}_{h}"] = s[~s.index.duplicated()]
+    M = pd.DataFrame(cols).sort_index()
+    return M.apply(lambda r: (lev / r.dropna().shape[0] * r.dropna()).sum()
+                   if r.dropna().shape[0] else np.nan, axis=1).dropna()
+
+
+def bootstrap_p95_maxdd(weekly: pd.Series, n=4000, mw=520, blk=4, seed=11) -> float:
+    """ブロック・ブートストラップ p95(最悪5%) maxDD（%）。原典の DD 指標。"""
+    rng = np.random.default_rng(seed); a = weekly.values; nn = len(a)
+    mdd = np.zeros(n)
+    for i in range(n):
+        seq = []
+        while len(seq) < mw:
+            st = rng.integers(0, nn); seq.extend(a[(st + k) % nn] for k in range(blk))
+        eq = peak = 1.0; m = 0.0
+        for x in seq[:mw]:
+            eq += x; peak = max(peak, eq); m = min(m, (eq - peak) / peak)
+        mdd[i] = m
+    return float(-np.percentile(mdd, 5) * 100)
+
+
 def main():
     shots = shot_table()
     pair_close = {s: load_h1(s)["close"] for s in PAIRS}
@@ -197,6 +232,17 @@ def main():
     verdict = "改善" if (c_s['sharpe'] > b_s['sharpe'] and c_s['maxDD'] <= b_s['maxDD']) else "改善せず"
     out["regime_walkforward"]["verdict"] = verdict
     print(f"  → レジーム条件付けは OOS で: {verdict}")
+
+    # --- 原典 handoff との較正（レバ単位 + p95ブートストラップDD）---
+    print("\n=== reconciliation with original (leverage units, p95 bootstrap DD) ===")
+    recon = {}
+    for lev in [0.6, 1.5, 2.5]:
+        w = original_convention_weekly(lev)
+        p95 = bootstrap_p95_maxdd(w)
+        net = float(((1 + w).prod() - 1) * 100)
+        recon[str(lev)] = {"p95_maxDD_pct": round(p95, 2), "net_pct": round(net, 1)}
+        print(f"  lev={lev}: p95DD={p95:.2f}%  net={net:.1f}%")
+    out["reconciliation_original_convention"] = recon
 
     with open(report_path("v7_sim.json"), "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
