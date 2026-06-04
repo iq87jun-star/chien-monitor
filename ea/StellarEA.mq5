@@ -83,6 +83,14 @@ input bool   InpUseSessionFilter= true; // Restrict trading hours
 input int    InpSessionStartHour= 7;    // Session start hour (server time)
 input int    InpSessionEndHour  = 20;   // Session end hour (server time)
 
+input group "=== Day-of-Week Filter ==="
+input bool   InpTradeMon       = true;  // Trade on Monday
+input bool   InpTradeTue       = true;  // Trade on Tuesday
+input bool   InpTradeWed       = true;  // Trade on Wednesday
+input bool   InpTradeThu       = true;  // Trade on Thursday
+input bool   InpTradeFri       = true;  // Trade on Friday
+input bool   InpTradeWeekend   = false; // Trade on Saturday/Sunday
+
 input group "=== News Filter ==="
 input bool          InpUseNewsFilter  = true;          // Enable news avoidance
 input bool          InpNewsUseCalendar= true;          // Use MT5 economic calendar (live only)
@@ -291,6 +299,9 @@ bool PassFilters()
          return false;
    }
 
+   if(!IsWeekdayAllowed())
+      return false;
+
    if(InpUseSessionFilter)
    {
       MqlDateTime t;
@@ -309,6 +320,22 @@ bool PassFilters()
       return false;
 
    return true;
+}
+
+// Allow new entries only on enabled weekdays (server time).
+bool IsWeekdayAllowed()
+{
+   MqlDateTime t;
+   TimeToStruct(TimeCurrent(), t);
+   switch(t.day_of_week)
+   {
+      case 1: return InpTradeMon;
+      case 2: return InpTradeTue;
+      case 3: return InpTradeWed;
+      case 4: return InpTradeThu;
+      case 5: return InpTradeFri;
+      default: return InpTradeWeekend; // 0=Sun, 6=Sat
+   }
 }
 
 //============================= NEWS FILTER ======================//

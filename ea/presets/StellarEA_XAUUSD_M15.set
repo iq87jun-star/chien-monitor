@@ -1,0 +1,55 @@
+; StellarEA preset - XAUUSD (Gold) M15
+; Gold is volatile with wide spreads -> lower risk, wider ATR stops,
+; higher spread tolerance. VERIFY your broker's point/spread scale and
+; tune InpMaxSpreadPoints accordingly before trading.
+InpMagic=870125
+InpComment=StellarEA-XAUUSD
+InpTradeTF=15
+InpHtfTF=16388
+InpSlippage=40
+InpAdxPeriod=14
+InpAdxTrendLevel=25.0
+InpAdxRangeLevel=20.0
+InpHtfEmaPeriod=200
+InpFastEma=21
+InpSlowEma=50
+InpPullbackEma=21
+InpBbPeriod=20
+InpBbDev=2.0
+InpRsiPeriod=14
+InpRsiOversold=30.0
+InpRsiOverbought=70.0
+InpAtrPeriod=14
+InpSlAtrMult=2.5
+InpTrendRR=2.0
+InpRangeRR=1.3
+InpUseBreakeven=1
+InpBeTriggerAtr=1.0
+InpBeLockAtr=0.1
+InpUseTrailing=1
+InpTrailAtrMult=2.5
+InpRiskPercent=0.5
+InpInitialBalance=0.0
+InpDailyLossPct=4.0
+InpMaxDrawdownPct=8.0
+InpMaxPositions=1
+InpMaxTradesPerDay=5
+InpCloseOnDailyStop=1
+InpMaxSpreadPoints=350.0
+InpUseSessionFilter=1
+InpSessionStartHour=8
+InpSessionEndHour=21
+InpTradeMon=1
+InpTradeTue=1
+InpTradeWed=1
+InpTradeThu=1
+InpTradeFri=1
+InpTradeWeekend=0
+InpUseNewsFilter=1
+InpNewsUseCalendar=1
+InpNewsMinImp=3
+InpNewsMinBefore=15
+InpNewsMinAfter=15
+InpNewsManualList=
+InpPrintAnalysis=1
+InpAnalysisToCSV=0
