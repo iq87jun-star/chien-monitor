@@ -18,10 +18,18 @@
 //+------------------------------------------------------------------+
 #property copyright "Stellar EA"
 #property link      ""
-#property version   "2.00"
+#property version   "2.10"
 #property description "Regime-adaptive EA: trend-follow in trends, mean-revert in ranges, with strict prop-firm drawdown guards."
 
 #include <Trade/Trade.mqh>
+
+// Minimum news importance to block trading (matches CALENDAR_IMPORTANCE_*).
+enum ENUM_NEWS_IMP
+{
+   NEWS_IMP_LOW      = 1, // Low or higher
+   NEWS_IMP_MODERATE = 2, // Moderate or higher
+   NEWS_IMP_HIGH     = 3  // High only
+};
 
 //================================ INPUTS ===========================//
 input group "=== General ==="
@@ -75,6 +83,18 @@ input bool   InpUseSessionFilter= true; // Restrict trading hours
 input int    InpSessionStartHour= 7;    // Session start hour (server time)
 input int    InpSessionEndHour  = 20;   // Session end hour (server time)
 
+input group "=== News Filter ==="
+input bool          InpUseNewsFilter  = true;          // Enable news avoidance
+input bool          InpNewsUseCalendar= true;          // Use MT5 economic calendar (live only)
+input ENUM_NEWS_IMP InpNewsMinImp     = NEWS_IMP_HIGH; // Min event importance to block
+input int           InpNewsMinBefore  = 15;            // Pause this many minutes before event
+input int           InpNewsMinAfter   = 15;            // Pause this many minutes after event
+input string        InpNewsManualList = "";            // Manual events for backtest: "YYYY.MM.DD HH:MM; ..."
+
+input group "=== Performance Analysis ==="
+input bool   InpPrintAnalysis   = true;  // Print hour/day-of-week stats on deinit
+input bool   InpAnalysisToCSV   = false; // Also write a CSV to MQL5/Files
+
 //=============================== GLOBALS ===========================//
 CTrade   trade;
 
@@ -87,6 +107,7 @@ int      hRsi    = INVALID_HANDLE;
 int      hBands  = INVALID_HANDLE;
 int      hAtr    = INVALID_HANDLE;
 
+datetime g_newsTimes[];          // parsed manual news events (for backtest)
 datetime g_lastBarTime   = 0;
 double   g_initialBalance= 0.0;
 double   g_dayStartEquity= 0.0;
@@ -174,15 +195,20 @@ int OnInit()
    trade.SetDeviationInPoints(InpSlippage);
    trade.SetTypeFillingBySymbol(_Symbol);
 
+   ParseManualNews(InpNewsManualList);
+
    UpdateDayState(true);
 
-   PrintFormat("StellarEA initialised. InitialBalance=%.2f  TradeTF=%s  HTF=%s",
-               g_initialBalance, EnumToString(InpTradeTF), EnumToString(InpHtfTF));
+   PrintFormat("StellarEA initialised. InitialBalance=%.2f  TradeTF=%s  HTF=%s  ManualNews=%d",
+               g_initialBalance, EnumToString(InpTradeTF), EnumToString(InpHtfTF),
+               ArraySize(g_newsTimes));
    return INIT_SUCCEEDED;
 }
 
 void OnDeinit(const int reason)
 {
+   PrintPerformanceAnalysis();
+
    IndicatorRelease(hHtfEma);
    IndicatorRelease(hFastEma);
    IndicatorRelease(hSlowEma);
@@ -278,7 +304,94 @@ bool PassFilters()
       if(!inSession)
          return false;
    }
+
+   if(IsNewsBlocked())
+      return false;
+
    return true;
+}
+
+//============================= NEWS FILTER ======================//
+// Parse "YYYY.MM.DD HH:MM; YYYY.MM.DD HH:MM" into g_newsTimes[].
+void ParseManualNews(const string list)
+{
+   ArrayResize(g_newsTimes, 0);
+   if(StringLen(list) == 0) return;
+
+   string parts[];
+   int n = StringSplit(list, ';', parts);
+   for(int i = 0; i < n; i++)
+   {
+      string s = parts[i];
+      StringTrimLeft(s);
+      StringTrimRight(s);
+      if(StringLen(s) == 0) continue;
+      datetime t = StringToTime(s);
+      if(t > 0)
+      {
+         int sz = ArraySize(g_newsTimes);
+         ArrayResize(g_newsTimes, sz + 1);
+         g_newsTimes[sz] = t;
+      }
+      else
+         PrintFormat("StellarEA: could not parse manual news entry '%s'.", s);
+   }
+}
+
+bool IsManualNewsTime(const datetime now)
+{
+   for(int i = 0; i < ArraySize(g_newsTimes); i++)
+   {
+      datetime et = g_newsTimes[i];
+      if(now >= et - InpNewsMinBefore * 60 && now <= et + InpNewsMinAfter * 60)
+         return true;
+   }
+   return false;
+}
+
+// Query the MT5 economic calendar for blocking events of one currency.
+// NOTE: calendar data is unavailable in the Strategy Tester (returns 0).
+bool CurrencyHasBlockingEvent(const string cur, const datetime now)
+{
+   if(StringLen(cur) == 0) return false;
+
+   datetime from = now - (datetime)((InpNewsMinBefore + 2) * 60);
+   datetime to   = now + (datetime)((InpNewsMinAfter  + 2) * 60);
+
+   MqlCalendarValue values[];
+   int n = CalendarValueHistory(values, from, to, NULL, cur);
+   for(int i = 0; i < n; i++)
+   {
+      datetime et = values[i].time;
+      if(et == 0) continue;
+      if(now < et - InpNewsMinBefore * 60 || now > et + InpNewsMinAfter * 60)
+         continue;
+
+      MqlCalendarEvent ev;
+      if(!CalendarEventById(values[i].event_id, ev)) continue;
+      if((int)ev.importance >= (int)InpNewsMinImp)
+         return true;
+   }
+   return false;
+}
+
+bool IsNewsBlocked()
+{
+   if(!InpUseNewsFilter) return false;
+
+   datetime now = TimeCurrent();
+
+   if(ArraySize(g_newsTimes) > 0 && IsManualNewsTime(now))
+      return true;
+
+   if(InpNewsUseCalendar)
+   {
+      string base = SymbolInfoString(_Symbol, SYMBOL_CURRENCY_BASE);
+      string prof = SymbolInfoString(_Symbol, SYMBOL_CURRENCY_PROFIT);
+      if(CurrencyHasBlockingEvent(base, now)) return true;
+      if(prof != base && CurrencyHasBlockingEvent(prof, now)) return true;
+   }
+   return false;
 }
 
 //============================= ENTRY ============================//
@@ -458,5 +571,128 @@ void ManageOpenPositions()
             trade.PositionModify(ticket, NP(newSL), curTP);
       }
    }
+}
+
+//==================== PERFORMANCE ANALYSIS ======================//
+// Aggregate closed trades (by entry hour and day-of-week) from the
+// account history filtered to this EA's symbol + magic number.
+void PrintPerformanceAnalysis()
+{
+   if(!InpPrintAnalysis) return;
+   if(!HistorySelect(0, TimeCurrent())) return;
+
+   double hourPL[24];  int hourCnt[24]; int hourWin[24];
+   double dowPL[7];    int dowCnt[7];   int dowWin[7];
+   ArrayInitialize(hourPL, 0.0); ArrayInitialize(hourCnt, 0); ArrayInitialize(hourWin, 0);
+   ArrayInitialize(dowPL,  0.0); ArrayInitialize(dowCnt,  0); ArrayInitialize(dowWin,  0);
+
+   // Map each position id to its entry time so we can bucket by entry moment.
+   ulong    posId[];
+   datetime posTime[];
+
+   int totalTrades = 0;
+   double totalPL  = 0.0;
+
+   int deals = HistoryDealsTotal();
+   for(int i = 0; i < deals; i++)
+   {
+      ulong ticket = HistoryDealGetTicket(i);
+      if(ticket == 0) continue;
+      if(HistoryDealGetString(ticket, DEAL_SYMBOL) != _Symbol) continue;
+      if(HistoryDealGetInteger(ticket, DEAL_MAGIC) != InpMagic) continue;
+
+      long  entry = HistoryDealGetInteger(ticket, DEAL_ENTRY);
+      ulong pid   = (ulong)HistoryDealGetInteger(ticket, DEAL_POSITION_ID);
+
+      if(entry == DEAL_ENTRY_IN)
+      {
+         int sz = ArraySize(posId);
+         ArrayResize(posId, sz + 1);
+         ArrayResize(posTime, sz + 1);
+         posId[sz]   = pid;
+         posTime[sz] = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
+      }
+      else if(entry == DEAL_ENTRY_OUT || entry == DEAL_ENTRY_OUT_BY)
+      {
+         double pl = HistoryDealGetDouble(ticket, DEAL_PROFIT)
+                   + HistoryDealGetDouble(ticket, DEAL_SWAP)
+                   + HistoryDealGetDouble(ticket, DEAL_COMMISSION);
+
+         datetime et = (datetime)HistoryDealGetInteger(ticket, DEAL_TIME);
+         for(int k = ArraySize(posId) - 1; k >= 0; k--)
+            if(posId[k] == pid) { et = posTime[k]; break; }
+
+         MqlDateTime st;
+         TimeToStruct(et, st);
+         int h = st.hour;
+         int d = st.day_of_week;
+         if(h >= 0 && h < 24) { hourPL[h] += pl; hourCnt[h]++; if(pl > 0) hourWin[h]++; }
+         if(d >= 0 && d < 7)  { dowPL[d]  += pl; dowCnt[d]++;  if(pl > 0) dowWin[d]++;  }
+
+         totalTrades++;
+         totalPL += pl;
+      }
+   }
+
+   if(totalTrades == 0)
+   {
+      Print("StellarEA analysis: no closed trades for this symbol/magic.");
+      return;
+   }
+
+   string dow[7] = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+
+   Print("===== StellarEA Performance Analysis =====");
+   PrintFormat("Symbol=%s  Magic=%s  Trades=%d  NetP/L=%.2f %s",
+               _Symbol, IntegerToString(InpMagic), totalTrades, totalPL,
+               AccountInfoString(ACCOUNT_CURRENCY));
+
+   Print("--- By day of week ---");
+   Print("Day | Trades |  Win% |     Net P/L");
+   for(int d = 0; d < 7; d++)
+   {
+      if(dowCnt[d] == 0) continue;
+      double wr = 100.0 * dowWin[d] / dowCnt[d];
+      PrintFormat("%-3s | %6d | %5.1f | %11.2f", dow[d], dowCnt[d], wr, dowPL[d]);
+   }
+
+   Print("--- By hour of day (entry, server time) ---");
+   Print("Hr | Trades |  Win% |     Net P/L");
+   for(int h = 0; h < 24; h++)
+   {
+      if(hourCnt[h] == 0) continue;
+      double wr = 100.0 * hourWin[h] / hourCnt[h];
+      PrintFormat("%02d | %6d | %5.1f | %11.2f", h, hourCnt[h], wr, hourPL[h]);
+   }
+   Print("==========================================");
+
+   if(InpAnalysisToCSV)
+      WriteAnalysisCSV(dow, hourPL, hourCnt, hourWin, dowPL, dowCnt, dowWin);
+}
+
+void WriteAnalysisCSV(const string &dow[],
+                      const double &hourPL[], const int &hourCnt[], const int &hourWin[],
+                      const double &dowPL[],  const int &dowCnt[],  const int &dowWin[])
+{
+   string fname = StringFormat("StellarEA_stats_%s_%s.csv", _Symbol, IntegerToString(InpMagic));
+   int fh = FileOpen(fname, FILE_WRITE | FILE_CSV | FILE_ANSI, ',');
+   if(fh == INVALID_HANDLE)
+   {
+      PrintFormat("StellarEA: could not open %s for writing (err %d).", fname, GetLastError());
+      return;
+   }
+   FileWrite(fh, "bucket", "key", "trades", "win_pct", "net_pl");
+   for(int d = 0; d < 7; d++)
+      if(dowCnt[d] > 0)
+         FileWrite(fh, "dow", dow[d], dowCnt[d],
+                   DoubleToString(100.0 * dowWin[d] / dowCnt[d], 1),
+                   DoubleToString(dowPL[d], 2));
+   for(int h = 0; h < 24; h++)
+      if(hourCnt[h] > 0)
+         FileWrite(fh, "hour", IntegerToString(h), hourCnt[h],
+                   DoubleToString(100.0 * hourWin[h] / hourCnt[h], 1),
+                   DoubleToString(hourPL[h], 2));
+   FileClose(fh);
+   PrintFormat("StellarEA: wrote %s to MQL5/Files.", fname);
 }
 //+------------------------------------------------------------------+
