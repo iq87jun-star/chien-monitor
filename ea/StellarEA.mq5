@@ -267,24 +267,24 @@ void CheckRiskGuards()
    // Daily loss limit (relative to equity at the start of the trading day).
    if(!g_haltToday && InpDailyLossPct > 0.0)
    {
-      double floor = g_dayStartEquity * (1.0 - InpDailyLossPct / 100.0);
-      if(eq <= floor)
+      double lossFloor = g_dayStartEquity * (1.0 - InpDailyLossPct / 100.0);
+      if(eq <= lossFloor)
       {
          g_haltToday = true;
          if(InpCloseOnDailyStop) CloseAllMine();
-         PrintFormat("StellarEA: daily loss limit hit (equity %.2f <= %.2f). Halt for today.", eq, floor);
+         PrintFormat("StellarEA: daily loss limit hit (equity %.2f <= %.2f). Halt for today.", eq, lossFloor);
       }
    }
 
    // Max overall drawdown (relative to the configured initial balance).
    if(!g_haltPermanent && InpMaxDrawdownPct > 0.0)
    {
-      double floor = g_initialBalance * (1.0 - InpMaxDrawdownPct / 100.0);
-      if(eq <= floor)
+      double ddFloor = g_initialBalance * (1.0 - InpMaxDrawdownPct / 100.0);
+      if(eq <= ddFloor)
       {
          g_haltPermanent = true;
          CloseAllMine();
-         PrintFormat("StellarEA: max drawdown hit (equity %.2f <= %.2f). Halt permanently.", eq, floor);
+         PrintFormat("StellarEA: max drawdown hit (equity %.2f <= %.2f). Halt permanently.", eq, ddFloor);
       }
    }
 }
@@ -495,7 +495,7 @@ void OpenTrade(const ENUM_ORDER_TYPE type, const double atr, const double rr)
       return;
    }
 
-   bool ok;
+   bool ok = false;
    if(buy) ok = trade.Buy (lot, _Symbol, 0.0, NP(sl), NP(tp), InpComment);
    else    ok = trade.Sell(lot, _Symbol, 0.0, NP(sl), NP(tp), InpComment);
 
