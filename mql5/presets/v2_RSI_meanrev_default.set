@@ -1,0 +1,43 @@
+; FundedNext_Stellar_EA_v2 - RSI mean-reversion default preset
+; 研究(docs/04)で唯一エッジの兆候を示した日足RSI平均回帰。
+; 重要: このエッジはレジーム依存(直近強・2016-21は負け)。本番前にユーザー実データで再検証。
+; TF=16408 は PERIOD_D1。H4=16388, H1=16385。
+InpInitialBalance=100000.0
+InpProfitTargetPct=8.0
+InpDailyLossLimitPct=5.0
+InpMaxLossLimitPct=10.0
+InpDailyStopPct=4.0
+InpDailyNoNewPct=3.0
+InpEquityFloorDDPct=8.0
+InpCloseAllOnGuard=true
+InpRiskPerTradePct=0.4
+InpMaxDailyRiskPct=1.2
+InpMaxTradesPerDay=3
+InpMaxOpenPositions=1
+InpMinLot=0.01
+InpMaxLot=5.0
+InpSignalTF=16408
+InpRsiPeriod=14
+InpRsiBuyLevel=27.0
+InpRsiSellLevel=73.0
+InpRequireRsiTurn=true
+InpAtrPeriod=14
+InpMaxHoldBars=10
+InpAtrSLMult=1.5
+InpRR=1.2
+InpMinStopPips=12.0
+InpMaxStopPips=250.0
+InpUseBreakeven=true
+InpBreakevenAtR=1.0
+InpMaxSpreadPips=3.0
+InpUseSession=false
+InpSessionStartHour=0
+InpSessionEndHour=23
+InpMinHoldSeconds=150
+InpUseNewsFilter=true
+InpNewsBeforeMin=30
+InpNewsAfterMin=15
+InpManualBlackout=
+InpMagic=920531
+InpSlippagePoints=20
+InpVerboseLog=true
