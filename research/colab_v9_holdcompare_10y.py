@@ -113,10 +113,10 @@ def overnight_crossings(t_entry, t_exit):
     return cnt
 
 # ---------- ショット・リターン(LONG, hold本後決済, 実コスト/スワップ) ----------
-def shot_returns(pair, hour, hold, swap_pip=0.0):
+def shot_returns(pair, hour, hold, swap_pip=0.0, weekday=WEEKDAY):
     df=CACHE[pair]; idx=df.index
     cv=df["close"].values; av=df["ask"].values; bv=df["bid"].values
-    a=np.where((idx.dayofweek==WEEKDAY)&(idx.hour==hour))[0]; a=a[a+hold<len(cv)]
+    a=np.where((idx.dayofweek==weekday)&(idx.hour==hour))[0]; a=a[a+hold<len(cv)]
     rets=[]; wk=[]
     for i in a:
         j=i+hold
@@ -233,7 +233,7 @@ def run():
         cols=[]
         for p in PAIRS:
             for h in hours:
-                cols.append(shot_returns(p,h,hold).rename(f"{p}_{h}"))
+                cols.append(shot_returns(p,h,hold,weekday=wd).rename(f"{p}_{h}"))  # ★wdを必ず渡す
         return pd.concat(cols,axis=1).mean(axis=1).dropna()
     wd_p={["Mon","Tue","Wed","Thu","Fri"][wd]:round(perm_p(pool_wd(wd).values),4) for wd in range(5)}
     others=[wd_p[k] for k in ("Tue","Wed","Thu","Fri")]
