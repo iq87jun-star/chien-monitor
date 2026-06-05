@@ -9,8 +9,10 @@
 //|     半減し【5年失格 31.5%→1.0%】(Blueberry$50k・実10年, docs/44)。  |
 //|     3戦略とも相互に低/負相関ゆえ分散でDD効率が上がるのが源泉。       |
 //|                                                                   |
-//|   ■ 本ファイル=インスタント運用既定(Blueberry等):                   |
-//|     −10%トレーリング/無目標/日次なし/分配前提。攻めず守り寄り。      |
+//|   ■ 本ファイル=インスタント既定 ★中庸1.5x(Blueberry等):             |
+//|     v7 0.90% / v4 0.225% / E5 0.45%・−10%トレーリング/無目標/日次なし。|
+//|     docs/46確定: 5年失格8.8% / 手取り≈¥928k(/$50k・分配80%)。        |
+//|     ※守りで始めたい場合は InpScenario=PORT_MANUAL で 0.60/0.15/0.30。 |
 //|     (プロップ突破は Chien_Portfolio3_AllInOne_PROP.mq5 を使う)       |
 //|                                                                   |
 //|   ■ 内部3戦略(Magic分離で混線なし):                                 |
@@ -55,9 +57,9 @@ input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%
 input double InpAccountFloorDDPct= 8.0;   // 総合 -8% で全停止(-10%の内側)
 
 input group "=== 手動値（PORT_MANUAL時のみ・3戦略の配分）==="
-input double InpWeeklyRiskPct   = 0.60;   // v7 週次リスク%
-input double InpV4RiskPerTradePct= 0.15;  // v4 1トレードあたりリスク%
-input double InpE5LegRiskPct    = 0.30;   // E5 legRisk%(各レッグ月次σ)
+input double InpWeeklyRiskPct   = 0.90;   // v7 週次リスク%（INSTANT 1.5x既定と同値）
+input double InpV4RiskPerTradePct= 0.225; // v4 1トレードあたりリスク%
+input double InpE5LegRiskPct    = 0.45;   // E5 legRisk%(各レッグ月次σ)
 
 input group "=== v7 設定 ==="
 input string InpEntryHoursUTC = "4,6,8,10";
@@ -160,12 +162,12 @@ void ResolveScenario()
    g_profitPct=0; g_dailyStopPct=0; g_maxLossPct=InpMaxLossLimitPct; g_floorBufPct=2.0;
    g_scenName="MANUAL";
    if(InpScenario==PORT_INSTANT){
-      // 守り寄りの3戦略配分(≈40:40:20リスク・低予算)。トレーリング枠。
-      g_scenName="INSTANT"; g_weeklyRisk=0.60; g_v4risk=0.15; g_e5leg=0.30;
+      // ★インスタント中庸 1.5x(docs/46確定: 5年失格8.8%/手取り≈¥928k)。トレーリング枠。
+      g_scenName="INSTANT_1.5x"; g_weeklyRisk=0.90; g_v4risk=0.225; g_e5leg=0.45;
       g_useTrailing=true; g_useProfitStop=false; g_useDailyStop=false;
    } else if(InpScenario==PORT_PROP_BREAKTHROUGH){
-      // 突破寄り(やや積み増し)。静的-10%/+8%目標/日次-4%。
-      g_scenName="PROP_BREAKTHROUGH"; g_weeklyRisk=1.00; g_v4risk=0.25; g_e5leg=0.50;
+      // ★プロップ速攻 2.5x(docs/46確定: 無制限突破94%/中央4ヶ月/失格6.0%)。静的-10%/+8%目標/日次-4%。
+      g_scenName="PROP_2.5x"; g_weeklyRisk=2.50; g_v4risk=0.625; g_e5leg=1.25;
       g_useTrailing=false; g_useProfitStop=true; g_profitPct=8.0;
       g_useDailyStop=true; g_dailyStopPct=4.0;
    }
