@@ -291,6 +291,45 @@ def main():
         if rule["consistency"]:
             print(f"   ※一貫性{int(rule['consistency']*100)}%ルール: v7は月曜集中益で抵触しやすい→2種は不利。"
                   f"v4(日足分散)を足す3種は単日集中が緩み有利。月次MC外＝実口座/デモで要確認。")
+    # ===== ★あなたの現状(eXYSN)に当てはめた比較: Blueberry Instant $50k / v7+E5 75:25 @v7 1.5% =====
+    print("\n"+"="*76)
+    print("★あなたの現状(eXYSN/docs25+36③): Blueberry Instant $50k, v7+E5=75:25, v7週次1.5%(攻め)")
+    print("   ルール: 最大-10%トレーリング・日次なし・一貫性なし・分配80%。docs36③: 年失格6.5%/手取り≈¥862k/5年失格38%")
+    print("="*76)
+    ACC=50000; JPYrate=157.0; PAYOUT=0.80; CAP=0.10; TRAIL=True
+    cur = 0.75*comp["v7"] + 0.25*comp["E5"]                 # 現状: v7偏重 75:25
+    rec = 0.40*comp["v7"] + 0.40*comp["v4"] + 0.20*comp["E5"]  # 推奨3種 40:40:20
+    def dq_of(base,scale): return annual_dq(block_bootstrap(base*scale,m=12),CAP,TRAIL)
+    def fit_dq(base,target):
+        lo,hi=0.05,15.0
+        for _ in range(28):
+            mid=(lo+hi)/2
+            if dq_of(base,mid)>target: hi=mid
+            else: lo=mid
+        return (lo+hi)/2
+    def yen(s): return round(ann_return(s)*ACC*PAYOUT*JPYrate)
+    def line(tag,s,scale):
+        ser=s*scale; dq=dq_of(s,scale); fy=1-(1-dq)**5
+        print(f"   {tag:28s}: 年率{ann_return(ser)*100:>5.1f}% maxDD{maxdd(ser)*100:>6.1f}% "
+              f"年失格{dq*100:>4.1f}% 5年失格{fy*100:>4.1f}% 手取り≈¥{yen(ser):>9,}/年")
+        return dict(ann=round(ann_return(ser)*100,1),maxDD=round(maxdd(ser)*100,1),dq=round(dq*100,1),
+                    fail5y=round(fy*100,1),yen=yen(ser))
+    # 現状を docs36③ の年失格6.5% に合わせる総リスク
+    sc_cur=fit_dq(cur,0.065)
+    r_cur =line("現状 v7+E5 75:25(攻め)", cur, sc_cur)
+    # 推奨3種: ①現状と同じ総リスク(=同じ攻め) → 失格↓/年率↑
+    r_same=line("推奨 v7+v4+E5(同リスク)", rec, sc_cur)
+    # 推奨3種: ②現状と同じ年失格6.5%まで攻める → 年率↑(手取り↑)
+    sc_rec=fit_dq(rec,0.065)
+    r_eqdq=line("推奨 v7+v4+E5(同失格6.5%)", rec, sc_rec)
+    # 推奨3種: ③低失格(年2%)に絞る安全運用
+    sc_saf=fit_dq(rec,0.02)
+    r_safe=line("推奨 v7+v4+E5(安全:年失格2%)", rec, sc_saf)
+    out["your_current_blueberry"]=dict(account=ACC,ratio_current="v7:E5=75:25",ratio_rec="v7:v4:E5=40:40:20",
+        current=r_cur, rec_same_risk=r_same, rec_same_dq=r_eqdq, rec_safe=r_safe)
+    print("   → 同じ攻めなら【失格↓】、同じ失格まで攻めれば【手取り↑】。v4(無相関)で分散効率が上がるのが源泉。")
+    print("   ⚠ magnitudeはローカル楽観(v7⇄v4が10年0.03に対しローカル過大)。10年Driveで確定を。")
+
     print("\n"+"="*76)
     print("総括: チャレンジ(13週)は v4/E5 の上乗せ小(低頻度)=2種3種ほぼ同等。差が出るのは資金化後の年次"
           "(分散でDD効率↑→同枠で年率↑/失格↓)。一貫性ルール社では3種(v4分散)が構造的に有利。")
