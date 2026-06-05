@@ -164,39 +164,43 @@ def ann_vol(s):
     s=pd.Series(s).dropna(); return float(s.std()*np.sqrt(12)) if len(s) else 0.0
 def sharpe(s):
     v=ann_vol(s); return ann_return(s)/v if v>0 else 0.0
-def boot_paths(series_list,weights_k,n_paths=N_PATHS,months=60,block=3,seed=SEED):
-    rng=np.random.default_rng(seed); P=np.zeros((n_paths,months))
-    for s,k in zip(series_list,weights_k):
-        w=pd.Series(s).dropna().values; n=len(w)
-        if n==0 or k==0: continue
-        for pth in range(n_paths):
-            seq=[]
-            while len(seq)<months:
-                st=rng.integers(0,n); seq.extend(w[(st+j)%n] for j in range(block))
-            P[pth]+=k*np.array(seq[:months])
-    return P
+def boot_matrix(s,n_paths=N_PATHS,months=60,block=3,seed=SEED):
+    """系列sを独立ブロック再標本した (n_paths, months) 行列を一度だけ生成(ベクトル化)。"""
+    w=pd.Series(s).dropna().values; n=len(w)
+    if n==0: return np.zeros((n_paths,months))
+    rng=np.random.default_rng(seed); nb=int(np.ceil(months/block))
+    starts=rng.integers(0,n,size=(n_paths,nb)); offs=np.arange(block)
+    idx=(starts[:,:,None]+offs[None,None,:])%n
+    return w[idx].reshape(n_paths,nb*block)[:,:months]
+def _dd_min(P):
+    eq=np.cumprod(1+P,axis=1); pk=np.maximum.accumulate(eq,axis=1)
+    return ((eq-pk)/pk).min(axis=1)
+def path_maxdd_p95(P): return float(np.percentile(_dd_min(P),5))
 def trailing_fail_rate(P,total_dd=0.10,horizon=12):
-    n,T=P.shape;fail=np.zeros(n,bool);H=min(T,horizon)
-    for i in range(n):
-        eq=1.0;peak=1.0
-        for t in range(H):
-            eq*=(1+P[i,t]);peak=max(peak,eq)
-            if (eq-peak)/peak<=-total_dd: fail[i]=True;break
-    return float(fail.mean())
-def path_maxdd_p95(P):
-    dds=[]
-    for i in range(P.shape[0]):
-        eq=np.cumprod(1+P[i]);pk=np.maximum.accumulate(eq);dds.append(((eq-pk)/pk).min())
-    return float(np.percentile(dds,5))
+    return float((_dd_min(P[:,:min(P.shape[1],horizon)])<=-total_dd).mean())
 def cagr_of(P):
     fin=np.prod(1+P,axis=1); return float(np.median(fin)**(12/P.shape[1])-1)
+
+# 確定の比率→EA予算アンカー(docs/45): 40:40:20 ↔ v7 0.60 / v4 0.15 / E5 0.30 (INSTANT基準)
+REF_BUDGET={"v7":0.60,"v4":0.15,"v5":0.30}; BASE_SHARE={"v7":40.0,"v4":40.0,"v5":20.0}
+OBJECTIVES={"CALMAR_40_35_25":(40,35,25),"CAGR_45_35_20":(45,35,20),
+            "DEFENSE_45_40_15":(45,40,15),"BASELINE_40_40_20":(40,40,20)}
+TARGET_DD_GRID=[0.04,0.05,0.06,0.07,0.08,0.10]   # 倍率を当てる目標 p95 maxDD
+
 def main():
-    s7=v7_monthly(); s4=v4_monthly(); s5=e5_monthly()
+    s7=v7_monthly(); s4=v4_monthly(); s5=e5_monthly()           # 参照予算(0.60/0.15/0.30)での実10年系列
     series={"v7":s7,"v4":s4,"v5":s5}; order=["v7","v4","v5"]
     stats={k:dict(n=int(len(v.dropna())),ann_ret=round(ann_return(v)*100,2),ann_vol=round(ann_vol(v)*100,2),
                   maxDD=round(maxdd(v)*100,2),sharpe=round(sharpe(v),2)) for k,v in
            {"v7(10y)":s7,"v4(10y)":s4,"E5(10y)":s5}.items()}
-    sig={k:ann_vol(v)/np.sqrt(12) for k,v in series.items()}
+    if len(pd.Series(s7).dropna())<60:
+        print("\n⚠⚠ 警告: v7系列が60ヶ月未満(=10年H1 Dukascopy未投入)。"
+              "v7のSharpeが短期サンプルで歪み、比率(A)が信用できません(E5を過小評価する傾向)。"
+              "**正式確定には10年H1 Dukascopyを H1_DIR に置いて再実行**してください。"
+              "それまでは比率は docs/49 の CALMAR 40:35:25 を採用。\n")
+    Bmat={k:boot_matrix(series[k]) for k in order}              # 各戦略パス行列(参照予算)を一度だけ
+    sig={k:ann_vol(series[k])/np.sqrt(12) for k in order}
+    # ===== (A) 比率スイープ: どの比率が最適か(リスク正規化・目標DD=8%で横並び) =====
     steps=np.arange(0,1.0001,0.05); grid=[]
     for a7 in steps:
         for a4 in steps:
@@ -205,31 +209,59 @@ def main():
             a5=round(float(a5),4)
             if a5<0: continue
             a7r,a4r=round(float(a7),3),round(float(a4),3)
-            kbase=[(a/ sig[k]) if sig[k]>0 and a>0 else 0.0 for k,a in zip(order,[a7r,a4r,a5])]
-            if sum(kbase)==0: continue
-            P0=boot_paths([series[k] for k in order],kbase,months=60)
-            dd0=abs(path_maxdd_p95(P0))
+            kb=[(a/sig[k]) if sig[k]>0 and a>0 else 0.0 for k,a in zip(order,[a7r,a4r,a5])]
+            if sum(kb)==0: continue
+            P0=sum(kb[i]*Bmat[order[i]] for i in range(3))
+            bstd=P0.std()
+            if bstd<=1e-9: continue
+            P0=P0*(0.01/bstd); dd0=abs(path_maxdd_p95(P0))
             if dd0<=1e-6: continue
-            m=TARGET_DD/dd0; P=P0*m
-            grid.append(dict(ratio=f"{int(a7r*100)}:{int(a4r*100)}:{int(a5*100)}",a7=a7r,a4=a4r,a5=a5,mult=round(m,3),
+            P=P0*(0.08/dd0)
+            grid.append(dict(ratio=f"{int(a7r*100)}:{int(a4r*100)}:{int(a5*100)}",a7=a7r,a4=a4r,a5=a5,
                              cagr=round(cagr_of(P)*100,2),maxDD_p95=round(path_maxdd_p95(P)*100,2),
-                             annual_fail=round(trailing_fail_rate(P,0.10,12)*100,3),
                              cum5y_fail=round(trailing_fail_rate(P,0.10,60)*100,2),
                              calmar=round(cagr_of(P)/max(abs(path_maxdd_p95(P)),1e-9),3)))
     valid=[g for g in grid if g["a7"]>0]
-    out=dict(meta=dict(source="Dukascopy 10y (or fallback)",target_dd=TARGET_DD,note="run outputs only"),
+    # ===== (B) 倍率スイープ: 各目的比率で、目標DD別の「EAに入れる実予算」を確定 =====
+    budget_plan={}
+    for name,(s7sh,s4sh,s5sh) in OBJECTIVES.items():
+        # ratio予算(M=1): REF_BUDGET × share/base_share
+        rb={k:REF_BUDGET[k]*sh/BASE_SHARE[k] for k,sh in zip(order,[s7sh,s4sh,s5sh])}
+        # 実予算系列 = 参照系列 × (rb/REF_BUDGET) を独立合成(=参照行列を係数倍)
+        unitP=sum((rb[k]/REF_BUDGET[k])*Bmat[k] for k in order)   # M=1(実予算)のポートパス
+        dd_unit=abs(path_maxdd_p95(unitP))
+        rows=[]
+        for tdd in TARGET_DD_GRID:
+            M=tdd/dd_unit if dd_unit>1e-9 else 0.0
+            P=unitP*M
+            rows.append(dict(target_dd=round(tdd*100,1),mult=round(M,3),
+                             v7=round(rb["v7"]*M,3),v4=round(rb["v4"]*M,3),e5=round(rb["v5"]*M,3),
+                             cagr=round(cagr_of(P)*100,2),p95maxDD=round(path_maxdd_p95(P)*100,2),
+                             annual_fail=round(trailing_fail_rate(P,0.10,12)*100,3),
+                             cum5y_fail=round(trailing_fail_rate(P,0.10,60)*100,2)))
+        budget_plan[name]=dict(ratio_budget_M1={k:round(rb[k],4) for k in order},by_target_dd=rows)
+    out=dict(meta=dict(source="Dukascopy 10y (or Yahoo fallback)",note="run outputs only; ratio+multiplier finalization",
+                       ref_budget=REF_BUDGET,target_dd_grid=[round(x*100,1) for x in TARGET_DD_GRID]),
              strategy_stats=stats,current_40_40_20=next((g for g in grid if g["ratio"]=="40:40:20"),None),
              opt_min_fail=sorted(valid,key=lambda g:(g["cum5y_fail"],-g["cagr"]))[0],
              opt_max_cagr=sorted(valid,key=lambda g:(-g["cagr"],g["cum5y_fail"]))[0],
              opt_max_calmar=sorted(valid,key=lambda g:(-g["calmar"]))[0],
-             top_by_fail=sorted(valid,key=lambda g:(g["cum5y_fail"],-g["cagr"]))[:8],
-             top_by_cagr=sorted(valid,key=lambda g:(-g["cagr"],g["cum5y_fail"]))[:8],full_grid=grid)
+             top_by_calmar=sorted(valid,key=lambda g:(-g["calmar"]))[:6],
+             budget_plan=budget_plan, full_grid=grid)
     os.makedirs("research/results",exist_ok=True)
     json.dump(out,open("research/results/optimize_portfolio3_10y.json","w"),indent=2,default=str)
-    print("各戦略(実10年):")
+    print("各戦略(実10年・参照予算 v7 0.60/v4 0.15/E5 0.30):")
     for k,v in stats.items(): print(f"  {k:9s} n={v['n']} annRet={v['ann_ret']:+.2f}% vol={v['ann_vol']:.2f}% maxDD={v['maxDD']:+.2f}% Sharpe={v['sharpe']}")
-    for t,g in [("現状40:40:20",out["current_40_40_20"]),("★失格最小",out["opt_min_fail"]),
-                ("★CAGR最大",out["opt_max_cagr"]),("★Calmar最大",out["opt_max_calmar"])]:
-        if g: print(f"[{t}] {g['ratio']} m={g['mult']}x CAGR={g['cagr']}% p95DD={g['maxDD_p95']}% 5yFail={g['cum5y_fail']}% Calmar={g['calmar']}")
-    print("出所: research/results/optimize_portfolio3_10y.json")
+    print("\n(A) 比率最適:")
+    for t,g in [("現状40:40:20",out["current_40_40_20"]),("★Calmar最大",out["opt_max_calmar"]),
+                ("★CAGR最大",out["opt_max_cagr"]),("★失格最小",out["opt_min_fail"])]:
+        if g: print(f"  [{t}] {g['ratio']} CAGR={g['cagr']}% p95DD={g['maxDD_p95']}% 5yFail={g['cum5y_fail']}% Calmar={g['calmar']}")
+    print("\n(B) 倍率確定 — 目的別×目標DD別の【EAに入れる実予算 v7/v4/E5 %】:")
+    for name,pl in budget_plan.items():
+        print(f"\n  ◆ {name}  (ratio予算M=1: v7={pl['ratio_budget_M1']['v7']} v4={pl['ratio_budget_M1']['v4']} E5={pl['ratio_budget_M1']['v5']})")
+        print(f"     {'目標DD':>6} {'倍率':>6} {'v7週次':>7} {'v4/tr':>7} {'E5leg':>7} {'CAGR':>7} {'p95DD':>7} {'年失格':>7} {'5年失格':>7}")
+        for r in pl["by_target_dd"]:
+            print(f"     {r['target_dd']:>5}% {r['mult']:>5}x {r['v7']:>6}% {r['v4']:>6}% {r['e5']:>6}% {r['cagr']:>6}% {r['p95maxDD']:>6}% {r['annual_fail']:>6}% {r['cum5y_fail']:>6}%")
+    print("\n出所: research/results/optimize_portfolio3_10y.json")
+    print("→ 採用比率(既定CALMAR)×目標DD行の v7/v4/E5 を Chien_Portfolio4_Optimized の MANUAL(または該当Objective)に投入。")
 if __name__=="__main__": main()

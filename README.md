@@ -80,6 +80,12 @@ docs/49 の最適比率を**そのままデプロイできる新EA**。旧 Portf
 - 詳細・予算表・本資金前チェック → [`docs/50`](docs/50_portfolio4_optimized_ea.md)。
 - ⚠ 比率は最適化済みだが**絶対サイズ(倍率)は Drive10年＋デモで確定**。v4=ADOPT/E5=LEAD＝デモ必須。
 
+### 比率×倍率の正式確定（docs/51・Drive 10年）
+`research/colab_optimize_portfolio3_10y.py`（/ `notebooks/optimize_portfolio3_10y.ipynb`）を Drive 10年H1で実行すると、
+**(A)比率最適**に加え **(B)目的別×目標DD別の「EAに入れる実予算 v7/v4/E5 %」** が出る → そのまま
+`Chien_Portfolio4_Optimized`（MANUAL or 該当Objective）に投入。手順・読み方は [`docs/51`](docs/51_ratio_multiplier_finalization_runbook.md)。
+⚠ v7が10年H1未投入(60ヶ月未満)だと比率が歪む（ハーネスが警告）→必ず10年H1で確定。
+
 ## 検証ハイライト（モンテカルロ 50,000×3シナリオ）
 
 - **全シナリオ・全勝率で 日次DD失格＝0.000% / 最大DD失格＝0.000%**（ガードの構造的成果）。
