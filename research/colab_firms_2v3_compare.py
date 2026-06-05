@@ -342,6 +342,42 @@ def main():
     out["your_current_blueberry"]["sanity"]=dict(months=span_m,corr_v7v4=corr_v7v4,
         current_yen=r_cur["yen"],anchor_yen=anchor_yen,trustworthy=bool(trust))
 
+    # ===== ★リスク倍率ごとの表: プロップ($100k) / インスタント($50k) ・ 現状 vs 推奨 =====
+    # 倍率の定義: 1.0x = 現状(cur)の hist maxDD が約10%になる総リスク(docs/25「1.5倍≒maxDD15%」と整合)。
+    cur_u = 0.75*comp["v7"] + 0.25*comp["E5"]                 # 現状 75:25(等リスク単位)
+    rec_u = 0.40*comp["v7"] + 0.40*comp["v4"] + 0.20*comp["E5"]# 推奨 40:40:20
+    # cur を hist maxDD=10% に合わせる BASE を二分探索 → これを「1.0x」とする
+    def fit_maxdd(base,target):
+        lo,hi=0.05,15.0
+        for _ in range(28):
+            mid=(lo+hi)/2
+            if abs(maxdd(base*mid))*100>target: hi=mid
+            else: lo=mid
+        return (lo+hi)/2
+    BASE=fit_maxdd(cur_u,10.0)
+    MULTS=[0.5,0.75,1.0,1.5,2.0,2.5,3.0]
+    def row(series,scale,acct,trailing,payout):
+        ser=series*scale; dq=annual_dq(block_bootstrap(ser,m=12),0.10,trailing)
+        return dict(maxDD=round(maxdd(ser)*100,1), dq=round(dq*100,1), fail5=round((1-(1-dq)**5)*100,1),
+                    yen=round(ann_return(ser)*acct*payout*157.0))
+    def mult_table(name,acct,trailing,payout):
+        print(f"\n  ［{name}］口座${acct:,}・分配{int(payout*100)}%・{'トレーリング' if trailing else '静的'}-10%枠 "
+              f"(1.0x=現状maxDD≈10%・docs25の1.5倍≒15%と整合)")
+        print(f"    {'倍率':>5} | {'現状75:25  maxDD / 年失格 / 5年失格 / 手取り':<44} | {'推奨40:40:20  maxDD / 年失格 / 5年失格 / 手取り'}")
+        rows={}
+        for m in MULTS:
+            c=row(cur_u,BASE*m,acct,trailing,payout); r=row(rec_u,BASE*m,acct,trailing,payout)
+            rows[f"{m:.2f}x"]=dict(current=c,recommended=r)
+            print(f"    {m:>4.1f}x | {c['maxDD']:>6.1f}% /{c['dq']:>5.1f}% /{c['fail5']:>5.1f}% / ¥{c['yen']:>9,}"
+                  f"   |  {r['maxDD']:>6.1f}% /{r['dq']:>5.1f}% /{r['fail5']:>5.1f}% / ¥{r['yen']:>9,}")
+        return rows
+    print("\n"+"="*76); print("★リスク倍率ごと: 現状(v7+E5 75:25) vs 推奨(v7+v4+E5 40:40:20)"); print("="*76)
+    out["mult_tables"]=dict(
+        prop=mult_table("プロップ FundedNext",100000,False,0.80),
+        instant=mult_table("インスタント Blueberry",50000,True,0.80))
+    if not trust:
+        print("\n   ⚠ サニティ未達(短期/相関乖離)＝上表の絶対値は信用せず。10年Driveで再実行して確定を。")
+
     print("\n"+"="*76)
     print("総括: チャレンジ(13週)は v4/E5 の上乗せ小(低頻度)=2種3種ほぼ同等。差が出るのは資金化後の年次"
           "(分散でDD効率↑→同枠で年率↑/失格↓)。一貫性ルール社では3種(v4分散)が構造的に有利。")
