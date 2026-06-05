@@ -1,0 +1,37 @@
+; FundedNext Stellar EA v9 — 月曜・週末フロー intraday(12h・同日決済) 既定プリセット
+; MT5: EAを右クリック→読み込み で適用。判定はUTC時刻なのでTFは任意(H1推奨)。
+; エッジ: v7と同じ唯一の検証済みエッジ「月曜04-10UTC LONG(JPYクロス)」。
+; v9の優位性(research/edge9b_v9_design.py, Yahoo H1 2.76年, JPYプール):
+;   v7(24h保有): net+45.4% / maxDD-8.49% / Calmar5.35
+;   v9(12h保有): net+29.3% / maxDD-4.08% / Calmar7.17  ★DDほぼ半減・OOS+2.25
+;   → 同じ-10%枠で予算を約2倍積める(=+8%到達が速い)。さらに同日決済でスワップ符号リスク排除。
+; ⚠ H1検証は2.76年=LEAD級。本資金前にユーザー10年H1で12h保有のmaxDD/順列p/JKを再測+デモ前進検証。
+; 運用: 3ペア(EURJPY/GBPJPY/USDJPY)のチャートに各1つ。InpWeeklyRiskPctは全インスタンス共通。
+;   既定予算0.60はv7踏襲の保守値。10年でDDが収まれば1.0-1.2へ。等加重(InpPairWeight=1.0)推奨。
+InpInitialBalance=100000.0
+InpProfitTargetPct=8.0
+InpMaxLossLimitPct=10.0
+InpDailyStopPct=4.0
+InpEquityFloorDDPct=8.0
+InpCloseAllOnGuard=true
+InpEntryWeekday=1
+InpEntryHoursUTC=4,6,8,10
+InpHoldHours=12
+InpLongOnly=true
+InpSkipFirstWeek=false
+InpWeeklyRiskPct=0.60
+InpShotsPerWeek=12
+InpPairWeight=1.0
+InpMinLot=0.01
+InpMaxLot=5.0
+InpAtrPeriodH1=24
+InpCatastropheATR=2.5
+InpMinStopPips=10.0
+InpMaxStopPips=400.0
+InpMaxSpreadPips=3.0
+InpUseNewsFilter=true
+InpNewsBeforeMin=30
+InpNewsAfterMin=15
+InpMagic=920590
+InpSlippagePoints=20
+InpVerboseLog=true
