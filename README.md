@@ -31,6 +31,25 @@ FundedNext「Stellar 2-Step」チャレンジ（$100,000 / Phase1）を、規則
 | [`sim/montecarlo_2phase.py`](sim/montecarlo_2phase.py) | P1→P2連続＋連敗自己相関ストレスのモンテカルロ |
 | [`docs/03_validation_report.md`](docs/03_validation_report.md) | ④ 検証レポート（MC実数値＋実価格WFA設計＋過剰最適化点検） |
 
+## 4本目エッジ探索（docs/47-48）— 誠実な NEGATIVE：Portfolio3 が最終形
+
+3本目（v7+v4+E5 の Portfolio3）完成を受け、**第4の独立エッジ**を探索した。日足・月次・カレンダー・
+リードラグ系は枯渇済み（docs/14,27,42）のため、docs/27 §4 の指示通り **未踏の足内(H1)条件付き3構造**を
+**事前登録**（[`docs/47`](docs/47_4thedge_preregistration.md)・候補とBonferroni母数を実行前に固定）→
+予備スクリーニング（[`research/edge10_4thedge.py`](research/edge10_4thedge.py)・Yahoo H1 ~2年）した。
+
+| 候補 | 内容 | プール純益 | OOS boot_p | 判定 |
+|---|---|--:|--:|---|
+| C1 インパルス・フェード | 足内2σ超→逆張り | −430.6% | 1.000 | **REJECT** |
+| C2 圧縮ブレイク | アジア圧縮→London抜け | −15.0% | 0.998 | **REJECT** |
+| C3 アジア→London反転 | 前セッション過大→反転 | −45.2% | 0.991 | **REJECT** |
+
+→ **3候補とも棄却（フェードも継続も負＝方向エッジ無し・コスト負け）。第4の独立エッジは現データに無い**
+（[`docs/48`](docs/48_4thedge_findings.md)）。**∴ Portfolio3（v7+v4+E5・互いに低/負相関）を最終形とするのが
+誠実な結論**。10年での正式確定が要れば [`research/colab_edge10_4thedge_10y.py`](research/colab_edge10_4thedge_10y.py)
+を Drive 実行（予備が決定的に負ゆえ優先度は低い）。収益拡大は新エッジでなく Portfolio3 のサイズ最適化＋
+デモ前進検証（docs/29,44）で。
+
 ## 検証ハイライト（モンテカルロ 50,000×3シナリオ）
 
 - **全シナリオ・全勝率で 日次DD失格＝0.000% / 最大DD失格＝0.000%**（ガードの構造的成果）。
