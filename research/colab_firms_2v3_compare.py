@@ -371,10 +371,39 @@ def main():
             print(f"    {m:>4.1f}x | {c['maxDD']:>6.1f}% /{c['dq']:>5.1f}% /{c['fail5']:>5.1f}% / ¥{c['yen']:>9,}"
                   f"   |  {r['maxDD']:>6.1f}% /{r['dq']:>5.1f}% /{r['fail5']:>5.1f}% / ¥{r['yen']:>9,}")
         return rows
+    # プロップ突破率/到達月(静的-10%・+8%目標・時間無制限=24ヶ月窓で評価)
+    def prop_pass(series, scale, horizon=24, target=0.08, dd=0.10, seed=SEED):
+        P=block_bootstrap(series*scale, m=horizon, seed=seed)
+        n,T=P.shape; pm=np.full(n,np.nan); fail=np.zeros(n,bool)
+        for i in range(n):
+            eq=1.0
+            for t in range(T):
+                eq*=(1+P[i,t])
+                if eq<=1-dd: fail[i]=True; break       # 静的-10%(初期基準)
+                if eq>=1+target: pm[i]=t+1; break       # +8%到達(月index)
+        ok=~np.isnan(pm)
+        pass3=float((pm[ok]<=3).sum())/n*100 if ok.any() else 0.0
+        passT=float(ok.mean())*100
+        med=float(np.nanmedian(pm)) if ok.any() else None
+        return dict(pass3mo=round(pass3,1), pass_total=round(passT,1),
+                    median_months=(None if med is None else round(med,1)), fail=round(float(fail.mean())*100,1))
+    def prop_pass_table():
+        print("\n  ［プロップ突破率/到達月 FundedNext $100k・+8%/静的-10%・時間無制限(24ヶ月窓)］")
+        print(f"    {'倍率':>5} | {'現状 3ヶ月突破 / 無制限突破 / 到達中央月 / 失格':<40} | 推奨 3ヶ月突破 / 無制限突破 / 到達中央月 / 失格")
+        out2={}
+        for m in MULTS:
+            c=prop_pass(cur_u,BASE*m); r=prop_pass(rec_u,BASE*m)
+            out2[f"{m:.2f}x"]=dict(current=c,recommended=r)
+            cm = "—" if c['median_months'] is None else f"{c['median_months']:.0f}ヶ月"
+            rm = "—" if r['median_months'] is None else f"{r['median_months']:.0f}ヶ月"
+            print(f"    {m:>4.1f}x | {c['pass3mo']:>5.1f}% /{c['pass_total']:>6.1f}% / {cm:>6} /{c['fail']:>5.1f}%"
+                  f"   |  {r['pass3mo']:>5.1f}% /{r['pass_total']:>6.1f}% / {rm:>6} /{r['fail']:>5.1f}%")
+        return out2
     print("\n"+"="*76); print("★リスク倍率ごと: 現状(v7+E5 75:25) vs 推奨(v7+v4+E5 40:40:20)"); print("="*76)
     out["mult_tables"]=dict(
         prop=mult_table("プロップ FundedNext",100000,False,0.80),
         instant=mult_table("インスタント Blueberry",50000,True,0.80))
+    out["prop_pass"]=prop_pass_table()
     if not trust:
         print("\n   ⚠ サニティ未達(短期/相関乖離)＝上表の絶対値は信用せず。10年Driveで再実行して確定を。")
 
