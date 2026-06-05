@@ -68,6 +68,18 @@ FundedNext「Stellar 2-Step」チャレンジ（$100,000 / Phase1）を、規則
 **E5≤25%ガード**（E5=未検証・テール厚）。確定は [`research/colab_optimize_portfolio3_10y.py`](research/colab_optimize_portfolio3_10y.py)
 を Drive 10年＋デモで（[`docs/49`](docs/49_portfolio3_ratio_optimization.md)）。
 
+## 最適化EA `Chien_Portfolio4_Optimized.mq5`（docs/50）— 1チャートで最適比率を運用
+
+docs/49 の最適比率を**そのままデプロイできる新EA**。旧 Portfolio3 の実績エンジン・口座ガードを**逐語継承**し、
+シナリオ部だけを「目的別×ルール別」プリセットに差し替えた（ロジック無変更）。
+
+- **InpObjective**: CALMAR(40:35:25 ★既定) / CAGR(45:35:20) / DEFENSE(45:40:15) / BASELINE(40:40:20) / MANUAL
+- **InpRuleMode**: INSTANT(−10%トレーリング) / PROP(静的−10%/+8%/日次−4%) を1ファイルで切替
+- **E5≤25%ガード**内蔵。1チャートに1つドロップで v7+v4+E5 を内部運用（Magic分離）。
+- プリセット: [`mql5/presets/p4_calmar_40_35_25_instant.set`](mql5/presets/p4_calmar_40_35_25_instant.set) 他。
+- 詳細・予算表・本資金前チェック → [`docs/50`](docs/50_portfolio4_optimized_ea.md)。
+- ⚠ 比率は最適化済みだが**絶対サイズ(倍率)は Drive10年＋デモで確定**。v4=ADOPT/E5=LEAD＝デモ必須。
+
 ## 検証ハイライト（モンテカルロ 50,000×3シナリオ）
 
 - **全シナリオ・全勝率で 日次DD失格＝0.000% / 最大DD失格＝0.000%**（ガードの構造的成果）。
