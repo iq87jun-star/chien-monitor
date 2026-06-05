@@ -328,7 +328,19 @@ def main():
     out["your_current_blueberry"]=dict(account=ACC,ratio_current="v7:E5=75:25",ratio_rec="v7:v4:E5=40:40:20",
         current=r_cur, rec_same_risk=r_same, rec_same_dq=r_eqdq, rec_safe=r_safe)
     print("   → 同じ攻めなら【失格↓】、同じ失格まで攻めれば【手取り↑】。v4(無相関)で分散効率が上がるのが源泉。")
-    print("   ⚠ magnitudeはローカル楽観(v7⇄v4が10年0.03に対しローカル過大)。10年Driveで確定を。")
+    # ---- サニティチェック: この実行が信頼できるか(10年か・現状がリポジトリ値¥862kと整合か) ----
+    span_m=len(df); corr_v7v4=round(float(df.corr().loc["v7","v4"]),3)
+    anchor_yen=862000; dev=abs(r_cur["yen"]-anchor_yen)/anchor_yen
+    trust = (span_m>=90) and (abs(corr_v7v4-0.03)<0.20) and (dev<0.6)
+    print(f"\n   [サニティ] 共通{span_m}ヶ月 / v7⇄v4相関={corr_v7v4}(10年期待≈0.03) / "
+          f"現状手取り¥{r_cur['yen']:,} vs docs36③アンカー¥{anchor_yen:,}(乖離{dev*100:.0f}%)")
+    if trust:
+        print("   [サニティ] ✅ 10年・整合 → 上記の絶対値は信頼してよい(実数確定)。")
+    else:
+        print("   [サニティ] ⚠ 短期 or アンカー乖離大 → **絶対値は信用しない**(方向性のみ)。"
+              "Driveの dukascopy_data_h1 に9ペア10年H1があるか確認し再実行。")
+    out["your_current_blueberry"]["sanity"]=dict(months=span_m,corr_v7v4=corr_v7v4,
+        current_yen=r_cur["yen"],anchor_yen=anchor_yen,trustworthy=bool(trust))
 
     print("\n"+"="*76)
     print("総括: チャレンジ(13週)は v4/E5 の上乗せ小(低頻度)=2種3種ほぼ同等。差が出るのは資金化後の年次"
