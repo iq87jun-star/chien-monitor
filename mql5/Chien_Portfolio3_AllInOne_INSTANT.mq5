@@ -9,10 +9,12 @@
 //|     半減し【5年失格 31.5%→1.0%】(Blueberry$50k・実10年, docs/44)。  |
 //|     3戦略とも相互に低/負相関ゆえ分散でDD効率が上がるのが源泉。       |
 //|                                                                   |
-//|   ■ 本ファイル=インスタント既定 ★中庸1.5x(Blueberry等):             |
-//|     v7 0.90% / v4 0.225% / E5 0.45%・−10%トレーリング/無目標/日次なし。|
-//|     docs/46確定: 5年失格8.8% / 手取り≈¥928k(/$50k・分配80%)。        |
-//|     ※守りで始めたい場合は InpScenario=PORT_MANUAL で 0.60/0.15/0.30。 |
+//|   ■ 本ファイル=インスタント既定 ★攻め2.0x(Blueberry等):             |
+//|     v7 1.20% / v4 0.30% / E5 0.60%・−10%トレーリング/無目標/日次なし。 |
+//|     全停止フロア=−9%(枠を使い切る攻め)。docs/46確定: maxDD-9.7% /     |
+//|     5年失格31.8% / 手取り≈¥1,253k(/$50k・分配80%)。                  |
+//|     ⚠攻め=業者破綻/規約変更リスク前提で『速く出金・口座に大金を置かない』|
+//|       運用。出金は毎サイクル必ず実行。守りは PORT_MANUAL 0.60/0.15/0.30。|
 //|     (プロップ突破は Chien_Portfolio3_AllInOne_PROP.mq5 を使う)       |
 //|                                                                   |
 //|   ■ 内部3戦略(Magic分離で混線なし):                                 |
@@ -54,12 +56,12 @@ input string InpE5Symbols  = "XAUUSD,US500,NAS100,GER40";                     //
 input group "=== 口座/ガード ==="
 input double InpInitialBalance   = 0.0;   // 0=口座残高を自動取得
 input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%
-input double InpAccountFloorDDPct= 8.0;   // 総合 -8% で全停止(-10%の内側)
+input double InpAccountFloorDDPct= 9.0;   // 全停止ライン%(★攻め=9.0で-10%枠をほぼ使い切る/守りは8.0)
 
 input group "=== 手動値（PORT_MANUAL時のみ・3戦略の配分）==="
-input double InpWeeklyRiskPct   = 0.90;   // v7 週次リスク%（INSTANT 1.5x既定と同値）
-input double InpV4RiskPerTradePct= 0.225; // v4 1トレードあたりリスク%
-input double InpE5LegRiskPct    = 0.45;   // E5 legRisk%(各レッグ月次σ)
+input double InpWeeklyRiskPct   = 1.20;   // v7 週次リスク%（INSTANT 2.0x攻め既定と同値）
+input double InpV4RiskPerTradePct= 0.30;  // v4 1トレードあたりリスク%
+input double InpE5LegRiskPct    = 0.60;   // E5 legRisk%(各レッグ月次σ)
 
 input group "=== v7 設定 ==="
 input string InpEntryHoursUTC = "4,6,8,10";
@@ -159,15 +161,16 @@ void ResolveScenario()
 {
    g_weeklyRisk=InpWeeklyRiskPct; g_v4risk=InpV4RiskPerTradePct; g_e5leg=InpE5LegRiskPct;
    g_useTrailing=false; g_useProfitStop=false; g_useDailyStop=false;
-   g_profitPct=0; g_dailyStopPct=0; g_maxLossPct=InpMaxLossLimitPct; g_floorBufPct=2.0;
+   g_profitPct=0; g_dailyStopPct=0; g_maxLossPct=InpMaxLossLimitPct;
+   g_floorBufPct=MathMax(0.0, InpMaxLossLimitPct-InpAccountFloorDDPct); // 全停止= -InpAccountFloorDDPct
    g_scenName="MANUAL";
    if(InpScenario==PORT_INSTANT){
-      // ★インスタント中庸 1.5x(docs/46確定: 5年失格8.8%/手取り≈¥928k)。トレーリング枠。
-      g_scenName="INSTANT_1.5x"; g_weeklyRisk=0.90; g_v4risk=0.225; g_e5leg=0.45;
+      // ★インスタント攻め 2.0x(docs/46確定: maxDD-9.7%/5年失格31.8%/手取り≈¥1,253k)。トレーリング枠。
+      g_scenName="INSTANT_2.0x_AGGR"; g_weeklyRisk=1.20; g_v4risk=0.30; g_e5leg=0.60;
       g_useTrailing=true; g_useProfitStop=false; g_useDailyStop=false;
    } else if(InpScenario==PORT_PROP_BREAKTHROUGH){
-      // ★プロップ速攻 2.5x(docs/46確定: 無制限突破94%/中央4ヶ月/失格6.0%)。静的-10%/+8%目標/日次-4%。
-      g_scenName="PROP_2.5x"; g_weeklyRisk=2.50; g_v4risk=0.625; g_e5leg=1.25;
+      // ★プロップ最速攻め 3.0x(docs/46確定: 3ヶ月突破50.6%/無制限92%/中央3ヶ月/失格8.0%)。静的-10%/+8%/日次-4%。
+      g_scenName="PROP_3.0x_AGGR"; g_weeklyRisk=3.00; g_v4risk=0.75; g_e5leg=1.50;
       g_useTrailing=false; g_useProfitStop=true; g_profitPct=8.0;
       g_useDailyStop=true; g_dailyStopPct=4.0;
    }
