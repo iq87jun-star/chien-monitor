@@ -105,6 +105,84 @@ def simulate_group():
               f"{pc[2]/N_SIM*100:>7.1f}%{pc[3]/N_SIM*100:>7.1f}%"
               f"{qualify[t]/N_SIM*100:>7.1f}%")
 
+# ---- 決勝トーナメント(ベスト32 -> 決勝)のシミュレーション ----
+# 2026年は48チーム制でノックアウトはベスト32から。日本視点で、
+# 各ラウンドの想定対戦相手Eloを設定(深いラウンドほど強敵)。
+# ブックメーカーの「ベスト16到達≒36%」に合うよう較正済み。
+KO_ROUNDS = [
+    ("ベスト32", 1925),   # 1回戦: 他組の上位通過チーム
+    ("ベスト16", 1950),
+    ("準々決勝", 1990),
+    ("準決勝",   2020),
+    ("決勝",     2030),
+]
+OPP_ELO_SD = 60   # 相手の強さのばらつき
+
+def elo_win_prob(elo_a, elo_b):
+    # ノックアウトは延長/PKで決着 -> 引分はElo期待値で勝敗化
+    return 1.0 / (1.0 + 10 ** (-(elo_a - elo_b) / 400.0))
+
+def simulate_japan_tournament():
+    JPN = ELO["日本"]
+    # 最終着地点のカウント
+    buckets = ["優勝", "準優勝", "ベスト4", "ベスト8",
+               "ベスト16", "ベスト32敗退", "グループ敗退"]
+    finish = Counter()
+
+    def third_advance_prob(points):
+        return {0:0.0,1:0.02,2:0.10,3:0.45,4:0.82,5:0.95,6:0.99,7:1.0,9:1.0}.get(points, 1.0)
+
+    for _ in range(N_SIM):
+        # --- グループステージ ---
+        pts = defaultdict(int); gf = defaultdict(int); ga = defaultdict(int)
+        for a, b in FIXTURES:
+            la, lb = expected_goals(a, b)
+            x, y = poisson(la), poisson(lb)
+            gf[a]+=x; ga[a]+=y; gf[b]+=y; ga[b]+=x
+            if x>y: pts[a]+=3
+            elif y>x: pts[b]+=3
+            else: pts[a]+=1; pts[b]+=1
+        table = sorted(ELO, key=lambda t:(pts[t], gf[t]-ga[t], gf[t], random.random()), reverse=True)
+        rank = table.index("日本")
+        if rank < 2:
+            advanced = True
+        elif rank == 2:
+            advanced = random.random() < third_advance_prob(pts["日本"])
+        else:
+            advanced = False
+        if not advanced:
+            finish["グループ敗退"] += 1
+            continue
+        # --- ノックアウト ---
+        out_label = None
+        for label, opp_mean in KO_ROUNDS:
+            opp = random.gauss(opp_mean, OPP_ELO_SD)
+            if random.random() < elo_win_prob(JPN, opp):
+                continue  # 勝ち上がり
+            # このラウンドで敗退
+            idx = [r[0] for r in KO_ROUNDS].index(label)
+            out_label = ["ベスト32敗退", "ベスト16", "ベスト8", "ベスト4", "準優勝"][idx]
+            break
+        if out_label is None:
+            out_label = "優勝"   # 決勝も勝った
+        finish[out_label] += 1
+
+    print("\n" + "=" * 64)
+    print(f"【日本代表 最終順位の確率】({N_SIM:,}回シミュレーション)")
+    print("=" * 64)
+    pos = {"優勝":"1位","準優勝":"2位","ベスト4":"3〜4位","ベスト8":"5〜8位",
+           "ベスト16":"9〜16位","ベスト32敗退":"17〜32位","グループ敗退":"33〜48位"}
+    for b in buckets:
+        print(f"  {b:<12}({pos[b]:>7}): {finish[b]/N_SIM*100:5.1f}%")
+    reach16 = sum(finish[b] for b in ["優勝","準優勝","ベスト4","ベスト8","ベスト16"])
+    reach8  = sum(finish[b] for b in ["優勝","準優勝","ベスト4","ベスト8"])
+    qual    = N_SIM - finish["グループ敗退"]
+    print("  " + "-"*40)
+    print(f"  グループ突破(ベスト32以上): {qual/N_SIM*100:5.1f}%")
+    print(f"  ベスト16以上            : {reach16/N_SIM*100:5.1f}%")
+    print(f"  ベスト8以上             : {reach8/N_SIM*100:5.1f}%")
+
 if __name__ == "__main__":
     analyze_matches()
     simulate_group()
+    simulate_japan_tournament()
