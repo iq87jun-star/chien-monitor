@@ -138,7 +138,7 @@ double PipOf(string s){ return (StringFind(s,"JPY")>=0)? 0.01 : 0.0001; }
 
 string ResolveSymbol(string want)
 {
-   string suf[]={"",".cash",".r",".c",".pro","m",".spot","-cash",".sd","+",".i","_SB"};
+   string suf[]={"",".pi",".raw",".ecn",".stp",".pro",".cash",".r",".c",".m","m",".spot","-cash",".sd","+",".i","_SB","_raw",".a",".z"};
    string bases[]; ArrayResize(bases,20); int nb=0;
    bases[nb++]=want;
    string U=want; StringToUpper(U);
