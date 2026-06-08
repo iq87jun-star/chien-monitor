@@ -1,0 +1,11 @@
+; Chien_Portfolio2_AllInOne_PROP — 第2(並走)ポート・プロップ突破攻め(MR0.75/RP1.50・静的-10%/+8%/日次-4%)
+; 別ユニバース(現行と非重複): MR=別クロス9本 / RP=銀・原油・FTSE・日経225。v7非搭載=現行と取引非共有。
+InpScenario=1
+InpAcknowledgeLEAD=true
+InpMRSymbols=EURGBP,EURAUD,EURCHF,EURCAD,GBPAUD,AUDCAD,AUDNZD,GBPCHF,CADJPY
+InpRPSymbols=XAGUSD,USOIL,UK100,JP225
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpAllowShort=true
+InpMagicBase=940740

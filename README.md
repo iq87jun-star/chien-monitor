@@ -24,6 +24,9 @@ FundedNext「Stellar 2-Step」チャレンジ（$100,000 / Phase1）を、規則
 | [`mql5/FundedNext_Stellar_EA_v9.mq5`](mql5/FundedNext_Stellar_EA_v9.mq5) | ③''' **v9 EA（月曜・週末フロー intraday 12h・同日決済）**。v7と同エッジを**DDほぼ半減・スワップリスク排除**で運用。同ガード継承。**要10年再測** |
 | [`mql5/presets/v9_intraday_default.set`](mql5/presets/v9_intraday_default.set) | v9 既定プリセット（12h保有・保守予算0.60・等加重） |
 | [`docs/37_v9_intraday_weekendflow.md`](docs/37_v9_intraday_weekendflow.md) | ⑥ v9研究（新シグ探索=TOM/金曜SHORT棄却→月曜エッジ再確認→12h保有でCalmar最良の実証） |
+| [`docs/50_portfolio2_parallel_construction.md`](docs/50_portfolio2_parallel_construction.md) | ⑦ **第2(並走)ポートフォリオ**（検証済み機構=v4 MR/E5 RP を**現行と非重複の別ユニバース**へ。同じ9ゲート＋現行との相関で採点。v7は非搭載＝取引非共有で真に並走） |
+| [`mql5/Chien_Portfolio2_AllInOne_INSTANT.mq5`](mql5/Chien_Portfolio2_AllInOne_INSTANT.mq5) / [`_PROP.mq5`](mql5/Chien_Portfolio2_AllInOne_PROP.mq5) | 第2ポートEA（MR=別クロス9本＋RP=銀/原油/FTSE/日経。1チャート挿入。Magic 940730/940740系） |
+| [`notebooks/portfolio2_validate.ipynb`](notebooks/portfolio2_validate.ipynb) | 第2ポート検証ノート（現行と同一9ゲート採点＋現行との月次相関。**10年Colab実行で実数確定**） |
 | [`docs/04_research_v2_findings.md`](docs/04_research_v2_findings.md) | ⑤ v2研究レポート（Lv1-5でv1否定→白紙再探索→S3採用、感度/WF/Bonferroni） |
 | [`research/`](research/) | 研究用バックテスタ・戦略スクリーニング・ロバスト性検証（実データ） |
 | [`mql5/presets/EURUSD_default.set`](mql5/presets/EURUSD_default.set) | v1 EURUSD 既定プリセット |
