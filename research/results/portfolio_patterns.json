@@ -1,0 +1,89 @@
+{
+  "corr": {
+    "v7": {
+      "v7": 1.0,
+      "v4": -0.064,
+      "E5": -0.082,
+      "E-Mon": 0.228
+    },
+    "v4": {
+      "v7": -0.064,
+      "v4": 1.0,
+      "E5": -0.025,
+      "E-Mon": -0.13
+    },
+    "E5": {
+      "v7": -0.082,
+      "v4": -0.025,
+      "E5": 1.0,
+      "E-Mon": -0.149
+    },
+    "E-Mon": {
+      "v7": 0.228,
+      "v4": -0.13,
+      "E5": -0.149,
+      "E-Mon": 1.0
+    }
+  },
+  "singles": {
+    "S0 現状A (v7:v4:E5=40:40:20)": {
+      "sharpe": 1.06,
+      "ann_at6_pct": 4.7,
+      "calmar": 0.79,
+      "worst_month_pct": -3.5
+    },
+    "S1 4種・均整 (25/35/15/25) ★推奨": {
+      "sharpe": 1.29,
+      "ann_at6_pct": 6.8,
+      "calmar": 1.14,
+      "worst_month_pct": -3.6
+    },
+    "S2 4種・効率重視(v4厚 20/45/10/25)": {
+      "sharpe": 1.24,
+      "ann_at6_pct": 6.0,
+      "calmar": 1.0,
+      "worst_month_pct": -3.6
+    },
+    "S3 4種・分散最大(等加重 25/25/25/25)": {
+      "sharpe": 1.28,
+      "ann_at6_pct": 7.7,
+      "calmar": 1.28,
+      "worst_month_pct": -3.6
+    },
+    "S4 並行核のみ B (E-Mon:E5=65:35)": {
+      "sharpe": 0.87,
+      "ann_at6_pct": 2.4,
+      "calmar": 0.4,
+      "worst_month_pct": -1.8
+    },
+    "S5 並行・効率版 (E-Mon:v4:E5=45:40:15)": {
+      "sharpe": 1.21,
+      "ann_at6_pct": 5.4,
+      "calmar": 0.89,
+      "worst_month_pct": -2.6
+    }
+  },
+  "parallel": {
+    "P-α A‖B (現状 ‖ E-Mon+E5)": {
+      "sharpe": 1.27,
+      "ann_at6_pct": 7.1,
+      "calmar": 1.18,
+      "worst_month_pct": -3.3,
+      "acct_corr": 0.16
+    },
+    "P-β A‖B+ (現状 ‖ E-Mon+v4+E5)": {
+      "sharpe": 1.29,
+      "ann_at6_pct": 6.3,
+      "calmar": 1.05,
+      "worst_month_pct": -3.7,
+      "acct_corr": 0.55
+    },
+    "P-γ FX口座 ‖ 株指口座 (v7+v4 ‖ E-Mon+E5)": {
+      "sharpe": 1.27,
+      "ann_at6_pct": 7.0,
+      "calmar": 1.17,
+      "worst_month_pct": -3.1,
+      "acct_corr": 0.03
+    }
+  }
+}
