@@ -1,0 +1,176 @@
+{
+  "target_vol": 0.015,
+  "n_months": 111,
+  "prop": {
+    "P1": {
+      "0.5": {
+        "pass_pct": 89.2,
+        "dq_pct": 0.0,
+        "to_pct": 10.8,
+        "med_pass_mo": 30,
+        "p95_maxDD": -5.0
+      },
+      "1.0": {
+        "pass_pct": 97.4,
+        "dq_pct": 1.1,
+        "to_pct": 1.6,
+        "med_pass_mo": 15,
+        "p95_maxDD": -8.3
+      },
+      "1.5": {
+        "pass_pct": 95.8,
+        "dq_pct": 3.9,
+        "to_pct": 0.3,
+        "med_pass_mo": 10,
+        "p95_maxDD": -10.9
+      },
+      "2.0": {
+        "pass_pct": 92.2,
+        "dq_pct": 7.8,
+        "to_pct": 0.0,
+        "med_pass_mo": 7,
+        "p95_maxDD": -12.5
+      }
+    },
+    "P2": {
+      "0.5": {
+        "pass_pct": 60.5,
+        "dq_pct": 0.3,
+        "to_pct": 39.2,
+        "med_pass_mo": 33,
+        "p95_maxDD": -7.0
+      },
+      "1.0": {
+        "pass_pct": 81.7,
+        "dq_pct": 5.8,
+        "to_pct": 12.4,
+        "med_pass_mo": 20,
+        "p95_maxDD": -11.6
+      },
+      "1.5": {
+        "pass_pct": 82.0,
+        "dq_pct": 14.3,
+        "to_pct": 3.7,
+        "med_pass_mo": 14,
+        "p95_maxDD": -13.8
+      },
+      "2.0": {
+        "pass_pct": 78.9,
+        "dq_pct": 20.0,
+        "to_pct": 1.1,
+        "med_pass_mo": 10,
+        "p95_maxDD": -14.9
+      }
+    },
+    "P1+P2": {
+      "0.5": {
+        "pass_pct": 93.8,
+        "dq_pct": 0.0,
+        "to_pct": 6.2,
+        "med_pass_mo": 28,
+        "p95_maxDD": -4.2
+      },
+      "1.0": {
+        "pass_pct": 98.6,
+        "dq_pct": 0.6,
+        "to_pct": 0.8,
+        "med_pass_mo": 15,
+        "p95_maxDD": -7.3
+      },
+      "1.5": {
+        "pass_pct": 97.5,
+        "dq_pct": 2.4,
+        "to_pct": 0.1,
+        "med_pass_mo": 10,
+        "p95_maxDD": -9.9
+      },
+      "2.0": {
+        "pass_pct": 94.2,
+        "dq_pct": 5.8,
+        "to_pct": 0.0,
+        "med_pass_mo": 7,
+        "p95_maxDD": -11.1
+      }
+    }
+  },
+  "instant": {
+    "P1": {
+      "0.5": {
+        "dq12_pct": 0.0,
+        "med_ann_pct": 2.7,
+        "p5_worst_pct": -1.5,
+        "p95_maxDD": -3.3
+      },
+      "1.0": {
+        "dq12_pct": 0.4,
+        "med_ann_pct": 5.3,
+        "p5_worst_pct": -3.1,
+        "p95_maxDD": -6.6
+      },
+      "1.5": {
+        "dq12_pct": 4.7,
+        "med_ann_pct": 8.0,
+        "p5_worst_pct": -4.6,
+        "p95_maxDD": -9.8
+      },
+      "2.0": {
+        "dq12_pct": 13.6,
+        "med_ann_pct": 10.6,
+        "p5_worst_pct": -6.3,
+        "p95_maxDD": -12.9
+      }
+    },
+    "P2": {
+      "0.5": {
+        "dq12_pct": 0.0,
+        "med_ann_pct": 1.2,
+        "p5_worst_pct": -2.8,
+        "p95_maxDD": -3.8
+      },
+      "1.0": {
+        "dq12_pct": 1.3,
+        "med_ann_pct": 2.4,
+        "p5_worst_pct": -5.5,
+        "p95_maxDD": -7.5
+      },
+      "1.5": {
+        "dq12_pct": 7.4,
+        "med_ann_pct": 3.6,
+        "p5_worst_pct": -8.3,
+        "p95_maxDD": -11.2
+      },
+      "2.0": {
+        "dq12_pct": 17.4,
+        "med_ann_pct": 4.8,
+        "p5_worst_pct": -11.0,
+        "p95_maxDD": -14.7
+      }
+    },
+    "P1+P2": {
+      "0.5": {
+        "dq12_pct": 0.0,
+        "med_ann_pct": 2.9,
+        "p5_worst_pct": -1.1,
+        "p95_maxDD": -3.0
+      },
+      "1.0": {
+        "dq12_pct": 0.2,
+        "med_ann_pct": 5.8,
+        "p5_worst_pct": -2.2,
+        "p95_maxDD": -5.9
+      },
+      "1.5": {
+        "dq12_pct": 2.9,
+        "med_ann_pct": 8.7,
+        "p5_worst_pct": -3.4,
+        "p95_maxDD": -8.8
+      },
+      "2.0": {
+        "dq12_pct": 11.4,
+        "med_ann_pct": 11.6,
+        "p5_worst_pct": -4.7,
+        "p95_maxDD": -11.7
+      }
+    }
+  }
+}
