@@ -1,0 +1,50 @@
+{
+  "account": 200000.0,
+  "split": 0.8,
+  "fx": 160.0,
+  "winrate": 67.0,
+  "rows": {
+    "保守 -6%": {
+      "ann": 7.9,
+      "p95DD": -6.0,
+      "sharpe": 1.26,
+      "calmar": 1.84,
+      "P1pass": 99.6,
+      "P1fail": 0.3,
+      "P1med": 14,
+      "twopass": 99.3,
+      "twomed": 21,
+      "annual_fail": 0.1,
+      "net_m": 168367,
+      "exp_y": 2018988
+    },
+    "中庸 -8%": {
+      "ann": 10.6,
+      "p95DD": -8.0,
+      "sharpe": 1.26,
+      "calmar": 1.86,
+      "P1pass": 98.7,
+      "P1fail": 1.2,
+      "P1med": 11,
+      "twopass": 97.5,
+      "twomed": 16,
+      "annual_fail": 1.2,
+      "net_m": 226419,
+      "exp_y": 2683744
+    },
+    "攻め -10%": {
+      "ann": 13.4,
+      "p95DD": -10.0,
+      "sharpe": 1.26,
+      "calmar": 1.87,
+      "P1pass": 97.0,
+      "P1fail": 3.0,
+      "P1med": 8,
+      "twopass": 94.6,
+      "twomed": 12,
+      "annual_fail": 4.5,
+      "net_m": 285796,
+      "exp_y": 3275047
+    }
+  }
+}
