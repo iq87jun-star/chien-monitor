@@ -89,11 +89,13 @@ def main():
     print("P★ プロップ審査 通過月数MC（FundedNext Stellar 2-step・時間無制限・ブロックBS 2万パス）")
     print("=" * 92)
     print(f"{'サイズ(目標p95年DD)':22s}{'P1通過%':>8}{'P1失格%':>8}{'P1中央月':>9}{'P1 25-75%':>11}{'2段通過%':>9}{'2段中央月':>9}")
+    S10 = None
     for tag, tdd in [("保守 (−6%)", -6.0), ("中庸 (−8%)", -8.0), ("攻め (−10%)", -10.0)]:
         S = find_scale(s, tdd)
+        if tag.startswith("攻め"):
+            S10 = S
         p1 = simulate(s, S, 0.08)                      # Phase1 +8%
         p2 = simulate(s, S, 0.05, seed=23)             # Phase2 +5%(独立近似)
-        # 2段通過率と合計中央月(P1通過かつP2通過の近似: 率は積, 月は中央の和)
         both_pct = round(p1["pass_pct"] / 100 * p2["pass_pct"] / 100 * 100, 1)
         both_med = p1["med_month"] + p2["med_month"]
         realized_dd = p95_annual_maxdd(s, S)
@@ -101,6 +103,21 @@ def main():
                         both_pass_pct=both_pct, both_med_month=both_med)
         print(f"{tag:22s}{p1['pass_pct']:>8}{p1['fail_pct']:>8}{p1['med_month']:>9}"
               f"{str(p1['p25'])+'-'+str(p1['p75']):>11}{both_pct:>9}{both_med:>9}")
+
+    # ===== 超攻め(−10%枠を超えるレバレッジ ×1.5/×2/×3) =====
+    print("\n" + "-" * 92)
+    print("【超攻め】−10%枠フル(攻め)を基準にレバレッジ倍化。失格急増＝生存者のみ速い。")
+    print(f"{'超攻め(攻め比)':22s}{'実p95年DD':>9}{'P1通過%':>8}{'P1失格%':>8}{'P1中央月':>9}{'P1 25-75%':>11}{'2段通過%':>9}")
+    for tag, mult in [("×1.5", 1.5), ("×2.0", 2.0), ("×3.0", 3.0)]:
+        S = S10 * mult
+        p1 = simulate(s, S, 0.08)
+        p2 = simulate(s, S, 0.05, seed=23)
+        both_pct = round(p1["pass_pct"] / 100 * p2["pass_pct"] / 100 * 100, 1)
+        rdd = p95_annual_maxdd(s, S)
+        out["超攻め" + tag] = dict(scale=round(S, 3), p95_annual_maxDD=round(rdd, 1), P1=p1, P2=p2, both_pass_pct=both_pct)
+        print(f"{'超攻め '+tag:22s}{rdd:>9.0f}{p1['pass_pct']:>8}{p1['fail_pct']:>8}{p1['med_month']:>9}"
+              f"{str(p1['p25'])+'-'+str(p1['p75']):>11}{both_pct:>9}")
+    print("\n⚠ 超攻めは月次解像度では失格を大幅に過小評価(月内/日次−5%で実失格はさらに高い)。")
 
     print("\n[読み方] P1=Phase1(+8%) / 2段=Phase1→Phase2(+5%)通過。月=到達までの月数。")
     print("  時間無制限ゆえ『失格しなければいずれ通過』。保守ほど失格↓だが到達は遅い。")
