@@ -66,6 +66,8 @@ python3 sim/montecarlo_2phase.py      # P1→P2連続＋連敗相関ストレス
 |---|---|
 | [`docs/50_parallel_portfolio_emon.md`](docs/50_parallel_portfolio_emon.md) | 新エッジ一括探索（N=130）＋ **E-Mon を v7基準9ゲートで採点 → 7/9 = STRONG-LEAD（v7と同格）** |
 | [`docs/51_parallel_portfolio_deployment.md`](docs/51_parallel_portfolio_deployment.md) | デプロイ（プロップ/インスタント/別業者FTMO）— 1チャート挿入 |
+| [`docs/52_portfolio_comparison.md`](docs/52_portfolio_comparison.md) | **比較**: 既存A(v7+v4+E5) vs 並行B(E-Mon+E5) vs 両方並走 — A⇄B相関0.28・並走でSharpe最良・同時DD回避 |
+| [`research/parallel_vs_existing_compare.py`](research/parallel_vs_existing_compare.py) | 4成分再構築→ポート比較（相関行列/Sharpe/Calmar/同時マイナス月）|
 | [`mql5/Chien_Parallel_AllInOne_PROP.mq5`](mql5/Chien_Parallel_AllInOne_PROP.mq5) | E-Mon(核)+E5(衛星) オールインワン・プロップ既定（Magic 950720系） |
 | [`mql5/Chien_Parallel_AllInOne_INSTANT.mq5`](mql5/Chien_Parallel_AllInOne_INSTANT.mq5) | 同・インスタント既定（Magic 950710系） |
 | [`research/parallel_edge_hunt_10y.py`](research/parallel_edge_hunt_10y.py) | 新エッジ一括探索ハーネス（N=130・順列/IS-OOS/JK/Bonferroni/コスト/**v7相関**） |
