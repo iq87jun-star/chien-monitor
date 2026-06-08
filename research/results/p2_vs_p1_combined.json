@@ -1,0 +1,21 @@
+{
+  "note": "月次ボラ1.0%に正規化した公平比較(スケール不変)。生の絶対DDはサイジング依存。",
+  "n_months": 111,
+  "corr_P1_P2": 0.014,
+  "P1_alone": {
+    "sharpe": 1.06,
+    "ann_pct": 3.73,
+    "maxDD_pct": -4.7
+  },
+  "P2_alone": {
+    "sharpe": 0.7,
+    "ann_pct": 2.54,
+    "maxDD_pct": -7.7
+  },
+  "combined_50_50": {
+    "sharpe": 1.23,
+    "ann_pct": 3.14,
+    "maxDD_pct": -3.2
+  },
+  "sharpe_lift": 1.16
+}

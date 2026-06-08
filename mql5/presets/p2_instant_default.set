@@ -1,0 +1,15 @@
+; P2 ターン・オブ・ウィーク — インスタント運用(Blueberry等・−10%トレーリング・無目標)
+; 株価指数(US500/NAS100/GER40)月曜LONG。暗号衛星は既定OFF(暗号可の業者のみON)。
+InpScenario=0
+InpAcknowledgeLEAD=true
+InpEqSymbols=US500,NAS100,GER40
+InpCryptoSymbols=BTCUSD,ETHUSD
+InpEnableCrypto=false
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpWeeklyRiskPct=0.50
+InpCryptoLegPct=0.20
+InpEntryHourUTC=0
+InpHoldHours=24
+InpMagic=940800

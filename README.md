@@ -10,6 +10,15 @@ FundedNext「Stellar 2-Step」チャレンジ（$100,000 / Phase1）を、規則
 > 詳細は [`docs/04_research_v2_findings.md`](docs/04_research_v2_findings.md)。**本番前にユーザーの実データハーネスで要再検証。**
 > v1 ロジックは本番投入しないこと。
 
+> **第2ポートフォリオ(P2)を追加（[`docs/50`](docs/50_p2_turnofweek_portfolio.md)）**:
+> 既存P1(v7円月曜＋v4合議FX＋E5多資産モメンタム)とは**別物の分散源**として、商品ユニバースを拡張し
+> （追加FXクロス＋金属＋株価指数＋暗号, Yahoo10年）同じ9ゲートで全数検定。
+> 生き残ったのは **米独株価指数(US500/NAS100/GER40)の「月曜LONG」(週初ドリフト)バスケット** ＝
+> **STRONG-LEAD（P1のv7/E5と同級。月曜のみ有意のプラセボ識別・IS/OOS両+・WF4/5・コスト2×+、未達はBonf/JKのみ）**。
+> 決定的に **P1との月次相関=0.014（ほぼゼロ）** で、同ボラ併用すると **Sharpe 1.06→1.23・maxDD −4.7%→−3.2%**。
+> EA: [`mql5/Chien_P2_TurnOfWeek_AllInOne.mq5`](mql5/Chien_P2_TurnOfWeek_AllInOne.mq5)（1チャート挿入・Magic940800・P1と別系統）。
+> 実データ追認: [`research/colab_p2_validate.py`](research/colab_p2_validate.py)。**本資金前にデモ前進検証（P1と同方針）。**
+
 ## 成果物
 
 | ファイル | 内容 |

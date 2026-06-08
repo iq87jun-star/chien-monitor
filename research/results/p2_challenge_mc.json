@@ -1,0 +1,87 @@
+{
+  "core": [
+    "US500",
+    "NAS100",
+    "GER40"
+  ],
+  "raw_weekly_mean_pct": 0.1064,
+  "raw_weekly_std_pct": 1.0023,
+  "target": 0.08,
+  "floor": -0.1,
+  "n_paths": 4000,
+  "block": 4,
+  "sweep": [
+    {
+      "L": 0.5,
+      "pass_pct": 94.5,
+      "dq_pct": 4.4,
+      "p95_maxDD": -9.7,
+      "med_maxDD": -3.5,
+      "med_weeks": 118,
+      "ann_pct": 2.8
+    },
+    {
+      "L": 0.75,
+      "pass_pct": 89.0,
+      "dq_pct": 11.1,
+      "p95_maxDD": -10.4,
+      "med_maxDD": -4.1,
+      "med_weeks": 72,
+      "ann_pct": 4.24
+    },
+    {
+      "L": 1.0,
+      "pass_pct": 82.2,
+      "dq_pct": 17.8,
+      "p95_maxDD": -10.9,
+      "med_maxDD": -4.4,
+      "med_weeks": 48,
+      "ann_pct": 5.69
+    },
+    {
+      "L": 1.25,
+      "pass_pct": 78.5,
+      "dq_pct": 21.5,
+      "p95_maxDD": -11.4,
+      "med_maxDD": -4.7,
+      "med_weeks": 36,
+      "ann_pct": 7.16
+    },
+    {
+      "L": 1.5,
+      "pass_pct": 73.6,
+      "dq_pct": 26.4,
+      "p95_maxDD": -11.8,
+      "med_maxDD": -5.0,
+      "med_weeks": 27,
+      "ann_pct": 8.65
+    },
+    {
+      "L": 2.0,
+      "pass_pct": 69.1,
+      "dq_pct": 30.9,
+      "p95_maxDD": -12.9,
+      "med_maxDD": -5.5,
+      "med_weeks": 19,
+      "ann_pct": 11.69
+    },
+    {
+      "L": 2.5,
+      "pass_pct": 66.2,
+      "dq_pct": 33.8,
+      "p95_maxDD": -15.2,
+      "med_maxDD": -6.0,
+      "med_weeks": 14,
+      "ann_pct": 14.82
+    },
+    {
+      "L": 3.0,
+      "pass_pct": 65.7,
+      "dq_pct": 34.4,
+      "p95_maxDD": -16.1,
+      "med_maxDD": -6.1,
+      "med_weeks": 11,
+      "ann_pct": 18.03
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "span": [
+    "2016-07",
+    "2026-04"
+  ],
+  "N_tests": 274,
+  "alpha_bonf": 0.000182,
+  "p1_leg_corr": {
+    "v7_v4": -0.064,
+    "v7_e5": -0.08,
+    "v4_e5": -0.025
+  },
+  "sig_count": 10,
+  "bonferroni_survivors": 0,
+  "all_significant": [
+    {
+      "label": "NAS100_Mon_L",
+      "family": "DOW",
+      "net_pct": 117.8,
+      "win_pct": 59.9,
+      "maxDD_pct": -18.2,
+      "n": 469,
+      "perm_p": 0.0035,
+      "corr_P1": -0.087,
+      "corr_n": 111
+    },
+    {
+      "label": "AUDJPY_Mon_L",
+      "family": "DOW",
+      "net_pct": 43.4,
+      "win_pct": 54.2,
+      "maxDD_pct": -9.3,
+      "n": 520,
+      "perm_p": 0.0037,
+      "corr_P1": 0.335,
+      "corr_n": 111
+    },
+    {
+      "label": "NZDJPY_Mon_L",
+      "family": "DOW",
+      "net_pct": 32.6,
+      "win_pct": 51.9,
+      "maxDD_pct": -5.5,
+      "n": 520,
+      "perm_p": 0.013,
+      "corr_P1": 0.331,
+      "corr_n": 111
+    },
+    {
+      "label": "BTCUSD_Mon_L",
+      "family": "DOW",
+      "net_pct": 384.8,
+      "win_pct": 51.6,
+      "maxDD_pct": -43.5,
+      "n": 521,
+      "perm_p": 0.0132,
+      "corr_P1": -0.056,
+      "corr_n": 111
+    },
+    {
+      "label": "XAGUSD_Tue_L",
+      "family": "DOW",
+      "net_pct": 143.1,
+      "win_pct": 52.5,
+      "maxDD_pct": -40.5,
+      "n": 518,
+      "perm_p": 0.0158,
+      "corr_P1": -0.108,
+      "corr_n": 111
+    },
+    {
+      "label": "ETHUSD_Sat_L",
+      "family": "DOW",
+      "net_pct": 249.9,
+      "win_pct": 54.5,
+      "maxDD_pct": -30.4,
+      "n": 448,
+      "perm_p": 0.0163,
+      "corr_P1": -0.087,
+      "corr_n": 95
+    },
+    {
+      "label": "GER40_Mon_L",
+      "family": "DOW",
+      "net_pct": 65.5,
+      "win_pct": 50.8,
+      "maxDD_pct": -12.8,
+      "n": 496,
+      "perm_p": 0.0173,
+      "corr_P1": 0.045,
+      "corr_n": 111
+    },
+    {
+      "label": "US500_Mon_L",
+      "family": "DOW",
+      "net_pct": 51.9,
+      "win_pct": 58.0,
+      "maxDD_pct": -13.7,
+      "n": 469,
+      "perm_p": 0.0187,
+      "corr_P1": 0.058,
+      "corr_n": 111
+    },
+    {
+      "label": "BTCUSD_TOM_L",
+      "family": "TOM",
+      "net_pct": 241.4,
+      "win_pct": 54.5,
+      "maxDD_pct": -51.0,
+      "n": 484,
+      "perm_p": 0.021,
+      "corr_P1": -0.127,
+      "corr_n": 111
+    },
+    {
+      "label": "ETHUSD_TOM_L",
+      "family": "TOM",
+      "net_pct": 260.3,
+      "win_pct": 51.2,
+      "maxDD_pct": -63.4,
+      "n": 416,
+      "perm_p": 0.027,
+      "corr_P1": -0.089,
+      "corr_n": 95
+    }
+  ],
+  "detail": {
+    "NAS100_Mon_L": {
+      "full": {
+        "net_pct": 117.8,
+        "win_pct": 59.9,
+        "maxDD_pct": -18.2,
+        "n": 469,
+        "perm_p": 0.0035,
+        "corr_P1": -0.087,
+        "corr_n": 111
+      },
+      "bonferroni_survivor": false,
+      "is_": {
+        "net_pct": 40.7,
+        "perm_p": 0.0435
+      },
+      "oos": {
+        "net_pct": 54.8,
+        "win_pct": 56.2,
+        "maxDD_pct": -10.7,
+        "n": 235,
+        "perm_p": 0.012
+      },
+      "g_is_oos": true,
+      "jk_max_p": 0.083,
+      "jk": {
+        "2016": 0.003,
+        "2017": 0.001,
+        "2018": 0.0,
+        "2019": 0.003,
+        "2020": 0.083,
+        "2021": 0.002,
+        "2022": 0.004,
+        "2023": 0.007,
+        "2024": 0.003,
+        "2025": 0.003,
+        "2026": 0.004
+      },
+      "g_jk": true,
+      "wf": "5/5",
+      "g_wf": true,
+      "cost2x": {
+        "net_pct": 72.3,
+        "win_pct": 56.9,
+        "maxDD_pct": -21.2,
+        "n": 469
+      },
+      "g_cost": true,
+      "g_placebo": true
+    }
+  }
+}
