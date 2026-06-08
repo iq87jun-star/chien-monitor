@@ -1,0 +1,74 @@
+{
+  "保守 (−6%)": {
+    "scale": 3.704,
+    "p95_annual_maxDD": -6.0,
+    "P1": {
+      "pass_pct": 99.7,
+      "fail_pct": 0.3,
+      "timeout_pct": 0.0,
+      "med_month": 9,
+      "p25": 6,
+      "p75": 14,
+      "p90": 20
+    },
+    "P2": {
+      "pass_pct": 99.8,
+      "fail_pct": 0.2,
+      "timeout_pct": 0.0,
+      "med_month": 6,
+      "p25": 4,
+      "p75": 9,
+      "p90": 14
+    },
+    "both_pass_pct": 99.5,
+    "both_med_month": 15
+  },
+  "中庸 (−8%)": {
+    "scale": 4.972,
+    "p95_annual_maxDD": -8.0,
+    "P1": {
+      "pass_pct": 99.0,
+      "fail_pct": 1.0,
+      "timeout_pct": 0.0,
+      "med_month": 7,
+      "p25": 4,
+      "p75": 11,
+      "p90": 16
+    },
+    "P2": {
+      "pass_pct": 99.1,
+      "fail_pct": 0.9,
+      "timeout_pct": 0.0,
+      "med_month": 4,
+      "p25": 3,
+      "p75": 7,
+      "p90": 12
+    },
+    "both_pass_pct": 98.1,
+    "both_med_month": 11
+  },
+  "攻め (−10%)": {
+    "scale": 6.0,
+    "p95_annual_maxDD": -9.6,
+    "P1": {
+      "pass_pct": 97.9,
+      "fail_pct": 2.1,
+      "timeout_pct": 0.0,
+      "med_month": 5,
+      "p25": 4,
+      "p75": 9,
+      "p90": 14
+    },
+    "P2": {
+      "pass_pct": 98.2,
+      "fail_pct": 1.8,
+      "timeout_pct": 0.0,
+      "med_month": 4,
+      "p25": 2,
+      "p75": 6,
+      "p90": 10
+    },
+    "both_pass_pct": 96.1,
+    "both_med_month": 9
+  }
+}
