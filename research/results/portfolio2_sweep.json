@@ -1,0 +1,17 @@
+{
+  "_note": "Colab 10年実測(Yahoo日足・先物連結近月)。第2ポート多候補スイープ。合格候補=0。docs/52 §6。",
+  "N": {"MR": 22, "RP": 11, "alpha_MR": 0.00227, "alpha_RP": 0.00455},
+  "MR": {
+    "MR-A_range":   {"grade":"LEAD","passed":3,"years":10.2,"net":0.4,"Sharpe":0.08,"maxDD":-1.6,"n":87,"perm_p":0.4158,"jk":0.638,"IS":-0.1,"OOS":0.6,"wf":2,"dd_p95":-4.5,"corr_v4":0.04,"corr_v7":-0.114,"universe":["EURGBP","EURCHF","AUDNZD","NZDCAD","AUDCAD"]},
+    "MR-B_jpyx":    {"grade":"LEAD","passed":6,"years":9.8,"net":4.3,"Sharpe":0.37,"maxDD":-3.2,"n":101,"perm_p":0.1452,"jk":0.279,"IS":4.0,"OOS":0.4,"wf":4,"dd_p95":-6.4,"corr_v4":0.351,"corr_v7":-0.138,"universe":["CADJPY","AUDJPY","NZDJPY","CHFJPY"]},
+    "MR-C_eurgbpx": {"grade":"LEAD","passed":6,"years":10.2,"net":1.1,"Sharpe":0.17,"maxDD":-1.9,"n":84,"perm_p":0.3355,"jk":0.564,"IS":0.9,"OOS":0.1,"wf":2,"dd_p95":-6.1,"corr_v4":0.063,"corr_v7":-0.152,"universe":["EURGBP","EURCHF","GBPCHF","EURNZD","GBPNZD"]}
+  },
+  "RP": {
+    "RP-A_rates":  {"grade":"LEAD","passed":3,"years":8.8,"net":0.7,"Sharpe":0.04,"maxDD":-21.6,"n":97,"perm_p":0.4517,"jk":0.678,"IS":10.6,"OOS":-9.0,"wf":2,"dd_p95":-11.8,"corr_E5":0.111,"corr_v7":-0.08,"universe":["UST10","UST30","UST5"]},
+    "RP-B_macro":  {"grade":"LEAD","passed":5,"years":8.9,"net":46.9,"Sharpe":0.35,"maxDD":-20.2,"n":107,"perm_p":0.172,"jk":0.397,"IS":54.3,"OOS":-4.8,"wf":3,"dd_p95":-6.3,"corr_E5":-0.043,"corr_v7":-0.121,"universe":["DXY(404-skip)","UST10","COPPER","NATGAS"]},
+    "RP-C_asiaeu": {"grade":"LEAD","passed":3,"years":8.9,"net":-42.6,"Sharpe":-0.46,"maxDD":-51.8,"n":108,"perm_p":0.918,"jk":0.952,"IS":-20.7,"OOS":-27.6,"wf":1,"dd_p95":-19.8,"corr_E5":0.577,"corr_v7":-0.151,"universe":["JP225","HK50","AUS200","FRA40"]},
+    "RP-D_crypto": {"grade":"LEAD","passed":5,"years":8.9,"net":78.3,"Sharpe":0.36,"maxDD":-58.6,"n":108,"perm_p":0.143,"jk":0.257,"IS":52.2,"OOS":17.1,"wf":3,"dd_p95":-10.0,"corr_E5":0.174,"corr_v7":-0.084,"G4_placebo":false,"universe":["BTCUSD","ETHUSD","COPPER","NATGAS"]}
+  },
+  "survivors": [],
+  "conclusion": "合格候補ゼロ。高netのRP-B_macro/RP-D_cryptoは規律が偽陽性を捕捉(OOS消滅/プラセボ未達)。docs/40・42・52『この相場に第2の独立エッジは無い』を最強に再確認→実利はB(実証済みエッジを2口座)。"
+}
