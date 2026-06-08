@@ -1,0 +1,55 @@
+{
+  "account_usd": 100000.0,
+  "split": 0.8,
+  "fx": 155.0,
+  "levels": {
+    "保守 (−6%)": {
+      "scale": 3.704,
+      "ann_return_pct": 10.3,
+      "annual_fail_pct": 0.2,
+      "net_month_jpy": 106197,
+      "net_year_jpy": 1274365,
+      "exp_year_jpy": 1272007
+    },
+    "中庸 (−8%)": {
+      "scale": 4.972,
+      "ann_return_pct": 13.9,
+      "annual_fail_pct": 1.4,
+      "net_month_jpy": 143658,
+      "net_year_jpy": 1723901,
+      "exp_year_jpy": 1700284
+    },
+    "攻め (−10%)": {
+      "scale": 6.0,
+      "ann_return_pct": 16.9,
+      "annual_fail_pct": 3.7,
+      "net_month_jpy": 174400,
+      "net_year_jpy": 2092797,
+      "exp_year_jpy": 2014736
+    },
+    "超攻め ×1.5": {
+      "scale": 9.0,
+      "ann_return_pct": 25.7,
+      "annual_fail_pct": 15.8,
+      "net_month_jpy": 266060,
+      "net_year_jpy": 3192715,
+      "exp_year_jpy": 2686830
+    },
+    "超攻め ×2.0": {
+      "scale": 12.0,
+      "ann_return_pct": 34.9,
+      "annual_fail_pct": 41.1,
+      "net_month_jpy": 360391,
+      "net_year_jpy": 4324688,
+      "exp_year_jpy": 2545079
+    },
+    "超攻め ×3.0": {
+      "scale": 18.0,
+      "ann_return_pct": 53.8,
+      "annual_fail_pct": 68.4,
+      "net_month_jpy": 555963,
+      "net_year_jpy": 6671555,
+      "exp_year_jpy": 2108211
+    }
+  }
+}
