@@ -52,3 +52,30 @@ python3 sim/montecarlo_2phase.py      # P1→P2連続＋連敗相関ストレス
 
 > **免責**: バックテスト/シミュレーションは将来の成績・ライブ約定を保証しない。「必ず通る手法」は存在しない。
 > 本EAはリスクガードで退場確率を極小化するが、利益はエッジに依存する。運用前に最新の FundedNext 規約を再確認すること。
+
+---
+
+## 🆕 並行ポートフォリオ（既存とは別・同レベル検証）
+
+既存ポート（v7 円月曜 主軸）とは別に、**同じ v7基準9ゲートを通った"並行ポートフォリオ"** を新規に構築した。
+方針はユーザー選択の「**新しい無相関エッジを探索**」。これまで未トライの土俵（株価指数TOM/曜日・暗号・
+コモディティ・相対価値）を **N=130・Bonferroni** で一括検定した結果、唯一生き残った無相関の新エッジが
+**E-Mon（株価指数の月曜効果）**。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/50_parallel_portfolio_emon.md`](docs/50_parallel_portfolio_emon.md) | 新エッジ一括探索（N=130）＋ **E-Mon を v7基準9ゲートで採点 → 7/9 = STRONG-LEAD（v7と同格）** |
+| [`docs/51_parallel_portfolio_deployment.md`](docs/51_parallel_portfolio_deployment.md) | デプロイ（プロップ/インスタント/別業者FTMO）— 1チャート挿入 |
+| [`mql5/Chien_Parallel_AllInOne_PROP.mq5`](mql5/Chien_Parallel_AllInOne_PROP.mq5) | E-Mon(核)+E5(衛星) オールインワン・プロップ既定（Magic 950720系） |
+| [`mql5/Chien_Parallel_AllInOne_INSTANT.mq5`](mql5/Chien_Parallel_AllInOne_INSTANT.mq5) | 同・インスタント既定（Magic 950710系） |
+| [`research/parallel_edge_hunt_10y.py`](research/parallel_edge_hunt_10y.py) | 新エッジ一括探索ハーネス（N=130・順列/IS-OOS/JK/Bonferroni/コスト/**v7相関**） |
+| [`research/parallel_emon_validate.py`](research/parallel_emon_validate.py) | E-Mon の9ゲート採点＋相関＋ブレンド |
+| [`notebooks/parallel_emon.ipynb`](notebooks/parallel_emon.ipynb) | Drive確定用ノート（`research/colab_parallel_emon.py`） |
+
+**核心**: E-Mon は v7（円月曜）と **月次相関 +0.22（低）**・E5 と **−0.06（無相関）**。
+∴ 既存の v7主軸口座と **同時にDDしない第2の器** ＝ 別口座／別業者で並走させる価値が「誠実に」成立する。
+並行ポート = **E-Mon(核) + E5(衛星) ≈ 70:30〜65:35**（既存 v7:E5=65:35 と対称）。
+
+> **規律（本プロジェクト一貫）**: 数字は盛らない。E-Mon は STRONG-LEAD であって ADOPT ではない
+> （G3 Bonferroni 未達は v7 自身と同じ壁）。**確証はバックテストでなくデモ前進検証で埋める**。
+> 一次値は Yahoo日足10年。最終は `notebooks/parallel_emon.ipynb` を Drive 実行＋デモで確定すること。
