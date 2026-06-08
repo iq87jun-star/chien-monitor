@@ -18,7 +18,7 @@ from pstar_challenge_mc import pstar_monthly, find_scale, block_paths, p95_annua
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 ACCOUNT_USD = 100000.0      # FN Stellar funded $100k
-SPLIT = 0.80                # 分配率(FN base 80%・アドオンで90%も)
+SPLIT = 0.95                # 分配率(FN base 80% + アドオン15% = 95%。ユーザー保有アドオン反映)
 FX = 155.0                  # ¥/$ (可変)
 
 
@@ -71,7 +71,7 @@ def main():
     print("\n[読み方] 手取り/年=生存時(口座×年率×分配×為替)。期待手取り=失格で口座喪失を考慮(×(1−年失格))。")
     print("  ⚠ 年失格は月次解像度ゆえ楽観(日次−5%/月内で実際は高い)＝超攻めの期待値は表より低い。")
     print("  本番後は『生存優先で保守』が定石(docs/36)。超攻めは口座喪失・再挑戦前提の戦法。")
-    print(f"\n  ※前提: 分配{SPLIT*100:.0f}%(FNアドオンで90%なら×1.125)・為替¥{FX}(変動)・$100k口座。$50k口座は概ね半額。")
+    print(f"\n  ※前提: 分配{SPLIT*100:.0f}%(base80%+アドオン15%)・為替¥{FX}(変動)・$100k口座。base80%なら×{0.80/SPLIT:.3f}・$50k口座は概ね半額。")
 
     with open(os.path.join(HERE, "results", "pstar_funded_income.json"), "w") as fp:
         json.dump(dict(account_usd=ACCOUNT_USD, split=SPLIT, fx=FX, levels=out),
