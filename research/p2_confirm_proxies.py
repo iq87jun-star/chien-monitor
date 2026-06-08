@@ -13,12 +13,14 @@ p2_confirm_proxies.py — P2「株価指数 月曜LONG」エッジの独立イ�
 判定: 各々で「月曜LONGのperm_p」と「火-金プラセボ」を出し、月曜のみ有意が再現するか。
 注: ETF/先物は配当・限月・乖離があり現物と完全一致しない＝独立性の担保。最終確証はユーザー実CFDデモで。
 """
-import os, sys, json, urllib.request, datetime as dt
+import os, json, urllib.request, datetime as dt
 import numpy as np, pandas as pd, warnings
 warnings.filterwarnings("ignore")
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-HERE=os.path.dirname(os.path.abspath(__file__))
+try:
+    HERE=os.path.dirname(os.path.abspath(__file__))   # スクリプト実行時
+except NameError:
+    HERE=os.getcwd()                                   # ノートブックcell実行時(__file__無し)
 BPS=5.0
 GROUPS={
  "US500":  [("現物 ^GSPC","^GSPC"),("ETF SPY","SPY"),("先物 ES=F","ES=F")],
@@ -74,9 +76,10 @@ def main():
     print(f"\n=== 追認サマリ: 月曜LONGが p<=0.05 で再現したインストゥルメント = {n_mon_sig}/{n_total} ===")
     print("→ 現物だけでなくETF/先物でも月曜効果が再現すれば『Yahoo現物固有のクセ』ではない＝本物の現象の傍証。")
     print("  (絶対値はインストゥルメントで異なる＝配当/限月/乖離。最終確証はユーザー実CFDデモで)")
+    os.makedirs(os.path.join(HERE,"results"),exist_ok=True)
     with open(os.path.join(HERE,"results","p2_confirm_proxies.json"),"w") as f:
         json.dump(dict(summary=f"{n_mon_sig}/{n_total}",groups=out),f,ensure_ascii=False,indent=2)
-    print("\n保存: research/results/p2_confirm_proxies.json")
+    print("\n保存: results/p2_confirm_proxies.json")
 
 if __name__=="__main__":
     main()

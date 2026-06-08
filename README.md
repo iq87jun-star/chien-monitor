@@ -17,7 +17,7 @@ FundedNext「Stellar 2-Step」チャレンジ（$100,000 / Phase1）を、規則
 > **STRONG-LEAD（P1のv7/E5と同級。月曜のみ有意のプラセボ識別・IS/OOS両+・WF4/5・コスト2×+、未達はBonf/JKのみ）**。
 > 決定的に **P1との月次相関=0.014（ほぼゼロ）** で、同ボラ併用すると **Sharpe 1.06→1.23・maxDD −4.7%→−3.2%**。
 > EA: [`mql5/Chien_P2_TurnOfWeek_AllInOne.mq5`](mql5/Chien_P2_TurnOfWeek_AllInOne.mq5)（1チャート挿入・Magic940800・P1と別系統）。
-> 実データ追認: [`research/colab_p2_validate.py`](research/colab_p2_validate.py)。**本資金前にデモ前進検証（P1と同方針）。**
+> 実データ追認: Colabノート [`notebooks/p2_validate.ipynb`](notebooks/p2_validate.ipynb)（「すべて実行」で9ゲート採点＋現物/ETF/先物の独立追認=8/8）。**本資金前にデモ前進検証（P1と同方針）。**
 
 ## 成果物
 

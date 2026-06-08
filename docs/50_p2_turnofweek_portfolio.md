@@ -193,6 +193,8 @@ EAでは `InpEnableCrypto=true` / `InpCryptoLegPct`(既定0.20%) で承認。
 | [`research/p2_vs_p1_combined.py`](../research/p2_vs_p1_combined.py) | P1×P2併用のSharpe/DD改善 |
 | [`research/p2_confirm_proxies.py`](../research/p2_confirm_proxies.py) | 独立インストゥルメント追認(現物/ETF/先物で月曜エッジ再現=8/8) |
 | [`research/colab_p2_validate.py`](../research/colab_p2_validate.py) | **ユーザー実データ(Drive/実指数)で9ゲート再確認** |
+| [`notebooks/p2_validate.ipynb`](../notebooks/p2_validate.ipynb) | **Colab実行ノート**(上2スクリプト内蔵・「すべて実行」で9ゲート採点＋独立追認。実行済み出力入り) |
+| [`research/build_p2_notebook.py`](../research/build_p2_notebook.py) | 上記ノートの生成スクリプト(スクリプトと同期) |
 
 ### 使い方（MT5）
 1. `Chien_P2_TurnOfWeek_AllInOne.mq5` をMetaEditorでコンパイル(F7)。
