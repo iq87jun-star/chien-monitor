@@ -1,0 +1,11 @@
+; Portfolio4 加重S1・PROP突破(3.0x相当・同DD) — v7:v4:E5:E-Mon=25:35:15:25
+; 現状PROPとDDを合わせ年率+46%(12.3%→17.9%, docs/53)。静的-10%/+8%停止/日次-4%。
+InpScenario=1
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY,USDJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpEMonSymbols=US500,NAS100,GER40
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpMagicBase=940730

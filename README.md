@@ -19,6 +19,13 @@ FundedNext「Stellar 2-Step」チャレンジ（$100,000 / Phase1）を、規則
 > EA: [`mql5/Chien_P2_TurnOfWeek_AllInOne.mq5`](mql5/Chien_P2_TurnOfWeek_AllInOne.mq5)（1チャート挿入・Magic940800・P1と別系統）。
 > 実データ追認: Colabノート [`notebooks/p2_validate.ipynb`](notebooks/p2_validate.ipynb)（「すべて実行」で9ゲート採点＋現物/ETF/先物の独立追認=8/8）。**本資金前にデモ前進検証（P1と同方針）。**
 
+> **4戦略 加重統合EA（[`docs/52`](docs/52_portfolio_patterns.md)）**:
+> 現状P1(v7+v4+E5)に新候補P2/E-Mon(株価指数月曜)を加えた **加重S1(25:35:15:25)** の1チャート統合EA。
+> **DDを現状に合わせたまま年率 +45〜65%**（INSTANT 7.8→11.3% / PROP 12.3→17.9%, docs/53）。
+> EA: [`mql5/Chien_Portfolio4_AllInOne.mq5`](mql5/Chien_Portfolio4_AllInOne.mq5)（PROP/INSTANTシナリオ・Magic940730系）／
+> プリセット [`p4_prop_weighted`](mql5/presets/p4_prop_weighted.set) / [`p4_instant_weighted`](mql5/presets/p4_instant_weighted.set)。
+> ⚠ E-Monは素DD大＝デモで合算maxDDが−10%枠内か実測（E5/E-Mon=STRONG-LEAD・本資金前デモ必須）。
+
 ## 成果物
 
 | ファイル | 内容 |

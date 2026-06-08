@@ -1,0 +1,11 @@
+; Portfolio4 加重S1・INSTANT(2.0x相当・同DD) — v7:v4:E5:E-Mon=25:35:15:25
+; 現状INSTANTとDDを合わせ年率+45%(7.8%→11.3%, docs/53)。-10%トレーリング/無目標。
+InpScenario=0
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY,USDJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpEMonSymbols=US500,NAS100,GER40
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpMagicBase=940730
