@@ -169,8 +169,8 @@ def main():
         m = metrics(series, ann); m["corr_v7"] = corr_v7(series, ref) if len(series) else None
         rows.append(dict(EA=label, **m, note=note))
 
-    # 円月曜(v6/v7エッジ): 各個 + バスケット
-    for p in YEN: add(f"円月曜 {p}", mon_long(p, 2 * pip(p) / load_daily(p)[load_daily(p)['weekday']==0]['open'].mean()), 52)
+    # 円月曜(v6/v7エッジ): 各個 + バスケット (円ペア往復~1.3bps)
+    for p in YEN: add(f"円月曜 {p}", mon_long(p, 1.3), 52)
     add("円月曜 バスケット(v6/v7エッジ)", basket(YEN, 1.0), 52, "v7=これをリスク予算化/v6=同エッジでDD超過(docs/13)")
     # 株指月曜(E-Mon): 各個 + バスケット
     for ix in EMON: add(f"株指月曜 {ix}", mon_long(ix, 3.0), 52)
