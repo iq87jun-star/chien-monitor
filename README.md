@@ -28,6 +28,7 @@ FundedNext「Stellar 2-Step」チャレンジ（$100,000 / Phase1）を、規則
 | [`mql5/Chien_Portfolio2_AllInOne_INSTANT.mq5`](mql5/Chien_Portfolio2_AllInOne_INSTANT.mq5) / [`_PROP.mq5`](mql5/Chien_Portfolio2_AllInOne_PROP.mq5) | 第2ポートEA（MR=別クロス9本＋RP=銀/原油/FTSE/日経。1チャート挿入。Magic 940730/940740系） |
 | [`notebooks/portfolio2_validate.ipynb`](notebooks/portfolio2_validate.ipynb) | 第2ポート検証ノート（現行と同一9ゲート採点＋現行との月次相関。**10年Colab実行で実数確定**） |
 | [`docs/51_portfolio1_vs_portfolio2_comparison.md`](docs/51_portfolio1_vs_portfolio2_comparison.md) | ⑧ **現行 vs 第2ポート比較**（構成・検証ステータス・相関・リスク/リターン・運用。確定値=現行 / 期待値=第2を厳密に区別） |
+| [`docs/52_portfolio2_v1_results_negative.md`](docs/52_portfolio2_v1_results_negative.md) | ⑨ **第2ポート v1 検証結果【不合格・実10年】**（MR/RPとも別ユニバースへ転移せず棄却→『第2の無相関エッジは無い』を再確認。次案A/B/C） |
 | [`docs/04_research_v2_findings.md`](docs/04_research_v2_findings.md) | ⑤ v2研究レポート（Lv1-5でv1否定→白紙再探索→S3採用、感度/WF/Bonferroni） |
 | [`research/`](research/) | 研究用バックテスタ・戦略スクリーニング・ロバスト性検証（実データ） |
 | [`mql5/presets/EURUSD_default.set`](mql5/presets/EURUSD_default.set) | v1 EURUSD 既定プリセット |
