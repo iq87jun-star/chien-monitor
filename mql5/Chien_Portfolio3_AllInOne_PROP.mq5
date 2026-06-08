@@ -101,6 +101,12 @@ input long   InpMagicBase = 940720;       // v7=+1 / v4=+2 / E5=+3
 input int    InpSlippagePoints = 30;
 input bool   InpVerboseLog = true;
 
+input group "=== 通知（スマホPush/メール）==="
+input bool   InpNotifyPush    = true;   // MetaTraderアプリへPush通知(要 MetaQuotes ID 設定)
+input bool   InpNotifyEmail   = false;  // メール通知(要 ツール>オプション>Eメール 設定)
+input bool   InpNotifyEntries = true;   // エントリー時に通知
+input bool   InpNotifyGuards  = true;   // ガード作動(全停止/日次停止)時に通知
+
 //==================================================================
 CTrade        trade;
 CPositionInfo posinfo;
@@ -135,6 +141,14 @@ int SplitHours(string csv, int &arr[])
    ArrayResize(arr,m); return m;
 }
 double PipOf(string s){ return (StringFind(s,"JPY")>=0)? 0.01 : 0.0001; }
+
+void NotifyMsg(string m){
+   string full=StringFormat("[%s/%s] %s", g_scenName, AccountInfoString(ACCOUNT_COMPANY), m);
+   if(InpNotifyPush)  SendNotification(full);
+   if(InpNotifyEmail) SendMail("Chien EA: "+m, full);
+}
+void NotifyEntry(string m){ if(InpNotifyEntries) NotifyMsg("ENTRY "+m); }
+void NotifyGuard(string m){ if(InpNotifyGuards)  NotifyMsg("GUARD "+m); }
 
 string ResolveSymbol(string want)
 {
@@ -223,6 +237,7 @@ int OnInit()
       g_scenName,g_initBal,g_weeklyRisk,g_v4risk,g_e5leg,(g_useTrailing?"Y":"N"),
       (g_useProfitStop?"Y":"N"),g_profitPct,(g_useDailyStop?"Y":"N"));
    if(InpVerboseLog) Print("[NOTE] 1チャートに本EA1つだけ。v7+v4+E5を内部運用。Magic分離(",g_mV7,"/",g_mV4,"/",g_mE5,")。v4=ADOPT/E5=LEAD=デモ前提。");
+   NotifyMsg(StringFormat("起動 %s initBal=%.0f (通知テスト)", g_scenName, g_initBal));
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }
@@ -305,13 +320,13 @@ void OnTimer()
    double floor=BreachFloor(equity);
    double guard=floor+g_initBal*g_floorBufPct/100.0;
    if(equity<=guard && !g_halted){ g_halted=true; CloseAllMine("EQUITY_FLOOR");
-      PrintFormat("[HALT] equity %.2f <= guard %.2f",equity,guard); }
+      PrintFormat("[HALT] equity %.2f <= guard %.2f",equity,guard); NotifyGuard(StringFormat("EQUITY FLOOR 全停止 eq=%.0f",equity)); }
    if(g_halted){ CloseAllMine("HALTED"); return; }
 
    if(g_useDailyStop){
       double dpnl=equity-g_dayStartEq;
       if(dpnl<=-g_initBal*g_dailyStopPct/100.0 && !g_dayBlocked){ g_dayBlocked=true;
-         PrintFormat("[DAILY STOP] %.2f",dpnl); }
+         PrintFormat("[DAILY STOP] %.2f",dpnl); NotifyGuard(StringFormat("DAILY STOP dPnL=%.0f",dpnl)); }
    }
 
    ManageV7Exit();
@@ -364,7 +379,7 @@ void EntriesV7(datetime utc)
       double sl=NormalizeDouble(ask-sd,dg);
       g_lastShot[key]=hourBar;
       if(trade.Buy(lots,sym,0.0,sl,0.0,StringFormat("v7_%s_h%d",sym,g_hours[slot])))
-         { if(InpVerboseLog) PrintFormat("[v7 ENTRY] LONG %s h%dUTC lots=%.2f SL=%.5f",sym,g_hours[slot],lots,sl); }
+         { if(InpVerboseLog) PrintFormat("[v7 ENTRY] LONG %s h%dUTC lots=%.2f SL=%.5f",sym,g_hours[slot],lots,sl); NotifyEntry(StringFormat("v7 LONG %s h%dUTC lots=%.2f",sym,g_hours[slot],lots)); }
    }
 }
 
@@ -424,10 +439,10 @@ void EntriesV4()
       int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
       if(sig>0){ double e=SymbolInfoDouble(sym,SYMBOL_ASK);
          double sl=NormalizeDouble(e-sd,dg), tp=NormalizeDouble(e+tpd,dg);
-         if(trade.Buy(lots,sym,0.0,sl,tp,"v4_"+sym) && InpVerboseLog) PrintFormat("[v4 ENTRY] LONG %s lots=%.2f SL=%.5f TP=%.5f",sym,lots,sl,tp); }
+         if(trade.Buy(lots,sym,0.0,sl,tp,"v4_"+sym)){ if(InpVerboseLog) PrintFormat("[v4 ENTRY] LONG %s lots=%.2f SL=%.5f TP=%.5f",sym,lots,sl,tp); NotifyEntry(StringFormat("v4 LONG %s lots=%.2f",sym,lots)); } }
       else     { double e=SymbolInfoDouble(sym,SYMBOL_BID);
          double sl=NormalizeDouble(e+sd,dg), tp=NormalizeDouble(e-tpd,dg);
-         if(trade.Sell(lots,sym,0.0,sl,tp,"v4_"+sym) && InpVerboseLog) PrintFormat("[v4 ENTRY] SHORT %s lots=%.2f SL=%.5f TP=%.5f",sym,lots,sl,tp); }
+         if(trade.Sell(lots,sym,0.0,sl,tp,"v4_"+sym)){ if(InpVerboseLog) PrintFormat("[v4 ENTRY] SHORT %s lots=%.2f SL=%.5f TP=%.5f",sym,lots,sl,tp); NotifyEntry(StringFormat("v4 SHORT %s lots=%.2f",sym,lots)); } }
    }
 }
 
@@ -465,9 +480,9 @@ void EntriesE5()
       double lots=LotsFor(sym,atr,riskMoney); if(lots<InpMinLot) continue;
       double sd=InpCatATR_E5*atr; int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
       if(sig>0){ double e=SymbolInfoDouble(sym,SYMBOL_ASK); double sl=NormalizeDouble(e-sd,dg);
-         if(trade.Buy(lots,sym,0.0,sl,0.0,"E5_"+sym) && InpVerboseLog) PrintFormat("[E5 ENTRY] LONG %s lots=%.2f",sym,lots); }
+         if(trade.Buy(lots,sym,0.0,sl,0.0,"E5_"+sym)){ if(InpVerboseLog) PrintFormat("[E5 ENTRY] LONG %s lots=%.2f",sym,lots); NotifyEntry(StringFormat("E5 LONG %s lots=%.2f",sym,lots)); } }
       else     { double e=SymbolInfoDouble(sym,SYMBOL_BID); double sl=NormalizeDouble(e+sd,dg);
-         if(trade.Sell(lots,sym,0.0,sl,0.0,"E5_"+sym) && InpVerboseLog) PrintFormat("[E5 ENTRY] SHORT %s lots=%.2f",sym,lots); }
+         if(trade.Sell(lots,sym,0.0,sl,0.0,"E5_"+sym)){ if(InpVerboseLog) PrintFormat("[E5 ENTRY] SHORT %s lots=%.2f",sym,lots); NotifyEntry(StringFormat("E5 SHORT %s lots=%.2f",sym,lots)); } }
    }
 }
 //+------------------------------------------------------------------+
