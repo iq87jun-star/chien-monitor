@@ -108,6 +108,24 @@ v7が「月曜のみ有意・他曜日は非有意」で本物性を示したの
 
 ---
 
+## 3.5 独立インストゥルメント追認（現物 / ETF / 先物）— `p2_confirm_proxies.py`
+
+「Yahoo現物指数データ固有のクセ」でないことを確かめるため、同じ指数を**別系列のインストゥルメント**
+（ETF・先物）で取得し月曜LONGを再検定した。先物(ES/NQ)はCFDが連動する対象ゆえ実運用妥当性の追認も兼ねる。
+
+| 指数 | 現物 | ETF | 先物 |
+|---|---|---|---|
+| US500 | ^GSPC p=0.019 | SPY p=0.004 | **ES=F p=0.040** |
+| NAS100 | ^IXIC p=0.003 | QQQ p=0.000 | **NQ=F p=0.009** |
+| GER40 | ^GDAXI p=0.020 | EWG p=0.016 | （先物略） |
+
+- **8/8 のインストゥルメントで月曜LONGが p≤0.05 で再現**。かつ**全件で火-金プラセボは非有意（p>0.4・負）**。
+- 現物・ETF・**先物**を通じて同じ月曜効果が出る＝**Yahoo現物固有のアーティファクトではなく本物の市場現象**の傍証。
+  特に先物での再現は、CFD(先物/現物連動・オーバーナイトギャップ有り)での実運用妥当性を補強する。
+- ⚠ あくまで傍証。絶対値はインストゥルメントで異なる（配当/限月/乖離）。**最終確証はユーザーの実CFDデモで**。
+
+---
+
 ## 4. P1との相関と「並列運用」の価値 — `p2_vs_p1_combined.py`
 
 P2の最大の存在意義は**P1と独立**なこと。月次相関:
@@ -173,6 +191,7 @@ EAでは `InpEnableCrypto=true` / `InpCryptoLegPct`(既定0.20%) で承認。
 | [`research/p2_portfolio_validate.py`](../research/p2_portfolio_validate.py) | P2核の本検証(プール/プラセボ/JK/WF/相関) |
 | [`research/p2_challenge_mc.py`](../research/p2_challenge_mc.py) | チャレンジMC(レバ別 合格/失格/p95DD) |
 | [`research/p2_vs_p1_combined.py`](../research/p2_vs_p1_combined.py) | P1×P2併用のSharpe/DD改善 |
+| [`research/p2_confirm_proxies.py`](../research/p2_confirm_proxies.py) | 独立インストゥルメント追認(現物/ETF/先物で月曜エッジ再現=8/8) |
 | [`research/colab_p2_validate.py`](../research/colab_p2_validate.py) | **ユーザー実データ(Drive/実指数)で9ゲート再確認** |
 
 ### 使い方（MT5）
