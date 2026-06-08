@@ -1,0 +1,16 @@
+{
+  "_note": "Colab 10年実測。第2ポートC案=リラティブバリュー(統計的ペア)。合格候補0。docs/53。",
+  "N": 7, "alpha": 0.00714,
+  "params": {"W_beta":120,"W_z":60,"Z_entry":2.0,"Z_exit":0.5,"cost_bps":4.0},
+  "pairs": {
+    "XAUUSD/XAGUSD": {"grade":"LEAD","passed":2,"net":-55.1,"Sharpe":-0.70,"maxDD":-57.3,"n":121,"perm_p":0.985,"jk":0.993,"IS":-28.5,"OOS":-37.3,"wf":1,"dd_p95":-12.5,"G4_placebo":false,"corr_v7":-0.004,"corr_v4":-0.107,"corr_E5":0.088,"corr_max":0.107},
+    "AUDUSD/NZDUSD": {"grade":"LEAD","passed":3,"net":-15.5,"Sharpe":-0.36,"maxDD":-20.1,"n":120,"perm_p":0.8665,"jk":0.931,"IS":-16.0,"OOS":0.6,"wf":1,"dd_p95":-9.3,"G4_placebo":false,"corr_v7":0.081,"corr_v4":0.144,"corr_E5":-0.054,"corr_max":0.144},
+    "EURUSD/GBPUSD": {"grade":"LEAD","passed":5,"net":11.5,"Sharpe":0.28,"maxDD":-8.1,"n":120,"perm_p":0.1955,"jk":0.305,"IS":10.9,"OOS":0.6,"wf":3,"dd_p95":-4.8,"G4_placebo":false,"corr_v7":-0.079,"corr_v4":-0.053,"corr_E5":-0.152,"corr_max":0.152},
+    "US500/NAS100": {"grade":"LEAD","passed":3,"net":0.5,"Sharpe":0.04,"maxDD":-17.6,"n":121,"perm_p":0.446,"jk":0.627,"IS":7.8,"OOS":-6.8,"wf":1,"dd_p95":-5.5,"G4_placebo":false,"corr_v7":-0.036,"corr_v4":-0.117,"corr_E5":-0.119,"corr_max":0.119},
+    "US500/GER40": {"grade":"LEAD","passed":0,"net":0.0,"n":0,"note":"Yahoo取引所間で日足タイムスタンプずれ→整列せず未計測(データ不具合)"},
+    "XAUUSD/AUDUSD": {"grade":"LEAD","passed":0,"net":0.0,"n":0,"note":"同上(金=Yahoo日足 vs 豪=H1日足整列ずれ)未計測"},
+    "EURUSD/USDCHF": {"grade":"LEAD","passed":5,"net":9.1,"Sharpe":0.25,"maxDD":-6.3,"n":120,"perm_p":0.2233,"jk":0.45,"IS":4.9,"OOS":4.0,"wf":3,"dd_p95":-4.8,"G4_placebo":false,"corr_v7":0.24,"corr_v4":-0.069,"corr_E5":-0.166,"corr_max":0.24}
+  },
+  "survivors": [],
+  "conclusion": "計測5ペア全てG4プラセボ不合格＝スプレッド方向がランダムに勝てない。perm_pもα(0.007)に全く届かず。2ペアはデータ整列不良で未計測だが救済見込み薄。リラティブバリュー枠でも第2の独立エッジ無し。残るC変種(キャリー=金利/ボラ売り=オプション)はデータ範囲外。"
+}
