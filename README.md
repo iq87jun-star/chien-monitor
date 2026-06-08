@@ -21,6 +21,9 @@ FundedNext「Stellar 2-Step」チャレンジ（$100,000 / Phase1）を、規則
 | [`mql5/presets/v2_RSI_meanrev_default.set`](mql5/presets/v2_RSI_meanrev_default.set) | v2 プリセット |
 | [`mql5/FundedNext_Stellar_EA_v3.mq5`](mql5/FundedNext_Stellar_EA_v3.mq5) | ③'' **v3 EA（多信号アンサンブル k≥4）**。研究で唯一プールP値が有意。同ガード継承。**要再検証** |
 | [`mql5/presets/v3_confluence_default.set`](mql5/presets/v3_confluence_default.set) | v3 既定プリセット（k≥4合議） |
+| [`mql5/FundedNext_Stellar_EA_v9.mq5`](mql5/FundedNext_Stellar_EA_v9.mq5) | ③''' **v9 EA（月曜・週末フロー intraday 12h・同日決済）**。v7と同エッジを**DDほぼ半減・スワップリスク排除**で運用。同ガード継承。**要10年再測** |
+| [`mql5/presets/v9_intraday_default.set`](mql5/presets/v9_intraday_default.set) | v9 既定プリセット（12h保有・保守予算0.60・等加重） |
+| [`docs/37_v9_intraday_weekendflow.md`](docs/37_v9_intraday_weekendflow.md) | ⑥ v9研究（新シグ探索=TOM/金曜SHORT棄却→月曜エッジ再確認→12h保有でCalmar最良の実証） |
 | [`docs/04_research_v2_findings.md`](docs/04_research_v2_findings.md) | ⑤ v2研究レポート（Lv1-5でv1否定→白紙再探索→S3採用、感度/WF/Bonferroni） |
 | [`research/`](research/) | 研究用バックテスタ・戦略スクリーニング・ロバスト性検証（実データ） |
 | [`mql5/presets/EURUSD_default.set`](mql5/presets/EURUSD_default.set) | v1 EURUSD 既定プリセット |

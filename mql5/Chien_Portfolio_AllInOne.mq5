@@ -113,18 +113,18 @@ double PipOf(string s){ return (StringFind(s,"JPY")>=0)? 0.01 : 0.0001; }
 // 業者で銘柄名が違う問題に対応: 指定名＋主要別名＋サフィックスを総当りで実在銘柄を解決。
 string ResolveSymbol(string want)
 {
-   string suf[]={"",".cash",".r",".c",".pro","m",".spot","-cash",".sd","+",".i","_SB"};
-   string bases[]; ArrayResize(bases,20); int nb=0;
+   string suf[]={"",".pi",".raw",".ecn",".stp",".pro",".cash",".r",".c",".m","m",".spot","-cash",".sd","+",".i","_SB","_raw",".a",".z"};
+   string bases[]; ArrayResize(bases,40); int nb=0;
    bases[nb++]=want;
    string U=want; StringToUpper(U);
    if(StringFind(U,"XAU")>=0 || StringFind(U,"GOLD")>=0){
       bases[nb++]="XAUUSD"; bases[nb++]="GOLD"; bases[nb++]="GOLDUSD"; }
    else if(StringFind(U,"SPX")>=0 || StringFind(U,"500")>=0){
-      bases[nb++]="US500"; bases[nb++]="SPX500"; bases[nb++]="SP500"; bases[nb++]="USA500"; bases[nb++]="US500Cash"; }
+      bases[nb++]="US500"; bases[nb++]="SPX500"; bases[nb++]="SP500"; bases[nb++]="USA500"; bases[nb++]="US500Cash"; bases[nb++]="US_500"; bases[nb++]="SPX"; bases[nb++]="S&P500"; bases[nb++]="US500.cash"; }
    else if(StringFind(U,"NAS")>=0 || StringFind(U,"USTEC")>=0 || StringFind(U,"NDX")>=0 || StringFind(U,"US100")>=0 || StringFind(U,"TECH")>=0){
-      bases[nb++]="NAS100"; bases[nb++]="USTEC"; bases[nb++]="US100"; bases[nb++]="NDX100"; bases[nb++]="USTECH"; }
+      bases[nb++]="NAS100"; bases[nb++]="USTEC"; bases[nb++]="US100"; bases[nb++]="NDX100"; bases[nb++]="USTECH"; bases[nb++]="USTEC100"; bases[nb++]="NDX"; bases[nb++]="US_TECH100"; bases[nb++]="NAS100.cash"; }
    else if(StringFind(U,"GER")>=0 || StringFind(U,"DAX")>=0 || StringFind(U,"DE40")>=0 || StringFind(U,"DE30")>=0 || StringFind(U,"40")>=0){
-      bases[nb++]="GER40"; bases[nb++]="DE40"; bases[nb++]="DAX40"; bases[nb++]="GER30"; bases[nb++]="DE30"; }
+      bases[nb++]="GER40"; bases[nb++]="DE40"; bases[nb++]="DAX40"; bases[nb++]="GER30"; bases[nb++]="DE30"; bases[nb++]="GERMANY40"; bases[nb++]="DE_40"; bases[nb++]="DAX"; bases[nb++]="GER40.cash"; }
    ArrayResize(bases,nb);
    for(int b=0;b<nb;b++)
       for(int s=0;s<ArraySize(suf);s++){
