@@ -1,0 +1,17 @@
+; Portfolio4 INSTANT・指数なし(金は有る) — v7+v4+E5(金のみ)・E-Mon除外
+; 指数CFDが無いインスタント口座向け。v4厚めに再配分(同DD-9.7%で年率≈11.7%,Sharpe1.19/docs53)。
+; -10%トレーリング維持(InpForceTrailing=true)。E5は金のみ・E-MonはweeklyPct=0で無効。
+InpScenario=2
+InpForceTrailing=true
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY,USDJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD
+InpEMonSymbols=US500,NAS100,GER40
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpWeeklyRiskPct=1.10
+InpV4RiskPerTradePct=0.46
+InpE5LegRiskPct=0.90
+InpEMonWeeklyPct=0.0
+InpMagicBase=940730

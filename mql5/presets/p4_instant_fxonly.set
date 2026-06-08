@@ -1,0 +1,17 @@
+; Portfolio4 INSTANT・FX純(指数も金も無し) — v7+v4のみ
+; FX専業のインスタント口座向け。v4(ADOPT)主軸に再配分(同DD-9.7%で年率≈8.8%,Sharpe0.95/docs53)。
+; -10%トレーリング維持。E5/E-MonはweeklyPct=0で無効(銘柄は自動スキップ)。
+InpScenario=2
+InpForceTrailing=true
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY,USDJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD
+InpEMonSymbols=US500,NAS100,GER40
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpWeeklyRiskPct=1.30
+InpV4RiskPerTradePct=0.55
+InpE5LegRiskPct=0.0
+InpEMonWeeklyPct=0.0
+InpMagicBase=940730

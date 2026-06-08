@@ -60,6 +60,7 @@ input group "=== 口座/ガード ==="
 input double InpInitialBalance   = 0.0;   // 0=口座残高を自動取得
 input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%
 input double InpAccountFloorDDPct= 9.0;   // 全停止ライン%(攻め=9 / 守りは8)
+input bool   InpForceTrailing    = false; // true=MANUALでもトレーリング(INSTANT用に再配分する時)
 
 input group "=== 手動値（PORT_MANUAL時のみ・4戦略の配分）==="
 input double InpWeeklyRiskPct    = 2.50;  // v7 週次リスク%
@@ -185,6 +186,8 @@ void ResolveScenario()
       g_scenName="PROP_3.0x_W"; g_weeklyRisk=2.50; g_v4risk=0.90; g_e5leg=1.50; g_emonWeekly=2.50;
       g_useProfitStop=true; g_profitPct=8.0; g_useDailyStop=true; g_dailyStopPct=4.0;
    }
+   // INSTANTで銘柄欠落により再配分(PORT_MANUAL)する場合でもトレーリングを維持する用
+   if(InpForceTrailing){ g_useTrailing=true; g_useProfitStop=false; g_useDailyStop=false; g_profitPct=0; g_dailyStopPct=0; }
 }
 
 int OnInit()
