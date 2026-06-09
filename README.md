@@ -127,3 +127,22 @@ v7/E-Mon/v4/E5 と時間的に重ならない第3系統 ＝ **休眠リスク予
 **核心**: **P-A（P1にE-Monを足す）が総合本命** ― 同速(中央4ヶ月)で失格 6.1%→**4.4%**・本番-8%年収 ¥1.76M→**¥1.96M**・
 リスク最大寄与 44%→**35%**・有効ベット 2.56→**3.67**。**P1(確定)は P-A に全項目で劣後**＝確定をP-Aへ更新する価値大。
 分散を極めるなら**分散案D**（寄与29%・有効3.86）。P-Cは収益高いがv4集中(63%)で分散は弱い。
+
+---
+
+## 🆕 E-Mon を RG3(非対称リスクオフ・ゲート)版へ差し替え
+
+別ブランチ(hsjec9, docs/64-67)の **RG3＝E-Monの非対称リスクオフ・ゲート**（SMA200割れ×高ボラ週のみ月曜建て見送り）を取り込み、
+本ブランチの**中央4ヶ月ポート枠で raw vs RG3 を実測**。**失格率がほぼ半減**したため採用した。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/68_emon_rg3_adoption.md`](docs/68_emon_rg3_adoption.md) | RG3検証・採用判定（失格 4.9→2.3% / p95DD −13→−11%）＋EA実装 |
+| [`research/compare_emon_rg3_median4.py`](research/compare_emon_rg3_median4.py) | raw vs RG3 比較（中央4ヶ月・失格/分散度） |
+| [`research/edge_regime_gate_10y.py`](research/edge_regime_gate_10y.py) | RG3ゲート定義（別ブランチ由来・流用） |
+| `mql5/Chien_Parallel_AllInOne_PROP.mq5` | E-Mon脚に **RG3ゲート実装**（`InpEMonRegimeGate`） |
+| `parallel_median4_{PA,D,PC}_emon.set` | E-Mon脚で **RG3有効化済み** |
+
+**核心**: RG3 は「Sharpeを捨ててDD/失格を買う保険」。スリーブ maxDD −15.3→**−6.4%**、中央4ヶ月ポートで
+**失格 P-A 4.9→2.3% / 分散案D 5.2→2.0%**・p95DD −13/−14→**−11%**。純益(funded年収)は小幅減だが、
+プロップの生存最優先に照らし妥当。**差し替えは E-Mon脚だけ**（v7/v4/E5は不変）。

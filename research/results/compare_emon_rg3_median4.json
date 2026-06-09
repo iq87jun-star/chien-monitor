@@ -1,0 +1,46 @@
+{
+  "sleeve": {
+    "raw": {
+      "net_pct": 67.0,
+      "maxDD_pct": -15.3
+    },
+    "RG3": {
+      "net_pct": 47.8,
+      "maxDD_pct": -6.4
+    }
+  },
+  "portfolio": {
+    "raw|P-A(30:30:20:20)": {
+      "max_contrib": 35.0,
+      "eff_bets": 3.67,
+      "mult": 1.47,
+      "p95DD": -13.0,
+      "fail_pct": 4.9,
+      "med": 4
+    },
+    "raw|分散案D(30:25:25:20)": {
+      "max_contrib": 29.0,
+      "eff_bets": 3.86,
+      "mult": 1.47,
+      "p95DD": -14.0,
+      "fail_pct": 5.2,
+      "med": 4
+    },
+    "RG3|P-A(30:30:20:20)": {
+      "max_contrib": 34.0,
+      "eff_bets": 3.67,
+      "mult": 1.42,
+      "p95DD": -11.0,
+      "fail_pct": 2.3,
+      "med": 4
+    },
+    "RG3|分散案D(30:25:25:20)": {
+      "max_contrib": 31.0,
+      "eff_bets": 3.77,
+      "mult": 1.43,
+      "p95DD": -11.0,
+      "fail_pct": 2.0,
+      "med": 4
+    }
+  }
+}
