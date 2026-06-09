@@ -64,7 +64,9 @@ input double InpAccountFloorDDPct= 9.0;   // 全停止ライン%(★攻め=9.0�
 
 input group "=== 手動値（PORT_MANUAL時のみ・2戦略の配分）==="
 input double InpEMonWeeklyPct   = 3.00;   // E-Mon 週次リスク%（PROP 3.0x攻め既定と同値）
-input double InpE5LegRiskPct    = 1.50;   // E5 legRisk%(各レッグ月次σ)
+input double InpE5LegRiskPct    = 1.50;   // E5 legRisk%(各レッグ月次σ)。P-A/D/C重畳時は0=E-Monのみ
+input double InpManualProfitStopPct = 0.0; // PARA_MANUAL: +この%で新規停止(0=無効)。重畳脚は主EA側に任せ0が既定
+input double InpManualDailyStopPct  = 4.0; // PARA_MANUAL: 日次−この%で当日全決済(0=無効)。規約−5%手前
 
 input group "=== E-Mon 設定（株価指数 月曜LONG）==="
 input int    InpEntryWeekday  = 1;        // 1=月曜(MQL: 0=日..6=土)
@@ -76,6 +78,13 @@ input double InpCatastropheATR= 2.5;      // SL=2.5×ATR(災害用・広く置�
 input double InpMinStopPts    = 50.0;     // 指数の最小SL(ポイント)
 input double InpMaxStopPts    = 200000.0; // 指数の最大SL(ポイント・大きめ許容)
 input double InpMaxSpreadPts  = 1500.0;   // 指数スプレッド上限(ポイント)
+
+input group "=== E-Mon RG3 レジームゲート（非対称リスクオフ・DD保険, docs/67）==="
+input bool   InpEMonRegimeGate = false;   // ★true=RG3ゲート有効(SMA200割れ×高ボラ週は月曜建て見送り)。スリーブmaxDD≈半減
+input int    InpRG_SMA        = 200;      // トレンド判定SMA(D1)
+input int    InpRG_VolWin     = 20;       // 実現ボラ窓(営業日)
+input int    InpRG_VolLB      = 252;      // 高ボラ分位の参照窓(営業日)
+input double InpRG_VolQ       = 0.80;     // 高ボラ分位(>これ=高ボラ)
 
 input group "=== E5 設定（多資産月次TSMOM）==="
 input int    InpLB1=1, InpLB2=3, InpLB3=6, InpLB4=12;
@@ -162,6 +171,10 @@ void ResolveScenario()
       g_scenName="PROP_3.0x_AGGR"; g_emonWeekly=3.00; g_e5leg=1.50;
       g_useTrailing=false; g_useProfitStop=true; g_profitPct=8.0;
       g_useDailyStop=true; g_dailyStopPct=4.0;
+   } else {
+      // ★PARA_MANUAL: 手動ガードを入力から有効化（P-A/D/CでE-Mon脚を主EAと併走させる時も自前で日次/利確を持つ）。
+      if(InpManualProfitStopPct>0.0){ g_useProfitStop=true; g_profitPct=InpManualProfitStopPct; }
+      if(InpManualDailyStopPct>0.0){ g_useDailyStop=true;  g_dailyStopPct=InpManualDailyStopPct; }
    }
 }
 
@@ -309,12 +322,57 @@ void ManageEMonExit()
          PrintFormat("[E-Mon TIME EXIT] %s",posinfo.Symbol()); }
    }
 }
+// ---- RG3 非対称リスクオフ・ゲート(docs/66-67): バスケットがSMA200割れ"かつ"高ボラの週だけ見送り ----
+double PercentileSorted(double &v[], int n, double q)
+{
+   double a[]; ArrayResize(a,n); for(int i=0;i<n;i++) a[i]=v[i]; ArraySort(a);
+   if(n<=1) return (n==1?a[0]:0.0);
+   double idx=q*(n-1); int lo=(int)MathFloor(idx); double fr=idx-lo;
+   if(lo>=n-1) return a[n-1];
+   return a[lo]+(a[lo+1]-a[lo])*fr;
+}
+bool EMonRiskOffWeek()
+{
+   int n=ArraySize(g_emon);
+   int need=InpRG_SMA+InpRG_VolLB+InpRG_VolWin+5;
+   int upCount=0, valid=0;
+   double bvsum[]; int bvcnt[]; ArrayResize(bvsum,InpRG_VolLB); ArrayResize(bvcnt,InpRG_VolLB);
+   ArrayInitialize(bvsum,0.0); ArrayInitialize(bvcnt,0);
+   for(int s=0;s<n;s++){
+      if(g_atrH1[s]==INVALID_HANDLE) continue;
+      double c[]; int got=CopyClose(g_emon[s],PERIOD_D1,0,need,c);
+      if(got<InpRG_SMA+2) continue;
+      ArraySetAsSeries(c,true);                          // c[1]=前営業日の確定終値
+      double sma=0; for(int k=1;k<=InpRG_SMA;k++) sma+=c[k]; sma/=InpRG_SMA;
+      valid++; if(c[1]>sma) upCount++;
+      for(int d=0;d<InpRG_VolLB;d++){                     // d=0=直近の20日窓ボラ
+         int base=1+d; if(base+InpRG_VolWin+1>=got) break;
+         double m=0; for(int j=0;j<InpRG_VolWin;j++) m+=(c[base+j]/c[base+j+1]-1.0); m/=InpRG_VolWin;
+         double vv=0; for(int j=0;j<InpRG_VolWin;j++){ double r=c[base+j]/c[base+j+1]-1.0; vv+=(r-m)*(r-m); }
+         double sd=MathSqrt(vv/InpRG_VolWin)*MathSqrt(252.0);
+         bvsum[d]+=sd; bvcnt[d]++;
+      }
+   }
+   if(valid==0) return false;                             // 判定不能→ゲートせず通常建て(fail-open)
+   bool up_maj=(upCount*2>=valid);
+   double bv[]; int m=0; ArrayResize(bv,InpRG_VolLB);
+   for(int d=0;d<InpRG_VolLB;d++) if(bvcnt[d]>0) bv[m++]=bvsum[d]/bvcnt[d];
+   if(m<30) return false;
+   double cur=bv[0]; double thr=PercentileSorted(bv,m,InpRG_VolQ);
+   bool hv_high=(cur>thr);
+   return ((!up_maj) && hv_high);                         // 真リスクオフ週=見送り
+}
+
 void EntriesEMon(datetime utc)
 {
    MqlDateTime u; TimeToStruct(utc,u);
    if(u.day_of_week!=InpEntryWeekday) return;
    int slot=-1; for(int h=0;h<ArraySize(g_hours);h++) if(u.hour==g_hours[h]){ slot=h; break; }
    if(slot<0) return;
+   if(InpEMonRegimeGate && EMonRiskOffWeek()){
+      if(InpVerboseLog) Print("[E-Mon RG3] リスクオフ週(SMA200割れ×高ボラ)→月曜建て見送り");
+      return;
+   }
    datetime hourBar=utc-(utc%3600); int nh=ArraySize(g_hours);
    double perShot=g_emonWeekly/(InpShotsPerWeek>0?InpShotsPerWeek:1);
    trade.SetExpertMagicNumber(g_mEMon);

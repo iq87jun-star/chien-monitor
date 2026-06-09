@@ -1,0 +1,388 @@
+{
+  "n_tests": 164,
+  "alpha_bonf": 0.000305,
+  "sig_count": 6,
+  "bonferroni_survivors": 0,
+  "span": [
+    "2016-06",
+    "2026-06"
+  ],
+  "all_significant": [
+    {
+      "label": "US500_Jul_L",
+      "family": "M_monthOfYear",
+      "net_pct": 29.4,
+      "win_pct": 60.0,
+      "maxDD_pct": -4.0,
+      "n": 210,
+      "perm_p": 0.0035,
+      "corr_v7": NaN,
+      "corr_emon": NaN
+    },
+    {
+      "label": "US500_Nov_L",
+      "family": "M_monthOfYear",
+      "net_pct": 38.1,
+      "win_pct": 62.0,
+      "maxDD_pct": -6.9,
+      "n": 205,
+      "perm_p": 0.0047,
+      "corr_v7": NaN,
+      "corr_emon": NaN
+    },
+    {
+      "label": "NAS100_Jul_L",
+      "family": "M_monthOfYear",
+      "net_pct": 39.4,
+      "win_pct": 60.0,
+      "maxDD_pct": -7.4,
+      "n": 210,
+      "perm_p": 0.0125,
+      "corr_v7": NaN,
+      "corr_emon": NaN
+    },
+    {
+      "label": "NAS100_Nov_L",
+      "family": "M_monthOfYear",
+      "net_pct": 36.2,
+      "win_pct": 59.0,
+      "maxDD_pct": -9.2,
+      "n": 205,
+      "perm_p": 0.0367,
+      "corr_v7": NaN,
+      "corr_emon": NaN
+    },
+    {
+      "label": "XAUUSD_Dec_L",
+      "family": "M_monthOfYear",
+      "net_pct": 21.0,
+      "win_pct": 55.0,
+      "maxDD_pct": -5.8,
+      "n": 209,
+      "perm_p": 0.043,
+      "corr_v7": NaN,
+      "corr_emon": NaN
+    },
+    {
+      "label": "GER40_Nov_L",
+      "family": "M_monthOfYear",
+      "net_pct": 27.0,
+      "win_pct": 56.0,
+      "maxDD_pct": -8.1,
+      "n": 215,
+      "perm_p": 0.0473,
+      "corr_v7": NaN,
+      "corr_emon": NaN
+    }
+  ],
+  "detail": {
+    "US500_Jul_L": {
+      "full": {
+        "net_pct": 29.4,
+        "win_pct": 60.0,
+        "maxDD_pct": -4.0,
+        "n": 210,
+        "perm_p": 0.0035,
+        "corr_v7": NaN,
+        "corr_emon": NaN
+      },
+      "bonferroni_survivor": false,
+      "yearly_block_p": 0.0024,
+      "yearly_n": 10,
+      "yearly_pos_pct": 90.0,
+      "IS": {
+        "net_pct": 13.2,
+        "win_pct": 62.0,
+        "maxDD_pct": -2.0,
+        "n": 105
+      },
+      "oos": {
+        "net_pct": 14.3,
+        "win_pct": 57.0,
+        "maxDD_pct": -4.0,
+        "n": 105,
+        "perm_p": 0.0367
+      },
+      "jackknife_max_p": 0.016,
+      "jackknife": {
+        "2016": 0.007,
+        "2017": 0.005,
+        "2018": 0.009,
+        "2019": 0.003,
+        "2020": 0.007,
+        "2021": 0.005,
+        "2022": 0.016,
+        "2023": 0.009,
+        "2024": 0.003,
+        "2025": 0.003
+      },
+      "cost_net": {
+        "1x": 29.4,
+        "2x": 21.5,
+        "3x": 14.1
+      }
+    },
+    "US500_Nov_L": {
+      "full": {
+        "net_pct": 38.1,
+        "win_pct": 62.0,
+        "maxDD_pct": -6.9,
+        "n": 205,
+        "perm_p": 0.0047,
+        "corr_v7": NaN,
+        "corr_emon": NaN
+      },
+      "bonferroni_survivor": false,
+      "yearly_block_p": 0.0062,
+      "yearly_n": 10,
+      "yearly_pos_pct": 80.0,
+      "IS": {
+        "net_pct": 19.8,
+        "win_pct": 64.0,
+        "maxDD_pct": -6.4,
+        "n": 102
+      },
+      "oos": {
+        "net_pct": 15.3,
+        "win_pct": 61.0,
+        "maxDD_pct": -6.9,
+        "n": 103,
+        "perm_p": 0.0645
+      },
+      "jackknife_max_p": 0.02,
+      "jackknife": {
+        "2016": 0.006,
+        "2017": 0.006,
+        "2018": 0.004,
+        "2019": 0.005,
+        "2020": 0.02,
+        "2021": 0.004,
+        "2022": 0.005,
+        "2023": 0.019,
+        "2024": 0.011,
+        "2025": 0.001
+      },
+      "cost_net": {
+        "1x": 38.1,
+        "2x": 29.9,
+        "3x": 22.1
+      }
+    },
+    "NAS100_Jul_L": {
+      "full": {
+        "net_pct": 39.4,
+        "win_pct": 60.0,
+        "maxDD_pct": -7.4,
+        "n": 210,
+        "perm_p": 0.0125,
+        "corr_v7": NaN,
+        "corr_emon": NaN
+      },
+      "bonferroni_survivor": false,
+      "yearly_block_p": 0.0063,
+      "yearly_n": 10,
+      "yearly_pos_pct": 80.0,
+      "IS": {
+        "net_pct": 19.7,
+        "win_pct": 58.0,
+        "maxDD_pct": -5.1,
+        "n": 105
+      },
+      "oos": {
+        "net_pct": 16.4,
+        "win_pct": 61.0,
+        "maxDD_pct": -7.4,
+        "n": 105,
+        "perm_p": 0.082
+      },
+      "jackknife_max_p": 0.045,
+      "jackknife": {
+        "2016": 0.028,
+        "2017": 0.017,
+        "2018": 0.02,
+        "2019": 0.015,
+        "2020": 0.023,
+        "2021": 0.014,
+        "2022": 0.045,
+        "2023": 0.02,
+        "2024": 0.009,
+        "2025": 0.018
+      },
+      "cost_net": {
+        "1x": 39.4,
+        "2x": 30.9,
+        "3x": 22.9
+      }
+    },
+    "NAS100_Nov_L": {
+      "full": {
+        "net_pct": 36.2,
+        "win_pct": 59.0,
+        "maxDD_pct": -9.2,
+        "n": 205,
+        "perm_p": 0.0367,
+        "corr_v7": NaN,
+        "corr_emon": NaN
+      },
+      "bonferroni_survivor": false,
+      "yearly_block_p": 0.0198,
+      "yearly_n": 10,
+      "yearly_pos_pct": 90.0,
+      "IS": {
+        "net_pct": 18.7,
+        "win_pct": 62.0,
+        "maxDD_pct": -9.2,
+        "n": 102
+      },
+      "oos": {
+        "net_pct": 14.8,
+        "win_pct": 55.0,
+        "maxDD_pct": -9.1,
+        "n": 103,
+        "perm_p": 0.1537
+      },
+      "jackknife_max_p": 0.111,
+      "jackknife": {
+        "2016": 0.042,
+        "2017": 0.04,
+        "2018": 0.034,
+        "2019": 0.055,
+        "2020": 0.111,
+        "2021": 0.038,
+        "2022": 0.031,
+        "2023": 0.091,
+        "2024": 0.07,
+        "2025": 0.013
+      },
+      "cost_net": {
+        "1x": 36.2,
+        "2x": 28.1,
+        "3x": 20.5
+      }
+    },
+    "XAUUSD_Dec_L": {
+      "full": {
+        "net_pct": 21.0,
+        "win_pct": 55.0,
+        "maxDD_pct": -5.8,
+        "n": 209,
+        "perm_p": 0.043,
+        "corr_v7": NaN,
+        "corr_emon": NaN
+      },
+      "bonferroni_survivor": false,
+      "yearly_block_p": 0.0252,
+      "yearly_n": 10,
+      "yearly_pos_pct": 80.0,
+      "IS": {
+        "net_pct": 14.0,
+        "win_pct": 58.0,
+        "maxDD_pct": -5.8,
+        "n": 104
+      },
+      "oos": {
+        "net_pct": 6.2,
+        "win_pct": 51.0,
+        "maxDD_pct": -5.4,
+        "n": 105,
+        "perm_p": 0.2592
+      },
+      "jackknife_max_p": 0.123,
+      "jackknife": {
+        "2016": 0.025,
+        "2017": 0.056,
+        "2018": 0.091,
+        "2019": 0.079,
+        "2020": 0.123,
+        "2021": 0.066,
+        "2022": 0.068,
+        "2023": 0.037,
+        "2024": 0.028,
+        "2025": 0.056
+      },
+      "cost_net": {
+        "1x": 21.0,
+        "2x": 11.3,
+        "3x": 2.4
+      }
+    },
+    "GER40_Nov_L": {
+      "full": {
+        "net_pct": 27.0,
+        "win_pct": 56.0,
+        "maxDD_pct": -8.1,
+        "n": 215,
+        "perm_p": 0.0473,
+        "corr_v7": NaN,
+        "corr_emon": NaN
+      },
+      "bonferroni_survivor": false,
+      "yearly_block_p": 0.109,
+      "yearly_n": 10,
+      "yearly_pos_pct": 60.0,
+      "IS": {
+        "net_pct": 11.0,
+        "win_pct": 50.0,
+        "maxDD_pct": -7.4,
+        "n": 107
+      },
+      "oos": {
+        "net_pct": 14.4,
+        "win_pct": 63.0,
+        "maxDD_pct": -8.1,
+        "n": 108,
+        "perm_p": 0.0803
+      },
+      "jackknife_max_p": 0.197,
+      "jackknife": {
+        "2016": 0.023,
+        "2017": 0.03,
+        "2018": 0.042,
+        "2019": 0.059,
+        "2020": 0.197,
+        "2021": 0.02,
+        "2022": 0.117,
+        "2023": 0.136,
+        "2024": 0.057,
+        "2025": 0.031
+      },
+      "cost_net": {
+        "1x": 27.0,
+        "2x": 19.0,
+        "3x": 11.6
+      }
+    }
+  },
+  "baskets": {
+    "S-Nov(US500+NAS100+GER40 Nov L)": {
+      "net_pct": 34.1,
+      "win_pct": 60.0,
+      "maxDD_pct": -7.8,
+      "n": 215,
+      "daily_perm_p": 0.009,
+      "yearly_block_p": 0.0287,
+      "yearly_n": 10,
+      "yearly_pos_pct": 70.0,
+      "yearly_mean_pct": 3.06,
+      "yearly_min_pct": -2.33,
+      "cost2x_net": 20.9,
+      "corr_v7": 0.33,
+      "corr_emon": 0.55
+    },
+    "S-Jul(US500+NAS100 Jul L)": {
+      "net_pct": 34.4,
+      "win_pct": 60.0,
+      "maxDD_pct": -5.7,
+      "n": 210,
+      "daily_perm_p": 0.0067,
+      "yearly_block_p": 0.0045,
+      "yearly_n": 10,
+      "yearly_pos_pct": 80.0,
+      "yearly_mean_pct": 3.04,
+      "yearly_min_pct": -0.4,
+      "cost2x_net": 21.0,
+      "corr_v7": 0.64,
+      "corr_emon": -0.31
+    }
+  }
+}

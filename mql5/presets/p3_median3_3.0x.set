@@ -1,0 +1,15 @@
+; 既存P1本体 Chien_Portfolio3_AllInOne_PROP — 【中央3ヶ月版 = 3.0x】(docs/46 §3b Drive確定)
+; 無制限突破92% / 中央3ヶ月 / 失格8.0%。FundedNext Stellar P1(+8%/-10%)。
+; PROP_BREAKTHROUGH シナリオ=3.0x予算(v7 3.00/v4 0.75/E5 1.50)+利確+8%+日次-4%+全停止-9%を自動適用。
+; ★中央4ヶ月版より速いが失格+2pt。p95DDが枠に接近=全停止-9%が頻繁作動の想定。資金化後は1.0xへ。
+InpScenario=1
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY,USDJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpMagicBase=940720
+InpSlippagePoints=30
+InpVerboseLog=true

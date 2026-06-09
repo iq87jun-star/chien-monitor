@@ -1,0 +1,18 @@
+; 【分散案D 中央4ヶ月版】Portfolio3脚(v4:v7:E5=30:25:20相当)。E-Mon脚は parallel_median4_D_emon.set。
+; 比較(docs/65): 失格4.5%・最大リスク寄与29%(最小)・有効ベット3.86(最大)・本番-8%年収¥1.86M。★最も均等分散。
+InpScenario=2
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY,USDJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpWeeklyRiskPct=1.5625
+InpV4RiskPerTradePct=0.469
+InpE5LegRiskPct=1.25
+InpManualProfitStopPct=8.0
+InpManualDailyStopPct=4.0
+InpMagicBase=940720
+InpSlippagePoints=30
+InpVerboseLog=true

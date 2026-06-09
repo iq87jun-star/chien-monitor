@@ -82,3 +82,100 @@ python3 sim/montecarlo_2phase.py      # P1→P2連続＋連敗相関ストレス
 > **規律（本プロジェクト一貫）**: 数字は盛らない。E-Mon は STRONG-LEAD であって ADOPT ではない
 > （G3 Bonferroni 未達は v7 自身と同じ壁）。**確証はバックテストでなくデモ前進検証で埋める**。
 > 一次値は Yahoo日足10年。最終は `notebooks/parallel_emon.ipynb` を Drive 実行＋デモで確定すること。
+
+---
+
+## 🆕 季節性サテライト S-Jul（指数の7月効果 — 新土俵「曜日・月末以外のカレンダー」）
+
+既存探索（docs/14, docs/50）が触れたカレンダー軸は **「曜日(DOW)」と「月末(TOM)」だけ**だった。
+これまで未トライの **プレ祝日 / 年末年始(サンタ) / 月別シーズナリティ** を、同一ハーネス
+（順列 / IS-OOS / 年次JK / Bonferroni / コスト感応 / **v7・E-Mon 両相関**）で **N=164・一括事前登録**検定した。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/64_calendar_seasonal_edge_sjul.md`](docs/64_calendar_seasonal_edge_sjul.md) | 新土俵 N=164 探索＋ **S-Jul を9ゲート採点 → 7/9 = SEASONAL-LEAD**・組込み提案 |
+| [`research/calendar_event_edge_10y.py`](research/calendar_event_edge_10y.py) | 探索ハーネス（プレ祝日=休場ギャップ自動検出 / 年末年始 / 月別 ＋ **★年次ブロックp**） |
+| [`research/fetch_calendar.py`](research/fetch_calendar.py) | 指数5＋金＋円3クロスの Yahoo日足10年取得（429バックオフ付き） |
+| [`mql5/Chien_Seasonal_Index_EA.mq5`](mql5/Chien_Seasonal_Index_EA.mq5) | 季節性EA（指定月に指数バスケットLONG・全EA共通ガード継承・Magic 950730帯・**7月だけ中サイズ自動増量** `InpJulyBoostEnable`） |
+| [`mql5/presets/seasonal_sjul_default.set`](mql5/presets/seasonal_sjul_default.set) | S-Jul 既定（7月・US500+NAS100・月次1%サテライト） |
+| [`mql5/presets/seasonal_sjul_p1overlay.set`](mql5/presets/seasonal_sjul_p1overlay.set) | **P1重畳・7月中サイズ既定**（月1.0%×2.5＝7月だけ2.5%・docs/64 §8） |
+| [`research/p1_july_start_sjul.py`](research/p1_july_start_sjul.py) | **7月開始シナリオ試算**（既存P1×FundedNext+8%・中央3/4ヶ月到達MC＋S-Jul月1上乗せ） |
+
+**核心**: Bonferroni生存=0（v7/E-Monと同じ天井）。プレ祝日・年末年始は**エッジ無し**。唯一クリーンに残ったのが
+**S-Jul = 株価指数の7月ロング**（US500+NAS100）。**年次ブロックp=0.0045・陽性年80%・最悪年−0.4%・maxDD−5.7%**、
+かつ **E-Mon（指数月曜）と相関 −0.31（負）= 既存の指数スリーブに対する真の分散源**。発火窓が「7月の1ヶ月」で
+v7/E-Mon/v4/E5 と時間的に重ならない第3系統 ＝ **休眠リスク予算を使う季節性オーバーレイ**として足す。
+
+> **正直な限界（数字を盛らない）**: 単月季節性の**実サンプルは年数(10)のみ**＝v7/E-Mon(週次~500)より構造的に薄い。
+> ∴ **SEASONAL-LEAD であって ADOPT ではない**。**サテライト小サイズ(月次≤1%)限定**・本資金前にデモ前進検証必須。
+> 1ヶ月保有=スワップ/配当の影響大（Yahooは配当除く・bps単純化）→ 実CFDコストは要デモ実測。S-Nov は E-Mon相関+0.55(冗長)ゆえ不採用。
+
+---
+
+## 🆕 中央4ヶ月版 ポートフォリオ比較（確定P1 vs 3案）
+
+既存候補(v4/v7/E-Mon/E5)のみで、P1と同速(中央4ヶ月)かつ**リスク分散を高めた**代替案を横並び比較。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/65_portfolio_median4_compare.md`](docs/65_portfolio_median4_compare.md) | **P1 vs P-A vs 分散案D vs P-C を中央4ヶ月で比較**（失格%/分散度/本番年収）＋デプロイ |
+| [`research/portfolio_median4_compare.py`](research/portfolio_median4_compare.py) | 再現スクリプト（分散度・中央4倍率・失格・資金化後年収） |
+| `mql5/presets/p3_median4_PA.set` ＋ `parallel_median4_PA_emon.set` | **★P-A** 中央4ヶ月版（本命） |
+| `mql5/presets/p3_median4_D.set` ＋ `parallel_median4_D_emon.set` | 分散案D（均等分散最優先） |
+| `mql5/presets/p3_median4_PC.set` ＋ `parallel_median4_PC_emon.set` | P-C（v4厚・効率型） |
+
+**核心**: **P-A（P1にE-Monを足す）が総合本命** ― 同速(中央4ヶ月)で失格 6.1%→**4.4%**・本番-8%年収 ¥1.76M→**¥1.96M**・
+リスク最大寄与 44%→**35%**・有効ベット 2.56→**3.67**。**P1(確定)は P-A に全項目で劣後**＝確定をP-Aへ更新する価値大。
+分散を極めるなら**分散案D**（寄与29%・有効3.86）。P-Cは収益高いがv4集中(63%)で分散は弱い。
+
+---
+
+## 🆕 E-Mon を RG3(非対称リスクオフ・ゲート)版へ差し替え
+
+別ブランチ(hsjec9, docs/64-67)の **RG3＝E-Monの非対称リスクオフ・ゲート**（SMA200割れ×高ボラ週のみ月曜建て見送り）を取り込み、
+本ブランチの**中央4ヶ月ポート枠で raw vs RG3 を実測**。**失格率がほぼ半減**したため採用した。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/68_emon_rg3_adoption.md`](docs/68_emon_rg3_adoption.md) | RG3検証・採用判定（失格 4.9→2.3% / p95DD −13→−11%）＋EA実装 |
+| [`research/compare_emon_rg3_median4.py`](research/compare_emon_rg3_median4.py) | raw vs RG3 比較（中央4ヶ月・失格/分散度） |
+| [`research/edge_regime_gate_10y.py`](research/edge_regime_gate_10y.py) | RG3ゲート定義（別ブランチ由来・流用） |
+| `mql5/Chien_Parallel_AllInOne_PROP.mq5` | E-Mon脚に **RG3ゲート実装**（`InpEMonRegimeGate`） |
+| `parallel_median4_{PA,D,PC}_emon.set` | E-Mon脚で **RG3有効化済み** |
+
+**核心**: RG3 は「Sharpeを捨ててDD/失格を買う保険」。スリーブ maxDD −15.3→**−6.4%**、中央4ヶ月ポートで
+**失格 P-A 4.9→2.3% / 分散案D 5.2→2.0%**・p95DD −13/−14→**−11%**。純益(funded年収)は小幅減だが、
+プロップの生存最優先に照らし妥当。**差し替えは E-Mon脚だけ**（v7/v4/E5は不変）。
+
+---
+
+## 🆕 2口座並走 — 中央3ヶ月で最良の2本
+
+2口座の本質＝**全損回避**（2口座とも失う事故を避け、最低1つは資金化）。中央3ヶ月で低相関ペアを実測比較。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/69_twobook_median3.md`](docs/69_twobook_median3.md) | 2口座ペア比較（≥1通過/両喪失/相関）＋確定2本＋デプロイ |
+| [`research/twobook_median3.py`](research/twobook_median3.py) | 同月ブロック・ジョイントMC（共倒れ率算出） |
+| `mql5/presets/twobook_A_v4core_median3.set` | **口座A=v4主軸**（v4:v7:E5 45:35:20・3.0x） |
+| `mql5/presets/twobook_B_emon_rg3_median3.set` | **口座B=E-Mon[RG3]主軸**（E-Mon[RG3]:E5 65:35・RG3 ON） |
+
+**核心**: **口座A『v4主軸(FX/多資産)』∥ 口座B『E-Mon[RG3]主軸(指数)』** が望ましい2本。資産クラス・機序が別で
+**相関+0.37**と低く、**複製(同一2口座)の両喪失5.5%→4.0%**・**≥1通過96%**・各口座中央3ヶ月。
+「口座Aは FX/v4系、口座Bは 指数/E-Mon系に分ける」のが肝（A にも E-Mon を入れると相関0.68に上昇＝独立性が削がれる）。
+別口座/別業者で並走＝業者破綻リスクも分離。資金化後は両口座1.0xへ減（生存優先）。
+
+---
+
+## 🆕 FundedNext で中央3ヶ月 — リスク分散の2ポートフォリオ(運用カード)
+
+「既存会社=FundedNext」の規約に当てて、中央3ヶ月・リスク分散の確定2本をデプロイ手順へ落とし込んだ自己完結カード。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/70_fundednext_median3_two_portfolios.md`](docs/70_fundednext_median3_two_portfolios.md) | FundedNext規約＋対象銘柄＋確定2本(口座A/B)＋ジョイント期待値＋デプロイ＋ガード |
+
+**核心**: 検証は docs/69 と同じ(新規シミュレーションなし)。**口座A『v4主軸』∥ 口座B『E-Mon[RG3]主軸』** を
+別口座・別業者で並走＝相関+0.37・**≥1通過96%/両喪失4.0%**・各口座中央3ヶ月。プリセットは
+`twobook_A_v4core_median3.set` / `twobook_B_emon_rg3_median3.set` で即デプロイ可。中央3ヶ月=口座喪失前提ゆえ
+強ガード(日次−4%/フロア−9%)必須、資金化後は1.0xへ減（失格を嫌うなら docs/65 の中央4ヶ月へ）。

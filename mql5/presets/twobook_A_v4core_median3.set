@@ -1,0 +1,20 @@
+; 【2口座並走・口座A=v4主軸(FX/多資産)】中央3ヶ月版。Chien_Portfolio3_AllInOne_PROP に適用。
+; 構成 v4:v7:E5 = 45:35:20 を 3.0x(中央3ヶ月)で。口座B(E-Mon[RG3]主軸)と相関+0.37=低い→共倒れ回避。
+; ペア成績(docs/69): ≥1通過96% / 両喪失4.0%(複製5.5%より低) / 各口座 中央3ヶ月。
+; ★別口座(できれば別業者)で口座Bと並走。資金化後は1.0xへ減(生存優先)。
+InpScenario=2
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY,USDJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpWeeklyRiskPct=2.625
+InpV4RiskPerTradePct=0.844
+InpE5LegRiskPct=1.50
+InpManualProfitStopPct=8.0
+InpManualDailyStopPct=4.0
+InpMagicBase=940720
+InpSlippagePoints=30
+InpVerboseLog=true
