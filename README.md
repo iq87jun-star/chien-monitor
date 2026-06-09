@@ -82,3 +82,28 @@ python3 sim/montecarlo_2phase.py      # P1→P2連続＋連敗相関ストレス
 > **規律（本プロジェクト一貫）**: 数字は盛らない。E-Mon は STRONG-LEAD であって ADOPT ではない
 > （G3 Bonferroni 未達は v7 自身と同じ壁）。**確証はバックテストでなくデモ前進検証で埋める**。
 > 一次値は Yahoo日足10年。最終は `notebooks/parallel_emon.ipynb` を Drive 実行＋デモで確定すること。
+
+---
+
+## 🆕 季節性サテライト S-Jul（指数の7月効果 — 新土俵「曜日・月末以外のカレンダー」）
+
+既存探索（docs/14, docs/50）が触れたカレンダー軸は **「曜日(DOW)」と「月末(TOM)」だけ**だった。
+これまで未トライの **プレ祝日 / 年末年始(サンタ) / 月別シーズナリティ** を、同一ハーネス
+（順列 / IS-OOS / 年次JK / Bonferroni / コスト感応 / **v7・E-Mon 両相関**）で **N=164・一括事前登録**検定した。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/64_calendar_seasonal_edge_sjul.md`](docs/64_calendar_seasonal_edge_sjul.md) | 新土俵 N=164 探索＋ **S-Jul を9ゲート採点 → 7/9 = SEASONAL-LEAD**・組込み提案 |
+| [`research/calendar_event_edge_10y.py`](research/calendar_event_edge_10y.py) | 探索ハーネス（プレ祝日=休場ギャップ自動検出 / 年末年始 / 月別 ＋ **★年次ブロックp**） |
+| [`research/fetch_calendar.py`](research/fetch_calendar.py) | 指数5＋金＋円3クロスの Yahoo日足10年取得（429バックオフ付き） |
+| [`mql5/Chien_Seasonal_Index_EA.mq5`](mql5/Chien_Seasonal_Index_EA.mq5) | 季節性EA（指定月に指数バスケットLONG・全EA共通ガード継承・Magic 950730帯） |
+| [`mql5/presets/seasonal_sjul_default.set`](mql5/presets/seasonal_sjul_default.set) | S-Jul 既定（7月・US500+NAS100・月次1%サテライト） |
+
+**核心**: Bonferroni生存=0（v7/E-Monと同じ天井）。プレ祝日・年末年始は**エッジ無し**。唯一クリーンに残ったのが
+**S-Jul = 株価指数の7月ロング**（US500+NAS100）。**年次ブロックp=0.0045・陽性年80%・最悪年−0.4%・maxDD−5.7%**、
+かつ **E-Mon（指数月曜）と相関 −0.31（負）= 既存の指数スリーブに対する真の分散源**。発火窓が「7月の1ヶ月」で
+v7/E-Mon/v4/E5 と時間的に重ならない第3系統 ＝ **休眠リスク予算を使う季節性オーバーレイ**として足す。
+
+> **正直な限界（数字を盛らない）**: 単月季節性の**実サンプルは年数(10)のみ**＝v7/E-Mon(週次~500)より構造的に薄い。
+> ∴ **SEASONAL-LEAD であって ADOPT ではない**。**サテライト小サイズ(月次≤1%)限定**・本資金前にデモ前進検証必須。
+> 1ヶ月保有=スワップ/配当の影響大（Yahooは配当除く・bps単純化）→ 実CFDコストは要デモ実測。S-Nov は E-Mon相関+0.55(冗長)ゆえ不採用。
