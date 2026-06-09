@@ -1,0 +1,83 @@
+{
+  "攻め(−10%枠)": {
+    "mult": 1.0,
+    "p95DD": -9.6,
+    "P1": {
+      "pass_pct": 97.9,
+      "fail_pct": 2.1,
+      "timeout_pct": 0.0,
+      "med_month": 5,
+      "p25": 4,
+      "p75": 9,
+      "p90": 14
+    },
+    "P2": {
+      "pass_pct": 98.2,
+      "fail_pct": 1.8,
+      "timeout_pct": 0.0,
+      "med_month": 4,
+      "p25": 2,
+      "p75": 6,
+      "p90": 10
+    },
+    "both_pass": 96.1,
+    "ann": 16.9,
+    "annual_fail": 3.7,
+    "net_m": 213780,
+    "exp_y": 2469676
+  },
+  "中央4ヶ月": {
+    "mult": 1.22,
+    "p95DD": -11.7,
+    "P1": {
+      "pass_pct": 96.1,
+      "fail_pct": 3.9,
+      "timeout_pct": 0.0,
+      "med_month": 4,
+      "p25": 3,
+      "p75": 7,
+      "p90": 11
+    },
+    "P2": {
+      "pass_pct": 96.7,
+      "fail_pct": 3.3,
+      "timeout_pct": 0.0,
+      "med_month": 3,
+      "p25": 2,
+      "p75": 5,
+      "p90": 8
+    },
+    "both_pass": 92.9,
+    "ann": 20.8,
+    "annual_fail": 9.1,
+    "net_m": 263662,
+    "exp_y": 2877446
+  },
+  "中央3ヶ月": {
+    "mult": 1.63,
+    "p95DD": -15.4,
+    "P1": {
+      "pass_pct": 93.3,
+      "fail_pct": 6.7,
+      "timeout_pct": 0.0,
+      "med_month": 3,
+      "p25": 2,
+      "p75": 6,
+      "p90": 9
+    },
+    "P2": {
+      "pass_pct": 94.1,
+      "fail_pct": 5.9,
+      "timeout_pct": 0.0,
+      "med_month": 2,
+      "p25": 1,
+      "p75": 4,
+      "p90": 7
+    },
+    "both_pass": 87.8,
+    "ann": 28.1,
+    "annual_fail": 20.2,
+    "net_m": 356271,
+    "exp_y": 3411224
+  }
+}
