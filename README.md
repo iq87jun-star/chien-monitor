@@ -109,3 +109,21 @@ v7/E-Mon/v4/E5 と時間的に重ならない第3系統 ＝ **休眠リスク予
 > **正直な限界（数字を盛らない）**: 単月季節性の**実サンプルは年数(10)のみ**＝v7/E-Mon(週次~500)より構造的に薄い。
 > ∴ **SEASONAL-LEAD であって ADOPT ではない**。**サテライト小サイズ(月次≤1%)限定**・本資金前にデモ前進検証必須。
 > 1ヶ月保有=スワップ/配当の影響大（Yahooは配当除く・bps単純化）→ 実CFDコストは要デモ実測。S-Nov は E-Mon相関+0.55(冗長)ゆえ不採用。
+
+---
+
+## 🆕 中央4ヶ月版 ポートフォリオ比較（確定P1 vs 3案）
+
+既存候補(v4/v7/E-Mon/E5)のみで、P1と同速(中央4ヶ月)かつ**リスク分散を高めた**代替案を横並び比較。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/65_portfolio_median4_compare.md`](docs/65_portfolio_median4_compare.md) | **P1 vs P-A vs 分散案D vs P-C を中央4ヶ月で比較**（失格%/分散度/本番年収）＋デプロイ |
+| [`research/portfolio_median4_compare.py`](research/portfolio_median4_compare.py) | 再現スクリプト（分散度・中央4倍率・失格・資金化後年収） |
+| `mql5/presets/p3_median4_PA.set` ＋ `parallel_median4_PA_emon.set` | **★P-A** 中央4ヶ月版（本命） |
+| `mql5/presets/p3_median4_D.set` ＋ `parallel_median4_D_emon.set` | 分散案D（均等分散最優先） |
+| `mql5/presets/p3_median4_PC.set` ＋ `parallel_median4_PC_emon.set` | P-C（v4厚・効率型） |
+
+**核心**: **P-A（P1にE-Monを足す）が総合本命** ― 同速(中央4ヶ月)で失格 6.1%→**4.4%**・本番-8%年収 ¥1.76M→**¥1.96M**・
+リスク最大寄与 44%→**35%**・有効ベット 2.56→**3.67**。**P1(確定)は P-A に全項目で劣後**＝確定をP-Aへ更新する価値大。
+分散を極めるなら**分散案D**（寄与29%・有効3.86）。P-Cは収益高いがv4集中(63%)で分散は弱い。

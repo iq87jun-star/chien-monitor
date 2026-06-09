@@ -1,0 +1,17 @@
+; 【P-A 中央4ヶ月版】Parallel EAのE-Mon脚のみ(E5=0)。p3_median4_PA.set と同口座・別Magic(950720)で併走。
+InpScenario=2
+InpAcknowledgeLEAD=true
+InpEMonSymbols=NAS100,US500,GER40
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpEMonWeeklyPct=1.25
+InpE5LegRiskPct=0.0
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpManualProfitStopPct=0.0
+InpManualDailyStopPct=4.0
+InpEntryWeekday=1
+InpEntryHoursUTC=9,14
+InpShotsPerWeek=6
+InpHoldHours=24
+InpMagicBase=950720

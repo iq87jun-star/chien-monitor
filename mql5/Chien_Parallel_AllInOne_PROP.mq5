@@ -64,7 +64,9 @@ input double InpAccountFloorDDPct= 9.0;   // 全停止ライン%(★攻め=9.0�
 
 input group "=== 手動値（PORT_MANUAL時のみ・2戦略の配分）==="
 input double InpEMonWeeklyPct   = 3.00;   // E-Mon 週次リスク%（PROP 3.0x攻め既定と同値）
-input double InpE5LegRiskPct    = 1.50;   // E5 legRisk%(各レッグ月次σ)
+input double InpE5LegRiskPct    = 1.50;   // E5 legRisk%(各レッグ月次σ)。P-A/D/C重畳時は0=E-Monのみ
+input double InpManualProfitStopPct = 0.0; // PARA_MANUAL: +この%で新規停止(0=無効)。重畳脚は主EA側に任せ0が既定
+input double InpManualDailyStopPct  = 4.0; // PARA_MANUAL: 日次−この%で当日全決済(0=無効)。規約−5%手前
 
 input group "=== E-Mon 設定（株価指数 月曜LONG）==="
 input int    InpEntryWeekday  = 1;        // 1=月曜(MQL: 0=日..6=土)
@@ -162,6 +164,10 @@ void ResolveScenario()
       g_scenName="PROP_3.0x_AGGR"; g_emonWeekly=3.00; g_e5leg=1.50;
       g_useTrailing=false; g_useProfitStop=true; g_profitPct=8.0;
       g_useDailyStop=true; g_dailyStopPct=4.0;
+   } else {
+      // ★PARA_MANUAL: 手動ガードを入力から有効化（P-A/D/CでE-Mon脚を主EAと併走させる時も自前で日次/利確を持つ）。
+      if(InpManualProfitStopPct>0.0){ g_useProfitStop=true; g_profitPct=InpManualProfitStopPct; }
+      if(InpManualDailyStopPct>0.0){ g_useDailyStop=true;  g_dailyStopPct=InpManualDailyStopPct; }
    }
 }
 
