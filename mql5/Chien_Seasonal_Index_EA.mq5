@@ -28,6 +28,12 @@
 //|   ■ ガードは全EA共通(docs/01規約準拠): equityフロア(既定−8%/最終     |
 //|     backstop−10%)・日次−4%(規約−5%手前)・毎ティック equity 監視。    |
 //|                                                                   |
+//|   ■ 7月開始シナリオ(docs/64 §8): 既存P1(v7:v4:E5)に7月だけ重畳する     |
+//|     使い方では InpJulyBoostEnable=true で7月の実効リスクを             |
+//|     InpMonthRiskPct×InpJulyRiskMult(既定1.0%×2.5=2.5%≒中サイズ)へ     |
+//|     自動増量。中央4ヶ月運用(×1.47)で3ヶ月以内通過 ~38%→~41%・失格     |
+//|     6.1%→5.6%(速度寄りの小改善)。効くのは速さで、失格減は小。         |
+//|                                                                   |
 //|   ★1チャートに本EAを1つだけドロップ(どの銘柄/足でも可)。残高は自動。 |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
@@ -46,6 +52,8 @@ input int    InpEntryDom       = 1;            // 月内 何営業日目に建�
 input group "=== サイズ（季節性=サテライト小サイズ）==="
 input bool   InpAcknowledgeLEAD = true;        // S-Jul=SEASONAL-LEAD。デモ/極小で承認=true
 input double InpMonthRiskPct   = 1.00;         // 1季節(1ヶ月)あたりの総リスク%(全銘柄合算の予算)
+input bool   InpJulyBoostEnable = false;       // ★7月だけ中サイズへ自動増量(docs/64 §8: P1重畳の7月開始シナリオ)
+input double InpJulyRiskMult    = 2.5;         // 7月の実効リスク= InpMonthRiskPct × この倍率(既定1.0%×2.5=2.5%≒中サイズ)
 input double InpCatastropheATR = 2.5;          // 災害SL=2.5×ATR(D1)
 input double InpMinStopPts     = 50.0;         // 指数の最小SL(ポイント)
 input double InpMaxSpreadPts   = 1500.0;       // 指数スプレッド上限(ポイント)
@@ -250,7 +258,14 @@ void OnTimer()
 void OpenBasket()
 {
    int ns=ArraySize(g_syms);
-   double perSym=InpMonthRiskPct/(ns>0?ns:1);
+   // ★7月だけ中サイズへ自動増量(docs/64 §8)。建て月が7月かつ有効時のみ実効リスクを倍率適用。
+   MqlDateTime nt; TimeToStruct(TimeCurrent(),nt);
+   double monthRisk=InpMonthRiskPct;
+   if(InpJulyBoostEnable && nt.mon==7 && InpJulyRiskMult>0.0){
+      monthRisk=InpMonthRiskPct*InpJulyRiskMult;
+      if(InpVerboseLog) PrintFormat("[JULY BOOST] 7月の実効リスク=%.2f%%(=%.2f%%×%.2f)",monthRisk,InpMonthRiskPct,InpJulyRiskMult);
+   }
+   double perSym=monthRisk/(ns>0?ns:1);
    trade.SetExpertMagicNumber(g_mSeason);
    for(int i=0;i<ns;i++){
       if(g_atrD1[i]==INVALID_HANDLE) continue;

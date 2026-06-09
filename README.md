@@ -96,8 +96,10 @@ python3 sim/montecarlo_2phase.py      # P1→P2連続＋連敗相関ストレス
 | [`docs/64_calendar_seasonal_edge_sjul.md`](docs/64_calendar_seasonal_edge_sjul.md) | 新土俵 N=164 探索＋ **S-Jul を9ゲート採点 → 7/9 = SEASONAL-LEAD**・組込み提案 |
 | [`research/calendar_event_edge_10y.py`](research/calendar_event_edge_10y.py) | 探索ハーネス（プレ祝日=休場ギャップ自動検出 / 年末年始 / 月別 ＋ **★年次ブロックp**） |
 | [`research/fetch_calendar.py`](research/fetch_calendar.py) | 指数5＋金＋円3クロスの Yahoo日足10年取得（429バックオフ付き） |
-| [`mql5/Chien_Seasonal_Index_EA.mq5`](mql5/Chien_Seasonal_Index_EA.mq5) | 季節性EA（指定月に指数バスケットLONG・全EA共通ガード継承・Magic 950730帯） |
+| [`mql5/Chien_Seasonal_Index_EA.mq5`](mql5/Chien_Seasonal_Index_EA.mq5) | 季節性EA（指定月に指数バスケットLONG・全EA共通ガード継承・Magic 950730帯・**7月だけ中サイズ自動増量** `InpJulyBoostEnable`） |
 | [`mql5/presets/seasonal_sjul_default.set`](mql5/presets/seasonal_sjul_default.set) | S-Jul 既定（7月・US500+NAS100・月次1%サテライト） |
+| [`mql5/presets/seasonal_sjul_p1overlay.set`](mql5/presets/seasonal_sjul_p1overlay.set) | **P1重畳・7月中サイズ既定**（月1.0%×2.5＝7月だけ2.5%・docs/64 §8） |
+| [`research/p1_july_start_sjul.py`](research/p1_july_start_sjul.py) | **7月開始シナリオ試算**（既存P1×FundedNext+8%・中央3/4ヶ月到達MC＋S-Jul月1上乗せ） |
 
 **核心**: Bonferroni生存=0（v7/E-Monと同じ天井）。プレ祝日・年末年始は**エッジ無し**。唯一クリーンに残ったのが
 **S-Jul = 株価指数の7月ロング**（US500+NAS100）。**年次ブロックp=0.0045・陽性年80%・最悪年−0.4%・maxDD−5.7%**、
