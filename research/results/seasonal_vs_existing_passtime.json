@@ -1,0 +1,129 @@
+{
+  "title": "第3季節口座 vs 既存median4ポート — Phase1 +8% 月次通過の正面比較",
+  "discipline": "数字を盛らない。既存側は一次p1_july引用。季節側は確定窓の月次MC。",
+  "existing_median4_primary(p1_july_start_sjul.json)": {
+    "base": {
+      "mult": 1.47,
+      "month1_pt": 0.0,
+      "med": 4,
+      "mean": 5.32,
+      "le3": 38.0,
+      "le4": 53.7,
+      "pass_pct": 93.9,
+      "fail_pct": 6.1
+    },
+    "overlay_1pt": {
+      "mult": 1.47,
+      "month1_pt": 1.0,
+      "med": 4,
+      "mean": 5.26,
+      "le3": 39.2,
+      "le4": 54.6,
+      "pass_pct": 94.1,
+      "fail_pct": 5.9
+    },
+    "overlay_mid": {
+      "mult": 1.47,
+      "month1_pt": 2.4,
+      "med": 4,
+      "mean": 5.17,
+      "le3": 40.6,
+      "le4": 55.6,
+      "pass_pct": 94.4,
+      "fail_pct": 5.6
+    },
+    "overlay_full": {
+      "mult": 1.47,
+      "month1_pt": 4.9,
+      "med": 4,
+      "mean": 5.0,
+      "le3": 43.4,
+      "le4": 57.7,
+      "pass_pct": 94.8,
+      "fail_pct": 5.2
+    }
+  },
+  "seasonal_account_monthly_mc": {
+    "season_x1.0(素)": {
+      "mult": 1.0,
+      "include_dec": false,
+      "pass_pct": 94.1,
+      "breach_fail_pct": 0.0,
+      "timeout_pct(5y, not a real DQ)": 5.9,
+      "median_month": 36,
+      "mean_month": 37.5,
+      "le4_pct": 0.0,
+      "le6_pct": 0.0,
+      "p90_month": 51
+    },
+    "season_x1.3(守り)": {
+      "mult": 1.3,
+      "include_dec": false,
+      "pass_pct": 99.3,
+      "breach_fail_pct": 0.0,
+      "timeout_pct(5y, not a real DQ)": 0.7,
+      "median_month": 22,
+      "mean_month": 24.1,
+      "le4_pct": 0.0,
+      "le6_pct": 0.0,
+      "p90_month": 36
+    },
+    "season_x1.5(-10%枠上限寄り)": {
+      "mult": 1.5,
+      "include_dec": false,
+      "pass_pct": 99.2,
+      "breach_fail_pct": 0.15,
+      "timeout_pct(5y, not a real DQ)": 0.6,
+      "median_month": 22,
+      "mean_month": 24.2,
+      "le4_pct": 0.0,
+      "le6_pct": 0.0,
+      "p90_month": 36
+    },
+    "season_x1.5+dec(金12月併用)": {
+      "mult": 1.5,
+      "include_dec": true,
+      "pass_pct": 99.5,
+      "breach_fail_pct": 0.38,
+      "timeout_pct(5y, not a real DQ)": 0.1,
+      "median_month": 18,
+      "mean_month": 19.6,
+      "le4_pct": 0.0,
+      "le6_pct": 0.0,
+      "p90_month": 28
+    }
+  },
+  "structural_note": "季節口座は年1-2窓(7月/12月)のみ発火。ランダム開始だと7月到達の期待だけで中央~6ヶ月。∴ ★中央4ヶ月は構造的に不可能(サイズを上げても-10%枠で頭打ち)。本口座は『速さ』でなく『口座2(E-Mon)と負相関=同時DD回避・生存』が価値。",
+  "correlation": {
+    "S-Jul_vs_E-Mon(account2)": -0.31,
+    "S-Jul_vs_v7(account1)": 0.64
+  },
+  "parallel_survival(account1_median4 ∥ account3_seasonal)": {
+    "exist_fail_pct": 6.1,
+    "seasonal_fail_pct": 0.15,
+    "both_fail_pct(approx, indep)": 0.009,
+    "at_least_one_pass_pct(approx)": 99.991,
+    "note": "季節は年11ヶ月休眠ゆえ口座レベル相関≈0と仮定した独立近似。実相関はデモで確認。"
+  },
+  "overlay_path_on_median4(季節を主軸口座に重畳した時の一次効果)": {
+    "base(median4, S-Jul無)": {
+      "pass_pct": 93.9,
+      "le3": 38.0,
+      "le4": 53.7,
+      "med": 4
+    },
+    "+S-Jul中サイズ": {
+      "pass_pct": 94.4,
+      "le3": 40.6,
+      "le4": 55.6,
+      "med": 4
+    },
+    "+S-Julフル脚相当": {
+      "pass_pct": 94.8,
+      "le3": 43.4,
+      "le4": 57.7,
+      "med": 4
+    },
+    "note": "既存median4口座に7月だけ重畳=通過93.9%→94.4-94.8%・≤3ヶ月38.0%→40.6-43.4%(速度寄り小改善)。"
+  }
+}

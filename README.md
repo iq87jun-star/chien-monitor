@@ -125,6 +125,8 @@ v7/E-Mon/v4/E5 と時間的に重ならない第3系統 ＝ **休眠リスク予
 | [`mql5/Chien_Seasonal_Portfolio_AllInOne_PROP.mq5`](mql5/Chien_Seasonal_Portfolio_AllInOne_PROP.mq5) | **窓ごとに資産が異なる季節カレンダーEA**（7月=指数バスケット / 12月=金）。全EA共通ガード継承・Magic帯950740（窓ごと+月） |
 | [`mql5/presets/seasonal_portfolio_prop_default.set`](mql5/presets/seasonal_portfolio_prop_default.set) | 既定（7月核 US500+NAS100 + 12月金 半分サイズ・実効x1.3） |
 | [`mql5/presets/seasonal_portfolio_prop_core_only.set`](mql5/presets/seasonal_portfolio_prop_core_only.set) | 守り（弱い金12月を外し、クリーンな核 S-Jul 単独） |
+| [`docs/66_seasonal_vs_existing_median4.md`](docs/66_seasonal_vs_existing_median4.md) | **既存median4ポートとの正面比較**（同一 Phase1+8% 月次）。季節口座は中央4ヶ月に"できない"＝役割は速さでなく並走の生存 |
+| [`research/seasonal_vs_existing_passtime.py`](research/seasonal_vs_existing_passtime.py) | 季節 vs 既存median4 の通過時間MC＋並走の全損回避＋7月オーバーレイ一次効果 |
 
 **核心**: 核 = **S-Jul（指数 US500+NAS100 の7月L, SEASONAL-LEAD）**＋弱い第2窓 = **金XAU の12月L（小サイズ）**。
 **S-Jul ⇄ E-Mon（口座2核）= 相関 −0.31（負）= 真の分散源**ゆえ、口座2と**同時にDDしにくい第3口座**が誠実に成立。
