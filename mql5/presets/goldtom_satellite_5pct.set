@@ -1,0 +1,15 @@
+; 金(XAUUSD) turn-of-month LONG 衛星 — 5%相当の保守プリセット(docs/64)
+; ★弱LEAD/デモ専用。本資金禁止。XAUUSD の D1 チャートにアタッチ。
+; 規約クリーン(金=FX/指数と非衝突)。LONGのみ・1ポジ・SL必須。
+InpAcknowledgeLEAD=true
+InpTradeRiskPct=0.30
+InpDailyStopPct=4.0
+InpAccountFloorDDPct=8.0
+InpInitialBalance=0.0
+InpFirstBizDays=3
+InpIncludeLastBizDay=true
+InpAtrPeriodD1=14
+InpCatastropheATR=2.5
+InpMagic=640301
+InpSlippagePoints=30
+InpVerboseLog=true
