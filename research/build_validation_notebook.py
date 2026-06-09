@@ -252,7 +252,7 @@ def ensure_data(pairs=PAIRS, data_dir=DATA_DIR):
             print(f"[{p}] Yahooシンボル未定義→スキップ"); continue
         try:
             u=(f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}"
-               f"?interval=1h&range=730d")
+               f"?interval=1h&period1=1704067200&period2=1767225599")
             req=urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"})
             d=json.loads(urllib.request.urlopen(req,timeout=25).read())
             r=d["chart"]["result"][0]; ts=r["timestamp"]; q=r["indicators"]["quote"][0]
@@ -260,7 +260,7 @@ def ensure_data(pairs=PAIRS, data_dir=DATA_DIR):
             for i,t in enumerate(ts):
                 o,h,l,c=q["open"][i],q["high"][i],q["low"][i],q["close"][i]
                 if None in (o,h,l,c): continue
-                rows.append((_dt.datetime.utcfromtimestamp(t).strftime("%Y-%m-%d %H:%M:%S"),o,h,l,c))
+                rows.append((_dt.datetime.fromtimestamp(t, _dt.timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S"),o,h,l,c))
             with open(path,"w",newline="") as f:
                 w=csv.writer(f); w.writerow(["timestamp","open","high","low","close"]); w.writerows(rows)
             print(f"[{p}] Yahoo取得 {len(rows)}本 -> {path}")

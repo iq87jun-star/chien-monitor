@@ -15,7 +15,7 @@ ASSETS = {
 
 
 def fetch(sym, tries=6):
-    u = f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval=1d&range=10y"
+    u = f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval=1d&period1=1451606400&period2=1767225599"
     last = None
     for k in range(tries):
         try:
@@ -27,7 +27,7 @@ def fetch(sym, tries=6):
                 o, h, l, c = q["open"][i], q["high"][i], q["low"][i], q["close"][i]
                 if None in (o, h, l, c):
                     continue
-                rows.append((dt.datetime.utcfromtimestamp(t).strftime("%Y-%m-%d %H:%M:%S"), o, h, l, c))
+                rows.append((dt.datetime.fromtimestamp(t, dt.timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S"), o, h, l, c))
             return rows
         except Exception as e:
             last = e; wait = 2 ** k

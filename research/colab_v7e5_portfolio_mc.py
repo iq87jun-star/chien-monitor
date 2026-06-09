@@ -116,7 +116,7 @@ def ensure_multiasset():
         if _resolve(name,True) is not None: continue
         sym=_YH.get(name)
         try:
-            u=f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval=1d&range=10y"
+            u=f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval=1d&period1=1451606400&period2=1767225599"
             d=J.loads(urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"}),timeout=25).read())
             r=d["chart"]["result"][0]; ts=r["timestamp"]; q=r["indicators"]["quote"][0]
             with open(os.path.join(out,f"{name}_d.csv"),"w",newline="") as f:
@@ -124,7 +124,7 @@ def ensure_multiasset():
                 for i,t in enumerate(ts):
                     o,h,l,c=q["open"][i],q["high"][i],q["low"][i],q["close"][i]
                     if None in (o,h,l,c): continue
-                    w.writerow([DT.datetime.utcfromtimestamp(t).strftime("%Y-%m-%d %H:%M:%S"),o,h,l,c])
+                    w.writerow([DT.datetime.fromtimestamp(t, DT.timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S"),o,h,l,c])
             CACHE.pop(("d",name),None); print(f"  [取得]{name}"); time.sleep(1.0)
         except Exception as e: print(f"  [取得失敗]{name}:{str(e)[:40]}")
 

@@ -57,7 +57,7 @@ def _yahoo_daily(pair):
     import urllib.request, json as _json, datetime as _dt
     sym={"EURUSD":"EURUSD=X","GBPUSD":"GBPUSD=X","USDJPY":"USDJPY=X","AUDUSD":"AUDUSD=X","USDCHF":"USDCHF=X",
          "USDCAD":"USDCAD=X","NZDUSD":"NZDUSD=X","EURJPY":"EURJPY=X","GBPJPY":"GBPJPY=X"}[pair]
-    u=f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval=1d&range=10y"
+    u=f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval=1d&period1=1451606400&period2=1767225599"
     req=urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"})
     d=_json.loads(urllib.request.urlopen(req,timeout=25).read()); r=d["chart"]["result"][0]
     ts=r["timestamp"]; q=r["indicators"]["quote"][0]
