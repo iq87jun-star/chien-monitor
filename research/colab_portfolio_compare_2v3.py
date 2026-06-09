@@ -68,7 +68,7 @@ def ensure_multiasset():
     for name in ASSETS:
         if _resolve(name,daily=True) is not None: continue
         try:
-            u=f"https://query2.finance.yahoo.com/v8/finance/chart/{_YH[name]}?interval=1d&range=10y"
+            u=f"https://query2.finance.yahoo.com/v8/finance/chart/{_YH[name]}?interval=1d&period1=1451606400&period2=1767225599"
             req=urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"})
             d=_json.loads(urllib.request.urlopen(req,timeout=25).read()); r=d["chart"]["result"][0]
             ts=r["timestamp"]; q=r["indicators"]["quote"][0]
@@ -77,7 +77,7 @@ def ensure_multiasset():
                 for i,t in enumerate(ts):
                     o,h,l,c=q["open"][i],q["high"][i],q["low"][i],q["close"][i]
                     if None in (o,h,l,c): continue
-                    w.writerow([_dt.datetime.utcfromtimestamp(t).strftime("%Y-%m-%d %H:%M:%S"),o,h,l,c])
+                    w.writerow([_dt.datetime.fromtimestamp(t, _dt.timezone.utc).replace(tzinfo=None).strftime("%Y-%m-%d %H:%M:%S"),o,h,l,c])
             CACHE.pop(("d",name),None); print(f"  [取得] {name}"); time.sleep(1.0)
         except Exception as e: print(f"  [取得失敗] {name}: {str(e)[:40]}")
 

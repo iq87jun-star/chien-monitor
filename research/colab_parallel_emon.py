@@ -49,7 +49,7 @@ def _yahoo_daily(name):
     sym = YAHOO.get(name)
     if sym is None:
         return None
-    u = f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval=1d&range=10y"
+    u = f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval=1d&period1=1451606400&period2=1767225599"
     req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"})
     d = json.loads(urllib.request.urlopen(req, timeout=25).read())
     r = d["chart"]["result"][0]; ts = r["timestamp"]; q = r["indicators"]["quote"][0]
@@ -58,7 +58,7 @@ def _yahoo_daily(name):
         o, h, l, c = q["open"][i], q["high"][i], q["low"][i], q["close"][i]
         if None in (o, h, l, c):
             continue
-        rows.append((dt.datetime.utcfromtimestamp(t), o, h, l, c))
+        rows.append((dt.datetime.fromtimestamp(t, dt.timezone.utc).replace(tzinfo=None), o, h, l, c))
     df = pd.DataFrame(rows, columns=["t", "open", "high", "low", "close"])
     df["t"] = pd.to_datetime(df["t"], utc=True)
     return df

@@ -52,8 +52,11 @@ def _yahoo_fetch(name, rng="10y"):
     import urllib.request, time
     sym = YAHOO.get(name)
     if not sym: return None
+    # 固定窓で凍結(ローリングrange廃止): 10y=2016-01-01..2025-12-31
+    _p = {"10y": (1451606400, 1767225599), "730d": (1704067200, 1767225599)}
+    p1, p2 = _p.get(rng, (1451606400, 1767225599))
     u = (f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}"
-         f"?range={rng}&interval=1d")
+         f"?period1={p1}&period2={p2}&interval=1d")
     for _ in range(3):
         try:
             req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"})

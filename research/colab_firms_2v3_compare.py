@@ -67,7 +67,9 @@ def _read(path):
     return df[[o,h,l,c]].astype(float).rename(columns={o:"open",h:"high",l:"low",c:"close"})
 def _yf(sym,rng="10y",iv="1d"):
     import urllib.request, json as j
-    u=f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval={iv}&range={rng}"
+    # 固定窓で凍結(ローリングrange廃止): 10y=2016-01-01..2025-12-31 / 730d=2024-01-01..2025-12-31
+    _p={"10y":(1451606400,1767225599),"730d":(1704067200,1767225599)}; p1,p2=_p.get(rng,(1451606400,1767225599))
+    u=f"https://query2.finance.yahoo.com/v8/finance/chart/{sym}?interval={iv}&period1={p1}&period2={p2}"
     d=j.loads(urllib.request.urlopen(urllib.request.Request(u,headers={"User-Agent":"Mozilla/5.0"}),timeout=25).read())
     r=d["chart"]["result"][0]; ts=r["timestamp"]; q=r["indicators"]["quote"][0]
     rows=[(pd.to_datetime(t,unit="s",utc=True),q["open"][i],q["high"][i],q["low"][i],q["close"][i])
