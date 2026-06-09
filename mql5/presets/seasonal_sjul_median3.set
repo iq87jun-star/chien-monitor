@@ -1,0 +1,23 @@
+; 季節性サテライト Chien_Seasonal_Index_EA — 【中央3ヶ月版に重畳】7月やや厚め(docs/64 §8)
+; P1(中央3=3.0x)口座に同居。7月だけ実効リスク= 1.0%×3.0 = 3.0%へ自動増量(速攻に合わせやや厚め)。
+; ⚠ 速攻3.0x側は元々DDが枠に接近。S-Jul厚めは7月の指数集中を増す→日次-4%/フロア-8%必須。
+InpSeasonMonths=7
+InpSymbols=US500,NAS100
+InpEntryDom=1
+InpAcknowledgeLEAD=true
+InpMonthRiskPct=1.00
+InpJulyBoostEnable=true
+InpJulyRiskMult=3.0
+InpCatastropheATR=2.5
+InpMinStopPts=50.0
+InpMaxSpreadPts=1500.0
+InpAtrPeriodD1=14
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpDailyStopPct=4.0
+InpMinLot=0.01
+InpMaxLot=50.0
+InpMagicBase=950730
+InpSlippagePoints=30
+InpVerboseLog=true

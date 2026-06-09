@@ -1,0 +1,23 @@
+; 季節性サテライト Chien_Seasonal_Index_EA — 【中央4ヶ月版に重畳】7月中サイズ(docs/64 §8)
+; P1(中央4=2.5x)口座に同居。7月だけ実効リスク= 1.0%×2.5 = 2.5%(中サイズ)へ自動増量。
+; 効果: 3ヶ月以内通過を底上げ+わずかに失格減(速度寄り)。別Magic帯950730で衝突回避。
+InpSeasonMonths=7
+InpSymbols=US500,NAS100
+InpEntryDom=1
+InpAcknowledgeLEAD=true
+InpMonthRiskPct=1.00
+InpJulyBoostEnable=true
+InpJulyRiskMult=2.5
+InpCatastropheATR=2.5
+InpMinStopPts=50.0
+InpMaxSpreadPts=1500.0
+InpAtrPeriodD1=14
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpDailyStopPct=4.0
+InpMinLot=0.01
+InpMaxLot=50.0
+InpMagicBase=950730
+InpSlippagePoints=30
+InpVerboseLog=true
