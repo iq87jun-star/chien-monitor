@@ -21,7 +21,8 @@ Yahoo Finance 取得を `range=10y` / `range=730d`(=**実行日基準**でズレ
 - **H1 ~2年**: `period1=1704067200`(2024-01-01)〜`period2=1767225599`(2025-12-31)。
 
 対象: `fetch_data.py` `fetch_calendar.py` `fetch_multiasset.py` `colab_*` 各取得関数、
-`build_*_notebook.py`、`colab_firms_2v3_compare.py:_yf`、`edge_regime_gate_10y.py:_yahoo_fetch`。
+`build_*_notebook.py`、`colab_firms_2v3_compare.py:_yf`、`edge_regime_gate_10y.py:_yahoo_fetch`、
+**および `notebooks/*.ipynb` と `research/*.ipynb`(ユーザーが Colab で直接回す検証ノート、同じ取得コードを埋め込み)**。
 
 > 効果: いつ実行しても**同一の価格データ**を取得する。これが従来、最大の非再現要因だった。
 
