@@ -70,10 +70,13 @@
 
 ## 5. 実装（EAマッピング）
 
-- 既存 `Chien_Portfolio3_AllInOne`(v7+v4+E5) を流用するなら **v7とE5のレッグを無効化**し v4 のみ稼働 ＋ 別途 E-Mon
-  (`Chien_Parallel_AllInOne` の E-Monレッグ／P2 EA) を **指数LONG限定**で。
-- 推奨は**専用の準拠EA**（v4フル＋E-Mon・指数SHORT抑止・日次−3%/フロア−8%/ニュースフィルタ内蔵）を1本作ること。
-- Magic分離・1口座1EA・銘柄名は業者仕様に合わせる。
+- **専用EA実装済み**: [`mql5/Chien_FTMO_Compliant_AllInOne.mq5`](../mql5/Chien_FTMO_Compliant_AllInOne.mq5)
+  — v4(FX9・k≥4・両建て) ＋ E-Mon(指数 月曜LONG限定) を1チャート挿入。**ニュースフィルタ・指数SHORT抑止
+  (構造的にLONGのみ)・日次−3%/総合フロア−8%/災害SL** を内蔵。Magic分離(960801/960802)。残高自動。
+- プリセット: `ftmo_conservative.set`(保守−6%) / `ftmo_balanced.set`(★中庸−8%) / `ftmo_aggressive.set`(攻め−10%) /
+  `ftmo_fast4_x1.64.set`(中央4ヶ月) / `ftmo_fast3_x2.0.set`(中央3ヶ月・要強ガード)。
+- 使い方: F7コンパイル → どのチャートでも1枚に本EAをドロップ → 「Allow Algo Trading」✓。銘柄名は業者仕様に。
+  **FTMO Swing口座**を使うなら `InpUseNewsFilter=false`(ニュース制限なし)。
 
 ## 6. 確定スペック早見
 

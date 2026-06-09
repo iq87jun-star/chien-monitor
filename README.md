@@ -69,6 +69,8 @@ python3 sim/montecarlo_2phase.py      # P1→P2連続＋連敗相関ストレス
 | [`docs/52_portfolio_comparison.md`](docs/52_portfolio_comparison.md) | **比較**: 既存A(v7+v4+E5) vs 並行B(E-Mon+E5) vs 両方並走 — A⇄B相関0.28・並走でSharpe最良・同時DD回避 |
 | [`research/parallel_vs_existing_compare.py`](research/parallel_vs_existing_compare.py) | 4成分再構築→ポート比較（相関行列/Sharpe/Calmar/同時マイナス月）|
 | [`docs/53_ea_comparison.md`](docs/53_ea_comparison.md) | **全EA比較**（17本: 戦略/検証級/銘柄/採否/使い分け早見）。「v4」二義性の注意も明記 |
+| [`docs/61_ftmo_optimal_spec.md`](docs/61_ftmo_optimal_spec.md) | **FTMO準拠の確定スペック**（v4:E-Mon=55:45・銘柄/サイズ/ガード）＋ docs/55-63 の最適化・収益・通過月数 |
+| [`mql5/Chien_FTMO_Compliant_AllInOne.mq5`](mql5/Chien_FTMO_Compliant_AllInOne.mq5) | **FTMO準拠EA**（v4フル＋E-Mon指数LONG限定・ニュースフィルタ・日次-3%/フロア-8%ガード・1チャート） |
 | [`mql5/Chien_Parallel_AllInOne_PROP.mq5`](mql5/Chien_Parallel_AllInOne_PROP.mq5) | E-Mon(核)+E5(衛星) オールインワン・プロップ既定（Magic 950720系） |
 | [`mql5/Chien_Parallel_AllInOne_INSTANT.mq5`](mql5/Chien_Parallel_AllInOne_INSTANT.mq5) | 同・インスタント既定（Magic 950710系） |
 | [`research/parallel_edge_hunt_10y.py`](research/parallel_edge_hunt_10y.py) | 新エッジ一括探索ハーネス（N=130・順列/IS-OOS/JK/Bonferroni/コスト/**v7相関**） |

@@ -1,0 +1,15 @@
+; FTMO準拠 Chien_FTMO_Compliant_AllInOne — ★中庸-8%(推奨) v4:E-Mon 55:45
+; P1通過98.7%/失格1.2%/中央11ヶ月・funded月¥226k($200k/分配80%)。本資金前デモ必須。
+InpScenario=1
+InpAcknowledgeLEAD=true
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpEMonSymbols=US500,NAS100,GER40
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpDailyStopPct=3.0
+InpUseDailyStop=true
+InpEntryHoursUTC=9,14
+InpShotsPerWeek=6
+InpUseNewsFilter=true
+InpMagicBase=960800
