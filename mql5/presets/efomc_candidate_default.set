@@ -1,0 +1,24 @@
+; イベント・ドリフト Chien_EventDrift_Index_EA — E-FOMC 既定(pre-FOMC drift・US500+NAS100+GER40 LONG)
+; 根拠: docs/65 / research/event_intermarket_edge_10y.py。★Drive10年 未確定の"候補"=デモ前提・小サイズ。
+; 先に notebooks/event_intermarket.ipynb で 年次ブロックp / 既存4成分すべてと|相関|<=0.3 / OOS / コスト頑健 を確認。
+; FOMC日(InpFomcDates)は毎年 Fed 公式カレンダーで更新すること(既定はEA内蔵の2024-2026)。
+InpSymbols=US500,NAS100,GER40
+InpDaysBefore=1
+InpEntryHourUTC=14
+InpExitHourUTC=14
+InpHoldHours=28
+InpAcknowledgeCANDIDATE=true
+InpEventRiskPct=1.00
+InpCatastropheATR=2.5
+InpMinStopPts=50.0
+InpMaxSpreadPts=1500.0
+InpAtrPeriodD1=14
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpDailyStopPct=4.0
+InpMinLot=0.01
+InpMaxLot=50.0
+InpMagicBase=950740
+InpSlippagePoints=30
+InpVerboseLog=true

@@ -109,3 +109,31 @@ v7/E-Mon/v4/E5 と時間的に重ならない第3系統 ＝ **休眠リスク予
 > **正直な限界（数字を盛らない）**: 単月季節性の**実サンプルは年数(10)のみ**＝v7/E-Mon(週次~500)より構造的に薄い。
 > ∴ **SEASONAL-LEAD であって ADOPT ではない**。**サテライト小サイズ(月次≤1%)限定**・本資金前にデモ前進検証必須。
 > 1ヶ月保有=スワップ/配当の影響大（Yahooは配当除く・bps単純化）→ 実CFDコストは要デモ実測。S-Nov は E-Mon相関+0.55(冗長)ゆえ不採用。
+
+---
+
+## 🆕 第3並走ポートフォリオ（口座C）の核探し — 未トライ土俵「イベント・ドリフト × 先行遅行」
+
+既存A(v7+v4+E5)・並走B(E-Mon+E5)とは**別に、新しく並走させる第3ポートフォリオ**を作るための新エッジ探索。
+方針はユーザー選択の「**新しい無相関エッジを探索**」。既存の探索土俵（曜日/月末/月別/プレ祝日/年末年始/足内
+セッション）は**出尽くし**（survivor=v7/E-Mon/S-Jul のみ）のため、**これまで一度も検定していない2系統**
+（G=マクロ・イベント・ドリフト＝pre/post FOMC・NFP / L=インターマーケット先行遅行＝gold→AUD・oil→CAD・
+dxy→EUR・spx→指数・低ボラレジーム）を、v1-v6/E-Mon/S-Jul を裁いたのと**同一ハーネス**で一括事前登録検定する。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/65_third_parallel_edge_search.md`](docs/65_third_parallel_edge_search.md) | 探索の事前登録（N≈54/Bonferroni）＋ 核候補 **E-FOMC** の EA化・口座C構築方針・確定手順 |
+| [`research/event_intermarket_edge_10y.py`](research/event_intermarket_edge_10y.py) | 探索本体（イベント/先行遅行/低ボラ × 順列/年次ブロックp/IS-OOS/JK/Bonferroni/コスト ＋ **既存4成分すべてと相関**） |
+| [`research/colab_event_intermarket.py`](research/colab_event_intermarket.py) / [`notebooks/event_intermarket.ipynb`](notebooks/event_intermarket.ipynb) | Drive/Colab 確定用（Drive優先→Yahoo自動取得） |
+| [`research/fetch_intermarket.py`](research/fetch_intermarket.py) | 追加データ取得（WTI/ドル指数/主要FX。指数+金+円は `fetch_calendar.py`） |
+| [`mql5/Chien_EventDrift_Index_EA.mq5`](mql5/Chien_EventDrift_Index_EA.mq5) | **E-FOMC 候補EA**（FOMC公表前日に指数バスケットLONG・全EA共通ガード継承・Magic 950740帯・候補ガード付き） |
+| [`mql5/presets/efomc_candidate_default.set`](mql5/presets/efomc_candidate_default.set) | E-FOMC 既定（前日建て・US500+NAS100+GER40・1イベント1%） |
+
+**核心**: 口座C は **A・B の"両方"と低相関**でなければ並走の意味が無いので、survivor 条件に
+**既存4成分（v7・v4・E5・E-Mon）すべてと |相関|≤0.3** を課す。最有力 deploy 候補 = **E-FOMC（pre-FOMC drift）**
+＝FOMC（ほぼ水曜・年8回・24h保有）は「月曜効果」と曜日が重ならず機序が直交＝A・B両方と低相関が期待できる第3系統。
+
+> **★現状の正直な限界（数字を盛らない）**: 本探索は **numpy/pandas・ネット非搭載の環境で組成したため一次値すら未算出**。
+> **`notebooks/event_intermarket.ipynb` を Drive で実行して確定**するまで E-FOMC は **"候補"（LEAD未満）**であり、EAも
+> `InpAcknowledgeCANDIDATE` ガードで「Drive未確定・デモ/極小」を明示している。**出なければ第3は作らず A∥B の2口座で確定**
+> （edge7=docs/28 と同じ規律）。pre-FOMC drift は近年減衰の報告ありレジーム依存疑い→**年次ブロックp・OOS**で判定すること。
