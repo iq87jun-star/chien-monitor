@@ -42,6 +42,35 @@ EMON    = ["NAS100", "US500", "GER40"]      # docs/50 確定の指数3バスケ�
 GOLD    = "XAUUSD"
 WD_MON  = 0
 
+# Drive(Dukascopy/CFD)が無い環境向けの Yahoo 日足10年フォールバック(=概算・配当除く近似)。
+# 拘束力ある確証は Drive 実データ。本フォールバックは docs/50 と同じ"一次近似"の位置づけ。
+YAHOO = {"NAS100": "%5EIXIC", "US500": "%5EGSPC", "GER40": "%5EGDAXI", "XAUUSD": "GC=F",
+         "EURJPY": "EURJPY=X", "GBPJPY": "GBPJPY=X", "USDJPY": "USDJPY=X"}
+
+
+def _yahoo_fetch(name, rng="10y"):
+    import urllib.request, time
+    sym = YAHOO.get(name)
+    if not sym: return None
+    u = (f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}"
+         f"?range={rng}&interval=1d")
+    for _ in range(3):
+        try:
+            req = urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=20) as r:
+                d = json.load(r)
+            res = d["chart"]["result"][0]
+            ts = res["timestamp"]; q = res["indicators"]["quote"][0]
+            df = pd.DataFrame({"timestamp": pd.to_datetime(ts, unit="s", utc=True),
+                               "open": q["open"], "high": q["high"],
+                               "low": q["low"], "close": q["close"]}).dropna()
+            os.makedirs(LOCAL, exist_ok=True)
+            df.to_csv(os.path.join(LOCAL, f"{name}_d.csv"), index=False)
+            return df
+        except Exception:
+            time.sleep(2)
+    return None
+
 
 # ---------- I/O (parallel_emon_validate.py と同じ規約) ----------
 def _read_ohlc(path):
@@ -53,17 +82,27 @@ def _read_ohlc(path):
     o = next((c for c in ["open", "bidopen", "o"] if c in df.columns), None)
     c = next((c for c in ["close", "bidclose", "c"] if c in df.columns), None)
     out = pd.DataFrame({"open": df[o].astype(float), "close": df[c].astype(float)}).dropna()
+    out["o2o"] = out["open"].shift(-1) / out["open"] - 1.0     # open->翌open(時刻順で先に算出)
+    # 銘柄間で intraday の時刻が違う(指数13:30 / GER40 07:00 / 金04:00)ため、
+    # クロス銘柄の整列はカレンダー日に正規化する(docs/14 の trade_date 正規化と同趣旨)。
+    out.index = out.index.floor("D")
+    out = out[~out.index.duplicated(keep="first")]
     out["weekday"] = out.index.dayofweek
     out = out[out["weekday"] <= 4].copy()
-    out["o2o"] = out["open"].shift(-1) / out["open"] - 1.0     # open->翌open
     return out
 
 
 CACHE = {}
+ALLOW_YAHOO = os.environ.get("RG_ALLOW_YAHOO", "1") == "1"
 def load(name):
     if name not in CACHE:
         p = os.path.join(LOCAL, f"{name}_d.csv")
-        CACHE[name] = _read_ohlc(p) if os.path.exists(p) else None
+        if os.path.exists(p):
+            CACHE[name] = _read_ohlc(p)
+        elif ALLOW_YAHOO and _yahoo_fetch(name) is not None:
+            CACHE[name] = _read_ohlc(p)
+        else:
+            CACHE[name] = None
     return CACHE[name]
 
 
@@ -132,29 +171,36 @@ def emon_weekly_raw(cost_mult=1.0):
     if not legs: return None
     return pd.concat(legs, axis=1).mean(axis=1).dropna()
 
-def emon_weekly_gated(kind, cost_mult=1.0):
-    """kind in {trend, vol, riskoff}. レジームでその週の各レッグをON/OFF。"""
-    high = basket_vol_high(EMON) if kind in ("vol", "riskoff") else None
-    legs = []
-    for nm in EMON:
+def basket_regime(names):
+    """E-Monバスケット全体の1つのレジーム信号(週次・no-lookahead): 過半が上昇/高ボラ。
+    バスケットは1シグナルで建てる(=実運用と同じ)ため、ゲートも週単位で全レッグ一括。"""
+    up_parts, hv_high = [], basket_vol_high(names)
+    for nm in names:
         df = load(nm)
         if df is None: continue
-        c = BASE_BPS * 1e-4 * cost_mult
-        mon = df[df["weekday"] == WD_MON].copy()
-        leg = (mon["o2o"] - c)
-        up = sma_above(df["close"]).reindex(mon.index).fillna(False)
-        hv = (high.reindex(mon.index).fillna(False) if high is not None else pd.Series(False, index=mon.index))
-        if kind == "trend":
-            on = up
-        elif kind == "vol":
-            on = ~hv
-        elif kind == "riskoff":
-            on = ~((~up) & hv)            # SMA割れ かつ 高ボラ の週だけ OFF
-        else:
-            on = pd.Series(True, index=mon.index)
-        legs.append(leg.where(on.astype(bool), np.nan).rename(nm))
-    if not legs: return None
-    return pd.concat(legs, axis=1).mean(axis=1).dropna()
+        up_parts.append(sma_above(df["close"]).rename(nm))
+    if not up_parts: return None, None
+    up_maj = (pd.concat(up_parts, axis=1).astype(float).mean(axis=1) >= 0.5)   # 過半がSMA上
+    return up_maj, hv_high
+
+def emon_weekly_gated(kind, cost_mult=1.0):
+    """kind in {trend, vol, riskoff}. バスケット週次レジームで全レッグ一括 ON/OFF。"""
+    raw = emon_weekly_raw(cost_mult)
+    if raw is None: return None
+    up_maj, hv_high = basket_regime(EMON)
+    if up_maj is None: return raw
+    up = up_maj.reindex(raw.index).fillna(False).astype(bool)
+    hv = (hv_high.reindex(raw.index).fillna(False).astype(bool)
+          if hv_high is not None else pd.Series(False, index=raw.index))
+    if kind == "trend":
+        on = up                                   # 上昇局面の週だけ建てる
+    elif kind == "vol":
+        on = ~hv                                  # 高ボラ週は見送り
+    elif kind == "riskoff":
+        on = ~((~up) & hv)                        # SMA割れ かつ 高ボラ の真リスクオフ週だけ見送り
+    else:
+        on = pd.Series(True, index=raw.index)
+    return raw.where(on, np.nan).dropna()
 
 def gate_fraction(raw, gated):
     """ゲートが間引いた週の割合（プラセボの間引き率を合わせるため）。"""
@@ -205,18 +251,78 @@ def score_gate(name, raw, gated):
     return res
 
 
+# ---------- 円バスケットの週次素リターン & レジーム ----------
+def v7_weekly_raw(cost_mult=1.0):
+    legs = []
+    for p in YEN:
+        df = load(p)
+        if df is None: continue
+        c = BASE_BPS * 1e-4 * cost_mult
+        legs.append((df[df["weekday"] == WD_MON]["o2o"] - c).rename(p))
+    if not legs: return None
+    return pd.concat(legs, axis=1).mean(axis=1).dropna()
+
+
+# ---------- RG4: v7(円月曜LONG)日足プロキシ + リスクオフ・ゲート(バスケット一括) ----------
+def v7_weekly_raw_and_gated(cost_mult=1.0):
+    raw = v7_weekly_raw(cost_mult)
+    if raw is None: return None, None
+    up_maj, hv_high = basket_regime(YEN)
+    if up_maj is None: return raw, raw
+    up = up_maj.reindex(raw.index).fillna(False).astype(bool)
+    hv = (hv_high.reindex(raw.index).fillna(False).astype(bool)
+          if hv_high is not None else pd.Series(False, index=raw.index))
+    on = ~((~up) & hv)                            # 円高(SMA割れ)×高ボラ の真リスクオフ週は見送り
+    return raw, raw.where(on, np.nan).dropna()
+
+
+# ---------- RG5: リスクオフ週だけ建てる金(XAU)ロング衛星(バスケット一括) ----------
+def gold_riskoff_weekly(cost_mult=1.0):
+    """E-Mon が RG3 で OFF の週(=指数リスクオフ)に XAUUSD を月曜LONG。安全資産ヘッジ衛星。"""
+    g = load(GOLD)
+    if g is None: return None, None, None
+    up_maj, hv_high = basket_regime(EMON)
+    if up_maj is None or hv_high is None: return None, None, None
+    gmon = g[g["weekday"] == WD_MON].copy()
+    c = BASE_BPS * 1e-4 * cost_mult * 0.8        # 金は指数よりやや安い往復近似
+    gleg = (gmon["o2o"] - c)
+    up = up_maj.reindex(gmon.index).fillna(False).astype(bool)
+    hv = hv_high.reindex(gmon.index).fillna(False).astype(bool)
+    riskoff = (~up) & hv                          # 指数バスケットが真リスクオフの週
+    gold_hedge = gleg.where(riskoff, np.nan).dropna()
+    gold_all = gleg.dropna()                       # 比較用: 無条件の金月曜L(=プラセボ)
+    return gold_hedge, gold_all, riskoff
+
+
 def main():
-    if not os.path.isdir(LOCAL):
-        print("research/data が無い。Drive/ローカルにFX/指数/金の *_d.csv を置いて再実行。")
+    have_any = os.path.isdir(LOCAL) or ALLOW_YAHOO
+    if not have_any:
+        print("research/data が無い。Drive/ローカルにFX/指数/金の *_d.csv を置く"
+              "(または RG_ALLOW_YAHOO=1 で Yahoo 概算)。")
         return
     out = {}
     raw = emon_weekly_raw()
+    if raw is None:
+        print("指数データを取得できず(Drive/Yahoo 両方失敗)。"); return
     out["RG1_TREND"]   = score_gate("RG1_TREND",   raw, emon_weekly_gated("trend"))
     out["RG2_VOL"]     = score_gate("RG2_VOL",     raw, emon_weekly_gated("vol"))
     out["RG3_RISKOFF"] = score_gate("RG3_RISKOFF", raw, emon_weekly_gated("riskoff"))
-    # RG4/RG5/RG6 は Drive の v7(H1)/金/ポート合算が要るためフック（データ接続後に有効化）
-    out["RG4_V7"]   = dict(id="RG4_V7",   status="PENDING_DRIVE_v7_h1")
-    out["RG5_GOLD"] = dict(id="RG5_GOLD", status="PENDING_DRIVE_xau_riskoff")
+
+    v7_raw, v7_gate = v7_weekly_raw_and_gated()
+    out["RG4_V7"] = (score_gate("RG4_V7", v7_raw, v7_gate) if v7_raw is not None
+                     else dict(id="RG4_V7", status="NO_JPY_DATA"))
+
+    gh, ga, _ = gold_riskoff_weekly()
+    if gh is not None and len(gh) > 20:
+        out["RG5_GOLD"] = dict(
+            id="RG5_GOLD", n_riskoff_weeks=int(len(gh)),
+            hedge=dict(net=round(stats(gh.values)["net_pct"], 2), sharpe=round(stats(gh.values)["sharpe"], 3),
+                       maxdd=round(max_dd(gh), 4), perm_p=round(perm_p_block(gh), 5)),
+            gold_all=dict(net=round(stats(ga.values)["net_pct"], 2), sharpe=round(stats(ga.values)["sharpe"], 3),
+                          maxdd=round(max_dd(ga), 4)),
+            note="hedge=リスクオフ週のみ金L / gold_all=無条件金月曜L(=プラセボ比較). hedge>gold_all & perm<Bonf で衛星価値")
+    else:
+        out["RG5_GOLD"] = dict(id="RG5_GOLD", status="NO_GOLD_DATA")
     out["RG6_VTGT"] = dict(id="RG6_VTGT", status="PENDING_DRIVE_portfolio_blend")
 
     print(f"RG 事前登録ハーネス (N={N_CAND}, Bonferroni α={ALPHA_BONF:.4f}) — 素版 vs ゲート版 vs プラセボ")
@@ -224,6 +330,12 @@ def main():
     for k, v in out.items():
         if v.get("status"):
             print(f"{k:12s}: {v['status']}"); continue
+        if k == "RG5_GOLD":
+            h, a = v["hedge"], v["gold_all"]
+            print(f"{k:12s}: riskoff週={v['n_riskoff_weeks']}  "
+                  f"hedge[net {h['net']:.1f}% sh {h['sharpe']:.2f} dd {h['maxdd']:.1%} p {h['perm_p']}]  "
+                  f"vs 無条件金L[net {a['net']:.1f}% sh {a['sharpe']:.2f} dd {a['maxdd']:.1%}]")
+            continue
         print(f"{k:12s}: keep={v['kept_frac']:.0%}  "
               f"raw[cal {v['raw']['calmar']:.2f} dd {v['raw']['maxdd']:.1%}]  "
               f"gate[cal {v['gated']['calmar']:.2f} dd {v['gated']['maxdd']:.1%} p {v['gated']['perm_p']}]  "
