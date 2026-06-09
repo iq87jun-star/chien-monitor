@@ -54,8 +54,18 @@ Python 3.12+ で非推奨(将来削除)の `dt.datetime.utcfromtimestamp(t)` を
 docs/13・18 等の**合否判定の根拠数値**は、ユーザーの Google Drive 上の Dukascopy H1(実bid/ask)を
 回した**印字出力の手転記**であり、(a) 入力データがリポジトリ外、(b) 生出力が未コミット。
 リポジトリ単体での独立再現には次が必要(本コミットでは未実施＝データが手元に無いため):
-1. 検証ノートの各セルの**生出力を JSON/CSV で `research/results/` に保存・コミット**。
+1. 検証ノートの各セルの**生出力を JSON で `research/results/` に保存・コミット**。
 2. 入力 Dukascopy CSV の **SHA-256 ハッシュ**を併記(同一入力であることの証跡)。
 3. 以後は数値を docs に**手転記せず**、保存JSONを参照する運用へ。
 
-→ ユーザーが Dukascopy データで再実行する際に上記を出力する小ヘルパーを追加可能(要依頼)。
+→ これを 1 行で行うヘルパー **`research/capture_results.py`** を追加済み。Colab で:
+```python
+from capture_results import save_result
+save_result("v7_10year_validation",
+            metrics={"net_pct":80.3, "maxDD_pct":14.8, "phase1_pass_pct":79.2},
+            inputs=[f"{H1_DIR}/EURJPY_h1.csv", f"{H1_DIR}/GBPJPY_h1.csv"],
+            params=P, seed=MC_SEED)
+# -> research/results/v7_10year_validation.json(metrics + 入力SHA-256 + 環境バージョン)
+```
+出力 JSON をコミットすれば、看板数値が「どの入力・どの環境で出たか」をリポジトリ内で追跡でき、
+手転記を廃止できる。
