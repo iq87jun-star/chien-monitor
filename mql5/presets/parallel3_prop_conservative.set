@@ -1,0 +1,19 @@
+; 第3並行ポート Chien_Parallel3_Crypto_Sjul_PROP — プロップ守り(気長確実)
+; P3_MANUAL: CRYPTO週次0.60 / S-Jul月次0.50。静的-10%/フロア-8%。CRYPTO高DDゆえ守りは特に小さく。
+; ★暗号可業者のみ。本資金前デモ必須。資金化前の安全運用向け。
+InpScenario=2
+InpAcknowledgeLEAD=true
+InpCryptoWeeklyPct=0.60
+InpSjulMonthPct=0.50
+InpCryptoSymbols=BTCUSD,ETHUSD
+InpSjulSymbols=US500,NAS100
+InpInitialBalance=100000.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpEntryWeekday=1
+InpEntryHoursUTC=9,14
+InpShotsPerWeek=4
+InpHoldHours=24
+InpSeasonMonths=7
+InpEntryDom=1
+InpMagicBase=950740

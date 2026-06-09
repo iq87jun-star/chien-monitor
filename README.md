@@ -109,3 +109,30 @@ v7/E-Mon/v4/E5 と時間的に重ならない第3系統 ＝ **休眠リスク予
 > **正直な限界（数字を盛らない）**: 単月季節性の**実サンプルは年数(10)のみ**＝v7/E-Mon(週次~500)より構造的に薄い。
 > ∴ **SEASONAL-LEAD であって ADOPT ではない**。**サテライト小サイズ(月次≤1%)限定**・本資金前にデモ前進検証必須。
 > 1ヶ月保有=スワップ/配当の影響大（Yahooは配当除く・bps単純化）→ 実CFDコストは要デモ実測。S-Nov は E-Mon相関+0.55(冗長)ゆえ不採用。
+
+---
+
+## 🆕 第3の並行ポートフォリオ（口座1/2と並走・CRYPTO核 + S-Jul）
+
+既存の **口座1（v7+v4+E5）** と **口座2（E-Mon+E5・上記並行ポート）** に、もう1つ **並走させる第3の器** を構築した。
+価値の条件は「**口座1/2のコアと無相関**」（同時DDしないから1社飛んでも残る）。既往の網羅探索（N=130/N=164）で、
+円月曜(v7)/FX(v4)/指数月曜(E-Mon) の**いずれとも被らず生き残った材料**だけで組む＝**真の第3系統**。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/65_parallel3_crypto_sjul.md`](docs/65_parallel3_crypto_sjul.md) | 第3並行ポートの根拠（既存探索の棚卸し・無相関の根拠・サイズ・限界） |
+| [`mql5/Chien_Parallel3_Crypto_Sjul_PROP.mq5`](mql5/Chien_Parallel3_Crypto_Sjul_PROP.mq5) | CRYPTO(核)+S-Jul(7月衛星) オールインワン・プロップ既定（Magic 950740帯） |
+| [`mql5/Chien_Parallel3_Crypto_Sjul_INSTANT.mq5`](mql5/Chien_Parallel3_Crypto_Sjul_INSTANT.mq5) | 同・インスタント既定（Magic 950750帯） |
+| [`mql5/presets/parallel3_prop_breakthrough_aggr.set`](mql5/presets/parallel3_prop_breakthrough_aggr.set) | プロップ攻め（CRYPTO週次1.20%/S-Jul月次1.00%・フロア−9%） |
+| [`mql5/presets/parallel3_prop_conservative.set`](mql5/presets/parallel3_prop_conservative.set) | プロップ守り（週次0.60%/月次0.50%・フロア−8%） |
+| [`mql5/presets/parallel3_instant_aggr.set`](mql5/presets/parallel3_instant_aggr.set) | インスタント攻め（週次0.80%/月次0.60%・−10%トレーリング） |
+| [`mql5/presets/parallel3_instant_conservative.set`](mql5/presets/parallel3_instant_conservative.set) | インスタント守り（週次0.40%/月次0.30%・静的フロア−8%） |
+
+**核心**: 第3口座 = **CRYPTO（BTC/ETH 月曜LONG・核） + S-Jul（指数7月LONG・季節サテライト）**。
+CRYPTOは全戦略と低相関（v7=.06/v4=−.10/E-Mon=.16/E5=.04）、S-Julは **E-Mon相関 −0.31（負）**。
+∴ 口座1・口座2・口座3 は資産クラス/発火窓が3つとも別 ＝ **同時に大負けしにくい**（別口座/別業者で並走＝全損回避）。
+
+> **正直な限界（数字を盛らない）**: 口座3は2口座より **1口座あたりの質は低い**。CRYPTOは【有意・高DD】級
+> （STRONG-LEAD**未満**・docs/50で核棄却→docs/54で衛星候補・**素maxDD−55%**）、S-Jul は SEASONAL-LEAD（実標本10年分のみ）。
+> ∴ 狙いは"高収益"ではなく **【総量拡大＋業者分散（全損回避）】**。CRYPTOは高DDゆえ**小サイズ厳守**。
+> **★暗号可の業者でのみ動く**（多くのプロップは暗号不可/別ルール=要確認）。本資金前デモ前進検証必須。

@@ -1,0 +1,17 @@
+; 第3並行ポート Chien_Parallel3_Crypto_Sjul_INSTANT — インスタント(攻め) Blueberry等
+; CRYPTO(BTC/ETH 月曜LONG, 核・高DDゆえ小サイズ) + S-Jul(指数7月LONG)。-10%トレーリング/無目標/フロア-9%。
+; ★暗号可業者のみ。CRYPTO=有意・高DD / S-Jul=SEASONAL-LEAD(共に未確証)=本資金前デモ必須。
+InpScenario=0
+InpAcknowledgeLEAD=true
+InpCryptoSymbols=BTCUSD,ETHUSD
+InpSjulSymbols=US500,NAS100
+InpInitialBalance=100000.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpEntryWeekday=1
+InpEntryHoursUTC=9,14
+InpShotsPerWeek=4
+InpHoldHours=24
+InpSeasonMonths=7
+InpEntryDom=1
+InpMagicBase=950750
