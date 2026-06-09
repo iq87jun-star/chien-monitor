@@ -1,0 +1,31 @@
+; 第3並走ポートフォリオ Chien_Seasonal_Portfolio_AllInOne_PROP — FundedNext 2-Step 既定(docs/65)
+; 用途: 既存 口座1(v7+v4+E5) / 口座2(E-Mon+E5) と並走する【第3口座=季節カレンダー】。
+; カレンダー = 7月に指数バスケット(US500+NAS100)=核 + 12月に金(XAUUSD)=弱窓・半分サイズ。
+; 核 S-Jul: 年平均+3.04%/最悪年-0.4%/陽性年80%/年次p=0.0045/★E-Mon相関-0.31(口座2の分散源)。
+; 第2窓 XAU-Dec: ★弱い(OOS perm_p=0.26非有意/JK_max=0.123不合格)=半分サイズ。外しても核単独で成立。
+; サイズ: 1窓1.30%(核の実効)。-10%枠ゆえ≤1.5%目安(1.7x超は単一窓で枠割れ・docs/65)。
+; 通過MC(No-time-limit 2-Step): 小サイズ(x1.3)で失格ほぼ0% / 通過 中央~3年(P1+P2)。
+;   ⚠ 遅い。本口座の価値は"速さ"でなく口座2と同時にDDしない"生存・分散"。主軸にしない。
+; ⚠ 季節性=実サンプル年数のみ=薄い。SEASONAL-LEAD=本資金前デモ前進検証必須(docs/29)。
+; ⚠ 1ヶ月保有=指数/金CFDのスワップ累積・配当・取引時間は業者差大→デモで実測しサイズ確定。
+; ⚠ 口座1(v7)とは S-Jul co-active corr=+0.64(7月共ロング)→別口座/別業者で並走推奨。
+; Magic帯 950740(窓ごと+月: 7月=950747 / 12月=950752)で既存EAと分離。
+InpCalendar=7:US500,NAS100:1.0; 12:XAUUSD:0.5
+InpEntryDom=1
+InpAcknowledgeLEAD=true
+InpWindowRiskPct=1.30
+InpCatastropheATR=2.5
+InpMinStopPtsIndex=50.0
+InpMinStopPtsGold=100.0
+InpMaxSpreadPtsIdx=1500.0
+InpMaxSpreadPtsXau=800.0
+InpAtrPeriodD1=14
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpDailyStopPct=4.0
+InpMinLot=0.01
+InpMaxLot=50.0
+InpMagicBase=950740
+InpSlippagePoints=30
+InpVerboseLog=true

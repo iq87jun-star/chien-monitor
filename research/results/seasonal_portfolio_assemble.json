@@ -1,0 +1,87 @@
+{
+  "title": "第3並走ポートフォリオ(季節性核オーバーレイ口座) 組み立て・採点",
+  "discipline": "数字を盛らない。新規データ探索なし。一次=calendar_event_edge_10y.json。確証はデモ前進検証。",
+  "source": "calendar_event_edge_10y.json (primary)",
+  "legs": {
+    "S-Jul": {
+      "month": 7,
+      "assets": [
+        "US500",
+        "NAS100"
+      ],
+      "yearly_mean_pct": 3.04,
+      "yearly_min_pct": -0.4,
+      "pos_pct": 80.0,
+      "yearly_block_p": 0.0045,
+      "maxDD_pct": -5.7,
+      "corr_v7": 0.64,
+      "corr_emon": -0.31,
+      "grade": "SEASONAL-LEAD(core)"
+    },
+    "XAU-Dec": {
+      "month": 12,
+      "assets": [
+        "XAUUSD"
+      ],
+      "yearly_mean_pct": 1.9,
+      "yearly_min_pct": -1.5,
+      "pos_pct": 80.0,
+      "yearly_block_p": 0.0252,
+      "maxDD_pct": -5.8,
+      "oos_perm_p": 0.2592,
+      "jk_max_p": 0.123,
+      "cost3x_net_pct": 2.4,
+      "grade": "WEAK(OOS-fail/jk-fail) -> small satellite only"
+    }
+  },
+  "excluded": {
+    "S-Nov(index Nov L)": "corr_emon=+0.55(口座2 E-Monと冗長)ゆえ不採用"
+  },
+  "correlation_note": {
+    "S-Jul_vs_E-Mon(account2)": -0.31,
+    "S-Jul_vs_v7(account1)": 0.64,
+    "interpretation": "co-active corr。口座は年1-2ヶ月のみ稼働ゆえ口座レベルは希薄化。口座2(E-Mon)とは負相関=真の分散。口座1(v7)とは7月共ロングに注意(小稼働で実害限定)。"
+  },
+  "monte_carlo_no_time_limit": {
+    "core_only_x1.0(素・月1%相当)": {
+      "risk_mult": 1.0,
+      "include_dec": false,
+      "n_sims": 50000,
+      "pass_pct": 100.0,
+      "fail_pct": 0.0,
+      "median_years_P1P2": 6,
+      "mean_years_P1P2": 6.25,
+      "p90_years_P1P2": 8
+    },
+    "core_only_x1.3(守り中サイズ)": {
+      "risk_mult": 1.3,
+      "include_dec": false,
+      "n_sims": 50000,
+      "pass_pct": 100.0,
+      "fail_pct": 0.0,
+      "median_years_P1P2": 3,
+      "mean_years_P1P2": 4.0,
+      "p90_years_P1P2": 6
+    },
+    "core+dec_x1.3(7月核+12月金衛星)": {
+      "risk_mult": 1.3,
+      "include_dec": true,
+      "n_sims": 50000,
+      "pass_pct": 100.0,
+      "fail_pct": 0.0,
+      "median_years_P1P2": 3,
+      "mean_years_P1P2": 3.48,
+      "p90_years_P1P2": 5
+    },
+    "core+dec_x1.5(上限寄り・-10%枠内)": {
+      "risk_mult": 1.5,
+      "include_dec": true,
+      "n_sims": 50000,
+      "pass_pct": 99.3,
+      "fail_pct": 0.7,
+      "median_years_P1P2": 3,
+      "mean_years_P1P2": 3.45,
+      "p90_years_P1P2": 4
+    }
+  }
+}

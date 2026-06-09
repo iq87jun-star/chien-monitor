@@ -1,0 +1,25 @@
+; 第3並走ポートフォリオ Chien_Seasonal_Portfolio_AllInOne_PROP — 核S-Jul単独・守り(docs/65)
+; 用途: 弱い第2窓(金12月=OOS非有意)を外し、クリーンな核 S-Jul(指数7月)だけで運用する守り型。
+; カレンダー = 7月に指数バスケット(US500+NAS100)のみ。年1窓=最も保守的・最も遅い。
+; 通過MC(No-time-limit 2-Step): 素サイズ相当で失格0% / 通過 中央~6年(x1.0)・x1.3で~3年。
+; ⚠ 季節性=実サンプル年数のみ=薄い。SEASONAL-LEAD=本資金前デモ必須(docs/29)。
+; 「弱い窓は足さない」を選ぶ最も正直な構成。口座2(E-Mon)との並走で同時DD回避(corr -0.31)が狙い。
+InpCalendar=7:US500,NAS100:1.0
+InpEntryDom=1
+InpAcknowledgeLEAD=true
+InpWindowRiskPct=1.30
+InpCatastropheATR=2.5
+InpMinStopPtsIndex=50.0
+InpMinStopPtsGold=100.0
+InpMaxSpreadPtsIdx=1500.0
+InpMaxSpreadPtsXau=800.0
+InpAtrPeriodD1=14
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpDailyStopPct=4.0
+InpMinLot=0.01
+InpMaxLot=50.0
+InpMagicBase=950740
+InpSlippagePoints=30
+InpVerboseLog=true

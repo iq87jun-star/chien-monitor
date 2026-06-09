@@ -109,3 +109,28 @@ v7/E-Mon/v4/E5 と時間的に重ならない第3系統 ＝ **休眠リスク予
 > **正直な限界（数字を盛らない）**: 単月季節性の**実サンプルは年数(10)のみ**＝v7/E-Mon(週次~500)より構造的に薄い。
 > ∴ **SEASONAL-LEAD であって ADOPT ではない**。**サテライト小サイズ(月次≤1%)限定**・本資金前にデモ前進検証必須。
 > 1ヶ月保有=スワップ/配当の影響大（Yahooは配当除く・bps単純化）→ 実CFDコストは要デモ実測。S-Nov は E-Mon相関+0.55(冗長)ゆえ不採用。
+
+---
+
+## 🆕 第3並走ポートフォリオ（季節性核オーバーレイ口座 — FundedNext 2-Step）
+
+既存の並走（**口座1 = v7+v4+E5** / **口座2 = E-Mon+E5**）に対する**第3の器**を、**季節性（month-of-year）を核**に構築した。
+方針はユーザー選択の「**季節性核のオーバーレイ口座**・対象は**プロップ2ステップ**」。新規データ探索はせず、確定済みの
+季節窓（docs/64・一次10年）を「第3口座として組み立て・採点」した（**数字は盛らない**）。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/65_seasonal_overlay_portfolio_prop.md`](docs/65_seasonal_overlay_portfolio_prop.md) | 第3口座の組み立て・採点・相関・**No-time-limit 2-Step 通過MC**・デプロイ・正直な限界 |
+| [`research/seasonal_portfolio_assemble.py`](research/seasonal_portfolio_assemble.py) | 既存JSONから第3口座を組み立て＋通過MC（新規ネットワーク不要・一次=calendar_event_edge_10y.json） |
+| [`mql5/Chien_Seasonal_Portfolio_AllInOne_PROP.mq5`](mql5/Chien_Seasonal_Portfolio_AllInOne_PROP.mq5) | **窓ごとに資産が異なる季節カレンダーEA**（7月=指数バスケット / 12月=金）。全EA共通ガード継承・Magic帯950740（窓ごと+月） |
+| [`mql5/presets/seasonal_portfolio_prop_default.set`](mql5/presets/seasonal_portfolio_prop_default.set) | 既定（7月核 US500+NAS100 + 12月金 半分サイズ・実効x1.3） |
+| [`mql5/presets/seasonal_portfolio_prop_core_only.set`](mql5/presets/seasonal_portfolio_prop_core_only.set) | 守り（弱い金12月を外し、クリーンな核 S-Jul 単独） |
+
+**核心**: 核 = **S-Jul（指数 US500+NAS100 の7月L, SEASONAL-LEAD）**＋弱い第2窓 = **金XAU の12月L（小サイズ）**。
+**S-Jul ⇄ E-Mon（口座2核）= 相関 −0.31（負）= 真の分散源**ゆえ、口座2と**同時にDDしにくい第3口座**が誠実に成立。
+No-time-limit 2-Step 通過MC では**小サイズ（実効x1.3）で失格ほぼ0%・通過 中央〜3年**（素サイズなら〜6年）。
+
+> **正直な限界（数字を盛らない）**: 季節性=**実サンプルは年数(10)のみ＝薄い**・Bonferroni未達＝**SEASONAL-LEAD止まり**。
+> **遅い**（年1〜2窓ゆえ通過は年単位）＝本口座の価値は"速さ"でなく**口座2との同時DD回避・生存**。主軸（v4/v7/E-Mon）にしない。
+> 金12月は**弱い**（OOS perm_p=0.26 非有意・年次JK_max=0.123 不合格）→既定で半分サイズ・**外しても核単独で成立**。
+> 口座1(v7)とは S-Jul co-active相関 **+0.64**（7月共ロング）→**別口座/別業者で並走**必須。本資金前にデモ前進検証（docs/29）必須。
