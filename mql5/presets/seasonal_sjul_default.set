@@ -1,0 +1,21 @@
+; 季節性サテライト Chien_Seasonal_Index_EA — S-Jul 既定(7月・US500+NAS100 LONG)
+; 根拠: docs/64 / research/calendar_event_edge_10y.py。SEASONAL-LEAD=デモ前提・小サイズ。
+; 既定は7月のみ(E-Mon相関 -0.31=真の分散源)。11月併用は InpSeasonMonths=7,11 + Symbols に GER40 追加(冗長承知)。
+InpSeasonMonths=7
+InpSymbols=US500,NAS100
+InpEntryDom=1
+InpAcknowledgeLEAD=true
+InpMonthRiskPct=1.00
+InpCatastropheATR=2.5
+InpMinStopPts=50.0
+InpMaxSpreadPts=1500.0
+InpAtrPeriodD1=14
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpDailyStopPct=4.0
+InpMinLot=0.01
+InpMaxLot=50.0
+InpMagicBase=950730
+InpSlippagePoints=30
+InpVerboseLog=true

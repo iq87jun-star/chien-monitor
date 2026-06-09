@@ -64,6 +64,8 @@ input group "=== 手動値（PORT_MANUAL時のみ・3戦略の配分）==="
 input double InpWeeklyRiskPct   = 3.00;   // v7 週次リスク%（PROP 3.0x攻め既定と同値）
 input double InpV4RiskPerTradePct= 0.75;  // v4 1トレードあたりリスク%
 input double InpE5LegRiskPct    = 1.50;   // E5 legRisk%(各レッグ月次σ)
+input double InpManualProfitStopPct = 8.0; // PORT_MANUAL: +この%で新規停止(0=無効)。FN P1=8.0
+input double InpManualDailyStopPct  = 4.0; // PORT_MANUAL: 日次−この%で当日全決済(0=無効)。規約−5%手前
 
 input group "=== v7 設定 ==="
 input string InpEntryHoursUTC = "4,6,8,10";
@@ -175,6 +177,10 @@ void ResolveScenario()
       g_scenName="PROP_3.0x_AGGR"; g_weeklyRisk=3.00; g_v4risk=0.75; g_e5leg=1.50;
       g_useTrailing=false; g_useProfitStop=true; g_profitPct=8.0;
       g_useDailyStop=true; g_dailyStopPct=4.0;
+   } else {
+      // ★PORT_MANUAL: 手動ガードを入力から有効化（中央4ヶ月=2.5x手動運用でも日次/利確停止を維持）。
+      if(InpManualProfitStopPct>0.0){ g_useProfitStop=true; g_profitPct=InpManualProfitStopPct; }
+      if(InpManualDailyStopPct>0.0){ g_useDailyStop=true;  g_dailyStopPct=InpManualDailyStopPct; }
    }
 }
 

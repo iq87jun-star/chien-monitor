@@ -1,0 +1,27 @@
+; 季節性サテライト Chien_Seasonal_Index_EA — P1重畳・7月中サイズ既定(docs/64 §8)
+; 用途: 既存P1(v7:v4:E5)口座に7月だけ重畳。来月7月スタートで早期通過の山を厚くする。
+; 7月の実効リスク = InpMonthRiskPct(1.0%) × InpJulyRiskMult(2.5) = 2.5% ≒ 中サイズ。
+; 効果(中央4ヶ月運用 ×1.47): 3ヶ月以内通過 ~38%→~41% / 失格 6.1%→5.6%(速度寄り・失格減は小)。
+; ⚠ 速さ施策であって生存施策ではない。失格を下げるのはガード強化(docs/60)。
+; ⚠ 2016-2025の7月に大暴落無し=下振れ楽観。日次-4%/フロア-8%のハードガード必須(実装済)。
+; ⚠ SEASONAL-LEAD=本資金前デモ必須。サイズはデモ実DDで確定。別Magic帯950730で同口座併存可。
+InpSeasonMonths=7
+InpSymbols=US500,NAS100
+InpEntryDom=1
+InpAcknowledgeLEAD=true
+InpMonthRiskPct=1.00
+InpJulyBoostEnable=true
+InpJulyRiskMult=2.5
+InpCatastropheATR=2.5
+InpMinStopPts=50.0
+InpMaxSpreadPts=1500.0
+InpAtrPeriodD1=14
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpDailyStopPct=4.0
+InpMinLot=0.01
+InpMaxLot=50.0
+InpMagicBase=950730
+InpSlippagePoints=30
+InpVerboseLog=true

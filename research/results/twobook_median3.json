@@ -1,0 +1,72 @@
+{
+  "A:v4core(v4:v7:E5 45:35:20) || B:E-Mon[RG3]:E5 65:35": {
+    "corr": 0.37,
+    "multA": 1.88,
+    "multB": 2.14,
+    "both_pass": 67.0,
+    "atleast1": 96.0,
+    "both_blown": 4.0,
+    "medA": 3,
+    "medB": 3
+  },
+  "A:v4core(v4:v7:E5 45:35:20) || B:E-Mon[RG3]:CRYPTO 80:20": {
+    "corr": 0.19,
+    "multA": 1.88,
+    "multB": 1.91,
+    "both_pass": 65.5,
+    "atleast1": 97.2,
+    "both_blown": 2.8,
+    "medA": 3,
+    "medB": 3
+  },
+  "A:v4core(v4:v7:E5 45:35:20) || B:E-Mon[RG3]:E5:CRYPTO 60:25:15": {
+    "corr": 0.32,
+    "multA": 1.88,
+    "multB": 1.97,
+    "both_pass": 69.0,
+    "atleast1": 96.3,
+    "both_blown": 3.7,
+    "medA": 3,
+    "medB": 3
+  },
+  "A:PA(v7:v4:E5:E-Mon 30:30:20:20) || B:E-Mon[RG3]:E5 65:35": {
+    "corr": 0.68,
+    "multA": 1.88,
+    "multB": 2.14,
+    "both_pass": 71.9,
+    "atleast1": 96.3,
+    "both_blown": 3.7,
+    "medA": 3,
+    "medB": 3
+  },
+  "A:PA(v7:v4:E5:E-Mon 30:30:20:20) || B:E-Mon[RG3]:CRYPTO 80:20": {
+    "corr": 0.53,
+    "multA": 1.88,
+    "multB": 1.91,
+    "both_pass": 71.0,
+    "atleast1": 96.8,
+    "both_blown": 3.2,
+    "medA": 3,
+    "medB": 3
+  },
+  "A:PA(v7:v4:E5:E-Mon 30:30:20:20) || B:E-Mon[RG3]:E5:CRYPTO 60:25:15": {
+    "corr": 0.65,
+    "multA": 1.88,
+    "multB": 1.97,
+    "both_pass": 73.9,
+    "atleast1": 96.5,
+    "both_blown": 3.5,
+    "medA": 3,
+    "medB": 3
+  },
+  "(参考)複製 P-A∥P-A": {
+    "corr": 1.0,
+    "multA": 1.88,
+    "multB": 1.88,
+    "both_pass": 94.5,
+    "atleast1": 94.5,
+    "both_blown": 5.5,
+    "medA": 3,
+    "medB": 3
+  }
+}
