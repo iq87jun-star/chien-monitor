@@ -17,7 +17,11 @@ docs/71 §4 の残課題対応。Dukascopy 実データで検証ノートを回�
 """
 import os, sys, json, hashlib, platform, datetime
 
-RESULTS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "results")
+try:
+    _BASE = os.path.dirname(os.path.abspath(__file__))
+except NameError:            # ノート/Colab では __file__ が無い
+    _BASE = os.getcwd()
+RESULTS_DIR = os.path.join(_BASE, "results")
 
 
 def sha256_file(path, _buf=1 << 20):
