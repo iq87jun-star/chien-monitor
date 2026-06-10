@@ -1,0 +1,22 @@
+; NH52スリーブ Chien_NearHigh52_EA — 既定(US500+NAS100+GER40・52週高値95%近接のみLONG)
+; 根拠: docs/72 / research/edge10_newaxes_10y.py。自走バッチ初のADOPT(Bonferroni生存 p=0.0017)。
+; 価値=リスクタイミング(maxDD -12.8%はランダム同数ロングのp98.8)。本資金前にデモ前進検証必須。
+InpSymbols=US500,NAS100,GER40
+InpNearHighRatio=0.95
+InpHighLookbackD=252
+InpEntryDom=1
+InpAcknowledgeDemo=true
+InpMonthRiskPct=1.50
+InpCatastropheATR=2.5
+InpMinStopPts=50.0
+InpMaxSpreadPts=1500.0
+InpAtrPeriodD1=14
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpDailyStopPct=4.0
+InpMinLot=0.01
+InpMaxLot=50.0
+InpMagicBase=950740
+InpSlippagePoints=30
+InpVerboseLog=true
