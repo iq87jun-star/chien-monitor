@@ -1,0 +1,74 @@
+{
+  "data_source": "Yahoo(fixed-window)",
+  "weights": {
+    "v4": 0.3,
+    "v7": 0.25,
+    "E-Mon": 0.25,
+    "E5": 0.2
+  },
+  "challenge": {
+    "median-3 標準": {
+      "mult_vs_std": 1.0,
+      "p95DD": -18.0,
+      "pass_pct": 88.9,
+      "fail_pct": 11.1,
+      "med": 3
+    },
+    "median-3 ×1.25": {
+      "mult_vs_std": 1.25,
+      "p95DD": -22.0,
+      "pass_pct": 85.5,
+      "fail_pct": 14.5,
+      "med": 3
+    },
+    "median-3 ×1.5 高リスク": {
+      "mult_vs_std": 1.5,
+      "p95DD": -26.0,
+      "pass_pct": 81.9,
+      "fail_pct": 18.1,
+      "med": 2
+    }
+  },
+  "funded": {
+    "保守 −6%": {
+      "ann_return_pct": 7.0,
+      "annual_fail_pct": 0.2,
+      "net_month_jpy": 85682,
+      "net_year_jpy": 1028182,
+      "exp_year_jpy": 1025766
+    },
+    "中庸 −8%": {
+      "ann_return_pct": 9.4,
+      "annual_fail_pct": 1.7,
+      "net_month_jpy": 115099,
+      "net_year_jpy": 1381188,
+      "exp_year_jpy": 1358122
+    },
+    "攻め −10%": {
+      "ann_return_pct": 11.8,
+      "annual_fail_pct": 5.2,
+      "net_month_jpy": 144939,
+      "net_year_jpy": 1739266,
+      "exp_year_jpy": 1649172
+    },
+    "高リスク ×1.5": {
+      "ann_return_pct": 17.8,
+      "annual_fail_pct": 22.4,
+      "net_month_jpy": 218167,
+      "net_year_jpy": 2618006,
+      "exp_year_jpy": 2031965
+    },
+    "超攻め ×2.0": {
+      "ann_return_pct": 23.8,
+      "annual_fail_pct": 38.3,
+      "net_month_jpy": 291538,
+      "net_year_jpy": 3498453,
+      "exp_year_jpy": 2160120
+    }
+  },
+  "params": {
+    "account_usd": 100000.0,
+    "split": 0.95,
+    "fx": 155.0
+  }
+}
