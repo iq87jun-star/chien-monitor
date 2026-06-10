@@ -1,7 +1,8 @@
 # 再現性のための依存ピン留め(Google Colab のバージョン更新対策)
 # Colab 先頭セルで:  !pip install -q -r research/requirements.txt
-# numpy 2.x / pandas 既定変更による端数のブレを避けるため固定する。
+# 基準環境 = Colab 実測(2026-06 検証実行: numpy 2.0.2 / pandas 2.2.2)。numpy 1.x への
+# ダウングレードは pandas wheel(ABI=numpy2) と非互換のため不可。
 # 乱数(MC)は np.random.default_rng(PCG64) でシード固定済 → 本ピンで結果は完全決定的。
-numpy==1.26.4
+numpy==2.0.2
 pandas==2.2.2
-matplotlib==3.9.2
+matplotlib==3.10.0
