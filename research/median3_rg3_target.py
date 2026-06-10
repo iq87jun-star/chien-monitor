@@ -21,7 +21,7 @@ import os, sys, json, shutil, numpy as np, pandas as pd, warnings
 warnings.filterwarnings("ignore")
 os.environ.setdefault("RG_ALLOW_YAHOO", "1")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from parallel_vs_existing_compare import v4_monthly, z
+from parallel_vs_existing_compare import v7_monthly, v4_monthly, e5_monthly, z
 from pstar_challenge_mc import find_scale, simulate, p95_annual_maxdd
 import edge_regime_gate_10y as RG
 
@@ -81,8 +81,25 @@ def main():
     base55 = series_for(.55, .45, "raw")
     S10ref = find_scale(base55, -10.0)            # 55:45(raw) の −10%枠=1.0x 基準(表示用)
 
-    CANDS = [("v4:E-Mon 55:45", .55, .45), ("v4:E-Mon 70:30", .70, .30),
-             ("v4:E-Mon 40:60", .40, .60), ("v4 単独", 1.0, 0.0), ("E-Mon 単独", 0.0, 1.0)]
+    V7 = v7_monthly(); E5 = e5_monthly()
+
+    def series_w(weights, emk):
+        cols = {}
+        for k, wv in weights.items():
+            if wv <= 0: continue
+            cols[k] = EMON[emk] if k == "E-Mon" else {"v7": V7, "v4": V4, "E5": E5}[k]
+        M = pd.DataFrame(cols).dropna()
+        return sum(z(M[k]) * weights[k] for k in cols).dropna()
+
+    # v7/E5 込み(現状運用=docs/70 整合)。E-Mon有り構成は raw/RG3 両方を採点。
+    CANDS = [
+        ("v4:E-Mon 55:45 (旧2成分)",        {"v4": .55, "E-Mon": .45}, True),
+        ("v7:v4:E5 40:40:20 (P0)",          {"v7": .40, "v4": .40, "E5": .20}, False),
+        ("PA v7:v4:E5:E-Mon 30:30:20:20",   {"v7": .30, "v4": .30, "E5": .20, "E-Mon": .20}, True),
+        ("D v4:v7:E-Mon:E5 30:25:25:20",    {"v4": .30, "v7": .25, "E-Mon": .25, "E5": .20}, True),
+        ("v7:v4:E-Mon 35:35:30 (E5無)",     {"v7": .35, "v4": .35, "E-Mon": .30}, True),
+        ("均等 25:25:25:25",                 {"v7": .25, "v4": .25, "E5": .25, "E-Mon": .25}, True),
+    ]
     out = {"data_source": ("Drive" if drive_got else "Yahoo(fixed-window)"), "sleeve": sleeve, "grids": {}}
 
     for tag, t, want in [("FundedNext +8% / median-3", 0.08, 3),
@@ -90,9 +107,9 @@ def main():
         print("\n" + "=" * 94); print(tag); print("=" * 94)
         print(f"{'構成':22s}{'E-Mon':>6}{'倍率*':>8}{'p95年DD':>9}{'通過%':>8}{'失格%':>8}{'中央月':>7}")
         grid = {}
-        for nm, wv, we in CANDS:
-            for emk in (["raw", "RG3"] if we > 0 else ["raw"]):
-                s = series_for(wv, we, emk)
+        for nm, w, has_emon in CANDS:
+            for emk in (["raw", "RG3"] if has_emon else ["raw"]):
+                s = series_w(w, emk)
                 S = scale_for_median(s, S10ref, want, t)
                 r = simulate(s, S, t, n_paths=20000); dd = p95_annual_maxdd(s, S)
                 grid[f"{nm}|{emk}"] = dict(mult=round(S / S10ref, 2), p95DD=round(dd, 0),
