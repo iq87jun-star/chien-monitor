@@ -1,0 +1,148 @@
+{
+  "n_tests": 42,
+  "alpha_bonf": 0.00119,
+  "sig_count": 2,
+  "bonferroni_survivors": 2,
+  "span": [
+    "2016-01",
+    "2025-12"
+  ],
+  "fomc_n": 75,
+  "gap_sigma": 0.5,
+  "fin_bps_night": 1.8,
+  "overnight_vs_intraday_p": {
+    "US500": 0.2916,
+    "NAS100": 0.2578,
+    "GER40": 0.0947,
+    "UK100": 0.8828,
+    "JP225": 0.0255
+  },
+  "all_significant": [
+    {
+      "label": "US500_GapFollow",
+      "family": "G_gap",
+      "net_pct": 190.6,
+      "win_pct": 58.0,
+      "maxDD_pct": -7.5,
+      "n": 610,
+      "perm_p": 0.0,
+      "corr_v7": -0.06,
+      "corr_emon": 0.33
+    },
+    {
+      "label": "JP225_GapFollow",
+      "family": "G_gap",
+      "net_pct": 576.6,
+      "win_pct": 53.0,
+      "maxDD_pct": -12.7,
+      "n": 1083,
+      "perm_p": 0.0,
+      "corr_v7": -0.07,
+      "corr_emon": 0.27
+    }
+  ],
+  "detail": {
+    "US500_GapFollow": {
+      "full": {
+        "net_pct": 190.6,
+        "win_pct": 58.0,
+        "maxDD_pct": -7.5,
+        "n": 610,
+        "perm_p": 0.0,
+        "corr_v7": -0.06,
+        "corr_emon": 0.33
+      },
+      "bonferroni_survivor": true,
+      "yearly_block_p": 0.0076,
+      "yearly_n": 10,
+      "yearly_pos_pct": 90.0,
+      "IS": {
+        "net_pct": 123.7,
+        "win_pct": 59.0,
+        "maxDD_pct": -5.7,
+        "n": 305
+      },
+      "oos": {
+        "net_pct": 29.9,
+        "win_pct": 57.0,
+        "maxDD_pct": -7.5,
+        "n": 305,
+        "perm_p": 0.0617
+      },
+      "jackknife_max_p": 0.008,
+      "jackknife": {
+        "2016": 0.0,
+        "2017": 0.0,
+        "2018": 0.0,
+        "2019": 0.0,
+        "2020": 0.008,
+        "2021": 0.0,
+        "2022": 0.0,
+        "2023": 0.0,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "cost_net": {
+        "1x": 190.6,
+        "2x": 142.0,
+        "3x": 101.6
+      },
+      "fin_net": {
+        "0x": 190.6,
+        "1x": 190.6,
+        "2x": 190.6
+      }
+    },
+    "JP225_GapFollow": {
+      "full": {
+        "net_pct": 576.6,
+        "win_pct": 53.0,
+        "maxDD_pct": -12.7,
+        "n": 1083,
+        "perm_p": 0.0,
+        "corr_v7": -0.07,
+        "corr_emon": 0.27
+      },
+      "bonferroni_survivor": true,
+      "yearly_block_p": 0.0035,
+      "yearly_n": 10,
+      "yearly_pos_pct": 90.0,
+      "IS": {
+        "net_pct": 82.6,
+        "win_pct": 49.0,
+        "maxDD_pct": -12.7,
+        "n": 541
+      },
+      "oos": {
+        "net_pct": 270.5,
+        "win_pct": 57.0,
+        "maxDD_pct": -7.1,
+        "n": 542,
+        "perm_p": 0.0
+      },
+      "jackknife_max_p": 0.0,
+      "jackknife": {
+        "2016": 0.0,
+        "2017": 0.0,
+        "2018": 0.0,
+        "2019": 0.0,
+        "2020": 0.0,
+        "2021": 0.0,
+        "2022": 0.0,
+        "2023": 0.0,
+        "2024": 0.0,
+        "2025": 0.0
+      },
+      "cost_net": {
+        "1x": 576.6,
+        "2x": 339.0,
+        "3x": 184.8
+      },
+      "fin_net": {
+        "0x": 576.6,
+        "1x": 576.6,
+        "2x": 576.6
+      }
+    }
+  }
+}

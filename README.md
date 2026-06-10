@@ -167,6 +167,24 @@ v7/E-Mon/v4/E5 と時間的に重ならない第3系統 ＝ **休眠リスク予
 
 ---
 
+## 🆕 新エッジ探索 edge10 — 日足セッション分解 → 全REJECT(アーティファクト解剖つき)
+
+「新しいEAを探せるか」への自走回答。未踏だった「1日を夜間(close→open)/日中(open→close)に分解する」土俵を
+事前登録 N=42・Bonferroni で一括検定し、生存した GapFollow(US500/JP225) を H1 追検で解剖した。
+
+| ファイル | 内容 |
+|---|---|
+| [`docs/72_edge10_session_structure_negative.md`](docs/72_edge10_session_structure_negative.md) | 事前登録〜一次/二次結果〜アーティファクト解剖〜教訓 |
+| [`research/edge10_session_structure_10y.py`](research/edge10_session_structure_10y.py) | 夜間/日中/ギャップ/週末/FOMC 一括検定(凍結窓・スワップ控除) |
+| [`research/edge10b_gap_tradability_h1.py`](research/edge10b_gap_tradability_h1.py) | GapFollow の実取引可能性追検(寄付1h後エントリー) |
+
+**核心**: GapFollow は全ハーネス(Bonferroni/JK/IS-OOS/年次ブロックp/方向分解)を通過した**見かけ上は過去最強の
+候補**だったが、利益の全額が寄付後1時間に集中し1時間後エントリーで消滅 ＝ **現物指数の stale open による
+取引不可能な見かけの利益**。**採用ゼロ・新EAは作らない**。教訓: 寄付値を使う指数戦略は必ず「寄付N分後
+エントリー」の追検を恒久ゲートとする。検証済みエッジは v7/E-Mon(±E5)のまま不変、最新構成は docs/69/70。
+
+---
+
 ## 🆕 FundedNext で中央3ヶ月 — リスク分散の2ポートフォリオ(運用カード)
 
 「既存会社=FundedNext」の規約に当てて、中央3ヶ月・リスク分散の確定2本をデプロイ手順へ落とし込んだ自己完結カード。
