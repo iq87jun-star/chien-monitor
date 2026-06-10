@@ -7,6 +7,7 @@ import os, sys, json, urllib.request, numpy as np, pandas as pd, warnings
 warnings.filterwarnings("ignore")
 HERE=os.path.dirname(os.path.abspath(__file__)) if "__file__" in dir() else os.getcwd()
 DATA=os.path.join(HERE,"data")
+os.makedirs(DATA, exist_ok=True)
 P1,P2=1451606400,1767225599
 YS={**{f:f+"=X" for f in ["EURUSD","GBPUSD","USDJPY","AUDUSD","USDCHF","USDCAD","NZDUSD","EURJPY","GBPJPY"]},
     "NAS100":"%5EIXIC","US500":"%5EGSPC","GER40":"%5EGDAXI","XAUUSD":"GC=F"}
