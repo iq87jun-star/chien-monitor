@@ -27,7 +27,9 @@ Yahoo Finance 取得を `range=10y` / `range=730d`(=**実行日基準**でズレ
 > 効果: いつ実行しても**同一の価格データ**を取得する。これが従来、最大の非再現要因だった。
 
 ### (2) 依存ピン留め — `research/requirements.txt`
-`numpy==1.26.4 / pandas==2.2.2 / matplotlib==3.9.2` を固定。Colab 先頭セルで:
+`numpy==2.0.2 / pandas==2.2.2 / matplotlib==3.10.0` を固定(基準=2026-06のColab検証実行で実測した環境)。
+※当初 numpy 1.26.4 を指定したが、Python3.12 の pandas wheel が numpy2 ABI でビルドされており
+`numpy.dtype size changed` で崩壊するため、実測基準環境へのピンに変更した。Colab 先頭セルで:
 ```python
 !pip install -q -r research/requirements.txt
 ```
