@@ -15,7 +15,8 @@ docs/71 §4 の残課題対応。Dukascopy 実データで検証ノートを回�
     )
     # -> research/results/v7_10year_validation.json
 """
-import os, sys, json, hashlib, platform, datetime
+import os, sys, json, hashlib, platform
+import datetime as _dtmod        # エイリアスで保持(ノートで `from datetime import datetime` に上書きされても壊れない)
 
 try:
     _BASE = os.path.dirname(os.path.abspath(__file__))
@@ -55,7 +56,7 @@ def save_result(name, metrics, inputs=None, params=None, seed=None):
     inputs = inputs or []
     rec = {
         "name": name,
-        "saved_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "saved_at": _dtmod.datetime.now(_dtmod.timezone.utc).isoformat(),
         "env": _env(),
         "seed": seed,
         "params": params,
