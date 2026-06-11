@@ -33,9 +33,9 @@ def sjul():
 
 series = {
     "v7(円月曜3クロス)":  e13.v7_proxy(),
-    "v7新4クロス(H14c)":  e14.monday_legs(e14.V7_NEW, fx=True),
+    "v7新4クロス(H14c)":  e14.monday_legs(e14.V7_NEW, fx=True, start="1985-01-01"),
     "E-Mon(株指月曜)":    e13.emon(),
-    "E-Mon新3指数(H14d)": e14.monday_legs(e14.EMON_NEW, fx=False),
+    "E-Mon新3指数(H14d)": e14.monday_legs(e14.EMON_NEW, fx=False, start="1985-01-01"),
     "E5(多資産TSMOM)":    e13.e5(),
     "v4(k≥4合議)":        e14.v4_daily_legs(),
     "G3近似(日足・弱)":   e14.fomc_proxy_legs(e14.FOMC_PRE + e14.FOMC_POST),
@@ -43,9 +43,10 @@ series = {
 tab = {k: yearly(s) for k, s in series.items()}
 tab["S-Jul(7月のみ)"] = sjul()
 
-years = list(range(2016, 2027))
+y0 = min(min(v) for v in tab.values())
+years = list(range(y0, 2027))
 cols = list(tab.keys())
-print("年度別純益%(2016-2026・素サイズ・Yahoo近似)")
+print(f"年度別純益%({y0}-2026・素サイズ・Yahoo近似)")
 print("| 年 | " + " | ".join(cols) + " |")
 print("|---|" + "--:|"*len(cols))
 for y in years:
