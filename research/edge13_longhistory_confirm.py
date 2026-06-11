@@ -73,10 +73,13 @@ def blocks5y(s):
     return out
 
 # ---- 凍結ルール(edge6/edge11実装と同一) ----
-def monday_legs(assets, fx):
+def monday_legs(assets, fx, window="canonical"):
+    """window='canonical'=月曜終値→翌営業日終値(edge11 yen_monday_monthly/ea_benchmarkと同一のshift(-1))。
+    window='prereg_aswritten'=前営業日終値→月曜終値(docs/83初版の誤記載=週末ギャップ窓。比較記録用)。"""
     legs = []
     for a in assets:
-        s = daily(a); r = s.pct_change()
+        s = daily(a)
+        r = s.pct_change().shift(-1) if window == "canonical" else s.pct_change()
         c = (2.0*0.01/s) if fx else pd.Series(5e-4, index=s.index)
         mon = np.where(s.index.dayofweek == 0)[0]
         for i in mon:
@@ -87,6 +90,8 @@ def monday_legs(assets, fx):
 
 def v7_proxy():  return monday_legs(YEN, fx=True)
 def emon():      return monday_legs(EQ, fx=False)
+def v7_proxy_gapwin():  return monday_legs(YEN, fx=True, window="prereg_aswritten")
+def emon_gapwin():      return monday_legs(EQ, fx=False, window="prereg_aswritten")
 
 def e5():
     rets, sigs, ws = {}, {}, {}
@@ -113,7 +118,9 @@ def run():
                         inputs={k: sha(k) for k in _YH},
                         spans={k: [str(daily(k).index[0].date()), str(daily(k).index[-1].date())]
                                for k in _YH}), "edges": {}}
-    for name, fn in [("v7_proxy", v7_proxy), ("E-Mon", emon), ("E5", e5)]:
+    for name, fn in [("v7_proxy", v7_proxy), ("E-Mon", emon), ("E5", e5),
+                     ("v7_proxy_gapwin(誤窓・記録用)", v7_proxy_gapwin),
+                     ("E-Mon_gapwin(誤窓・記録用)", emon_gapwin)]:
         s = fn()
         pre, full = s[s.index < PRE_END], s
         st_pre, st_full = stats(pre), stats(full)
