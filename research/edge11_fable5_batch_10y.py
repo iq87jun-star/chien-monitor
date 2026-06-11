@@ -143,6 +143,22 @@ def f2_n_flips():
     pos = (df["v3m"] > df["vix"]).astype(int)
     return int(pos.diff().abs().sum()), float(pos.mean())
 
+def f2_diagnostics(bps=BASE_BPS):
+    """事後診断(新仮説ではない): ゲートの価値は『OFF日=ストレス日の回避』にあるか。
+    買い持ち(B&H)との比較・ON/OFF日の条件付き平均で判定する。"""
+    px = daily_close("US500"); vix = daily_close("VIX"); v3m = daily_close("VIX3M")
+    df = pd.concat({"px": px, "vix": vix, "v3m": v3m}, axis=1).dropna()
+    on = (df["v3m"] > df["vix"]); nxt = df["px"].pct_change().shift(-1).dropna()
+    on = on.reindex(nxt.index)
+    bh = stats(nxt)
+    on_mean = float(nxt[on].mean()*1e4); off_mean = float(nxt[~on].mean()*1e4)
+    off_p = perm_p(nxt[~on].values)  # OFF日が負側に偏るかの順列(片側=正側検定なので1-pが負側)
+    # OFF日にSHORTしたら? (参考のみ・事前登録外ゆえ採用不可)
+    return dict(bh_net=bh["net_pct"], bh_maxDD=bh["maxDD_pct"],
+                on_day_mean_bps=round(on_mean, 2), off_day_mean_bps=round(off_mean, 2),
+                n_on=int(on.sum()), n_off=int((~on).sum()),
+                off_neg_perm_p=round(1.0-off_p, 4))
+
 # ---------- F3 米金利→USDJPYリード ----------
 def f3_ust2jpy(bps=BASE_BPS, placebo=False, seed=3):
     rng = np.random.default_rng(seed)
@@ -200,6 +216,7 @@ CAND = {
 }
 
 def run():
+    for k in _YH: daily_close(k)  # 全系列を先に取得(キャッシュ+SHA用)
     ym = yen_monday_monthly()
     nflip, onfrac = f2_n_flips()
     print(f"事前登録N=5 Bonferroniα={BONF} / コスト基準{BASE_BPS}bps / v7基準月数={len(ym)}")
@@ -208,9 +225,10 @@ def run():
                         f2_flips=nflip, f2_on_frac=round(onfrac, 3),
                         inputs={k: sha256(f"{LOCAL}/{k}_d.csv") for k in _YH}),
            "candidates": {}}
+    MIN_N = {"F4_JPY_FISCAL": 8}  # 年次戦略は標本が年1(バスケット合算)
     for name, fn in CAND.items():
         s = fn()
-        if len(s) < 24:
+        if len(s) < MIN_N.get(name, 24):
             out["candidates"][name] = dict(note="insufficient", n=len(s))
             print(f"\n{name}: データ不足 n={len(s)}"); continue
         st = stats(s); p = round(perm_p_robust(s), 4)
@@ -219,7 +237,7 @@ def run():
         j = pd.concat([mP(s).rename("c"), ym.rename("y")], axis=1).dropna()
         corr = round(float(j["c"].corr(j["y"])), 2) if len(j) > 12 else None
         plc = fn(placebo=True); plc_p = round(perm_p_robust(plc), 3); plc_net = stats(plc)["net_pct"]
-        cost = {f"{c}bps": stats(fn(bps=float(c)))["net_pct"] for c in (2, 5, 10, 20)}
+        cost = {f"{c}bps": float(stats(fn(bps=float(c)))["net_pct"]) for c in (2, 5, 10, 20)}
         dd_ok = st["maxDD_pct"] >= -10.0
         g_perm = p <= BONF; g_jk = (jkmax is not None and jkmax <= 0.10)
         g_oos = (isr.sum() > 0 and oos.sum() > 0); g_indep = (corr is None) or abs(corr) <= 0.4
@@ -236,6 +254,8 @@ def run():
         print(f"\n### {name}  [{grade}] {passed}/6{dn}")
         print(f"   純益{st['net_pct']}% 勝率{st['win_pct']}% maxDD{st['maxDD_pct']}% n={st['n']} | p頑健={p}(Bonf{BONF}:{g_perm}) JKmax={jkmax}({g_jk})")
         print(f"   IS{stats(isr)['net_pct']}/OOS{stats(oos)['net_pct']}({g_oos}) | v7相関{corr}({g_indep}) | placebo純{plc_net}%/p{plc_p}({g_plac}) | cost{cost}({g_cost})")
+    out["f2_diagnostics_posthoc"] = f2_diagnostics()
+    print("\nF2事後診断(採用判定外):", out["f2_diagnostics_posthoc"])
     adopts = [n for n, r in out["candidates"].items() if r.get("grade") == "ADOPT"]
     leads = [n for n, r in out["candidates"].items() if r.get("grade") == "LEAD"]
     print("\n>>> ADOPT:", adopts if adopts else "なし")
