@@ -1,6 +1,6 @@
 //+------------------------------------------------------------------+
 //|                      Chien_PortfolioA_FTMO3.mq5                  |
-//|   FTMO審査用ワンパターン版(中央3ヶ月・挿入するだけ):                |
+//|   FTMO審査用ワンパターン版(中央4ヶ月・挿入するだけ):                |
 //|   v4(日足k≥4合議) + v7(円月曜) + E5(多資産トレンド) = 45:35:20。    |
 //|                                                                   |
 //|   ■ 位置づけ(docs/77-78): FN口座(分散案D)との2社並走の「口座2」。   |
@@ -9,7 +9,8 @@
 //|                                                                   |
 //|   ■ FTMO規定対応: P1目標 +10%(FNの+8%と違う) / 静的−10% / 日次−5%。 |
 //|     利確停止=+10%・日次ガード=−4%(規約−5%の手前)・フロア=−9% 内蔵。  |
-//|     サイズは「+10%でも中央3ヶ月」へ再校正済(FN比で大きめ)。          |
+//|     ★+10%目標はv4coreでは中央3ヶ月不可(レバ上限)→中央4ヶ月が合理点。 |
+//|     Drive確定: median-4 通過90.3%/失格9.7%/p95年DD−17%。            |
 //|     ⚠ P2は目標+5%=P1サイズのままで可(早く終わる)。                  |
 //|                                                                   |
 //|   ★使い方: チャートにドロップ → OK だけ。設定不要・.set不要。       |
@@ -40,10 +41,10 @@ input double InpInitialBalance   = 0.0;   // 0=口座残高を自動取得
 input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%
 input double InpAccountFloorDDPct= 9.0;   // 全停止ライン%(攻め=9.0で-10%枠をほぼ使い切る)
 
-input group "=== リスク配分（FTMO +10%・中央3ヶ月=内蔵既定。通常は変更不要）==="
-input double InpWeeklyRiskPct    = 3.19;  // v7 週次リスク%(=twobook_A 2.625×1.213)
-input double InpV4RiskPerTradePct= 1.02;  // v4 1トレードあたりリスク%(=0.844×1.213)
-input double InpE5LegRiskPct     = 1.82;  // E5 legRisk%(=1.50×1.213)
+input group "=== リスク配分（FTMO +10%・中央4ヶ月=内蔵既定。通常は変更不要）==="
+input double InpWeeklyRiskPct    = 2.49;  // v7 週次リスク%(=twobook_A 2.625×0.95, FTMO median-4)
+input double InpV4RiskPerTradePct= 0.80;  // v4 1トレード%(=0.844×0.95)
+input double InpE5LegRiskPct     = 1.43;  // E5 legRisk%(=1.50×0.95)
 input double InpProfitStopPct    = 10.0;  // +この%で新規停止(FTMO P1=+10%)
 input double InpDailyStopPct      = 4.0;  // 日次−この%で当日全決済(規約−5%手前)
 
@@ -93,7 +94,7 @@ int      g_atrH1[]; int g_atrD1[]; int g_rsiD1[]; int g_atrMN1[];
 datetime g_lastShotV7[];   // [yenIdx*nV7Hours + hourIdx]
 datetime g_lastV4Bar[];    // [v4Idx]
 datetime g_lastMonth[];    // [e5Idx]
-double   g_initBal=0.0, g_weeklyRisk=3.19, g_v4risk=1.02, g_e5leg=1.82, g_maxLossPct=10.0;
+double   g_initBal=0.0, g_weeklyRisk=2.49, g_v4risk=0.80, g_e5leg=1.43, g_maxLossPct=10.0;
 bool     g_useProfitStop=false, g_useDailyStop=false;
 double   g_profitPct=0.0, g_dailyStopPct=0.0, g_floorBufPct=1.0;
 double   g_dayStartEq=0.0;
@@ -145,8 +146,8 @@ string ResolveSymbol(string want)
 
 void ResolveScenario()
 {
-   // ワンパターン: FTMO中央3ヶ月(+10%目標で再校正)。静的−10% / +10%利確停止 / 日次−4% / フロア−9%。
-   g_scenName="A_FTMO_MEDIAN3";
+   // ワンパターン: FTMO中央4ヶ月(+10%目標・v4coreの合理点)。静的−10%/+10%利確停止/日次−4%/フロア−9%。
+   g_scenName="A_FTMO_MEDIAN4";
    g_weeklyRisk=InpWeeklyRiskPct; g_v4risk=InpV4RiskPerTradePct; g_e5leg=InpE5LegRiskPct;
    g_maxLossPct=InpMaxLossLimitPct;
    g_floorBufPct=MathMax(0.0, InpMaxLossLimitPct-InpAccountFloorDDPct);
