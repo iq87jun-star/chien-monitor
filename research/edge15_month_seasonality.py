@@ -71,7 +71,7 @@ def judge(name, assets, month, dir_, half=None):
     res = dict(**st, pre2016_mean=round(float(pre.mean())*100, 2) if len(pre) else None,
                post2016_mean=round(float(post.mean())*100, 2) if len(post) else None,
                month_rank=f"{sep_rank}/12",
-               gates=dict(dir=g_dir, perm=g_perm, split=g_split, rank=g_rank), verdict=verdict,
+               gates=dict(dir=bool(g_dir), perm=bool(g_perm), split=bool(g_split), rank=bool(g_rank)), verdict=verdict,
                yearly_2016plus={int(y): round(float(r)*100, 1) for y, r in post.items()})
     print(f"\n### {name} → {verdict} ({passed}/4)")
     print(f"  全履歴: net{st['net_pct']}% 平均{st['mean_pct']}%/年 勝率{st['win']} p={st['perm_p']}(α{round(ALPHA,4)})")
