@@ -29,7 +29,7 @@
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
 
-enum ENUM_SEASONAL_SCN { SCN_JUNE_TOP5=0, SCN_JULY_TOP2=1, SCN_AUG_TOP4=2 };
+enum ENUM_SEASONAL_SCN { SCN_JUNE_TOP5=0, SCN_JULY_TOP2=1, SCN_AUG_V4ONLY=2 };
 
 input group "=== シナリオ ==="
 input ENUM_SEASONAL_SCN InpScenario = SCN_JUNE_TOP5; // 6月版/7月版
@@ -130,7 +130,7 @@ int OnInit()
    if(!InpAcknowledgeDemo){ Print("[STOP] デモ専用EA。InpAcknowledgeDemo=trueで承認してください。"); return INIT_FAILED; }
    if(InpScenario==SCN_JUNE_TOP5)      { g_month=6; g_mult=2.0; }
    else if(InpScenario==SCN_JULY_TOP2) { g_month=7; g_mult=1.3; }
-   else                                { g_month=8; g_mult=0.6; }   // 8月: 2024/8/5型の月曜クラッシュで日次ガード拘束→1倍未満が上限(docs/87)
+   else                                { g_month=8; g_mult=0.4; }   // 8月: v4単独。2024/8/5(円急騰)に同日複数SLで-8.9%/1x→日次ガード逆算0.5x×安全率(docs/87)
    if(InpMultOverride>0.0) g_mult=InpMultOverride;
    g_initBal=(InpInitialBalance>0.0)? InpInitialBalance : AccountInfoDouble(ACCOUNT_BALANCE);
    if(g_initBal<=0.0) g_initBal=AccountInfoDouble(ACCOUNT_EQUITY);
@@ -390,11 +390,8 @@ void OnTimer()
    }else if(InpScenario==SCN_JULY_TOP2){
       SleeveSJul(0.685);
       SleeveE5(0.315);
-   }else{ // SCN_AUG_TOP4: v4 66.0% / E-Mon横 18.7% / E-Mon 8.1% / E5 7.2%
-      SleeveV4(0.660);
-      SleeveE5(0.072);
-      SleeveMonday(SL_EMON, g_emon, g_nemon, 0.081, 0);
-      SleeveMonday(SL_EMONX,g_emonx,g_nemonx,0.187, 1);
+   }else{ // SCN_AUG_V4ONLY: 8月ランキング1位のv4を100%(倍率0.4x)
+      SleeveV4(1.0);
    }
 }
 void OnTick(){ /* 主処理はOnTimer(60s) */ }
