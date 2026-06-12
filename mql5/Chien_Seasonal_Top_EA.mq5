@@ -29,7 +29,7 @@
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
 
-enum ENUM_SEASONAL_SCN { SCN_JUNE_TOP5=0, SCN_JULY_TOP2=1, SCN_AUG_V4ONLY=2 };
+enum ENUM_SEASONAL_SCN { SCN_JUNE_TOP5=0, SCN_JULY_TOP2=1, SCN_AUG_V4ONLY=2, SCN_YEARROUND_05=3 };
 
 input group "=== シナリオ ==="
 input ENUM_SEASONAL_SCN InpScenario = SCN_JUNE_TOP5; // 6月版/7月版
@@ -47,6 +47,7 @@ input string InpE5Assets = "XAUUSD,US500,NAS100,GER40";
 input string InpEMon     = "US500,NAS100,GER40";
 input string InpEMonX    = "JP225,UK100,FR40";
 input string InpV7X      = "AUDJPY,NZDJPY,CADJPY,CHFJPY";
+input string InpV7       = "EURJPY,GBPJPY,USDJPY";   // 通年シナリオの5月のみ使用
 input string InpSJul     = "US500,NAS100";
 
 input group "=== 詳細 ==="
@@ -77,9 +78,21 @@ int      g_e5MonthKey = -1, g_sjulMonthKey = -1, g_monWeekKey[64];
 #define SL_EMONX 4
 #define SL_V7X  5
 #define SL_SJUL 6
+#define SL_V7   7
 
-string g_v4[16], g_e5[8], g_emon[8], g_emonx[8], g_v7x[8], g_sjul[8];
-int    g_nv4=0, g_ne5=0, g_nemon=0, g_nemonx=0, g_nv7x=0, g_nsjul=0;
+string g_v4[16], g_e5[8], g_emon[8], g_emonx[8], g_v7x[8], g_sjul[8], g_v7[8];
+int    g_nv4=0, g_ne5=0, g_nemon=0, g_nemonx=0, g_nv7x=0, g_nsjul=0, g_nv7=0;
+int    g_curMonth=-1;   // 通年シナリオの月替わり検出
+
+// 通年(YEARROUND_05): 月利0.5%以上を平均比例配分(docs/87 §通年・2016-2025選抜)
+// index=月(1-12)。合計1.0/月。
+double WY_V4[13]   ={0, 0,   1.00,0.19,0,   0.46,0.38,0,   0.46,1.00,0,   0,   0.23};
+double WY_E5[13]   ={0, 0,   0,   0.20,0,   0,   0.36,0.24,0.41,0,   0,   0,   0.42};
+double WY_EMON[13] ={0, 1.00,0,   0.33,0,   0,   0.15,0,   0,   0,   0,   1.00,0.36};
+double WY_EMONX[13]={0, 0,   0,   0.28,1.00,0,   0.12,0,   0.13,0,   1.00,0,   0};
+double WY_V7X[13]  ={0, 0,   0,   0,   0,   0.31,0,   0,   0,   0,   0,   0,   0};
+double WY_V7[13]   ={0, 0,   0,   0,   0,   0.23,0,   0,   0,   0,   0,   0,   0};
+double WY_SJUL[13] ={0, 0,   0,   0,   0,   0,   0,   0.76,0,   0,   0,   0,   0};
 
 //------------------------------------------------------------------
 string ResolveSymbol(string want)
@@ -130,7 +143,8 @@ int OnInit()
    if(!InpAcknowledgeDemo){ Print("[STOP] デモ専用EA。InpAcknowledgeDemo=trueで承認してください。"); return INIT_FAILED; }
    if(InpScenario==SCN_JUNE_TOP5)      { g_month=6; g_mult=2.0; }
    else if(InpScenario==SCN_JULY_TOP2) { g_month=7; g_mult=1.3; }
-   else                                { g_month=8; g_mult=0.4; }   // 8月: v4単独。2024/8/5(円急騰)に同日複数SLで-8.9%/1x→日次ガード逆算0.5x×安全率(docs/87)
+   else if(InpScenario==SCN_AUG_V4ONLY){ g_month=8; g_mult=0.4; }   // 8月: v4単独。2024/8/5(円急騰)に同日複数SLで-8.9%/1x→日次ガード逆算0.5x×安全率(docs/87)
+   else                                { g_month=0; g_mult=0.7; }   // 通年: 1xでmaxDD-9.0%=枠いっぱい→0.9x上限×安全率0.8(docs/87)
    if(InpMultOverride>0.0) g_mult=InpMultOverride;
    g_initBal=(InpInitialBalance>0.0)? InpInitialBalance : AccountInfoDouble(ACCOUNT_BALANCE);
    if(g_initBal<=0.0) g_initBal=AccountInfoDouble(ACCOUNT_EQUITY);
@@ -140,14 +154,18 @@ int OnInit()
    g_nemon =SplitResolve(InpEMon,   g_emon, 8,"E-Mon");
    g_nemonx=SplitResolve(InpEMonX,  g_emonx,8,"E-Mon横");
    g_nv7x  =SplitResolve(InpV7X,    g_v7x,  8,"v7横");
+   g_nv7   =SplitResolve(InpV7,     g_v7,   8,"v7");
    g_nsjul =SplitResolve(InpSJul,   g_sjul, 8,"S-Jul");
    ArrayInitialize(g_monWeekKey,-1);
 
    trade.SetDeviationInPoints(50);
    EventSetTimer(60);
-   PrintFormat("[INIT Seasonal %s] 稼働月=%d月 倍率=%.1fx initBal=%.0f | v4:%d E5:%d EMon:%d EMonX:%d v7x:%d SJul:%d",
-      (InpScenario==SCN_JUNE_TOP5?"JUNE_TOP5":"JULY_TOP2"),g_month,g_mult,g_initBal,
-      g_nv4,g_ne5,g_nemon,g_nemonx,g_nv7x,g_nsjul);
+   string scn=(InpScenario==SCN_JUNE_TOP5?"JUNE_TOP5":
+              (InpScenario==SCN_JULY_TOP2?"JULY_TOP2":
+              (InpScenario==SCN_AUG_V4ONLY?"AUG_V4ONLY":"YEARROUND_05")));
+   PrintFormat("[INIT Seasonal %s] 稼働月=%s 倍率=%.1fx initBal=%.0f | v4:%d E5:%d EMon:%d EMonX:%d v7x:%d v7:%d SJul:%d",
+      scn,(g_month==0?"通年(月替わり自動)":IntegerToString(g_month)+"月"),g_mult,g_initBal,
+      g_nv4,g_ne5,g_nemon,g_nemonx,g_nv7x,g_nv7,g_nsjul);
    Print("[NOTE] デモ専用・対象月以外は自動で全決済して待機。横展開レッグはEA初実装(docs/86)。");
    return INIT_SUCCEEDED;
 }
@@ -208,7 +226,7 @@ void CloseSleeve(int sleeve, string why, int olderThanSec=0, int maxBarsD1=0)
 }
 void CloseAllMine(string why)
 {
-   for(int sl=SL_V4; sl<=SL_SJUL; sl++) CloseSleeve(sl,why);
+   for(int sl=SL_V4; sl<=SL_V7; sl++) CloseSleeve(sl,why);
 }
 bool OpenNotional(string s, int sleeve, int dir, double notional, double slPrice=0.0, double tpPrice=0.0, string tag="")
 {
@@ -378,7 +396,21 @@ void OnTimer()
    }
    if(g_dayHalt) return;
 
-   // 月ゲート: 対象月以外は全決済して待機
+   // 通年シナリオ: 月替わりで全決済→当月の構成へ自動切替(挿しっぱなしで12ヶ月回る)
+   if(InpScenario==SCN_YEARROUND_05){
+      if(t.mon!=g_curMonth){ CloseAllMine("MONTH_ROLL"); g_curMonth=t.mon; }
+      int m=t.mon;
+      if(WY_V4[m]>0.0)    SleeveV4(WY_V4[m]);
+      if(WY_E5[m]>0.0)    SleeveE5(WY_E5[m]);
+      if(WY_EMON[m]>0.0)  SleeveMonday(SL_EMON, g_emon, g_nemon, WY_EMON[m], 0);
+      if(WY_EMONX[m]>0.0) SleeveMonday(SL_EMONX,g_emonx,g_nemonx,WY_EMONX[m],1);
+      if(WY_V7X[m]>0.0)   SleeveMonday(SL_V7X,  g_v7x,  g_nv7x,  WY_V7X[m],  2);
+      if(WY_V7[m]>0.0)    SleeveMonday(SL_V7,   g_v7,   g_nv7,   WY_V7[m],   3);
+      if(WY_SJUL[m]>0.0)  SleeveSJul(WY_SJUL[m]);
+      return;
+   }
+
+   // 単月シナリオの月ゲート: 対象月以外は全決済して待機
    if(t.mon!=g_month){ CloseAllMine("MONTH_GATE"); return; }
 
    if(InpScenario==SCN_JUNE_TOP5){
