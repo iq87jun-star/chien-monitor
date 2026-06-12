@@ -29,7 +29,7 @@
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
 
-enum ENUM_SEASONAL_SCN { SCN_JUNE_TOP5=0, SCN_JULY_TOP2=1, SCN_AUG_V4ONLY=2, SCN_YEARROUND_05=3 };
+enum ENUM_SEASONAL_SCN { SCN_JUNE_TOP5=0, SCN_JULY_TOP2=1, SCN_AUG_V4ONLY=2, SCN_YEARROUND_05=3, SCN_YEARROUND_M3=4 };
 
 input group "=== シナリオ ==="
 input ENUM_SEASONAL_SCN InpScenario = SCN_JUNE_TOP5; // 6月版/7月版
@@ -144,7 +144,8 @@ int OnInit()
    if(InpScenario==SCN_JUNE_TOP5)      { g_month=6; g_mult=2.0; }
    else if(InpScenario==SCN_JULY_TOP2) { g_month=7; g_mult=1.3; }
    else if(InpScenario==SCN_AUG_V4ONLY){ g_month=8; g_mult=0.4; }   // 8月: v4単独。2024/8/5(円急騰)に同日複数SLで-8.9%/1x→日次ガード逆算0.5x×安全率(docs/87)
-   else                                { g_month=0; g_mult=0.7; }   // 通年: 1xでmaxDD-9.0%=枠いっぱい→0.9x上限×安全率0.8(docs/87)
+   else if(InpScenario==SCN_YEARROUND_05){ g_month=0; g_mult=0.7; } // 通年・運用版: 1xでmaxDD-9.0%=枠いっぱい→0.9x上限×安全率0.8(docs/87)
+   else                                { g_month=0; g_mult=2.0; }   // 通年・median-3チャレンジ版: 中央3.1ヶ月/失格MC1.5%(楽観値,docs/87)。⚠暴落日はガードが間に合わない可能性=デモ必須
    if(InpMultOverride>0.0) g_mult=InpMultOverride;
    g_initBal=(InpInitialBalance>0.0)? InpInitialBalance : AccountInfoDouble(ACCOUNT_BALANCE);
    if(g_initBal<=0.0) g_initBal=AccountInfoDouble(ACCOUNT_EQUITY);
@@ -162,7 +163,8 @@ int OnInit()
    EventSetTimer(60);
    string scn=(InpScenario==SCN_JUNE_TOP5?"JUNE_TOP5":
               (InpScenario==SCN_JULY_TOP2?"JULY_TOP2":
-              (InpScenario==SCN_AUG_V4ONLY?"AUG_V4ONLY":"YEARROUND_05")));
+              (InpScenario==SCN_AUG_V4ONLY?"AUG_V4ONLY":
+              (InpScenario==SCN_YEARROUND_05?"YEARROUND_05":"YEARROUND_M3"))));
    PrintFormat("[INIT Seasonal %s] 稼働月=%s 倍率=%.1fx initBal=%.0f | v4:%d E5:%d EMon:%d EMonX:%d v7x:%d v7:%d SJul:%d",
       scn,(g_month==0?"通年(月替わり自動)":IntegerToString(g_month)+"月"),g_mult,g_initBal,
       g_nv4,g_ne5,g_nemon,g_nemonx,g_nv7x,g_nv7,g_nsjul);
@@ -397,7 +399,7 @@ void OnTimer()
    if(g_dayHalt) return;
 
    // 通年シナリオ: 月替わりで全決済→当月の構成へ自動切替(挿しっぱなしで12ヶ月回る)
-   if(InpScenario==SCN_YEARROUND_05){
+   if(InpScenario==SCN_YEARROUND_05 || InpScenario==SCN_YEARROUND_M3){
       if(t.mon!=g_curMonth){ CloseAllMine("MONTH_ROLL"); g_curMonth=t.mon; }
       int m=t.mon;
       if(WY_V4[m]>0.0)    SleeveV4(WY_V4[m]);
