@@ -22,9 +22,9 @@
 //|     機構確認(docs/86 H14c/d)のみでEA実績ゼロ。必ずデモから。        |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.10"
+#property version   "1.20"
 #property strict
-#property description "Seasonal top-ranked mini-portfolios (JUNE_TOP5 2.0x / JULY_TOP2 1.3x). Forward-validation EA, demo-first. Inactive outside its month. v1.10: +7% profit lock (docs/100)."
+#property description "Seasonal top-ranked mini-portfolios (JUNE_TOP5 2.0x / JULY_TOP2 1.3x). Forward-validation EA, demo-first. Inactive outside its month. v1.10: +7% profit lock. v1.20: re-enter after manual close (docs/100)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -63,6 +63,10 @@ input string InpSJul     = "US500,NAS100";
 
 input group "=== スワップ実測ログ(docs/98転記用, docs/100 §4) ==="
 input bool   InpSwapLogEnable = true;     // MQL5/Files/ChienSwapLog_<口座>.csv に記録
+
+input group "=== 手決済後の再建て(docs/100 §5) ==="
+input bool   InpReenterManualClose = true; // 月保有スリーブ(S-Jul/E5)を手決済したら同月内に自動で建て直す
+                                           // ※ガード(日次/フロア/ロック/月ゲート)による決済後は再建てしない
 
 input group "=== 詳細 ==="
 input int    InpHoldHoursMonday = 24;     // 月曜系の保有時間
@@ -331,6 +335,23 @@ void SwapLogMonthlySummary(int y,int m)   // 前月(y,m)の実現スワップを
 }
 int g_swapMonKey=-1;
 
+// 手決済判定(docs/100 §5): 当月内の該当スリーブ×銘柄の直近クローズ約定が
+// 手動(CLIENT/MOBILE/WEB)なら true。EA起点(EXPERT=ガード/月ゲート)や SL なら false。
+bool ManualCloseThisMonth(int sleeve, string sym)
+{
+   MqlDateTime t; TimeToStruct(TimeCurrent(),t);
+   if(!HistorySelect(SwapMonthStart(t.year,t.mon),TimeCurrent()+60)) return false;
+   for(int i=HistoryDealsTotal()-1;i>=0;i--){
+      ulong dt=HistoryDealGetTicket(i); if(dt==0) continue;
+      if((long)HistoryDealGetInteger(dt,DEAL_MAGIC)!=MagicOf(sleeve)) continue;
+      if(HistoryDealGetString(dt,DEAL_SYMBOL)!=sym) continue;
+      if((ENUM_DEAL_ENTRY)HistoryDealGetInteger(dt,DEAL_ENTRY)!=DEAL_ENTRY_OUT) continue;
+      long r=(long)HistoryDealGetInteger(dt,DEAL_REASON);
+      return (r==DEAL_REASON_CLIENT || r==DEAL_REASON_MOBILE || r==DEAL_REASON_WEB);
+   }
+   return false;
+}
+
 datetime g_rgLastLog=0;
 bool RiskGuardBlocked(string ctx)
 {
@@ -443,7 +464,8 @@ void SleeveE5(double W)
 {
    MqlDateTime t; TimeToStruct(TimeCurrent(),t);
    int mk=t.year*100+t.mon;
-   if(g_e5MonthKey==mk) return;
+   bool firstBuild=(g_e5MonthKey!=mk);
+   if(!firstBuild && !InpReenterManualClose) return;
    double sgn[8], invv[8], sumInv=0;
    for(int i=0;i<g_ne5;i++){
       sgn[i]=0; invv[i]=0;
@@ -466,16 +488,17 @@ void SleeveE5(double W)
       if(sd2<=0) continue;
       sgn[i]=(comp>0?1:-1); invv[i]=1.0/sd2; sumInv+=invv[i];
    }
-   if(sumInv<=0){ g_e5MonthKey=mk; return; }
+   if(sumInv<=0){ if(firstBuild) g_e5MonthKey=mk; return; }
    double eq=AccountInfoDouble(ACCOUNT_EQUITY);
    int done=0, want=0;
    for(int i=0;i<g_ne5;i++){
       if(sgn[i]==0) continue;
       want++;
       if(CountSleeve(SL_E5,g_e5[i])>0){ done++; continue; }
-      if(OpenNotional(g_e5[i],SL_E5,(int)sgn[i],eq*W*g_mult*invv[i]/sumInv,0,0,"E5_TSMOM")) done++;
+      if(!firstBuild && !ManualCloseThisMonth(SL_E5,g_e5[i])) continue;    // 再建ては手決済後のみ
+      if(OpenNotional(g_e5[i],SL_E5,(int)sgn[i],eq*W*g_mult*invv[i]/sumInv,0,0,(firstBuild?"E5_TSMOM":"E5_REENTER"))) done++;
    }
-   if(done>=want) g_e5MonthKey=mk;
+   if(firstBuild && done>=want) g_e5MonthKey=mk;
 }
 
 //------------------------------------------------------------------ S-Jul スリーブ(月初買い持ち)
@@ -483,14 +506,16 @@ void SleeveSJul(double W)
 {
    MqlDateTime t; TimeToStruct(TimeCurrent(),t);
    int mk=t.year*100+t.mon;
-   if(g_sjulMonthKey==mk) return;
+   bool firstBuild=(g_sjulMonthKey!=mk);
+   if(!firstBuild && !InpReenterManualClose) return;
    double eq=AccountInfoDouble(ACCOUNT_EQUITY);
    int done=0;
    for(int i=0;i<g_nsjul;i++){
       if(CountSleeve(SL_SJUL,g_sjul[i])>0){ done++; continue; }
-      if(OpenNotional(g_sjul[i],SL_SJUL,+1,eq*W*g_mult/g_nsjul,0,0,"SJUL")) done++;
+      if(!firstBuild && !ManualCloseThisMonth(SL_SJUL,g_sjul[i])) continue;  // 再建ては手決済後のみ
+      if(OpenNotional(g_sjul[i],SL_SJUL,+1,eq*W*g_mult/g_nsjul,0,0,(firstBuild?"SJUL":"SJUL_REENTER"))) done++;
    }
-   if(done>=g_nsjul) g_sjulMonthKey=mk;
+   if(firstBuild && done>=g_nsjul) g_sjulMonthKey=mk;
 }
 
 //------------------------------------------------------------------
