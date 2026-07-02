@@ -1,0 +1,201 @@
+{
+ "prereg": "docs/104",
+ "window": "2016-01..2026-07",
+ "loyo_years": [
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025
+ ],
+ "input_sha256": {
+  "EURUSD": "113537c4663290cf",
+  "GBPUSD": "81191342a95492d6",
+  "USDJPY": "44493d72ca3da454",
+  "AUDUSD": "b9a00386562810e3",
+  "USDCHF": "608f80dc30102b06",
+  "USDCAD": "e7d7d32b5ef89a96",
+  "NZDUSD": "89b1bad88a04566f",
+  "EURJPY": "841334444b0857d9",
+  "GBPJPY": "728315254a4f47bf",
+  "AUDJPY": "98ade6818bbd7995",
+  "NZDJPY": "341c655370e601b5",
+  "CADJPY": "71dafae63b484892",
+  "CHFJPY": "69850c932f42ab0d",
+  "XAUUSD": "069fde17d31617ee",
+  "US500": "bff1db8e8620b8c5",
+  "NAS100": "86ddb5dbb579dc02",
+  "GER40": "2f506d58458bfe58",
+  "JP225": "d4903278f071a23a",
+  "UK100": "f979a26e46c6fb79",
+  "FR40": "231bf96be49c76de"
+ },
+ "loyo_oos": {
+  "R0": {
+   "mean_month_pct": 0.38,
+   "sharpe": 1.027,
+   "maxDD": -5.56,
+   "calmar": 0.82,
+   "worst_month_pct": -3.8,
+   "months": 120
+  },
+  "R1": {
+   "mean_month_pct": 0.901,
+   "sharpe": 1.16,
+   "maxDD": -13.46,
+   "calmar": 0.81,
+   "worst_month_pct": -6.31,
+   "months": 120
+  },
+  "R2a": {
+   "mean_month_pct": 1.06,
+   "sharpe": 0.991,
+   "maxDD": -28.55,
+   "calmar": 0.44,
+   "worst_month_pct": -11.08,
+   "months": 120
+  },
+  "R2b": {
+   "mean_month_pct": 0.874,
+   "sharpe": 0.99,
+   "maxDD": -18.88,
+   "calmar": 0.55,
+   "worst_month_pct": -6.63,
+   "months": 120
+  },
+  "R3a": {
+   "mean_month_pct": 0.51,
+   "sharpe": 1.326,
+   "maxDD": -4.52,
+   "calmar": 1.37,
+   "worst_month_pct": -4.39,
+   "months": 120
+  },
+  "R3b": {
+   "mean_month_pct": 0.64,
+   "sharpe": 1.336,
+   "maxDD": -6.83,
+   "calmar": 1.14,
+   "worst_month_pct": -4.98,
+   "months": 120
+  },
+  "R3c": {
+   "mean_month_pct": 0.769,
+   "sharpe": 1.246,
+   "maxDD": -9.46,
+   "calmar": 0.99,
+   "worst_month_pct": -5.58,
+   "months": 120
+  },
+  "R4": {
+   "mean_month_pct": 0.849,
+   "sharpe": 1.282,
+   "maxDD": -8.1,
+   "calmar": 1.28,
+   "worst_month_pct": -4.71,
+   "months": 120
+  }
+ },
+ "placebo": {
+  "R1": {
+   "real_sharpe": 1.16,
+   "placebo_mean": 0.767,
+   "placebo_p95": 1.095,
+   "p_value": 0.035,
+   "verdict": "月別性に固有価値あり"
+  },
+  "R4": {
+   "real_sharpe": 1.282,
+   "placebo_mean": 0.747,
+   "placebo_p95": 1.132,
+   "p_value": 0.0,
+   "verdict": "月別性に固有価値あり"
+  }
+ },
+ "cost2x": {
+  "R0": {
+   "mean_month_pct": 0.31,
+   "sharpe": 0.838,
+   "maxDD": -5.97,
+   "calmar": 0.62,
+   "worst_month_pct": -3.86,
+   "months": 120
+  },
+  "R1": {
+   "mean_month_pct": 0.839,
+   "sharpe": 0.992,
+   "maxDD": -17.08,
+   "calmar": 0.59,
+   "worst_month_pct": -7.22,
+   "months": 120
+  },
+  "R2a": {
+   "mean_month_pct": 0.975,
+   "sharpe": 0.912,
+   "maxDD": -28.96,
+   "calmar": 0.4,
+   "worst_month_pct": -11.13,
+   "months": 120
+  },
+  "R2b": {
+   "mean_month_pct": 0.82,
+   "sharpe": 0.903,
+   "maxDD": -21.19,
+   "calmar": 0.46,
+   "worst_month_pct": -7.22,
+   "months": 120
+  },
+  "R3a": {
+   "mean_month_pct": 0.442,
+   "sharpe": 1.117,
+   "maxDD": -5.83,
+   "calmar": 0.91,
+   "worst_month_pct": -4.49,
+   "months": 120
+  },
+  "R3b": {
+   "mean_month_pct": 0.573,
+   "sharpe": 1.126,
+   "maxDD": -8.87,
+   "calmar": 0.78,
+   "worst_month_pct": -5.12,
+   "months": 120
+  },
+  "R3c": {
+   "mean_month_pct": 0.705,
+   "sharpe": 1.055,
+   "maxDD": -12.45,
+   "calmar": 0.68,
+   "worst_month_pct": -5.74,
+   "months": 120
+  },
+  "R4": {
+   "mean_month_pct": 0.752,
+   "sharpe": 1.005,
+   "maxDD": -14.18,
+   "calmar": 0.63,
+   "worst_month_pct": -7.22,
+   "months": 120
+  }
+ },
+ "ref_2026H1_net_pct": {
+  "R0": 2.5,
+  "R1": 16.36,
+  "R2a": 18.72,
+  "R2b": 19.79,
+  "R3a": 5.96,
+  "R3b": 9.43,
+  "R3c": 12.9,
+  "R4": 12.93
+ },
+ "decision": {
+  "winner_by_rule": "R3a",
+  "reason": "決定規則を満たす(docs/104 §4)",
+  "placebo_note": "R1はプラセボ合格(月別性に固有価値)"
+ }
+}
