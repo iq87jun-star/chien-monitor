@@ -61,6 +61,9 @@ input string InpV7X      = "AUDJPY,NZDJPY,CADJPY,CHFJPY";
 input string InpV7       = "EURJPY,GBPJPY,USDJPY";   // 通年シナリオの5月のみ使用
 input string InpSJul     = "US500,NAS100";
 
+input group "=== スワップ実測ログ(docs/98転記用, docs/100 §4) ==="
+input bool   InpSwapLogEnable = true;     // MQL5/Files/ChienSwapLog_<口座>.csv に記録
+
 input group "=== 詳細 ==="
 input int    InpHoldHoursMonday = 24;     // 月曜系の保有時間
 input int    InpV4MaxHoldDays   = 8;      // v4の時間切れ(D1バー)
@@ -269,6 +272,65 @@ double OpenRiskPct()
    }
    return (g_initBal>0? 100.0*total/g_initBal : 0.0);
 }
+// ===== スワップ実測ログ(docs/100 §4) =====
+// 目的: E5/S-Jul等の持越しコスト実測→docs/98へ月次転記。CSV: MQL5/Files/ChienSwapLog_<口座>.csv
+//  SNAPSHOT行: 日次・保有中建玉の累積スワップ / MONTHLY行: 決済履歴からスリーブ別の実現スワップ合算
+string SleeveName(long magic)
+{
+   int s=(int)(magic-InpMagicBase);
+   switch(s){ case SL_V4: return "v4"; case SL_E5: return "E5"; case SL_EMON: return "EMon";
+              case SL_EMONX: return "EMonX"; case SL_V7X: return "v7x"; case SL_SJUL: return "SJul";
+              case SL_V7: return "v7"; }
+   return "other";
+}
+void SwapLogWrite(string line)
+{
+   string fn=StringFormat("ChienSwapLog_%I64d.csv",(long)AccountInfoInteger(ACCOUNT_LOGIN));
+   int h=FileOpen(fn,FILE_READ|FILE_WRITE|FILE_TXT|FILE_ANSI|FILE_SHARE_READ);
+   if(h==INVALID_HANDLE) return;
+   if(FileSize(h)==0) FileWriteString(h,"type,date,ea,sleeve,symbol,ticket,lots,swap,commission,profit,note\n");
+   FileSeek(h,0,SEEK_END); FileWriteString(h,line+"\n"); FileClose(h);
+}
+void SwapLogDailySnapshot()
+{
+   for(int i=PositionsTotal()-1;i>=0;i--){
+      ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      if(!IsMyMagic(posinfo.Magic())) continue;
+      SwapLogWrite(StringFormat("SNAPSHOT,%s,Seasonal,%s,%s,%I64u,%.2f,%.2f,,%.2f,accum-open",
+         TimeToString(TimeCurrent(),TIME_DATE),SleeveName(posinfo.Magic()),
+         posinfo.Symbol(),tk,posinfo.Volume(),posinfo.Swap(),posinfo.Profit()));
+   }
+}
+datetime SwapMonthStart(int y,int m)
+{
+   MqlDateTime s; s.year=y; s.mon=m; s.day=1; s.hour=0; s.min=0; s.sec=0; s.day_of_week=0; s.day_of_year=0;
+   return StructToTime(s);
+}
+void SwapLogMonthlySummary(int y,int m)   // 前月(y,m)の実現スワップをスリーブ別に合算
+{
+   int y2=(m==12? y+1:y), m2=(m==12? 1:m+1);
+   datetime from=SwapMonthStart(y,m), to=SwapMonthStart(y2,m2);
+   if(!HistorySelect(from,to)) return;
+   double sw[8], cm[8], pf[8]; int cnt[8];
+   ArrayInitialize(sw,0); ArrayInitialize(cm,0); ArrayInitialize(pf,0); ArrayInitialize(cnt,0);
+   for(int i=HistoryDealsTotal()-1;i>=0;i--){
+      ulong dt=HistoryDealGetTicket(i); if(dt==0) continue;
+      long mg=(long)HistoryDealGetInteger(dt,DEAL_MAGIC);
+      if(!IsMyMagic(mg)) continue;
+      int s=(int)(mg-InpMagicBase); if(s<1||s>7) continue;
+      sw[s]+=HistoryDealGetDouble(dt,DEAL_SWAP);
+      cm[s]+=HistoryDealGetDouble(dt,DEAL_COMMISSION);
+      pf[s]+=HistoryDealGetDouble(dt,DEAL_PROFIT); cnt[s]++;
+   }
+   for(int s=1;s<=7;s++){
+      if(cnt[s]==0) continue;
+      SwapLogWrite(StringFormat("MONTHLY,%04d-%02d,Seasonal,%s,,,,%.2f,%.2f,%.2f,deals=%d",
+         y,m,SleeveName(InpMagicBase+s),sw[s],cm[s],pf[s],cnt[s]));
+   }
+}
+int g_swapMonKey=-1;
+
 datetime g_rgLastLog=0;
 bool RiskGuardBlocked(string ctx)
 {
@@ -435,6 +497,20 @@ void SleeveSJul(double W)
 void OnTimer()
 {
    double eq=AccountInfoDouble(ACCOUNT_EQUITY);
+
+   // スワップ実測ログ(docs/100 §4): ガードとは独立に日次1回+月替わりで集計
+   if(InpSwapLogEnable){
+      MqlDateTime ts0; TimeToStruct(TimeCurrent(),ts0);
+      int swDk=ts0.year*1000+ts0.day_of_year;
+      static int s_swapDayKey=-1;
+      if(swDk!=s_swapDayKey){
+         s_swapDayKey=swDk;
+         SwapLogDailySnapshot();
+         int mk=ts0.year*100+ts0.mon;
+         if(g_swapMonKey!=-1 && mk!=g_swapMonKey) SwapLogMonthlySummary(g_swapMonKey/100,g_swapMonKey%100);
+         g_swapMonKey=mk;
+      }
+   }
 
    // フロア(恒久停止)
    if(eq<=g_initBal*(1.0-InpAccountFloorDDPct/100.0) && !g_halted){

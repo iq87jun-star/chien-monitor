@@ -91,9 +91,19 @@
   高重要度全回避で保守側に倒しているが、**最終的にはFTMOの制限イベントリストとの照合が必要**。
 - カレンダー時刻はサーバ時刻系(`TimeTradeServer()`)で比較。ブローカーのGMTオフセットに依存しない。
 
-## 4. A-4: スワップ実測ログ(E5/S-Jul持越しコスト→docs/98転記用)
+## 4. A-4: スワップ実測ログ(E5/S-Jul持越しコスト→docs/98転記用) — 両EA v1.10
 
-(実装記録は本docの次コミットで追記)
+- 出力: `MQL5/Files/ChienSwapLog_<口座番号>.csv`(`InpSwapLogEnable=true` 既定ON)。
+  ヘッダ: `type,date,ea,sleeve,symbol,ticket,lots,swap,commission,profit,note`
+- **SNAPSHOT行**(日次1回・最初のタイマー): 保有中の自建玉ごとの**累積スワップ**(`POSITION_SWAP`)と含み損益。
+  持越しコストの日次推移がそのまま残る(E5/S-Julの月次保有の実測)。
+- **MONTHLY行**(月替わり時): 前月の**決済履歴**(`DEAL_SWAP/COMMISSION/PROFIT`)をスリーブ別に合算=
+  docs/98 に転記する確定値。例: `MONTHLY,2026-07,Seasonal,SJul,,,,-42.10,0.00,+1893.20,deals=4`
+- ガード(フロア/日次/ロック)とは独立に実行=停止状態でも記録は続く(PASS_LOCK後の当月分は
+  MT5履歴 or `research/forward_scoring_mt5.py` で補完)。
+- docs/98 転記手順: 月初にCSVのMONTHLY行の `swap` 列をスリーブ別に読み、docs/98 §2 の行へ
+  「スワップ$」として追記(EA別・スリーブ別)。バックテストのコスト前提(E5摩擦検証はdocs/39)との
+  乖離が大きい場合は倍率/銘柄の見直し材料にする。
 
 > 免責: 本docの変更は防御機能の追加であり、収益性の改善を主張しない。全EAはデモ前進検証後にのみ
 > 実口座へ(ADOPT級でも同じ)。「必ず通る手法」は存在しない。
