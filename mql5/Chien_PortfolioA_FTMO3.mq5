@@ -21,7 +21,7 @@
 //|     本EAは"審査用"。資金化後はサイズを落とす(別運用)。               |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.00"
+#property version   "1.10"   // v1.10: FTMO資金化後モード(ニュース±分回避・週末クローズ, docs/100 §3)
 #property strict
 #property description "Portfolio-A ONE-CLICK for FTMO (median-3, +10% target): v4+v7+E5=45:35:20. Drop on chart & OK."
 
@@ -47,6 +47,13 @@ input double InpV4RiskPerTradePct= 0.80;  // v4 1トレード%(=0.844×0.95)
 input double InpE5LegRiskPct     = 1.43;  // E5 legRisk%(=1.50×0.95)
 input double InpProfitStopPct    = 10.0;  // +この%で新規停止(FTMO P1=+10%)
 input double InpDailyStopPct      = 4.0;  // 日次−この%で当日全決済(規約−5%手前)
+
+input group "=== FTMO資金化後モード(FTMO Account Standard用, docs/100 §3) ==="
+input bool   InpFundedNewsFilter   = false; // 高重要度ニュース±バッファ分は建て/EA決済しない(資金化後ON)
+input int    InpNewsBufferMin      = 5;     // 規約は±2分。既定5分=執行遅延の余裕(保守側)
+input bool   InpNewsFailOpen       = true;  // カレンダー取得不可時: true=取引継続+警告 / false=新規停止
+input bool   InpFundedWeekendClose = false; // 金曜このUTC時以降 全決済+新規停止(Standard口座のみ。Swingなら不要)
+input int    InpWeekendCloseHourUTC= 20;    // 金曜クローズ開始UTC時
 
 input group "=== v7 設定（円クロス 月曜マルチショット）==="
 input string InpV7HoursUTC    = "4,6,8,10";
@@ -196,6 +203,11 @@ int OnInit()
    }
    trade.SetDeviationInPoints(InpSlippagePoints);
    ResetDay(TimeCurrent());
+   if(InpFundedNewsFilter || InpFundedWeekendClose)
+      PrintFormat("[FUNDED MODE] news=%s(±%dmin) weekendClose=%s(金%d:00UTC)。⚠資金化後はサイズも落とすこと"
+                  "(docs/76: funded保守)。週末クローズはv4/E5の保有を毎週切る=Swing口座なら不要(docs/94 §3)",
+         (InpFundedNewsFilter?"ON":"OFF"),InpNewsBufferMin,
+         (InpFundedWeekendClose?"ON":"OFF"),InpWeekendCloseHourUTC);
    PrintFormat("[INIT A-FTMO %s] initBal=%.0f v7=%.2f%%/wk v4=%.2f%%/tr E5=%.2f%%leg profit=+%.0f%% daily=-%.1f%%",
       g_scenName,g_initBal,g_weeklyRisk,g_v4risk,g_e5leg,g_profitPct,g_dailyStopPct);
    if(InpVerboseLog) Print("[NOTE] v4core=45:35:20(FTMO審査用)。1チャートに本EA1つだけ。Magic(",g_mV7,"/",g_mV4,"/",g_mE5,")。資金化後はサイズを落とす(別運用)。");
@@ -258,6 +270,65 @@ void CloseAllMine(string why){
       if(IsMine(posinfo.Magic())) trade.PositionClose(tk); }
    if(InpVerboseLog) PrintFormat("[CLOSE ALL %s]",why);
 }
+int CountMine(){
+   int n=0;
+   for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      if(IsMine(posinfo.Magic())) n++; }
+   return n;
+}
+
+// ===== FTMO資金化後モード(docs/100 §3) =====
+// 週末クローズ: 金曜InpWeekendCloseHourUTC以降〜日曜は全決済+新規停止(FTMO Account Standardの
+// 週末持越し禁止)。⚠ v4(〜8日保有)/E5(月次保有)は毎金曜に強制決済され検証済み挙動から乖離する。
+// E5は月キーをリセットして翌週初に同シグナルで再建て。恒久運用はFTMO Swing口座(制限なし)を推奨(docs/94 §3)。
+bool WeekendBlock(datetime utc)
+{
+   if(!InpFundedWeekendClose) return false;
+   MqlDateTime u; TimeToStruct(utc,u);
+   if(u.day_of_week==5 && u.hour>=InpWeekendCloseHourUTC) return true;
+   if(u.day_of_week==6 || u.day_of_week==0) return true;
+   return false;
+}
+// ニュースフィルタ: 銘柄の関連通貨(base/profit/margin)の高重要度イベント±InpNewsBufferMin内は
+// 新規建てとEA起点の決済を行わない(FTMO Account: 制限イベント±2分の建て/決済禁止)。
+// SL/TPのサーバ執行は対象外(FTMO許容)。カレンダー時刻はサーバ時刻系=TimeTradeServer()で比較。
+bool g_newsWarned=false;
+bool NewsBlocked(string sym)
+{
+   if(!InpFundedNewsFilter) return false;
+   string curs[3]; int nc=0;
+   string cb=SymbolInfoString(sym,SYMBOL_CURRENCY_BASE);
+   string cp=SymbolInfoString(sym,SYMBOL_CURRENCY_PROFIT);
+   string cm=SymbolInfoString(sym,SYMBOL_CURRENCY_MARGIN);
+   if(StringLen(cb)>0) curs[nc++]=cb;
+   if(StringLen(cp)>0 && cp!=cb) curs[nc++]=cp;
+   if(StringLen(cm)>0 && cm!=cb && cm!=cp) curs[nc++]=cm;
+   datetime now=TimeTradeServer();
+   datetime from=now-InpNewsBufferMin*60, to=now+InpNewsBufferMin*60;
+   bool anyData=false;
+   for(int c=0;c<nc;c++){
+      MqlCalendarValue vals[];
+      if(!CalendarValueHistory(vals,from,to,NULL,curs[c])) continue;
+      anyData=true;
+      for(int i=0;i<ArraySize(vals);i++){
+         MqlCalendarEvent ev;
+         if(!CalendarEventById(vals[i].event_id,ev)) continue;
+         if(ev.importance==CALENDAR_IMPORTANCE_HIGH){
+            if(InpVerboseLog) PrintFormat("[NEWS BLOCK] %s: '%s'(%s) ±%dmin",sym,ev.name,curs[c],InpNewsBufferMin);
+            return true;
+         }
+      }
+   }
+   if(!anyData){
+      if(!g_newsWarned){ g_newsWarned=true;
+         PrintFormat("[WARN] 経済カレンダー取得不可(テスター/未対応業者?)→%s(InpNewsFailOpen)。"
+                     "資金化後の本運用前に必ずライブでカレンダー動作を確認すること",
+                     (InpNewsFailOpen?"取引継続":"新規停止")); }
+      return !InpNewsFailOpen;
+   }
+   return false;
+}
 
 //==================================================================
 void OnTimer()
@@ -272,6 +343,13 @@ void OnTimer()
    if(equity<=guard && !g_halted){ g_halted=true; CloseAllMine("EQUITY_FLOOR");
       PrintFormat("[HALT] equity %.2f <= guard %.2f",equity,guard); }
    if(g_halted){ CloseAllMine("HALTED"); return; }
+
+   // 週末クローズ(資金化後モード): 金曜規定時刻以降は全決済して停止。E5は月キーを
+   // リセットし週明けに同シグナルで再建て(v4はシグナル依存で自然再開)。
+   if(WeekendBlock(utc)){
+      if(CountMine()>0){ CloseAllMine("WEEKEND_CLOSE"); ArrayInitialize(g_lastMonth,0); }
+      return;
+   }
 
    if(g_useDailyStop){
       double dpnl=equity-g_dayStartEq;
@@ -297,6 +375,7 @@ void ManageV7Exit()
    for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
       if(!posinfo.SelectByTicket(tk)) continue;
       if(posinfo.Magic()!=g_mV7) continue;
+      if(NewsBlocked(posinfo.Symbol())) continue;   // EA起点の決済もニュース窓では遅延(数分後に再試行)
       int held=(int)(TimeCurrent()-(datetime)posinfo.Time());
       if(held>=InpV7HoldHours*3600){ if(trade.PositionClose(tk)&&InpVerboseLog)
          PrintFormat("[v7 TIME EXIT] %s",posinfo.Symbol()); }
@@ -316,6 +395,7 @@ void EntriesV7(datetime utc)
       int key=s*nh+slot;
       if(g_lastShotV7[key]==hourBar) continue;
       string sym=g_yen[s]; double pip=PipOf(sym);
+      if(NewsBlocked(sym)) continue;                // slot未消費=同時間内・窓明けに再試行
       double atr=AtrAt(g_atrH1[s]); if(atr<=0) continue;
       double sd=InpCatastropheATR*atr; double sp=sd/pip;
       if(sp<InpMinStopPips){ sp=InpMinStopPips; sd=sp*pip; }
@@ -360,6 +440,7 @@ void ManageV4Exit()
    for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
       if(!posinfo.SelectByTicket(tk)) continue;
       if(posinfo.Magic()!=g_mV4) continue;
+      if(NewsBlocked(posinfo.Symbol())) continue;   // EA起点の決済もニュース窓では遅延
       int heldDays=(int)((TimeCurrent()-(datetime)posinfo.Time())/86400);
       if(heldDays>=InpV4_MaxHoldDays){ if(trade.PositionClose(tk)&&InpVerboseLog)
          PrintFormat("[v4 TIME EXIT %dd] %s",heldDays,posinfo.Symbol()); }
@@ -373,6 +454,7 @@ void EntriesV4()
       string sym=g_v4[i];
       datetime db=(datetime)iTime(sym,PERIOD_D1,0);
       if(db==0 || db==g_lastV4Bar[i]) continue;
+      if(NewsBlocked(sym)) continue;                // バー未消費=ニュース窓明けの次タイマーで再試行
       g_lastV4Bar[i]=db;
       if(CountPos(sym,g_mV4)>0) continue;
       double dummy; int sig=V4Signal(sym,g_rsiD1[i],dummy);
@@ -414,6 +496,7 @@ void EntriesE5()
       string sym=g_e5[i];
       datetime mb=(datetime)iTime(sym,PERIOD_MN1,0);
       if(mb==0 || mb==g_lastMonth[i]) continue;
+      if(NewsBlocked(sym)) continue;                // 月キー未消費=窓明けに再試行(FLIP決済も遅延)
       g_lastMonth[i]=mb;
       int sig=E5Signal(sym); int cur=DirOf(sym,g_mE5);
       if(sig==0){ if(cur!=0) CloseSymMagic(sym,g_mE5,"E5_FLAT"); continue; }

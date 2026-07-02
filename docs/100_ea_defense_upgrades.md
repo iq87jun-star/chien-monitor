@@ -69,9 +69,27 @@
 - `research/verify_risk_guard.py`: 集計ロジック写像5テスト+解析的影響評価 **ALL PASS**
   (`research/results/verify_risk_guard.json`)。
 
-## 3. A-3: FTMO資金化後モード(ニュース±2分回避・週末クローズ)
+## 3. A-3: FTMO資金化後モード(ニュース±2分回避・週末クローズ) — `Chien_PortfolioA_FTMO3` v1.10
 
-(実装記録は本docの次コミットで追記)
+対象はFTMO用EA(`Chien_PortfolioA_FTMO3`)。FTMOのニュース/週末制限は**資金化後(FTMO Account Standard)にのみ**
+適用されるため(審査中は制限なし・docs/59 §5)、**既定は両方OFF=審査中は従来挙動と完全一致**。
+
+| input | 既定 | 動作 |
+|---|---|---|
+| `InpFundedNewsFilter` | false | ONで**高重要度**(CALENDAR_IMPORTANCE_HIGH)イベント±`InpNewsBufferMin`(既定**5分**。規約±2分+執行余裕の保守側)の間、その銘柄の関連通貨(base/profit/margin)の**新規建てとEA起点の決済を遅延**。SL/TPのサーバ執行は対象外(FTMO許容)。窓明けに自動再試行(slot/バー/月キーは未消費) |
+| `InpNewsFailOpen` | true | MQL5経済カレンダー取得不可(テスター等)時: true=取引継続+警告1回 / false=新規停止(完全防御) |
+| `InpFundedWeekendClose` | false | ONで金曜`InpWeekendCloseHourUTC`(既定20時UTC)以降〜日曜は**全決済+新規停止**。E5は月キーをリセットし週明けに同シグナルで再建て |
+
+### ⚠ 正直な注記
+- **週末クローズはv4(〜8日保有)/E5(月次保有)の検証済み挙動を毎週切断する**(週末ギャップ分の損益が消え、
+  スプレッド往復コストが増える)。定量影響は未計測(H1/日足の週跨ぎ分解が必要)。
+  **恒久運用はFTMO Swing口座(ニュース/週末制限なし)を第一候補**とし(docs/94 §3)、
+  本モードは「Standard口座で資金化してしまった場合」の規約準拠スイッチという位置づけ。
+- ニュースフィルタは**MQL5内蔵経済カレンダー**に依存(ストラテジーテスターでは動かない)。
+  **資金化後の本運用前にライブデモで [NEWS BLOCK] ログの出現を必ず確認**すること。
+  カレンダーの重要度分類がFTMOの「制限イベント」リストと完全一致する保証はない=±5分の余裕と
+  高重要度全回避で保守側に倒しているが、**最終的にはFTMOの制限イベントリストとの照合が必要**。
+- カレンダー時刻はサーバ時刻系(`TimeTradeServer()`)で比較。ブローカーのGMTオフセットに依存しない。
 
 ## 4. A-4: スワップ実測ログ(E5/S-Jul持越しコスト→docs/98転記用)
 
