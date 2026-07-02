@@ -18,9 +18,9 @@
 //|     ※ライブ(資金化後)版は通過後に別途用意。                        |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.00"
+#property version   "1.10"
 #property strict
-#property description "Portfolio-D ONE-CLICK (PROP median-3 standard): v4+v7+E-Mon[RG3]+E5=30:25:25:20. Drop on chart & OK. No preset needed."
+#property description "Portfolio-D ONE-CLICK (PROP median-3 standard): v4+v7+E-Mon[RG3]+E5=30:25:25:20. Drop on chart & OK. No preset needed. v1.10: +7% profit lock (docs/100)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -47,6 +47,11 @@ input double InpEMonWeeklyPct    = 1.95;  // E-Mon 週次リスク%
 input double InpE5LegRiskPct     = 1.56;  // E5 legRisk%(各レッグ月次σ)
 input double InpProfitStopPct    = 8.0;   // +この%で新規停止(FN P1=8.0)
 input double InpDailyStopPct      = 4.0;  // 日次−この%で当日全決済(規約−5%手前)
+
+input group "=== +7%利益ロック(フェーズ通過の確定, docs/100) ==="
+input bool   InpProfitLockEnable = true;  // 利益ロックを使う
+input double InpLockArmPct       = 7.0;   // equity+この%で新規停止(既存+8%停止より手前・水準判定)
+input double InpLockClosePct     = 7.5;   // equity+この%で全決済し恒久ロック(PASS_LOCK)
 
 input group "=== v7 設定（円クロス 月曜マルチショット）==="
 input string InpV7HoursUTC    = "4,6,8,10";
@@ -116,6 +121,7 @@ bool     g_useProfitStop=false, g_useDailyStop=false;
 double   g_profitPct=0.0, g_dailyStopPct=0.0, g_floorBufPct=1.0;
 double   g_dayStartEq=0.0;
 datetime g_curDay=0; bool g_halted=false, g_dayBlocked=false;
+bool     g_passLocked=false;   // PASS_LOCK(+LockClose%で全決済済み・恒久)
 string   g_scenName="";
 long     g_mV7=0, g_mV4=0, g_mE5=0, g_mEMon=0;
 
@@ -303,6 +309,21 @@ void OnTimer()
       PrintFormat("[HALT] equity %.2f <= guard %.2f",equity,guard); }
    if(g_halted){ CloseAllMine("HALTED"); return; }
 
+   // +7%利益ロック(docs/100): Arm=新規停止(既存+8%停止より手前) / Close=全決済し恒久ロック。
+   // ⚠正直な注記: +LockClose%(既定7.5)での全決済が確定するのは実現≈+LockClose%。FN P1目標+8%より
+   //   低い設定では残差≈0.5%を縮小サイズ再稼働か手動で確定する(閾値の変え方はdocs/100)。
+   double gainPct=(g_initBal>0? (equity-g_initBal)/g_initBal*100.0 : 0.0);
+   if(InpProfitLockEnable && !g_passLocked && gainPct>=InpLockClosePct){
+      g_passLocked=true; CloseAllMine("PROFIT_LOCK");
+      PrintFormat("[PROFIT LOCK] equity %+.2f%% >= +%.2f%% → 全決済・恒久ロック(再開はEA再アタッチ)",gainPct,InpLockClosePct);
+   }
+   Comment(StringFormat("Chien_PD_Prop3 | gain %+.2f%% | %s",gainPct,
+          (g_passLocked?"PASS_LOCK(全決済済)":
+           (g_halted?"HALTED":
+            (InpProfitLockEnable&&gainPct>=InpLockArmPct?"ARMED(新規停止)":
+             (g_dayBlocked?"DAY_BLOCKED":"active"))))));
+   if(g_passLocked){ CloseAllMine("PROFIT_LOCK"); return; }
+
    if(g_useDailyStop){
       double dpnl=equity-g_dayStartEq;
       if(dpnl<=-g_initBal*g_dailyStopPct/100.0 && !g_dayBlocked){ g_dayBlocked=true;
@@ -314,7 +335,8 @@ void OnTimer()
    ManageEMonExit();
    ManageE5();
 
-   bool blockNew = (g_useProfitStop && equity>=g_initBal*(1.0+g_profitPct/100.0)) || g_dayBlocked;
+   bool blockNew = (g_useProfitStop && equity>=g_initBal*(1.0+g_profitPct/100.0)) || g_dayBlocked
+                   || (InpProfitLockEnable && gainPct>=InpLockArmPct);
    if(blockNew) return;
 
    EntriesV7(utc);

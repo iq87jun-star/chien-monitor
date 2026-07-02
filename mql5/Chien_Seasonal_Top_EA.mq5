@@ -22,9 +22,9 @@
 //|     機構確認(docs/86 H14c/d)のみでEA実績ゼロ。必ずデモから。        |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.00"
+#property version   "1.10"
 #property strict
-#property description "Seasonal top-ranked mini-portfolios (JUNE_TOP5 2.0x / JULY_TOP2 1.3x). Forward-validation EA, demo-first. Inactive outside its month."
+#property description "Seasonal top-ranked mini-portfolios (JUNE_TOP5 2.0x / JULY_TOP2 1.3x). Forward-validation EA, demo-first. Inactive outside its month. v1.10: +7% profit lock (docs/100)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -40,6 +40,11 @@ input group "=== ガード(プロジェクト標準) ==="
 input double InpDailyStopPct      = 4.0;  // 日次この%負けたら当日停止+全決済
 input double InpAccountFloorDDPct = 8.0;  // 初期残高からこの%でEA恒久停止
 input double InpInitialBalance    = 0.0;  // 0=自動取得
+
+input group "=== +7%利益ロック(フェーズ通過の確定, docs/100) ==="
+input bool   InpProfitLockEnable  = true; // 利益ロックを使う
+input double InpLockArmPct        = 7.0;  // equity+この%で新規停止(水準判定・後退で自動再開)
+input double InpLockClosePct      = 7.5;  // equity+この%で全決済し恒久ロック(PASS_LOCK)
 
 input group "=== 銘柄名(業者表記が違う場合のみ変更) ==="
 input string InpV4Pairs  = "EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY";
@@ -69,6 +74,8 @@ bool     g_halted  = false;
 bool     g_dayHalt = false;
 int      g_dayKey  = -1;
 double   g_dayStartEq = 0.0;
+bool     g_lockDone = false;   // PASS_LOCK(恒久・+LockClose%で全決済済み)
+bool     g_lockArmed = false;  // 新規停止中(+LockArm%以上・水準判定)
 datetime g_lastD1  = 0;
 int      g_e5MonthKey = -1, g_sjulMonthKey = -1, g_monWeekKey[64];
 
@@ -232,6 +239,7 @@ void CloseAllMine(string why)
 }
 bool OpenNotional(string s, int sleeve, int dir, double notional, double slPrice=0.0, double tpPrice=0.0, string tag="")
 {
+   if(g_lockDone || g_lockArmed) return false;   // 利益ロック: 新規停止(決済系は各スリーブで継続)
    if(SpreadBps(s)>InpMaxSpreadBps){
       if(InpVerboseLog) PrintFormat("[SKIP] %s spread %.1fbps",s,SpreadBps(s));
       return false;
@@ -387,6 +395,25 @@ void OnTimer()
       PrintFormat("[HALT] equity %.2f <= floor",eq);
    }
    if(g_halted){ CloseAllMine("HALTED"); return; }
+
+   // +7%利益ロック(docs/100): Arm=新規停止(水準判定) / Close=全決済し恒久ロック。
+   // ⚠正直な注記: +LockClose%での全決済が確定するのは実現≈+LockClose%(スリッページ下振れあり)。
+   //   フェーズ目標(+8%等)より低く設定した場合、残差は縮小サイズ再稼働か手動で確定する(docs/100)。
+   if(InpProfitLockEnable && g_initBal>0){
+      double gainPct=(eq-g_initBal)/g_initBal*100.0;
+      if(!g_lockDone && gainPct>=InpLockClosePct){
+         g_lockDone=true; CloseAllMine("PROFIT_LOCK");
+         PrintFormat("[PROFIT LOCK] equity %+.2f%% >= +%.2f%% → 全決済・恒久ロック(再開はEA再アタッチ)",gainPct,InpLockClosePct);
+      }
+      bool armNow=(!g_lockDone && gainPct>=InpLockArmPct);
+      if(armNow!=g_lockArmed){
+         g_lockArmed=armNow;
+         PrintFormat("[PROFIT LOCK %s] equity %+.2f%% (arm=+%.1f%%)",(armNow?"ARMED=新規停止":"DISARM=新規再開"),gainPct,InpLockArmPct);
+      }
+      Comment(StringFormat("Chien_Seasonal | gain %+.2f%% | %s",gainPct,
+             (g_lockDone?"PASS_LOCK(全決済済)":(g_lockArmed?"ARMED(新規停止)":"active"))));
+   }
+   if(g_lockDone){ CloseAllMine("PROFIT_LOCK"); return; }
 
    // 日次ガード
    MqlDateTime t; TimeToStruct(TimeCurrent(),t);
