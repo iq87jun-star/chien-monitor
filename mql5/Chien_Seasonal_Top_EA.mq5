@@ -46,6 +46,12 @@ input bool   InpProfitLockEnable  = true; // 利益ロックを使う
 input double InpLockArmPct        = 7.0;  // equity+この%で新規停止(水準判定・後退で自動再開)
 input double InpLockClosePct      = 7.5;  // equity+この%で全決済し恒久ロック(PASS_LOCK)
 
+input group "=== Max Risk 3%ガード(FN規約, docs/100 §2) ==="
+enum ENUM_RISK_GUARD { RG_OFF=0, RG_MONITOR=1, RG_ENFORCE=2 };
+input ENUM_RISK_GUARD InpRiskGuardMode = RG_MONITOR; // MONITOR=超過をログ記録のみ / ENFORCE=新規抑制
+input double InpMaxOpenRiskPct    = 3.0;  // 同時保有の想定損失合算の上限%
+input double InpNoSLRiskAssumePct = 10.0; // SLなし建玉(E5/月曜/SJul)の想定損失=建玉額×この%(保守側)
+
 input group "=== 銘柄名(業者表記が違う場合のみ変更) ==="
 input string InpV4Pairs  = "EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY";
 input string InpE5Assets = "XAUUSD,US500,NAS100,GER40";
@@ -237,9 +243,50 @@ void CloseAllMine(string why)
 {
    for(int sl=SL_V4; sl<=SL_V7; sl++) CloseSleeve(sl,why);
 }
+
+// ===== Max Risk 3%ガード(docs/100 §2) =====
+// 自スリーブ全建玉の「SL到達時の想定損失」合算を初期残高比%で返す。
+// 本EAはE5/月曜系/S-JulがSLなし建玉→建玉額×InpNoSLRiskAssumePctで保守側に見積る。
+bool IsMyMagic(long m){ return (m>=InpMagicBase+SL_V4 && m<=InpMagicBase+SL_V7); }
+double OpenRiskPct()
+{
+   double total=0.0;
+   for(int i=PositionsTotal()-1;i>=0;i--){
+      ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      if(!IsMyMagic(posinfo.Magic())) continue;
+      string sym=posinfo.Symbol();
+      double vol=posinfo.Volume(), sl=posinfo.StopLoss(), op=posinfo.PriceOpen();
+      double tv=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_VALUE);
+      double ts=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_SIZE);
+      double risk=0.0;
+      if(sl>0.0 && tv>0 && ts>0) risk=MathAbs(op-sl)/ts*tv*vol;
+      else{
+         double px=SymbolInfoDouble(sym,SYMBOL_BID);
+         if(tv>0 && ts>0 && px>0) risk=px*(tv/ts)*vol*InpNoSLRiskAssumePct/100.0;
+      }
+      total+=risk;
+   }
+   return (g_initBal>0? 100.0*total/g_initBal : 0.0);
+}
+datetime g_rgLastLog=0;
+bool RiskGuardBlocked(string ctx)
+{
+   if(InpRiskGuardMode==RG_OFF || InpMaxOpenRiskPct<=0) return false;
+   double r=OpenRiskPct();
+   if(r<=InpMaxOpenRiskPct) return false;
+   if(TimeCurrent()-g_rgLastLog>=900){
+      g_rgLastLog=TimeCurrent();
+      PrintFormat("[RISK GUARD %s] open-risk %.2f%% > %.2f%% (%s) %s",
+         (InpRiskGuardMode==RG_ENFORCE?"ENFORCE":"MONITOR"),r,InpMaxOpenRiskPct,ctx,
+         (InpRiskGuardMode==RG_ENFORCE?"→ 新規抑制":"→ 記録のみ(docs/100 §2)"));
+   }
+   return (InpRiskGuardMode==RG_ENFORCE);
+}
 bool OpenNotional(string s, int sleeve, int dir, double notional, double slPrice=0.0, double tpPrice=0.0, string tag="")
 {
    if(g_lockDone || g_lockArmed) return false;   // 利益ロック: 新規停止(決済系は各スリーブで継続)
+   if(RiskGuardBlocked(tag)) return false;       // Max Riskガード(ENFORCE時のみ抑制)
    if(SpreadBps(s)>InpMaxSpreadBps){
       if(InpVerboseLog) PrintFormat("[SKIP] %s spread %.1fbps",s,SpreadBps(s));
       return false;
@@ -410,7 +457,9 @@ void OnTimer()
          g_lockArmed=armNow;
          PrintFormat("[PROFIT LOCK %s] equity %+.2f%% (arm=+%.1f%%)",(armNow?"ARMED=新規停止":"DISARM=新規再開"),gainPct,InpLockArmPct);
       }
-      Comment(StringFormat("Chien_Seasonal | gain %+.2f%% | %s",gainPct,
+      Comment(StringFormat("Chien_Seasonal | gain %+.2f%% | open-risk %.2f%%(cap %.1f%% %s) | %s",gainPct,
+             OpenRiskPct(),InpMaxOpenRiskPct,
+             (InpRiskGuardMode==RG_ENFORCE?"ENF":(InpRiskGuardMode==RG_MONITOR?"MON":"OFF")),
              (g_lockDone?"PASS_LOCK(全決済済)":(g_lockArmed?"ARMED(新規停止)":"active"))));
    }
    if(g_lockDone){ CloseAllMine("PROFIT_LOCK"); return; }

@@ -53,6 +53,12 @@ input bool   InpProfitLockEnable = true;  // 利益ロックを使う
 input double InpLockArmPct       = 7.0;   // equity+この%で新規停止(既存+8%停止より手前・水準判定)
 input double InpLockClosePct     = 7.5;   // equity+この%で全決済し恒久ロック(PASS_LOCK)
 
+input group "=== Max Risk 3%ガード(FN規約, docs/100 §2) ==="
+enum ENUM_RISK_GUARD { RG_OFF=0, RG_MONITOR=1, RG_ENFORCE=2 };
+input ENUM_RISK_GUARD InpRiskGuardMode = RG_MONITOR; // MONITOR=超過をログ記録のみ / ENFORCE=新規抑制
+input double InpMaxOpenRiskPct    = 3.0;  // 同時保有の想定損失(SLまで)合算の上限%
+input double InpNoSLRiskAssumePct = 10.0; // SLなし建玉の想定損失=建玉額×この%(保守側)
+
 input group "=== v7 設定（円クロス 月曜マルチショット）==="
 input string InpV7HoursUTC    = "4,6,8,10";
 input int    InpV7ShotsPerWeek= 12;
@@ -288,6 +294,46 @@ void CloseSymMagic(string sym, long magic, string why){
          if(trade.PositionClose(tk) && InpVerboseLog) PrintFormat("[CLOSE %s] %s",why,sym); } }
 }
 bool IsMine(long m){ return (m==g_mV7||m==g_mV4||m==g_mE5||m==g_mEMon); }
+
+// ===== Max Risk 3%ガード(docs/100 §2) =====
+// 自分の全建玉について「SLに到達した場合の想定損失」を合算し、初期残高比%で返す。
+// SLなし建玉(本EAでは原則発生しない)は建玉額×InpNoSLRiskAssumePctで保守側に見積る。
+double OpenRiskPct()
+{
+   double total=0.0;
+   for(int i=PositionsTotal()-1;i>=0;i--){
+      ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      if(!IsMine(posinfo.Magic())) continue;
+      string sym=posinfo.Symbol();
+      double vol=posinfo.Volume(), sl=posinfo.StopLoss(), op=posinfo.PriceOpen();
+      double tv=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_VALUE);
+      double ts=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_SIZE);
+      double risk=0.0;
+      if(sl>0.0 && tv>0 && ts>0) risk=MathAbs(op-sl)/ts*tv*vol;
+      else{
+         double px=SymbolInfoDouble(sym,SYMBOL_BID);
+         if(tv>0 && ts>0 && px>0) risk=px*(tv/ts)*vol*InpNoSLRiskAssumePct/100.0;
+      }
+      total+=risk;
+   }
+   return (g_initBal>0? 100.0*total/g_initBal : 0.0);
+}
+datetime g_rgLastLog=0;
+// 新規エントリー直前に呼ぶ。MONITOR=超過をログのみ(falseを返す) / ENFORCE=超過中は新規抑制(true)。
+bool RiskGuardBlocked(string ctx)
+{
+   if(InpRiskGuardMode==RG_OFF || InpMaxOpenRiskPct<=0) return false;
+   double r=OpenRiskPct();
+   if(r<=InpMaxOpenRiskPct) return false;
+   if(TimeCurrent()-g_rgLastLog>=900){
+      g_rgLastLog=TimeCurrent();
+      PrintFormat("[RISK GUARD %s] open-risk %.2f%% > %.2f%% (%s) %s",
+         (InpRiskGuardMode==RG_ENFORCE?"ENFORCE":"MONITOR"),r,InpMaxOpenRiskPct,ctx,
+         (InpRiskGuardMode==RG_ENFORCE?"→ 新規抑制":"→ 記録のみ(FN規約の適用範囲はdocs/100 §2)"));
+   }
+   return (InpRiskGuardMode==RG_ENFORCE);
+}
 void CloseAllMine(string why){
    for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
       if(!posinfo.SelectByTicket(tk)) continue;
@@ -317,7 +363,9 @@ void OnTimer()
       g_passLocked=true; CloseAllMine("PROFIT_LOCK");
       PrintFormat("[PROFIT LOCK] equity %+.2f%% >= +%.2f%% → 全決済・恒久ロック(再開はEA再アタッチ)",gainPct,InpLockClosePct);
    }
-   Comment(StringFormat("Chien_PD_Prop3 | gain %+.2f%% | %s",gainPct,
+   Comment(StringFormat("Chien_PD_Prop3 | gain %+.2f%% | open-risk %.2f%%(cap %.1f%% %s) | %s",gainPct,
+          OpenRiskPct(),InpMaxOpenRiskPct,
+          (InpRiskGuardMode==RG_ENFORCE?"ENF":(InpRiskGuardMode==RG_MONITOR?"MON":"OFF")),
           (g_passLocked?"PASS_LOCK(全決済済)":
            (g_halted?"HALTED":
             (InpProfitLockEnable&&gainPct>=InpLockArmPct?"ARMED(新規停止)":
@@ -366,6 +414,7 @@ void EntriesV7(datetime utc)
    double perShot=g_weeklyRisk/(InpV7ShotsPerWeek>0?InpV7ShotsPerWeek:1);
    trade.SetExpertMagicNumber(g_mV7);
    for(int s=0;s<ArraySize(g_yen);s++){
+      if(RiskGuardBlocked("v7")) break;                  // 抑制時はslot未消費=同時間内に再試行可
       if(g_atrH1[s]==INVALID_HANDLE) continue;
       int key=s*nh+slot;
       if(g_lastShotV7[key]==hourBar) continue;
@@ -427,6 +476,7 @@ void EntriesV4()
       string sym=g_v4[i];
       datetime db=(datetime)iTime(sym,PERIOD_D1,0);
       if(db==0 || db==g_lastV4Bar[i]) continue;
+      if(RiskGuardBlocked("v4")) break;                  // 抑制時はバー未消費=次タイマーで再試行
       g_lastV4Bar[i]=db;
       if(CountPos(sym,g_mV4)>0) continue;
       double dummy; int sig=V4Signal(sym,g_rsiD1[i],dummy);
@@ -509,6 +559,7 @@ void EntriesEMon(datetime utc)
    double perShot=g_emonWeekly/(InpEMonShotsPerWeek>0?InpEMonShotsPerWeek:1);
    trade.SetExpertMagicNumber(g_mEMon);
    for(int s=0;s<ArraySize(g_emon);s++){
+      if(RiskGuardBlocked("E-Mon")) break;               // 抑制時はslot未消費=同時間内に再試行可
       if(g_atrH1em[s]==INVALID_HANDLE) continue;
       int key=s*nh+slot;
       if(g_lastShotEM[key]==hourBar) continue;
@@ -558,6 +609,7 @@ void EntriesE5()
       if(sig==0){ if(cur!=0) CloseSymMagic(sym,g_mE5,"E5_FLAT"); continue; }
       if(cur==sig) continue;
       if(cur!=0) CloseSymMagic(sym,g_mE5,"E5_FLIP");
+      if(RiskGuardBlocked("E5")) continue;               // 決済(FLAT/FLIP)は抑制しない。新規レッグのみ
       double atr=AtrAt(g_atrMN1[i]); if(atr<=0) continue;
       double equity=AccountInfoDouble(ACCOUNT_EQUITY);
       double riskMoney=equity*(g_e5leg/100.0);
