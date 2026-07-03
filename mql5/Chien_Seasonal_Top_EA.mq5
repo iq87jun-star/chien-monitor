@@ -22,9 +22,9 @@
 //|     機構確認(docs/86 H14c/d)のみでEA実績ゼロ。必ずデモから。        |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.40"
+#property version   "1.50"
 #property strict
-#property description "Seasonal top-ranked mini-portfolios. Forward-validation EA, demo-first. v1.30 G3 overlay + R4 scenario / v1.40 push notify (Even G2 mirror) + persistent baseline balance (docs/112)."
+#property description "Seasonal top-ranked mini-portfolios. Forward-validation EA, demo-first. v1.40 push notify (Even G2) + persistent baseline / v1.50 sleeve profit-width notify vs history (docs/112)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -83,6 +83,8 @@ input bool   InpNotifyEnable      = true;   // SendNotificationを使う(要Meta
 input bool   InpNotifyEntries     = true;   // エントリー(G3含む)を通知
 input double InpNotifyRefPct      = 6.0;    // 手決済の参考値: equity+この%で「検討ライン」通知
 input double InpNotifyDayWarnPct  = 3.0;    // 日次−この%で警告(ガード−4%の手前)
+input bool   InpNotifyWidth       = true;   // 利幅通知: スリーブ月内PnLが過去p75/最大(1x換算)超えで通知
+                                            // ※上振れの認識用。行動は利益ロック任せ(docs/112 §5)
 
 input group "=== 詳細 ==="
 input int    InpHoldHoursMonday = 24;     // 月曜系の保有時間
@@ -149,6 +151,23 @@ double WR4_EMONX[13]={0, 0,    0,    0,    0,    0.114,0,    0,    0,    0,    0
 double WR4_V7X[13]  ={0, 0,    0,    0,    0,    0.270,0,    0,    0,    0,    0,    0,    0};
 double WR4_V7[13]   ={0, 0,    0,    0,    0,    0.279,0,    0,    0,    0,    0,    0,    0};
 double WR4_SJUL[13] ={0, 0.311,0,    0,    0.227,0.162,0.245,1.00, 0.135,0,    0.184,0.819,0};
+
+// 利幅通知用: 各スリーブの月次リターン過去分布(1x・2016-2025 Yahoo再構築, %)。
+// p75=75%分位 / MAX=最大。research/seasonal_optimize_loyo の月次系列から生成(docs/112 §5)。
+double WP75_V4[13]  ={0,1.81,2.89,3.53,1.39,3.58,2.87,1.14,3.72,2.12,2.40,0.71,1.76};
+double WMAX_V4[13]  ={0,2.08,5.57,4.52,3.79,5.91,11.71,6.07,5.27,3.94,4.39,3.01,2.49};
+double WP75_E5[13]  ={0,0.87,2.13,3.16,1.61,1.10,1.89,1.45,2.08,2.41,1.91,1.65,1.51};
+double WMAX_E5[13]  ={0,4.35,3.89,4.42,2.12,4.00,7.54,5.40,5.44,7.05,2.61,2.91,3.56};
+double WP75_EMON[13]={0,0.94,0.66,2.68,1.22,1.13,1.67,0.37,1.71,1.15,1.07,1.05,0.99};
+double WMAX_EMON[13]={0,2.65,2.04,9.45,7.48,7.06,9.05,1.83,2.11,2.72,7.09,1.78,2.71};
+double WP75_EMONX[13]={0,0.50,1.01,0.72,0.91,1.29,0.73,0.90,0.65,0.72,1.06,0.84,0.64};
+double WMAX_EMONX[13]={0,2.09,4.00,1.23,4.16,5.02,3.38,1.42,3.36,2.20,4.64,6.58,1.70};
+double WP75_V7X[13] ={0,0.51,0.48,0.43,0.78,1.36,0.59,0.83,0.28,0.28,1.46,0.51,0.54};
+double WMAX_V7X[13] ={0,1.23,1.71,1.19,1.49,2.20,2.98,1.60,1.49,1.16,2.27,2.69,2.01};
+double WP75_V7[13]  ={0,0.23,0.16,0.46,0.45,0.87,0.31,0.86,0.10,0.60,0.90,0.86,0.79};
+double WMAX_V7[13]  ={0,1.34,1.67,2.03,1.17,1.39,0.93,2.15,1.64,1.43,2.15,2.33,2.47};
+double WP75_SJUL[13]={0,5.58,2.80,3.18,3.60,5.12,5.45,4.65,2.97,1.34,3.29,5.64,2.98};
+double WMAX_SJUL[13]={0,8.76,5.60,6.67,14.02,7.80,7.11,10.68,8.25,4.52,7.04,11.23,4.92};
 
 //------------------------------------------------------------------
 string ResolveSymbol(string want)
@@ -475,6 +494,91 @@ void FlushNotify()
    g_ntfBuf="";
 }
 
+//------------------------------------------------------------------ 利幅通知(docs/112 §5)
+// スリーブ別の月内PnL(実現+含み)を1x換算し、過去分布のp75/最大(上表)超えで通知。
+// 上振れの「認識」用であり手決済の推奨ではない(処理は利益ロックが担う)。
+double WidthRef(int sl, int m, bool wantMax)
+{
+   switch(sl){
+      case SL_V4:    return wantMax? WMAX_V4[m]   : WP75_V4[m];
+      case SL_E5:    return wantMax? WMAX_E5[m]   : WP75_E5[m];
+      case SL_EMON:  return wantMax? WMAX_EMON[m] : WP75_EMON[m];
+      case SL_EMONX: return wantMax? WMAX_EMONX[m]: WP75_EMONX[m];
+      case SL_V7X:   return wantMax? WMAX_V7X[m]  : WP75_V7X[m];
+      case SL_V7:    return wantMax? WMAX_V7[m]   : WP75_V7[m];
+      case SL_SJUL:  return wantMax? WMAX_SJUL[m] : WP75_SJUL[m];
+   }
+   return 0.0;
+}
+double SleeveWeightNow(int sl, int m)
+{
+   if(InpScenario==SCN_JUNE_TOP5){
+      if(m!=6) return 0;
+      switch(sl){ case SL_V4: return .414; case SL_E5: return .219; case SL_EMON: return .160;
+                  case SL_EMONX: return .133; case SL_V7X: return .074; } return 0;
+   }
+   if(InpScenario==SCN_JULY_TOP2){
+      if(m!=7) return 0;
+      switch(sl){ case SL_SJUL: return .685; case SL_E5: return .315; } return 0;
+   }
+   if(InpScenario==SCN_AUG_V4ONLY) return (m==8 && sl==SL_V4)? 1.0 : 0.0;
+   if(InpScenario==SCN_YEARROUND_R4){
+      switch(sl){ case SL_V4: return WR4_V4[m]; case SL_E5: return WR4_E5[m]; case SL_EMON: return WR4_EMON[m];
+                  case SL_EMONX: return WR4_EMONX[m]; case SL_V7X: return WR4_V7X[m];
+                  case SL_V7: return WR4_V7[m]; case SL_SJUL: return WR4_SJUL[m]; } return 0;
+   }
+   // YEARROUND_05 / M3
+   switch(sl){ case SL_V4: return WY_V4[m]; case SL_E5: return WY_E5[m]; case SL_EMON: return WY_EMON[m];
+               case SL_EMONX: return WY_EMONX[m]; case SL_V7X: return WY_V7X[m];
+               case SL_V7: return WY_V7[m]; case SL_SJUL: return WY_SJUL[m]; }
+   return 0;
+}
+int  g_widthMonKey=-1;
+uint g_widthLatch=0;    // bit: sleeve*2(p75) / sleeve*2+1(max)。月替わりでリセット
+void CheckWidthNotify()
+{
+   if(!InpNotifyEnable || !InpNotifyWidth || g_initBal<=0) return;
+   MqlDateTime t; TimeToStruct(TimeCurrent(),t);
+   int mk=t.year*100+t.mon;
+   if(mk!=g_widthMonKey){ g_widthMonKey=mk; g_widthLatch=0; }
+   // 月内PnL(実現)をスリーブ別に集計
+   double pnl[9]; ArrayInitialize(pnl,0);
+   if(HistorySelect(SwapMonthStart(t.year,t.mon),TimeCurrent()+60)){
+      for(int i=HistoryDealsTotal()-1;i>=0;i--){
+         ulong dt=HistoryDealGetTicket(i); if(dt==0) continue;
+         long mg=(long)HistoryDealGetInteger(dt,DEAL_MAGIC);
+         if(!IsMyMagic(mg)) continue;
+         int s=(int)(mg-InpMagicBase); if(s<1||s>SL_G3) continue;
+         pnl[s]+=HistoryDealGetDouble(dt,DEAL_PROFIT)+HistoryDealGetDouble(dt,DEAL_SWAP)
+                +HistoryDealGetDouble(dt,DEAL_COMMISSION);
+      }
+   }
+   for(int i=PositionsTotal()-1;i>=0;i--){       // +含み
+      ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      if(!IsMyMagic(posinfo.Magic())) continue;
+      int s=(int)(posinfo.Magic()-InpMagicBase); if(s<1||s>SL_G3) continue;
+      pnl[s]+=posinfo.Profit()+posinfo.Swap();
+   }
+   for(int s=SL_V4;s<=SL_V7;s++){                // G3は対象外(イベント建玉)
+      double w=SleeveWeightNow(s,t.mon)*g_mult;
+      if(w<=0.01) continue;
+      double acc=100.0*pnl[s]/g_initBal;         // 口座%
+      double r1x=acc/w;                          // 素サイズ1x換算
+      double p75=WidthRef(s,t.mon,false), wmax=WidthRef(s,t.mon,true);
+      uint b75=(uint)1<<(uint)(s*2), bmx=(uint)1<<(uint)(s*2+1);
+      if(wmax>0 && r1x>=wmax && (g_widthLatch&bmx)==0){
+         g_widthLatch|=bmx|b75;
+         Notify(StringFormat("利幅 %s 月内%+.2f%%(1x%+.2f%%)が過去最大%+.2f%%超え=⚪上振れ(docs/98)。処理はロック任せ",
+                SleeveName(MagicOf(s)),acc,r1x,wmax));
+      }else if(p75>0 && r1x>=p75 && (g_widthLatch&b75)==0){
+         g_widthLatch|=b75;
+         Notify(StringFormat("利幅 %s 月内%+.2f%%(1x%+.2f%% ≥ p75 %+.2f%%)。上振れ認識・行動不要",
+                SleeveName(MagicOf(s)),acc,r1x,p75));
+      }
+   }
+}
+
 //------------------------------------------------------------------ G3 FOMCオーバーレイ(Chien_FOMC_Drift_EAから逐語移植, docs/82)
 void ZeroMemoryStruct(MqlDateTime &t){ t.year=0;t.mon=0;t.day=0;t.hour=0;t.min=0;t.sec=0;t.day_of_week=0;t.day_of_year=0; }
 datetime NthSundayUtc(int year,int month,int nth,int utcHour)
@@ -765,6 +869,8 @@ void OnTimer()
 
    // G3 FOMCオーバーレイ(イベント建玉・月ゲートと独立。ガードの対象)
    SleeveG3();
+   // 利幅通知(スリーブ別・過去分布比較, docs/112 §5)
+   CheckWidthNotify();
 
    // 通年シナリオ: 月替わりで全決済→当月の構成へ自動切替(挿しっぱなしで12ヶ月回る)
    if(InpScenario==SCN_YEARROUND_05 || InpScenario==SCN_YEARROUND_M3){
