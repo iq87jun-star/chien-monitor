@@ -22,14 +22,14 @@
 //|     機構確認(docs/86 H14c/d)のみでEA実績ゼロ。必ずデモから。        |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.20"
+#property version   "1.30"
 #property strict
-#property description "Seasonal top-ranked mini-portfolios (JUNE_TOP5 2.0x / JULY_TOP2 1.3x). Forward-validation EA, demo-first. Inactive outside its month. v1.10: +7% profit lock. v1.20: re-enter after manual close (docs/100)."
+#property description "Seasonal top-ranked mini-portfolios. Forward-validation EA, demo-first. v1.10 profit lock / v1.20 re-enter after manual close / v1.30 G3 FOMC overlay + YEARROUND_R4 scenario (docs/110)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
 
-enum ENUM_SEASONAL_SCN { SCN_JUNE_TOP5=0, SCN_JULY_TOP2=1, SCN_AUG_V4ONLY=2, SCN_YEARROUND_05=3, SCN_YEARROUND_M3=4 };
+enum ENUM_SEASONAL_SCN { SCN_JUNE_TOP5=0, SCN_JULY_TOP2=1, SCN_AUG_V4ONLY=2, SCN_YEARROUND_05=3, SCN_YEARROUND_M3=4, SCN_YEARROUND_R4=5 };
 
 input group "=== シナリオ ==="
 input ENUM_SEASONAL_SCN InpScenario = SCN_JUNE_TOP5; // 6月版/7月版
@@ -68,6 +68,15 @@ input group "=== 手決済後の再建て(docs/100 §5) ==="
 input bool   InpReenterManualClose = true; // 月保有スリーブ(S-Jul/E5)を手決済したら同月内に自動で建て直す
                                            // ※ガード(日次/フロア/ロック/月ゲート)による決済後は再建てしない
 
+input group "=== G3 FOMCオーバーレイ(ADOPT・docs/82, 重畳は docs/110) ==="
+input bool   InpG3Enable        = false;  // 現行構成にFOMC前日ドリフト(US500 24hロング)を重畳
+input string InpG3Symbol        = "US500";
+input string InpG3Dates         = "2026.01.28,2026.03.18,2026.04.29,2026.06.17,2026.07.29,2026.09.16,2026.10.28,2026.12.09"; // 声明日(毎年Fed公式から更新)
+input double InpG3RiskPct       = 1.0;    // 1イベントのリスク%(ATR(D1)変動≒この%)
+input double InpG3CatATR        = 2.5;    // 災害SL=2.5×ATR(D1)
+input int    InpG3EntryHourET   = 14;     // エントリ=声明24h前(前日のこの時刻ET)
+input int    InpG3ExitMinBefore = 5;      // 声明何分前に手仕舞うか(検証=0分・5分は保守側)
+
 input group "=== 詳細 ==="
 input int    InpHoldHoursMonday = 24;     // 月曜系の保有時間
 input int    InpV4MaxHoldDays   = 8;      // v4の時間切れ(D1バー)
@@ -89,6 +98,11 @@ int      g_dayKey  = -1;
 double   g_dayStartEq = 0.0;
 bool     g_lockDone = false;   // PASS_LOCK(恒久・+LockClose%で全決済済み)
 bool     g_lockArmed = false;  // 新規停止中(+LockArm%以上・水準判定)
+string   g_g3sym="";           // G3 FOMCオーバーレイ(v1.30)
+int      g_g3atr=INVALID_HANDLE;
+datetime g_g3WinStart[64], g_g3WinEnd[64];
+int      g_g3n=0;
+datetime g_g3Entered=0;
 datetime g_lastD1  = 0;
 int      g_e5MonthKey = -1, g_sjulMonthKey = -1, g_monWeekKey[64];
 
@@ -99,6 +113,7 @@ int      g_e5MonthKey = -1, g_sjulMonthKey = -1, g_monWeekKey[64];
 #define SL_V7X  5
 #define SL_SJUL 6
 #define SL_V7   7
+#define SL_G3   8   // FOMCオーバーレイ(月ゲートの対象外・全ガードの対象)
 
 string g_v4[16], g_e5[8], g_emon[8], g_emonx[8], g_v7x[8], g_sjul[8], g_v7[8];
 int    g_nv4=0, g_ne5=0, g_nemon=0, g_nemonx=0, g_nv7x=0, g_nsjul=0, g_nv7=0;
@@ -113,6 +128,15 @@ double WY_EMONX[13]={0, 0,   0,   0.28,1.00,0,   0.12,0,   0.13,0,   1.00,0,   0
 double WY_V7X[13]  ={0, 0,   0,   0,   0,   0.31,0,   0,   0,   0,   0,   0,   0};
 double WY_V7[13]   ={0, 0,   0,   0,   0,   0.23,0,   0,   0,   0,   0,   0,   0};
 double WY_SJUL[13] ={0, 0,   0,   0,   0,   0,   0,   0.76,0,   0,   0,   0,   0};
+
+// 通年(YEARROUND_R4): リスク調整比例(docs/105 R4・全期間訓練, docs/110)。index=月。
+double WR4_V4[13]   ={0, 0,    1.00, 0.38, 0,    0.092,0.25, 0,    0.331,0.483,0,    0,    0.406};
+double WR4_E5[13]   ={0, 0,    0,    0.217,0,    0,    0.332,0,    0.328,0,    0,    0,    0.594};
+double WR4_EMON[13] ={0, 0.689,0,    0.403,0.773,0.084,0.173,0,    0.206,0.517,0.379,0,    0};
+double WR4_EMONX[13]={0, 0,    0,    0,    0,    0.114,0,    0,    0,    0,    0.437,0.181,0};
+double WR4_V7X[13]  ={0, 0,    0,    0,    0,    0.270,0,    0,    0,    0,    0,    0,    0};
+double WR4_V7[13]   ={0, 0,    0,    0,    0,    0.279,0,    0,    0,    0,    0,    0,    0};
+double WR4_SJUL[13] ={0, 0.311,0,    0,    0.227,0.162,0.245,1.00, 0.135,0,    0.184,0.819,0};
 
 //------------------------------------------------------------------
 string ResolveSymbol(string want)
@@ -165,6 +189,7 @@ int OnInit()
    else if(InpScenario==SCN_JULY_TOP2) { g_month=7; g_mult=1.3; }
    else if(InpScenario==SCN_AUG_V4ONLY){ g_month=8; g_mult=0.4; }   // 8月: v4単独。2024/8/5(円急騰)に同日複数SLで-8.9%/1x→日次ガード逆算0.5x×安全率(docs/87)
    else if(InpScenario==SCN_YEARROUND_05){ g_month=0; g_mult=0.7; } // 通年・運用版: 1xでmaxDD-9.0%=枠いっぱい→0.9x上限×安全率0.8(docs/87)
+   else if(InpScenario==SCN_YEARROUND_R4){ g_month=0; g_mult=2.27; } // 通年・R4(リスク調整比例, docs/105/110)。2.27x=現行M3と同じ踏み込み係数。⚠ガード安全倍率は0.68(docs/110)=速攻値。デモ必須
    else                                { g_month=0; g_mult=2.0; }   // 通年・median-3チャレンジ版: 中央3.1ヶ月/失格MC1.5%(楽観値,docs/87)。⚠暴落日はガードが間に合わない可能性=デモ必須
    if(InpMultOverride>0.0) g_mult=InpMultOverride;
    g_initBal=(InpInitialBalance>0.0)? InpInitialBalance : AccountInfoDouble(ACCOUNT_BALANCE);
@@ -179,19 +204,30 @@ int OnInit()
    g_nsjul =SplitResolve(InpSJul,   g_sjul, 8,"S-Jul");
    ArrayInitialize(g_monWeekKey,-1);
 
+   if(InpG3Enable){
+      g_g3sym=ResolveSymbol(InpG3Symbol);
+      if(g_g3sym==""){ Print("⚠ G3: 銘柄解決不可→G3無効"); }
+      else{
+         g_g3atr=iATR(g_g3sym,PERIOD_D1,14);
+         if(!ParseG3Windows()) Print("⚠ G3: FOMC日程の解析失敗→G3無効");
+         else PrintFormat("[G3] 有効: %s イベント%d件 risk=%.1f%%/event(ADOPT・要デモ, docs/82/110)",
+                          g_g3sym,g_g3n,InpG3RiskPct);
+      }
+   }
    trade.SetDeviationInPoints(50);
    EventSetTimer(60);
    string scn=(InpScenario==SCN_JUNE_TOP5?"JUNE_TOP5":
               (InpScenario==SCN_JULY_TOP2?"JULY_TOP2":
               (InpScenario==SCN_AUG_V4ONLY?"AUG_V4ONLY":
-              (InpScenario==SCN_YEARROUND_05?"YEARROUND_05":"YEARROUND_M3"))));
+              (InpScenario==SCN_YEARROUND_05?"YEARROUND_05":
+              (InpScenario==SCN_YEARROUND_R4?"YEARROUND_R4":"YEARROUND_M3")))));
    PrintFormat("[INIT Seasonal %s] 稼働月=%s 倍率=%.1fx initBal=%.0f | v4:%d E5:%d EMon:%d EMonX:%d v7x:%d v7:%d SJul:%d",
       scn,(g_month==0?"通年(月替わり自動)":IntegerToString(g_month)+"月"),g_mult,g_initBal,
       g_nv4,g_ne5,g_nemon,g_nemonx,g_nv7x,g_nv7,g_nsjul);
    Print("[NOTE] デモ専用・対象月以外は自動で全決済して待機。横展開レッグはEA初実装(docs/86)。");
    return INIT_SUCCEEDED;
 }
-void OnDeinit(const int reason){ EventKillTimer(); }
+void OnDeinit(const int reason){ EventKillTimer(); if(g_g3atr!=INVALID_HANDLE) IndicatorRelease(g_g3atr); }
 
 //------------------------------------------------------------------
 double SpreadBps(string s)
@@ -246,7 +282,11 @@ void CloseSleeve(int sleeve, string why, int olderThanSec=0, int maxBarsD1=0)
          PrintFormat("[CLOSE %s] %s",why,posinfo.Symbol());
    }
 }
-void CloseAllMine(string why)
+void CloseAllMine(string why)      // ガード用: G3含む全スリーブ
+{
+   for(int sl=SL_V4; sl<=SL_G3; sl++) CloseSleeve(sl,why);
+}
+void CloseAllMonthly(string why)   // 月ゲート用: G3(イベント建玉)は対象外
 {
    for(int sl=SL_V4; sl<=SL_V7; sl++) CloseSleeve(sl,why);
 }
@@ -254,7 +294,7 @@ void CloseAllMine(string why)
 // ===== Max Risk 3%ガード(docs/100 §2) =====
 // 自スリーブ全建玉の「SL到達時の想定損失」合算を初期残高比%で返す。
 // 本EAはE5/月曜系/S-JulがSLなし建玉→建玉額×InpNoSLRiskAssumePctで保守側に見積る。
-bool IsMyMagic(long m){ return (m>=InpMagicBase+SL_V4 && m<=InpMagicBase+SL_V7); }
+bool IsMyMagic(long m){ return (m>=InpMagicBase+SL_V4 && m<=InpMagicBase+SL_G3); }
 double OpenRiskPct()
 {
    double total=0.0;
@@ -284,7 +324,7 @@ string SleeveName(long magic)
    int s=(int)(magic-InpMagicBase);
    switch(s){ case SL_V4: return "v4"; case SL_E5: return "E5"; case SL_EMON: return "EMon";
               case SL_EMONX: return "EMonX"; case SL_V7X: return "v7x"; case SL_SJUL: return "SJul";
-              case SL_V7: return "v7"; }
+              case SL_V7: return "v7"; case SL_G3: return "G3"; }
    return "other";
 }
 void SwapLogWrite(string line)
@@ -316,18 +356,18 @@ void SwapLogMonthlySummary(int y,int m)   // 前月(y,m)の実現スワップを
    int y2=(m==12? y+1:y), m2=(m==12? 1:m+1);
    datetime from=SwapMonthStart(y,m), to=SwapMonthStart(y2,m2);
    if(!HistorySelect(from,to)) return;
-   double sw[8], cm[8], pf[8]; int cnt[8];
+   double sw[9], cm[9], pf[9]; int cnt[9];
    ArrayInitialize(sw,0); ArrayInitialize(cm,0); ArrayInitialize(pf,0); ArrayInitialize(cnt,0);
    for(int i=HistoryDealsTotal()-1;i>=0;i--){
       ulong dt=HistoryDealGetTicket(i); if(dt==0) continue;
       long mg=(long)HistoryDealGetInteger(dt,DEAL_MAGIC);
       if(!IsMyMagic(mg)) continue;
-      int s=(int)(mg-InpMagicBase); if(s<1||s>7) continue;
+      int s=(int)(mg-InpMagicBase); if(s<1||s>SL_G3) continue;
       sw[s]+=HistoryDealGetDouble(dt,DEAL_SWAP);
       cm[s]+=HistoryDealGetDouble(dt,DEAL_COMMISSION);
       pf[s]+=HistoryDealGetDouble(dt,DEAL_PROFIT); cnt[s]++;
    }
-   for(int s=1;s<=7;s++){
+   for(int s=1;s<=SL_G3;s++){
       if(cnt[s]==0) continue;
       SwapLogWrite(StringFormat("MONTHLY,%04d-%02d,Seasonal,%s,,,,%.2f,%.2f,%.2f,deals=%d",
          y,m,SleeveName(InpMagicBase+s),sw[s],cm[s],pf[s],cnt[s]));
@@ -381,6 +421,84 @@ bool OpenNotional(string s, int sleeve, int dir, double notional, double slPrice
                   : trade.Sell(lots,s,0.0,slPrice,tpPrice,tag);
    if(ok && InpVerboseLog) PrintFormat("[ENTRY %s] %s %s lots=%.2f notional=%.0f",tag,s,(dir>0?"L":"S"),lots,notional);
    return ok;
+}
+
+//------------------------------------------------------------------ G3 FOMCオーバーレイ(Chien_FOMC_Drift_EAから逐語移植, docs/82)
+void ZeroMemoryStruct(MqlDateTime &t){ t.year=0;t.mon=0;t.day=0;t.hour=0;t.min=0;t.sec=0;t.day_of_week=0;t.day_of_year=0; }
+datetime NthSundayUtc(int year,int month,int nth,int utcHour)
+{
+   MqlDateTime t; ZeroMemoryStruct(t);
+   t.year=year; t.mon=month; t.day=1; t.hour=0;
+   datetime d1=StructToTime(t);
+   MqlDateTime w; TimeToStruct(d1,w);
+   int firstSun = 1 + ((7 - w.day_of_week) % 7);
+   t.day=firstSun + 7*(nth-1); t.hour=utcHour;
+   return StructToTime(t);
+}
+bool IsDstUS(datetime utc)
+{
+   MqlDateTime t; TimeToStruct(utc,t);
+   return (utc>=NthSundayUtc(t.year,3,2,7) && utc<NthSundayUtc(t.year,11,1,6));
+}
+datetime EtToUtc(int year,int mon,int day,int hourEt,int minEt)
+{
+   MqlDateTime t; ZeroMemoryStruct(t);
+   t.year=year; t.mon=mon; t.day=day; t.hour=hourEt; t.min=minEt;
+   datetime asUtc=StructToTime(t);
+   int offset = IsDstUS(asUtc+5*3600) ? 4 : 5;    // EDT/EST(境界週の±1hはFOMC日に該当なし)
+   return asUtc + offset*3600;
+}
+bool ParseG3Windows()
+{
+   g_g3n=0;
+   string parts[]; int n=StringSplit(InpG3Dates,',',parts);
+   for(int i=0;i<n && g_g3n<64;i++){
+      string s=parts[i]; StringTrimLeft(s); StringTrimRight(s);
+      string ymd[]; if(StringSplit(s,'.',ymd)!=3) continue;
+      int y=(int)StringToInteger(ymd[0]), m=(int)StringToInteger(ymd[1]), d=(int)StringToInteger(ymd[2]);
+      if(y<2020||m<1||m>12||d<1||d>31) continue;
+      datetime ann=EtToUtc(y,m,d,InpG3EntryHourET,0);
+      g_g3WinStart[g_g3n]=ann-24*3600;
+      g_g3WinEnd[g_g3n]  =ann-InpG3ExitMinBefore*60;
+      g_g3n++;
+   }
+   return (g_g3n>0);
+}
+void SleeveG3()
+{
+   if(!InpG3Enable || g_g3sym=="" || g_g3n==0) return;
+   datetime utc=TimeGMT();
+   int w=-1;
+   for(int i=0;i<g_g3n;i++) if(utc>=g_g3WinStart[i] && utc<g_g3WinEnd[i]){ w=i; break; }
+   if(w<0){ CloseSleeve(SL_G3,"G3_WINDOW_END"); return; }   // 窓外=手仕舞い(声明5分前の退出を含む)
+   if(g_g3Entered==g_g3WinStart[w]) return;                 // この窓は処理済み
+   if(CountSleeve(SL_G3)>0){ g_g3Entered=g_g3WinStart[w]; return; }
+   if(g_lockDone || g_lockArmed) return;                    // 利益ロック
+   if(RiskGuardBlocked("G3")) return;                       // Max Riskガード
+   if(SpreadBps(g_g3sym)>InpMaxSpreadBps) return;           // 次のタイマーで再試行
+   double a[1];
+   if(g_g3atr==INVALID_HANDLE || CopyBuffer(g_g3atr,0,1,1,a)<1) return;
+   double atr=a[0]; if(atr<=0) return;
+   double tv=SymbolInfoDouble(g_g3sym,SYMBOL_TRADE_TICK_VALUE);
+   double ts=SymbolInfoDouble(g_g3sym,SYMBOL_TRADE_TICK_SIZE);
+   if(tv<=0||ts<=0) return;
+   double riskMoney=g_initBal*InpG3RiskPct/100.0;
+   double lots=riskMoney/(atr/ts*tv);
+   double step=SymbolInfoDouble(g_g3sym,SYMBOL_VOLUME_STEP);
+   double vmin=SymbolInfoDouble(g_g3sym,SYMBOL_VOLUME_MIN);
+   double vmax=SymbolInfoDouble(g_g3sym,SYMBOL_VOLUME_MAX);
+   if(step>0) lots=MathFloor(lots/step)*step;
+   lots=MathMin(lots,vmax);
+   if(lots<vmin) return;
+   double ask=SymbolInfoDouble(g_g3sym,SYMBOL_ASK); if(ask<=0) return;
+   int dg=(int)SymbolInfoInteger(g_g3sym,SYMBOL_DIGITS);
+   double sl=NormalizeDouble(ask-InpG3CatATR*atr,dg);
+   trade.SetExpertMagicNumber(MagicOf(SL_G3));
+   if(trade.Buy(lots,g_g3sym,0.0,sl,0.0,"G3_FOMC")){
+      g_g3Entered=g_g3WinStart[w];
+      if(InpVerboseLog) PrintFormat("[G3 ENTRY] LONG %s lots=%.2f SL=%.2f (窓終了=%s)",
+         g_g3sym,lots,sl,TimeToString(g_g3WinEnd[w],TIME_DATE|TIME_MINUTES));
+   }
 }
 
 //------------------------------------------------------------------ 指標(配列・直近確定基準)
@@ -575,9 +693,12 @@ void OnTimer()
    }
    if(g_dayHalt) return;
 
+   // G3 FOMCオーバーレイ(イベント建玉・月ゲートと独立。ガードの対象)
+   SleeveG3();
+
    // 通年シナリオ: 月替わりで全決済→当月の構成へ自動切替(挿しっぱなしで12ヶ月回る)
    if(InpScenario==SCN_YEARROUND_05 || InpScenario==SCN_YEARROUND_M3){
-      if(t.mon!=g_curMonth){ CloseAllMine("MONTH_ROLL"); g_curMonth=t.mon; }
+      if(t.mon!=g_curMonth){ CloseAllMonthly("MONTH_ROLL"); g_curMonth=t.mon; }
       int m=t.mon;
       if(WY_V4[m]>0.0)    SleeveV4(WY_V4[m]);
       if(WY_E5[m]>0.0)    SleeveE5(WY_E5[m]);
@@ -588,9 +709,22 @@ void OnTimer()
       if(WY_SJUL[m]>0.0)  SleeveSJul(WY_SJUL[m]);
       return;
    }
+   // 通年シナリオ(R4: リスク調整比例, docs/110)
+   if(InpScenario==SCN_YEARROUND_R4){
+      if(t.mon!=g_curMonth){ CloseAllMonthly("MONTH_ROLL"); g_curMonth=t.mon; }
+      int m=t.mon;
+      if(WR4_V4[m]>0.0)    SleeveV4(WR4_V4[m]);
+      if(WR4_E5[m]>0.0)    SleeveE5(WR4_E5[m]);
+      if(WR4_EMON[m]>0.0)  SleeveMonday(SL_EMON, g_emon, g_nemon, WR4_EMON[m], 0);
+      if(WR4_EMONX[m]>0.0) SleeveMonday(SL_EMONX,g_emonx,g_nemonx,WR4_EMONX[m],1);
+      if(WR4_V7X[m]>0.0)   SleeveMonday(SL_V7X,  g_v7x,  g_nv7x,  WR4_V7X[m],  2);
+      if(WR4_V7[m]>0.0)    SleeveMonday(SL_V7,   g_v7,   g_nv7,   WR4_V7[m],   3);
+      if(WR4_SJUL[m]>0.0)  SleeveSJul(WR4_SJUL[m]);
+      return;
+   }
 
    // 単月シナリオの月ゲート: 対象月以外は全決済して待機
-   if(t.mon!=g_month){ CloseAllMine("MONTH_GATE"); return; }
+   if(t.mon!=g_month){ CloseAllMonthly("MONTH_GATE"); return; }
 
    if(InpScenario==SCN_JUNE_TOP5){
       SleeveV4(0.414);
