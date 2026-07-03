@@ -1,26 +1,25 @@
 //+------------------------------------------------------------------+
 //|                                  Chien_TickExport_Edge20.mq5     |
-//|  edge20(docs/108改訂): ブローカー実データのエクスポート v1.10       |
+//|  edge20(docs/108改訂): M1バー一括エクスポート v1.20                 |
 //|                                                                   |
-//|  v1.10: ①CopyTicksRangeにリトライ+エラーコード診断を追加           |
-//|         ②ティック不可なら自動でM1バー(スプレッド列付き)へフォール    |
-//|           バック(履歴が深く、H20a/b/cの採点に十分)                  |
+//|  v1.20: 全面書き換え。日付範囲指定をやめ「直近から◯本」の位置ベース  |
+//|    CopyRatesに変更(履歴DL競合で空振りしない最も確実な方式)。         |
+//|    起動時に環境診断(サーバー時刻・M1本数)をログ表示。               |
+//|    月・火曜×指定サーバー時間帯のみをCSVへ(スプレッド列付き)。        |
 //|                                                                   |
 //|  使い方: コンパイル → ナビゲータ「スクリプト」からチャートへドラッグ |
-//|  出力: MQL5/Files/ChienTicksM1_<PAIR>.csv (ティック1分集約)         |
-//|     or MQL5/Files/ChienRatesM1_<PAIR>.csv (M1バー・フォールバック)  |
-//|  → できたCSV(3ペア分)をzipしてチャットにアップロード                |
+//|  出力: MQL5/Files/ChienRatesM1_<PAIR>.csv                          |
+//|  → 3ペア分をzipしてチャットにアップロード                           |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.10"
+#property version   "1.20"
 #property script_show_inputs
 #property strict
 
-input string InpSymbols     = "EURJPY,GBPJPY,USDJPY";
-input int    InpMaxDaysBack = 1200;   // 最大遡り日数(履歴が尽きれば自動終了)
-input int    InpHourFrom    = 4;      // サーバー時刻 この時から
-input int    InpHourTo      = 16;     // サーバー時刻 この時まで(含む)
-input int    InpEmptyStop   = 30;     // 対象日がこれだけ連続無データなら終了
+input string InpSymbols   = "EURJPY,GBPJPY,USDJPY";
+input int    InpMaxBars   = 800000;  // 遡るM1本数の上限(≈3年。履歴が尽きれば自動終了)
+input int    InpHourFrom  = 4;       // サーバー時刻 この時から
+input int    InpHourTo    = 16;      // サーバー時刻 この時まで(含む)
 
 int SplitCSV(string csv, string &arr[])
 {
@@ -36,128 +35,62 @@ string ResolveSymbol(string want)
    return "";
 }
 
-// ティック取得(リトライ付き)。戻り: >0=件数 / 0=本当に無し / -1=取得不能
-int CopyTicksRetry(string sym, MqlTick &ticks[], ulong fromMs, ulong toMs, int tries=6)
-{
-   int lastErr=0;
-   for(int a=0;a<tries;a++){
-      ResetLastError();
-      int n=CopyTicksRange(sym,ticks,COPY_TICKS_INFO,fromMs,toMs);
-      if(n>0) return n;
-      lastErr=GetLastError();
-      if(n==0 && lastErr==0) return 0;      // データなし(正常)
-      Sleep(1500);                          // 履歴ダウンロード待ち→再試行
-   }
-   PrintFormat("   (tick取得不能 err=%d)",lastErr);
-   return -1;
-}
-
-// ---- モードA: ティック1分集約 ----
-bool ExportTicks(string sym, string base, double pip)
-{
-   string fn=StringFormat("ChienTicksM1_%s.csv",base);
-   int h=FileOpen(fn,FILE_WRITE|FILE_TXT|FILE_ANSI);
-   if(h==INVALID_HANDLE) return false;
-   FileWriteString(h,"time_server,bid_avg,ask_avg,spread_pips_avg,spread_pips_max,n_ticks\n");
-   MqlDateTime t0; TimeToStruct(TimeCurrent(),t0); t0.hour=0;t0.min=0;t0.sec=0;
-   datetime today=StructToTime(t0);
-   int emptyStreak=0, daysOut=0; long rows=0; datetime oldest=TimeCurrent();
-   for(int d=0; d<InpMaxDaysBack && emptyStreak<InpEmptyStop && !IsStopped(); d++){
-      datetime day0=today-(datetime)d*86400;
-      MqlDateTime st; TimeToStruct(day0,st);
-      if(st.day_of_week!=1 && st.day_of_week!=2) continue;
-      bool any=false;
-      for(int hh=InpHourFrom; hh<=InpHourTo; hh++){
-         ulong fromMs=(ulong)(day0+hh*3600)*1000, toMs=fromMs+3600*1000-1;
-         MqlTick ticks[];
-         int n=CopyTicksRetry(sym,ticks,fromMs,toMs);
-         if(n<=0) continue;
-         any=true;
-         double sb=0,sa=0,sspr=0,mspr=0; int cnt=0; int curMin=-1; datetime curT=0;
-         for(int i=0;i<n;i++){
-            if(ticks[i].bid<=0 || ticks[i].ask<=0) continue;
-            datetime tt=(datetime)(ticks[i].time_msc/1000);
-            int mi=(int)((tt-day0)/60);
-            if(mi!=curMin && cnt>0){
-               FileWriteString(h,StringFormat("%s,%.5f,%.5f,%.3f,%.3f,%d\n",
-                  TimeToString(curT,TIME_DATE|TIME_MINUTES),sb/cnt,sa/cnt,sspr/cnt/pip,mspr/pip,cnt));
-               rows++; sb=0;sa=0;sspr=0;mspr=0;cnt=0;
-            }
-            if(mi!=curMin){ curMin=mi; curT=day0+(datetime)mi*60; }
-            double spr=ticks[i].ask-ticks[i].bid;
-            sb+=ticks[i].bid; sa+=ticks[i].ask; sspr+=spr; if(spr>mspr) mspr=spr; cnt++;
-         }
-         if(cnt>0){
-            FileWriteString(h,StringFormat("%s,%.5f,%.5f,%.3f,%.3f,%d\n",
-               TimeToString(curT,TIME_DATE|TIME_MINUTES),sb/cnt,sa/cnt,sspr/cnt/pip,mspr/pip,cnt));
-            rows++;
-         }
-      }
-      if(any){ emptyStreak=0; daysOut++; if(day0<oldest) oldest=day0;
-         if(daysOut<=3 || daysOut%20==0)
-            PrintFormat("[%s TICK] %s 取得済み(累計%d日・%d行)",base,TimeToString(day0,TIME_DATE),daysOut,(int)rows); }
-      else emptyStreak++;
-   }
-   FileClose(h);
-   PrintFormat("[%s TICK] 完了: %d日・%d行(最古=%s)→ %s",base,daysOut,(int)rows,TimeToString(oldest,TIME_DATE),fn);
-   return (rows>0);
-}
-
-// ---- モードB: M1バー(スプレッド列)フォールバック ----
-void ExportRates(string sym, string base, double pip)
-{
-   double point=SymbolInfoDouble(sym,SYMBOL_POINT);
-   string fn=StringFormat("ChienRatesM1_%s.csv",base);
-   int h=FileOpen(fn,FILE_WRITE|FILE_TXT|FILE_ANSI);
-   if(h==INVALID_HANDLE) return;
-   FileWriteString(h,"time_server,open_bid,close_bid,spread_pips_open\n");
-   MqlDateTime t0; TimeToStruct(TimeCurrent(),t0); t0.hour=0;t0.min=0;t0.sec=0;
-   datetime today=StructToTime(t0);
-   int emptyStreak=0, daysOut=0; long rows=0; datetime oldest=TimeCurrent();
-   for(int d=0; d<InpMaxDaysBack && emptyStreak<InpEmptyStop && !IsStopped(); d++){
-      datetime day0=today-(datetime)d*86400;
-      MqlDateTime st; TimeToStruct(day0,st);
-      if(st.day_of_week!=1 && st.day_of_week!=2) continue;
-      datetime from=day0+InpHourFrom*3600, to=day0+(InpHourTo+1)*3600-60;
-      MqlRates r[]; int n=-1;
-      for(int a=0;a<6;a++){ ResetLastError();
-         n=CopyRates(sym,PERIOD_M1,from,to,r);
-         if(n>0) break; Sleep(1500); }
-      if(n<=0){ emptyStreak++; continue; }
-      for(int i=0;i<n;i++)
-         { FileWriteString(h,StringFormat("%s,%.5f,%.5f,%.3f\n",
-              TimeToString(r[i].time,TIME_DATE|TIME_MINUTES),r[i].open,r[i].close,
-              r[i].spread*point/pip)); rows++; }
-      emptyStreak=0; daysOut++; if(day0<oldest) oldest=day0;
-      if(daysOut<=3 || daysOut%40==0)
-         PrintFormat("[%s M1] %s 取得済み(累計%d日・%d行)",base,TimeToString(day0,TIME_DATE),daysOut,(int)rows);
-   }
-   FileClose(h);
-   PrintFormat("[%s M1] 完了: %d日・%d行(最古=%s)→ %s",base,daysOut,(int)rows,TimeToString(oldest,TIME_DATE),fn);
-}
-
 void OnStart()
 {
-   string syms[]; int ns=SplitCSV(InpSymbols,syms);
-   PrintFormat("[TickExport v1.10] GMTオフセット(現在): サーバー%+d秒",(int)(TimeCurrent()-TimeGMT()));
+   PrintFormat("[Export v1.20 診断] TimeCurrent=%s TimeGMT=%s (サーバーGMTオフセット%+d秒) 端末MaxBars=%d",
+      TimeToString(TimeCurrent(),TIME_DATE|TIME_SECONDS),TimeToString(TimeGMT(),TIME_DATE|TIME_SECONDS),
+      (int)(TimeCurrent()-TimeGMT()),(int)TerminalInfoInteger(TERMINAL_MAXBARS));
 
-   for(int si=0; si<ns; si++){
+   string syms[]; int ns=SplitCSV(InpSymbols,syms);
+   for(int si=0; si<ns && !IsStopped(); si++){
       string sym=ResolveSymbol(syms[si]);
       if(sym==""){ PrintFormat("⚠ %s 解決不可→スキップ",syms[si]); continue; }
       double pip=(StringFind(sym,"JPY")>=0? 0.01: 0.0001);
+      double point=SymbolInfoDouble(sym,SYMBOL_POINT);
 
-      // 直近の火曜10時(サーバー)でティック取得を診断
-      MqlDateTime t0; TimeToStruct(TimeCurrent(),t0); t0.hour=0;t0.min=0;t0.sec=0;
-      datetime day=StructToTime(t0);
-      while(true){ MqlDateTime st; TimeToStruct(day,st); if(st.day_of_week==2) break; day-=86400; }
-      MqlTick probe[];
-      int pn=CopyTicksRetry(sym,probe,(ulong)(day+10*3600)*1000,(ulong)(day+11*3600)*1000-1,8);
-      PrintFormat("[%s 診断] 直近火曜(%s)10時台 tick=%d → %s",
-         syms[si],TimeToString(day,TIME_DATE),pn,(pn>0?"ティックモード":"M1バーモードへフォールバック"));
+      // ウォームアップ: 直近10本が取れるまで待つ(履歴ダウンロード誘発)
+      MqlRates warm[]; int wn=-1;
+      for(int a=0;a<10;a++){ ResetLastError(); wn=CopyRates(sym,PERIOD_M1,0,10,warm);
+         if(wn>0) break; Sleep(1500); }
+      long avail=Bars(sym,PERIOD_M1);
+      PrintFormat("[%s 診断] warmup=%d本(err=%d) M1利用可能≈%d本",syms[si],wn,GetLastError(),(int)avail);
+      if(wn<=0){ PrintFormat("⚠ %s: M1が1本も取れない→スキップ(ログを報告してください)",syms[si]); continue; }
 
-      if(pn>0){ if(!ExportTicks(sym,syms[si],pip)) ExportRates(sym,syms[si],pip); }
-      else      ExportRates(sym,syms[si],pip);
+      string fn=StringFormat("ChienRatesM1_%s.csv",syms[si]);
+      int h=FileOpen(fn,FILE_WRITE|FILE_TXT|FILE_ANSI);
+      if(h==INVALID_HANDLE){ PrintFormat("⚠ %s: ファイル作成失敗 err=%d",fn,GetLastError()); continue; }
+      FileWriteString(h,"time_server,open_bid,close_bid,spread_pips_open\n");
+
+      long pos=0, rows=0; datetime oldest=0,newest=0;
+      int CHUNK=20000;
+      while(pos<InpMaxBars && !IsStopped()){
+         MqlRates r[]; int n=-1;
+         for(int a=0;a<6;a++){ ResetLastError();
+            n=CopyRates(sym,PERIOD_M1,(int)pos,CHUNK,r);
+            if(n>0) break; Sleep(1500); }
+         if(n<=0){ PrintFormat("[%s] pos=%d で履歴終端(err=%d)",syms[si],(int)pos,GetLastError()); break; }
+         for(int i=0;i<n;i++){
+            MqlDateTime st; TimeToStruct(r[i].time,st);
+            if(st.day_of_week!=1 && st.day_of_week!=2) continue;
+            if(st.hour<InpHourFrom || st.hour>InpHourTo) continue;
+            FileWriteString(h,StringFormat("%s,%.5f,%.5f,%.3f\n",
+               TimeToString(r[i].time,TIME_DATE|TIME_MINUTES),r[i].open,r[i].close,
+               r[i].spread*point/pip));
+            rows++;
+            if(oldest==0 || r[i].time<oldest) oldest=r[i].time;
+            if(r[i].time>newest) newest=r[i].time;
+         }
+         pos+=n;
+         PrintFormat("[%s] %d本走査済み(採用%d行・最古=%s)",syms[si],(int)pos,(int)rows,
+            (oldest>0?TimeToString(oldest,TIME_DATE):"-"));
+         if(n<CHUNK) { PrintFormat("[%s] 履歴終端に到達",syms[si]); break; }
+      }
+      FileClose(h);
+      PrintFormat("[%s] 完了: %d行(期間 %s 〜 %s)→ MQL5/Files/%s",
+         syms[si],(int)rows,(oldest>0?TimeToString(oldest,TIME_DATE):"-"),
+         (newest>0?TimeToString(newest,TIME_DATE):"-"),fn);
    }
-   Print("[TickExport] 全完了。MQL5/Files の ChienTicksM1_*.csv または ChienRatesM1_*.csv をzipにしてチャットへアップロードしてください。");
+   Print("[Export] 全完了。MQL5/Files の ChienRatesM1_*.csv(3本)をzipにしてチャットへアップロードしてください。");
+   Print("[Export] もし行数0のペアがあれば、このエキスパートタブのログを丸ごと貼り付けてください。");
 }
 //+------------------------------------------------------------------+
