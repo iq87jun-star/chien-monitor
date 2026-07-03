@@ -1,50 +1,74 @@
 # -*- coding: utf-8 -*-
 """
 colab_edge20_tick_fetch.py — edge20(docs/108): Dukascopyティック取得(ユーザーColab用)。
-v2: 並列ダウンロード(16スレッド)で約5〜10分に高速化。再開可能(取得済み日はスキップ)。
+v3: 起動時に接続自己診断 / 100リクエスト毎に進捗表示 / 404は即スキップ(リトライしない) /
+    全滅検知で早期停止。12並列・再開可能。
 
 使い方(Colab):
   from google.colab import drive; drive.mount('/content/drive')
   !python colab_edge20_tick_fetch.py
-出力: {DRIVE_BASE}/tick_edge20/{PAIR}_m1.parquet (1分足集約・約20-30MB)
+出力: {DRIVE_BASE}/tick_edge20/{PAIR}_m1.parquet
 仕様(docs/108 §1固定): EURJPY/GBPJPY/USDJPY × 月・火曜 × 03-12時UTC × 2023-07-01..2026-06-30
 """
-import os, lzma, struct, time, datetime as dt, urllib.request
-from concurrent.futures import ThreadPoolExecutor
+import os, lzma, struct, time, datetime as dt, urllib.request, urllib.error
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import pandas as pd
 
 DRIVE_BASE = "/content/drive/MyDrive/forex_ml"
 OUT_DIR = (f"{DRIVE_BASE}/tick_edge20" if os.path.isdir("/content/drive/MyDrive")
            else os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "tick_edge20"))
-PAIRS = {"EURJPY": 0.001, "GBPJPY": 0.001, "USDJPY": 0.001}   # Dukascopy point
+PAIRS = {"EURJPY": 0.001, "GBPJPY": 0.001, "USDJPY": 0.001}
 START, END = dt.date(2023, 7, 1), dt.date(2026, 6, 30)
-HOURS = list(range(3, 13))    # 03..12 UTC
-WEEKDAYS = (0, 1)             # 月曜・火曜
-WORKERS = 16
-CHECKPOINT_DAYS = 60
+HOURS = list(range(3, 13))
+WEEKDAYS = (0, 1)
+WORKERS = 12
+CHECKPOINT_DAYS = 40
+UA = {"User-Agent": "Mozilla/5.0"}
 
 
-def fetch_hour(pair, day, hour, point, retries=3):
-    url = (f"https://datafeed.dukascopy.com/datafeed/{pair}/{day.year}/"
-           f"{day.month-1:02d}/{day.day:02d}/{hour:02d}h_ticks.bi5")   # 月は0始まり
+def url_of(pair, day, hour):
+    return (f"https://datafeed.dukascopy.com/datafeed/{pair}/{day.year}/"
+            f"{day.month-1:02d}/{day.day:02d}/{hour:02d}h_ticks.bi5")   # 月は0始まり
+
+
+def fetch_hour(pair, day, hour, point, retries=2):
     for a in range(retries):
         try:
-            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            raw = urllib.request.urlopen(req, timeout=30).read()
+            req = urllib.request.Request(url_of(pair, day, hour), headers=UA)
+            raw = urllib.request.urlopen(req, timeout=15).read()
             if len(raw) == 0:
-                return day, hour, []
+                return day, "empty", []
             d = lzma.decompress(raw)
             base = dt.datetime.combine(day, dt.time(hour), tzinfo=dt.timezone.utc)
             out = [(base + dt.timedelta(milliseconds=struct.unpack(">I", d[i:i+4])[0]),
                     struct.unpack(">I", d[i+4:i+8])[0] * point,
                     struct.unpack(">I", d[i+8:i+12])[0] * point)
                    for i in range(0, len(d) - 19, 20)]
-            return day, hour, out
+            return day, "ok", out
+        except urllib.error.HTTPError as e:
+            if e.code == 404:
+                return day, "404", []          # 休場等=データなし。リトライ不要
+            if a == retries - 1:
+                return day, f"http{e.code}", None
+            time.sleep(1.0 + a)
         except Exception as e:
             if a == retries - 1:
-                print(f"  SKIP {pair} {day} {hour:02d}h: {type(e).__name__}")
-                return day, hour, None
-            time.sleep(1.5 * (a + 1))
+                return day, type(e).__name__, None
+            time.sleep(1.0 + a)
+
+
+def selftest():
+    d = dt.date(2026, 5, 4)  # 月曜
+    print("[自己診断] EURJPY 2026-05-04 04hUTC を取得...")
+    t0 = time.time()
+    day, st, ticks = fetch_hour("EURJPY", d, 4, 0.001)
+    print(f"  status={st} ticks={len(ticks) if ticks else 0} ({time.time()-t0:.1f}s)")
+    if st != "ok" or not ticks:
+        print("  ⚠ Dukascopyに到達できていません。Colabのネットワーク一時障害か、")
+        print("    Dukascopy側の一時ブロックの可能性 → 数分待って再実行 / それでも駄目なら")
+        print("    ランタイムを「切断して削除」→ 新規ランタイムで再実行してください(IPが変わります)")
+        return False
+    return True
 
 
 def to_m1(ticks):
@@ -68,6 +92,8 @@ def target_days():
 
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
+    if not selftest():
+        return
     for pair, point in PAIRS.items():
         t0 = time.time()
         path = os.path.join(OUT_DIR, f"{pair}_m1.parquet")
@@ -80,23 +106,41 @@ def main():
         days = [d for d in target_days() if d not in done_days]
         if not days:
             print(f"{pair}: 取得済み"); continue
-        print(f"{pair}: {len(days)}日 × {len(HOURS)}時間 を{WORKERS}並列で取得")
-        buf, day_ticks = [], {}
+        total_req = len(days) * len(HOURS)
+        print(f"{pair}: {len(days)}日({total_req}リクエスト)を{WORKERS}並列で取得")
+        buf = []
+        stats = {"ok": 0, "404": 0, "empty": 0, "fail": 0}
+        done_req = 0
         with ThreadPoolExecutor(max_workers=WORKERS) as ex:
             for i0 in range(0, len(days), CHECKPOINT_DAYS):
                 chunk = days[i0:i0 + CHECKPOINT_DAYS]
-                futs = [ex.submit(fetch_hour, pair, d, h, point) for d in chunk for h in HOURS]
+                futs = {ex.submit(fetch_hour, pair, d, h, point) for d in chunk for h in HOURS}
                 day_ticks = {d: [] for d in chunk}
-                for f in futs:
-                    d, h, ticks = f.result()
-                    if ticks:
-                        day_ticks[d].extend(ticks)
+                for f in as_completed(futs):
+                    day, st, ticks = f.result()
+                    done_req += 1
+                    if st == "ok":
+                        stats["ok"] += 1; day_ticks[day].extend(ticks)
+                    elif st in ("404", "empty"):
+                        stats[st] += 1
+                    else:
+                        stats["fail"] += 1
+                    if done_req % 100 == 0:
+                        rate = done_req / max(time.time() - t0, 1)
+                        eta = (total_req - done_req) / max(rate, 0.1)
+                        print(f"  {pair}: {done_req}/{total_req} ok={stats['ok']} 404={stats['404']} "
+                              f"fail={stats['fail']} ({rate:.0f}req/s 残り目安{eta/60:.0f}分)")
+                    if done_req == 60 and stats["ok"] == 0:
+                        print("  ⚠ 60リクエスト全滅 → 中断。自己診断の案内に従って再実行してください")
+                        for g in futs:
+                            g.cancel()
+                        return
                 for d in chunk:
                     if day_ticks[d]:
                         buf.append(to_m1(sorted(day_ticks[d])))
                 pd.concat(acc + buf).sort_index().to_parquet(path)
                 print(f"  {pair}: {chunk[-1]} まで保存 ({i0+len(chunk)}/{len(days)}日, {time.time()-t0:.0f}s)")
-        print(f"{pair}: 完了 {time.time()-t0:.0f}s → {path}")
+        print(f"{pair}: 完了 {time.time()-t0:.0f}s ok={stats['ok']} 404={stats['404']} fail={stats['fail']} → {path}")
 
 
 if __name__ == "__main__":
