@@ -3,24 +3,25 @@
 //|   R4+G3 ワンパターン版(プロップ中央3ヶ月・挿入するだけ):            |
 //|   YEARROUND_R4(リスク調整比例・月別) + G3 FOMCオーバーレイ。        |
 //|                                                                   |
-//|   ★使い方: チャートにドロップ → InpInitialBalance にフェーズ開始   |
-//|     残高を入力 → OK。.set不要(全設定を既定値として内蔵)。           |
+//|   ★使い方: チャートにドロップ → OK(残高は自動記録・.set不要)。      |
+//|     新フェーズ開始時のみ InpBaselineReset=true で基準残高を更新。   |
 //|   ★校正(docs/111・日次MC 20000パス):                               |
 //|     倍率1.5x = 中央3.0ヶ月 / 通過95.0% / 失格5.0〜7.8% /            |
 //|     最悪単日-5.4%。M3速攻(失格10〜14%)の上位互換。                  |
-//|   ★ガード: 日次-4% / フロア-8% / +7%利益ロック(7.0/7.5) /          |
-//|     Max RiskガードMONITOR / スワップログ / 手決済再建て 全て内蔵。   |
+//|   ★内蔵: 日次-4% / フロア-8% / +7%利益ロック(7.0/7.5) /            |
+//|     リスクガードMONITOR / スワップログ / 手決済再建て /              |
+//|     プッシュ通知(MT5モバイル→Even G2ミラー, docs/112)。              |
 //|                                                                   |
 //|   ⚠ デモ必須: R4はLOYO合格(docs/105)だがデモ未了。                  |
 //|     実口座投入はデモ1ヶ月採点(docs/103)で分布内を確認後。           |
 //|   ⚠ 資金化後は InpMultOverride=0.68(ガード安全倍率, docs/110)へ。   |
-//|   ⚠ 実装は Chien_Seasonal_Top_EA v1.30 の逐語コピー(既定値のみ変更・ |
-//|     Magic基底は940700=旧EAと同居しても衝突しない)。                 |
+//|   ⚠ 実装は Chien_Seasonal_Top_EA v1.40 の逐語コピー(既定値のみ変更・ |
+//|     Magic基底940700=旧EAと同居しても衝突しない)。                   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.00"   // = Seasonal_Top_EA v1.30 相当
+#property version   "1.10"   // = Seasonal_Top_EA v1.40 相当
 #property strict
-#property description "R4+G3 ONE-CLICK (median-3, 1.5x, all guards built-in). Drop on chart, set InpInitialBalance, OK. Demo-first (docs/110/111)."
+#property description "R4+G3 ONE-CLICK (median-3, 1.5x, guards+notify built-in). Drop on chart & OK. Demo-first (docs/110-112)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -35,7 +36,8 @@ input double InpMultOverride    = 1.5;    // 中央3ヶ月校正(docs/111)。資
 input group "=== ガード(プロジェクト標準) ==="
 input double InpDailyStopPct      = 4.0;  // 日次この%負けたら当日停止+全決済
 input double InpAccountFloorDDPct = 8.0;  // 初期残高からこの%でEA恒久停止
-input double InpInitialBalance    = 0.0;  // 0=自動取得
+input double InpInitialBalance    = 0.0;  // 0=自動(初回アタッチ時の残高を端末に永続保存・再アタッチ耐性)
+input bool   InpBaselineReset     = false;// 新フェーズ開始時のみtrue=基準残高を今の残高で取り直す
 
 input group "=== +7%利益ロック(フェーズ通過の確定, docs/100) ==="
 input bool   InpProfitLockEnable  = true; // 利益ロックを使う
@@ -73,6 +75,12 @@ input double InpG3CatATR        = 2.5;    // 災害SL=2.5×ATR(D1)
 input int    InpG3EntryHourET   = 14;     // エントリ=声明24h前(前日のこの時刻ET)
 input int    InpG3ExitMinBefore = 5;      // 声明何分前に手仕舞うか(検証=0分・5分は保守側)
 
+input group "=== プッシュ通知(MT5モバイル→スマホ→Even G2ミラー, docs/112) ==="
+input bool   InpNotifyEnable      = true;   // SendNotificationを使う(要MetaQuotes ID設定)
+input bool   InpNotifyEntries     = true;   // エントリー(G3含む)を通知
+input double InpNotifyRefPct      = 6.0;    // 手決済の参考値: equity+この%で「検討ライン」通知
+input double InpNotifyDayWarnPct  = 3.0;    // 日次−この%で警告(ガード−4%の手前)
+
 input group "=== 詳細 ==="
 input int    InpHoldHoursMonday = 24;     // 月曜系の保有時間
 input int    InpV4MaxHoldDays   = 8;      // v4の時間切れ(D1バー)
@@ -99,6 +107,11 @@ int      g_g3atr=INVALID_HANDLE;
 datetime g_g3WinStart[64], g_g3WinEnd[64];
 int      g_g3n=0;
 datetime g_g3Entered=0;
+string   g_ntfBuf="";          // 通知バッファ(タイマー1回=1通に集約)
+bool     g_ntfRef=false;       // 参考値ライン通知済み(水準を離れたら再武装)
+bool     g_ntfArm=false;
+int      g_ntfDayKey=-1;       // 日次警告は1日1回
+string   g_gvName="";          // 基準残高の端末保存キー(4週失効対策で日次タッチ)
 datetime g_lastD1  = 0;
 int      g_e5MonthKey = -1, g_sjulMonthKey = -1, g_monWeekKey[64];
 
@@ -188,8 +201,25 @@ int OnInit()
    else if(InpScenario==SCN_YEARROUND_R4){ g_month=0; g_mult=2.27; } // 通年・R4(リスク調整比例, docs/105/110)。2.27x=現行M3と同じ踏み込み係数。⚠ガード安全倍率は0.68(docs/110)=速攻値。デモ必須
    else                                { g_month=0; g_mult=2.0; }   // 通年・median-3チャレンジ版: 中央3.1ヶ月/失格MC1.5%(楽観値,docs/87)。⚠暴落日はガードが間に合わない可能性=デモ必須
    if(InpMultOverride>0.0) g_mult=InpMultOverride;
-   g_initBal=(InpInitialBalance>0.0)? InpInitialBalance : AccountInfoDouble(ACCOUNT_BALANCE);
-   if(g_initBal<=0.0) g_initBal=AccountInfoDouble(ACCOUNT_EQUITY);
+   // 基準残高(docs/112): 明示入力 > 端末保存値(初回アタッチ時に記録・再アタッチ/再起動で不変) > 現残高
+   // フェーズが変わったら InpBaselineReset=true で取り直す(P1→P2、新チャレンジ等)。
+   {
+      string gv=StringFormat("ChienSeasonal_base_%I64d_%I64d",
+                             (long)AccountInfoInteger(ACCOUNT_LOGIN),(long)InpMagicBase);
+      g_gvName=gv;
+      if(InpInitialBalance>0.0){
+         g_initBal=InpInitialBalance; GlobalVariableSet(gv,g_initBal);
+      }else if(!InpBaselineReset && GlobalVariableCheck(gv)){
+         g_initBal=GlobalVariableGet(gv);
+         PrintFormat("[基準残高] 端末保存値を復元: %.2f (取り直しは InpBaselineReset=true)",g_initBal);
+      }else{
+         g_initBal=AccountInfoDouble(ACCOUNT_BALANCE);
+         if(g_initBal<=0.0) g_initBal=AccountInfoDouble(ACCOUNT_EQUITY);
+         GlobalVariableSet(gv,g_initBal);
+         PrintFormat("[基準残高] 新規記録: %.2f (口座%I64d/Magic%I64d)",
+                     g_initBal,(long)AccountInfoInteger(ACCOUNT_LOGIN),(long)InpMagicBase);
+      }
+   }
 
    g_nv4   =SplitResolve(InpV4Pairs, g_v4, 16,"v4");
    g_ne5   =SplitResolve(InpE5Assets,g_e5,  8,"E5");
@@ -416,7 +446,30 @@ bool OpenNotional(string s, int sleeve, int dir, double notional, double slPrice
    bool ok=(dir>0)? trade.Buy(lots,s,0.0,slPrice,tpPrice,tag)
                   : trade.Sell(lots,s,0.0,slPrice,tpPrice,tag);
    if(ok && InpVerboseLog) PrintFormat("[ENTRY %s] %s %s lots=%.2f notional=%.0f",tag,s,(dir>0?"L":"S"),lots,notional);
+   if(ok && InpNotifyEntries) Notify(StringFormat("IN %s %s %.2f",tag,s,lots));
    return ok;
+}
+
+//------------------------------------------------------------------ プッシュ通知(docs/112)
+// MT5モバイルアプリへ送信→スマホ通知→Even Realitiesアプリのミラーリングで G2 に表示。
+// タイマー1回分のイベントを1通に集約(SendNotificationのレート制限対策)。テスターでは無効。
+void Notify(string s)
+{
+   if(!InpNotifyEnable) return;
+   if(g_ntfBuf!="") g_ntfBuf+=" | ";
+   g_ntfBuf+=s;
+}
+void FlushNotify()
+{
+   if(g_ntfBuf=="") return;
+   string msg="[季節EA] "+g_ntfBuf;
+   if(StringLen(msg)>250) msg=StringSubstr(msg,0,247)+"...";
+   if(!MQLInfoInteger(MQL_TESTER)){
+      if(!SendNotification(msg))
+         PrintFormat("[NOTIFY失敗 err=%d] %s (ツール→オプション→通知のMetaQuotes ID設定を確認)",GetLastError(),msg);
+   }
+   Print("[NOTIFY] ",msg);
+   g_ntfBuf="";
 }
 
 //------------------------------------------------------------------ G3 FOMCオーバーレイ(Chien_FOMC_Drift_EAから逐語移植, docs/82)
@@ -635,6 +688,7 @@ void SleeveSJul(double W)
 //------------------------------------------------------------------
 void OnTimer()
 {
+   FlushNotify();   // 前タイマー分の未送信(早期return経路)を送出
    double eq=AccountInfoDouble(ACCOUNT_EQUITY);
 
    // スワップ実測ログ(docs/100 §4): ガードとは独立に日次1回+月替わりで集計
@@ -644,6 +698,7 @@ void OnTimer()
       static int s_swapDayKey=-1;
       if(swDk!=s_swapDayKey){
          s_swapDayKey=swDk;
+         if(g_gvName!="") GlobalVariableSet(g_gvName,g_initBal);  // 4週失効対策の日次タッチ
          SwapLogDailySnapshot();
          int mk=ts0.year*100+ts0.mon;
          if(g_swapMonKey!=-1 && mk!=g_swapMonKey) SwapLogMonthlySummary(g_swapMonKey/100,g_swapMonKey%100);
@@ -655,6 +710,7 @@ void OnTimer()
    if(eq<=g_initBal*(1.0-InpAccountFloorDDPct/100.0) && !g_halted){
       g_halted=true; CloseAllMine("FLOOR");
       PrintFormat("[HALT] equity %.2f <= floor",eq);
+      Notify(StringFormat("FLOOR -%.1f%% 全決済・恒久停止",InpAccountFloorDDPct)); FlushNotify();
    }
    if(g_halted){ CloseAllMine("HALTED"); return; }
 
@@ -666,12 +722,20 @@ void OnTimer()
       if(!g_lockDone && gainPct>=InpLockClosePct){
          g_lockDone=true; CloseAllMine("PROFIT_LOCK");
          PrintFormat("[PROFIT LOCK] equity %+.2f%% >= +%.2f%% → 全決済・恒久ロック(再開はEA再アタッチ)",gainPct,InpLockClosePct);
+         Notify(StringFormat("PASS_LOCK %+.2f%% 全決済(通過確定処理)",gainPct));
       }
       bool armNow=(!g_lockDone && gainPct>=InpLockArmPct);
       if(armNow!=g_lockArmed){
          g_lockArmed=armNow;
          PrintFormat("[PROFIT LOCK %s] equity %+.2f%% (arm=+%.1f%%)",(armNow?"ARMED=新規停止":"DISARM=新規再開"),gainPct,InpLockArmPct);
+         if(armNow && !g_ntfArm){ g_ntfArm=true; Notify(StringFormat("ARM %+.2f%% 新規停止(手決済参考: +%.1f%%で全決済)",gainPct,InpLockClosePct)); }
+         if(!armNow) g_ntfArm=false;
       }
+      // 手決済の参考値ライン(既定+6%): 到達で1回通知、-0.5%離れたら再武装
+      if(!g_ntfRef && gainPct>=InpNotifyRefPct && InpNotifyRefPct>0){
+         g_ntfRef=true;
+         Notify(StringFormat("参考値到達 %+.2f%% (ARM=+%.1f%%/LOCK=+%.1f%%が自動処理)",gainPct,InpLockArmPct,InpLockClosePct));
+      }else if(g_ntfRef && gainPct<InpNotifyRefPct-0.5) g_ntfRef=false;
       Comment(StringFormat("Chien_Seasonal | gain %+.2f%% | open-risk %.2f%%(cap %.1f%% %s) | %s",gainPct,
              OpenRiskPct(),InpMaxOpenRiskPct,
              (InpRiskGuardMode==RG_ENFORCE?"ENF":(InpRiskGuardMode==RG_MONITOR?"MON":"OFF")),
@@ -683,9 +747,16 @@ void OnTimer()
    MqlDateTime t; TimeToStruct(TimeCurrent(),t);
    int dk=t.year*1000+t.day_of_year;
    if(dk!=g_dayKey){ g_dayKey=dk; g_dayStartEq=eq; g_dayHalt=false; }
+   // 日次の警告ライン(既定-3%・ガード-4%の手前で1日1回)
+   if(InpNotifyDayWarnPct>0 && g_ntfDayKey!=dk && g_dayStartEq>0
+      && eq<=g_dayStartEq*(1.0-InpNotifyDayWarnPct/100.0)){
+      g_ntfDayKey=dk;
+      Notify(StringFormat("日次-%.1f%%警告(ガード-%.1f%%手前) eq=%.0f",InpNotifyDayWarnPct,InpDailyStopPct,eq)); FlushNotify();
+   }
    if(!g_dayHalt && eq<=g_dayStartEq*(1.0-InpDailyStopPct/100.0)){
       g_dayHalt=true; CloseAllMine("DAILY_STOP");
       PrintFormat("[DAILY HALT] %.2f%%",InpDailyStopPct);
+      Notify(StringFormat("DAILY_STOP -%.1f%% 当日停止・全決済",InpDailyStopPct)); FlushNotify();
    }
    if(g_dayHalt) return;
 
