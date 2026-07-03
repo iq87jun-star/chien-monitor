@@ -1,0 +1,146 @@
+{
+ "prereg": "docs/106",
+ "input_sha256": {
+  "ZW": "9607120835429498",
+  "ZC": "b9d8733c3104acbd",
+  "ZS": "b22919f7ecd551c2",
+  "NG": "aa36320c04207bca",
+  "CL": "56d2f33b3a8e6fab",
+  "HG": "2504a16a346de94a",
+  "SI": "41eb1160bd49f2ca",
+  "PL": "5acd2ec7c2ad92c6",
+  "ZN": "eb6fe9afcef0e195",
+  "ZB": "fd87995c21ecdaa6",
+  "SB": "572001fe155a4f5d",
+  "KC": "a5e32f1198d26d51"
+ },
+ "universe": [
+  "ZW",
+  "ZC",
+  "ZS",
+  "NG",
+  "CL",
+  "HG",
+  "SI",
+  "PL",
+  "ZN",
+  "ZB",
+  "SB",
+  "KC"
+ ],
+ "long_history_assets": [
+  "ZW",
+  "ZC",
+  "ZS",
+  "NG",
+  "CL",
+  "HG",
+  "SI",
+  "PL",
+  "ZN",
+  "ZB",
+  "SB",
+  "KC"
+ ],
+ "h19a": {
+  "main": {
+   "net": -18.7,
+   "sharpe": -0.298,
+   "maxDD": -24.2,
+   "calmar": -0.08,
+   "n": 120
+  },
+  "perm_p": 0.8363,
+  "pre2016": {
+   "net": -14.4,
+   "sharpe": -0.071,
+   "maxDD": -29.6,
+   "calmar": -0.03,
+   "n": 191
+  },
+  "perm_p_pre": 0.6162,
+  "jk_max_p": 0.932,
+  "jk_min_net": -25.1,
+  "is_net": -6.0,
+  "oos_net": -13.5,
+  "cost2x": {
+   "net": -22.6,
+   "sharpe": -0.377,
+   "maxDD": -26.8,
+   "calmar": -0.09,
+   "n": 120
+  },
+  "placebo": {
+   "placebo_mean": -0.6,
+   "placebo_p95": 27.2,
+   "p_real_vs_placebo": 0.8855
+  },
+  "corr_existing": {
+   "v4": -0.186,
+   "v7": 0.01,
+   "EMon": -0.152,
+   "E5": 0.112
+  },
+  "g9": {
+   "base": {
+    "net": 25.0,
+    "sharpe": 1.328,
+    "maxDD": -1.1,
+    "calmar": 2.26,
+    "n": 113
+   },
+   "with_new": {
+    "net": 18.7,
+    "sharpe": 1.193,
+    "maxDD": -1.2,
+    "calmar": 1.53,
+    "n": 113
+   }
+  },
+  "gates": {
+   "G1_econ": false,
+   "G2_perm": false,
+   "G3_jk": false,
+   "G4_placebo": false,
+   "G5_cost2x": false,
+   "G6_isoos": false,
+   "G7_pre2016": false,
+   "G8_corr": true,
+   "G9_port": false
+  },
+  "gates_passed": "1/9",
+  "verdict": "REJECT"
+ },
+ "h19b": {
+  "e5_old": {
+   "net": 60.7,
+   "sharpe": 0.575,
+   "maxDD": -14.7,
+   "calmar": 0.33,
+   "n": 120
+  },
+  "e5_16": {
+   "net": 4.7,
+   "sharpe": 0.112,
+   "maxDD": -13.7,
+   "calmar": 0.03,
+   "n": 120
+  },
+  "p_16": 0.37425,
+  "corr_old_new": 0.561,
+  "e5_16_cost2x": {
+   "net": -0.4,
+   "sharpe": 0.02,
+   "maxDD": -15.5,
+   "calmar": -0.0,
+   "n": 120
+  },
+  "gates": {
+   "improves": false,
+   "sig": false,
+   "cost2x": false
+  },
+  "verdict": "拡張見送り"
+ },
+ "ref_2026H1_net_pct": -2.65
+}
