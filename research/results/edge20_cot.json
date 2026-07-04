@@ -1,0 +1,87 @@
+{
+ "doc": "docs/104",
+ "markets": [
+  "JPY",
+  "EUR",
+  "GBP",
+  "AUD",
+  "CAD",
+  "CHF",
+  "WTI"
+ ],
+ "cost_oneway": 0.0005,
+ "hold_stress": 0.05,
+ "results": {
+  "H20a": {
+   "n_weeks": 1949,
+   "avg_gross_exposure": 0.687,
+   "gross_sum": -0.0393,
+   "net_sum": -0.5295,
+   "net_2xcost": -1.0197,
+   "net_hold5": -1.816,
+   "perm_p": 0.5065,
+   "beta_take": -0.0685,
+   "excess_vs_beta": 0.0292,
+   "net_pre2016": -0.9316,
+   "net_2016plus": 0.4026,
+   "maxdd_lev1": -0.7164,
+   "gates": {
+    "G_dir": false,
+    "G_p": false,
+    "G_p_bonf": false,
+    "G_split_pre2016": false,
+    "G_split_2016plus": true,
+    "G_cost": false,
+    "G_hold": false,
+    "G_beta": true,
+    "G_dd": false
+   },
+   "verdict": "REJECT",
+   "per_market_net": {
+    "JPY": -0.3345,
+    "EUR": -0.2578,
+    "GBP": 0.094,
+    "AUD": -0.2969,
+    "CAD": 0.0189,
+    "CHF": -0.0534,
+    "WTI": 0.3003
+   }
+  },
+  "H20b": {
+   "n_weeks": 1949,
+   "avg_gross_exposure": 0.787,
+   "gross_sum": 0.5684,
+   "net_sum": 0.2567,
+   "net_2xcost": -0.055,
+   "net_hold5": -1.2187,
+   "perm_p": 0.059,
+   "beta_take": -0.0129,
+   "excess_vs_beta": 0.5813,
+   "net_pre2016": 0.2335,
+   "net_2016plus": 0.0236,
+   "maxdd_lev1": -0.239,
+   "gates": {
+    "G_dir": true,
+    "G_p": false,
+    "G_p_bonf": false,
+    "G_split_pre2016": true,
+    "G_split_2016plus": true,
+    "G_cost": false,
+    "G_hold": false,
+    "G_beta": true,
+    "G_dd": false
+   },
+   "verdict": "参考",
+   "per_market_net": {
+    "JPY": 0.0541,
+    "EUR": 0.1735,
+    "GBP": -0.0419,
+    "AUD": 0.017,
+    "CAD": 0.0084,
+    "CHF": -0.073,
+    "WTI": 0.1186
+   }
+  }
+ },
+ "input_sha256": "cc1725fa4647b3f62c0e74e27a6d2db50909247812091d0180f56764506854ae"
+}
