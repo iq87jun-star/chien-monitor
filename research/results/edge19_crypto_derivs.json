@@ -1,0 +1,245 @@
+{
+ "doc": "docs/100",
+ "cost_oneway": 0.001,
+ "hold_stress": 0.15,
+ "perm_n": 2000,
+ "assets": {
+  "BTCUSDT": {
+   "role": "primary",
+   "rows": 2557,
+   "px_range": [
+    "2019-06-01",
+    "2026-05-31"
+   ],
+   "results": [
+    {
+     "id": "H19a",
+     "n_days": 2340,
+     "on_days": 258,
+     "on_ratio": 0.11,
+     "gross_sum": 1.2201,
+     "net_sum": 1.1141,
+     "net_2xcost": 1.0081,
+     "net_hold15": 1.008,
+     "perm_p": 0.035,
+     "beta_take": 0.3888,
+     "excess_vs_beta": 0.8313,
+     "net_half1": 0.8203,
+     "net_half2": 0.2938,
+     "maxdd_lev1": -0.2938,
+     "gates": {
+      "G_dir": true,
+      "G_p": true,
+      "G_p_bonf": false,
+      "G_split": true,
+      "G_cost": true,
+      "G_hold": true,
+      "G_beta": true,
+      "G_dd": false
+     },
+     "verdict": "LEAD"
+    },
+    {
+     "id": "H19b",
+     "n_days": 2340,
+     "on_days": 102,
+     "on_ratio": 0.044,
+     "gross_sum": -0.2632,
+     "net_sum": -0.3032,
+     "net_2xcost": -0.3432,
+     "net_hold15": -0.3451,
+     "perm_p": 0.617,
+     "beta_take": -0.1537,
+     "excess_vs_beta": -0.1095,
+     "net_half1": -0.2181,
+     "net_half2": -0.0851,
+     "maxdd_lev1": -0.4817,
+     "gates": {
+      "G_dir": false,
+      "G_p": false,
+      "G_p_bonf": false,
+      "G_split": false,
+      "G_cost": false,
+      "G_hold": false,
+      "G_beta": false,
+      "G_dd": false
+     },
+     "verdict": "REJECT"
+    },
+    {
+     "id": "H19c",
+     "n_days": 1894,
+     "on_days": 866,
+     "on_ratio": 0.457,
+     "gross_sum": 1.0546,
+     "net_sum": 0.9066,
+     "net_2xcost": 0.7586,
+     "net_hold15": 0.5507,
+     "perm_p": 0.202,
+     "beta_take": 0.5248,
+     "excess_vs_beta": 0.5298,
+     "net_half1": 0.1119,
+     "net_half2": 0.7957,
+     "maxdd_lev1": -0.6148,
+     "gates": {
+      "G_dir": true,
+      "G_p": false,
+      "G_p_bonf": false,
+      "G_split": true,
+      "G_cost": true,
+      "G_hold": true,
+      "G_beta": true,
+      "G_dd": false
+     },
+     "verdict": "REJECT"
+    },
+    {
+     "id": "H19d",
+     "n_days": 1889,
+     "on_days": 83,
+     "on_ratio": 0.044,
+     "gross_sum": -0.1674,
+     "net_sum": -0.1894,
+     "net_2xcost": -0.2114,
+     "net_hold15": -0.2235,
+     "perm_p": 0.8075,
+     "beta_take": 0.046,
+     "excess_vs_beta": -0.2134,
+     "net_half1": -0.3746,
+     "net_half2": 0.1862,
+     "maxdd_lev1": -0.4866,
+     "gates": {
+      "G_dir": false,
+      "G_p": false,
+      "G_p_bonf": false,
+      "G_split": false,
+      "G_cost": false,
+      "G_hold": false,
+      "G_beta": false,
+      "G_dd": false
+     },
+     "verdict": "REJECT"
+    }
+   ]
+  },
+  "ETHUSDT": {
+   "role": "confirm",
+   "rows": 2557,
+   "px_range": [
+    "2019-06-01",
+    "2026-05-31"
+   ],
+   "results": [
+    {
+     "id": "H19a",
+     "n_days": 2340,
+     "on_days": 244,
+     "on_ratio": 0.104,
+     "gross_sum": 0.5257,
+     "net_sum": 0.4137,
+     "net_2xcost": 0.3017,
+     "net_hold15": 0.3134,
+     "perm_p": 0.4865,
+     "beta_take": 0.5097,
+     "excess_vs_beta": 0.016,
+     "net_half1": 0.2473,
+     "net_half2": 0.1664,
+     "maxdd_lev1": -0.3968,
+     "gates": {
+      "G_dir": true,
+      "G_p": false,
+      "G_p_bonf": false,
+      "G_split": true,
+      "G_cost": true,
+      "G_hold": true,
+      "G_beta": true,
+      "G_dd": false
+     },
+     "verdict": "REJECT"
+    },
+    {
+     "id": "H19b",
+     "n_days": 2340,
+     "on_days": 142,
+     "on_ratio": 0.061,
+     "gross_sum": -1.1536,
+     "net_sum": -1.2056,
+     "net_2xcost": -1.2576,
+     "net_hold15": -1.2639,
+     "perm_p": 0.965,
+     "beta_take": -0.2966,
+     "excess_vs_beta": -0.8569,
+     "net_half1": -1.1398,
+     "net_half2": -0.0657,
+     "maxdd_lev1": -0.7862,
+     "gates": {
+      "G_dir": false,
+      "G_p": false,
+      "G_p_bonf": false,
+      "G_split": false,
+      "G_cost": false,
+      "G_hold": false,
+      "G_beta": false,
+      "G_dd": false
+     },
+     "verdict": "REJECT"
+    },
+    {
+     "id": "H19c",
+     "n_days": 1894,
+     "on_days": 667,
+     "on_ratio": 0.352,
+     "gross_sum": 1.7815,
+     "net_sum": 1.6325,
+     "net_2xcost": 1.4835,
+     "net_hold15": 1.3584,
+     "perm_p": 0.0815,
+     "beta_take": 0.6054,
+     "excess_vs_beta": 1.1761,
+     "net_half1": 0.7524,
+     "net_half2": 0.8811,
+     "maxdd_lev1": -0.7139,
+     "gates": {
+      "G_dir": true,
+      "G_p": false,
+      "G_p_bonf": false,
+      "G_split": true,
+      "G_cost": true,
+      "G_hold": true,
+      "G_beta": true,
+      "G_dd": false
+     },
+     "verdict": "参考"
+    },
+    {
+     "id": "H19d",
+     "n_days": 1889,
+     "on_days": 133,
+     "on_ratio": 0.07,
+     "gross_sum": 0.0164,
+     "net_sum": -0.0196,
+     "net_2xcost": -0.0556,
+     "net_hold15": -0.0742,
+     "perm_p": 0.5995,
+     "beta_take": 0.1109,
+     "excess_vs_beta": -0.0945,
+     "net_half1": -0.0927,
+     "net_half2": 0.0741,
+     "maxdd_lev1": -0.5286,
+     "gates": {
+      "G_dir": false,
+      "G_p": false,
+      "G_p_bonf": false,
+      "G_split": false,
+      "G_cost": false,
+      "G_hold": false,
+      "G_beta": false,
+      "G_dd": false
+     },
+     "verdict": "REJECT"
+    }
+   ]
+  }
+ },
+ "input_sha256": "e6cc869e973c9c3aa06d1095642b44a2d39e281512a0bca5c5d0d2c7b1540c25"
+}
