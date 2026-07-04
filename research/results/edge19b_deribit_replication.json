@@ -1,0 +1,31 @@
+{
+ "doc": "docs/102",
+ "source": "Deribit BTC-PERPETUAL (funding+index, Binance不使用)",
+ "range": [
+  "2019-10-02",
+  "2026-07-01"
+ ],
+ "n_days": 2462,
+ "on_days": 647,
+ "on_ratio": 0.263,
+ "gross_sum": 1.2051,
+ "net_sum": 1.0451,
+ "net_2xcost": 0.8851,
+ "net_hold15": 0.7792,
+ "perm_p": 0.3285,
+ "beta_take": 0.8525,
+ "excess_vs_beta": 0.3526,
+ "net_half1": 0.8619,
+ "net_half2": 0.1841,
+ "maxdd_lev1_record_only": -0.502,
+ "gates": {
+  "G_dir": true,
+  "G_p": false,
+  "G_split": true,
+  "G_cost": true,
+  "G_hold": true,
+  "G_beta": true
+ },
+ "verdict": "再現不成立",
+ "input_sha256": "1c3c945fc9faf95d6f4ef6109e2b299a1c6c699d4496444a9cb861bbb6fb4e23"
+}
