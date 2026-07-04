@@ -18,9 +18,9 @@
 //|     ※ライブ(資金化後)版は通過後に別途用意。                        |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.10"
+#property version   "1.20"
 #property strict
-#property description "Portfolio-D ONE-CLICK (PROP median-3 standard): v4+v7+E-Mon[RG3]+E5=30:25:25:20. Drop on chart & OK. No preset needed. v1.10: +7% profit lock (docs/100)."
+#property description "Portfolio-D ONE-CLICK (PROP median-3 standard): v4+v7+E-Mon[RG3]+E5=30:25:25:20. Drop on chart & OK. v1.10 profit lock+risk guard+swap log / v1.20 push notify (Even G2)+persistent baseline+E5 re-enter (docs/112)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -36,9 +36,20 @@ input string InpE5Symbols   = "XAUUSD,US500,NAS100,GER40";                     /
 input string InpEMonSymbols = "NAS100,US500,GER40";                            // E-Mon: 指数3つ(月曜LONG)
 
 input group "=== 口座/ガード ==="
-input double InpInitialBalance   = 0.0;   // 0=口座残高を自動取得
+input double InpInitialBalance   = 0.0;   // 0=自動(初回アタッチ時の残高を端末に永続保存・再アタッチ耐性)
+input bool   InpBaselineReset    = false; // 新フェーズ開始時のみtrue=基準残高を今の残高で取り直す
 input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%
 input double InpAccountFloorDDPct= 9.0;   // 全停止ライン%(攻め=9.0で-10%枠をほぼ使い切る)
+
+input group "=== プッシュ通知(MT5モバイル→スマホ→Even G2ミラー, docs/112) ==="
+input bool   InpNotifyEnable     = true;  // SendNotificationを使う(要MetaQuotes ID設定)
+input bool   InpNotifyEntries    = true;  // エントリーを通知
+input double InpNotifyRefPct     = 6.0;   // 手決済の参考値: equity+この%で「検討ライン」通知
+input double InpNotifyDayWarnPct = 3.0;   // 日次−この%で警告(ガード−4%の手前)
+
+input group "=== 手決済後の再建て(docs/100 §5) ==="
+input bool   InpReenterManualClose = true; // E5(月保有)を手決済したら同月内に自動で建て直す
+                                           // ※ガード/SLによる決済後は再建てしない
 
 input group "=== リスク配分（中央3ヶ月・標準=内蔵既定。通常は変更不要）==="
 input double InpWeeklyRiskPct    = 1.95;  // v7 週次リスク%
@@ -131,6 +142,10 @@ double   g_profitPct=0.0, g_dailyStopPct=0.0, g_floorBufPct=1.0;
 double   g_dayStartEq=0.0;
 datetime g_curDay=0; bool g_halted=false, g_dayBlocked=false;
 bool     g_passLocked=false;   // PASS_LOCK(+LockClose%で全決済済み・恒久)
+string   g_ntfBuf="";          // 通知バッファ(タイマー1回=1通に集約)
+bool     g_ntfRef=false, g_ntfArm=false;
+datetime g_ntfWarnDay=0;       // 日次警告は1日1回
+string   g_gvName="";          // 基準残高の端末保存キー
 string   g_scenName="";
 long     g_mV7=0, g_mV4=0, g_mE5=0, g_mEMon=0;
 
@@ -201,8 +216,20 @@ int OnInit()
    if(ny==0||nv==0||ne==0||nm==0||nh7==0||nhm==0){ Print("シンボル/時刻のパース失敗"); return INIT_FAILED; }
    ResolveScenario();
    g_mV7=InpMagicBase+1; g_mV4=InpMagicBase+2; g_mE5=InpMagicBase+3; g_mEMon=InpMagicBase+4;
-   g_initBal=(InpInitialBalance>0.0)?InpInitialBalance:AccountInfoDouble(ACCOUNT_BALANCE);
-   if(g_initBal<=0.0) g_initBal=AccountInfoDouble(ACCOUNT_EQUITY);
+   // 基準残高(docs/112): 明示入力 > 端末保存値(初回アタッチ時に記録・再アタッチ/再起動で不変) > 現残高
+   g_gvName=StringFormat("ChienPD_base_%I64d_%I64d",
+                         (long)AccountInfoInteger(ACCOUNT_LOGIN),(long)InpMagicBase);
+   if(InpInitialBalance>0.0){
+      g_initBal=InpInitialBalance; GlobalVariableSet(g_gvName,g_initBal);
+   }else if(!InpBaselineReset && GlobalVariableCheck(g_gvName)){
+      g_initBal=GlobalVariableGet(g_gvName);
+      PrintFormat("[基準残高] 端末保存値を復元: %.2f (取り直しは InpBaselineReset=true)",g_initBal);
+   }else{
+      g_initBal=AccountInfoDouble(ACCOUNT_BALANCE);
+      if(g_initBal<=0.0) g_initBal=AccountInfoDouble(ACCOUNT_EQUITY);
+      GlobalVariableSet(g_gvName,g_initBal);
+      PrintFormat("[基準残高] 新規記録: %.2f",g_initBal);
+   }
 
    ArrayResize(g_atrH1,ny); ArrayResize(g_atrD1,nv); ArrayResize(g_rsiD1,nv);
    ArrayResize(g_atrMN1,ne); ArrayResize(g_atrH1em,nm);
@@ -256,7 +283,8 @@ void OnDeinit(const int reason){
 }
 
 datetime DayStart(datetime t){ MqlDateTime s; TimeToStruct(t,s); s.hour=0;s.min=0;s.sec=0; return StructToTime(s); }
-void ResetDay(datetime t){ g_curDay=DayStart(t); g_dayStartEq=AccountInfoDouble(ACCOUNT_EQUITY); g_dayBlocked=false; }
+void ResetDay(datetime t){ g_curDay=DayStart(t); g_dayStartEq=AccountInfoDouble(ACCOUNT_EQUITY); g_dayBlocked=false;
+   if(g_gvName!="" && g_initBal>0) GlobalVariableSet(g_gvName,g_initBal); }  // 4週失効対策の日次タッチ
 double AtrAt(int handle){ double a[1]; if(handle==INVALID_HANDLE||CopyBuffer(handle,0,1,1,a)<1) return 0.0; return a[0]; }
 
 double LotsFor(string sym, double priceMove, double riskMoney)
@@ -322,6 +350,42 @@ double OpenRiskPct()
    }
    return (g_initBal>0? 100.0*total/g_initBal : 0.0);
 }
+// ===== プッシュ通知(docs/112・Seasonal v1.40から逐語移植) =====
+void Notify(string s)
+{
+   if(!InpNotifyEnable) return;
+   if(g_ntfBuf!="") g_ntfBuf+=" | ";
+   g_ntfBuf+=s;
+}
+void FlushNotify()
+{
+   if(g_ntfBuf=="") return;
+   string msg="[PD] "+g_ntfBuf;
+   if(StringLen(msg)>250) msg=StringSubstr(msg,0,247)+"...";
+   if(!MQLInfoInteger(MQL_TESTER)){
+      if(!SendNotification(msg))
+         PrintFormat("[NOTIFY失敗 err=%d] %s (ツール→オプション→通知のMetaQuotes ID設定を確認)",GetLastError(),msg);
+   }
+   Print("[NOTIFY] ",msg);
+   g_ntfBuf="";
+}
+
+// ===== E5 手決済判定(docs/100 §5・Seasonal v1.20から逐語移植) =====
+bool ManualCloseE5ThisMonth(string sym)
+{
+   MqlDateTime t; TimeToStruct(TimeCurrent(),t);
+   if(!HistorySelect(SwapMonthStart(t.year,t.mon),TimeCurrent()+60)) return false;
+   for(int i=HistoryDealsTotal()-1;i>=0;i--){
+      ulong dt=HistoryDealGetTicket(i); if(dt==0) continue;
+      if((long)HistoryDealGetInteger(dt,DEAL_MAGIC)!=g_mE5) continue;
+      if(HistoryDealGetString(dt,DEAL_SYMBOL)!=sym) continue;
+      if((ENUM_DEAL_ENTRY)HistoryDealGetInteger(dt,DEAL_ENTRY)!=DEAL_ENTRY_OUT) continue;
+      long r=(long)HistoryDealGetInteger(dt,DEAL_REASON);
+      return (r==DEAL_REASON_CLIENT || r==DEAL_REASON_MOBILE || r==DEAL_REASON_WEB);
+   }
+   return false;
+}
+
 // ===== スワップ実測ログ(docs/100 §4) =====
 // E5等の持越しコスト実測→docs/98へ月次転記。CSV: MQL5/Files/ChienSwapLog_<口座>.csv
 string SleeveName(long magic)
@@ -403,6 +467,7 @@ void CloseAllMine(string why){
 //==================================================================
 void OnTimer()
 {
+   FlushNotify();   // 前タイマー分の未送信(早期return経路)を送出
    datetime now=TimeCurrent(); datetime utc=TimeGMT();
    if(DayStart(now)!=g_curDay) ResetDay(now);
    double equity=AccountInfoDouble(ACCOUNT_EQUITY);
@@ -425,7 +490,8 @@ void OnTimer()
    double floor=g_initBal*(1.0-g_maxLossPct/100.0);
    double guard=floor+g_initBal*g_floorBufPct/100.0;
    if(equity<=guard && !g_halted){ g_halted=true; CloseAllMine("EQUITY_FLOOR");
-      PrintFormat("[HALT] equity %.2f <= guard %.2f",equity,guard); }
+      PrintFormat("[HALT] equity %.2f <= guard %.2f",equity,guard);
+      Notify(StringFormat("FLOOR %.2f 全決済・恒久停止",equity)); FlushNotify(); }
    if(g_halted){ CloseAllMine("HALTED"); return; }
 
    // +7%利益ロック(docs/100): Arm=新規停止(既存+8%停止より手前) / Close=全決済し恒久ロック。
@@ -435,6 +501,18 @@ void OnTimer()
    if(InpProfitLockEnable && !g_passLocked && gainPct>=InpLockClosePct){
       g_passLocked=true; CloseAllMine("PROFIT_LOCK");
       PrintFormat("[PROFIT LOCK] equity %+.2f%% >= +%.2f%% → 全決済・恒久ロック(再開はEA再アタッチ)",gainPct,InpLockClosePct);
+      Notify(StringFormat("PASS_LOCK %+.2f%% 全決済(通過確定処理)",gainPct)); FlushNotify();
+   }
+   // 通知: 手決済参考値(+6%)とARM(+7%)。水準を離れたら再武装
+   if(InpProfitLockEnable && !g_passLocked){
+      bool armNow=(gainPct>=InpLockArmPct);
+      if(armNow && !g_ntfArm){ g_ntfArm=true;
+         Notify(StringFormat("ARM %+.2f%% 新規停止(手決済参考: +%.1f%%で全決済)",gainPct,InpLockClosePct)); }
+      else if(!armNow) g_ntfArm=false;
+      if(!g_ntfRef && InpNotifyRefPct>0 && gainPct>=InpNotifyRefPct){
+         g_ntfRef=true;
+         Notify(StringFormat("参考値到達 %+.2f%% (ARM=+%.1f%%/LOCK=+%.1f%%が自動処理)",gainPct,InpLockArmPct,InpLockClosePct));
+      }else if(g_ntfRef && gainPct<InpNotifyRefPct-0.5) g_ntfRef=false;
    }
    Comment(StringFormat("Chien_PD_Prop3 | gain %+.2f%% | open-risk %.2f%%(cap %.1f%% %s) | %s",gainPct,
           OpenRiskPct(),InpMaxOpenRiskPct,
@@ -447,8 +525,14 @@ void OnTimer()
 
    if(g_useDailyStop){
       double dpnl=equity-g_dayStartEq;
+      if(InpNotifyDayWarnPct>0 && g_ntfWarnDay!=g_curDay
+         && dpnl<=-g_initBal*InpNotifyDayWarnPct/100.0){
+         g_ntfWarnDay=g_curDay;
+         Notify(StringFormat("日次-%.1f%%警告(ガード-%.1f%%手前) eq=%.0f",InpNotifyDayWarnPct,g_dailyStopPct,equity)); FlushNotify();
+      }
       if(dpnl<=-g_initBal*g_dailyStopPct/100.0 && !g_dayBlocked){ g_dayBlocked=true;
-         PrintFormat("[DAILY STOP] %.2f",dpnl); }
+         PrintFormat("[DAILY STOP] %.2f",dpnl);
+         Notify(StringFormat("DAILY_STOP -%.1f%% 当日新規停止",g_dailyStopPct)); FlushNotify(); }
    }
 
    ManageV7Exit();
@@ -505,7 +589,8 @@ void EntriesV7(datetime utc)
       double sl=NormalizeDouble(ask-sd,dg);
       g_lastShotV7[key]=hourBar;
       if(trade.Buy(lots,sym,0.0,sl,0.0,StringFormat("v7_%s_h%d",sym,g_v7hours[slot])))
-         { if(InpVerboseLog) PrintFormat("[v7 ENTRY] LONG %s h%dUTC lots=%.2f SL=%.5f",sym,g_v7hours[slot],lots,sl); }
+         { if(InpVerboseLog) PrintFormat("[v7 ENTRY] LONG %s h%dUTC lots=%.2f SL=%.5f",sym,g_v7hours[slot],lots,sl);
+           if(InpNotifyEntries) Notify(StringFormat("IN v7 %s %.2f",sym,lots)); }
    }
 }
 
@@ -561,10 +646,14 @@ void EntriesV4()
       int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
       if(sig>0){ double e=SymbolInfoDouble(sym,SYMBOL_ASK);
          double sl=NormalizeDouble(e-sd,dg), tp=NormalizeDouble(e+tpd,dg);
-         if(trade.Buy(lots,sym,0.0,sl,tp,"v4_"+sym) && InpVerboseLog) PrintFormat("[v4 ENTRY] LONG %s lots=%.2f SL=%.5f TP=%.5f",sym,lots,sl,tp); }
+         if(trade.Buy(lots,sym,0.0,sl,tp,"v4_"+sym)){
+            if(InpVerboseLog) PrintFormat("[v4 ENTRY] LONG %s lots=%.2f SL=%.5f TP=%.5f",sym,lots,sl,tp);
+            if(InpNotifyEntries) Notify(StringFormat("IN v4 L %s %.2f",sym,lots)); } }
       else     { double e=SymbolInfoDouble(sym,SYMBOL_BID);
          double sl=NormalizeDouble(e+sd,dg), tp=NormalizeDouble(e-tpd,dg);
-         if(trade.Sell(lots,sym,0.0,sl,tp,"v4_"+sym) && InpVerboseLog) PrintFormat("[v4 ENTRY] SHORT %s lots=%.2f SL=%.5f TP=%.5f",sym,lots,sl,tp); }
+         if(trade.Sell(lots,sym,0.0,sl,tp,"v4_"+sym)){
+            if(InpVerboseLog) PrintFormat("[v4 ENTRY] SHORT %s lots=%.2f SL=%.5f TP=%.5f",sym,lots,sl,tp);
+            if(InpNotifyEntries) Notify(StringFormat("IN v4 S %s %.2f",sym,lots)); } }
    }
 }
 
@@ -650,7 +739,8 @@ void EntriesEMon(datetime utc)
       double sl=NormalizeDouble(ask-sd,dg);
       g_lastShotEM[key]=hourBar;
       if(trade.Buy(lots,sym,0.0,sl,0.0,StringFormat("EMon_%s_h%d",sym,g_emhours[slot])))
-         { if(InpVerboseLog) PrintFormat("[E-Mon ENTRY] LONG %s h%dUTC lots=%.2f SL=%.2f perShot=%.3f%%",sym,g_emhours[slot],lots,sl,perShot); }
+         { if(InpVerboseLog) PrintFormat("[E-Mon ENTRY] LONG %s h%dUTC lots=%.2f SL=%.2f perShot=%.3f%%",sym,g_emhours[slot],lots,sl,perShot);
+           if(InpNotifyEntries) Notify(StringFormat("IN EMon %s %.2f",sym,lots)); }
    }
 }
 
@@ -676,22 +766,30 @@ void EntriesE5()
       if(g_atrMN1[i]==INVALID_HANDLE) continue;
       string sym=g_e5[i];
       datetime mb=(datetime)iTime(sym,PERIOD_MN1,0);
-      if(mb==0 || mb==g_lastMonth[i]) continue;
-      g_lastMonth[i]=mb;
+      if(mb==0) continue;
+      bool firstBuild=(mb!=g_lastMonth[i]);
+      if(!firstBuild && !InpReenterManualClose) continue;
+      if(firstBuild) g_lastMonth[i]=mb;
       int sig=E5Signal(sym); int cur=DirOf(sym,g_mE5);
-      if(sig==0){ if(cur!=0) CloseSymMagic(sym,g_mE5,"E5_FLAT"); continue; }
+      if(sig==0){ if(cur!=0 && firstBuild) CloseSymMagic(sym,g_mE5,"E5_FLAT"); continue; }
       if(cur==sig) continue;
-      if(cur!=0) CloseSymMagic(sym,g_mE5,"E5_FLIP");
+      if(cur!=0){ if(!firstBuild) continue; CloseSymMagic(sym,g_mE5,"E5_FLIP"); }
+      if(!firstBuild && !ManualCloseE5ThisMonth(sym)) continue;   // 再建ては手決済後のみ(SL/EA決済は対象外)
       if(RiskGuardBlocked("E5")) continue;               // 決済(FLAT/FLIP)は抑制しない。新規レッグのみ
       double atr=AtrAt(g_atrMN1[i]); if(atr<=0) continue;
       double equity=AccountInfoDouble(ACCOUNT_EQUITY);
       double riskMoney=equity*(g_e5leg/100.0);
       double lots=LotsFor(sym,atr,riskMoney); if(lots<InpMinLot) continue;
       double sd=InpCatATR_E5*atr; int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
+      string tag=(firstBuild? "E5_" : "E5RE_")+sym;
       if(sig>0){ double e=SymbolInfoDouble(sym,SYMBOL_ASK); double sl=NormalizeDouble(e-sd,dg);
-         if(trade.Buy(lots,sym,0.0,sl,0.0,"E5_"+sym) && InpVerboseLog) PrintFormat("[E5 ENTRY] LONG %s lots=%.2f",sym,lots); }
+         if(trade.Buy(lots,sym,0.0,sl,0.0,tag)){
+            if(InpVerboseLog) PrintFormat("[E5 ENTRY%s] LONG %s lots=%.2f",(firstBuild?"":" 再建て"),sym,lots);
+            if(InpNotifyEntries) Notify(StringFormat("IN E5 L %s %.2f",sym,lots)); } }
       else     { double e=SymbolInfoDouble(sym,SYMBOL_BID); double sl=NormalizeDouble(e+sd,dg);
-         if(trade.Sell(lots,sym,0.0,sl,0.0,"E5_"+sym) && InpVerboseLog) PrintFormat("[E5 ENTRY] SHORT %s lots=%.2f",sym,lots); }
+         if(trade.Sell(lots,sym,0.0,sl,0.0,tag)){
+            if(InpVerboseLog) PrintFormat("[E5 ENTRY%s] SHORT %s lots=%.2f",(firstBuild?"":" 再建て"),sym,lots);
+            if(InpNotifyEntries) Notify(StringFormat("IN E5 S %s %.2f",sym,lots)); } }
    }
 }
 //+------------------------------------------------------------------+
