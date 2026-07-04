@@ -1,0 +1,67 @@
+{
+ "doc": "docs/110",
+ "px_range": [
+  "2006-01-01",
+  "2024-12-31"
+ ],
+ "vvix_anomalies_dropped": 6,
+ "cost_oneway": 0.00015,
+ "hold_stress": 0.03,
+ "results": [
+  {
+   "id": "H23a",
+   "n_days": 4165,
+   "on_days": 370,
+   "on_ratio": 0.089,
+   "gross_sum": -0.1338,
+   "net_sum": -0.1434,
+   "net_2xcost": -0.153,
+   "net_hold3": -0.1739,
+   "perm_p": 0.878,
+   "beta_take": 0.1313,
+   "excess_vs_beta": -0.2652,
+   "net_half1": -0.0711,
+   "net_half2": -0.0723,
+   "maxdd_lev1": -0.42,
+   "gates": {
+    "G_dir": false,
+    "G_p": false,
+    "G_p_bonf": false,
+    "G_split": false,
+    "G_cost": false,
+    "G_hold": false,
+    "G_beta": false,
+    "G_dd": false
+   },
+   "verdict": "REJECT"
+  },
+  {
+   "id": "H23b",
+   "n_days": 4270,
+   "on_days": 298,
+   "on_ratio": 0.07,
+   "gross_sum": -0.2158,
+   "net_sum": -0.2213,
+   "net_2xcost": -0.2269,
+   "net_hold3": -0.2458,
+   "perm_p": 0.7025,
+   "beta_take": -0.1067,
+   "excess_vs_beta": -0.1091,
+   "net_half1": 0.0,
+   "net_half2": -0.2213,
+   "maxdd_lev1": -0.2229,
+   "gates": {
+    "G_dir": false,
+    "G_p": false,
+    "G_p_bonf": false,
+    "G_split": false,
+    "G_cost": false,
+    "G_hold": false,
+    "G_beta": false,
+    "G_dd": false
+   },
+   "verdict": "REJECT"
+  }
+ ],
+ "input_sha256": "70d6d81cc79ca4eecde588e9d4f051631f6db6bf2bec911e43307ec47d5fc50c"
+}
