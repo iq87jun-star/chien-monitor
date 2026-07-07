@@ -1,0 +1,250 @@
+{
+ "prereg": "docs/119",
+ "window_daily": "2016-01..2025-12(固定窓CSV=docs/114と同一)",
+ "daily": {
+  "H24": {
+   "net_pct": 74.8,
+   "cagr": 5.79,
+   "sharpe": 0.81,
+   "maxDD": -14.86,
+   "calmar": 0.39,
+   "worst_week": -5.44,
+   "mult": 0.43,
+   "score": 0.0487,
+   "weeks": 516
+  },
+  "HNO": {
+   "net_pct": 36.7,
+   "cagr": 3.2,
+   "sharpe": 0.75,
+   "maxDD": -7.53,
+   "calmar": 0.42,
+   "worst_week": -2.51,
+   "mult": 0.85,
+   "score": 0.053,
+   "weeks": 516
+  },
+  "HDC_ref": {
+   "net_pct": 9.7,
+   "cagr": 0.94,
+   "sharpe": 0.21,
+   "maxDD": -18.79,
+   "calmar": 0.05,
+   "worst_week": -3.81,
+   "mult": 0.34,
+   "score": 0.007,
+   "weeks": 516
+  }
+ },
+ "ref_2026H1": {
+  "H24": 5.6,
+  "HNO": -2.62
+ },
+ "placebo_weekday_c2o": {
+  "月": {
+   "net_pct": 36.7,
+   "cagr": 3.2,
+   "sharpe": 0.75,
+   "maxDD": -7.53,
+   "calmar": 0.42,
+   "worst_week": -2.51,
+   "mult": 0.85,
+   "score": 0.053,
+   "weeks": 516
+  },
+  "火": {
+   "net_pct": 12.3,
+   "cagr": 1.17,
+   "sharpe": 0.32,
+   "maxDD": -8.52,
+   "calmar": 0.14,
+   "worst_week": -4.43,
+   "mult": 0.72,
+   "score": 0.0171,
+   "weeks": 520
+  },
+  "水": {
+   "net_pct": -11.2,
+   "cagr": -1.18,
+   "sharpe": -0.25,
+   "maxDD": -26.54,
+   "calmar": -0.04,
+   "worst_week": -5.53,
+   "mult": 0.24,
+   "score": -0.005,
+   "weeks": 518
+  },
+  "木": {
+   "net_pct": -9.5,
+   "cagr": -0.99,
+   "sharpe": -0.2,
+   "maxDD": -13.19,
+   "calmar": -0.08,
+   "worst_week": -4.81,
+   "mult": 0.49,
+   "score": -0.0084,
+   "weeks": 520
+  },
+  "金": {
+   "net_pct": -8.6,
+   "cagr": -0.91,
+   "sharpe": -0.13,
+   "maxDD": -25.53,
+   "calmar": -0.04,
+   "worst_week": -6.38,
+   "mult": 0.25,
+   "score": -0.0036,
+   "weeks": 508
+  }
+ },
+ "monday_rank": 1,
+ "jackknife": {
+  "2016": {
+   "H24": 0.0521,
+   "HNO": 0.0554,
+   "HNO_wins": true
+  },
+  "2017": {
+   "H24": 0.0509,
+   "HNO": 0.059,
+   "HNO_wins": true
+  },
+  "2018": {
+   "H24": 0.0929,
+   "HNO": 0.0596,
+   "HNO_wins": false
+  },
+  "2019": {
+   "H24": 0.052,
+   "HNO": 0.0544,
+   "HNO_wins": true
+  },
+  "2020": {
+   "H24": 0.0122,
+   "HNO": 0.0114,
+   "HNO_wins": false
+  },
+  "2021": {
+   "H24": 0.0506,
+   "HNO": 0.0563,
+   "HNO_wins": true
+  },
+  "2022": {
+   "H24": 0.0527,
+   "HNO": 0.0491,
+   "HNO_wins": false
+  },
+  "2023": {
+   "H24": 0.0501,
+   "HNO": 0.0964,
+   "HNO_wins": true
+  },
+  "2024": {
+   "H24": 0.0511,
+   "HNO": 0.0921,
+   "HNO_wins": true
+  },
+  "2025": {
+   "H24": 0.0454,
+   "HNO": 0.0583,
+   "HNO_wins": true
+  }
+ },
+ "jk_wins": 7,
+ "isoos": {
+  "IS": {
+   "H24": {
+    "net_pct": 48.3,
+    "cagr": 5.84,
+    "sharpe": 0.78,
+    "maxDD": -14.86,
+    "calmar": 0.39,
+    "worst_week": -5.44,
+    "mult": 0.43,
+    "score": 0.0494,
+    "weeks": 361
+   },
+   "HNO": {
+    "net_pct": 42.9,
+    "cagr": 5.28,
+    "sharpe": 1.11,
+    "maxDD": -3.94,
+    "calmar": 1.34,
+    "worst_week": -2.51,
+    "mult": 1.27,
+    "score": 0.1283,
+    "weeks": 361
+   }
+  },
+  "OOS": {
+   "H24": {
+    "net_pct": 17.8,
+    "cagr": 5.66,
+    "sharpe": 0.94,
+    "maxDD": -4.98,
+    "calmar": 1.14,
+    "worst_week": -2.06,
+    "mult": 1.29,
+    "score": 0.1411,
+    "weeks": 155
+   },
+   "HNO": {
+    "net_pct": -4.4,
+    "cagr": -1.49,
+    "sharpe": -0.46,
+    "maxDD": -7.53,
+    "calmar": -0.2,
+    "worst_week": -1.32,
+    "mult": 0.85,
+    "score": -0.0237,
+    "weeks": 155
+   }
+  }
+ },
+ "cost2x": {
+  "H24": {
+   "net_pct": 49.7,
+   "cagr": 4.15,
+   "sharpe": 0.6,
+   "maxDD": -16.11,
+   "calmar": 0.26,
+   "worst_week": -5.47,
+   "mult": 0.4,
+   "score": 0.0333,
+   "weeks": 516
+  },
+  "HNO": {
+   "net_pct": 17.1,
+   "cagr": 1.6,
+   "sharpe": 0.39,
+   "maxDD": -9.25,
+   "calmar": 0.17,
+   "worst_week": -2.54,
+   "mult": 0.69,
+   "score": 0.0223,
+   "weeks": 516
+  }
+ },
+ "h1_secondary": {
+  "window": "2024-07-09..2026-07-07",
+  "sha256": {
+   "NAS100": "c9b38ba4abaf34cf",
+   "US500": "428db4cf7380ba96",
+   "GER40": "4fb42d1439e26595"
+  },
+  "HNO": {
+   "net_pct": -2.5,
+   "weeks": 104,
+   "worst_week": -1.87
+  }
+ },
+ "checks": {
+  "score_110pct": false,
+  "net_80pct": false,
+  "monday_top1": true,
+  "jk_8of10": false,
+  "cost2x_rank": false,
+  "h1_positive": false
+ },
+ "decision": "H24維持(不合格: ['score_110pct', 'net_80pct', 'jk_8of10', 'cost2x_rank', 'h1_positive'])"
+}
