@@ -18,7 +18,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 os.environ.setdefault("RG_ALLOW_YAHOO", "0")
 
-from seasonal_optimize_loyo import fetch_all, sha256s, build_sleeves, month_stats, weights_for, LOYO_YEARS
+from seasonal_optimize_loyo import (fetch_all, sha256s, build_sleeves, month_stats, weights_for,
+                                    LOYO_YEARS, FIXED_R0)
 from portfolio_daily_compare import (load_daily, clip, mon_daily, cc_daily, e5_daily, v4_daily,
                                      composite_daily, calibrate, worst_stats, M3,
                                      YEN, V7X, EMON, EMONX)
@@ -107,8 +108,11 @@ def score_series(daily):
 
 
 # ---------- LOYO ----------
+PD = {m: dict(FIXED_R0) for m in range(1, 13)}   # PortfolioD: v4:30/v7:25/EMon:25/E5:20 通年固定(docs/76)
+
+
 def loyo_run(sleeves, df_monthly, baseline):
-    """baseline: 'R4'(主基準・フォールド毎に重み再学習) or 'M3'(固定テーブル)。
+    """baseline: 'R4'(フォールド毎に重み再学習) / 'M3'(固定テーブル) / 'PD'(通年固定・docs/114 §6)。
        返り値: {rule: dict(oos_daily, params_by_fold, trig)}"""
     res = {r: dict(parts=[], params={}, trig=[]) for r in ["T0", "T1", "T2", "T3"]}
     for y in LOYO_YEARS:
@@ -116,6 +120,8 @@ def loyo_run(sleeves, df_monthly, baseline):
         if baseline == "R4":
             mu, sd = month_stats(df_monthly, train)
             wmap = {m: weights_for("R4", mu.loc[m], sd.loc[m]) for m in range(1, 13)}
+        elif baseline == "PD":
+            wmap = PD
         else:
             wmap = M3
         comp = composite_daily(sleeves, wmap)
@@ -205,84 +211,84 @@ def main():
     sleeves = build_daily_sleeves(1.0)
     print("  日次:", {k: len(v) for k, v in sleeves.items()})
 
-    print("[3/6] LOYO OOS採点(主基準R4 / 参考M3)")
+    print("[3/6] LOYO OOS採点(主基準R4 / 参考M3 / PD=docs/114 §6追記)")
     results = {}
     oos_keep = {}
-    for base in ("R4", "M3"):
+    for base in ("R4", "M3", "PD"):
         r = loyo_run(sleeves, dfm, base)
         results[base] = {k: v["stats"] for k, v in r.items()}
         oos_keep[base] = {k: v["oos"] for k, v in r.items()}
         for k in ("T0", "T1", "T2", "T3"):
             print(f"  [{base}] {k}: {results[base][k]}")
 
-    print("[4/6] プラセボ(発動頻度マッチのランダム打ち切り×%d)" % PLACEBO_REPS)
-    cands = {k: v["stats"]["score_calib_mean"] for k, v in
-             {kk: dict(stats=results["R4"][kk]) for kk in ("T1", "T2", "T3")}.items()}
-    winner = max(cands, key=cands.get)
-    plc = placebo(oos_keep["R4"]["T0"], results["R4"][winner]["trigger_rate_pct"] / 100.0,
-                  results["R4"][winner]["score_calib_mean"], rng)
-    print(f"  winner候補 {winner}: {plc}")
-
-    print("[5/6] コスト2倍感応(LOYO再実行・パラメータ再選択込み)")
+    print("[4-6] プラセボ/コスト2倍/条件付き分布/2026H1参考/決定 — R4(主基準)とPD(§6追記)で実施")
     sleeves2 = build_daily_sleeves(2.0)
     dfm2 = build_sleeves(2.0)
     dfm2 = dfm2[(dfm2.index.year >= 2016) & (dfm2.index.year <= 2025)]
-    r2 = loyo_run(sleeves2, dfm2, "R4")
-    cost2 = {k: v["stats"] for k, v in r2.items()}
-    for k in ("T0", "T1", "T2", "T3"):
-        print(f"  cost2x [{k}] score {results['R4'][k]['score_calib_mean']} -> {cost2[k]['score_calib_mean']}")
+    judged = {}
+    for base in ("R4", "PD"):
+        cands = {k: results[base][k]["score_calib_mean"] for k in ("T1", "T2", "T3")}
+        winner = max(cands, key=cands.get)
+        plc = placebo(oos_keep[base]["T0"], results[base][winner]["trigger_rate_pct"] / 100.0,
+                      results[base][winner]["score_calib_mean"], rng)
+        print(f"  [{base}] placebo {winner}: {plc}")
+        r2 = loyo_run(sleeves2, dfm2, base)
+        cost2 = {k: v["stats"] for k, v in r2.items()}
+        for k in ("T0", "T1", "T2", "T3"):
+            print(f"  [{base}] cost2x {k}: {results[base][k]['score_calib_mean']} -> {cost2[k]['score_calib_mean']}")
+        cond = conditional_afterX(oos_keep[base]["T0"])
+        for k, v in cond.items():
+            print(f"  [{base}] {k}: {v}")
 
-    print("[6/6] 条件付き分布(+X%到達後の残月・T0/R4のOOS系列)")
-    cond = conditional_afterX(oos_keep["R4"]["T0"])
-    for k, v in cond.items():
-        print(f"  {k}: {v}")
+        # 参考: 2026H1(LOYO外)— 2016-2025訓練の重み+勝者パラメータを2026H1に適用
+        if base == "R4":
+            mu, sd = month_stats(dfm, LOYO_YEARS)
+            wmap26 = {m: weights_for("R4", mu.loc[m], sd.loc[m]) for m in range(1, 13)}
+        else:
+            wmap26 = PD
+        full = composite_daily(sleeves, wmap26)
+        comp26 = full[full.index.year == 2026]
+        fullTr = full[full.index.year <= 2025]
+        best26, bp26 = None, None
+        for p in GRIDS[winner]:
+            d, _ = apply_rule(fullTr, winner, p)
+            sc = score_series(d)
+            key = (sc["score_calib_mean"], sc["calmar"])
+            if best26 is None or key > best26:
+                best26, bp26 = key, p
+        d26, _ = apply_rule(comp26, winner, bp26)
+        ref26 = dict(T0=round(float(((1 + comp26).prod() - 1) * 100), 2),
+                     **{winner: round(float(((1 + d26).prod() - 1) * 100), 2)}, param=bp26)
+        print(f"  [{base}] 2026H1参考(1x・LOYO外):", ref26)
 
-    # 参考: 2026H1(LOYO外)— 2016-2025訓練のR4重み+勝者パラメータを2026H1に適用
-    mu, sd = month_stats(dfm, LOYO_YEARS)
-    wmap26 = {m: weights_for("R4", mu.loc[m], sd.loc[m]) for m in range(1, 13)}
-    comp26 = composite_daily(sleeves, wmap26)
-    comp26 = comp26[comp26.index.year == 2026]
-    best26, bp26 = None, None
-    full = composite_daily(sleeves, wmap26)
-    fullTr = full[full.index.year <= 2025]
-    for p in GRIDS[winner]:
-        d, _ = apply_rule(fullTr, winner, p)
-        sc = score_series(d)
-        key = (sc["score_calib_mean"], sc["calmar"])
-        if best26 is None or key > best26:
-            best26, bp26 = key, p
-    d26, _ = apply_rule(comp26, winner, bp26)
-    ref26 = dict(T0=round(float(((1 + comp26).prod() - 1) * 100), 2),
-                 **{winner: round(float(((1 + d26).prod() - 1) * 100), 2)}, param=bp26)
-    print("  2026H1参考(1x・LOYO外):", ref26)
+        # 決定規則(docs/114 §4)の機械適用 — 勝者候補のみ採用対象・基準毎に独立判定
+        t0 = results[base]["T0"]
+        c = results[base][winner]
+        checks = dict(
+            score_110pct=bool(c["score_calib_mean"] >= 1.1 * t0["score_calib_mean"]),
+            worst_month_not_worse=bool(c["worst_month_pct"] >= t0["worst_month_pct"]),
+            placebo_pass=bool(plc["p_value"] < 0.05),
+            cost2x_rank_kept=bool(cost2[winner]["score_calib_mean"] >= cost2["T0"]["score_calib_mean"]))
+        if all(checks.values()):
+            decision, why = winner, "決定規則(docs/114 §4)を全て満たす"
+        else:
+            decision, why = "T0(現行=途中利確なし)", f"不合格条件: {[k for k, v in checks.items() if not v]}"
+        print(f"  [{base}] 決定: {decision} | {why}")
+        judged[base] = dict(winner_candidate=winner, placebo=plc, cost2x=cost2,
+                            conditional_after_reach=cond, ref_2026H1_net_pct=ref26,
+                            checks=checks, adopted=decision, reason=why)
 
-    # 決定規則(docs/114 §4)の機械適用 — 主基準R4・勝者候補のみ採用対象
-    t0 = results["R4"]["T0"]
-    c = results["R4"][winner]
-    checks = dict(
-        score_110pct=bool(c["score_calib_mean"] >= 1.1 * t0["score_calib_mean"]),
-        worst_month_not_worse=bool(c["worst_month_pct"] >= t0["worst_month_pct"]),
-        placebo_pass=bool(plc["p_value"] < 0.05),
-        cost2x_rank_kept=bool(cost2[winner]["score_calib_mean"] >= cost2["T0"]["score_calib_mean"]))
-    if all(checks.values()):
-        decision, why = winner, "決定規則(docs/114 §4)を全て満たす"
-    else:
-        failed = [k for k, v in checks.items() if not v]
-        decision, why = "T0(現行=途中利確なし)", f"不合格条件: {failed}"
-
-    out = dict(prereg="docs/114", loyo_years=LOYO_YEARS, input_sha256=hashes,
+    out = dict(prereg="docs/114(+§6追記=PD)", loyo_years=LOYO_YEARS, input_sha256=hashes,
                grids=GRIDS, t2_arm=T2_ARM,
-               loyo_oos=dict(R4=results["R4"], M3=results["M3"]),
-               placebo=dict(rule=winner, **plc),
-               cost2x_R4=cost2,
-               conditional_after_reach=cond, ref_2026H1_net_pct=ref26,
-               decision=dict(winner_candidate=winner, checks=checks, adopted=decision, reason=why))
+               loyo_oos=dict(R4=results["R4"], M3=results["M3"], PD=results["PD"]),
+               judgement=judged)
     path = os.path.join(HERE, "results", "early_profittake_loyo.json")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(out, f, ensure_ascii=False, indent=1, default=str)
     print("保存:", path)
-    print("決定:", decision, "|", why)
+    for base in ("R4", "PD"):
+        print(f"決定[{base}]:", judged[base]["adopted"], "|", judged[base]["reason"])
 
 
 if __name__ == "__main__":

@@ -18,9 +18,9 @@
 //|     ※ライブ(資金化後)版は通過後に別途用意。                        |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.20"
+#property version   "1.30"
 #property strict
-#property description "Portfolio-D ONE-CLICK (PROP median-3 standard): v4+v7+E-Mon[RG3]+E5=30:25:25:20. Drop on chart & OK. v1.10 profit lock+risk guard+swap log / v1.20 push notify (Even G2)+persistent baseline+E5 re-enter (docs/112)."
+#property description "Portfolio-D ONE-CLICK (PROP median-3 standard): v4+v7+E-Mon[RG3]+E5=30:25:25:20. Drop on chart & OK. v1.10 profit lock+risk guard+swap log / v1.20 push notify (Even G2)+persistent baseline+E5 re-enter (docs/112) / v1.30 month-trail lock T2 (docs/116, default OFF)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -50,6 +50,17 @@ input double InpNotifyDayWarnPct = 3.0;   // 日次−この%で警告(ガード
 input group "=== 手決済後の再建て(docs/100 §5) ==="
 input bool   InpReenterManualClose = true; // E5(月保有)を手決済したら同月内に自動で建て直す
                                            // ※ガード/SLによる決済後は再建てしない
+
+input group "=== 月内トレーリング・ロック(docs/114-116 T2合格・PD限定・既定OFF) ==="
+// LOYO 10年OOSで合格(校正後期待月利+19.7%・プラセボp=0.01, docs/116)。ONの前にデモ並走必須。
+// 発動: 月初来equityのピークが ARM×k % 以上に達した後、ピークから GIVEBACK×k % 押したら
+//       全決済+当月新規停止(翌月月初に自動再開)。ARM/GIVEBACKは検証済みの研究1x単位=変更しない。
+// k(スケール)= 口座の月次PnLスケール ÷ 研究1x。docs/87式のガード校正口座≈1.1。
+//   サイズを上げた運用ではその倍率に比例して上げる(例: 研究1xの2倍で回すなら k=2.2)。
+input bool   InpMTrailEnable     = false; // 月内トレーリングを使う(デモ確認後にON)
+input double InpMTrailArm1x      = 1.0;   // アーム閾値(研究1x単位%・docs/116の検証値)
+input double InpMTrailGiveback1x = 1.5;   // 押し幅(研究1x単位%・docs/116の検証値)
+input double InpMTrailScale      = 1.1;   // k: 口座スケール(口座MTD% ≈ k×研究1x)
 
 input group "=== リスク配分（中央3ヶ月・標準=内蔵既定。通常は変更不要）==="
 input double InpWeeklyRiskPct    = 1.95;  // v7 週次リスク%
@@ -146,6 +157,12 @@ string   g_ntfBuf="";          // 通知バッファ(タイマー1回=1通に集
 bool     g_ntfRef=false, g_ntfArm=false;
 datetime g_ntfWarnDay=0;       // 日次警告は1日1回
 string   g_gvName="";          // 基準残高の端末保存キー
+// 月内トレーリング・ロック(docs/116 T2)の状態。端末GVで再アタッチ耐性(基準残高と同方式)
+int      g_mtMonKey=0;         // year*100+mon
+double   g_mtMonStartEq=0.0;   // 月初equity(MTD基準)
+double   g_mtPeakPct=0.0;      // 月内ピークMTD(口座%・対g_initBal)
+bool     g_mtBlocked=false;    // 発動済み=当月新規停止
+string   g_gvMT="";            // 状態保存キー接頭辞
 string   g_scenName="";
 long     g_mV7=0, g_mV4=0, g_mE5=0, g_mEMon=0;
 
@@ -231,6 +248,18 @@ int OnInit()
       PrintFormat("[基準残高] 新規記録: %.2f",g_initBal);
    }
 
+   // 月内トレーリング状態の復元(docs/116・基準残高と同方式。月が変わっていればOnTimerが取り直す)
+   g_gvMT=StringFormat("ChienPD_mtrail_%I64d_%I64d",
+                       AccountInfoInteger(ACCOUNT_LOGIN),InpMagicBase);
+   if(InpMTrailEnable && GlobalVariableCheck(g_gvMT+"_k")){
+      g_mtMonKey    =(int)GlobalVariableGet(g_gvMT+"_k");
+      g_mtMonStartEq=GlobalVariableGet(g_gvMT+"_eq");
+      g_mtPeakPct   =GlobalVariableGet(g_gvMT+"_pk");
+      g_mtBlocked   =(GlobalVariableGet(g_gvMT+"_bl")>0.5);
+      PrintFormat("[MONTH_TRAIL] 状態復元: key=%d startEq=%.2f peak=%+.2f%% blocked=%s",
+                  g_mtMonKey,g_mtMonStartEq,g_mtPeakPct,(g_mtBlocked?"Y":"N"));
+   }
+
    ArrayResize(g_atrH1,ny); ArrayResize(g_atrD1,nv); ArrayResize(g_rsiD1,nv);
    ArrayResize(g_atrMN1,ne); ArrayResize(g_atrH1em,nm);
    ArrayResize(g_lastShotV7,ny*nh7); ArrayInitialize(g_lastShotV7,0);
@@ -284,7 +313,8 @@ void OnDeinit(const int reason){
 
 datetime DayStart(datetime t){ MqlDateTime s; TimeToStruct(t,s); s.hour=0;s.min=0;s.sec=0; return StructToTime(s); }
 void ResetDay(datetime t){ g_curDay=DayStart(t); g_dayStartEq=AccountInfoDouble(ACCOUNT_EQUITY); g_dayBlocked=false;
-   if(g_gvName!="" && g_initBal>0) GlobalVariableSet(g_gvName,g_initBal); }  // 4週失効対策の日次タッチ
+   if(g_gvName!="" && g_initBal>0) GlobalVariableSet(g_gvName,g_initBal);    // 4週失効対策の日次タッチ
+   if(InpMTrailEnable && g_mtMonKey>0) MTrailSave(); }                        // MONTH_TRAIL状態も同様に日次タッチ
 double AtrAt(int handle){ double a[1]; if(handle==INVALID_HANDLE||CopyBuffer(handle,0,1,1,a)<1) return 0.0; return a[0]; }
 
 double LotsFor(string sym, double priceMove, double riskMoney)
@@ -457,6 +487,14 @@ bool RiskGuardBlocked(string ctx)
    }
    return (InpRiskGuardMode==RG_ENFORCE);
 }
+// ===== 月内トレーリング・ロック(docs/116 T2・LOYO合格)の状態保存 =====
+void MTrailSave(){
+   if(g_gvMT=="") return;
+   GlobalVariableSet(g_gvMT+"_k",(double)g_mtMonKey);
+   GlobalVariableSet(g_gvMT+"_eq",g_mtMonStartEq);
+   GlobalVariableSet(g_gvMT+"_pk",g_mtPeakPct);
+   GlobalVariableSet(g_gvMT+"_bl",(g_mtBlocked?1.0:0.0));
+}
 void CloseAllMine(string why){
    for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
       if(!posinfo.SelectByTicket(tk)) continue;
@@ -520,7 +558,8 @@ void OnTimer()
           (g_passLocked?"PASS_LOCK(全決済済)":
            (g_halted?"HALTED":
             (InpProfitLockEnable&&gainPct>=InpLockArmPct?"ARMED(新規停止)":
-             (g_dayBlocked?"DAY_BLOCKED":"active"))))));
+             (g_dayBlocked?"DAY_BLOCKED":
+              (InpMTrailEnable&&g_mtBlocked?"MONTH_TRAIL(当月停止)":"active")))))));
    if(g_passLocked){ CloseAllMine("PROFIT_LOCK"); return; }
 
    if(g_useDailyStop){
@@ -535,13 +574,40 @@ void OnTimer()
          Notify(StringFormat("DAILY_STOP -%.1f%% 当日新規停止",g_dailyStopPct)); FlushNotify(); }
    }
 
+   // 月内トレーリング・ロック(docs/114-116 T2・LOYO合格・既定OFF):
+   // 月初来ピーク≥ARM×k% 到達後、ピークから GIVEBACK×k% 押したら全決済+当月新規停止。
+   // フロア/PASS_LOCK/日次が先に評価される(上の早期return)=優先順は従来ガードが上。
+   if(InpMTrailEnable && g_initBal>0){
+      MqlDateTime mtt; TimeToStruct(now,mtt);
+      int mk=mtt.year*100+mtt.mon;
+      if(mk!=g_mtMonKey){
+         bool was=g_mtBlocked;
+         g_mtMonKey=mk; g_mtMonStartEq=equity; g_mtPeakPct=0.0; g_mtBlocked=false; MTrailSave();
+         if(was) Print("[MONTH_TRAIL] 月替わり→新規再開");
+      }
+      if(!g_mtBlocked){
+         double mtd=(equity-g_mtMonStartEq)/g_initBal*100.0;
+         if(mtd>g_mtPeakPct){ g_mtPeakPct=mtd; MTrailSave(); }
+         double armAcct=InpMTrailArm1x*InpMTrailScale;
+         double gbAcct =InpMTrailGiveback1x*InpMTrailScale;
+         if(g_mtPeakPct>=armAcct && mtd<=g_mtPeakPct-gbAcct){
+            g_mtBlocked=true; MTrailSave();
+            CloseAllMine("MONTH_TRAIL");
+            PrintFormat("[MONTH_TRAIL] MTD %+.2f%% (peak %+.2f%% / arm %.2f%% / 押し %.2f%%) → 全決済・当月新規停止(翌月自動再開)",
+                        mtd,g_mtPeakPct,armAcct,gbAcct);
+            Notify(StringFormat("MONTH_TRAIL %+.2f%%(peak %+.2f%%) 全決済・当月停止",mtd,g_mtPeakPct)); FlushNotify();
+         }
+      }
+   }
+
    ManageV7Exit();
    ManageV4Exit();
    ManageEMonExit();
    ManageE5();
 
    bool blockNew = (g_useProfitStop && equity>=g_initBal*(1.0+g_profitPct/100.0)) || g_dayBlocked
-                   || (InpProfitLockEnable && gainPct>=InpLockArmPct);
+                   || (InpProfitLockEnable && gainPct>=InpLockArmPct)
+                   || (InpMTrailEnable && g_mtBlocked);
    if(blockNew) return;
 
    EntriesV7(utc);

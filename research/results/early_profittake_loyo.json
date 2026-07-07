@@ -1,5 +1,5 @@
 {
- "prereg": "docs/114",
+ "prereg": "docs/114(+§6追記=PD)",
  "loyo_years": [
   2016,
   2017,
@@ -236,156 +236,398 @@
      "2025": 15
     }
    }
-  }
- },
- "placebo": {
-  "rule": "T1",
-  "real": 0.465,
-  "placebo_mean": 0.44,
-  "placebo_p95": 0.5,
-  "p_value": 0.245,
-  "verdict": "ランダム打ち切りと区別できない"
- },
- "cost2x_R4": {
-  "T0": {
-   "score_calib_mean": 0.192,
-   "mult": 0.24,
-   "mean_month_pct": 0.798,
-   "sharpe": 1.07,
-   "maxDD": -13.65,
-   "calmar": 0.7,
-   "worst_month_pct": -7.17,
-   "worst_day_pct": -6.72,
-   "worst_intramonth_DD": -22.66,
-   "months": 120
   },
-  "T1": {
-   "score_calib_mean": 0.201,
-   "mult": 0.24,
-   "mean_month_pct": 0.839,
-   "sharpe": 1.268,
-   "maxDD": -13.4,
-   "calmar": 0.76,
-   "worst_month_pct": -7.17,
-   "worst_day_pct": -6.72,
-   "worst_intramonth_DD": -22.66,
-   "months": 120,
-   "trigger_rate_pct": 32.5,
-   "mean_trigger_day": 10.8,
-   "params_by_fold": {
-    "2016": 3.0,
-    "2017": 3.0,
-    "2018": 3.0,
-    "2019": 3.0,
-    "2020": 3.0,
-    "2021": 1.0,
-    "2022": 3.0,
-    "2023": 3.0,
-    "2024": 1.5,
-    "2025": 3.0
-   }
-  },
-  "T2": {
-   "score_calib_mean": 0.344,
-   "mult": 0.48,
-   "mean_month_pct": 0.717,
-   "sharpe": 1.176,
-   "maxDD": -8.99,
-   "calmar": 0.96,
-   "worst_month_pct": -7.17,
-   "worst_day_pct": -5.16,
-   "worst_intramonth_DD": -12.77,
-   "months": 120,
-   "trigger_rate_pct": 26.7,
-   "mean_trigger_day": 13.1,
-   "params_by_fold": {
-    "2016": 1.5,
-    "2017": 1.5,
-    "2018": 1.5,
-    "2019": 1.5,
-    "2020": 1.0,
-    "2021": 1.5,
-    "2022": 1.5,
-    "2023": 1.5,
-    "2024": 1.5,
-    "2025": 1.5
-   }
-  },
-  "T3": {
-   "score_calib_mean": 0.122,
-   "mult": 0.24,
-   "mean_month_pct": 0.51,
-   "sharpe": 0.589,
-   "maxDD": -21.09,
-   "calmar": 0.27,
-   "worst_month_pct": -21.09,
-   "worst_day_pct": -6.72,
-   "worst_intramonth_DD": -22.49,
-   "months": 120,
-   "trigger_rate_pct": 100.0,
-   "mean_trigger_day": 13.5,
-   "params_by_fold": {
-    "2016": 15,
-    "2017": 15,
-    "2018": 15,
-    "2019": 15,
-    "2020": 15,
-    "2021": 10,
-    "2022": 10,
-    "2023": 15,
-    "2024": 10,
-    "2025": 15
+  "PD": {
+   "T0": {
+    "score_calib_mean": 0.35,
+    "mult": 0.88,
+    "mean_month_pct": 0.398,
+    "sharpe": 1.042,
+    "maxDD": -5.54,
+    "calmar": 0.86,
+    "worst_month_pct": -3.82,
+    "worst_day_pct": -2.7,
+    "worst_intramonth_DD": -7.28,
+    "months": 120
+   },
+   "T1": {
+    "score_calib_mean": 0.311,
+    "mult": 0.88,
+    "mean_month_pct": 0.354,
+    "sharpe": 1.063,
+    "maxDD": -4.01,
+    "calmar": 1.06,
+    "worst_month_pct": -3.82,
+    "worst_day_pct": -2.57,
+    "worst_intramonth_DD": -7.28,
+    "months": 120,
+    "trigger_rate_pct": 41.7,
+    "mean_trigger_day": 10.5,
+    "params_by_fold": {
+     "2016": 1.0,
+     "2017": 1.0,
+     "2018": 1.0,
+     "2019": 1.0,
+     "2020": 2.0,
+     "2021": 1.0,
+     "2022": 1.0,
+     "2023": 1.0,
+     "2024": 1.0,
+     "2025": 1.0
+    }
+   },
+   "T2": {
+    "score_calib_mean": 0.419,
+    "mult": 1.16,
+    "mean_month_pct": 0.361,
+    "sharpe": 0.989,
+    "maxDD": -4.51,
+    "calmar": 0.96,
+    "worst_month_pct": -3.82,
+    "worst_day_pct": -2.7,
+    "worst_intramonth_DD": -3.78,
+    "months": 120,
+    "trigger_rate_pct": 9.2,
+    "mean_trigger_day": 14.3,
+    "params_by_fold": {
+     "2016": 1.5,
+     "2017": 1.5,
+     "2018": 1.5,
+     "2019": 1.5,
+     "2020": 1.5,
+     "2021": 1.5,
+     "2022": 1.0,
+     "2023": 1.5,
+     "2024": 1.5,
+     "2025": 1.5
+    }
+   },
+   "T3": {
+    "score_calib_mean": 0.3,
+    "mult": 0.88,
+    "mean_month_pct": 0.341,
+    "sharpe": 0.943,
+    "maxDD": -5.96,
+    "calmar": 0.68,
+    "worst_month_pct": -5.96,
+    "worst_day_pct": -2.7,
+    "worst_intramonth_DD": -7.28,
+    "months": 120,
+    "trigger_rate_pct": 100.0,
+    "mean_trigger_day": 15.0,
+    "params_by_fold": {
+     "2016": 15,
+     "2017": 15,
+     "2018": 15,
+     "2019": 15,
+     "2020": 15,
+     "2021": 15,
+     "2022": 15,
+     "2023": 15,
+     "2024": 15,
+     "2025": 15
+    }
    }
   }
  },
- "conditional_after_reach": {
-  "+1.0%": {
-   "n_months": 73,
-   "mean": 0.48,
-   "median": 0.27,
-   "p25": -0.39,
-   "p75": 1.25,
-   "pct_negative": 40.0
+ "judgement": {
+  "R4": {
+   "winner_candidate": "T1",
+   "placebo": {
+    "real": 0.465,
+    "placebo_mean": 0.44,
+    "placebo_p95": 0.5,
+    "p_value": 0.245,
+    "verdict": "ランダム打ち切りと区別できない"
+   },
+   "cost2x": {
+    "T0": {
+     "score_calib_mean": 0.192,
+     "mult": 0.24,
+     "mean_month_pct": 0.798,
+     "sharpe": 1.07,
+     "maxDD": -13.65,
+     "calmar": 0.7,
+     "worst_month_pct": -7.17,
+     "worst_day_pct": -6.72,
+     "worst_intramonth_DD": -22.66,
+     "months": 120
+    },
+    "T1": {
+     "score_calib_mean": 0.201,
+     "mult": 0.24,
+     "mean_month_pct": 0.839,
+     "sharpe": 1.268,
+     "maxDD": -13.4,
+     "calmar": 0.76,
+     "worst_month_pct": -7.17,
+     "worst_day_pct": -6.72,
+     "worst_intramonth_DD": -22.66,
+     "months": 120,
+     "trigger_rate_pct": 32.5,
+     "mean_trigger_day": 10.8,
+     "params_by_fold": {
+      "2016": 3.0,
+      "2017": 3.0,
+      "2018": 3.0,
+      "2019": 3.0,
+      "2020": 3.0,
+      "2021": 1.0,
+      "2022": 3.0,
+      "2023": 3.0,
+      "2024": 1.5,
+      "2025": 3.0
+     }
+    },
+    "T2": {
+     "score_calib_mean": 0.344,
+     "mult": 0.48,
+     "mean_month_pct": 0.717,
+     "sharpe": 1.176,
+     "maxDD": -8.99,
+     "calmar": 0.96,
+     "worst_month_pct": -7.17,
+     "worst_day_pct": -5.16,
+     "worst_intramonth_DD": -12.77,
+     "months": 120,
+     "trigger_rate_pct": 26.7,
+     "mean_trigger_day": 13.1,
+     "params_by_fold": {
+      "2016": 1.5,
+      "2017": 1.5,
+      "2018": 1.5,
+      "2019": 1.5,
+      "2020": 1.0,
+      "2021": 1.5,
+      "2022": 1.5,
+      "2023": 1.5,
+      "2024": 1.5,
+      "2025": 1.5
+     }
+    },
+    "T3": {
+     "score_calib_mean": 0.122,
+     "mult": 0.24,
+     "mean_month_pct": 0.51,
+     "sharpe": 0.589,
+     "maxDD": -21.09,
+     "calmar": 0.27,
+     "worst_month_pct": -21.09,
+     "worst_day_pct": -6.72,
+     "worst_intramonth_DD": -22.49,
+     "months": 120,
+     "trigger_rate_pct": 100.0,
+     "mean_trigger_day": 13.5,
+     "params_by_fold": {
+      "2016": 15,
+      "2017": 15,
+      "2018": 15,
+      "2019": 15,
+      "2020": 15,
+      "2021": 10,
+      "2022": 10,
+      "2023": 15,
+      "2024": 10,
+      "2025": 15
+     }
+    }
+   },
+   "conditional_after_reach": {
+    "+1.0%": {
+     "n_months": 73,
+     "mean": 0.48,
+     "median": 0.27,
+     "p25": -0.39,
+     "p75": 1.25,
+     "pct_negative": 40.0
+    },
+    "+1.5%": {
+     "n_months": 59,
+     "mean": 0.3,
+     "median": 0.0,
+     "p25": -0.71,
+     "p75": 1.07,
+     "pct_negative": 46.0
+    },
+    "+2.0%": {
+     "n_months": 43,
+     "mean": 0.23,
+     "median": 0.09,
+     "p25": -0.53,
+     "p75": 0.95,
+     "pct_negative": 44.0
+    },
+    "+3.0%": {
+     "n_months": 25,
+     "mean": 0.04,
+     "median": -0.16,
+     "p25": -0.46,
+     "p75": 0.9,
+     "pct_negative": 56.0
+    }
+   },
+   "ref_2026H1_net_pct": {
+    "T0": 13.19,
+    "T1": 11.6,
+    "param": 1.5
+   },
+   "checks": {
+    "score_110pct": false,
+    "worst_month_not_worse": true,
+    "placebo_pass": false,
+    "cost2x_rank_kept": true
+   },
+   "adopted": "T0(現行=途中利確なし)",
+   "reason": "不合格条件: ['score_110pct', 'placebo_pass']"
   },
-  "+1.5%": {
-   "n_months": 59,
-   "mean": 0.3,
-   "median": 0.0,
-   "p25": -0.71,
-   "p75": 1.07,
-   "pct_negative": 46.0
-  },
-  "+2.0%": {
-   "n_months": 43,
-   "mean": 0.23,
-   "median": 0.09,
-   "p25": -0.53,
-   "p75": 0.95,
-   "pct_negative": 44.0
-  },
-  "+3.0%": {
-   "n_months": 25,
-   "mean": 0.04,
-   "median": -0.16,
-   "p25": -0.46,
-   "p75": 0.9,
-   "pct_negative": 56.0
+  "PD": {
+   "winner_candidate": "T2",
+   "placebo": {
+    "real": 0.419,
+    "placebo_mean": 0.347,
+    "placebo_p95": 0.383,
+    "p_value": 0.01,
+    "verdict": "利益条件に固有価値あり"
+   },
+   "cost2x": {
+    "T0": {
+     "score_calib_mean": 0.275,
+     "mult": 0.84,
+     "mean_month_pct": 0.327,
+     "sharpe": 0.858,
+     "maxDD": -5.95,
+     "calmar": 0.65,
+     "worst_month_pct": -3.89,
+     "worst_day_pct": -2.7,
+     "worst_intramonth_DD": -7.3,
+     "months": 120
+    },
+    "T1": {
+     "score_calib_mean": 0.259,
+     "mult": 0.84,
+     "mean_month_pct": 0.308,
+     "sharpe": 0.91,
+     "maxDD": -4.29,
+     "calmar": 0.86,
+     "worst_month_pct": -3.89,
+     "worst_day_pct": -2.58,
+     "worst_intramonth_DD": -7.3,
+     "months": 120,
+     "trigger_rate_pct": 40.0,
+     "mean_trigger_day": 11.2,
+     "params_by_fold": {
+      "2016": 1.0,
+      "2017": 1.0,
+      "2018": 1.0,
+      "2019": 1.0,
+      "2020": 2.0,
+      "2021": 1.0,
+      "2022": 1.0,
+      "2023": 1.0,
+      "2024": 1.0,
+      "2025": 1.0
+     }
+    },
+    "T2": {
+     "score_calib_mean": 0.338,
+     "mult": 1.16,
+     "mean_month_pct": 0.292,
+     "sharpe": 0.799,
+     "maxDD": -4.91,
+     "calmar": 0.7,
+     "worst_month_pct": -3.89,
+     "worst_day_pct": -2.7,
+     "worst_intramonth_DD": -3.84,
+     "months": 120,
+     "trigger_rate_pct": 9.2,
+     "mean_trigger_day": 14.3,
+     "params_by_fold": {
+      "2016": 1.5,
+      "2017": 1.5,
+      "2018": 1.5,
+      "2019": 1.5,
+      "2020": 1.5,
+      "2021": 1.5,
+      "2022": 1.0,
+      "2023": 1.5,
+      "2024": 1.5,
+      "2025": 1.5
+     }
+    },
+    "T3": {
+     "score_calib_mean": 0.211,
+     "mult": 0.84,
+     "mean_month_pct": 0.251,
+     "sharpe": 0.717,
+     "maxDD": -6.01,
+     "calmar": 0.49,
+     "worst_month_pct": -6.01,
+     "worst_day_pct": -2.7,
+     "worst_intramonth_DD": -7.3,
+     "months": 120,
+     "trigger_rate_pct": 100.0,
+     "mean_trigger_day": 14.5,
+     "params_by_fold": {
+      "2016": 15,
+      "2017": 15,
+      "2018": 15,
+      "2019": 15,
+      "2020": 15,
+      "2021": 15,
+      "2022": 10,
+      "2023": 15,
+      "2024": 15,
+      "2025": 15
+     }
+    }
+   },
+   "conditional_after_reach": {
+    "+1.0%": {
+     "n_months": 53,
+     "mean": 0.06,
+     "median": 0.12,
+     "p25": -0.28,
+     "p75": 0.49,
+     "pct_negative": 43.0
+    },
+    "+1.5%": {
+     "n_months": 36,
+     "mean": 0.0,
+     "median": 0.0,
+     "p25": -0.27,
+     "p75": 0.47,
+     "pct_negative": 47.0
+    },
+    "+2.0%": {
+     "n_months": 21,
+     "mean": -0.05,
+     "median": -0.01,
+     "p25": -0.5,
+     "p75": 0.26,
+     "pct_negative": 52.0
+    },
+    "+3.0%": {
+     "n_months": 4,
+     "mean": 0.05,
+     "median": 0.11,
+     "p25": -0.07,
+     "p75": 0.22,
+     "pct_negative": 25.0
+    }
+   },
+   "ref_2026H1_net_pct": {
+    "T0": 1.95,
+    "T2": 1.95,
+    "param": 1.5
+   },
+   "checks": {
+    "score_110pct": true,
+    "worst_month_not_worse": true,
+    "placebo_pass": true,
+    "cost2x_rank_kept": true
+   },
+   "adopted": "T2",
+   "reason": "決定規則(docs/114 §4)を全て満たす"
   }
- },
- "ref_2026H1_net_pct": {
-  "T0": 13.19,
-  "T1": 11.6,
-  "param": 1.5
- },
- "decision": {
-  "winner_candidate": "T1",
-  "checks": {
-   "score_110pct": false,
-   "worst_month_not_worse": true,
-   "placebo_pass": false,
-   "cost2x_rank_kept": true
-  },
-  "adopted": "T0(現行=途中利確なし)",
-  "reason": "不合格条件: ['score_110pct', 'placebo_pass']"
  }
 }
