@@ -1,0 +1,274 @@
+{
+ "prereg": "docs/117",
+ "window_daily": "2016-01..2025-12(固定窓CSV=docs/114と同一)",
+ "fin_scenarios_bps_per_night": {
+  "F0": 0.0,
+  "F2": 2.5999999999999996,
+  "F4": 4.0
+ },
+ "daily": {
+  "H24": {
+   "F0": {
+    "net_pct": 74.8,
+    "cagr": 5.79,
+    "sharpe": 0.81,
+    "maxDD": -14.86,
+    "calmar": 0.39,
+    "worst_week": -5.44,
+    "mult": 0.43,
+    "score": 0.0487,
+    "weeks": 516
+   },
+   "F2": {
+    "net_pct": 52.8,
+    "cagr": 4.37,
+    "sharpe": 0.63,
+    "maxDD": -15.94,
+    "calmar": 0.27,
+    "worst_week": -5.47,
+    "mult": 0.4,
+    "score": 0.0349,
+    "weeks": 516
+   },
+   "F4": {
+    "net_pct": 42.2,
+    "cagr": 3.61,
+    "sharpe": 0.53,
+    "maxDD": -16.52,
+    "calmar": 0.22,
+    "worst_week": -5.48,
+    "mult": 0.39,
+    "score": 0.0286,
+    "weeks": 516
+   }
+  },
+  "HDC": {
+   "F0": {
+    "net_pct": 9.7,
+    "cagr": 0.94,
+    "sharpe": 0.21,
+    "maxDD": -18.79,
+    "calmar": 0.05,
+    "worst_week": -3.81,
+    "mult": 0.34,
+    "score": 0.007,
+    "weeks": 516
+   },
+   "F2": {
+    "net_pct": 9.7,
+    "cagr": 0.94,
+    "sharpe": 0.21,
+    "maxDD": -18.79,
+    "calmar": 0.05,
+    "worst_week": -3.81,
+    "mult": 0.34,
+    "score": 0.007,
+    "weeks": 516
+   },
+   "F4": {
+    "net_pct": 9.7,
+    "cagr": 0.94,
+    "sharpe": 0.21,
+    "maxDD": -18.79,
+    "calmar": 0.05,
+    "worst_week": -3.81,
+    "mult": 0.34,
+    "score": 0.007,
+    "weeks": 516
+   }
+  }
+ },
+ "ref_2026H1": {
+  "H24": 5.6,
+  "HDC": 7.44
+ },
+ "robustness": {
+  "F0": {
+   "IS": {
+    "H24": {
+     "net_pct": 48.3,
+     "cagr": 5.84,
+     "sharpe": 0.78,
+     "maxDD": -14.86,
+     "calmar": 0.39,
+     "worst_week": -5.44,
+     "mult": 0.43,
+     "score": 0.0494,
+     "weeks": 361
+    },
+    "HDC": {
+     "net_pct": -6.8,
+     "cagr": -1.01,
+     "sharpe": -0.16,
+     "maxDD": -18.79,
+     "calmar": -0.05,
+     "worst_week": -3.81,
+     "mult": 0.34,
+     "score": -0.0056,
+     "weeks": 361
+    }
+   },
+   "OOS": {
+    "H24": {
+     "net_pct": 17.8,
+     "cagr": 5.66,
+     "sharpe": 0.94,
+     "maxDD": -4.98,
+     "calmar": 1.14,
+     "worst_week": -2.06,
+     "mult": 1.29,
+     "score": 0.1411,
+     "weeks": 155
+    },
+    "HDC": {
+     "net_pct": 17.7,
+     "cagr": 5.61,
+     "sharpe": 1.32,
+     "maxDD": -3.86,
+     "calmar": 1.45,
+     "worst_week": -2.04,
+     "mult": 1.57,
+     "score": 0.1674,
+     "weeks": 155
+    }
+   }
+  },
+  "F2": {
+   "IS": {
+    "H24": {
+     "net_pct": 35.0,
+     "cagr": 4.42,
+     "sharpe": 0.6,
+     "maxDD": -15.94,
+     "calmar": 0.28,
+     "worst_week": -5.47,
+     "mult": 0.4,
+     "score": 0.0356,
+     "weeks": 361
+    },
+    "HDC": {
+     "net_pct": -6.8,
+     "cagr": -1.01,
+     "sharpe": -0.16,
+     "maxDD": -18.79,
+     "calmar": -0.05,
+     "worst_week": -3.81,
+     "mult": 0.34,
+     "score": -0.0056,
+     "weeks": 361
+    }
+   },
+   "OOS": {
+    "H24": {
+     "net_pct": 13.2,
+     "cagr": 4.24,
+     "sharpe": 0.72,
+     "maxDD": -5.05,
+     "calmar": 0.84,
+     "worst_week": -2.09,
+     "mult": 1.27,
+     "score": 0.1059,
+     "weeks": 155
+    },
+    "HDC": {
+     "net_pct": 17.7,
+     "cagr": 5.61,
+     "sharpe": 1.32,
+     "maxDD": -3.86,
+     "calmar": 1.45,
+     "worst_week": -2.04,
+     "mult": 1.57,
+     "score": 0.1674,
+     "weeks": 155
+    }
+   }
+  }
+ },
+ "jackknife_excl_year": {
+  "2016": {
+   "F0": -44.53,
+   "F2": -32.44
+  },
+  "2017": {
+   "F0": -46.47,
+   "F2": -34.38
+  },
+  "2018": {
+   "F0": -46.62,
+   "F2": -34.56
+  },
+  "2019": {
+   "F0": -43.83,
+   "F2": -31.77
+  },
+  "2020": {
+   "F0": -20.26,
+   "F2": -8.19
+  },
+  "2021": {
+   "F0": -44.87,
+   "F2": -32.81
+  },
+  "2022": {
+   "F0": -41.05,
+   "F2": -28.96
+  },
+  "2023": {
+   "F0": -49.49,
+   "F2": -37.4
+  },
+  "2024": {
+   "F0": -47.8,
+   "F2": -35.73
+  },
+  "2025": {
+   "F0": -45.89,
+   "F2": -33.83
+  }
+ },
+ "cost2x_F0": {
+  "H24": {
+   "net_pct": 49.7,
+   "cagr": 4.15,
+   "sharpe": 0.6,
+   "maxDD": -16.11,
+   "calmar": 0.26,
+   "worst_week": -5.47,
+   "mult": 0.4,
+   "score": 0.0333,
+   "weeks": 516
+  },
+  "HDC": {
+   "net_pct": -6.0,
+   "cagr": -0.63,
+   "sharpe": -0.1,
+   "maxDD": -22.08,
+   "calmar": -0.03,
+   "worst_week": -3.84,
+   "mult": 0.29,
+   "score": -0.0028,
+   "weeks": 516
+  }
+ },
+ "h1_secondary": {
+  "window": "2024-07-09..2026-07-07",
+  "sha256": {
+   "NAS100": "24dac8a28547e159",
+   "US500": "296e40544b818476",
+   "GER40": "4d15561609f9690e"
+  },
+  "res": {
+   "H24": {
+    "net_pct": 11.25,
+    "weeks": 103,
+    "worst_week": -2.12
+   },
+   "HDC": {
+    "net_pct": 12.88,
+    "weeks": 103,
+    "worst_week": -1.56
+   }
+  }
+ },
+ "decision": "H24維持(現行24h)"
+}
