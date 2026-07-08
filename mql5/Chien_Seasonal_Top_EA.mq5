@@ -22,7 +22,7 @@
 //|     機構確認(docs/86 H14c/d)のみでEA実績ゼロ。必ずデモから。        |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.50"
+#property version   "1.60"
 #property strict
 #property description "Seasonal top-ranked mini-portfolios. Forward-validation EA, demo-first. v1.40 push notify (Even G2) + persistent baseline / v1.50 sleeve profit-width notify vs history (docs/112)."
 
@@ -132,6 +132,7 @@ int      g_e5MonthKey = -1, g_sjulMonthKey = -1, g_monWeekKey[64];
 string g_v4[16], g_e5[8], g_emon[8], g_emonx[8], g_v7x[8], g_sjul[8], g_v7[8];
 int    g_nv4=0, g_ne5=0, g_nemon=0, g_nemonx=0, g_nv7x=0, g_nsjul=0, g_nv7=0;
 int    g_curMonth=-1;   // 通年シナリオの月替わり検出
+bool   g_rollPending=false; // 月替わり全決済の完了待ちフラグ(v1.60: 週末月替わりの迷子建玉対策)
 
 // 通年(YEARROUND_05): 月利0.5%以上を平均比例配分(docs/87 §通年・2016-2025選抜)
 // index=月(1-12)。合計1.0/月。
@@ -337,6 +338,16 @@ void CloseAllMine(string why)      // ガード用: G3含む全スリーブ
 void CloseAllMonthly(string why)   // 月ゲート用: G3(イベント建玉)は対象外
 {
    for(int sl=SL_V4; sl<=SL_V7; sl++) CloseSleeve(sl,why);
+}
+
+int MonthlyOpenCount()   // 月ゲート対象(G3除く)の残建玉数: 休場中のMONTH_ROLL再試行判定に使う
+{
+   int n=0;
+   for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      long m=posinfo.Magic();
+      if(m>=InpMagicBase+SL_V4 && m<=InpMagicBase+SL_V7) n++; }
+   return n;
 }
 
 // ===== Max Risk 3%ガード(docs/100 §2) =====
@@ -874,7 +885,12 @@ void OnTimer()
 
    // 通年シナリオ: 月替わりで全決済→当月の構成へ自動切替(挿しっぱなしで12ヶ月回る)
    if(InpScenario==SCN_YEARROUND_05 || InpScenario==SCN_YEARROUND_M3){
-      if(t.mon!=g_curMonth){ CloseAllMonthly("MONTH_ROLL"); g_curMonth=t.mon; }
+      if(t.mon!=g_curMonth){ g_rollPending=true; g_curMonth=t.mon; }
+      if(g_rollPending){                       // 休場中(土曜の月替わり等)は決済失敗→完了まで毎タイマー再試行
+         CloseAllMonthly("MONTH_ROLL");
+         if(MonthlyOpenCount()>0) return;      // 全決済が終わるまで新しい月の構成へ進まない
+         g_rollPending=false;
+      }
       int m=t.mon;
       if(WY_V4[m]>0.0)    SleeveV4(WY_V4[m]);
       if(WY_E5[m]>0.0)    SleeveE5(WY_E5[m]);
@@ -887,7 +903,12 @@ void OnTimer()
    }
    // 通年シナリオ(R4: リスク調整比例, docs/110)
    if(InpScenario==SCN_YEARROUND_R4){
-      if(t.mon!=g_curMonth){ CloseAllMonthly("MONTH_ROLL"); g_curMonth=t.mon; }
+      if(t.mon!=g_curMonth){ g_rollPending=true; g_curMonth=t.mon; }
+      if(g_rollPending){                       // 休場中(土曜の月替わり等)は決済失敗→完了まで毎タイマー再試行
+         CloseAllMonthly("MONTH_ROLL");
+         if(MonthlyOpenCount()>0) return;      // 全決済が終わるまで新しい月の構成へ進まない
+         g_rollPending=false;
+      }
       int m=t.mon;
       if(WR4_V4[m]>0.0)    SleeveV4(WR4_V4[m]);
       if(WR4_E5[m]>0.0)    SleeveE5(WR4_E5[m]);
