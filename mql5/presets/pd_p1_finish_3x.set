@@ -1,0 +1,31 @@
+; 【FN 100k・P1残り消化用(3x)】Chien_PortfolioD_Prop3 v1.30 に適用。
+; 現在+5%の口座の残り+3%を守りながら取る縮小設定(内蔵標準5.07x → 3.0x = リスク4本を×0.59)。
+; 試算(docs/122系・+5.04%起点): 到達96.7% / 失格1.7%(悲観6.7%) / 中央1.1ヶ月。
+; ⚠ InpInitialBalance=100000 明示が重要(現在残高が105kのため自動取得は不可)。
+; ロックは現行どおり: +7% ARM / +7.5% PASS_LOCK → 残差0.5%はロック後に縮小サイズで確定。
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY,USDJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpEMonSymbols=NAS100,US500,GER40
+InpInitialBalance=100000.0
+InpBaselineReset=false
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpNotifyEnable=true
+InpNotifyEntries=true
+InpNotifyRefPct=6.0
+InpNotifyDayWarnPct=3.0
+InpReenterManualClose=true
+InpMTrailEnable=false
+InpWeeklyRiskPct=1.15
+InpV4RiskPerTradePct=0.34
+InpEMonWeeklyPct=1.15
+InpE5LegRiskPct=0.92
+InpProfitStopPct=8.0
+InpDailyStopPct=4.0
+InpProfitLockEnable=true
+InpLockArmPct=7.0
+InpLockClosePct=7.5
+InpSwapLogEnable=true
+InpMagicBase=760720

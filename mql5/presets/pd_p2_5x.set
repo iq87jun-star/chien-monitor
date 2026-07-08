@@ -1,0 +1,31 @@
+; 【FN 100k・Phase2用(5x=内蔵標準)】Chien_PortfolioD_Prop3 v1.30 に適用。P1通過後の新フェーズ開始時に。
+; 目標+5%対応: 利確停止5.0 / ARM4.0 / PASS_LOCK4.5(残差0.5%はロック後に縮小サイズで確定)。
+; 試算: 到達82.5% / 失格15.8%(悲観21.7%) / 中央1.0ヶ月。
+; ⚠ P2口座は残高$100,000にリセットされるので InpInitialBalance=100000 明示でOK。
+; MONTH_TRAILはP2では効果なし(検証済み)のためOFF。資金化後口座でON+サイズ再校正(docs/116)。
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY,USDJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpEMonSymbols=NAS100,US500,GER40
+InpInitialBalance=100000.0
+InpBaselineReset=false
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpNotifyEnable=true
+InpNotifyEntries=true
+InpNotifyRefPct=3.5
+InpNotifyDayWarnPct=3.0
+InpReenterManualClose=true
+InpMTrailEnable=false
+InpWeeklyRiskPct=1.95
+InpV4RiskPerTradePct=0.58
+InpEMonWeeklyPct=1.95
+InpE5LegRiskPct=1.56
+InpProfitStopPct=5.0
+InpDailyStopPct=4.0
+InpProfitLockEnable=true
+InpLockArmPct=4.0
+InpLockClosePct=4.5
+InpSwapLogEnable=true
+InpMagicBase=760720
