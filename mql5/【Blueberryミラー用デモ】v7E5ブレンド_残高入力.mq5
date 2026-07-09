@@ -66,7 +66,7 @@ input group "=== リスク配分（中央3ヶ月・標準=内蔵既定。通常�
 input double InpWeeklyRiskPct    = 1.0;  // v7 週次リスク%
 input double InpV4RiskPerTradePct= 0.0;  // v4 1トレードあたりリスク%
 input double InpEMonWeeklyPct    = 0.0;  // E-Mon 週次リスク%
-input double InpE5LegRiskPct     = 1.05;  // E5 legRisk%(各レッグ月次σ)
+input double InpE5LegRiskPct     = 0.55;  // E5 legRisk%(各レッグ月次σ)
 input double InpProfitStopPct    = 0.0;   // +この%で新規停止(FN P1=8.0)
 input double InpDailyStopPct      = 0.0;  // 日次−この%で当日全決済(規約−5%手前)
 
@@ -624,7 +624,7 @@ void ManageV7Exit()
       if(posinfo.Magic()!=g_mV7) continue;
       int held=(int)(TimeCurrent()-(datetime)posinfo.Time());
       if(held>=InpV7HoldHours*3600){ string s7=posinfo.Symbol();
-         if(trade.PositionClose(tk)){ Notify(StringFormat("OUT v7 %s 決済",s7));
+         if(trade.PositionClose(tk)){ Notify(StringFormat("⏱決済 v7 %s(24時間満期・成行で閉じてください)",s7));
             if(InpVerboseLog) PrintFormat("[v7 TIME EXIT] %s",s7); } }
    }
 }
@@ -657,7 +657,7 @@ void EntriesV7(datetime utc)
       g_lastShotV7[key]=hourBar;
       if(trade.Buy(lots,sym,0.0,sl,0.0,StringFormat("v7_%s_h%d",sym,g_v7hours[slot])))
          { if(InpVerboseLog) PrintFormat("[v7 ENTRY] LONG %s h%dUTC lots=%.2f SL=%.5f",sym,g_v7hours[slot],lots,sl);
-           if(InpNotifyEntries) Notify(StringFormat("IN v7 %s %.2f",sym,lots)); }
+           if(InpNotifyEntries) Notify(StringFormat("🔵新規買い v7 %s %.2fロット SL=%s(明日同時刻に決済)",sym,lots,DoubleToString(sl,dg))); }
    }
 }
 
@@ -715,12 +715,12 @@ void EntriesV4()
          double sl=NormalizeDouble(e-sd,dg), tp=NormalizeDouble(e+tpd,dg);
          if(trade.Buy(lots,sym,0.0,sl,tp,"v4_"+sym)){
             if(InpVerboseLog) PrintFormat("[v4 ENTRY] LONG %s lots=%.2f SL=%.5f TP=%.5f",sym,lots,sl,tp);
-            if(InpNotifyEntries) Notify(StringFormat("IN v4 L %s %.2f",sym,lots)); } }
+            if(InpNotifyEntries) Notify(StringFormat("🔵新規買い v4 %s %.2fロット",sym,lots)); } }
       else     { double e=SymbolInfoDouble(sym,SYMBOL_BID);
          double sl=NormalizeDouble(e+sd,dg), tp=NormalizeDouble(e-tpd,dg);
          if(trade.Sell(lots,sym,0.0,sl,tp,"v4_"+sym)){
             if(InpVerboseLog) PrintFormat("[v4 ENTRY] SHORT %s lots=%.2f SL=%.5f TP=%.5f",sym,lots,sl,tp);
-            if(InpNotifyEntries) Notify(StringFormat("IN v4 S %s %.2f",sym,lots)); } }
+            if(InpNotifyEntries) Notify(StringFormat("🔴新規売り v4 %s %.2fロット",sym,lots)); } }
    }
 }
 
@@ -807,7 +807,7 @@ void EntriesEMon(datetime utc)
       g_lastShotEM[key]=hourBar;
       if(trade.Buy(lots,sym,0.0,sl,0.0,StringFormat("EMon_%s_h%d",sym,g_emhours[slot])))
          { if(InpVerboseLog) PrintFormat("[E-Mon ENTRY] LONG %s h%dUTC lots=%.2f SL=%.2f perShot=%.3f%%",sym,g_emhours[slot],lots,sl,perShot);
-           if(InpNotifyEntries) Notify(StringFormat("IN EMon %s %.2f",sym,lots)); }
+           if(InpNotifyEntries) Notify(StringFormat("🔵新規買い EMon %s %.2fロット",sym,lots)); }
    }
 }
 
@@ -838,9 +838,9 @@ void EntriesE5()
       if(!firstBuild && !InpReenterManualClose) continue;
       if(firstBuild) g_lastMonth[i]=mb;
       int sig=E5Signal(sym); int cur=DirOf(sym,g_mE5);
-      if(sig==0){ if(cur!=0 && firstBuild){ CloseSymMagic(sym,g_mE5,"E5_FLAT"); Notify("OUT E5 "+sym+" 決済(FLAT)"); } continue; }
+      if(sig==0){ if(cur!=0 && firstBuild){ CloseSymMagic(sym,g_mE5,"E5_FLAT"); Notify("⏱決済 E5 "+sym+"(シグナル消滅・成行で閉じてください)"); } continue; }
       if(cur==sig) continue;
-      if(cur!=0){ if(!firstBuild) continue; CloseSymMagic(sym,g_mE5,"E5_FLIP"); Notify("OUT E5 "+sym+" 反転決済"); }
+      if(cur!=0){ if(!firstBuild) continue; CloseSymMagic(sym,g_mE5,"E5_FLIP"); Notify("🔁反転 E5 "+sym+"(決済して逆方向の新規通知を待ってください)"); }
       if(!firstBuild && !ManualCloseE5ThisMonth(sym)) continue;   // 再建ては手決済後のみ(SL/EA決済は対象外)
       if(RiskGuardBlocked("E5")) continue;               // 決済(FLAT/FLIP)は抑制しない。新規レッグのみ
       double atr=AtrAt(g_atrMN1[i]); if(atr<=0) continue;
@@ -852,11 +852,11 @@ void EntriesE5()
       if(sig>0){ double e=SymbolInfoDouble(sym,SYMBOL_ASK); double sl=NormalizeDouble(e-sd,dg);
          if(trade.Buy(lots,sym,0.0,sl,0.0,tag)){
             if(InpVerboseLog) PrintFormat("[E5 ENTRY%s] LONG %s lots=%.2f",(firstBuild?"":" 再建て"),sym,lots);
-            if(InpNotifyEntries) Notify(StringFormat("IN E5 L %s %.2f",sym,lots)); } }
+            if(InpNotifyEntries) Notify(StringFormat("🔵新規買い E5 %s %.2fロット SL=%s(月次保有)",sym,lots,DoubleToString(sl,dg))); } }
       else     { double e=SymbolInfoDouble(sym,SYMBOL_BID); double sl=NormalizeDouble(e+sd,dg);
          if(trade.Sell(lots,sym,0.0,sl,0.0,tag)){
             if(InpVerboseLog) PrintFormat("[E5 ENTRY%s] SHORT %s lots=%.2f",(firstBuild?"":" 再建て"),sym,lots);
-            if(InpNotifyEntries) Notify(StringFormat("IN E5 S %s %.2f",sym,lots)); } }
+            if(InpNotifyEntries) Notify(StringFormat("🔴新規売り E5 %s %.2fロット SL=%s(月次保有)",sym,lots,DoubleToString(sl,dg))); } }
    }
 }
 //+------------------------------------------------------------------+
