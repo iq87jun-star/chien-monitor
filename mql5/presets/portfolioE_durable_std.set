@@ -1,0 +1,11 @@
+; PortfolioE「耐久」標準 — E5単独 0.56x(ガード逆算×0.8, docs/130)
+; Chien_E5_RP_Trend_EA 用。XAUUSD/US500/NAS100/GER40 の4チャートに適用
+; legRisk = 0.55% × 0.56 = 0.31%/レッグ。フロア−8%全停止。デモ前進検証後に本資金(要承認)
+InpScenario=2
+InpAcknowledgeLEAD=true
+InpLegMonthlyRiskPct=0.31
+InpAccountFloorDDPct=8.0
+InpInitialBalance=0.0
+InpCloseAllOnGuard=true
+InpAllowShort=true
+InpMagic=930610
