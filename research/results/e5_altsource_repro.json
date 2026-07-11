@@ -1,0 +1,112 @@
+{
+ "meta": {
+  "started": "2026-07-11T08:41:46.629295+00:00",
+  "spec": "docs/127 §2",
+  "pass_rule": "duka net>0 AND corr>=0.6"
+ },
+ "sanity": {
+  "XAUUSD": {
+   "rows": 4155,
+   "start": "2010-01-01",
+   "end": "2025-12-31"
+  },
+  "US500": {
+   "rows": 3289,
+   "start": "2012-12-25",
+   "end": "2025-12-31"
+  },
+  "NAS100": {
+   "rows": 3309,
+   "start": "2011-04-15",
+   "end": "2025-12-31"
+  },
+  "GER40": {
+   "rows": 3158,
+   "start": "2013-09-30",
+   "end": "2025-12-31"
+  }
+ },
+ "price_monthly_corr": {
+  "XAUUSD": 0.9927,
+  "US500": 0.9971,
+  "NAS100": 0.9839,
+  "GER40": 0.993
+ },
+ "window": [
+  "2013-10",
+  "2025-12"
+ ],
+ "n_months": 147,
+ "e5_duka_net": 25.02,
+ "e5_yahoo_net_samewindow": 32.47,
+ "strategy_monthly_corr": 0.9614,
+ "monthly_sign_agree_pct": 91.2,
+ "gates": {
+  "G1_net_pos": true,
+  "G2_corr": true
+ },
+ "verdict": "PASS(別ソース再現✔)",
+ "input_sha256": {
+  "DEUIDXEUR_2013_day.bi5": "b2df0fa1977b650f",
+  "DEUIDXEUR_2014_day.bi5": "2a3eca16a5738e2d",
+  "DEUIDXEUR_2015_day.bi5": "560ae9cf303d06a7",
+  "DEUIDXEUR_2016_day.bi5": "8605c1f6df30f661",
+  "DEUIDXEUR_2017_day.bi5": "a60d2e8973cb1cae",
+  "DEUIDXEUR_2018_day.bi5": "3eef0b068ced14b9",
+  "DEUIDXEUR_2019_day.bi5": "ffc6253f26d41d3d",
+  "DEUIDXEUR_2020_day.bi5": "278d4963eac64682",
+  "DEUIDXEUR_2021_day.bi5": "ab11b6b2e6e0400f",
+  "DEUIDXEUR_2022_day.bi5": "5a9443cd9a28ee05",
+  "DEUIDXEUR_2023_day.bi5": "1c60e5627a4527b7",
+  "DEUIDXEUR_2024_day.bi5": "45ff024af5f075c5",
+  "DEUIDXEUR_2025_day.bi5": "b1c8933eecb3889b",
+  "USA500IDXUSD_2010_day.bi5": "0e94361b9fb85895",
+  "USA500IDXUSD_2011_day.bi5": "5e039ed6aacceed7",
+  "USA500IDXUSD_2012_day.bi5": "a95368f9faa17e75",
+  "USA500IDXUSD_2013_day.bi5": "1e950eaf22f8ce42",
+  "USA500IDXUSD_2014_day.bi5": "72872f0c6ef1ca0d",
+  "USA500IDXUSD_2015_day.bi5": "7bb0b70747a95a58",
+  "USA500IDXUSD_2016_day.bi5": "9a614edbbe65f6ca",
+  "USA500IDXUSD_2017_day.bi5": "05723a9693d52350",
+  "USA500IDXUSD_2018_day.bi5": "e8b7e75bb28a273e",
+  "USA500IDXUSD_2019_day.bi5": "270ee6c7e8b15bba",
+  "USA500IDXUSD_2020_day.bi5": "f1f78859a3d06359",
+  "USA500IDXUSD_2021_day.bi5": "61c20dfc61f108bd",
+  "USA500IDXUSD_2022_day.bi5": "f90c55a10e7febb8",
+  "USA500IDXUSD_2023_day.bi5": "7fd09dac997ae6fb",
+  "USA500IDXUSD_2024_day.bi5": "269f6c5c8af52533",
+  "USA500IDXUSD_2025_day.bi5": "8feff8da1e6c1ffa",
+  "USATECHIDXUSD_2010_day.bi5": "a16ca450897046fe",
+  "USATECHIDXUSD_2011_day.bi5": "9f6540045ec71638",
+  "USATECHIDXUSD_2012_day.bi5": "2a41144baf7ca6b7",
+  "USATECHIDXUSD_2013_day.bi5": "74f3aee5d67f33c7",
+  "USATECHIDXUSD_2014_day.bi5": "0c5c492bf29bc0a3",
+  "USATECHIDXUSD_2015_day.bi5": "a44b19608a4f29f6",
+  "USATECHIDXUSD_2016_day.bi5": "9142a8169784536f",
+  "USATECHIDXUSD_2017_day.bi5": "8ed61f5b435a2438",
+  "USATECHIDXUSD_2018_day.bi5": "605ad501ddefb722",
+  "USATECHIDXUSD_2019_day.bi5": "1b8004d4daf2f8d3",
+  "USATECHIDXUSD_2020_day.bi5": "90d2a69432cd183a",
+  "USATECHIDXUSD_2021_day.bi5": "f0827a176e133306",
+  "USATECHIDXUSD_2022_day.bi5": "cf6b333636e6dd20",
+  "USATECHIDXUSD_2023_day.bi5": "441ca576804837de",
+  "USATECHIDXUSD_2024_day.bi5": "411ea2e4ef78d16a",
+  "USATECHIDXUSD_2025_day.bi5": "f8e509cdc1095a88",
+  "XAUUSD_2010_day.bi5": "27a132109e51a10b",
+  "XAUUSD_2011_day.bi5": "e42a2936f5a01acc",
+  "XAUUSD_2012_day.bi5": "60b16f10a9eff46d",
+  "XAUUSD_2013_day.bi5": "821e22cf1d3021c4",
+  "XAUUSD_2014_day.bi5": "ec10c2a2d18face4",
+  "XAUUSD_2015_day.bi5": "5c434db9cf94c754",
+  "XAUUSD_2016_day.bi5": "3f4c35f67e97e778",
+  "XAUUSD_2017_day.bi5": "6dabd63b27bc781d",
+  "XAUUSD_2018_day.bi5": "c31b254d57d37082",
+  "XAUUSD_2019_day.bi5": "df3604c338b97af7",
+  "XAUUSD_2020_day.bi5": "96821554d99e280d",
+  "XAUUSD_2021_day.bi5": "f6ca70e7856a130a",
+  "XAUUSD_2022_day.bi5": "0f77bccaa4197580",
+  "XAUUSD_2023_day.bi5": "b63dbcf6350b19b5",
+  "XAUUSD_2024_day.bi5": "d6c4aa7b90c70720",
+  "XAUUSD_2025_day.bi5": "43d4e4fa1e336e3d"
+ }
+}
