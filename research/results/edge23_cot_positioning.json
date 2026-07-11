@@ -1,0 +1,209 @@
+{
+ "meta": {
+  "started": "2026-07-11T07:44:41.056825+00:00",
+  "alpha": 0.0033333333333333335,
+  "spec": "docs/127 §1",
+  "cot_weeks": {
+   "JPY": 1646,
+   "EUR": 1436,
+   "GBP": 1646,
+   "CHF": 1644,
+   "AUD": 1619,
+   "CAD": 1646
+  }
+ },
+ "C1": {
+  "main": {
+   "net": -3.15,
+   "maxdd": -15.25,
+   "sharpe": -0.02,
+   "n_weeks": 545,
+   "n_active": 185,
+   "winrate": 51.9
+  },
+  "perm_p": 0.51987,
+  "jackknife": {
+   "2016": 7.6,
+   "2017": -2.89,
+   "2018": -7.82,
+   "2019": -4.69,
+   "2020": -0.82,
+   "2021": -3.41,
+   "2022": 9.51,
+   "2023": -0.16,
+   "2024": -12.21,
+   "2025": 4.47,
+   "2026": -1.16
+  },
+  "jk_pass": "3/11",
+  "cost2x": {
+   "net": -6.3,
+   "maxdd": -16.02,
+   "sharpe": -0.07,
+   "n_weeks": 545,
+   "n_active": 185,
+   "winrate": 51.9
+  },
+  "is_net": 2.83,
+  "oos_net": -3.99,
+  "placebo_p95": 28.45,
+  "placebo_p": 0.496,
+  "pre2016": {
+   "net": -35.28,
+   "maxdd": -44.33,
+   "sharpe": -0.22,
+   "n_weeks": 930,
+   "n_active": 299,
+   "winrate": 45.5,
+   "perm_p": 0.82354,
+   "window": [
+    "1998-01-05",
+    "2015-12-28"
+   ]
+  },
+  "gates": {
+   "G1_econ": false,
+   "G2_perm": false,
+   "G3_jk": false,
+   "G4_placebo": false,
+   "G5_cost2x": false,
+   "G6_isoos": false,
+   "G8": true
+  },
+  "gates_passed": 0,
+  "verdict": "REJECT",
+  "G8_corr": {
+   "v4": -0.056,
+   "v7": 0.16,
+   "EMon": 0.052,
+   "E5": 0.006
+  }
+ },
+ "C2": {
+  "main": {
+   "net": 6.18,
+   "maxdd": -3.06,
+   "sharpe": 0.3,
+   "n_weeks": 545,
+   "n_active": 457,
+   "winrate": 48.8
+  },
+  "perm_p": 0.16896,
+  "jackknife": {
+   "2016": 8.4,
+   "2017": 5.35,
+   "2018": 5.46,
+   "2019": 5.61,
+   "2020": 6.6,
+   "2021": 5.34,
+   "2022": 6.07,
+   "2023": 4.68,
+   "2024": 3.7,
+   "2025": 4.08,
+   "2026": 6.81
+  },
+  "jk_pass": "11/11",
+  "cost2x": {
+   "net": 3.3,
+   "maxdd": -3.61,
+   "sharpe": 0.16,
+   "n_weeks": 545,
+   "n_active": 457,
+   "winrate": 48.6
+  },
+  "is_net": -0.37,
+  "oos_net": 6.58,
+  "placebo_p95": 8.07,
+  "placebo_p": 0.094,
+  "pre2016": {
+   "net": -17.18,
+   "maxdd": -19.9,
+   "sharpe": -0.3,
+   "n_weeks": 935,
+   "n_active": 585,
+   "winrate": 46.8,
+   "perm_p": 0.89078,
+   "window": [
+    "1998-01-05",
+    "2015-12-28"
+   ]
+  },
+  "gates": {
+   "G1_econ": true,
+   "G2_perm": false,
+   "G3_jk": true,
+   "G4_placebo": false,
+   "G5_cost2x": true,
+   "G6_isoos": false,
+   "G8": true
+  },
+  "gates_passed": 3,
+  "verdict": "REJECT",
+  "G8_corr": {
+   "v4": -0.046,
+   "v7": -0.054,
+   "EMon": 0.101,
+   "E5": -0.104
+  }
+ },
+ "C3": {
+  "n_short_weeks": 367,
+  "n_long_weeks": 180,
+  "v7_unfiltered_net": 21.58,
+  "v7_filtered_net": 14.03,
+  "mean_bps_shortweeks": 3.8,
+  "mean_bps_longweeks": 4.2,
+  "split_perm_p": 0.52562,
+  "gates": {
+   "filter_improves": false,
+   "split_p": false
+  },
+  "verdict": "REJECT(v7は素通し維持)"
+ },
+ "input_sha256": {
+  "deacot1995.txt": "f42580c7e527a921",
+  "deacot1996.txt": "11d8627716105fe6",
+  "deacot1997.txt": "fa9b11d839c18469",
+  "deacot1998.txt": "dc16b1a4bf34cda0",
+  "deacot1999.txt": "1afb9172822db33c",
+  "deacot2000.txt": "00bce6eb2635a371",
+  "deacot2001.txt": "8af85de610b2b82d",
+  "deacot2002.txt": "2ae7b5b04798672b",
+  "deacot2003.txt": "60238f01ccad22fd",
+  "deacot2004.txt": "c9a81687ee741144",
+  "deacot2005.txt": "e6653be404bcef44",
+  "deacot2006.txt": "233f118d1e881b59",
+  "deacot2007.txt": "35656074789fa835",
+  "deacot2008.txt": "3c9768a28a39ad2e",
+  "deacot2009.txt": "cb04393dd28ad9da",
+  "deacot2010.txt": "6f85a0f661c64e37",
+  "deacot2011.txt": "b240d0751f0ae5d4",
+  "deacot2012.txt": "f6fa9a3b61101e0e",
+  "deacot2013.txt": "d1eda9b2d30cb7af",
+  "deacot2014.txt": "3efbfba04e1eef91",
+  "deacot2015.txt": "0e8c1523e5168a79",
+  "deacot2016.txt": "106684edf948ccf6",
+  "deacot2017.txt": "8ba60cfb622ce72c",
+  "deacot2018.txt": "dd0173fcf9fdc14d",
+  "deacot2019.txt": "004c1952f32c4bc9",
+  "deacot2020.txt": "4bd39b1f0cdf679f",
+  "deacot2021.txt": "ae16eb98bdfd5990",
+  "deacot2022.txt": "586c0debe2f7d714",
+  "deacot2023.txt": "ec4e38013e9c389b",
+  "deacot2024.txt": "49ec8e2246d15559",
+  "deacot2025.txt": "1e3055c6aaed5034",
+  "deacot2026.txt": "7c6959c681afb5c2",
+  "USDJPY_d.csv": "dfda40cefcf01b62",
+  "EURUSD_d.csv": "91f3d2b98c705b18",
+  "GBPUSD_d.csv": "4d68aeffe030c87c",
+  "USDCHF_d.csv": "32c49bb2654f6473",
+  "AUDUSD_d.csv": "7ae67cc5a48b5485",
+  "USDCAD_d.csv": "dd41d6820a6c997b",
+  "EURJPY_d.csv": "eb623e9353134cb1",
+  "GBPJPY_d.csv": "780c9ce4b3b89445",
+  "US500_d.csv": "5d23345ceb3c48f9",
+  "NAS100_d.csv": "39a51ddc20bdd245",
+  "GER40_d.csv": "a987fef53b7280bb",
+  "XAUUSD_d.csv": "98dac2ee375a7a90"
+ }
+}
