@@ -1,0 +1,75 @@
+{
+ "meta": {
+  "started": "2026-07-11T10:23:16.706323+00:00",
+  "spec": "docs/131 P1",
+  "window": "2016-01-01..2026-06-30"
+ },
+ "variants": {
+  "Portfolio-I": {
+   "mean_month": 0.28,
+   "cagr": 3.2,
+   "sharpe": 0.62,
+   "maxDD": -7.0,
+   "worst_month": -3.86,
+   "worst_day": -3.14,
+   "p_pass_JulAug": 0.0,
+   "months": 126,
+   "mult": 0.76,
+   "worst_intramonth_DD": -5.1
+  },
+  "PortfolioD": {
+   "mean_month": 0.34,
+   "cagr": 4.1,
+   "sharpe": 1.02,
+   "maxDD": -4.9,
+   "worst_month": -3.71,
+   "worst_day": -2.38,
+   "p_pass_JulAug": 0.0,
+   "months": 126,
+   "mult": 0.88,
+   "worst_intramonth_DD": -6.4
+  },
+  "R4+G3": {
+   "mean_month": 1.13,
+   "cagr": 14.2,
+   "sharpe": 2.21,
+   "maxDD": -2.9,
+   "worst_month": -2.88,
+   "worst_day": -2.43,
+   "p_pass_JulAug": 4.0,
+   "months": 126,
+   "mult": 0.68,
+   "worst_intramonth_DD": -6.1
+  },
+  "E5単体": {
+   "mean_month": 0.18,
+   "cagr": 2.1,
+   "sharpe": 0.41,
+   "maxDD": -8.7,
+   "worst_month": -4.81,
+   "worst_day": -2.8,
+   "p_pass_JulAug": 0.0,
+   "months": 126,
+   "mult": 0.56,
+   "worst_intramonth_DD": -6.2
+  }
+ },
+ "monthly_corr_vs": {
+  "PortfolioD": 0.681,
+  "R4+G3": 0.26
+ },
+ "stress": {
+  "e5_alone_ann": 2.1,
+  "portfolio_I_stress_ann": 1.71,
+  "portfolioD_stress_ann": 0.66,
+  "note": "v4/G3/v7/EMon期待値0置換・E5実績のみ(安全倍率換算)"
+ },
+ "gates": {
+  "I1_independence": false,
+  "I2_diversification": true,
+  "I3_practicality": false,
+  "I4_insurance": "True"
+ },
+ "gates_passed": "2",
+ "verdict": "不採用(代替=案3複製)"
+}
