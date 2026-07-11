@@ -1,0 +1,25 @@
+; 【R4+G3 資金化後・生存モード 0.68x】Chien_Seasonal_R4G3_Prop v1.30 に適用(docs/110/128)。
+; 0.68x=ガード安全倍率(過去10.5年で日次−4%/月中−8%を一度も踏まない上限, docs/110 パネルA)。
+; 実績(Yahoo日足近似): 平均月利+1.13% / 年率+14.2% / Sharpe 2.21 / maxDD−2.9% / 最悪単日−2.4%。
+; 利益ロックOFF=資金化後は通過目標なし(出金はdocs/49の定石で手動)。ガードは維持。
+; ⚠ 1口座目の資金化は pd_funded_conserv.set(Drive確定・年失格0.2%)が既定。
+;   本プリセットはR4のデモ採点(docs/103)で分布内を確認後の2口座目以降(docs/128 §1)。
+; ⚠ 切替時は InpBaselineReset=true を1回だけ(基準残高を資金化後残高で取り直し→falseへ戻す)。
+InpScenario=5
+InpAcknowledgeDemo=true
+InpMultOverride=0.68
+InpDailyStopPct=4.0
+InpAccountFloorDDPct=8.0
+InpInitialBalance=0.0
+InpBaselineReset=false
+InpProfitLockEnable=false
+InpRiskGuardMode=1
+InpMaxOpenRiskPct=3.0
+InpNoSLRiskAssumePct=10.0
+InpSwapLogEnable=true
+InpReenterManualClose=true
+InpG3Enable=true
+InpNotifyEnable=true
+InpNotifyRefPct=6.0
+InpNotifyDayWarnPct=3.0
+InpNotifyWidth=true
