@@ -1,0 +1,237 @@
+{
+ "prereg": "docs/126",
+ "alpha": 0.0025,
+ "input_sha256": {
+  "cot_jpy.csv": "498e79ac753ee39c",
+  "cot_gold.csv": "04d6a36ec1451c31",
+  "usdjpy_full_d.csv": "ec38d37af4fd73f9",
+  "gold_full_d.csv": "205ac07594654b41",
+  "us500_full_d.csv": "70c9d0ee248107dd"
+ },
+ "h23a": {
+  "main": {
+   "net": 1.2,
+   "sharpe": 0.052,
+   "maxDD": -17.8,
+   "n": 522
+  },
+  "perm_p": 0.4462,
+  "pre2016": {
+   "net": -41.4,
+   "sharpe": -0.221,
+   "maxDD": -50.2,
+   "n": 999
+  },
+  "perm_p_pre": 0.835,
+  "jk_max_p": 0.6115,
+  "jk_min_net": -8.8,
+  "is_net": -8.8,
+  "oos_net": 11.1,
+  "cost2x": {
+   "net": -3.5,
+   "sharpe": -0.017,
+   "maxDD": -18.3,
+   "n": 522
+  },
+  "placebo": {
+   "placebo_mean": -1.9,
+   "placebo_p95": 35.8,
+   "p_real_vs_placebo": 0.3925
+  },
+  "corr_existing": {
+   "v4": 0.015,
+   "v7": 0.06,
+   "EMon": 0.004,
+   "E5": 0.094
+  },
+  "g9": {
+   "base": {
+    "net": 23.8,
+    "calmar": 1.68,
+    "maxDD": -1.4
+   },
+   "with_new": {
+    "net": 20.7,
+    "calmar": 1.18,
+    "maxDD": -1.7
+   }
+  },
+  "gates": {
+   "G1_econ": false,
+   "G2_perm": false,
+   "G3_jk": false,
+   "G4_placebo": false,
+   "G5_cost2x": false,
+   "G6_isoos": false,
+   "G7_pre2016": false,
+   "G8_corr": true,
+   "G9_port": false
+  },
+  "gates_passed": "1/9",
+  "verdict": "REJECT",
+  "on_ratio_main": 0.552
+ },
+ "h23b": {
+  "on_ratio": 0.484,
+  "full": {
+   "ungated": {
+    "net": 21.2,
+    "sharpe": 0.616,
+    "maxDD": -6.1,
+    "n": 521,
+    "sharpe_w": 0.616
+   },
+   "gated": {
+    "net": 5.8,
+    "sharpe": 0.274,
+    "maxDD": -7.1,
+    "n": 521,
+    "sharpe_w": 0.274
+   }
+  },
+  "blocks": [
+   {
+    "ungated": -0.117,
+    "gated": -0.756,
+    "win": false
+   },
+   {
+    "ungated": 0.444,
+    "gated": 0.305,
+    "win": false
+   },
+   {
+    "ungated": 1.629,
+    "gated": 1.246,
+    "win": false
+   }
+  ],
+  "placebo_p": 0.757,
+  "verdict": "REJECT(現行v7維持)"
+ },
+ "h23c": {
+  "main": {
+   "net": -23.4,
+   "sharpe": -0.188,
+   "maxDD": -35.5,
+   "n": 522
+  },
+  "perm_p": 0.7288,
+  "pre2016": {
+   "net": 4.7,
+   "sharpe": 0.093,
+   "maxDD": -34.0,
+   "n": 678
+  },
+  "perm_p_pre": 0.3775,
+  "jk_max_p": 0.8595,
+  "jk_min_net": -33.3,
+  "is_net": -5.2,
+  "oos_net": -19.2,
+  "cost2x": {
+   "net": -32.8,
+   "sharpe": -0.305,
+   "maxDD": -41.0,
+   "n": 522
+  },
+  "placebo": {
+   "placebo_mean": -27.4,
+   "placebo_p95": 15.2,
+   "p_real_vs_placebo": 0.3685
+  },
+  "corr_existing": {
+   "v4": 0.167,
+   "v7": 0.072,
+   "EMon": 0.082,
+   "E5": -0.182
+  },
+  "g9": {
+   "base": {
+    "net": 23.8,
+    "calmar": 1.68,
+    "maxDD": -1.4
+   },
+   "with_new": {
+    "net": 18.6,
+    "calmar": 1.13,
+    "maxDD": -1.6
+   }
+  },
+  "gates": {
+   "G1_econ": false,
+   "G2_perm": false,
+   "G3_jk": false,
+   "G4_placebo": false,
+   "G5_cost2x": false,
+   "G6_isoos": false,
+   "G7_pre2016": false,
+   "G8_corr": true,
+   "G9_port": false
+  },
+  "gates_passed": "1/9",
+  "verdict": "REJECT",
+  "on_ratio_main": 0.496
+ },
+ "h23d": {
+  "main": {
+   "net": -5.5,
+   "sharpe": -0.043,
+   "maxDD": -25.0,
+   "n": 120
+  },
+  "perm_p": 0.5505,
+  "pre2016": {
+   "net": 130.9,
+   "sharpe": 0.436,
+   "maxDD": -25.6,
+   "n": 312
+  },
+  "perm_p_pre": 0.0165,
+  "jk_max_p": 0.7525,
+  "jk_min_net": -15.9,
+  "is_net": -10.0,
+  "oos_net": 5.0,
+  "cost2x": {
+   "net": -8.8,
+   "sharpe": -0.093,
+   "maxDD": -25.9,
+   "n": 120
+  },
+  "placebo": {
+   "placebo_mean": 38.5,
+   "placebo_p95": 91.6,
+   "p_real_vs_placebo": 0.9505
+  },
+  "corr_existing": {
+   "v4": -0.066,
+   "v7": 0.059,
+   "EMon": 0.165,
+   "E5": -0.093
+  },
+  "g9": {
+   "base": {
+    "net": 23.8,
+    "calmar": 1.68,
+    "maxDD": -1.4
+   },
+   "with_new": {
+    "net": 20.1,
+    "calmar": 1.57,
+    "maxDD": -1.2
+   }
+  },
+  "gates": {
+   "G1_econ": false,
+   "G2_perm": false,
+   "G3_jk": false,
+   "G4_placebo": false,
+   "G5_cost2x": false,
+   "G6_isoos": false,
+   "G7_pre2016": true,
+   "G8_corr": true,
+   "G9_port": false
+  },
+  "gates_passed": "2/9",
+  "verdict": "REJECT"
+ }
+}
