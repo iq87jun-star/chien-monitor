@@ -1,0 +1,135 @@
+{
+ "meta": {
+  "started": "2026-07-11T10:10:20.608639+00:00",
+  "alpha": 0.0033333333333333335,
+  "spec": "docs/129",
+  "mof_weeks": 1122,
+  "mof_range": [
+   "2005-01-08",
+   "2026-07-04"
+  ]
+ },
+ "M1": {
+  "n_hi": 258,
+  "n_lo": 289,
+  "v7_unfiltered_net": 21.58,
+  "v7_filtered_net": 11.8,
+  "mean_bps_hi": 4.6,
+  "mean_bps_lo": 3.4,
+  "split_perm_p": 0.38365,
+  "gates": {
+   "filter_improves": false,
+   "split_p": false
+  },
+  "verdict": "REJECT(v7素通し維持)"
+ },
+ "M2": {
+  "main": {
+   "net": -16.5,
+   "maxdd": -27.99,
+   "sharpe": -0.14,
+   "n_weeks": 545,
+   "n_active": 545,
+   "winrate": 51.0
+  },
+  "perm_p": 0.67708,
+  "jk_pass": "0/11",
+  "jackknife": {
+   "2016": -5.85,
+   "2017": -18.09,
+   "2018": -6.77,
+   "2019": -12.76,
+   "2020": -13.36,
+   "2021": -10.4,
+   "2022": -14.84,
+   "2023": -21.51,
+   "2024": -15.72,
+   "2025": -3.09,
+   "2026": -13.1
+  },
+  "cost2x_net": -24.24,
+  "is_net": -10.93,
+  "oos_net": -2.63,
+  "placebo_p95": 38.32,
+  "pre2016": {
+   "net": 19.63,
+   "perm_p": 0.26293,
+   "n": 508
+  },
+  "gates": {
+   "G1_econ": false,
+   "G2_perm": false,
+   "G3_jk": false,
+   "G4_placebo": false,
+   "G5_cost2x": false,
+   "G6_isoos": false,
+   "G8": true
+  },
+  "gates_passed": 0,
+  "verdict": "REJECT",
+  "G8_corr": {
+   "v4": -0.069,
+   "v7": -0.237,
+   "EMon": 0.008,
+   "E5": 0.07
+  }
+ },
+ "M3": {
+  "main": {
+   "net": -27.96,
+   "maxdd": -36.31,
+   "sharpe": -0.11,
+   "n_weeks": 410,
+   "n_active": 410,
+   "winrate": 49.0
+  },
+  "perm_p": 0.62559,
+  "jk_pass": "0/11",
+  "jackknife": {
+   "2016": -11.7,
+   "2017": -29.6,
+   "2018": -8.1,
+   "2019": -10.85,
+   "2020": -16.9,
+   "2021": -15.52,
+   "2022": -29.09,
+   "2023": -23.79,
+   "2024": -6.64,
+   "2025": -20.67,
+   "2026": -3.55
+  },
+  "cost2x_net": -36.3,
+  "is_net": -11.06,
+  "oos_net": -6.58,
+  "placebo_p95": 87.16,
+  "pre2016": {
+   "net": -61.79,
+   "perm_p": 0.90752,
+   "n": 385
+  },
+  "gates": {
+   "G1_econ": false,
+   "G2_perm": false,
+   "G3_jk": false,
+   "G4_placebo": false,
+   "G5_cost2x": false,
+   "G6_isoos": false,
+   "G8": true
+  },
+  "gates_passed": 0,
+  "verdict": "REJECT",
+  "G8_corr": {
+   "v4": 0.142,
+   "v7": -0.058,
+   "EMon": -0.148,
+   "E5": 0.24
+  }
+ },
+ "input_sha256": {
+  "week.csv": "e70fec4f846ef47d",
+  "USDJPY_d.csv": "dfda40cefcf01b62",
+  "EURJPY_d.csv": "eb623e9353134cb1",
+  "GBPJPY_d.csv": "780c9ce4b3b89445",
+  "JP225_d.csv": "bec20f9bb2a9430d"
+ }
+}
