@@ -16,13 +16,38 @@ os.environ.setdefault("RG_ALLOW_YAHOO", "0")
 
 from portfolio_daily_compare import (mon_daily, cc_daily, e5_daily, v4_daily, g3_daily,
                                      composite_daily, worst_stats, calibrate, monthly_stats,
-                                     M3, YEN, V7X, EMON, EMONX)
+                                     M3, YEN, V7X, EMON, EMONX, load_daily)
 import median3_calibrate_compare as m3c
 from median3_calibrate_compare import month_arrays, month_stats_at, simulate
 from seasonal_optimize_loyo import sha256s
 
 N_FINAL = 20000
 SEED = 7
+
+
+def leg_sigma_pct(assets):
+    """各レッグ寄与(w_i×pos_i×r_i)の月次σ%(1x)。EAのInpLegMonthlyRiskPct換算用。"""
+    closes = {}
+    for nm in assets:
+        df = load_daily(nm); s = df["close"]; s.index = pd.to_datetime(df.index)
+        closes[nm] = s.resample("ME").last()
+    px = pd.DataFrame(closes).dropna(); ret = px.pct_change()
+    sig = pd.DataFrame(0.0, index=px.index, columns=px.columns)
+    for lb in (1, 3, 6, 12):
+        sig = sig.add(np.sign(px.pct_change(lb)), fill_value=0)
+    pos = np.sign(sig).shift(1)
+    vol = ret.rolling(12).std().shift(1)
+    w = (1 / vol).div((1 / vol).sum(axis=1), axis=0)
+    pw = (pos.abs() * w); pw.index = pw.index.to_period("M")
+    out = {}
+    for nm in assets:
+        s = load_daily(nm)["close"].pct_change().dropna()
+        mkey = pd.PeriodIndex(pd.to_datetime(s.index), freq="M")
+        leg = pd.Series(s.values * pw[nm].reindex(mkey).values, index=s.index).dropna()
+        leg = leg[(leg.index >= "2016-01-01")]
+        m = leg.groupby(pd.PeriodIndex(leg.index, freq="M")).sum()
+        out[nm] = round(float(m.std()) * 100, 2)
+    return out
 
 
 def to_monthly(s):
@@ -52,10 +77,20 @@ def mc_panel(arrs, g3a, mults, target, floor, label):
 
 
 def main():
-    print("[1/4] スリーブ構築")
-    e5 = e5_daily()
+    basket = None
+    if len(sys.argv) > 1:                      # 例: python3 ... XAUUSD,NAS100 (docs/129 §6)
+        basket = sys.argv[1].split(",")
+    tag = "_v2" if basket else ""
+    print(f"[1/4] スリーブ構築 basket={basket or 'E5現行4資産'}")
+    if basket:
+        from policy_prune_symbols import e5_basket
+        e5 = e5_basket(basket)
+    else:
+        e5 = e5_daily()
     g3_1, g3_2 = g3_daily(0.01), g3_daily(0.02)
     print(f"  E5 {len(e5)}日 / G3イベント {len(g3_1)}")
+    legsig = leg_sigma_pct(basket or ["XAUUSD", "US500", "NAS100", "GER40"])
+    print(f"  レッグ月次σ%(1x): {legsig}")
 
     print("[2/4] 校正(ガード逆算×0.8)と構成比較")
     variants = {}
@@ -112,7 +147,9 @@ def main():
     print(f"  ρ: {rho} → 分散価値{'限定的' if d4_limited else 'あり'}")
 
     res = dict(
-        meta=dict(prereg="docs/129", window="2016-01..2026-06(clip)", seed=SEED, n_paths=N_FINAL,
+        meta=dict(prereg="docs/129" + (" §6(E5間引き2資産)" if basket else ""), basket=basket or "4資産",
+                  window="2016-01..2026-06(clip)", seed=SEED, n_paths=N_FINAL,
+                  leg_sigma_monthly_pct_1x=legsig,
                   g3_note="G3は日足プロキシ=実測H1の約2割(docs/86 H14b)・控えめ側",
                   inputs=sha256s()),
         variants=variants,
@@ -123,7 +160,7 @@ def main():
                           note="楽観=日次-4%ガード完全執行/悲観(fail_pct_raw)=素の日次-5%踏抜き含む。"
                                "同月pass&failはfail優先"),
         reference=dict(PortfolioD="median-3標準: 中央3ヶ月/失格4.9%(Drive確定, docs/76)"))
-    path = os.path.join(HERE, "results", "portfolio_E_durable.json")
+    path = os.path.join(HERE, "results", f"portfolio_E_durable{tag}.json")
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
         json.dump(res, f, ensure_ascii=False, indent=1, default=str)

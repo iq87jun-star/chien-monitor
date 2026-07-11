@@ -1,9 +1,9 @@
-; PortfolioE「耐久」標準 — E5単独 0.56x(ガード逆算×0.8, docs/130)
-; Chien_E5_RP_Trend_EA 用。XAUUSD/US500/NAS100/GER40 の4チャートに適用
-; legRisk = 0.55% × 0.56 = 0.31%/レッグ。フロア−8%全停止。デモ前進検証後に本資金(要承認)
+; PortfolioE「耐久」標準(v1・4資産) — E5単独 0.56x(docs/130、換算はdocs/133 §3で訂正済み)
+; ⚠ 推奨は v2(2資産)= portfolioE2_durable_std.set(docs/133)。本ファイルは4資産版を使う場合のみ
+; legRisk = 0.56 × legσ1x(4資産=1.0) = 0.56%/レッグ。4チャート(XAUUSD/US500/NAS100/GER40)
 InpScenario=2
 InpAcknowledgeLEAD=true
-InpLegMonthlyRiskPct=0.31
+InpLegMonthlyRiskPct=0.56
 InpAccountFloorDDPct=8.0
 InpInitialBalance=0.0
 InpCloseAllOnGuard=true

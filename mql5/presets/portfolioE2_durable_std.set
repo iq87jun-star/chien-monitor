@@ -1,0 +1,12 @@
+; PortfolioE v2「耐久」標準 — E5間引き2資産(XAUUSD+NAS100) 0.68x(docs/133)
+; Chien_E5_RP_Trend_EA 用。XAUUSD と NAS100 の2チャートのみに適用(US500/GER40には挿さない)
+; legRisk = 0.68 × legσ1x(2資産=2.0) = 1.36 → 保守丸め1.35%/レッグ。フロア−8%全停止
+; FTMO+10%: 中央13ヶ月/通過85.2%/失格4.8%。デモ前進検証後に本資金(要承認)
+InpScenario=2
+InpAcknowledgeLEAD=true
+InpLegMonthlyRiskPct=1.35
+InpAccountFloorDDPct=8.0
+InpInitialBalance=0.0
+InpCloseAllOnGuard=true
+InpAllowShort=true
+InpMagic=930610
