@@ -40,7 +40,7 @@ string ResolveSymbol(string want)
 
 void OnStart()
 {
-   PrintFormat("[Export v1.20 診断] TimeCurrent=%s TimeGMT=%s (サーバーGMTオフセット%+d秒) 端末MaxBars=%d",
+   PrintFormat("[Export v1.40 診断] TimeCurrent=%s TimeGMT=%s (サーバーGMTオフセット%+d秒) 端末MaxBars=%d",
       TimeToString(TimeCurrent(),TIME_DATE|TIME_SECONDS),TimeToString(TimeGMT(),TIME_DATE|TIME_SECONDS),
       (int)(TimeCurrent()-TimeGMT()),(int)TerminalInfoInteger(TERMINAL_MAXBARS));
 
