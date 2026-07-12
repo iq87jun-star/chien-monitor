@@ -1,18 +1,17 @@
 //+------------------------------------------------------------------+
 //|                                  Chien_TickExport_Edge20.mq5     |
-//|  edge20(docs/108改訂): M1バー一括エクスポート v1.20                 |
+//|  edge20/24: M1バー一括エクスポート v1.30                            |
 //|                                                                   |
-//|  v1.20: 全面書き換え。日付範囲指定をやめ「直近から◯本」の位置ベース  |
-//|    CopyRatesに変更(履歴DL競合で空振りしない最も確実な方式)。         |
-//|    起動時に環境診断(サーバー時刻・M1本数)をログ表示。               |
-//|    月・火曜×指定サーバー時間帯のみをCSVへ(スプレッド列付き)。        |
+//|  v1.20: 位置ベースCopyRates(履歴DL競合で空振りしない方式)・環境診断  |
+//|  v1.30(edge24 執行スタディ用, docs/149): high/low列を追加            |
+//|    (指値約定シミュレーションにはM1の高安が必須)。出力名をv2に変更。   |
 //|                                                                   |
 //|  使い方: コンパイル → ナビゲータ「スクリプト」からチャートへドラッグ |
-//|  出力: MQL5/Files/ChienRatesM1_<PAIR>.csv                          |
+//|  出力: MQL5/Files/ChienRatesM1v2_<PAIR>.csv                        |
 //|  → 3ペア分をzipしてチャットにアップロード                           |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.20"
+#property version   "1.30"
 #property script_show_inputs
 #property strict
 
@@ -56,10 +55,10 @@ void OnStart()
       PrintFormat("[%s 診断] warmup=%d本(err=%d) M1利用可能≈%d本",syms[si],wn,GetLastError(),(int)avail);
       if(wn<=0){ PrintFormat("⚠ %s: M1が1本も取れない→スキップ(ログを報告してください)",syms[si]); continue; }
 
-      string fn=StringFormat("ChienRatesM1_%s.csv",syms[si]);
+      string fn=StringFormat("ChienRatesM1v2_%s.csv",syms[si]);
       int h=FileOpen(fn,FILE_WRITE|FILE_TXT|FILE_ANSI);
       if(h==INVALID_HANDLE){ PrintFormat("⚠ %s: ファイル作成失敗 err=%d",fn,GetLastError()); continue; }
-      FileWriteString(h,"time_server,open_bid,close_bid,spread_pips_open\n");
+      FileWriteString(h,"time_server,open_bid,high_bid,low_bid,close_bid,spread_pips_open\n");
 
       long pos=0, rows=0; datetime oldest=0,newest=0;
       int CHUNK=20000;
@@ -73,8 +72,8 @@ void OnStart()
             MqlDateTime st; TimeToStruct(r[i].time,st);
             if(st.day_of_week!=1 && st.day_of_week!=2) continue;
             if(st.hour<InpHourFrom || st.hour>InpHourTo) continue;
-            FileWriteString(h,StringFormat("%s,%.5f,%.5f,%.3f\n",
-               TimeToString(r[i].time,TIME_DATE|TIME_MINUTES),r[i].open,r[i].close,
+            FileWriteString(h,StringFormat("%s,%.5f,%.5f,%.5f,%.5f,%.3f\n",
+               TimeToString(r[i].time,TIME_DATE|TIME_MINUTES),r[i].open,r[i].high,r[i].low,r[i].close,
                r[i].spread*point/pip));
             rows++;
             if(oldest==0 || r[i].time<oldest) oldest=r[i].time;
@@ -90,7 +89,7 @@ void OnStart()
          syms[si],(int)rows,(oldest>0?TimeToString(oldest,TIME_DATE):"-"),
          (newest>0?TimeToString(newest,TIME_DATE):"-"),fn);
    }
-   Print("[Export] 全完了。MQL5/Files の ChienRatesM1_*.csv(3本)をzipにしてチャットへアップロードしてください。");
+   Print("[Export] 全完了。MQL5/Files の ChienRatesM1v2_*.csv(3本)をzipにしてチャットへアップロードしてください。");
    Print("[Export] もし行数0のペアがあれば、このエキスパートタブのログを丸ごと貼り付けてください。");
 }
 //+------------------------------------------------------------------+
