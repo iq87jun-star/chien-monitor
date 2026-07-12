@@ -18,9 +18,9 @@
 //|     ※ライブ(資金化後)版は通過後に別途用意。                        |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.30"
+#property version   "1.31"
 #property strict
-#property description "Portfolio-D ONE-CLICK (PROP median-3 standard): v4+v7+E-Mon[RG3]+E5=30:25:25:20. Drop on chart & OK. v1.10 profit lock+risk guard+swap log / v1.20 push notify (Even G2)+persistent baseline+E5 re-enter (docs/112) / v1.30 month-trail lock T2 (docs/116, default OFF)."
+#property description "Portfolio-D ONE-CLICK (PROP median-3 standard): v4+v7+E-Mon[RG3]+E5=30:25:25:20. Drop on chart & OK. v1.10 profit lock+risk guard+swap log / v1.20 push notify (Even G2)+persistent baseline+E5 re-enter (docs/112) / v1.30 month-trail lock T2 (docs/116, default OFF) / v1.31 holiday filter + per-pair spread caps (docs/148, default OFF)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -93,6 +93,10 @@ input double InpCatastropheATR= 2.5;
 input double InpMinStopPips   = 10.0;
 input double InpMaxStopPips   = 400.0;
 input double InpMaxSpreadPips = 3.0;
+
+input group "=== 防御フィルタ(docs/148・EV主張なし。既定OFF)==="
+input bool   InpHolidayFilterEnable = false; // 12/20〜1/3は新規停止(決済/管理は通常・E5月次ロールは対象外)
+input string InpV7SpreadCapsPips    = "";    // ペア別上限 "EURJPY:2.8,GBPJPY:2.9"(空=共通上限・edge20 §3)
 
 input group "=== v4 設定（日足k≥4合議）==="
 input int    InpV4_RSI       = 14;
@@ -474,6 +478,27 @@ int g_swapMonKey=-1;
 
 datetime g_rgLastLog=0;
 // 新規エントリー直前に呼ぶ。MONITOR=超過をログのみ(falseを返す) / ENFORCE=超過中は新規抑制(true)。
+//--- 防御フィルタ(docs/148): 休日・薄商い窓は新規停止(E5月次ロールは対象外=構成の欠落を防ぐ)
+bool HolidayBlocked(datetime utc)
+{
+   if(!InpHolidayFilterEnable) return false;
+   MqlDateTime t; TimeToStruct(utc,t);
+   return ((t.mon==12 && t.day>=20) || (t.mon==1 && t.day<=3));
+}
+//--- ペア別スプレッド上限(edge20 §3): "SYM:pips,..." 部分一致(業者サフィックス許容)。無指定=共通上限
+double SpreadCapFor(string sym)
+{
+   if(StringLen(InpV7SpreadCapsPips)==0) return InpMaxSpreadPips;
+   string S=sym; StringToUpper(S);
+   string parts[]; int n=StringSplit(InpV7SpreadCapsPips,',',parts);
+   for(int i=0;i<n;i++){
+      string kv[]; if(StringSplit(parts[i],':',kv)!=2) continue;
+      string k=kv[0]; StringTrimLeft(k); StringTrimRight(k); StringToUpper(k);
+      if(StringLen(k)>0 && StringFind(S,k)>=0) return StringToDouble(kv[1]);
+   }
+   return InpMaxSpreadPips;
+}
+
 bool RiskGuardBlocked(string ctx)
 {
    if(InpRiskGuardMode==RG_OFF || InpMaxOpenRiskPct<=0) return false;
@@ -631,6 +656,7 @@ void EntriesV7(datetime utc)
 {
    MqlDateTime u; TimeToStruct(utc,u);
    if(u.day_of_week!=1) return;
+   if(HolidayBlocked(utc)) return;                       // docs/148: 休日窓は新規停止
    int slot=-1; for(int h=0;h<ArraySize(g_v7hours);h++) if(u.hour==g_v7hours[h]){ slot=h; break; }
    if(slot<0) return;
    datetime hourBar=utc-(utc%3600); int nh=ArraySize(g_v7hours);
@@ -648,7 +674,7 @@ void EntriesV7(datetime utc)
       if(sp>InpMaxStopPips) continue;
       double ask=SymbolInfoDouble(sym,SYMBOL_ASK), bid=SymbolInfoDouble(sym,SYMBOL_BID);
       if(ask<=0||bid<=0) continue;
-      if((ask-bid)/pip>InpMaxSpreadPips){ g_lastShotV7[key]=hourBar; continue; }
+      if((ask-bid)/pip>SpreadCapFor(sym)){ g_lastShotV7[key]=hourBar; continue; }   // ペア別上限(docs/148)
       double riskMoney=g_initBal*(perShot/100.0);
       double lots=LotsFor(sym,sd,riskMoney); if(lots<InpMinLot){ g_lastShotV7[key]=hourBar; continue; }
       int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
@@ -694,6 +720,7 @@ void ManageV4Exit()
 }
 void EntriesV4()
 {
+   if(HolidayBlocked(TimeGMT())) return;                 // docs/148: 休日窓は新規停止(バー未消費=窓明けに通常判定)
    trade.SetExpertMagicNumber(g_mV4);
    for(int i=0;i<ArraySize(g_v4);i++){
       if(g_atrD1[i]==INVALID_HANDLE) continue;
@@ -777,6 +804,7 @@ void EntriesEMon(datetime utc)
 {
    MqlDateTime u; TimeToStruct(utc,u);
    if(u.day_of_week!=InpEMonWeekday) return;
+   if(HolidayBlocked(utc)) return;                       // docs/148: 休日窓は新規停止
    int slot=-1; for(int h=0;h<ArraySize(g_emhours);h++) if(u.hour==g_emhours[h]){ slot=h; break; }
    if(slot<0) return;
    if(InpEMonRegimeGate && EMonRiskOffWeek()){
