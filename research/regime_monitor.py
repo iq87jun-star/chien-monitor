@@ -65,12 +65,24 @@ def build_series():
     import edge_regime_gate_10y as RG
     def to_m(w):
         s = w.copy(); s.index = pd.to_datetime(s.index).to_period("M"); return s.groupby(level=0).sum()
-    return {
+    out = {
         "v4": v4_monthly(),
         "v7": v7_monthly(),
         "E-Mon[RG3]": to_m(RG.emon_weekly_gated("riskoff")).rename("E-Mon[RG3]"),
         "E5(参考)": e5_monthly(),
     }
+    # 間引き版(docs/135/133・配備予定の定義)も監視対象に追加(docs/150)
+    try:
+        from portfolio_daily_compare import mon_daily
+        from policy_prune_symbols import e5_basket
+        def d_to_m(d):
+            mk = pd.PeriodIndex(d.index, freq="M")
+            return pd.Series({k: float((1 + d[mk == k]).prod() - 1) for k in mk.unique()}).sort_index()
+        out["v7p(2クロス・配備予定)"] = d_to_m(mon_daily(["EURJPY", "GBPJPY"]))
+        out["E5p(2資産・配備予定)"] = d_to_m(e5_basket(["XAUUSD", "NAS100"]))
+    except Exception as e:
+        print(f"⚠ 間引き版系列の構築に失敗(監視は現行4系列のみ): {e}")
+    return out
 
 
 def judge(roll_net_by_month):

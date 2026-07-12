@@ -30,6 +30,15 @@ DISTS = {
     # 7月以降はdocs/87 §2の月次実績が確定し次第ここに追記する(数字を盛らない=不明月は追加しない)
 }
 
+# 新しい器の基準分布(docs/150): PD間引き版・PortfolioE v2 の全12ヶ月(素サイズ1x・2016-2025)
+_BASE_JSON = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                          "results", "forward_baselines_2026_07.json")
+if os.path.exists(_BASE_JSON):
+    with open(_BASE_JSON) as _f:
+        for _k, _v in json.load(_f).items():
+            if not _k.startswith("_"):
+                DISTS[_k] = dict(label=_v["label"], samples=_v["samples"])
+
 
 def read_text(path):
     raw = open(path, "rb").read()
