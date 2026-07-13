@@ -16,7 +16,7 @@
 //|     フォワード成績は docs/150 の pd_pruned 分布で採点する。         |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.31"
+#property version   "1.32"
 #property strict
 #property description "[FN100k #14074882 P1-FINISH PRUNED 3x] PD pruned (v7 2-cross / E5 2-asset, docs/135). ARM 7.9 / LOCK 8.05. Drop & OK."
 
@@ -319,13 +319,32 @@ void ResetDay(datetime t){ g_curDay=DayStart(t); g_dayStartEq=AccountInfoDouble(
    if(InpMTrailEnable && g_mtMonKey>0) MTrailSave(); }                        // MONTH_TRAIL状態も同様に日次タッチ
 double AtrAt(int handle){ double a[1]; if(handle==INVALID_HANDLE||CopyBuffer(handle,0,1,1,a)<1) return 0.0; return a[0]; }
 
+//--- v1.32(docs/153): サイズ二重チェック。ブローカー申告tick値と損益計算エンジンの2経路で
+//    「1ロットが価格1.0動いた時の損益」を見積り、大きい方(=ロットが保守側)を採用。
+//    FN GER30でtick値申告が実損益と約10倍乖離しE-Monレッグが10倍サイズで建った事故(2026-07-13)の恒久対策。
+string g_sizeWarned="";
+double MoneyPerUnit(string sym)
+{
+   double tv=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_VALUE);
+   double ts=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_SIZE);
+   double a=(tv>0&&ts>0)? tv/ts : 0.0;
+   double p=SymbolInfoDouble(sym,SYMBOL_ASK);
+   double b=0.0, prof=0.0, d=p*0.001;
+   if(p>0 && d>0 && OrderCalcProfit(ORDER_TYPE_BUY,sym,1.0,p,p+d,prof) && prof>0) b=prof/d;
+   double m=MathMax(a,b);
+   if(a>0&&b>0){ double r=(a>b? a/b:b/a);
+      if(r>1.5 && StringFind(g_sizeWarned,sym)<0){ g_sizeWarned+=sym+";";
+         PrintFormat("⚠[SIZE SANITY %s] tick値経路 $%.2f vs 損益経路 $%.2f (乖離%.1f倍) → 保守側を採用しロット縮小",
+                     sym,a,b,r); } }
+   return m;
+}
+
 double LotsFor(string sym, double priceMove, double riskMoney)
 {
    if(priceMove<=0||riskMoney<=0) return 0.0;
-   double tv=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_VALUE);
-   double ts=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_SIZE);
-   if(tv<=0||ts<=0) return 0.0;
-   double lossPerLot=(priceMove/ts)*tv; if(lossPerLot<=0) return 0.0;
+   double mpu=MoneyPerUnit(sym);
+   if(mpu<=0) return 0.0;
+   double lossPerLot=priceMove*mpu; if(lossPerLot<=0) return 0.0;
    double lots=riskMoney/lossPerLot;
    double step=SymbolInfoDouble(sym,SYMBOL_VOLUME_STEP);
    double vmin=SymbolInfoDouble(sym,SYMBOL_VOLUME_MIN);
