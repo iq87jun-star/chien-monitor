@@ -19,9 +19,9 @@
 //|     Magic基底940700=旧EAと同居しても衝突しない)。                   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.40"   // = Seasonal_Top_EA v1.50 相当
+#property version   "1.41"   // = Seasonal_Top_EA v1.50 相当
 #property strict
-#property description "[FN200k R4G3 standard v1.30] R4+G3 ONE-CLICK (median-3, 1.5x, guards+notify+width built-in, v1.40 dual-path lot sizing sanity docs/153). Drop on chart & OK. Demo-first (docs/110-112)."
+#property description "[FN200k R4G3 standard v1.30] R4+G3 ONE-CLICK (median-3, 1.5x, guards+notify+width built-in, v1.40 dual-path lot sizing sanity / v1.41 no-roll-on-restart fix, docs/153). Drop on chart & OK. Demo-first (docs/110-112)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -271,6 +271,17 @@ int OnInit()
       scn,(g_month==0?"通年(月替わり自動)":IntegerToString(g_month)+"月"),g_mult,g_initBal,
       g_nv4,g_ne5,g_nemon,g_nemonx,g_nv7x,g_nv7,g_nsjul);
    Print("[NOTE] デモ専用・対象月以外は自動で全決済して待機。横展開レッグはEA初実装(docs/86)。");
+   // v1.41(docs/153追補): 再起動のたびにMONTH_ROLLが走るバグ修正。
+   //   g_curMonth を現在月で初期化し、正規化(全決済→建て直し)は
+   //   「EA停止中に月を跨いだ建玉が残っている場合」のみ実行する。
+   //   これにより端末再起動/再接続/再アタッチでは既存建玉をそのまま引き継ぐ。
+   {
+      MqlDateTime ti; TimeToStruct(TimeCurrent(),ti);
+      g_curMonth=ti.mon;
+      g_rollPending=(MonthlyStaleCount(ti.mon,ti.year)>0);
+      if(g_rollPending) Print("[v1.41] 停止中の月跨ぎを検出→MONTH_ROLL正規化を実行します");
+      else PrintFormat("[v1.41] 既存建玉を当月(%d月)構成として引き継ぎ(再起動での全決済はしません)",ti.mon);
+   }
    return INIT_SUCCEEDED;
 }
 void OnDeinit(const int reason){ EventKillTimer(); if(g_g3atr!=INVALID_HANDLE) IndicatorRelease(g_g3atr); }
@@ -353,6 +364,19 @@ void CloseAllMine(string why)      // ガード用: G3含む全スリーブ
 void CloseAllMonthly(string why)   // 月ゲート用: G3(イベント建玉)は対象外
 {
    for(int sl=SL_V4; sl<=SL_V7; sl++) CloseSleeve(sl,why);
+}
+
+//--- v1.41(docs/153追補): 先月以前に建った月ゲート建玉の数(EA停止中に月を跨いだ場合のみ>0)
+int MonthlyStaleCount(int curMon, int curYear)
+{
+   int n=0;
+   for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      long m=posinfo.Magic();
+      if(m<InpMagicBase+SL_V4 || m>InpMagicBase+SL_V7) continue;
+      MqlDateTime pt; TimeToStruct((datetime)posinfo.Time(),pt);
+      if(pt.mon!=curMon || pt.year!=curYear) n++; }
+   return n;
 }
 
 int MonthlyOpenCount()   // 月ゲート対象(G3除く)の残建玉数: 休場中のMONTH_ROLL再試行判定に使う
