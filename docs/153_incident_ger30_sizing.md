@@ -27,8 +27,8 @@ FNサーバーのGER30はこの申告値が実損益(実測$11.4/pt/lot)と**約
 
 | EA | 状況 | 期限 |
 |---|---|---|
-| **Chien_Seasonal_R4G3_Prop**(FN200k/FTMO稼働中) | 同型LotsFor。7月はS-Jul 100%でGER30を建てないため未発現。**9月からE-MonがGER30を使う** | **8月末までにv1.40で移植必須** |
-| Chien_E5_RP_Trend_EA(PortfolioE用) | 同型。PE v2はXAU+NASのみだが他銘柄でも異常メタデータはあり得る | デモ開始前に移植 |
+| **Chien_Seasonal_R4G3_Prop**(FN200k/FTMO稼働中) | ✅ **v1.40移植済み(2026-07-14)** — LotsForNotional/リスク監視/G3の3箇所を二重チェック化。口座別ワンクリック2種も同時修正 | 差替はユーザーの都合の良い時(9月のGER30使用前まで) |
+| Chien_E5_RP_Trend_EA(PortfolioE用) | ✅ **v1.10移植済み(2026-07-14)** | デモ開始時からv1.10を使用 |
 | その他ワンクリック/AllInOne系 | 同型 | 次回改版時 |
 
 ## 5. 教訓(恒久規則に追加)

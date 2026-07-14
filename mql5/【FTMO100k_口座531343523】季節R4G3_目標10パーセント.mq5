@@ -19,9 +19,9 @@
 //|     Magic基底940700=旧EAと同居しても衝突しない)。                   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.30"   // = Seasonal_Top_EA v1.50 相当
+#property version   "1.40"   // = Seasonal_Top_EA v1.50 相当
 #property strict
-#property description "[FTMO100k #531343523 R4G3 target+10%] R4+G3 ONE-CLICK (median-3, 1.5x, guards+notify+width built-in). Drop on chart & OK. Demo-first (docs/110-112)."
+#property description "[FTMO100k #531343523 R4G3 target+10%] R4+G3 ONE-CLICK (median-3, 1.5x, guards+notify+width built-in, v1.40 dual-path lot sizing sanity docs/153). Drop on chart & OK. Demo-first (docs/110-112)."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -282,13 +282,31 @@ double SpreadBps(string s)
    if(a<=0||b<=0) return 1e9;
    return (a-b)/((a+b)/2.0)*1e4;
 }
+//--- v1.40(docs/153): サイズ二重チェック。tick値申告と損益計算エンジンの2経路で見積り、
+//    保守側(1ロット価値が大きい方=ロットが小さくなる側)を採用。FN GER30の10倍事故の恒久対策。
+string g_sizeWarned="";
+double MoneyPerUnit(string sym)
+{
+   double tv=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_VALUE);
+   double ts=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_SIZE);
+   double a=(tv>0&&ts>0)? tv/ts : 0.0;
+   double p=SymbolInfoDouble(sym,SYMBOL_ASK);
+   double b=0.0, prof=0.0, d=p*0.001;
+   if(p>0 && d>0 && OrderCalcProfit(ORDER_TYPE_BUY,sym,1.0,p,p+d,prof) && prof>0) b=prof/d;
+   double m=MathMax(a,b);
+   if(a>0&&b>0){ double r=(a>b? a/b:b/a);
+      if(r>1.5 && StringFind(g_sizeWarned,sym)<0){ g_sizeWarned+=sym+";";
+         PrintFormat("⚠[SIZE SANITY %s] tick値経路 $%.2f vs 損益経路 $%.2f (乖離%.1f倍) → 保守側を採用しロット縮小",
+                     sym,a,b,r); } }
+   return m;
+}
+
 double LotsForNotional(string s, double notional)
 {
    double price=SymbolInfoDouble(s,SYMBOL_ASK);
-   double tv=SymbolInfoDouble(s,SYMBOL_TRADE_TICK_VALUE);
-   double ts=SymbolInfoDouble(s,SYMBOL_TRADE_TICK_SIZE);
-   if(price<=0||tv<=0||ts<=0) return 0.0;
-   double valuePerLot=price*(tv/ts);        // 1ロットの建玉評価額(口座通貨)
+   double mpu=MoneyPerUnit(s);
+   if(price<=0||mpu<=0) return 0.0;
+   double valuePerLot=price*mpu;            // 1ロットの建玉評価額(口座通貨・v1.40二重チェック済)
    if(valuePerLot<=0) return 0.0;
    double lots=notional/valuePerLot;
    double step=SymbolInfoDouble(s,SYMBOL_VOLUME_STEP);
@@ -360,13 +378,12 @@ double OpenRiskPct()
       if(!IsMyMagic(posinfo.Magic())) continue;
       string sym=posinfo.Symbol();
       double vol=posinfo.Volume(), sl=posinfo.StopLoss(), op=posinfo.PriceOpen();
-      double tv=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_VALUE);
-      double ts=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_SIZE);
+      double mpu=MoneyPerUnit(sym);
       double risk=0.0;
-      if(sl>0.0 && tv>0 && ts>0) risk=MathAbs(op-sl)/ts*tv*vol;
+      if(sl>0.0 && mpu>0) risk=MathAbs(op-sl)*mpu*vol;
       else{
          double px=SymbolInfoDouble(sym,SYMBOL_BID);
-         if(tv>0 && ts>0 && px>0) risk=px*(tv/ts)*vol*InpNoSLRiskAssumePct/100.0;
+         if(mpu>0 && px>0) risk=px*mpu*vol*InpNoSLRiskAssumePct/100.0;
       }
       total+=risk;
    }
@@ -643,11 +660,10 @@ void SleeveG3()
    double a[1];
    if(g_g3atr==INVALID_HANDLE || CopyBuffer(g_g3atr,0,1,1,a)<1) return;
    double atr=a[0]; if(atr<=0) return;
-   double tv=SymbolInfoDouble(g_g3sym,SYMBOL_TRADE_TICK_VALUE);
-   double ts=SymbolInfoDouble(g_g3sym,SYMBOL_TRADE_TICK_SIZE);
-   if(tv<=0||ts<=0) return;
+   double mpu=MoneyPerUnit(g_g3sym);
+   if(mpu<=0) return;
    double riskMoney=g_initBal*InpG3RiskPct/100.0;
-   double lots=riskMoney/(atr/ts*tv);
+   double lots=riskMoney/(atr*mpu);
    double step=SymbolInfoDouble(g_g3sym,SYMBOL_VOLUME_STEP);
    double vmin=SymbolInfoDouble(g_g3sym,SYMBOL_VOLUME_MIN);
    double vmax=SymbolInfoDouble(g_g3sym,SYMBOL_VOLUME_MAX);

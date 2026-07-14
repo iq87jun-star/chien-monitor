@@ -26,7 +26,7 @@
 //|       バックテストは price index(配当除く)・月次終値モデル。       |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.00"
+#property version   "1.10"
 #property strict
 #property description "E5 risk-parity multi-asset TSMOM (gold+indices). LEAD/DEMO satellite — NOT a confirmed edge. Monthly, long/short, risk-budgeted."
 
@@ -155,16 +155,34 @@ double AtrMN1()
 }
 
 // リスクパリティ: 月次σ(価格)=ATR(MN1) として、月次P&L σ ≒ legRisk%×equity となる lot。
+//--- v1.10(docs/153): サイズ二重チェック。tick値申告と損益計算エンジンの2経路で見積り、
+//    保守側(1ロット価値が大きい方=ロットが小さくなる側)を採用。FN GER30の10倍事故の恒久対策。
+string g_sizeWarned="";
+double MoneyPerUnit(string sym)
+{
+   double tv=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_VALUE);
+   double ts=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_SIZE);
+   double a=(tv>0&&ts>0)? tv/ts : 0.0;
+   double p=SymbolInfoDouble(sym,SYMBOL_ASK);
+   double b=0.0, prof=0.0, d=p*0.001;
+   if(p>0 && d>0 && OrderCalcProfit(ORDER_TYPE_BUY,sym,1.0,p,p+d,prof) && prof>0) b=prof/d;
+   double m=MathMax(a,b);
+   if(a>0&&b>0){ double r=(a>b? a/b:b/a);
+      if(r>1.5 && StringFind(g_sizeWarned,sym)<0){ g_sizeWarned+=sym+";";
+         PrintFormat("⚠[SIZE SANITY %s] tick値経路 $%.2f vs 損益経路 $%.2f (乖離%.1f倍) → 保守側を採用しロット縮小",
+                     sym,a,b,r); } }
+   return m;
+}
+
 double CalcLots()
 {
    double atr=AtrMN1();
    if(atr<=0) return 0.0;
    double equity=AccountInfoDouble(ACCOUNT_EQUITY);
    double riskMoney=equity*(g_legRisk/100.0);
-   double tickValue=SymbolInfoDouble(_Symbol,SYMBOL_TRADE_TICK_VALUE);
-   double tickSize =SymbolInfoDouble(_Symbol,SYMBOL_TRADE_TICK_SIZE);
-   if(tickValue<=0 || tickSize<=0) return 0.0;
-   double moneyPerLotPer1Sigma=(atr/tickSize)*tickValue;   // 1ロットがATR(=月次σ)動いた時の損益
+   double mpu=MoneyPerUnit(_Symbol);
+   if(mpu<=0) return 0.0;
+   double moneyPerLotPer1Sigma=atr*mpu;   // 1ロットがATR(=月次σ)動いた時の損益(v1.10二重チェック済)
    if(moneyPerLotPer1Sigma<=0) return 0.0;
    double lots=riskMoney/moneyPerLotPer1Sigma;
    double step=SymbolInfoDouble(_Symbol,SYMBOL_VOLUME_STEP);
