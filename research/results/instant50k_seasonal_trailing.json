@@ -1,0 +1,249 @@
+{
+ "meta": {
+  "method": "日次ブロックMC(月単位BS・docs/111系流用)。失格=日次closeのequityがトレーリングフロア(HWM−X×初期)以下。lock=フロア建値で固定/pure=無限切上げの2変種で挟む。日次ガードキャップなし(素の日次=保守)。日次close解像度=実際の失格はやや高い側。",
+  "window": "2016-01..2026-06",
+  "n_paths": 20000,
+  "horizon_months": 36,
+  "composition": "季節R4+G3(WR4月別表・G3は倍率非適用=EA実装と同一)",
+  "inputs": {
+   "EURUSD": "00a08caf63207544",
+   "GBPUSD": "355a845799847d7b",
+   "USDJPY": "1f50f40b5e89f556",
+   "AUDUSD": "ad5549358e8fd8b5",
+   "USDCHF": "b4ef97cc2e91e4f1",
+   "USDCAD": "af173cc8d1fbe954",
+   "NZDUSD": "6bf23b76836db9af",
+   "EURJPY": "3b80d917753db76e",
+   "GBPJPY": "ddc66473ebd30273",
+   "AUDJPY": "98ade6818bbd7995",
+   "NZDJPY": "341c655370e601b5",
+   "CADJPY": "71dafae63b484892",
+   "CHFJPY": "69850c932f42ab0d",
+   "XAUUSD": "f63f13f5ac377f11",
+   "US500": "cf9623ed096f81dd",
+   "NAS100": "f0710910c39fd0d3",
+   "GER40": "1bd9ee8d1aaebc6f",
+   "JP225": "d4903278f071a23a",
+   "UK100": "f979a26e46c6fb79",
+   "FR40": "231bf96be49c76de"
+  },
+  "caveat": "Yahoo日足=v4含む構成は実データ比で過小評価側(docs/138)。絶対値は保守。"
+ },
+ "variants": {
+  "x0.5": {
+   "monthly": {
+    "mean_month_pct": 0.84,
+    "median_month_pct": 0.61,
+    "worst_month_pct": -2.49,
+    "worst_day_pct": -1.78,
+    "pos_month_pct": 73.8,
+    "ann_sharpe": 2.1,
+    "ann_return_pct": 10.5
+   },
+   "FN_Instant_6pct_lock": {
+    "breach_pct_6m": 0.5,
+    "breach_pct_12m": 1.3,
+    "breach_pct_36m": 1.8,
+    "median_breach_month": 9.0,
+    "alive12_median_gain_pct": 10.2,
+    "alive12_p25_gain_pct": 6.909999999999999
+   },
+   "FN_Instant_6pct_pure": {
+    "breach_pct_6m": 0.5,
+    "breach_pct_12m": 2.0,
+    "breach_pct_36m": 17.0,
+    "median_breach_month": 27.0,
+    "alive12_median_gain_pct": 10.2,
+    "alive12_p25_gain_pct": 6.92
+   },
+   "Blueberry_10pct_lock": {
+    "breach_pct_6m": 0.0,
+    "breach_pct_12m": 0.0,
+    "breach_pct_36m": 0.0,
+    "median_breach_month": 17.0,
+    "alive12_median_gain_pct": 10.1,
+    "alive12_p25_gain_pct": 6.800000000000001
+   },
+   "Blueberry_10pct_pure": {
+    "breach_pct_6m": 0.0,
+    "breach_pct_12m": 0.0,
+    "breach_pct_36m": 0.3,
+    "median_breach_month": 29.0,
+    "alive12_median_gain_pct": 10.1,
+    "alive12_p25_gain_pct": 6.800000000000001
+   }
+  },
+  "x0.75": {
+   "monthly": {
+    "mean_month_pct": 1.23,
+    "median_month_pct": 0.94,
+    "worst_month_pct": -3.04,
+    "worst_day_pct": -2.68,
+    "pos_month_pct": 74.6,
+    "ann_sharpe": 2.17,
+    "ann_return_pct": 15.8
+   },
+   "FN_Instant_6pct_lock": {
+    "breach_pct_6m": 7.2,
+    "breach_pct_12m": 10.1,
+    "breach_pct_36m": 10.7,
+    "median_breach_month": 5.0,
+    "alive12_median_gain_pct": 15.6,
+    "alive12_p25_gain_pct": 10.91
+   },
+   "FN_Instant_6pct_pure": {
+    "breach_pct_6m": 9.4,
+    "breach_pct_12m": 23.6,
+    "breach_pct_36m": 80.5,
+    "median_breach_month": 19.0,
+    "alive12_median_gain_pct": 15.5,
+    "alive12_p25_gain_pct": 10.85
+   },
+   "Blueberry_10pct_lock": {
+    "breach_pct_6m": 0.1,
+    "breach_pct_12m": 0.4,
+    "breach_pct_36m": 0.6,
+    "median_breach_month": 10.0,
+    "alive12_median_gain_pct": 15.2,
+    "alive12_p25_gain_pct": 10.35
+   },
+   "Blueberry_10pct_pure": {
+    "breach_pct_6m": 0.1,
+    "breach_pct_12m": 0.6,
+    "breach_pct_36m": 12.7,
+    "median_breach_month": 29.0,
+    "alive12_median_gain_pct": 15.2,
+    "alive12_p25_gain_pct": 10.35
+   }
+  },
+  "x1.0": {
+   "monthly": {
+    "mean_month_pct": 1.63,
+    "median_month_pct": 1.23,
+    "worst_month_pct": -3.66,
+    "worst_day_pct": -3.57,
+    "pos_month_pct": 74.6,
+    "ann_sharpe": 2.19,
+    "ann_return_pct": 21.4
+   },
+   "FN_Instant_6pct_lock": {
+    "breach_pct_6m": 17.5,
+    "breach_pct_12m": 20.6,
+    "breach_pct_36m": 21.1,
+    "median_breach_month": 3.0,
+    "alive12_median_gain_pct": 21.7,
+    "alive12_p25_gain_pct": 15.479999999999999
+   },
+   "FN_Instant_6pct_pure": {
+    "breach_pct_6m": 27.8,
+    "breach_pct_12m": 53.8,
+    "breach_pct_36m": 97.4,
+    "median_breach_month": 11.0,
+    "alive12_median_gain_pct": 22.0,
+    "alive12_p25_gain_pct": 15.690000000000001
+   },
+   "Blueberry_10pct_lock": {
+    "breach_pct_6m": 1.2,
+    "breach_pct_12m": 2.6,
+    "breach_pct_36m": 3.2,
+    "median_breach_month": 8.0,
+    "alive12_median_gain_pct": 20.6,
+    "alive12_p25_gain_pct": 14.12
+   },
+   "Blueberry_10pct_pure": {
+    "breach_pct_6m": 1.8,
+    "breach_pct_12m": 8.0,
+    "breach_pct_36m": 59.5,
+    "median_breach_month": 24.0,
+    "alive12_median_gain_pct": 20.3,
+    "alive12_p25_gain_pct": 13.94
+   }
+  },
+  "x1.25": {
+   "monthly": {
+    "mean_month_pct": 2.02,
+    "median_month_pct": 1.56,
+    "worst_month_pct": -4.6,
+    "worst_day_pct": -4.46,
+    "pos_month_pct": 77.0,
+    "ann_sharpe": 2.19,
+    "ann_return_pct": 27.2
+   },
+   "FN_Instant_6pct_lock": {
+    "breach_pct_6m": 25.1,
+    "breach_pct_12m": 27.9,
+    "breach_pct_36m": 28.3,
+    "median_breach_month": 3.0,
+    "alive12_median_gain_pct": 28.2,
+    "alive12_p25_gain_pct": 20.22
+   },
+   "FN_Instant_6pct_pure": {
+    "breach_pct_6m": 39.8,
+    "breach_pct_12m": 69.9,
+    "breach_pct_36m": 99.9,
+    "median_breach_month": 8.0,
+    "alive12_median_gain_pct": 28.8,
+    "alive12_p25_gain_pct": 21.0
+   },
+   "Blueberry_10pct_lock": {
+    "breach_pct_6m": 6.8,
+    "breach_pct_12m": 9.6,
+    "breach_pct_36m": 10.3,
+    "median_breach_month": 5.0,
+    "alive12_median_gain_pct": 26.4,
+    "alive12_p25_gain_pct": 18.240000000000002
+   },
+   "Blueberry_10pct_pure": {
+    "breach_pct_6m": 9.8,
+    "breach_pct_12m": 26.7,
+    "breach_pct_36m": 88.9,
+    "median_breach_month": 18.0,
+    "alive12_median_gain_pct": 25.9,
+    "alive12_p25_gain_pct": 17.849999999999998
+   }
+  },
+  "x1.5": {
+   "monthly": {
+    "mean_month_pct": 2.42,
+    "median_month_pct": 1.9,
+    "worst_month_pct": -5.55,
+    "worst_day_pct": -5.35,
+    "pos_month_pct": 77.8,
+    "ann_sharpe": 2.19,
+    "ann_return_pct": 33.2
+   },
+   "FN_Instant_6pct_lock": {
+    "breach_pct_6m": 29.9,
+    "breach_pct_12m": 32.4,
+    "breach_pct_36m": 32.7,
+    "median_breach_month": 3.0,
+    "alive12_median_gain_pct": 34.7,
+    "alive12_p25_gain_pct": 24.779999999999998
+   },
+   "FN_Instant_6pct_pure": {
+    "breach_pct_6m": 50.4,
+    "breach_pct_12m": 83.0,
+    "breach_pct_36m": 100.0,
+    "median_breach_month": 6.0,
+    "alive12_median_gain_pct": 35.1,
+    "alive12_p25_gain_pct": 25.89
+   },
+   "Blueberry_10pct_lock": {
+    "breach_pct_6m": 13.2,
+    "breach_pct_12m": 16.5,
+    "breach_pct_36m": 17.1,
+    "median_breach_month": 4.0,
+    "alive12_median_gain_pct": 32.9,
+    "alive12_p25_gain_pct": 22.98
+   },
+   "Blueberry_10pct_pure": {
+    "breach_pct_6m": 21.9,
+    "breach_pct_12m": 47.1,
+    "breach_pct_36m": 97.8,
+    "median_breach_month": 13.0,
+    "alive12_median_gain_pct": 32.6,
+    "alive12_p25_gain_pct": 22.64
+   }
+  }
+ }
+}
