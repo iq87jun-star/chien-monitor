@@ -22,7 +22,7 @@
 //|     機構確認(docs/86 H14c/d)のみでEA実績ゼロ。必ずデモから。        |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.60"
+#property version   "1.61"   // + S-Jul月初値エントリー(統計整合)
 #property strict
 #property description "Seasonal top-ranked mini-portfolios. Forward-validation EA, demo-first. v1.40 push notify (Even G2) + persistent baseline / v1.50 sleeve profit-width notify vs history (docs/112)."
 
@@ -68,6 +68,9 @@ input bool   InpSwapLogEnable = true;     // MQL5/Files/ChienSwapLog_<口座>.cs
 input group "=== 手決済後の再建て(docs/100 §5) ==="
 input bool   InpReenterManualClose = true; // 月保有スリーブ(S-Jul/E5)を手決済したら同月内に自動で建て直す
                                            // ※ガード(日次/フロア/ロック/月ゲート)による決済後は再建てしない
+
+input group "=== S-Jul 月初値エントリー(統計整合・2026-07-16) ==="
+input bool   InpSJulEntryAtOpenOrBelow = true; // S-Julは月初値以下でのみ建てる(途中導入時の高値掴み防止)
 
 input group "=== G3 FOMCオーバーレイ(ADOPT・docs/82, 重畳は docs/110) ==="
 input bool   InpG3Enable        = false;  // 現行構成にFOMC前日ドリフト(US500 24hロング)を重畳
@@ -119,6 +122,7 @@ int      g_ntfDayKey=-1;       // 日次警告は1日1回
 string   g_gvName="";          // 基準残高の端末保存キー(4週失効対策で日次タッチ)
 datetime g_lastD1  = 0;
 int      g_e5MonthKey = -1, g_sjulMonthKey = -1, g_monWeekKey[64];
+int      g_sjulWaitDayKey[8];
 
 #define SL_V4   1
 #define SL_E5   2
@@ -252,6 +256,7 @@ int OnInit()
    g_nv7   =SplitResolve(InpV7,     g_v7,   8,"v7");
    g_nsjul =SplitResolve(InpSJul,   g_sjul, 8,"S-Jul");
    ArrayInitialize(g_monWeekKey,-1);
+   ArrayInitialize(g_sjulWaitDayKey,-1);
 
    if(InpG3Enable){
       g_g3sym=ResolveSymbol(InpG3Symbol);
@@ -798,6 +803,17 @@ void SleeveSJul(double W)
    for(int i=0;i<g_nsjul;i++){
       if(CountSleeve(SL_SJUL,g_sjul[i])>0){ done++; continue; }
       if(!firstBuild && !ManualCloseThisMonth(SL_SJUL,g_sjul[i])) continue;  // 再建ては手決済後のみ
+      if(InpSJulEntryAtOpenOrBelow){                  // 統計整合: バックテスト=月初open起点(docs/104-105)
+         double mo=iOpen(g_sjul[i],PERIOD_MN1,0);
+         double bidw=SymbolInfoDouble(g_sjul[i],SYMBOL_BID);
+         if(mo>0 && bidw>mo){
+            MqlDateTime tw; TimeToStruct(TimeCurrent(),tw);
+            int wdk=tw.year*1000+tw.day_of_year;
+            if(g_sjulWaitDayKey[i]!=wdk){ g_sjulWaitDayKey[i]=wdk;
+               PrintFormat("[SJUL WAIT] %s bid %.2f > 月初 %.2f → 月初値以下まで待機(未達なら当月見送り)",g_sjul[i],bidw,mo); }
+            continue;
+         }
+      }
       if(OpenNotional(g_sjul[i],SL_SJUL,+1,eq*W*g_mult/g_nsjul,0,0,(firstBuild?"SJUL":"SJUL_REENTER"))) done++;
    }
    if(firstBuild && done>=g_nsjul) g_sjulMonthKey=mk;
