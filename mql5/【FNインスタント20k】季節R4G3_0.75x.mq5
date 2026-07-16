@@ -20,7 +20,7 @@
 #property copyright "chien-monitor research"
 #property version   "1.43"   // = v1.42 + S-Jul月初値エントリー(統計整合)
 #property strict
-#property description "[FN Instant 20k] R4+G3 ONE-CLICK 0.75x (trailing -6pct guard w/ breakeven lock, catastrophe SL on ALL legs, per-trade 2.5pct cap for Max-Risk-3pct rule, docs/154/155). Drop on chart & OK. Swap-free account recommended."
+#property description "*** DO NOT USE on FN Instant (docs/161: same trades as challenge accounts prohibited). Superseded by PD-pruned 1.0x EA (docs/163). *** [FN Instant 20k] R4+G3 ONE-CLICK 0.75x (trailing -6pct guard w/ breakeven lock, catastrophe SL on ALL legs, per-trade 2.5pct cap for Max-Risk-3pct rule, docs/154/155). Drop on chart & OK. Swap-free account recommended."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
