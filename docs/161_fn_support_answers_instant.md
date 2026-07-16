@@ -43,4 +43,20 @@ Instant 20kに季節を載せると**同一firm内で3口座同一戦略**にな
 > under my own profile? Specifically: (a) is running my own EA strategy on two of my own accounts
 > a violation? (b) If yes, is it sufficient that the accounts trade different strategies/instruments?
 
+## 4.【追補 2026-07-16】複数口座質問への回答(アニー・ジェーン氏・メール)
+
+Stellar Instantのコピートレード(=同一取引)規則:
+1. **同一人物のStellar Instant同士 → 許可**
+2. 異なる個人間 → 厳禁
+3. **Stellar InstantとStellar 1-Step/2-Step/LiteチャレンジまたはFundedNext口座の間 → 不許可**
+
+### 確定した結論
+
+- 当方のFN200k/FN100kはStellar 2-Step → **Instantに季節R4G3を載せて同時稼働は③に該当=不可**。
+  ユーザーの「Instant=季節」案は取り下げ、**Instantには別戦略**(PD間引き/PE v2)を割り当てる。
+- 2-Step同士(FN200k↔FN100k)の同一戦略については本回答は言及なし(①がInstant限定表現)。
+  グレーだが、①の「同一人物間は許可」の原則が示されたこと+これまで数ヶ月並走して指摘なしを
+  踏まえ、現状維持。次回のやり取りで機会があれば確認する。
+- Instant用代替戦略の校正 → docs/162。
+
 > 規律: 書面回答の一次記録。推測と回答を混ぜない(§1=回答の転記、§2=当方の解釈と対応案)。
