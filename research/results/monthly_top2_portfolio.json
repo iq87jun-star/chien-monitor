@@ -1,0 +1,78 @@
+{
+ "picks_is": {
+  "1": {
+   "HOLD:NAS100": 0.403,
+   "HOLD:US500": 0.597
+  },
+  "2": {
+   "EMonX:JP225": 0.273,
+   "v4:USDCHF": 0.727
+  },
+  "3": {
+   "EMon:GER40": 0.496,
+   "E5:GER40": 0.504
+  },
+  "4": {
+   "HOLD:NAS100": 0.425,
+   "HOLD:US500": 0.575
+  },
+  "5": {
+   "HOLD:NAS100": 0.401,
+   "HOLD:US500": 0.599
+  },
+  "6": {
+   "E5:NAS100": 0.604,
+   "HOLD:NAS100": 0.396
+  },
+  "7": {
+   "HOLD:NAS100": 0.394,
+   "HOLD:US500": 0.606
+  },
+  "8": {
+   "E5:NAS100": 0.424,
+   "E5:US500": 0.576
+  },
+  "9": {
+   "E5:XAUUSD": 0.288,
+   "v4:GBPJPY": 0.712
+  },
+  "10": {
+   "EMonX:JP225": 0.557,
+   "EMon:NAS100": 0.443
+  },
+  "11": {
+   "HOLD:US500": 0.546,
+   "HOLD:NAS100": 0.454
+  },
+  "12": {
+   "E5:NAS100": 0.194,
+   "v4:AUDUSD": 0.806
+  }
+ },
+ "variants": {
+  "月別Top2(IS・後知恵)": {
+   "mult": 1.05,
+   "median_months": 3.0,
+   "pass_pct": 90.7,
+   "fail_pct_optimistic": 9.3,
+   "fail_pct_raw": 17.2,
+   "undone_pct": 0.0,
+   "mean_month": 2.22,
+   "sharpe": 1.95,
+   "worst_month": -11.23,
+   "worst_day": -6.2
+  },
+  "月別Top2(LOYO・実力)": {
+   "mult": 1.3,
+   "median_months": 3.0,
+   "pass_pct": 73.8,
+   "fail_pct_optimistic": 26.2,
+   "fail_pct_raw": 35.7,
+   "undone_pct": 0.0,
+   "mean_month": 1.32,
+   "sharpe": 1.04,
+   "worst_month": -13.85,
+   "worst_day": -7.68
+  }
+ }
+}
