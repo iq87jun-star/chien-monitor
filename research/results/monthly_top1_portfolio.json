@@ -1,0 +1,66 @@
+{
+ "picks_is": {
+  "1": "HOLD:NAS100",
+  "2": "EMonX:JP225",
+  "3": "EMon:GER40",
+  "4": "HOLD:NAS100",
+  "5": "HOLD:NAS100",
+  "6": "E5:NAS100",
+  "7": "HOLD:NAS100",
+  "8": "E5:NAS100",
+  "9": "E5:XAUUSD",
+  "10": "EMonX:JP225",
+  "11": "HOLD:US500",
+  "12": "E5:NAS100"
+ },
+ "variants": {
+  "月別1位(IS・後知恵)": {
+   "mult": 0.85,
+   "median_months": 3.0,
+   "pass_pct": 91.0,
+   "fail_pct_optimistic": 9.0,
+   "fail_pct_raw": 10.7,
+   "undone_pct": 0.0,
+   "mean_month": 2.12,
+   "sharpe": 1.91,
+   "worst_month": -11.34,
+   "worst_day": -5.07
+  },
+  "月別1位(LOYO・実力)": {
+   "mult": 1.0,
+   "median_months": 3.0,
+   "pass_pct": 76.2,
+   "fail_pct_optimistic": 23.8,
+   "fail_pct_raw": 32.1,
+   "undone_pct": 0.0,
+   "mean_month": 1.21,
+   "sharpe": 1.01,
+   "worst_month": -13.26,
+   "worst_day": -7.92
+  },
+  "季節R4+G3": {
+   "mult": 1.5,
+   "median_months": 3.0,
+   "pass_pct": 94.3,
+   "fail_pct_optimistic": 5.7,
+   "fail_pct_raw": 8.5,
+   "undone_pct": 0.0,
+   "mean_month": 2.42,
+   "sharpe": 2.19,
+   "worst_month": -5.55,
+   "worst_day": -5.35
+  },
+  "PD間引き": {
+   "mult": 3.0,
+   "median_months": 3.0,
+   "pass_pct": 81.0,
+   "fail_pct_optimistic": 19.0,
+   "fail_pct_raw": 25.1,
+   "undone_pct": 0.0,
+   "mean_month": 1.48,
+   "sharpe": 1.34,
+   "worst_month": -6.99,
+   "worst_day": -7.68
+  }
+ }
+}
