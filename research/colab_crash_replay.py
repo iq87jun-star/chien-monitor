@@ -76,22 +76,29 @@ def h1(name):
     if os.path.exists(p):
         df=_read_h1(p); src="dukascopy"
     else:
-        df=_yahoo(YH.get(name,name+"=X"),"60m",
-                  "2024-07-01","2025-05-01"); src="yahoo60m"
-        # 2イベントの範囲だけあれば良い
+        start=max(pd.Timestamp.utcnow().tz_localize(None)-pd.Timedelta(days=725),
+                  pd.Timestamp("2024-07-20"))
+        df=_yahoo(YH.get(name,name+"=X"),"60m",str(start.date()),"2025-05-01"); src="yahoo60m"
+        # 2イベント範囲+ATR前提分(Yahoo 60mは約730日しか遡れない)
     H1CACHE[name]=(df,src); return H1CACHE[name]
 
 DCACHE={}
 def daily(name):
     if name in DCACHE: return DCACHE[name]
-    p=f"{H1_DIR}/{name}_h1.csv"
+    p=f"{H1_DIR}/{name}_h1.csv"; df=None
     if os.path.exists(p):
         x=_read_h1(p); g=x.resample("1D")
         df=pd.DataFrame({"open":g["open"].first(),"high":g["high"].max(),
                          "low":g["low"].min(),"close":g["close"].last()}).dropna()
-    else:
-        df=_yahoo(YH.get(name,name+"=X"),"1d","2013-01-01","2025-05-01")
-    df.index=pd.DatetimeIndex(df.index.date)
+        df.index=pd.DatetimeIndex(pd.DatetimeIndex(df.index).date)
+    if df is None or len(df[df.index<pd.Timestamp("2024-08-01")])<400:
+        try:
+            y=_yahoo(YH.get(name,name+"=X"),"1d","2013-01-01","2025-05-01")
+            y.index=pd.DatetimeIndex(pd.DatetimeIndex(y.index).date)
+            df=y if df is None else pd.concat([y[y.index<df.index.min()],df]).sort_index()
+            print(f"[data] {name}: 日足をYahooで延長({df.index.min().date()}〜{df.index.max().date()})")
+        except Exception as e:
+            print(f"[data] {name}: Yahoo日足補完失敗 {e}")
     DCACHE[name]=df; return df
 
 
@@ -117,6 +124,9 @@ def atr_mn(name, month_end, n=6):
 def e5_sign(name, before_month_end):
     df=daily(name); mc=df["close"].resample("ME").last()
     mc=mc[mc.index<=pd.Timestamp(before_month_end)]
+    if len(mc)<14:
+        print(f"⚠ {name}: 月次履歴{len(mc)}本<14 → E5シグナル判定不能(0扱い)")
+        return 0
     comp=0
     for lb in (1,3,6,12):
         r=mc.iloc[-1]/mc.iloc[-1-lb]-1
@@ -290,6 +300,13 @@ def replay(config, event, slip, seasonal=False):
 
 
 def main():
+    print("[診断] データ源と期間:")
+    for nm in ["EURJPY","GBPJPY","US500","NAS100","GER40","XAUUSD"]:
+        try:
+            df,src=h1(nm)
+            print(f"  H1 {nm}: {src} {df.index.min()}〜{df.index.max()} ({len(df)}本)")
+        except Exception as e:
+            print(f"  H1 {nm}: 取得失敗 {e}")
     out={}
     for ev in EVENTS:
         out[ev]={}
