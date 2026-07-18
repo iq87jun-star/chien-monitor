@@ -17,7 +17,8 @@ DRIVE_BASE = "/content/drive/MyDrive/forex_ml"
 H1_DIR = f"{DRIVE_BASE}/dukascopy_data_h1"
 OUT_JSON = f"{DRIVE_BASE}/crash_replay.json"
 
-EVENTS = ["2024-08-05", "2025-04-09"]
+EVENTS = ["2016-07-06","2018-02-05","2018-11-12","2020-03-12","2020-03-19",
+          "2024-08-05","2025-04-09"]
 SLIPS = [0.0, 0.001, 0.003]          # SL/ガード約定の不利方向スリッページ(価格比)
 GUARD_DAY = -0.04                    # EA日次ガード
 FN_DAY = -0.05                       # FN日次違反ライン
@@ -29,10 +30,16 @@ PD = dict(v7_pairs=["EURJPY","GBPJPY"], v7_hours=[4,6,8,10], v7_shot=0.00136,
           v4_risk=0.0032, e5_assets=["XAUUSD","NAS100"], e5_leg=0.0175, cat_atr=2.5, v4_slatr=1.5)
 # 季節1.5x(WR4焼き込み・当時仕様=月曜系/E5/SJulはSLなし)
 SEAS_W = {"2024-08-05": dict(v4=.331, EMon=.206, E5=.328, SJul=.135),
-          "2025-04-09": dict(EMon=.773, SJul=.227)}
+          "2025-04-09": dict(EMon=.773, SJul=.227),
+          "2016-07-06": dict(SJul=1.0),
+          "2018-02-05": dict(v4=1.0),          # 2月=v4単騎(月間保有レッグなし=季節側は対象外)
+          "2018-11-12": dict(EMonX=.181, SJul=.819),
+          "2020-03-12": dict(v4=.377, EMon=.405, E5=.218),
+          "2020-03-19": dict(v4=.377, EMon=.405, E5=.218)}
 SEAS_MULT = 1.5
 SEAS_E5 = ["XAUUSD","US500","NAS100","GER40"]
-YH = {"US500":"^GSPC","NAS100":"^NDX","GER40":"^GDAXI","XAUUSD":"GC=F"}
+YH = {"US500":"^GSPC","NAS100":"^NDX","GER40":"^GDAXI","XAUUSD":"GC=F",
+      "JP225":"^N225","UK100":"^FTSE","FR40":"^FCHI"}
 
 try:
     if not os.path.exists("/content/drive/MyDrive"):
@@ -74,17 +81,37 @@ def _yahoo(sym, interval, start, end):
 
 import urllib.parse  # noqa
 
+def _synth_h1(name, until=None):
+    """日足→擬似H1(00:00=寄り/12:00=高安フル/21:00=引け)。保守近似(docs/168 §4)"""
+    d=daily(name)
+    if until is not None: d=d[d.index<pd.Timestamp(until)]
+    rows=[]
+    for t,b in d.iterrows():
+        base=pd.Timestamp(t).tz_localize("UTC")
+        rows.append((base, b["open"],b["open"],b["open"],b["open"]))
+        rows.append((base+pd.Timedelta(hours=12), b["open"],b["high"],b["low"],b["close"]))
+        rows.append((base+pd.Timedelta(hours=21), b["close"],b["close"],b["close"],b["close"]))
+    return pd.DataFrame(rows,columns=["t","open","high","low","close"]).set_index("t")
+
 H1CACHE={}
 def h1(name):
     if name in H1CACHE: return H1CACHE[name]
     p=f"{H1_DIR}/{name}_h1.csv"
     if os.path.exists(p):
         df=_read_h1(p); src="dukascopy"
+        if df.index.min()>pd.Timestamp("2016-01-10",tz="UTC"):   # 例: XAUUSDは2021年〜
+            pre=_synth_h1(name, until=df.index.min().tz_localize(None))
+            df=pd.concat([pre,df]).sort_index(); src="dukascopy+synth"
     else:
-        start=max(pd.Timestamp.utcnow().tz_localize(None)-pd.Timedelta(days=725),
-                  pd.Timestamp("2024-07-20"))
-        df=_yahoo(YH.get(name,name+"=X"),"60m",str(start.date()),"2025-05-01"); src="yahoo60m"
-        # 2イベント範囲+ATR前提分(Yahoo 60mは約730日しか遡れない)
+        try:
+            start=max(pd.Timestamp.utcnow().tz_localize(None)-pd.Timedelta(days=725),
+                      pd.Timestamp("2024-07-20"))
+            recent=_yahoo(YH.get(name,name+"=X"),"60m",str(start.date()),"2025-05-01")
+        except Exception:
+            recent=None
+        pre=_synth_h1(name, until=None)
+        df=pre if recent is None else pd.concat([pre[pre.index<recent.index.min()],recent]).sort_index()
+        src="synth(+yahoo60m)" if recent is not None else "synth"
     H1CACHE[name]=(df,src); return H1CACHE[name]
 
 DCACHE={}
@@ -247,6 +274,13 @@ def replay(config, event, slip, seasonal=False):
             tot=sum(invv.values())
             for a,(s,ent) in sgn.items():
                 legs.append(Leg(a,s,ent,-1e18 if s>0 else 1e18,SEAS_MULT*W["E5"]*invv[a]/tot,f"E5:{a}"))
+        if "EMonX" in W and is_monday:
+            for a in ["JP225","UK100","FR40"]:
+                df,_=h1(a); t=day+pd.Timedelta(hours=9)
+                bar=df[df.index>=t]
+                if len(bar)==0: continue
+                ent=float(bar["open"].iloc[0])
+                legs.append(Leg(a,1,ent,-1e18,SEAS_MULT*W["EMonX"]/3,f"EMonX:{a}"))
         if "EMon" in W and is_monday:
             for a in ["US500","NAS100","GER40"]:
                 df,_=h1(a); t=day+pd.Timedelta(hours=9)
