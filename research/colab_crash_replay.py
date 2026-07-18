@@ -44,7 +44,12 @@ except Exception as e:
 def _read_h1(path):
     df = pd.read_csv(path); df.columns=[c.strip().lower() for c in df.columns]
     t = next((c for c in ["time","timestamp","date","datetime","gmt time"] if c in df.columns), df.columns[0])
-    df["t"]=pd.to_datetime(df[t],utc=True,errors="coerce")
+    raw=df[t]
+    if np.issubdtype(raw.dtype, np.number):          # エポック(秒/ミリ秒)形式のCSV対応
+        unit="ms" if float(raw.max())>1e11 else "s"
+        df["t"]=pd.to_datetime(raw,unit=unit,utc=True,errors="coerce")
+    else:
+        df["t"]=pd.to_datetime(raw,utc=True,errors="coerce")
     df=df.dropna(subset=["t"]).sort_values("t").set_index("t")
     def col(*n):
         for x in n:
@@ -91,6 +96,9 @@ def daily(name):
         df=pd.DataFrame({"open":g["open"].first(),"high":g["high"].max(),
                          "low":g["low"].min(),"close":g["close"].last()}).dropna()
         df.index=pd.DatetimeIndex(pd.DatetimeIndex(df.index).date)
+    if df is not None and (len(df)==0 or df.index.max()<pd.Timestamp("2020-01-01")):
+        print(f"[data] {name}: Drive由来の日足が不正(〜{df.index.max() if len(df) else 'empty'})→Yahoo単独へ")
+        df=None
     if df is None or len(df[df.index<pd.Timestamp("2024-08-01")])<400:
         try:
             y=_yahoo(YH.get(name,name+"=X"),"1d","2013-01-01","2025-05-01")
@@ -102,8 +110,12 @@ def daily(name):
     DCACHE[name]=df; return df
 
 
+def _utc(when):
+    ts=pd.Timestamp(when)
+    return ts.tz_localize("UTC") if ts.tz is None else ts.tz_convert("UTC")
+
 def atr_h1(name, when, n=24):
-    df,_=h1(name); w=df[df.index<pd.Timestamp(when,tz="UTC")].tail(n+1)
+    df,_=h1(name); w=df[df.index<_utc(when)].tail(n+1)
     tr=np.maximum(w["high"]-w["low"],
         np.maximum((w["high"]-w["close"].shift()).abs(),(w["low"]-w["close"].shift()).abs()))
     return float(tr.tail(n).mean())
