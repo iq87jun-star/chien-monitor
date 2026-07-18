@@ -1,0 +1,60 @@
+{
+ "static_picks_is": {
+  "ALL": {
+   "HOLD:NAS100": 0.11,
+   "EMon:NAS100": 0.22,
+   "v7x:AUDJPY": 0.53,
+   "HOLD:US500": 0.14
+  }
+ },
+ "variants": {
+  "静的SharpeTop4(IS)": {
+   "mult": 2.4,
+   "median_months": 3.0,
+   "pass_pct": 83.4,
+   "fail_pct_optimistic": 16.6,
+   "fail_pct_raw": 22.6,
+   "undone_pct": 0.0,
+   "mean_month": 1.54,
+   "sharpe": 1.29,
+   "worst_month": -8.73,
+   "worst_day": -11.51
+  },
+  "静的SharpeTop4(LOYO)": {
+   "mult": 2.6,
+   "median_months": 4.0,
+   "pass_pct": 67.9,
+   "fail_pct_optimistic": 32.1,
+   "fail_pct_raw": 40.4,
+   "undone_pct": 0.0,
+   "mean_month": 0.93,
+   "sharpe": 0.71,
+   "worst_month": -9.06,
+   "worst_day": -8.16
+  },
+  "月別SharpeTop2(IS)": {
+   "mult": 2.35,
+   "median_months": 4.0,
+   "pass_pct": 96.3,
+   "fail_pct_optimistic": 3.7,
+   "fail_pct_raw": 14.8,
+   "undone_pct": 0.0,
+   "mean_month": 2.85,
+   "sharpe": 2.12,
+   "worst_month": -1.82,
+   "worst_day": -6.79
+  },
+  "月別SharpeTop2(LOYO)": {
+   "mult": 2.95,
+   "median_months": 3.0,
+   "pass_pct": 72.8,
+   "fail_pct_optimistic": 27.2,
+   "fail_pct_raw": 42.9,
+   "undone_pct": 0.0,
+   "mean_month": 1.21,
+   "sharpe": 0.8,
+   "worst_month": -19.8,
+   "worst_day": -8.52
+  }
+ }
+}
