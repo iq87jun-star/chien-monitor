@@ -126,7 +126,8 @@ def daily(name):
     if df is not None and (len(df)==0 or df.index.max()<pd.Timestamp("2020-01-01")):
         print(f"[data] {name}: Drive由来の日足が不正(〜{df.index.max() if len(df) else 'empty'})→Yahoo単独へ")
         df=None
-    if df is None or len(df[df.index<pd.Timestamp("2024-08-01")])<400:
+    if df is None or len(df[df.index<pd.Timestamp("2016-01-01")])<50 \
+       or len(df[df.index<pd.Timestamp("2024-08-01")])<400:
         try:
             y=_yahoo(YH.get(name,name+"=X"),"1d","2013-01-01","2025-05-01")
             y.index=pd.DatetimeIndex(pd.DatetimeIndex(y.index).date)
