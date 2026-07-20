@@ -67,7 +67,25 @@ mid がトレーリングFV寄りで季節FVと半スプレッド超乖離 → *
 - 生存が再現した場合の次段階のみ、`data.py` の `IGQuoteSource` を実装した
   本格収集＋`backtest.py` での検証に進む（証明書ゲートはその先にある）。
 
-## 5. 想定される最頻の結末（正直な事前分布）
+## 5. 手動記録の代替: 公式APIによる自動収集（可否は口座依存）
+
+IGグループには公式REST API（labs.ig.com）が存在するが、IG証券(日本)のヘルプは
+「APIアクセスは提供していません」と案内しており、**日本口座でAPIキーが発行できるか・
+バイナリー銘柄がAPIに公開されているかは口座で試すまで不明**。判定は自動化済み:
+
+```bash
+# My IG > 設定 > APIキー でデモ口座のキーを発行できたら:
+export IG_API_KEY=... IG_USERNAME=... IG_PASSWORD=... IG_ACCOUNT_TYPE=demo
+python -m binary_options_edge.ig_probe probe     # バイナリーEPICの有無を数分で判定
+python -m binary_options_edge.ig_probe collect <EPIC...> --interval 60   # 気配収集
+```
+
+- キーが発行できない → 「API提供なし」が確定、手動記録(§2-3)に戻る。
+- probe でバイナリーEPICが見つかる → collect で§2の記録が完全自動化される。
+- ⚠️ 必ずデモ口座キーを使用。Web取引画面の内部通信を直接叩く非公式スクレイピングは
+  利用規約違反リスクがあるため本ツールは行わない(公式APIのみ)。
+
+## 6. 想定される最頻の結末（正直な事前分布）
 
 1. H3: 発表前に提示停止 or スプレッド20pt超 → **棄却**（最も可能性が高い）
 2. H2: mid が季節FVと一致 → **棄却**
