@@ -1,0 +1,4 @@
+timestamp,expiry,pair,spot,option_type,level,bid,ask,halted,hypothesis,sigma_ann,jump_std_log,sigma_trailing_ann,sigma_seasonal_ann,note
+2026-08-07 20:30,2026-08-07 22:00,USDJPY,150.00,ladder_above,150.35,4,10,0,H3,0.10,0.003,,,雇用統計60分前の例(この行を実測値で置換)
+2026-08-07 21:20,2026-08-07 22:00,USDJPY,150.00,touch,150.30,,,1,H3,0.10,0.003,,,発表10分前に提示停止だった場合の例
+2026-08-05 15:55,2026-08-05 18:00,USDJPY,150.00,ladder_above,150.25,10,16,0,H2,0.10,,0.06,0.16,ロンドン開始直前の例
