@@ -24,6 +24,7 @@ class Context:
     next_event_sec: Optional[float]   # 次の関連指標までの秒数
     hour: int                   # 意思決定時刻(UTC)の時間帯
     trend_strength: float       # |長窓ドリフト|/ボラ 等の簡易トレンド指標
+    prev_event_sec: Optional[float] = None   # 直前の関連指標からの経過秒数(H3b用)
 
 
 def build_context(c: BinaryContract, underlying: UnderlyingSource,
@@ -32,6 +33,7 @@ def build_context(c: BinaryContract, underlying: UnderlyingSource,
     sig_s = underlying.realized_vol(c.pair, c.decision_time, short_lb)
     sig_l = underlying.realized_vol(c.pair, c.decision_time, long_lb)
     nxt = calendar.next_event_seconds(c.pair, c.decision_time) if calendar else None
+    prv = calendar.prev_event_seconds(c.pair, c.decision_time) if calendar else None
     # 簡易トレンド: 長窓の対数リターン平均/ボラ
     start = c.decision_time - __import__("pandas").Timedelta(seconds=long_lb)
     hist = underlying.history(c.pair, start, c.decision_time)
@@ -40,7 +42,7 @@ def build_context(c: BinaryContract, underlying: UnderlyingSource,
         trend = float(np.nanmean(lr) / (np.nanstd(lr) + 1e-12))
     else:
         trend = 0.0
-    return Context(sig_s, sig_l, nxt, c.decision_time.hour, trend)
+    return Context(sig_s, sig_l, nxt, c.decision_time.hour, trend, prv)
 
 
 # フィルタは (contract, context) -> bool（True=トレード許可）
@@ -68,6 +70,25 @@ def h3_pre_event(window_seconds: float = 1800.0) -> HypothesisFilter:
     """
     def f(c, ctx):
         return ctx.next_event_sec is not None and 0 <= ctx.next_event_sec <= window_seconds
+    return f
+
+
+def h3b_post_event(window_seconds: float = 1800.0,
+                   min_after_seconds: float = 300.0) -> HypothesisFilter:
+    """H3b: 指標発表の直後(min_after〜window秒後)のみ取引。
+
+    狙いはH3の鏡像: 発表でジャンプ不確実性が解消した直後、実現ボラは急速に減衰する
+    (予定されたボラ崩壊)。IGのボラマークダウンが遅れるなら、タッチが割高・
+    レンジが割安になる=ボラ売り構造(レンジ買い/タッチ売り)にエッジが立つ仮説。
+    H3(発表前)と違い提示停止の反証要因が弱い(発表後は提示が再開される)のが利点。
+
+    Context.next_event_sec は「次のイベントまでの秒数」なので、直前イベントからの
+    経過は calendar 側で prev_event_seconds が必要。無い場合は
+    next_event_sec が None→直近にイベント無しとみなし False(保守側)。
+    """
+    def f(c, ctx):
+        prev = getattr(ctx, "prev_event_sec", None)
+        return prev is not None and min_after_seconds <= prev <= window_seconds
     return f
 
 
@@ -116,6 +137,7 @@ def default_hypotheses() -> dict[str, HypothesisFilter]:
         "H1_vol_regime": h1_vol_regime(),
         "H2_session": h2_session(),
         "H3_pre_event": h3_pre_event(),
+        "H3b_post_event": h3b_post_event(),
         "H4_avoid_event": h4_avoid_event(),
         "H1xH2": h_combine(h1_vol_regime(), h2_session()),
     }

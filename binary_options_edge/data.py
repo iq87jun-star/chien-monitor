@@ -108,6 +108,15 @@ class CalendarSource(abc.ABC):
             return None
         return min((e.time - as_of).total_seconds() for e in upcoming)
 
+    def prev_event_seconds(self, pair: str, as_of: datetime,
+                           horizon_seconds: float = 24 * 3600) -> Optional[float]:
+        """直前の関連イベントからの経過秒数（H3b: 発表後のボラ崩壊用）。無ければ None。"""
+        evs = self.events(as_of - pd.Timedelta(seconds=horizon_seconds), as_of)
+        past = [e for e in evs if e.time <= as_of and pair in e.pair_relevance]
+        if not past:
+            return None
+        return min((as_of - e.time).total_seconds() for e in past)
+
 
 # --------------------------------------------------------------------------- #
 # 仮定スプレッドモード: 実気配が無いときの「条件付き」検証用
