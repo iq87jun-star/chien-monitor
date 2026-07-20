@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta, timezone
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from binary_options_edge import empirical
 
@@ -42,7 +43,7 @@ def test_log_returns_skips_weekend_gaps():
     df = pd.DataFrame({"close": [100.0, 101.0, 105.0]}, index=idx)
     lr = empirical.log_returns(df, interval_seconds=3600.0)
     assert len(lr) == 1                              # ギャップ越えは除外
-    assert lr.iloc[0] == np.log(101.0 / 100.0)
+    assert lr.iloc[0] == pytest.approx(np.log(101.0 / 100.0))
 
 
 def test_seasonality_profile_shape():
