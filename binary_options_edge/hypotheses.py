@@ -78,6 +78,28 @@ def h4_avoid_event(min_distance_seconds: float = 3600.0) -> HypothesisFilter:
     return f
 
 
+def h_point_band(lo: float = 7.0, hi: float = 25.0,
+                 symmetric: bool = True) -> HypothesisFilter:
+    """構造フィルタ: 提示mid(ポイント)が指定帯にある提示のみ許可。
+
+    ⚠️ これは「エッジの源泉」ではなく「どこを見るか」の絞り込み(THEORY.md §8)。
+    価格帯だけを条件にエントリーしても期待値は必ず−半スプレッド
+    (価格=損益分岐勝率なので、安い玉はその分当たらない)。
+    正しい用途は h_combine で確率モデル系の仮説と併用し、
+    ボラ感応度の高い帯(ラダーなら|d|≈0.8-1.5 ⇔ 約7-25pt/75-93pt)に
+    エントリー候補を限定すること。ATM近辺(40-60pt)はボラ中立で理論上取れない。
+
+    symmetric=True なら鏡像帯(100-hi, 100-lo)も許可
+    (安い玉の買いと高い玉の売りは同じ歪みの表裏のため)。
+    """
+    def f(c, ctx):
+        m = c.mid
+        if lo <= m <= hi:
+            return True
+        return symmetric and (100.0 - hi) <= m <= (100.0 - lo)
+    return f
+
+
 def h_combine(*filters: HypothesisFilter) -> HypothesisFilter:
     return lambda c, ctx: all(fl(c, ctx) for fl in filters)
 
