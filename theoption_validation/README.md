@@ -61,3 +61,11 @@ Tier S/A 20戦略に対し、当時未実施だった2つの検定と多重性�
 
 - `g3_g5_validation.py` — 検証スクリプト（データはDrive `forex_ml/dukascopy_hourly/` の10ペアCSVを参照）
 - `theoption_g3_g5_results.csv` — 全20戦略の詳細結果
+
+## 追補 (2026-07-24): 翌06:00判定・エントリー7時以降の最終Tier
+
+確認試験の枠組み(確立済み月曜アノマリーのファミリー内補正 α=0.05/6〜8)で再審査。
+
+- **Tier 1**: 月曜7時 EURJPY/NZDJPY/AUDJPY HIGH、月曜13/14/16時 EURJPY HIGH(3本は同一トレードの時間違い・1本のみ)、毎晩22-23時 EURGBP LOW
+- **Tier 2据置**: GBPJPY/CADJPY/CHFJPY 月7時(前半5年Edge負=近年依存型のため。昇格にはフォワード実証が必要)
+- 詳細: `next6_final.csv` / `next6_all_candidates.csv`
