@@ -64,6 +64,27 @@ export default function KakeiboApp() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
   }, [entries]);
 
+  // リポジトリに置かれた記録 (public/entries.json) を取り込む。
+  // チャット経由で追記された記録もアプリに反映される。
+  useEffect(() => {
+    fetch("/entries.json")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => {
+        if (!Array.isArray(data)) return;
+        const valid = data.filter(
+          (x) => x && x.id && x.date && (x.type === "income" || x.type === "expense") &&
+                 Number.isFinite(Number(x.amount))
+        );
+        setEntries((prev) => {
+          const ids = new Set(prev.map((p) => p.id));
+          const fresh = valid.filter((v) => !ids.has(v.id));
+          if (fresh.length === 0) return prev;
+          return [...prev, ...fresh].sort((a, b) => (a.date < b.date ? -1 : 1));
+        });
+      })
+      .catch(() => {});
+  }, []);
+
   const setType = (type) =>
     setForm((f) => ({ ...f, type, category: CATEGORIES[type][0] }));
 
