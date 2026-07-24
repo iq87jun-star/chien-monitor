@@ -69,3 +69,13 @@ Tier S/A 20戦略に対し、当時未実施だった2つの検定と多重性�
 - **Tier 1**: 月曜7時 EURJPY/NZDJPY/AUDJPY HIGH、月曜13/14/16時 EURJPY HIGH(3本は同一トレードの時間違い・1本のみ)、毎晩22-23時 EURGBP LOW
 - **Tier 2据置**: GBPJPY/CADJPY/CHFJPY 月7時(前半5年Edge負=近年依存型のため。昇格にはフォワード実証が必要)
 - 詳細: `next6_final.csv` / `next6_all_candidates.csv`
+
+## 追補2 (2026-07-24): 新銘柄拡張探索と最終ポートフォリオ
+
+- 新銘柄7種(USDJPY/EURUSD/NZDUSD/USDCAD/EURAUD/GBPAUD/GOLD)×1428パターン探索(α=3.5e-05)
+  → 合格は **EURAUD 10時→翌06:00 LOW** のみ(Edge+2.0pp, 前半+1.5/後半+2.4, JK+1.7, EURGBP夜間との相関φ=0.10)。
+  累積多重性では合格線を僅かに外れるため小ロット採用。GOLD(2021年以降5.5年のみ)含む他は全滅。
+- 最終形(DD予算30万円): 月曜7時 EURJPY/NZDJPY/AUDJPY HIGH各14,000円 + EURAUD10時LOW 7,000円
+  + EURGBP23時LOW 7,000円(2/3/6/12月停止)
+  → 月平均+40,892円 / 直近5年+62,909円 / 年間+49.1万円 / 最大DD-244,916円 / 勝ち月68%
+- 月別強月選択はLOYO検証で月曜系に無効(劣化)、夜間のみ有効と裁定済み。探索はここで打ち止め、以後はフォワード計測へ。
