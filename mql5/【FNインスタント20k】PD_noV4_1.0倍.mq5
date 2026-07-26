@@ -1,26 +1,24 @@
 //+------------------------------------------------------------------+
-//|   【FTMO 口座531343523】PD_noV4 2.0倍・目標10% (v1.44・docs/171)   |
-//|  構成: v7 45 / E-Mon[RG3] 25(実効キャップ0.5) / E5(XAU+NAS) 30     |
-//|  v4除外・balance基準ガード-3.5%搭載・仕上げロック10.05/ARM9.9      |
-//|   ワンクリック版: チャートにドロップ→OKだけ(設定・.set不要)         |
-//|                                                                   |
-//|   ★用途(docs/167): 布陣の脱・季節集中(2026-08-01からFTMOをPDへ)。  |
-//|     季節-PD相関0.39=同時失格テールの分散。8月はPDの最強月。         |
-//|   構成(docs/134-135・間引き確定版):                                |
-//|     v7 = EURJPY+GBPJPY / E5 = XAUUSD+NAS100 / v4・E-Mon = 現行     |
-//|   サイズ: 3倍相当(FN median-3と同一)。FTMO +10%土俵で中央4ヶ月/     |
-//|     失格20.4/28.4%(IS・docs/167。PDは配分固定=数字がほぼ素の実力)   |
-//|   仕上げロック: ARM+9.9%(新規停止)→+10.05%全決済=P1通過確定        |
-//|   ガード: 日次-4%(FTMO-5%手前)・フロア-9%(FTMO-10%手前)            |
-//|   基準残高: $100,000 焼き込み(この口座専用・フェーズ開始残高)       |
-//|                                                                   |
-//|   ⚠ 差し替えは8/1推奨: 季節EAを外す→季節Magic(940700系)の残建玉    |
-//|     を確認/決済→本EAをアタッチ。1チャート1EA・VPSのみ。            |
+//|            【FNインスタント20k】PD間引き 1.0x ワンクリック         |
+//|   ★FN Stellar Instant $20K 専用(docs/161-163):                    |
+//|     Instant↔チャレンジ間の同一取引は不可(FN書面回答)のため、       |
+//|     チャレンジ2口座=季節のまま、Instantには本EA(PD間引き)を充てる。 |
+//|   ★校正(docs/162・2万パスMC・研究1.0x):                            |
+//|     昇格(+10%出金)中央16ヶ月 / 成功73.8% / 失格12ヶ月14.7%。        |
+//|   ★構成: v7(EURJPY+GBPJPY) 30... v4 9ペア / E-Mon 3指数 /          |
+//|     E5(XAUUSD+NAS100)。全レッグSL付き=Max Risk 3%(SL基準)適合。    |
+//|   ★インスタント適合(P1残り版v1.32からの変更点):                    |
+//|     1) トレーリングDDガード: FNフロア=min(HWM−6%×初期, 建値)。     |
+//|        フロア+2%で新規停止・+1%で全決済+恒久停止。HWM端末保存。    |
+//|     2) 利益ロック/+8%停止は無効(目標なし)。+10%到達で通知           |
+//|        → 出金→昇格→InpBaselineReset=true。                        |
+//|     3) サイズ=研究1.0x(v7 0.38/v4 0.11/EMon 0.38/E5 0.61)。        |
+//|   ⚠ スワップフリー口座前提。初週はエントリーログのロット数を確認。  |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.44"   // FTMO仕様(目標+10%・ロック9.9/10.05)
+#property version   "1.44"   // noV4 + balance基準ガード(docs/172)
 #property strict
-#property description "[FTMO100k #531343523 PRUNED 3x target +10pct] PD pruned (v7 2-cross / E5 2-asset, docs/135/167). ARM 9.9 / LOCK 10.05. Daily guard -4 (FTMO -5), floor -9 (FTMO -10). Drop & OK."
+#property description "[FN Instant 20k] PD pruned 1.0x (v7 2-cross / E5 2-asset) w/ trailing -6pct guard (breakeven lock), no profit target, +10pct step-up notify (docs/162). Drop & OK. Swap-free account recommended."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -36,15 +34,17 @@ input string InpE5Symbols   = "XAUUSD,NAS100";                     // E5: 金+�
 input string InpEMonSymbols = "NAS100,US500,GER40";                            // E-Mon: 指数3つ(月曜LONG)
 
 input group "=== 口座/ガード ==="
-input double InpInitialBalance   = 100000.0;   // 0=自動(初回アタッチ時の残高を端末に永続保存・再アタッチ耐性)
+input double InpInitialBalance   = 20000.0;    // 0=自動(初回アタッチ時の残高を端末に永続保存・再アタッチ耐性)
 input bool   InpBaselineReset    = false; // 新フェーズ開始時のみtrue=基準残高を今の残高で取り直す
-input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%
-input double InpAccountFloorDDPct= 9.0;   // 全停止ライン%(攻め=9.0で-10%枠をほぼ使い切る)
+input double InpMaxLossLimitPct  = 6.0;   // FN Instantトレーリング幅%(フロア=HWM−この%×初期・建値ロック)
+input double InpAccountFloorDDPct= 5.0;   // 静的バックストップ%(主ガードは下のトレーリング)
+input double InpTrailArmBufPct   = 2.0;   // FNフロア+この%で新規停止(回復で自動再開)
+input double InpTrailHaltBufPct  = 1.0;   // FNフロア+この%で全決済+恒久停止
 
 input group "=== プッシュ通知(MT5モバイル→スマホ→Even G2ミラー, docs/112) ==="
 input bool   InpNotifyEnable     = true;  // SendNotificationを使う(要MetaQuotes ID設定)
 input bool   InpNotifyEntries    = true;  // エントリーを通知
-input double InpNotifyRefPct  = 9.8;   // 手決済の参考値: equity+この%で「検討ライン」通知
+input double InpNotifyRefPct  = 10.0;  // ステップアップ到達通知: equity+この%(出金→昇格→BaselineReset)
 input double InpNotifyDayWarnPct = 3.0;   // 日次−この%で警告(ガード−4%の手前)
 
 input group "=== 手決済後の再建て(docs/100 §5) ==="
@@ -62,22 +62,22 @@ input double InpMTrailArm1x      = 1.0;   // アーム閾値(研究1x単位%・d
 input double InpMTrailGiveback1x = 1.5;   // 押し幅(研究1x単位%・docs/116の検証値)
 input double InpMTrailScale      = 1.1;   // k: 口座スケール(口座MTD% ≈ k×研究1x)
 
-input group "=== v1.44 balance基準日次ガード(docs/170/171・FN/FTMO実仕様準拠) ==="
+input group "=== v1.44 balance基準日次ガード(docs/170/172・FN実仕様準拠) ==="
 input double InpBalGuardPct      = 4.0;   // equity≤日開始balance−この%で全決済+当日停止(0=無効)
-input int    InpBalGuardMaxMonth = 2;     // 月内発動上限(超過は月末ロールまで新規停止)
+input int    InpBalGuardMaxMonth = 2;     // 月内発動上限(超過は月末まで新規停止)
 
 input group "=== リスク配分（中央3ヶ月・標準=内蔵既定。通常は変更不要）==="
-input double InpWeeklyRiskPct    = 1.31;  // v7 週次リスク%(noV4キャップ 45% × 2.0x)
-input double InpV4RiskPerTradePct= 0.00;  // v4 無効(noV4・docs/171)
-input double InpEMonWeeklyPct    = 0.73;  // E-Mon 週次リスク%(キャップ25%×2.0x=実効0.5・RG3 ON)
-input double InpE5LegRiskPct     = 1.75;  // E5 legRisk%(各レッグ月次σ)
-input double InpProfitStopPct = 10.1;  // +この%で新規停止(FTMO P1=10.0)
+input double InpWeeklyRiskPct    = 0.52;  // v7 週次リスク%(noV4 35.7% × 1.0x, docs/172)
+input double InpV4RiskPerTradePct= 0.00;  // v4 無効(noV4・docs/172)
+input double InpEMonWeeklyPct    = 0.52;  // E-Mon 週次リスク%(noV4 35.7% × 1.0x・RG3 ON)
+input double InpE5LegRiskPct     = 0.83;  // E5 legRisk%(noV4 28.6% × 1.0x)
+input double InpProfitStopPct = 0.0;   // インスタントは目標なし=無効(0)
 input double InpDailyStopPct  = 4.0;  // 日次−この%で当日全決済(規約−5%手前)
 
 input group "=== +7%利益ロック(フェーズ通過の確定, docs/100) ==="
-input bool   InpProfitLockEnable = true;  // 利益ロックを使う
-input double InpLockArmPct    = 9.9;   // equity+この%で新規停止(目標+10%の手前・水準判定)
-input double InpLockClosePct  = 10.05;  // equity+この%で全決済し恒久ロック(PASS_LOCK)
+input bool   InpProfitLockEnable = false; // インスタントは通過目標なし=無効
+input double InpLockArmPct    = 7.9;   // equity+この%で新規停止(既存+8%停止より手前・水準判定)
+input double InpLockClosePct  = 8.05;   // equity+この%で全決済し恒久ロック(PASS_LOCK)
 
 input group "=== Max Risk 3%ガード(FN規約, docs/100 §2) ==="
 enum ENUM_RISK_GUARD { RG_OFF=0, RG_MONITOR=1, RG_ENFORCE=2 };
@@ -140,7 +140,7 @@ input double InpCatATR_E5  = 2.5;
 input group "=== 共通 ==="
 input double InpMinLot = 0.01;
 input double InpMaxLot = 50.0;
-input long   InpMagicBase = 761130;  // v7=+1/v4=+2/E5=+3/E-Mon=+4(FTMO noV4版専用基底)
+input long   InpMagicBase = 761230;       // v7=+1 / v4=+2 / E5=+3 / E-Mon=+4(インスタント専用基底)
 input int    InpSlippagePoints = 30;
 input bool   InpVerboseLog = true;
 
@@ -159,12 +159,14 @@ double   g_initBal=0.0, g_weeklyRisk=1.95, g_v4risk=0.58, g_emonWeekly=1.95, g_e
 bool     g_useProfitStop=false, g_useDailyStop=false;
 double   g_profitPct=0.0, g_dailyStopPct=0.0, g_floorBufPct=1.0;
 double   g_dayStartEq=0.0;
-double   g_dayStartBal=0.0;                 // v1.44: 日開始balance(FN/FTMO日次規則の基準)
-datetime g_balBlockDay=0;                   // v1.44: BAL_GUARD発動日(当日停止)
-int      g_balFireMonth=-1, g_balFires=0;   // v1.44: 月内発動カウント
-bool     g_balMonthHalt=false;              // v1.44: 月内上限超過→月末まで停止
-
+double   g_dayStartBal=0.0;                 // v1.44
+datetime g_balBlockDay=0;
+int      g_balFireMonth=-1, g_balFires=0;
+bool     g_balMonthHalt=false;
 datetime g_curDay=0; bool g_halted=false, g_dayBlocked=false;
+double   g_hwm=0.0;            // equity最高値(トレーリングDD基準・端末保存)
+bool     g_trailArmed=false;   // トレーリングDD: 新規停止中
+string   g_gvHwm="";
 bool     g_passLocked=false;   // PASS_LOCK(+LockClose%で全決済済み・恒久)
 string   g_ntfBuf="";          // 通知バッファ(タイマー1回=1通に集約)
 bool     g_ntfRef=false, g_ntfArm=false;
@@ -261,6 +263,19 @@ int OnInit()
       PrintFormat("[基準残高] 新規記録: %.2f",g_initBal);
    }
 
+   // HWM(トレーリングDD基準)の永続化: 再起動/再アタッチで引き継ぐ
+   g_gvHwm=StringFormat("ChienPD_hwm_%I64d_%I64d",
+                        (long)AccountInfoInteger(ACCOUNT_LOGIN),(long)InpMagicBase);
+   {
+      double eq0=AccountInfoDouble(ACCOUNT_EQUITY);
+      if(!InpBaselineReset && GlobalVariableCheck(g_gvHwm))
+           g_hwm=MathMax(GlobalVariableGet(g_gvHwm),eq0);
+      else g_hwm=MathMax(g_initBal,eq0);
+      GlobalVariableSet(g_gvHwm,g_hwm);
+      PrintFormat("[HWM] %.2f (FNフロア=min(HWM-%.1f%%x初期, 建値)=%.2f)",
+                  g_hwm,InpMaxLossLimitPct,MathMin(g_hwm-g_initBal*InpMaxLossLimitPct/100.0,g_initBal));
+   }
+
    // 月内トレーリング状態の復元(docs/116・基準残高と同方式。月が変わっていればOnTimerが取り直す)
    g_gvMT=StringFormat("ChienPD_mtrail_%I64d_%I64d",
                        AccountInfoInteger(ACCOUNT_LOGIN),InpMagicBase);
@@ -328,6 +343,7 @@ datetime DayStart(datetime t){ MqlDateTime s; TimeToStruct(t,s); s.hour=0;s.min=
 void ResetDay(datetime t){ g_curDay=DayStart(t); g_dayStartEq=AccountInfoDouble(ACCOUNT_EQUITY); g_dayBlocked=false;
    g_dayStartBal=AccountInfoDouble(ACCOUNT_BALANCE);   // v1.44
    if(g_gvName!="" && g_initBal>0) GlobalVariableSet(g_gvName,g_initBal);    // 4週失効対策の日次タッチ
+   if(g_gvHwm!="" && g_hwm>0) GlobalVariableSet(g_gvHwm,g_hwm);
    if(InpMTrailEnable && g_mtMonKey>0) MTrailSave(); }                        // MONTH_TRAIL状態も同様に日次タッチ
 double AtrAt(int handle){ double a[1]; if(handle==INVALID_HANDLE||CopyBuffer(handle,0,1,1,a)<1) return 0.0; return a[0]; }
 
@@ -558,10 +574,9 @@ void CloseAllMine(string why){
 
 //==================================================================
 
-//--- v1.44(docs/170/171): balance基準日次ガード。FN/FTMOの実計算式
+//--- v1.44(docs/170/172): balance基準日次ガード。FNの実計算式
 //    「日開始balance − 現在equity」(=当日実現+保有全含み)に基準を一致させる。
-//    多日保有(E5)の含み損累積で気づかず失格ライン(-5%)に近づく事故(2026-07-24 FN200k)の恒久対策。
-//    ティック毎に評価し、-3.5%で全決済→翌サーバー日に自動再開。月内3回目で月末まで停止。
+//    2026-07-24 FN200k失格(含み損の多日累積をEAが検知できず)の恒久対策。ティック毎評価。
 bool BalGuardActive()
 {
    if(g_balMonthHalt) return true;
@@ -569,31 +584,32 @@ bool BalGuardActive()
 }
 void BalGuardCheck()
 {
-   if(InpBalGuardPct<=0.0 || g_halted || g_passLocked) return;
-   datetime now=TimeCurrent();
-   if(DayStart(now)!=g_curDay) ResetDay(now);
-   MqlDateTime bt; TimeToStruct(now,bt); int bmk=bt.year*100+bt.mon;
+   if(InpBalGuardPct<=0.0 || g_halted) return;
+   MqlDateTime bt; TimeToStruct(TimeCurrent(),bt);
+   int bmk=bt.year*100+bt.mon;
+   double beq=AccountInfoDouble(ACCOUNT_EQUITY);
+   if(DayStart(TimeCurrent())!=g_curDay) ResetDay(TimeCurrent());
    if(bmk!=g_balFireMonth){
       g_balFireMonth=bmk; g_balFires=0; g_balMonthHalt=false;
-      string bgv=g_gvName+"_bg";                       // v1.44: 再起動しても月内発動回数を忘れない
+      string bgv=g_gvName+"_bg";                        // 再起動しても月内発動回数を忘れない
       if(g_gvName!="" && GlobalVariableCheck(bgv)){
          long v=(long)GlobalVariableGet(bgv);
          if((int)(v/100)==bmk){ g_balFires=(int)(v%100); g_balMonthHalt=(g_balFires>InpBalGuardMaxMonth); }
       }
    }
    if(BalGuardActive() || g_dayStartBal<=0.0) return;
-   double beq=AccountInfoDouble(ACCOUNT_EQUITY);
    if(beq>g_dayStartBal*(1.0-InpBalGuardPct/100.0)) return;
    g_balBlockDay=g_curDay; g_balFires++;
    if(g_balFires>InpBalGuardMaxMonth) g_balMonthHalt=true;
-   if(g_gvName!="") GlobalVariableSet(g_gvName+"_bg",(double)((long)bmk*100+g_balFires));   // v1.44永続化
+   if(g_gvName!="") GlobalVariableSet(g_gvName+"_bg",(double)((long)bmk*100+g_balFires));
    CloseAllMine("BAL_GUARD");
    PrintFormat("[BAL GUARD] eq %.2f <= 日開始bal %.2f -%.1f%% → 全決済・当日停止(月内%d回目%s)",
                beq,g_dayStartBal,InpBalGuardPct,g_balFires,(g_balMonthHalt?"・月末まで停止":""));
    Notify(StringFormat("BAL_GUARD -%.1f%% 全決済・当日停止(%d/月)",InpBalGuardPct,g_balFires));
    FlushNotify();
 }
-void OnTick(){ BalGuardCheck(); }   // v1.44: ガードのみティック評価(主処理はOnTimer)
+
+void OnTick(){ BalGuardCheck(); }   // v1.44
 
 void OnTimer()
 {
@@ -616,13 +632,25 @@ void OnTimer()
       }
    }
 
-   // 静的フロア(初期残高基準・FN Stellar)。guard=フロアの内側バッファで早期撤退。
+   // トレーリングDDガード(FN Instant: フロア=min(HWM−6%×初期, 建値), docs/154/161)
+   if(equity>g_hwm){ g_hwm=equity; if(g_gvHwm!="") GlobalVariableSet(g_gvHwm,g_hwm); }
+   double fnFloor=MathMin(g_hwm-g_initBal*g_maxLossPct/100.0, g_initBal);
+   double haltLvl=fnFloor+g_initBal*InpTrailHaltBufPct/100.0;
+   double armLvl =fnFloor+g_initBal*InpTrailArmBufPct/100.0;
+   if(equity<=haltLvl && !g_halted){ g_halted=true; CloseAllMine("TRAIL_FLOOR");
+      PrintFormat("[HALT] equity %.2f <= trail停止線 %.2f (FNフロア %.2f)",equity,haltLvl,fnFloor);
+      Notify(StringFormat("TRAIL_FLOOR %.2f 全決済・恒久停止 (FNフロア=%.0f)",equity,fnFloor)); FlushNotify(); }
+   // 静的フロア(最終バックストップ・初期−5%)
    double floor=g_initBal*(1.0-g_maxLossPct/100.0);
    double guard=floor+g_initBal*g_floorBufPct/100.0;
    if(equity<=guard && !g_halted){ g_halted=true; CloseAllMine("EQUITY_FLOOR");
       PrintFormat("[HALT] equity %.2f <= guard %.2f",equity,guard);
       Notify(StringFormat("FLOOR %.2f 全決済・恒久停止",equity)); FlushNotify(); }
    if(g_halted){ CloseAllMine("HALTED"); return; }
+   bool tArm=(equity<=armLvl);
+   if(tArm!=g_trailArmed){ g_trailArmed=tArm;
+      PrintFormat("[TRAIL %s] eq=%.2f FNフロア=%.2f (+%.1f%%線)",(tArm?"ARMED=新規停止":"DISARM=新規再開"),equity,fnFloor,InpTrailArmBufPct);
+      Notify(StringFormat("TRAIL %s eq=%.0f (FNフロア=%.0f)",(tArm?"新規停止":"新規再開"),equity,fnFloor)); FlushNotify(); }
 
    // +7%利益ロック(docs/100): Arm=新規停止(既存+8%停止より手前) / Close=全決済し恒久ロック。
    // ⚠正直な注記: +LockClose%(既定7.5)での全決済が確定するのは実現≈+LockClose%。FN P1目標+8%より
@@ -644,17 +672,26 @@ void OnTimer()
          Notify(StringFormat("参考値到達 %+.2f%% (ARM=+%.1f%%/LOCK=+%.1f%%が自動処理)",gainPct,InpLockArmPct,InpLockClosePct));
       }else if(g_ntfRef && gainPct<InpNotifyRefPct-0.5) g_ntfRef=false;
    }
-   Comment(StringFormat("Chien_PD_Prop3 | gain %+.2f%% | open-risk %.2f%%(cap %.1f%% %s) | %s",gainPct,
+   Comment(StringFormat("Chien_PD_INSTANT20k | gain %+.2f%% | HWM %+.2f%% | FNフロアまで%.2f%% | open-risk %.2f%%(cap %.1f%% %s) | %s",gainPct,
+          (g_initBal>0?(g_hwm-g_initBal)/g_initBal*100.0:0.0),
+          (g_initBal>0?(equity-MathMin(g_hwm-g_initBal*g_maxLossPct/100.0,g_initBal))/g_initBal*100.0:0.0),
           OpenRiskPct(),InpMaxOpenRiskPct,
           (InpRiskGuardMode==RG_ENFORCE?"ENF":(InpRiskGuardMode==RG_MONITOR?"MON":"OFF")),
           (g_passLocked?"PASS_LOCK(全決済済)":
            (g_halted?"HALTED":
-            (InpProfitLockEnable&&gainPct>=InpLockArmPct?"ARMED(新規停止)":
-             (g_dayBlocked?"DAY_BLOCKED":
-              (InpMTrailEnable&&g_mtBlocked?"MONTH_TRAIL(当月停止)":"active")))))));
+            (g_trailArmed?"TRAIL_ARMED(新規停止)":
+             (InpProfitLockEnable&&gainPct>=InpLockArmPct?"ARMED(新規停止)":
+              (g_dayBlocked?"DAY_BLOCKED":
+               (InpMTrailEnable&&g_mtBlocked?"MONTH_TRAIL(当月停止)":"active"))))))));
+   // ステップアップ到達通知(+10%・利益ロック無効時)
+   if(!InpProfitLockEnable && InpNotifyRefPct>0 && g_initBal>0){
+      if(!g_ntfRef && gainPct>=InpNotifyRefPct){ g_ntfRef=true;
+         Notify(StringFormat("ステップアップ水準到達 %+.2f%% (出金→昇格→BaselineReset)",gainPct)); FlushNotify(); }
+      else if(g_ntfRef && gainPct<InpNotifyRefPct-0.5) g_ntfRef=false;
+   }
    if(g_passLocked){ CloseAllMine("PROFIT_LOCK"); return; }
 
-   BalGuardCheck();                                   // v1.44: タイマー側でも評価
+   BalGuardCheck();                                   // v1.44
 
    if(g_useDailyStop){
       double dpnl=equity-g_dayStartEq;
@@ -700,6 +737,7 @@ void OnTimer()
    ManageE5();
 
    bool blockNew = (g_useProfitStop && equity>=g_initBal*(1.0+g_profitPct/100.0)) || g_dayBlocked
+                   || g_trailArmed
                    || (InpProfitLockEnable && gainPct>=InpLockArmPct)
                    || (InpMTrailEnable && g_mtBlocked)
                    || BalGuardActive();   // v1.44
@@ -790,7 +828,7 @@ void ManageV4Exit()
 }
 void EntriesV4()
 {
-   if(g_v4risk<=0.0) return;                          // v1.44: noV4構成(docs/171)。コードは自己資金版用に温存
+   if(g_v4risk<=0.0) return;                          // v1.44: noV4構成(docs/172)
    if(HolidayBlocked(TimeGMT())) return;                 // docs/148: 休日窓は新規停止(バー未消費=窓明けに通常判定)
    trade.SetExpertMagicNumber(g_mV4);
    for(int i=0;i<ArraySize(g_v4);i++){
@@ -939,7 +977,7 @@ void EntriesE5()
       if(sig==0){ if(cur!=0 && firstBuild) CloseSymMagic(sym,g_mE5,"E5_FLAT"); continue; }
       if(cur==sig) continue;
       if(cur!=0){ if(!firstBuild) continue; CloseSymMagic(sym,g_mE5,"E5_FLIP"); }
-      bool balRe=(g_balFires>0 && !g_balMonthHalt && !BalGuardActive());   // v1.44: BAL_GUARD翌日は再建て可
+      bool balRe=(g_balFires>0 && !g_balMonthHalt && !BalGuardActive());   // v1.44
       if(!firstBuild && !ManualCloseE5ThisMonth(sym) && !balRe) continue;
       if(RiskGuardBlocked("E5")) continue;               // 決済(FLAT/FLIP)は抑制しない。新規レッグのみ
       double atr=AtrAt(g_atrMN1[i]); if(atr<=0) continue;
