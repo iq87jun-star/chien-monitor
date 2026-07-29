@@ -49,6 +49,12 @@ import random
 SEED       = 20260729
 N_PATHS    = 4000
 HORIZON_M  = 24
+USDJPY     = 157.0     # 表示用換算レート (docs/46/47・monthly_income_projection.py と同一)
+
+
+def jpy(usd):
+    """USD建て内部値を日本円表示文字列にする。"""
+    return f"¥{usd * USDJPY:,.0f}"
 
 # --- 商品 ---
 FEE            = 500.0     # $100k 2-step 参加費 (FTMO €540 / FundedNext $549 / Fintokei ¥89,800 の丸め)
@@ -160,7 +166,8 @@ def unit_economics(cfg, payout_mult=1.0, hazard=None):
 # 運営キャッシュフロー・モンテカルロ
 # ----------------------------------------------------------------------------
 def simulate_paths(sharp_share, scen, n_paths=N_PATHS, seed=SEED):
-    rng = random.Random(seed + int(sharp_share * 1000) + hash(scen) % 1000)
+    # hash() はプロセスごとにランダム化されるため使わない(再現性のため)
+    rng = random.Random(seed + int(sharp_share * 1000) + sum(ord(c) for c in scen))
     sc = SCENARIOS[scen]
     hazard = {"retail": TRADER["retail"]["hazard_m"], "sharp": sc["sharp_hazard"]}
     pmult  = {"retail": 1.0, "sharp": sc["sharp_payout_mult"]}
@@ -249,7 +256,8 @@ def simulate_paths(sharp_share, scen, n_paths=N_PATHS, seed=SEED):
 def main():
     print("=" * 88)
     print("プロップファーム運営側 収支モンテカルロ (docs/174) — "
-          f"参加費${FEE:.0f} / {SIGNUPS_M}人/月 / 地平{HORIZON_M}ヶ月 / {N_PATHS}パス")
+          f"参加費{jpy(FEE)}(${FEE:.0f}) / {SIGNUPS_M}人/月 / "
+          f"地平{HORIZON_M}ヶ月 / {N_PATHS}パス / USDJPY={USDJPY:.0f}")
     print("=" * 88)
 
     # --- 単体経済性と損益分岐 sharp 比率 ---
@@ -264,17 +272,18 @@ def main():
         s_star = m_r / (m_r - m_s) if m_s < 0 else 1.0
         unit[scen] = dict(retail=u_r, sharp=u_s, breakeven_sharp_share=s_star)
         print(f"\n  ◆ シナリオ: {scen}")
-        print(f"    {'タイプ':<8} {'購入回数':>8} {'参加費計':>10} {'返金':>10} "
-              f"{'出金計':>12} {'運営マージン':>12}")
+        print(f"    {'タイプ':<8} {'購入回数':>8} {'参加費計':>12} {'返金':>12} "
+              f"{'出金計':>14} {'運営マージン':>14}")
         for name, u in (("retail", u_r), ("sharp", u_s)):
-            print(f"    {name:<8} {u['buys']:>8.2f} ${u['fee_gross']:>9,.0f} "
-                  f"${u['refunds']:>9,.0f} ${u['payouts']:>11,.0f} ${u['margin']:>11,.0f}")
+            print(f"    {name:<8} {u['buys']:>8.2f} {jpy(u['fee_gross']):>12} "
+                  f"{jpy(u['refunds']):>12} {jpy(u['payouts']):>14} {jpy(u['margin']):>14}")
         print(f"    → 損益分岐 sharp 比率 s* = {s_star * 100:.2f}%  "
               f"(顧客の s* 超が sharp なら期待値ベースで赤字)")
 
     # --- 運営キャッシュフローMC ---
     results = {"config": dict(
-        SEED=SEED, N_PATHS=N_PATHS, HORIZON_M=HORIZON_M, FEE=FEE,
+        note="金額の内部値はすべてUSD建て。表示・docs転記は USDJPY で円換算",
+        SEED=SEED, N_PATHS=N_PATHS, HORIZON_M=HORIZON_M, USDJPY=USDJPY, FEE=FEE,
         REFUND_ON_FUND=REFUND_ON_FUND, EVAL_MONTHS=EVAL_MONTHS,
         SIGNUPS_M=SIGNUPS_M, OPEX_FIXED_M=OPEX_FIXED_M,
         VAR_COST_PCT=VAR_COST_PCT, PAYOUT_SIGMA=PAYOUT_SIGMA,
@@ -283,20 +292,20 @@ def main():
 
     for scen in SCENARIOS:
         print(f"\n[2] 運営キャッシュフローMC — シナリオ: {scen}")
-        header = (f"  {'sharp比率':>8} | {'期待月次損益':>12} | {'24M累計(中央値)':>14} | "
-                  f"{'24M累計(5%tile)':>14} | {'出金/売上':>8} | "
-                  + " | ".join(f"破綻P(C0=${c/1000:.0f}k)" for c in CAPITALS)
-                  + f" | {'破綻1%必要資本':>12}")
+        header = (f"  {'sharp比率':>8} | {'期待月次損益':>14} | {'24M累計(中央値)':>15} | "
+                  f"{'24M累計(5%tile)':>15} | {'出金/売上':>8} | "
+                  + " | ".join(f"破綻P(C0={jpy(c)})" for c in CAPITALS)
+                  + f" | {'破綻1%必要資本':>14}")
         print(header)
         rows = []
         for s in SHARP_SHARES:
             r = simulate_paths(s, scen)
             rows.append(r)
-            ruins = " | ".join(f"{r['ruin_prob'][str(c)] * 100:>13.1f}%" for c in CAPITALS)
-            print(f"  {s * 100:>7.0f}% | ${r['mean_monthly_pnl']:>11,.0f} | "
-                  f"${r['p50_final_pnl_24m']:>13,.0f} | ${r['p05_final_pnl_24m']:>13,.0f} | "
+            ruins = " | ".join(f"{r['ruin_prob'][str(c)] * 100:>15.1f}%" for c in CAPITALS)
+            print(f"  {s * 100:>7.0f}% | {jpy(r['mean_monthly_pnl']):>14} | "
+                  f"{jpy(r['p50_final_pnl_24m']):>15} | {jpy(r['p05_final_pnl_24m']):>15} | "
                   f"{r['payout_ratio'] * 100:>7.1f}% | {ruins} | "
-                  f"${r['capital_for_ruin_1pct']:>11,.0f}")
+                  f"{jpy(r['capital_for_ruin_1pct']):>14}")
         results["grid"][scen] = rows
 
     out = os.path.join(os.path.dirname(os.path.abspath(__file__)),
