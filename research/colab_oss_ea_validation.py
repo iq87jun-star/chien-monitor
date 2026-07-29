@@ -151,12 +151,14 @@ def gates(name, trades, ec, eq_end, eq0, trades2x):
     for _ in range(2000):
         if (np.abs(pnl)*RNG.choice([-1,1],len(pnl))).sum()>=obs: cnt+=1
     pval=cnt/2000
-    g=dict(G1_PF=(round(float(pf),3), pf>=1.30), G2_DD=(round(float(dd),4), dd<=0.08),
-           G3_LOYO_losing_years=(int(losing), losing<=2), G4_cost2x_PF=(round(float(pf2),3), pf2>1.10),
-           G5_placebo_p=(round(pval,4), pval<0.05))
+    g=dict(G1_PF=(float(round(float(pf),3)), bool(pf>=1.30)),
+           G2_DD=(float(round(float(dd),4)), bool(dd<=0.08)),
+           G3_LOYO_losing_years=(int(losing), bool(losing<=2)),
+           G4_cost2x_PF=(float(round(float(pf2),3)), bool(pf2>1.10)),
+           G5_placebo_p=(float(round(pval,4)), bool(pval<0.05)))
     ok=all(v[1] for v in g.values())
-    return dict(name=name, n_trades=len(trades), total_return=round(eq_end/eq0-1,4),
-                yearly={int(k):round(float(v),0) for k,v in years.items()},
+    return dict(name=name, n_trades=int(len(trades)), total_return=float(round(float(eq_end)/eq0-1,4)),
+                yearly={int(k):float(round(float(v),0)) for k,v in years.items()},
                 gates=g, verdict="→デモ前進検証候補(G6相関は別途)" if ok else "REJECT")
 
 def main():
