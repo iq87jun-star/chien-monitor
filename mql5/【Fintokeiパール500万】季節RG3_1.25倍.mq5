@@ -216,6 +216,30 @@ string ResolveSymbol(string want)
          string cand=bases[b]+suf[s];
          if(SymbolSelect(cand,true)) return cand;
       }
+   // v1.45(docs/173): 固定候補で見つからない場合、ブローカー全銘柄を走査して
+   // 「基底名で始まる」or「区切り文字を挟んで基底名を含む」最短名を採用(接尾辞/接頭辞の自動吸収)。
+   {
+      int total=SymbolsTotal(false);
+      string bestName=""; 
+      for(int i=0;i<total;i++){
+         string nm=SymbolName(i,false);
+         string UN=nm; StringToUpper(UN);
+         for(int b=0;b<nb;b++){
+            string UB=bases[b]; StringToUpper(UB);
+            int pos=StringFind(UN,UB);
+            if(pos<0) continue;
+            if(pos>0){
+               ushort c=StringGetCharacter(UN,pos-1);
+               if(!(c=='.'||c=='_'||c=='-'||c=='#'||c=='@')) continue;
+            }
+            if(bestName=="" || StringLen(nm)<StringLen(bestName)) bestName=nm;
+         }
+      }
+      if(bestName!="" && SymbolSelect(bestName,true)){
+         PrintFormat("[SYM] '%s' → '%s' (全銘柄走査で解決)",want,bestName);
+         return bestName;
+      }
+   }
    return "";
 }
 
