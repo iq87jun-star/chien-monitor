@@ -1,0 +1,255 @@
+{
+  "config": {
+    "SEED": 20260729,
+    "N_PATHS": 4000,
+    "HORIZON_M": 24,
+    "FEE": 500.0,
+    "REFUND_ON_FUND": true,
+    "EVAL_MONTHS": 2,
+    "SIGNUPS_M": 300,
+    "OPEX_FIXED_M": 12000.0,
+    "VAR_COST_PCT": 0.15,
+    "PAYOUT_SIGMA": 0.35,
+    "TRADER": {
+      "retail": {
+        "p_pass": 0.07,
+        "payout_m": 800.0,
+        "hazard_m": 0.45,
+        "rebuy_p": 0.35,
+        "max_buys": 3
+      },
+      "sharp": {
+        "p_pass": 0.9,
+        "payout_m": 985.0,
+        "hazard_m": 0.005,
+        "rebuy_p": 0.9,
+        "max_buys": 3
+      }
+    },
+    "SCENARIOS": {
+      "naive": {
+        "sharp_payout_mult": 1.0,
+        "sharp_hazard": 0.005
+      },
+      "defended": {
+        "sharp_payout_mult": 0.5,
+        "sharp_hazard": 0.02
+      }
+    },
+    "CAPITALS": [
+      50000,
+      150000,
+      300000
+    ]
+  },
+  "unit_economics": {
+    "naive": {
+      "retail": {
+        "fee_gross": 736.2497297077861,
+        "refunds": 51.53743877874301,
+        "payouts": 183.24113798513596,
+        "buys": 1.4724994594155763,
+        "margin": 391.03369348773913
+      },
+      "sharp": {
+        "fee_gross": 597.1293282675051,
+        "refunds": 533.2689679356238,
+        "payouts": 20810.036496500616,
+        "buys": 1.1942586565350135,
+        "margin": -20835.74553540886
+      },
+      "breakeven_sharp_share": 0.01842171576154211
+    },
+    "defended": {
+      "retail": {
+        "fee_gross": 736.2497297077861,
+        "refunds": 51.53743877874301,
+        "payouts": 183.24113798513596,
+        "buys": 1.4724994594155763,
+        "margin": 391.03369348773913
+      },
+      "sharp": {
+        "fee_gross": 729.217792799722,
+        "refunds": 641.6214314349286,
+        "payouts": 9933.109027570737,
+        "buys": 1.4584355855994424,
+        "margin": -9954.895335125902
+      },
+      "breakeven_sharp_share": 0.03779589946985532
+    }
+  },
+  "grid": {
+    "naive": [
+      {
+        "sharp_share": 0.0,
+        "mean_final_pnl_24m": 2601587.1215757644,
+        "p05_final_pnl_24m": 2404586.6674350966,
+        "p50_final_pnl_24m": 2606735.9424353773,
+        "mean_monthly_pnl": 108399.46339899018,
+        "payout_ratio": 0.21292160157463505,
+        "ruin_prob": {
+          "50000": 0.0,
+          "150000": 0.0,
+          "300000": 0.0
+        },
+        "capital_for_ruin_1pct": 0.0
+      },
+      {
+        "sharp_share": 0.01,
+        "mean_final_pnl_24m": 1856818.2341794334,
+        "p05_final_pnl_24m": 1574990.9368520544,
+        "p50_final_pnl_24m": 1858292.7310212539,
+        "mean_monthly_pnl": 77367.42642414306,
+        "payout_ratio": 0.35349438075282713,
+        "ruin_prob": {
+          "50000": 0.0,
+          "150000": 0.0,
+          "300000": 0.0
+        },
+        "capital_for_ruin_1pct": 0.0
+      },
+      {
+        "sharp_share": 0.02,
+        "mean_final_pnl_24m": 1115457.9950431995,
+        "p05_final_pnl_24m": 741380.634098905,
+        "p50_final_pnl_24m": 1123890.1628865916,
+        "mean_monthly_pnl": 46477.41646013331,
+        "payout_ratio": 0.4943732093209218,
+        "ruin_prob": {
+          "50000": 0.0,
+          "150000": 0.0,
+          "300000": 0.0
+        },
+        "capital_for_ruin_1pct": 0.0
+      },
+      {
+        "sharp_share": 0.03,
+        "mean_final_pnl_24m": 375570.3894020815,
+        "p05_final_pnl_24m": -123605.13786112383,
+        "p50_final_pnl_24m": 397530.8287180775,
+        "mean_monthly_pnl": 15648.766225086729,
+        "payout_ratio": 0.6353512457543978,
+        "ruin_prob": {
+          "50000": 0.07875,
+          "150000": 0.04275,
+          "300000": 0.01625
+        },
+        "capital_for_ruin_1pct": 352212.7944892549
+      },
+      {
+        "sharp_share": 0.05,
+        "mean_final_pnl_24m": -1091712.5843851783,
+        "p05_final_pnl_24m": -1782740.62738139,
+        "p50_final_pnl_24m": -1071222.3759030222,
+        "mean_monthly_pnl": -45488.02434938243,
+        "payout_ratio": 0.9164843492520505,
+        "ruin_prob": {
+          "50000": 0.999,
+          "150000": 0.996,
+          "300000": 0.9885
+        },
+        "capital_for_ruin_1pct": 2095896.9253764988
+      },
+      {
+        "sharp_share": 0.1,
+        "mean_final_pnl_24m": -4788716.964655726,
+        "p05_final_pnl_24m": -6063100.7071970785,
+        "p50_final_pnl_24m": -4749384.093875152,
+        "mean_monthly_pnl": -199529.87352732194,
+        "payout_ratio": 1.6347629900578184,
+        "ruin_prob": {
+          "50000": 1.0,
+          "150000": 1.0,
+          "300000": 1.0
+        },
+        "capital_for_ruin_1pct": 6637401.787037826
+      }
+    ],
+    "defended": [
+      {
+        "sharp_share": 0.0,
+        "mean_final_pnl_24m": 2599948.1206483296,
+        "p05_final_pnl_24m": 2403340.5880778106,
+        "p50_final_pnl_24m": 2604891.1617149976,
+        "mean_monthly_pnl": 108331.1716936804,
+        "payout_ratio": 0.21315235463132215,
+        "ruin_prob": {
+          "50000": 0.0,
+          "150000": 0.0,
+          "300000": 0.0
+        },
+        "capital_for_ruin_1pct": 0.0
+      },
+      {
+        "sharp_share": 0.01,
+        "mean_final_pnl_24m": 2230226.9156643697,
+        "p05_final_pnl_24m": 2017401.6248537353,
+        "p50_final_pnl_24m": 2232688.6461061495,
+        "mean_monthly_pnl": 92926.1214860154,
+        "payout_ratio": 0.2791929394281731,
+        "ruin_prob": {
+          "50000": 0.0,
+          "150000": 0.0,
+          "300000": 0.0
+        },
+        "capital_for_ruin_1pct": 0.0
+      },
+      {
+        "sharp_share": 0.02,
+        "mean_final_pnl_24m": 1861428.5648273246,
+        "p05_final_pnl_24m": 1617230.4348343066,
+        "p50_final_pnl_24m": 1863653.0155276475,
+        "mean_monthly_pnl": 77559.52353447185,
+        "payout_ratio": 0.34533871156483004,
+        "ruin_prob": {
+          "50000": 0.0,
+          "150000": 0.0,
+          "300000": 0.0
+        },
+        "capital_for_ruin_1pct": 0.0
+      },
+      {
+        "sharp_share": 0.03,
+        "mean_final_pnl_24m": 1482077.795048337,
+        "p05_final_pnl_24m": 1199259.9987159998,
+        "p50_final_pnl_24m": 1490685.7611445673,
+        "mean_monthly_pnl": 61753.24146034737,
+        "payout_ratio": 0.4136436751278213,
+        "ruin_prob": {
+          "50000": 0.0,
+          "150000": 0.0,
+          "300000": 0.0
+        },
+        "capital_for_ruin_1pct": 0.0
+      },
+      {
+        "sharp_share": 0.05,
+        "mean_final_pnl_24m": 739875.50123414,
+        "p05_final_pnl_24m": 383357.87519649713,
+        "p50_final_pnl_24m": 750217.4930705931,
+        "mean_monthly_pnl": 30828.145884755835,
+        "payout_ratio": 0.5473889688578493,
+        "ruin_prob": {
+          "50000": 0.00025,
+          "150000": 0.00025,
+          "300000": 0.0
+        },
+        "capital_for_ruin_1pct": 0.0
+      },
+      {
+        "sharp_share": 0.1,
+        "mean_final_pnl_24m": -1102177.0948130386,
+        "p05_final_pnl_24m": -1692478.3010050238,
+        "p50_final_pnl_24m": -1082007.0382292788,
+        "mean_monthly_pnl": -45924.045617209944,
+        "payout_ratio": 0.8817069578346801,
+        "ruin_prob": {
+          "50000": 0.99975,
+          "150000": 0.999,
+          "300000": 0.9945
+        },
+        "capital_for_ruin_1pct": 1999138.590617994
+      }
+    ]
+  }
+}
