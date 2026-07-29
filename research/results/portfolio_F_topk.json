@@ -1,0 +1,335 @@
+{
+ "meta": {
+  "prereg": "docs/142",
+  "K": 6,
+  "seed": 7,
+  "n_paths": 20000,
+  "inputs": {
+   "EURUSD": "113537c4663290cf",
+   "GBPUSD": "81191342a95492d6",
+   "USDJPY": "44493d72ca3da454",
+   "AUDUSD": "b9a00386562810e3",
+   "USDCHF": "608f80dc30102b06",
+   "USDCAD": "e7d7d32b5ef89a96",
+   "NZDUSD": "89b1bad88a04566f",
+   "EURJPY": "841334444b0857d9",
+   "GBPJPY": "728315254a4f47bf",
+   "AUDJPY": "98ade6818bbd7995",
+   "NZDJPY": "341c655370e601b5",
+   "CADJPY": "71dafae63b484892",
+   "CHFJPY": "69850c932f42ab0d",
+   "XAUUSD": "069fde17d31617ee",
+   "US500": "bff1db8e8620b8c5",
+   "NAS100": "86ddb5dbb579dc02",
+   "GER40": "2f506d58458bfe58",
+   "JP225": "d4903278f071a23a",
+   "UK100": "f979a26e46c6fb79",
+   "FR40": "231bf96be49c76de"
+  }
+ },
+ "loyo": {
+  "6": {
+   "oos_sharpe": 0.61,
+   "full_top": [
+    "EMon:NAS100",
+    "EMon:US500",
+    "v7:EURJPY",
+    "v7:GBPJPY",
+    "v7x:AUDJPY",
+    "v7x:NZDJPY"
+   ],
+   "avg_match": 5.3,
+   "fold_sets": {
+    "2016": [
+     "EMon:NAS100",
+     "EMon:US500",
+     "v4:basket",
+     "v7:EURJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2017": [
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2018": [
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2019": [
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2020": [
+     "EMon:NAS100",
+     "v4:basket",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2021": [
+     "E5:XAUUSD",
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2022": [
+     "E5:XAUUSD",
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2023": [
+     "E5:XAUUSD",
+     "EMon:GER40",
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2024": [
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2025": [
+     "EMon:NAS100",
+     "EMon:US500",
+     "G3:US500",
+     "v7:EURJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ]
+   }
+  },
+  "4": {
+   "oos_sharpe": 0.41,
+   "full_top": [
+    "EMon:NAS100",
+    "v7:EURJPY",
+    "v7x:AUDJPY",
+    "v7x:NZDJPY"
+   ],
+   "avg_match": 3.4,
+   "fold_sets": {
+    "2016": [
+     "EMon:NAS100",
+     "v4:basket",
+     "v7:EURJPY",
+     "v7x:AUDJPY"
+    ],
+    "2017": [
+     "EMon:NAS100",
+     "v7:EURJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2018": [
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2019": [
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2020": [
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2021": [
+     "EMon:NAS100",
+     "v7:EURJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2022": [
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2023": [
+     "E5:XAUUSD",
+     "EMon:NAS100",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2024": [
+     "EMon:NAS100",
+     "v7:EURJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2025": [
+     "EMon:NAS100",
+     "v7:EURJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ]
+   }
+  },
+  "8": {
+   "oos_sharpe": 0.58,
+   "full_top": [
+    "E5:XAUUSD",
+    "EMon:GER40",
+    "EMon:NAS100",
+    "EMon:US500",
+    "v7:EURJPY",
+    "v7:GBPJPY",
+    "v7x:AUDJPY",
+    "v7x:NZDJPY"
+   ],
+   "avg_match": 7.1,
+   "fold_sets": {
+    "2016": [
+     "E5:XAUUSD",
+     "EMon:NAS100",
+     "EMon:US500",
+     "v4:basket",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2017": [
+     "E5:XAUUSD",
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:CHFJPY",
+     "v7x:NZDJPY"
+    ],
+    "2018": [
+     "E5:XAUUSD",
+     "EMon:GER40",
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2019": [
+     "E5:NAS100",
+     "EMon:GER40",
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2020": [
+     "E5:NAS100",
+     "E5:XAUUSD",
+     "EMon:NAS100",
+     "v4:basket",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2021": [
+     "E5:XAUUSD",
+     "EMon:GER40",
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2022": [
+     "E5:NAS100",
+     "E5:XAUUSD",
+     "EMon:GER40",
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2023": [
+     "E5:NAS100",
+     "E5:XAUUSD",
+     "EMon:GER40",
+     "EMon:NAS100",
+     "EMon:US500",
+     "v7:EURJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2024": [
+     "EMon:GER40",
+     "EMon:NAS100",
+     "EMon:US500",
+     "EMonX:JP225",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ],
+    "2025": [
+     "EMon:GER40",
+     "EMon:NAS100",
+     "EMon:US500",
+     "G3:US500",
+     "v7:EURJPY",
+     "v7:GBPJPY",
+     "v7x:AUDJPY",
+     "v7x:NZDJPY"
+    ]
+   }
+  }
+ },
+ "placebo": {
+  "n": 400,
+  "p80": 0.96
+ },
+ "median3_mc": null,
+ "pd_ref": {
+  "fail_pct_optimistic": 19.6,
+  "fail_pct_raw": 26.7
+ },
+ "rho": {
+  "vs_季節R4": 0.41,
+  "vs_PD間引き": 0.45,
+  "vs_PE_v2": 0.07
+ },
+ "gates": {
+  "F1_placebo": false,
+  "F2_stability": true,
+  "F3_beats_PD": false,
+  "F4_overlap": true
+ },
+ "verdict": "REJECT(抜粋ポートフォリオは既存器を上回らない/選別に情報なし)"
+}

@@ -1,0 +1,41 @@
+; ==============================================================
+; 【FN200k(R4稼働中の口座)】季節EA(R4+G3)v1.30差し替え用・現行標準設定
+; 適用EA: Chien_Seasonal_R4G3_Prop v1.30(週末月替わりロール修正版)
+; 用途: 7/31(金)までにv1.20→v1.30へ差し替える際、現行と同一設定を明示適用する
+; 設定: FN Stellar仕様のまま(ロック7.0/7.5・倍率1.5x・日次-4%/フロア-8%)
+; 注意1: InpInitialBalance=200000 を明示(端末保存値の自動復元でも可だが明示が確実)
+; 注意2: 差し替え直後は「一度決済→当月構成で建て直し」の正規化動作が入る(重複はしない)
+; ==============================================================
+InpAcknowledgeDemo=true
+InpMultOverride=1.5
+InpDailyStopPct=4.0
+InpAccountFloorDDPct=8.0
+InpInitialBalance=200000.0
+InpBaselineReset=false
+InpProfitLockEnable=true
+InpLockArmPct=7.0
+InpLockClosePct=7.5
+InpMaxOpenRiskPct=3.0
+InpNoSLRiskAssumePct=10.0
+InpV4Pairs=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Assets=XAUUSD,US500,NAS100,GER40
+InpEMon=US500,NAS100,GER40
+InpEMonX=JP225,UK100,FR40
+InpV7X=AUDJPY,NZDJPY,CADJPY,CHFJPY
+InpV7=EURJPY,GBPJPY,USDJPY
+InpSJul=US500,NAS100
+InpSwapLogEnable=true
+InpReenterManualClose=true
+InpG3Enable=true
+InpG3Symbol=US500
+InpG3Dates=2026.01.28,2026.03.18,2026.04.29,2026.06.17,2026.07.29,2026.09.16,2026.10.28,2026.12.09
+InpG3RiskPct=1.0
+InpG3CatATR=2.5
+InpG3EntryHourET=14
+InpG3ExitMinBefore=5
+InpNotifyEnable=true
+InpNotifyEntries=true
+InpNotifyRefPct=6.0
+InpNotifyDayWarnPct=3.0
+InpNotifyWidth=true
+InpHoldHoursMonday=24

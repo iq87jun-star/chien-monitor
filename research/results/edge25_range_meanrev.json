@@ -1,0 +1,227 @@
+{
+ "meta": {
+  "prereg": "docs/156",
+  "n_candidates": 6,
+  "bonferroni": 0.0083,
+  "pairs": [
+   "EURUSD",
+   "GBPUSD",
+   "AUDUSD",
+   "NZDUSD",
+   "USDCAD",
+   "USDCHF",
+   "EURJPY",
+   "GBPJPY",
+   "USDJPY"
+  ],
+  "cost_pip": 2.0,
+  "hold_days": 3,
+  "n_placebo": 500,
+  "n_perm": 5000,
+  "seed": 7,
+  "inputs": {
+   "EURUSD": "00a08caf63207544",
+   "GBPUSD": "355a845799847d7b",
+   "AUDUSD": "ad5549358e8fd8b5",
+   "NZDUSD": "6bf23b76836db9af",
+   "USDCAD": "af173cc8d1fbe954",
+   "USDCHF": "b4ef97cc2e91e4f1",
+   "EURJPY": "3b80d917753db76e",
+   "GBPJPY": "ddc66473ebd30273",
+   "USDJPY": "1f50f40b5e89f556"
+  },
+  "caveat": "Yahoo日足・重複許容・固定3日保有。pre-2016はclose-only近似(参考)。"
+ },
+ "baseline_ungated": {
+  "S1": {
+   "total_ret_pct": 17.45,
+   "n_trades": 6572,
+   "mean_month_bp": 13.74,
+   "perm_p": 0.1654,
+   "loyo_all_positive": true,
+   "loyo_min": 4.87,
+   "is_mean_bp": 22.38,
+   "oos_mean_bp": -5.75
+  },
+  "S2": {
+   "total_ret_pct": 6.45,
+   "n_trades": 2545,
+   "mean_month_bp": 5.08,
+   "perm_p": 0.2833,
+   "loyo_all_positive": false,
+   "loyo_min": -0.03,
+   "is_mean_bp": 3.91,
+   "oos_mean_bp": 7.7
+  }
+ },
+ "candidates": {
+  "R1xS1": {
+   "total_ret_pct": -1.61,
+   "n_trades": 2677,
+   "mean_month_bp": -1.27,
+   "perm_p": 0.5709,
+   "loyo_all_positive": false,
+   "loyo_min": -8.13,
+   "is_mean_bp": -1.8,
+   "oos_mean_bp": -0.06,
+   "placebo_pct": 11.4,
+   "beats_base": false,
+   "cost_sens_total_pct": {
+    "1.0pip": 1.22,
+    "4.0pip": -7.26
+   },
+   "gates": {
+    "G_perm": false,
+    "G_plac": false,
+    "G_base": false,
+    "G_loyo": false,
+    "G_oos": false,
+    "G_cost": false
+   },
+   "verdict": "REJECT"
+  },
+  "R1xS2": {
+   "total_ret_pct": -2.32,
+   "n_trades": 995,
+   "mean_month_bp": -1.83,
+   "perm_p": 0.6537,
+   "loyo_all_positive": false,
+   "loyo_min": -7.55,
+   "is_mean_bp": -8.74,
+   "oos_mean_bp": 13.77,
+   "placebo_pct": 13.2,
+   "beats_base": false,
+   "cost_sens_total_pct": {
+    "1.0pip": -1.26,
+    "4.0pip": -4.44
+   },
+   "gates": {
+    "G_perm": false,
+    "G_plac": false,
+    "G_base": false,
+    "G_loyo": false,
+    "G_oos": false,
+    "G_cost": false
+   },
+   "verdict": "REJECT"
+  },
+  "R2xS1": {
+   "total_ret_pct": -0.78,
+   "n_trades": 1126,
+   "mean_month_bp": -0.62,
+   "perm_p": 0.5707,
+   "loyo_all_positive": false,
+   "loyo_min": -3.69,
+   "is_mean_bp": 0.41,
+   "oos_mean_bp": -2.93,
+   "placebo_pct": 20.8,
+   "beats_base": false,
+   "cost_sens_total_pct": {
+    "1.0pip": 0.37,
+    "4.0pip": -3.09
+   },
+   "gates": {
+    "G_perm": false,
+    "G_plac": false,
+    "G_base": false,
+    "G_loyo": false,
+    "G_oos": false,
+    "G_cost": false
+   },
+   "verdict": "REJECT"
+  },
+  "R2xS2": {
+   "total_ret_pct": 3.4,
+   "n_trades": 479,
+   "mean_month_bp": 2.68,
+   "perm_p": 0.1266,
+   "loyo_all_positive": true,
+   "loyo_min": 1.07,
+   "is_mean_bp": 3.76,
+   "oos_mean_bp": 0.24,
+   "placebo_pct": 69.6,
+   "beats_base": false,
+   "cost_sens_total_pct": {
+    "1.0pip": 3.89,
+    "4.0pip": 2.41
+   },
+   "gates": {
+    "G_perm": false,
+    "G_plac": false,
+    "G_base": false,
+    "G_loyo": true,
+    "G_oos": true,
+    "G_cost": true
+   },
+   "verdict": "REJECT"
+  },
+  "R3xS1": {
+   "total_ret_pct": -4.66,
+   "n_trades": 1802,
+   "mean_month_bp": -3.67,
+   "perm_p": 0.7652,
+   "loyo_all_positive": false,
+   "loyo_min": -9.98,
+   "is_mean_bp": -2.3,
+   "oos_mean_bp": -6.74,
+   "placebo_pct": 12.4,
+   "beats_base": false,
+   "cost_sens_total_pct": {
+    "1.0pip": -2.75,
+    "4.0pip": -8.46
+   },
+   "gates": {
+    "G_perm": false,
+    "G_plac": false,
+    "G_base": false,
+    "G_loyo": false,
+    "G_oos": false,
+    "G_cost": false
+   },
+   "verdict": "REJECT"
+  },
+  "R3xS2": {
+   "total_ret_pct": 2.37,
+   "n_trades": 644,
+   "mean_month_bp": 1.87,
+   "perm_p": 0.2515,
+   "loyo_all_positive": true,
+   "loyo_min": 0.49,
+   "is_mean_bp": 2.91,
+   "oos_mean_bp": -0.49,
+   "placebo_pct": 54.0,
+   "beats_base": false,
+   "cost_sens_total_pct": {
+    "1.0pip": 3.02,
+    "4.0pip": 1.07
+   },
+   "gates": {
+    "G_perm": false,
+    "G_plac": false,
+    "G_base": false,
+    "G_loyo": true,
+    "G_oos": false,
+    "G_cost": true
+   },
+   "verdict": "REJECT"
+  }
+ },
+ "pre2016_reference": {
+  "R2xS1": {
+   "total_ret_pct": -30.95,
+   "mean_month_bp": -13.4
+  },
+  "R2xS2": {
+   "total_ret_pct": -4.82,
+   "mean_month_bp": -2.09
+  },
+  "R3xS1": {
+   "total_ret_pct": -12.33,
+   "mean_month_bp": -5.34
+  },
+  "R3xS2": {
+   "total_ret_pct": -0.93,
+   "mean_month_bp": -0.4
+  }
+ }
+}

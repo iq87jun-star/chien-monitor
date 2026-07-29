@@ -1,0 +1,69 @@
+{
+  "portfolios": {
+    "既存 confirmed (v4 55 : EmonRaw 45)": {
+      "sharpe": 0.852,
+      "calmar": 0.537,
+      "maxdd": -0.1552,
+      "cagr": 0.0833,
+      "p95": -0.1242
+    },
+    "★最小変更 (v4 55 : EmonRG3 45)": {
+      "sharpe": 0.819,
+      "calmar": 0.576,
+      "maxdd": -0.1383,
+      "cagr": 0.0797,
+      "p95": -0.1253
+    },
+    "P-RG-lite (v4 50 : EmonRG3 44 : gold 6)": {
+      "sharpe": 0.828,
+      "calmar": 0.585,
+      "maxdd": -0.1379,
+      "cagr": 0.0807,
+      "p95": -0.1243
+    },
+    "P-RG-full (v4 50 : EmonRG3 38 : v7 6 : gold 6)": {
+      "sharpe": 0.781,
+      "calmar": 0.54,
+      "maxdd": -0.1402,
+      "cagr": 0.0757,
+      "p95": -0.127
+    }
+  },
+  "sleeves": {
+    "v4": {
+      "sharpe": 0.52,
+      "calmar": 0.302,
+      "maxdd": -0.1592,
+      "cagr": 0.0481,
+      "p95": -0.1353
+    },
+    "EmonRaw": {
+      "sharpe": 0.692,
+      "calmar": 0.343,
+      "maxdd": -0.1936,
+      "cagr": 0.0663,
+      "p95": -0.1139
+    },
+    "EmonRG3": {
+      "sharpe": 0.728,
+      "calmar": 0.641,
+      "maxdd": -0.1095,
+      "cagr": 0.0701,
+      "p95": -0.1208
+    },
+    "v7": {
+      "sharpe": -0.299,
+      "calmar": -0.093,
+      "maxdd": -0.37,
+      "cagr": -0.0343,
+      "p95": -0.187
+    },
+    "gold": {
+      "sharpe": 0.149,
+      "calmar": 0.099,
+      "maxdd": -0.1031,
+      "cagr": 0.0102,
+      "p95": -0.1549
+    }
+  }
+}

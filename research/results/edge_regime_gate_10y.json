@@ -1,0 +1,142 @@
+{
+  "RG1_TREND": {
+    "id": "RG1_TREND",
+    "kept_frac": 0.726,
+    "raw": {
+      "net": 54.37,
+      "calmar": 0.34,
+      "maxdd": -0.1569,
+      "sharpe": 0.759
+    },
+    "gated": {
+      "net": 25.22,
+      "calmar": 0.382,
+      "maxdd": -0.0694,
+      "sharpe": 0.608,
+      "perm_p": 0.10436
+    },
+    "placebo": {
+      "net": 40.72,
+      "calmar": 0.3,
+      "maxdd": -0.1326
+    },
+    "OOS": {
+      "raw_calmar": 1.214,
+      "gated_calmar": 0.661,
+      "raw_maxdd": -0.0503,
+      "gated_maxdd": -0.0503
+    },
+    "alpha_bonf": 0.008333,
+    "verdict": "REJECT"
+  },
+  "RG2_VOL": {
+    "id": "RG2_VOL",
+    "kept_frac": 0.812,
+    "raw": {
+      "net": 54.37,
+      "calmar": 0.34,
+      "maxdd": -0.1569,
+      "sharpe": 0.759
+    },
+    "gated": {
+      "net": 36.45,
+      "calmar": 0.498,
+      "maxdd": -0.0721,
+      "sharpe": 0.808,
+      "perm_p": 0.0265
+    },
+    "placebo": {
+      "net": 44.58,
+      "calmar": 0.311,
+      "maxdd": -0.141
+    },
+    "OOS": {
+      "raw_calmar": 1.214,
+      "gated_calmar": 0.483,
+      "raw_maxdd": -0.0503,
+      "gated_maxdd": -0.0444
+    },
+    "alpha_bonf": 0.008333,
+    "verdict": "REJECT"
+  },
+  "RG3_RISKOFF": {
+    "id": "RG3_RISKOFF",
+    "kept_frac": 0.893,
+    "raw": {
+      "net": 54.37,
+      "calmar": 0.34,
+      "maxdd": -0.1569,
+      "sharpe": 0.759
+    },
+    "gated": {
+      "net": 40.68,
+      "calmar": 0.579,
+      "maxdd": -0.0692,
+      "sharpe": 0.782,
+      "perm_p": 0.02125
+    },
+    "placebo": {
+      "net": 48.66,
+      "calmar": 0.333,
+      "maxdd": -0.1445
+    },
+    "OOS": {
+      "raw_calmar": 1.214,
+      "gated_calmar": 0.763,
+      "raw_maxdd": -0.0503,
+      "gated_maxdd": -0.0503
+    },
+    "alpha_bonf": 0.008333,
+    "verdict": "REJECT"
+  },
+  "RG4_V7": {
+    "id": "RG4_V7",
+    "kept_frac": 0.925,
+    "raw": {
+      "net": -9.18,
+      "calmar": -0.074,
+      "maxdd": -0.1318,
+      "sharpe": -0.258
+    },
+    "gated": {
+      "net": -5.12,
+      "calmar": -0.049,
+      "maxdd": -0.1161,
+      "sharpe": -0.154,
+      "perm_p": 0.59218
+    },
+    "placebo": {
+      "net": -7.96,
+      "calmar": -0.069,
+      "maxdd": -0.1248
+    },
+    "OOS": {
+      "raw_calmar": -0.258,
+      "gated_calmar": -0.199,
+      "raw_maxdd": -0.0711,
+      "gated_maxdd": -0.0441
+    },
+    "alpha_bonf": 0.008333,
+    "verdict": "LEAD"
+  },
+  "RG5_GOLD": {
+    "id": "RG5_GOLD",
+    "n_riskoff_weeks": 52,
+    "hedge": {
+      "net": 1.82,
+      "sharpe": 0.145,
+      "maxdd": -0.0881,
+      "perm_p": 0.85827
+    },
+    "gold_all": {
+      "net": -11.33,
+      "sharpe": -0.176,
+      "maxdd": -0.2862
+    },
+    "note": "hedge=リスクオフ週のみ金L / gold_all=無条件金月曜L(=プラセボ比較). hedge>gold_all & perm<Bonf で衛星価値"
+  },
+  "RG6_VTGT": {
+    "id": "RG6_VTGT",
+    "status": "PENDING_DRIVE_portfolio_blend"
+  }
+}

@@ -1,0 +1,206 @@
+{
+  "P0": {
+    "sharpe": 1.354,
+    "maxDD": -1.8,
+    "calmar": 1.53,
+    "ann6": 9.2
+  },
+  "universes": {
+    "no_crypto": {
+      "names": [
+        "v7",
+        "v4",
+        "E5",
+        "E-Mon"
+      ],
+      "months": 117,
+      "P0": {
+        "sharpe": 1.354,
+        "maxDD": -1.8,
+        "calmar": 1.53,
+        "ann6": 9.2
+      },
+      "max_sharpe": {
+        "w": {
+          "v7": 0.26,
+          "v4": 0.36,
+          "E5": 0.14,
+          "E-Mon": 0.24
+        },
+        "m": {
+          "sharpe": 1.51,
+          "maxDD": -1.6,
+          "calmar": 1.76,
+          "ann6": 10.6
+        }
+      },
+      "max_calmar": {
+        "w": {
+          "v7": 0.29,
+          "v4": 0.41,
+          "E5": 0.16,
+          "E-Mon": 0.14
+        },
+        "m": {
+          "sharpe": 1.482,
+          "maxDD": -1.1,
+          "calmar": 2.46,
+          "ann6": 14.8
+        }
+      },
+      "risk_parity": {
+        "w": {
+          "v7": 0.25,
+          "v4": 0.25,
+          "E5": 0.25,
+          "E-Mon": 0.25
+        },
+        "m": {
+          "sharpe": 1.435,
+          "maxDD": -2.1,
+          "calmar": 1.23,
+          "ann6": 7.4
+        }
+      },
+      "oos": {
+        "p0": {
+          "sharpe": 1.506,
+          "maxDD": -1.3,
+          "calmar": 2.4,
+          "ann6": 14.4
+        },
+        "rp": {
+          "sharpe": 2.019,
+          "maxDD": -1.1,
+          "calmar": 2.92,
+          "ann6": 17.5
+        },
+        "opt_sharpe_w": {
+          "v7": 0.32,
+          "v4": 0.45,
+          "E5": 0.05,
+          "E-Mon": 0.18
+        },
+        "opt_sharpe_oos": {
+          "sharpe": 1.536,
+          "maxDD": -1.3,
+          "calmar": 2.45,
+          "ann6": 14.7
+        },
+        "opt_calmar_w": {
+          "v7": 0.28,
+          "v4": 0.44,
+          "E5": 0.14,
+          "E-Mon": 0.15
+        },
+        "opt_calmar_oos": {
+          "sharpe": 1.619,
+          "maxDD": -1.2,
+          "calmar": 2.72,
+          "ann6": 16.3
+        }
+      }
+    },
+    "with_crypto": {
+      "names": [
+        "v7",
+        "v4",
+        "E5",
+        "E-Mon",
+        "CRYPTO"
+      ],
+      "months": 117,
+      "P0": {
+        "sharpe": 1.354,
+        "maxDD": -1.8,
+        "calmar": 1.53,
+        "ann6": 9.2
+      },
+      "max_sharpe": {
+        "w": {
+          "v7": 0.23,
+          "v4": 0.32,
+          "E5": 0.11,
+          "E-Mon": 0.19,
+          "CRYPTO": 0.14
+        },
+        "m": {
+          "sharpe": 1.586,
+          "maxDD": -1.6,
+          "calmar": 1.68,
+          "ann6": 10.1
+        }
+      },
+      "max_calmar": {
+        "w": {
+          "v7": 0.18,
+          "v4": 0.42,
+          "E5": 0.16,
+          "E-Mon": 0.14,
+          "CRYPTO": 0.1
+        },
+        "m": {
+          "sharpe": 1.518,
+          "maxDD": -1.0,
+          "calmar": 2.61,
+          "ann6": 15.7
+        }
+      },
+      "risk_parity": {
+        "w": {
+          "v7": 0.2,
+          "v4": 0.2,
+          "E5": 0.2,
+          "E-Mon": 0.2,
+          "CRYPTO": 0.2
+        },
+        "m": {
+          "sharpe": 1.483,
+          "maxDD": -2.4,
+          "calmar": 1.01,
+          "ann6": 6.1
+        }
+      },
+      "oos": {
+        "p0": {
+          "sharpe": 1.506,
+          "maxDD": -1.3,
+          "calmar": 2.4,
+          "ann6": 14.4
+        },
+        "rp": {
+          "sharpe": 2.057,
+          "maxDD": -0.9,
+          "calmar": 3.44,
+          "ann6": 20.6
+        },
+        "opt_sharpe_w": {
+          "v7": 0.26,
+          "v4": 0.44,
+          "E5": 0.01,
+          "E-Mon": 0.14,
+          "CRYPTO": 0.16
+        },
+        "opt_sharpe_oos": {
+          "sharpe": 1.488,
+          "maxDD": -1.3,
+          "calmar": 2.28,
+          "ann6": 13.7
+        },
+        "opt_calmar_w": {
+          "v7": 0.24,
+          "v4": 0.4,
+          "E5": 0.14,
+          "E-Mon": 0.08,
+          "CRYPTO": 0.14
+        },
+        "opt_calmar_oos": {
+          "sharpe": 1.641,
+          "maxDD": -1.1,
+          "calmar": 2.79,
+          "ann6": 16.7
+        }
+      }
+    }
+  }
+}

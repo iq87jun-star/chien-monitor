@@ -1,0 +1,386 @@
+{
+ "meta": {
+  "method": "docs/154(トレーリングlock)+docs/155(昇格レース)の機械を逐語流用。同月内昇格/失格は日次先着・同日fail優先。中間出金なし想定。",
+  "rule": "FN Stellar Instant −6%建値ロック(docs/161 §1で公式確認)",
+  "window": "2016-01..2026-06",
+  "n_paths": 20000,
+  "horizon_months": 36,
+  "inputs": {
+   "EURUSD": "00a08caf63207544",
+   "GBPUSD": "355a845799847d7b",
+   "USDJPY": "1f50f40b5e89f556",
+   "AUDUSD": "ad5549358e8fd8b5",
+   "USDCHF": "b4ef97cc2e91e4f1",
+   "USDCAD": "af173cc8d1fbe954",
+   "NZDUSD": "6bf23b76836db9af",
+   "EURJPY": "3b80d917753db76e",
+   "GBPJPY": "ddc66473ebd30273",
+   "AUDJPY": "98ade6818bbd7995",
+   "NZDJPY": "341c655370e601b5",
+   "CADJPY": "71dafae63b484892",
+   "CHFJPY": "69850c932f42ab0d",
+   "XAUUSD": "f63f13f5ac377f11",
+   "US500": "cf9623ed096f81dd",
+   "NAS100": "f0710910c39fd0d3",
+   "GER40": "1bd9ee8d1aaebc6f",
+   "JP225": "d4903278f071a23a",
+   "UK100": "f979a26e46c6fb79",
+   "FR40": "231bf96be49c76de"
+  },
+  "caveat": "Yahoo日足=v4含む構成(PD)は実データ比で過小側(docs/138)。季節との比較はdocs/154/155の同条件の値を参照。"
+ },
+ "variants": {
+  "PD間引き": {
+   "x0.5": {
+    "monthly": {
+     "mean_month_pct": 0.25,
+     "median_month_pct": 0.22,
+     "worst_month_pct": -1.19,
+     "worst_day_pct": -1.28,
+     "pos_month_pct": 68.3,
+     "ann_sharpe": 1.38,
+     "ann_return_pct": 3.1
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 0.0,
+     "breach_pct_12m": 0.2,
+     "breach_pct_36m": 1.2,
+     "median_breach_month": 22.0,
+     "alive12_median_gain_pct": 3.0,
+     "alive12_p25_gain_pct": 1.54
+    },
+    "stepup": {
+     "stepup_pct": 50.7,
+     "breach_first_pct": 1.2,
+     "undone_36m_pct": 48.1,
+     "median_stepup_month": 28.0,
+     "p25_stepup_month": 23.0,
+     "p75_stepup_month": 32.0,
+     "stepup_within_6m_pct": 0.0,
+     "stepup_within_12m_pct": 0.3
+    }
+   },
+   "x0.75": {
+    "monthly": {
+     "mean_month_pct": 0.38,
+     "median_month_pct": 0.33,
+     "worst_month_pct": -1.78,
+     "worst_day_pct": -1.92,
+     "pos_month_pct": 68.3,
+     "ann_sharpe": 1.38,
+     "ann_return_pct": 4.6
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 5.1,
+     "breach_pct_12m": 9.6,
+     "breach_pct_36m": 17.2,
+     "median_breach_month": 11.0,
+     "alive12_median_gain_pct": 4.5,
+     "alive12_p25_gain_pct": 2.26
+    },
+    "stepup": {
+     "stepup_pct": 70.2,
+     "breach_first_pct": 17.2,
+     "undone_36m_pct": 12.7,
+     "median_stepup_month": 21.0,
+     "p25_stepup_month": 16.0,
+     "p75_stepup_month": 27.0,
+     "stepup_within_6m_pct": 0.2,
+     "stepup_within_12m_pct": 7.6
+    }
+   },
+   "x1.0": {
+    "monthly": {
+     "mean_month_pct": 0.5,
+     "median_month_pct": 0.44,
+     "worst_month_pct": -2.37,
+     "worst_day_pct": -2.56,
+     "pos_month_pct": 67.5,
+     "ann_sharpe": 1.37,
+     "ann_return_pct": 6.2
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 6.8,
+     "breach_pct_12m": 14.7,
+     "breach_pct_36m": 24.3,
+     "median_breach_month": 10.0,
+     "alive12_median_gain_pct": 6.2,
+     "alive12_p25_gain_pct": 3.38
+    },
+    "stepup": {
+     "stepup_pct": 73.8,
+     "breach_first_pct": 23.5,
+     "undone_36m_pct": 2.7,
+     "median_stepup_month": 16.0,
+     "p25_stepup_month": 11.0,
+     "p75_stepup_month": 21.0,
+     "stepup_within_6m_pct": 2.5,
+     "stepup_within_12m_pct": 23.9
+    }
+   },
+   "x1.25": {
+    "monthly": {
+     "mean_month_pct": 0.62,
+     "median_month_pct": 0.54,
+     "worst_month_pct": -2.96,
+     "worst_day_pct": -3.2,
+     "pos_month_pct": 67.5,
+     "ann_sharpe": 1.37,
+     "ann_return_pct": 7.8
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 11.9,
+     "breach_pct_12m": 23.4,
+     "breach_pct_36m": 32.7,
+     "median_breach_month": 8.0,
+     "alive12_median_gain_pct": 8.4,
+     "alive12_p25_gain_pct": 4.9799999999999995
+    },
+    "stepup": {
+     "stepup_pct": 70.2,
+     "breach_first_pct": 29.4,
+     "undone_36m_pct": 0.5,
+     "median_stepup_month": 12.0,
+     "p25_stepup_month": 8.0,
+     "p75_stepup_month": 16.0,
+     "stepup_within_6m_pct": 8.8,
+     "stepup_within_12m_pct": 39.1
+    }
+   },
+   "x1.5": {
+    "monthly": {
+     "mean_month_pct": 0.75,
+     "median_month_pct": 0.65,
+     "worst_month_pct": -3.54,
+     "worst_day_pct": -3.84,
+     "pos_month_pct": 67.5,
+     "ann_sharpe": 1.36,
+     "ann_return_pct": 9.4
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 20.4,
+     "breach_pct_12m": 33.5,
+     "breach_pct_36m": 41.0,
+     "median_breach_month": 7.0,
+     "alive12_median_gain_pct": 10.7,
+     "alive12_p25_gain_pct": 6.81
+    },
+    "stepup": {
+     "stepup_pct": 63.9,
+     "breach_first_pct": 36.0,
+     "undone_36m_pct": 0.1,
+     "median_stepup_month": 9.0,
+     "p25_stepup_month": 6.0,
+     "p75_stepup_month": 13.0,
+     "stepup_within_6m_pct": 17.1,
+     "stepup_within_12m_pct": 47.3
+    }
+   },
+   "x2.0": {
+    "monthly": {
+     "mean_month_pct": 0.99,
+     "median_month_pct": 0.87,
+     "worst_month_pct": -4.7,
+     "worst_day_pct": -5.12,
+     "pos_month_pct": 67.5,
+     "ann_sharpe": 1.36,
+     "ann_return_pct": 12.6
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 34.0,
+     "breach_pct_12m": 45.8,
+     "breach_pct_36m": 51.0,
+     "median_breach_month": 5.0,
+     "alive12_median_gain_pct": 15.8,
+     "alive12_p25_gain_pct": 10.56
+    },
+    "stepup": {
+     "stepup_pct": 57.0,
+     "breach_first_pct": 43.0,
+     "undone_36m_pct": 0.0,
+     "median_stepup_month": 6.0,
+     "p25_stepup_month": 4.0,
+     "p75_stepup_month": 8.0,
+     "stepup_within_6m_pct": 32.7,
+     "stepup_within_12m_pct": 53.7
+    }
+   }
+  },
+  "PE_v2(E5p単独)": {
+   "x0.5": {
+    "monthly": {
+     "mean_month_pct": 0.36,
+     "median_month_pct": 0.31,
+     "worst_month_pct": -3.07,
+     "worst_day_pct": -1.89,
+     "pos_month_pct": 55.0,
+     "ann_sharpe": 0.99,
+     "ann_return_pct": 4.4
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 5.4,
+     "breach_pct_12m": 14.6,
+     "breach_pct_36m": 27.2,
+     "median_breach_month": 12.0,
+     "alive12_median_gain_pct": 5.1,
+     "alive12_p25_gain_pct": 2.4299999999999997
+    },
+    "stepup": {
+     "stepup_pct": 68.0,
+     "breach_first_pct": 26.7,
+     "undone_36m_pct": 5.4,
+     "median_stepup_month": 17.0,
+     "p25_stepup_month": 12.0,
+     "p75_stepup_month": 23.0,
+     "stepup_within_6m_pct": 1.9,
+     "stepup_within_12m_pct": 17.7
+    }
+   },
+   "x0.75": {
+    "monthly": {
+     "mean_month_pct": 0.54,
+     "median_month_pct": 0.45,
+     "worst_month_pct": -4.6,
+     "worst_day_pct": -2.84,
+     "pos_month_pct": 55.0,
+     "ann_sharpe": 0.98,
+     "ann_return_pct": 6.7
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 26.3,
+     "breach_pct_12m": 40.4,
+     "breach_pct_36m": 48.3,
+     "median_breach_month": 6.0,
+     "alive12_median_gain_pct": 9.5,
+     "alive12_p25_gain_pct": 5.88
+    },
+    "stepup": {
+     "stepup_pct": 55.3,
+     "breach_first_pct": 44.7,
+     "undone_36m_pct": 0.1,
+     "median_stepup_month": 9.0,
+     "p25_stepup_month": 6.0,
+     "p75_stepup_month": 13.0,
+     "stepup_within_6m_pct": 14.2,
+     "stepup_within_12m_pct": 40.1
+    }
+   },
+   "x1.0": {
+    "monthly": {
+     "mean_month_pct": 0.72,
+     "median_month_pct": 0.59,
+     "worst_month_pct": -6.13,
+     "worst_day_pct": -3.78,
+     "pos_month_pct": 55.0,
+     "ann_sharpe": 0.97,
+     "ann_return_pct": 9.0
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 42.2,
+     "breach_pct_12m": 53.7,
+     "breach_pct_36m": 58.8,
+     "median_breach_month": 4.0,
+     "alive12_median_gain_pct": 14.0,
+     "alive12_p25_gain_pct": 9.17
+    },
+    "stepup": {
+     "stepup_pct": 48.8,
+     "breach_first_pct": 51.2,
+     "undone_36m_pct": 0.0,
+     "median_stepup_month": 6.0,
+     "p25_stepup_month": 4.0,
+     "p75_stepup_month": 8.0,
+     "stepup_within_6m_pct": 28.6,
+     "stepup_within_12m_pct": 46.1
+    }
+   },
+   "x1.25": {
+    "monthly": {
+     "mean_month_pct": 0.89,
+     "median_month_pct": 0.72,
+     "worst_month_pct": -7.65,
+     "worst_day_pct": -4.73,
+     "pos_month_pct": 55.0,
+     "ann_sharpe": 0.96,
+     "ann_return_pct": 11.3
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 54.0,
+     "breach_pct_12m": 62.3,
+     "breach_pct_36m": 66.1,
+     "median_breach_month": 3.0,
+     "alive12_median_gain_pct": 18.4,
+     "alive12_p25_gain_pct": 12.06
+    },
+    "stepup": {
+     "stepup_pct": 45.1,
+     "breach_first_pct": 54.9,
+     "undone_36m_pct": 0.0,
+     "median_stepup_month": 4.0,
+     "p25_stepup_month": 3.0,
+     "p75_stepup_month": 6.0,
+     "stepup_within_6m_pct": 36.9,
+     "stepup_within_12m_pct": 44.7
+    }
+   },
+   "x1.5": {
+    "monthly": {
+     "mean_month_pct": 1.07,
+     "median_month_pct": 0.85,
+     "worst_month_pct": -9.16,
+     "worst_day_pct": -5.67,
+     "pos_month_pct": 55.0,
+     "ann_sharpe": 0.96,
+     "ann_return_pct": 13.6
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 62.4,
+     "breach_pct_12m": 68.4,
+     "breach_pct_36m": 71.5,
+     "median_breach_month": 2.0,
+     "alive12_median_gain_pct": 22.9,
+     "alive12_p25_gain_pct": 14.99
+    },
+    "stepup": {
+     "stepup_pct": 43.0,
+     "breach_first_pct": 57.0,
+     "undone_36m_pct": 0.0,
+     "median_stepup_month": 3.0,
+     "p25_stepup_month": 2.0,
+     "p75_stepup_month": 4.0,
+     "stepup_within_6m_pct": 39.9,
+     "stepup_within_12m_pct": 42.9
+    }
+   },
+   "x2.0": {
+    "monthly": {
+     "mean_month_pct": 1.41,
+     "median_month_pct": 1.08,
+     "worst_month_pct": -12.18,
+     "worst_day_pct": -7.56,
+     "pos_month_pct": 55.0,
+     "ann_sharpe": 0.94,
+     "ann_return_pct": 18.2
+    },
+    "trailing_lock": {
+     "breach_pct_6m": 69.1,
+     "breach_pct_12m": 73.7,
+     "breach_pct_36m": 76.4,
+     "median_breach_month": 2.0,
+     "alive12_median_gain_pct": 32.0,
+     "alive12_p25_gain_pct": 20.880000000000003
+    },
+    "stepup": {
+     "stepup_pct": 42.4,
+     "breach_first_pct": 57.6,
+     "undone_36m_pct": 0.0,
+     "median_stepup_month": 2.0,
+     "p25_stepup_month": 1.0,
+     "p75_stepup_month": 3.0,
+     "stepup_within_6m_pct": 41.8,
+     "stepup_within_12m_pct": 42.4
+    }
+   }
+  }
+ }
+}

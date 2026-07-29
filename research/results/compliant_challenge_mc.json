@@ -1,0 +1,102 @@
+{
+  "保守 (−6%)": {
+    "scale": 2.624,
+    "p95_annual_maxDD": -6.0,
+    "P1": {
+      "pass_pct": 99.6,
+      "fail_pct": 0.3,
+      "timeout_pct": 0.1,
+      "med_month": 14,
+      "p25": 10,
+      "p75": 21,
+      "p90": 30
+    },
+    "P2": {
+      "pass_pct": 99.7,
+      "fail_pct": 0.3,
+      "timeout_pct": 0.0,
+      "med_month": 7,
+      "p25": 4,
+      "p75": 12,
+      "p90": 19
+    },
+    "both_pass_pct": 99.3,
+    "both_med_month": 21
+  },
+  "中庸 (−8%)": {
+    "scale": 3.517,
+    "p95_annual_maxDD": -8.0,
+    "P1": {
+      "pass_pct": 98.7,
+      "fail_pct": 1.2,
+      "timeout_pct": 0.0,
+      "med_month": 11,
+      "p25": 7,
+      "p75": 17,
+      "p90": 24
+    },
+    "P2": {
+      "pass_pct": 98.8,
+      "fail_pct": 1.2,
+      "timeout_pct": 0.0,
+      "med_month": 5,
+      "p25": 3,
+      "p75": 9,
+      "p90": 15
+    },
+    "both_pass_pct": 97.5,
+    "both_med_month": 16
+  },
+  "攻め (−10%)": {
+    "scale": 4.425,
+    "p95_annual_maxDD": -10.0,
+    "P1": {
+      "pass_pct": 97.0,
+      "fail_pct": 3.0,
+      "timeout_pct": 0.0,
+      "med_month": 8,
+      "p25": 5,
+      "p75": 13,
+      "p90": 20
+    },
+    "P2": {
+      "pass_pct": 97.5,
+      "fail_pct": 2.5,
+      "timeout_pct": 0.0,
+      "med_month": 4,
+      "p25": 2,
+      "p75": 8,
+      "p90": 12
+    },
+    "both_pass_pct": 94.6,
+    "both_med_month": 12
+  },
+  "超攻め×1.5": {
+    "scale": 6.638,
+    "p95_annual_maxDD": -14.8,
+    "P1": {
+      "pass_pct": 90.8,
+      "fail_pct": 9.2,
+      "timeout_pct": 0.0,
+      "med_month": 5,
+      "p25": 3,
+      "p75": 8,
+      "p90": 13
+    },
+    "both_pass_pct": 83.6
+  },
+  "超攻め×2.0": {
+    "scale": 8.851,
+    "p95_annual_maxDD": -19.5,
+    "P1": {
+      "pass_pct": 85.2,
+      "fail_pct": 14.8,
+      "timeout_pct": 0.0,
+      "med_month": 3,
+      "p25": 2,
+      "p75": 6,
+      "p90": 9
+    },
+    "both_pass_pct": 74.1
+  }
+}

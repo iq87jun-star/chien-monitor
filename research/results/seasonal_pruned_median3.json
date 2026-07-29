@@ -1,0 +1,132 @@
+{
+ "meta": {
+  "method": "docs/111/139と同一",
+  "window": "2016-01..2026-06",
+  "seed": 7,
+  "n_paths": 20000,
+  "inputs": {
+   "EURUSD": "113537c4663290cf",
+   "GBPUSD": "81191342a95492d6",
+   "USDJPY": "44493d72ca3da454",
+   "AUDUSD": "b9a00386562810e3",
+   "USDCHF": "608f80dc30102b06",
+   "USDCAD": "e7d7d32b5ef89a96",
+   "NZDUSD": "89b1bad88a04566f",
+   "EURJPY": "841334444b0857d9",
+   "GBPJPY": "728315254a4f47bf",
+   "AUDJPY": "98ade6818bbd7995",
+   "NZDJPY": "341c655370e601b5",
+   "CADJPY": "71dafae63b484892",
+   "CHFJPY": "69850c932f42ab0d",
+   "XAUUSD": "069fde17d31617ee",
+   "US500": "bff1db8e8620b8c5",
+   "NAS100": "86ddb5dbb579dc02",
+   "GER40": "2f506d58458bfe58",
+   "JP225": "d4903278f071a23a",
+   "UK100": "f979a26e46c6fb79",
+   "FR40": "231bf96be49c76de"
+  },
+  "note": "v4は両変種に同一に含まれるためYahooバイアスは相対比較でほぼ相殺"
+ },
+ "variants": {
+  "現行R4+G3": {
+   "mult": 1.45,
+   "median_months": 4.0,
+   "pass_pct": 95.2,
+   "fail_pct_optimistic": 4.8,
+   "fail_pct_raw": 7.8,
+   "undone_pct": 0.0,
+   "mean_month": 2.36,
+   "sharpe": 2.24,
+   "worst_month": -5.28,
+   "worst_day": -5.17
+  },
+  "A_テーブル据置+間引き": {
+   "mult": 1.45,
+   "median_months": 3.0,
+   "pass_pct": 95.0,
+   "fail_pct_optimistic": 5.0,
+   "fail_pct_raw": 7.9,
+   "undone_pct": 0.0,
+   "mean_month": 2.41,
+   "sharpe": 2.31,
+   "worst_month": -5.28,
+   "worst_day": -5.08
+  },
+  "B_重み再導出+間引き": {
+   "mult": 1.55,
+   "median_months": 3.0,
+   "pass_pct": 96.3,
+   "fail_pct_optimistic": 3.7,
+   "fail_pct_raw": 6.5,
+   "undone_pct": 0.0,
+   "mean_month": 2.41,
+   "sharpe": 2.38,
+   "worst_month": -5.64,
+   "worst_day": -5.33
+  }
+ },
+ "R4p_weights": {
+  "1": {
+   "EMon": 0.689,
+   "SJul": 0.311
+  },
+  "2": {
+   "v4": 1.0
+  },
+  "3": {
+   "v4": 0.247,
+   "v7": 0.368,
+   "EMon": 0.262,
+   "E5": 0.123
+  },
+  "4": {
+   "EMon": 0.773,
+   "SJul": 0.227
+  },
+  "5": {
+   "v4": 0.093,
+   "v7": 0.27,
+   "v7x": 0.274,
+   "EMon": 0.085,
+   "EMonX": 0.115,
+   "SJul": 0.163
+  },
+  "6": {
+   "v4": 0.235,
+   "EMon": 0.162,
+   "E5": 0.373,
+   "SJul": 0.23
+  },
+  "7": {
+   "E5": 0.257,
+   "SJul": 0.743
+  },
+  "8": {
+   "v4": 0.318,
+   "EMon": 0.198,
+   "E5": 0.356,
+   "SJul": 0.129
+  },
+  "9": {
+   "v4": 0.396,
+   "EMon": 0.424,
+   "E5": 0.18
+  },
+  "10": {
+   "EMon": 0.379,
+   "EMonX": 0.437,
+   "SJul": 0.184
+  },
+  "11": {
+   "EMonX": 0.151,
+   "E5": 0.17,
+   "SJul": 0.679
+  },
+  "12": {
+   "v4": 0.314,
+   "E5": 0.686
+  }
+ },
+ "verdict": "採用候補: B_重み再導出+間引き(デモ必須)"
+}

@@ -1,0 +1,171 @@
+{
+ "window": "2016-02..2026-06",
+ "months": 119,
+ "input_sha256": {
+  "EURUSD": "380189b5f7e48ded",
+  "GBPUSD": "4b97d2d5488c50ff",
+  "USDJPY": "3d9ef1e48bcb6a78",
+  "AUDUSD": "055d7f351c6bbe8b",
+  "USDCHF": "1e8dcaa00505093e",
+  "USDCAD": "327f7adf8cad0c62",
+  "NZDUSD": "3762f966187844f4",
+  "EURJPY": "1e5e35e411e0a306",
+  "GBPJPY": "575a8028faa15fff",
+  "XAUUSD": "e8b944d2f368f84d",
+  "US500": "cd138370b7827ed9",
+  "NAS100": "6b6fb12d3b2e2752",
+  "GER40": "f978eaf383a967a7"
+ },
+ "sleeves": [
+  "v4",
+  "v7",
+  "E-Mon[RG3]",
+  "E5"
+ ],
+ "full": {
+  "corr": {
+   "v4": {
+    "v4": 1.0,
+    "v7": -0.09,
+    "E-Mon[RG3]": 0.086,
+    "E5": 0.085
+   },
+   "v7": {
+    "v4": -0.09,
+    "v7": 1.0,
+    "E-Mon[RG3]": 0.299,
+    "E5": 0.019
+   },
+   "E-Mon[RG3]": {
+    "v4": 0.086,
+    "v7": 0.299,
+    "E-Mon[RG3]": 1.0,
+    "E5": 0.013
+   },
+   "E5": {
+    "v4": 0.085,
+    "v7": 0.019,
+    "E-Mon[RG3]": 0.013,
+    "E5": 1.0
+   }
+  },
+  "raw_monthly_vol_pct": {
+   "v4": 3.071,
+   "v7": 0.852,
+   "E-Mon[RG3]": 1.662,
+   "E5": 2.853
+  },
+  "weights_current": {
+   "v4": 0.3,
+   "v7": 0.25,
+   "E-Mon[RG3]": 0.25,
+   "E5": 0.2
+  },
+  "weights_erc": {
+   "v4": 0.264,
+   "v7": 0.25,
+   "E-Mon[RG3]": 0.228,
+   "E5": 0.259
+  },
+  "weights_invvol_equal": {
+   "v4": 0.25,
+   "v7": 0.25,
+   "E-Mon[RG3]": 0.25,
+   "E5": 0.25
+  },
+  "port_current": {
+   "net": 24.9,
+   "maxDD": -1.35,
+   "sharpe": 1.18,
+   "calmar": 1.68,
+   "months": 119
+  },
+  "port_erc": {
+   "net": 23.7,
+   "maxDD": -1.33,
+   "sharpe": 1.14,
+   "calmar": 1.64,
+   "months": 119
+  },
+  "port_equal": {
+   "net": 23.8,
+   "maxDD": -1.27,
+   "sharpe": 1.14,
+   "calmar": 1.72,
+   "months": 119
+  }
+ },
+ "recent36": {
+  "corr": {
+   "v4": {
+    "v4": 1.0,
+    "v7": 0.109,
+    "E-Mon[RG3]": 0.113,
+    "E5": 0.032
+   },
+   "v7": {
+    "v4": 0.109,
+    "v7": 1.0,
+    "E-Mon[RG3]": 0.051,
+    "E5": 0.058
+   },
+   "E-Mon[RG3]": {
+    "v4": 0.113,
+    "v7": 0.051,
+    "E-Mon[RG3]": 1.0,
+    "E5": -0.072
+   },
+   "E5": {
+    "v4": 0.032,
+    "v7": 0.058,
+    "E-Mon[RG3]": -0.072,
+    "E5": 1.0
+   }
+  },
+  "raw_monthly_vol_pct": {
+   "v4": 3.277,
+   "v7": 0.596,
+   "E-Mon[RG3]": 1.446,
+   "E5": 2.898
+  },
+  "weights_current": {
+   "v4": 0.3,
+   "v7": 0.25,
+   "E-Mon[RG3]": 0.25,
+   "E5": 0.2
+  },
+  "weights_erc": {
+   "v4": 0.198,
+   "v7": 0.307,
+   "E-Mon[RG3]": 0.263,
+   "E5": 0.233
+  },
+  "weights_invvol_equal": {
+   "v4": 0.25,
+   "v7": 0.25,
+   "E-Mon[RG3]": 0.25,
+   "E5": 0.25
+  },
+  "port_current": {
+   "net": 9.3,
+   "maxDD": -1.07,
+   "sharpe": 1.7,
+   "calmar": 2.8,
+   "months": 36
+  },
+  "port_erc": {
+   "net": 8.7,
+   "maxDD": -1.12,
+   "sharpe": 1.71,
+   "calmar": 2.54,
+   "months": 36
+  },
+  "port_equal": {
+   "net": 9.1,
+   "maxDD": -1.13,
+   "sharpe": 1.72,
+   "calmar": 2.61,
+   "months": 36
+  }
+ }
+}
