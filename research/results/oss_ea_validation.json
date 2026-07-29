@@ -1,0 +1,26 @@
+{
+  "prereg": "docs/187",
+  "run": {"where": "Colab (user)", "date": "2026-07-29", "data": {"USDJPY_h1": 62351, "XAUUSD_h1": 43800}},
+  "results": [
+    {
+      "name": "C1_Donchian_N20", "n_trades": 2300, "total_return": -0.5198,
+      "yearly": {"2016": 5252.0, "2017": -15269.0, "2018": -13745.0, "2019": -15800.0, "2020": -3569.0, "2021": 1961.0, "2022": 3269.0, "2023": -5718.0, "2024": -3112.0, "2025": -5243.0},
+      "gates": {"G1_PF": [0.872, false], "G2_DD": [0.5742, false], "G3_LOYO_losing_years": [7, false], "G4_cost2x_PF": [0.775, false], "G5_placebo_p": [0.991, false]},
+      "verdict": "REJECT"
+    },
+    {
+      "name": "C1_Donchian_N55", "n_trades": 1372, "total_return": -0.3359,
+      "yearly": {"2016": 11064.0, "2017": -9582.0, "2018": -11971.0, "2019": -11588.0, "2020": -528.0, "2021": 6050.0, "2022": 2322.0, "2023": -5765.0, "2024": -7589.0, "2025": -6006.0},
+      "gates": {"G1_PF": [0.885, false], "G2_DD": [0.4162, false], "G3_LOYO_losing_years": [7, false], "G4_cost2x_PF": [0.792, false], "G5_placebo_p": [0.9455, false]},
+      "verdict": "REJECT"
+    },
+    {
+      "name": "C2_GOLD_ORB", "n_trades": 25, "total_return": -0.088,
+      "yearly": {"2021": -8799.0},
+      "gates": {"G1_PF": [0.571, false], "G2_DD": [0.0, true], "G3_LOYO_losing_years": [1, true], "G4_cost2x_PF": [0.436, false], "G5_placebo_p": [0.8885, false]},
+      "verdict": "REJECT",
+      "note": "equity DDブレーカー(保守実装: 一度発動で恒久停止)が2021年に発動し以後無取引"
+    }
+  ],
+  "G6": "自ポートフォリオ月次CSVなし → 保留(ただし全候補REJECTのため実質不要)"
+}
