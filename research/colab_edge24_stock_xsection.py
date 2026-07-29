@@ -20,6 +20,12 @@ RNG=np.random.default_rng(20260729)
 TOP_N=10; COST_RT=0.002; LOOKBACK=12; SKIP=1; N_PLACEBO=1000
 DRIVE_BASE="/content/drive/MyDrive/forex_ml"; OWN_MONTHLY=f"{DRIVE_BASE}/results/own_portfolio_monthly.csv"
 
+try:
+    if not os.path.exists("/content/drive/MyDrive"):
+        from google.colab import drive; drive.mount("/content/drive", force_remount=False)
+except Exception as e:
+    print("Drive不可(G5はスキップされます):", e)
+
 UNIVERSE=("AAPL ABBV ABT ACN ADBE AIG AMD AMGN AMT AMZN AVGO AXP BA BAC BK BKNG BLK BMY BRK-B C "
 "CAT CHTR CL CMCSA COF COP COST CRM CSCO CVS CVX DE DHR DIS DOW DUK EMR ETN F FDX GD GE GILD GM "
 "GOOG GS HD HON IBM INTC INTU ISRG JNJ JPM KHC KO LIN LLY LMT LOW MA MCD MDLZ MDT MET META MMM "
@@ -116,13 +122,37 @@ def main():
     print("  プラセボ分布を生成中(1,000本)…")
     plac=placebo_dist(px)
     out={"prereg":"docs/192","universe_n":int(px.shape[1]),"results":[]}
+    mom_excess=None
     for mode in ("MOM","LOWVOL","COMBO"):
         net,gross,bench=run_strategy(px,mode)
         net2,_,_=run_strategy(px,mode,cost_rt=COST_RT*2)
         r=gates(f"X_{mode}",net,gross,bench,net2,plac)
-        out["results"].append(r); print(json.dumps(r,ensure_ascii=False,indent=1))
-    print("\nG5 相関判定:", "own_portfolio_monthly.csv 検出→手動確認" if os.path.exists(OWN_MONTHLY)
-          else "自EA月次CSVなし → G5保留(合格候補も採用禁止のまま)")
+        if mode=="MOM":
+            mom_excess=(net-bench)
+            r["monthly_excess"]={f"{i:%Y-%m}":float(round(v,4)) for i,v in mom_excess.items()}
+        out["results"].append(r)
+        print(json.dumps({k:v for k,v in r.items() if k!="monthly_excess"},ensure_ascii=False,indent=1))
+    # ---- G5: 自EAポートフォリオ月次との相関 ----
+    if os.path.exists(OWN_MONTHLY) and mom_excess is not None:
+        own=pd.read_csv(OWN_MONTHLY)
+        own.columns=[c.strip().lower() for c in own.columns]
+        own["t"]=pd.to_datetime(own["t"],errors="coerce")
+        own=own.dropna(subset=["t"]).set_index("t")["ret"].astype(float)
+        a=mom_excess.copy(); a.index=[f"{i:%Y-%m}" for i in a.index]
+        b=own.copy(); b.index=[f"{i:%Y-%m}" for i in b.index]
+        common=sorted(set(a.index)&set(b.index))
+        if len(common)>=12:
+            rho=float(np.corrcoef(a[common].values.astype(float), b[common].values.astype(float))[0,1])
+            g5=bool(abs(rho)<0.30)
+            out["G5"]=dict(rho=round(rho,3), months=len(common), passed=g5)
+            print(f"\nG5 相関判定: ρ={rho:+.3f} (重複{len(common)}ヶ月) → "
+                  f"{'合格(|ρ|<0.30)' if g5 else '不合格(|ρ|≥0.30)'}")
+        else:
+            out["G5"]=f"重複月数不足({len(common)}<12) → 保留"
+            print(f"\nG5 相関判定: 重複月数不足({len(common)}<12ヶ月) → 保留")
+    else:
+        out["G5"]="自EA月次CSVなし → 保留(合格候補も採用禁止のまま)"
+        print("\nG5 相関判定: 自EA月次CSVなし → G5保留(合格候補も採用禁止のまま)")
     os.makedirs("research/results",exist_ok=True)
     with open("research/results/edge24_stock_xsection.json","w",encoding="utf-8") as f:
         json.dump(out,f,ensure_ascii=False,indent=2)
