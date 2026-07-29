@@ -1,0 +1,118 @@
+{
+  "sigma_a": 0.1368793951270237,
+  "trials_grid": [
+    11,
+    140,
+    596
+  ],
+  "own_anchor_sharpe": 1.71,
+  "darwinex": [
+    {
+      "name": "PKR",
+      "months": 77,
+      "ann_ret": 0.1008,
+      "implied_sharpe": 0.7364147095072846,
+      "p_value": 0.031061107940907107,
+      "luck_bars": {
+        "11": 0.6403976815943179,
+        "140": 1.0448793372960916,
+        "596": 1.2257403456421427
+      },
+      "verdict_vs_shortlist": "PASS(僅差)",
+      "note": "実績2020-02〜(約7年)。DarwinIA GOLD 9位"
+    },
+    {
+      "name": "ELW",
+      "months": 48,
+      "ann_ret": 0.1562,
+      "implied_sharpe": 1.141150571676963,
+      "p_value": 0.011235783547830946,
+      "luck_bars": {
+        "11": 0.8111001746025793,
+        "140": 1.3233992521796272,
+        "596": 1.5524700306419554
+      },
+      "verdict_vs_shortlist": "PASS",
+      "note": "実績2022-06〜(4年)。GOLD 10位"
+    },
+    {
+      "name": "QCF",
+      "months": 30,
+      "ann_ret": 0.1312,
+      "implied_sharpe": 0.9585080345967832,
+      "p_value": 0.06481857892390397,
+      "luck_bars": {
+        "11": 1.0259695849217634,
+        "140": 1.6739823562604697,
+        "596": 1.9637365183919897
+      },
+      "verdict_vs_shortlist": "FAIL",
+      "note": "実績2.5年。Darwinex自己資本配分#5"
+    },
+    {
+      "name": "OXTI",
+      "months": 27,
+      "ann_ret": 0.0979,
+      "implied_sharpe": 0.7152281752059838,
+      "p_value": 0.14167094744948094,
+      "luck_bars": {
+        "11": 1.0814668994701055,
+        "140": 1.7645323362395027,
+        "596": 2.0699600408559404
+      },
+      "verdict_vs_shortlist": "FAIL",
+      "note": "実績2.5年。GOLD 1位(4月)。556取引・勝率41.4%・平均5h保有"
+    }
+  ],
+  "gogojungle": [
+    {
+      "name": "Iam Clown FX (Red)",
+      "fwd_years": 7,
+      "pf": null,
+      "note": "GGJ最長クラス・複利低速",
+      "verdict": "定量検証候補(要CSV)"
+    },
+    {
+      "name": "ラスト侍EURUSD_5分足",
+      "fwd_years": 6,
+      "pf": 1.7,
+      "note": "低頻度・高選別",
+      "verdict": "定量検証候補(要CSV)"
+    },
+    {
+      "name": "Unison",
+      "fwd_years": 5,
+      "pf": null,
+      "note": "不利相場停止フィルタ",
+      "verdict": "定量検証候補(要CSV)"
+    },
+    {
+      "name": "ESCADA-USDJPY",
+      "fwd_years": 5,
+      "pf": null,
+      "note": "動的ロット(要精査)",
+      "verdict": "定量検証候補(要CSV)"
+    },
+    {
+      "name": "一本勝ち",
+      "fwd_years": null,
+      "pf": null,
+      "note": "FW>BT・2100+ユーザー",
+      "verdict": "保留(実績年数不足/不明)"
+    },
+    {
+      "name": "BeeOne_USDJPY",
+      "fwd_years": 2,
+      "pf": 1.42,
+      "note": "BT2.11→FW1.42(ヘアカット実例)",
+      "verdict": "保留(実績年数不足/不明)"
+    },
+    {
+      "name": "CounterQ",
+      "fwd_years": null,
+      "pf": null,
+      "note": "逆張り・無料版あり",
+      "verdict": "保留(実績年数不足/不明)"
+    }
+  ]
+}
