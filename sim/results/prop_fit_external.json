@@ -1,0 +1,118 @@
+{
+  "config": {
+    "SEED": 20260730,
+    "N_SIMS": 20000,
+    "rules": {
+      "P1": 0.08,
+      "P2": 0.05,
+      "daily": 0.05,
+      "maxloss": 0.1,
+      "max_days": 90,
+      "split": 0.8,
+      "tail": {
+        "p": 0.02,
+        "mult": 3.0
+      }
+    },
+    "sigma_a": 0.1368793951270237,
+    "USDJPY": 157.0
+  },
+  "grid": [
+    {
+      "name": "ELW",
+      "mult": 1.0,
+      "seq_pass_pct": 33.755,
+      "fail_dd_pct": 12.8,
+      "fail_daily_pct": 4.1000000000000005,
+      "timeout_pct": 49.345,
+      "avg_days_pass": 80.48777958820915,
+      "funded_loss_12m_pct": 14.516367945489558,
+      "payout_12m_jpy": 3126392.20020486,
+      "ev_12m_jpy": 1055313.6871791505
+    },
+    {
+      "name": "ELW",
+      "mult": 1.5,
+      "seq_pass_pct": 46.575,
+      "fail_dd_pct": 27.27,
+      "fail_daily_pct": 10.605,
+      "timeout_pct": 15.55,
+      "avg_days_pass": 58.704669887278584,
+      "funded_loss_12m_pct": 58.389694041867955,
+      "payout_12m_jpy": 3422482.581523851,
+      "ev_12m_jpy": 1594021.2623447336
+    },
+    {
+      "name": "ELW",
+      "mult": 2.0,
+      "seq_pass_pct": 47.12,
+      "fail_dd_pct": 32.055,
+      "fail_daily_pct": 17.665,
+      "timeout_pct": 3.16,
+      "avg_days_pass": 42.05560271646859,
+      "funded_loss_12m_pct": 88.89006791171478,
+      "payout_12m_jpy": 2894226.886072997,
+      "ev_12m_jpy": 1363759.7087175958
+    },
+    {
+      "name": "ELW",
+      "mult": 3.0,
+      "seq_pass_pct": 33.455,
+      "fail_dd_pct": 19.46,
+      "fail_daily_pct": 47.075,
+      "timeout_pct": 0.01,
+      "avg_days_pass": 22.447167837393515,
+      "funded_loss_12m_pct": 99.9701091017785,
+      "payout_12m_jpy": 1249595.3773011635,
+      "ev_12m_jpy": 418052.1334761042
+    },
+    {
+      "name": "PKR",
+      "mult": 1.0,
+      "seq_pass_pct": 24.26,
+      "fail_dd_pct": 17.41,
+      "fail_daily_pct": 3.9849999999999994,
+      "timeout_pct": 54.345,
+      "avg_days_pass": 81.98392415498763,
+      "funded_loss_12m_pct": 17.724649629018963,
+      "payout_12m_jpy": 2667627.4759662696,
+      "ev_12m_jpy": 647166.425669417
+    },
+    {
+      "name": "PKR",
+      "mult": 1.5,
+      "seq_pass_pct": 37.004999999999995,
+      "fail_dd_pct": 34.43,
+      "fail_daily_pct": 11.425,
+      "timeout_pct": 17.14,
+      "avg_days_pass": 59.79732468585326,
+      "funded_loss_12m_pct": 65.4100797189569,
+      "payout_12m_jpy": 2834431.4331944045,
+      "ev_12m_jpy": 1048881.3518535893
+    },
+    {
+      "name": "PKR",
+      "mult": 2.0,
+      "seq_pass_pct": 39.98,
+      "fail_dd_pct": 37.974999999999994,
+      "fail_daily_pct": 18.56,
+      "timeout_pct": 3.485,
+      "avg_days_pass": 43.73661830915458,
+      "funded_loss_12m_pct": 92.63381690845422,
+      "payout_12m_jpy": 2284317.535750745,
+      "ev_12m_jpy": 913270.1507931479
+    },
+    {
+      "name": "PKR",
+      "mult": 3.0,
+      "seq_pass_pct": 28.939999999999998,
+      "fail_dd_pct": 20.865000000000002,
+      "fail_daily_pct": 50.175000000000004,
+      "timeout_pct": 0.02,
+      "avg_days_pass": 22.895818935729096,
+      "funded_loss_12m_pct": 100.0,
+      "payout_12m_jpy": 1014109.4905296895,
+      "ev_12m_jpy": 293483.2865592922
+    }
+  ]
+}
