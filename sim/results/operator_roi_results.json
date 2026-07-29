@@ -1,0 +1,434 @@
+{
+  "config": {
+    "USDJPY": 157.0,
+    "CAC_GRID_JPY": [
+      15000,
+      25000,
+      40000
+    ],
+    "N_GRID": [
+      100,
+      300,
+      600
+    ],
+    "S_GRID": [
+      0.0,
+      0.02,
+      0.03,
+      0.05
+    ],
+    "DEALS_USD": {
+      "シェル(法人+MT5)+自力立上げ": 45000,
+      "中堅チャレンジ型(稼働中)": 330000,
+      "Instant型(稼働中)": 650000
+    },
+    "SHELL_EXTRA_USD": 60000,
+    "trader_ev_year_jpy": 2784669
+  },
+  "s_star": [
+    {
+      "scen": "naive",
+      "cac_jpy": 15000,
+      "s_star": 0.013920731403829366,
+      "m_retail_jpy": 46392.289877575044,
+      "m_sharp_jpy": -3286212.049059191
+    },
+    {
+      "scen": "naive",
+      "cac_jpy": 25000,
+      "s_star": 0.010920075165354202,
+      "m_retail_jpy": 36392.289877575044,
+      "m_sharp_jpy": -3296212.0490591913
+    },
+    {
+      "scen": "naive",
+      "cac_jpy": 40000,
+      "s_star": 0.006419090807641462,
+      "m_retail_jpy": 21392.289877575044,
+      "m_sharp_jpy": -3311212.049059191
+    },
+    {
+      "scen": "defended",
+      "cac_jpy": 15000,
+      "s_star": 0.028561213922559628,
+      "m_retail_jpy": 46392.289877575044,
+      "m_sharp_jpy": -1577918.5676147668
+    },
+    {
+      "scen": "defended",
+      "cac_jpy": 25000,
+      "s_star": 0.022404756891029172,
+      "m_retail_jpy": 36392.289877575044,
+      "m_sharp_jpy": -1587918.5676147665
+    },
+    {
+      "scen": "defended",
+      "cac_jpy": 40000,
+      "s_star": 0.01317007134373348,
+      "m_retail_jpy": 21392.289877575044,
+      "m_sharp_jpy": -1602918.5676147665
+    }
+  ],
+  "deals": [
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.0,
+      "n": 100,
+      "monthly_jpy": 1755228.987757504,
+      "payback_m": 9.391936958072565,
+      "roi24": 1.5553834216669755
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.0,
+      "n": 300,
+      "monthly_jpy": 9033686.963272512,
+      "payback_m": 1.8248363117984556,
+      "roi24": 12.151864550715212
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.0,
+      "n": 600,
+      "monthly_jpy": 19951373.926545024,
+      "payback_m": 0.826258886264817,
+      "roi24": 28.046586244287568
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.02,
+      "n": 100,
+      "monthly_jpy": -1493392.7272271789,
+      "payback_m": null,
+      "roi24": -3.1741841342706882
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.02,
+      "n": 300,
+      "monthly_jpy": -712178.1816815372,
+      "payback_m": null,
+      "roi24": -2.0368381170977794
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.02,
+      "n": 600,
+      "monthly_jpy": 459643.63663692574,
+      "payback_m": 35.86474104289964,
+      "roi24": -0.33081909133841564
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.03,
+      "n": 100,
+      "monthly_jpy": -3117703.58471952,
+      "payback_m": null,
+      "roi24": -5.538967912239519
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.03,
+      "n": 300,
+      "monthly_jpy": -5585110.754158562,
+      "payback_m": null,
+      "roi24": -9.131189451004275
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.03,
+      "n": 600,
+      "monthly_jpy": -9286221.508317122,
+      "payback_m": null,
+      "roi24": -14.519521759151406
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.05,
+      "n": 100,
+      "monthly_jpy": -6366325.299704205,
+      "payback_m": null,
+      "roi24": -10.268535468177188
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.05,
+      "n": 300,
+      "monthly_jpy": -15330975.899112616,
+      "payback_m": null,
+      "roi24": -23.319892118817275
+    },
+    {
+      "deal": "シェル(法人+MT5)+自力立上げ",
+      "eff_price_jpy": 16485000.0,
+      "scen": "defended",
+      "s": 0.05,
+      "n": 600,
+      "monthly_jpy": -28777951.79822523,
+      "payback_m": null,
+      "roi24": -42.89692709477741
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.0,
+      "n": 100,
+      "monthly_jpy": 1755228.987757504,
+      "payback_m": 29.517516153942346,
+      "roi24": -0.18692345674232594
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.0,
+      "n": 300,
+      "monthly_jpy": 9033686.963272512,
+      "payback_m": 5.73519983708086,
+      "roi24": 3.184684175227568
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.0,
+      "n": 600,
+      "monthly_jpy": 19951373.926545024,
+      "payback_m": 2.5968136425465675,
+      "roi24": 8.242095623182408
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.02,
+      "n": 100,
+      "monthly_jpy": -1493392.7272271789,
+      "payback_m": null,
+      "roi24": -1.6917858609043097
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.02,
+      "n": 300,
+      "monthly_jpy": -712178.1816815372,
+      "payback_m": null,
+      "roi24": -1.3299030372583844
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.02,
+      "n": 600,
+      "monthly_jpy": 459643.63663692574,
+      "payback_m": 112.71775756339888,
+      "roi24": -0.7870788017894959
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.03,
+      "n": 100,
+      "monthly_jpy": -3117703.58471952,
+      "payback_m": null,
+      "roi24": -2.4442170629853015
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.03,
+      "n": 300,
+      "monthly_jpy": -5585110.754158562,
+      "payback_m": null,
+      "roi24": -3.5871966435013607
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.03,
+      "n": 600,
+      "monthly_jpy": -9286221.508317122,
+      "payback_m": null,
+      "roi24": -5.3016660142754475
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.05,
+      "n": 100,
+      "monthly_jpy": -6366325.299704205,
+      "payback_m": null,
+      "roi24": -3.949079467147287
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.05,
+      "n": 300,
+      "monthly_jpy": -15330975.899112616,
+      "payback_m": null,
+      "roi24": -8.101783855987314
+    },
+    {
+      "deal": "中堅チャレンジ型(稼働中)",
+      "eff_price_jpy": 51810000.0,
+      "scen": "defended",
+      "s": 0.05,
+      "n": 600,
+      "monthly_jpy": -28777951.79822523,
+      "payback_m": null,
+      "roi24": -14.330840439247357
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.0,
+      "n": 100,
+      "monthly_jpy": 1755228.987757504,
+      "payback_m": 58.140562121401594,
+      "roi24": -0.587207293423027
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.0,
+      "n": 300,
+      "monthly_jpy": 9033686.963272512,
+      "payback_m": 11.296605739704725,
+      "roi24": 1.124531965884765
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.0,
+      "n": 600,
+      "monthly_jpy": 19951373.926545024,
+      "payback_m": 5.114935962591725,
+      "roi24": 3.6921408548464534
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.02,
+      "n": 100,
+      "monthly_jpy": -1493392.7272271789,
+      "payback_m": null,
+      "roi24": -1.3512143601514188
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.02,
+      "n": 300,
+      "monthly_jpy": -712178.1816815372,
+      "payback_m": null,
+      "roi24": -1.1674892343004106
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.02,
+      "n": 600,
+      "monthly_jpy": 459643.63663692574,
+      "payback_m": 222.01982550366444,
+      "roi24": -0.891901545523898
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.03,
+      "n": 100,
+      "monthly_jpy": -3117703.58471952,
+      "payback_m": null,
+      "roi24": -1.7332178935156146
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.03,
+      "n": 300,
+      "monthly_jpy": -5585110.754158562,
+      "payback_m": null,
+      "roi24": -2.3134998343929984
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.03,
+      "n": 600,
+      "monthly_jpy": -9286221.508317122,
+      "payback_m": null,
+      "roi24": -3.183922745709073
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.05,
+      "n": 100,
+      "monthly_jpy": -6366325.299704205,
+      "payback_m": null,
+      "roi24": -2.497224960244007
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.05,
+      "n": 300,
+      "monthly_jpy": -15330975.899112616,
+      "payback_m": null,
+      "roi24": -4.605521034578175
+    },
+    {
+      "deal": "Instant型(稼働中)",
+      "eff_price_jpy": 102050000.0,
+      "scen": "defended",
+      "s": 0.05,
+      "n": 600,
+      "monthly_jpy": -28777951.79822523,
+      "payback_m": null,
+      "roi24": -7.767965146079427
+    }
+  ]
+}
