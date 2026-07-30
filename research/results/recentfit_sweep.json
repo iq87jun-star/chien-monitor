@@ -1,0 +1,613 @@
+{
+ "meta": {
+  "windows": {
+   "ref": [
+    "2024-08-01",
+    "2025-06-30"
+   ],
+   "fit": [
+    "2025-07-01",
+    "2026-04-30"
+   ],
+   "holdout": [
+    "2026-05-01",
+    "2026-07-24"
+   ]
+  },
+  "sl_atr_mult": 3.0,
+  "combos_tested": 1602,
+  "passed_filter": 12,
+  "note": "選定はFIT窓のみ。REF窓成績は開示用で採用判断に不使用。多重検定は意図的に受容(直近フィット・トラックの設計)。"
+ },
+ "picked": [
+  {
+   "spec": {
+    "family": "A",
+    "pair": "GBPUSD",
+    "dow": 0,
+    "hour": 0,
+    "hold": 12,
+    "dir": 1
+   },
+   "fit": {
+    "n": 42,
+    "sumR": 1.85,
+    "meanR": 0.0441,
+    "pf": 3.379,
+    "tstat": 3.04,
+    "win%": 59.5
+   },
+   "holdout": {
+    "n": 11,
+    "sumR": 0.6,
+    "meanR": 0.0546,
+    "pf": 5.153,
+    "tstat": 2.18,
+    "win%": 81.8
+   },
+   "ref": {
+    "n": 48,
+    "sumR": 1.16,
+    "meanR": 0.0242,
+    "pf": 1.593,
+    "tstat": 1.28,
+    "win%": 66.7
+   }
+  },
+  {
+   "spec": {
+    "family": "C",
+    "pair": "GBPUSD",
+    "rsi_p": 2,
+    "lo": 30,
+    "hi": 70,
+    "hold": 5
+   },
+   "fit": {
+    "n": 38,
+    "sumR": 6.32,
+    "meanR": 0.1663,
+    "pf": 2.976,
+    "tstat": 2.67,
+    "win%": 65.8
+   },
+   "holdout": {
+    "n": 9,
+    "sumR": 1.03,
+    "meanR": 0.1146,
+    "pf": 2.531,
+    "tstat": 1.11,
+    "win%": 55.6
+   },
+   "ref": {
+    "n": 42,
+    "sumR": -2.37,
+    "meanR": -0.0564,
+    "pf": 0.707,
+    "tstat": -0.93,
+    "win%": 40.5
+   }
+  },
+  {
+   "spec": {
+    "family": "A",
+    "pair": "GBPJPY",
+    "dow": 0,
+    "hour": 8,
+    "hold": 12,
+    "dir": 1
+   },
+   "fit": {
+    "n": 41,
+    "sumR": 1.83,
+    "meanR": 0.0447,
+    "pf": 2.788,
+    "tstat": 2.46,
+    "win%": 68.3
+   },
+   "holdout": {
+    "n": 12,
+    "sumR": 0.82,
+    "meanR": 0.0684,
+    "pf": 4.619,
+    "tstat": 2.08,
+    "win%": 66.7
+   },
+   "ref": {
+    "n": 48,
+    "sumR": 1.56,
+    "meanR": 0.0326,
+    "pf": 1.991,
+    "tstat": 1.94,
+    "win%": 56.2
+   }
+  },
+  {
+   "spec": {
+    "family": "C",
+    "pair": "GBPJPY",
+    "rsi_p": 2,
+    "lo": 20,
+    "hi": 80,
+    "hold": 3
+   },
+   "fit": {
+    "n": 48,
+    "sumR": 5.15,
+    "meanR": 0.1073,
+    "pf": 2.656,
+    "tstat": 2.25,
+    "win%": 64.6
+   },
+   "holdout": {
+    "n": 12,
+    "sumR": 1.09,
+    "meanR": 0.0905,
+    "pf": 2.061,
+    "tstat": 0.95,
+    "win%": 58.3
+   },
+   "ref": {
+    "n": 58,
+    "sumR": 0.03,
+    "meanR": 0.0005,
+    "pf": 1.004,
+    "tstat": 0.01,
+    "win%": 46.6
+   }
+  },
+  {
+   "spec": {
+    "family": "A",
+    "pair": "USDCHF",
+    "dow": 3,
+    "hour": 16,
+    "hold": 6,
+    "dir": -1
+   },
+   "fit": {
+    "n": 43,
+    "sumR": 1.02,
+    "meanR": 0.0238,
+    "pf": 2.576,
+    "tstat": 2.2,
+    "win%": 74.4
+   },
+   "holdout": {
+    "n": 12,
+    "sumR": 0.37,
+    "meanR": 0.0308,
+    "pf": 2.106,
+    "tstat": 0.79,
+    "win%": 33.3
+   },
+   "ref": {
+    "n": 48,
+    "sumR": 1.04,
+    "meanR": 0.0217,
+    "pf": 2.147,
+    "tstat": 2.15,
+    "win%": 68.8
+   }
+  }
+ ],
+ "picked_corr_fitwindow": {
+  "0-1": -0.42,
+  "0-2": 0.09,
+  "0-3": 0.37,
+  "1-2": 0.12,
+  "1-4": 0.36,
+  "2-3": -0.52,
+  "3-4": 0.01
+ },
+ "top20_by_fit_tstat": [
+  {
+   "spec": {
+    "family": "A",
+    "pair": "GBPUSD",
+    "dow": 0,
+    "hour": 0,
+    "hold": 12,
+    "dir": 1
+   },
+   "fit": {
+    "n": 42,
+    "sumR": 1.85,
+    "meanR": 0.0441,
+    "pf": 3.379,
+    "tstat": 3.04,
+    "win%": 59.5
+   },
+   "holdout": {
+    "n": 11,
+    "sumR": 0.6,
+    "meanR": 0.0546,
+    "pf": 5.153,
+    "tstat": 2.18,
+    "win%": 81.8
+   },
+   "ref": {
+    "n": 48,
+    "sumR": 1.16,
+    "meanR": 0.0242,
+    "pf": 1.593,
+    "tstat": 1.28,
+    "win%": 66.7
+   }
+  },
+  {
+   "spec": {
+    "family": "A",
+    "pair": "GBPUSD",
+    "dow": 0,
+    "hour": 8,
+    "hold": 6,
+    "dir": 1
+   },
+   "fit": {
+    "n": 41,
+    "sumR": 1.69,
+    "meanR": 0.0412,
+    "pf": 3.853,
+    "tstat": 3.02,
+    "win%": 68.3
+   },
+   "holdout": {
+    "n": 12,
+    "sumR": 0.2,
+    "meanR": 0.0164,
+    "pf": 1.518,
+    "tstat": 0.57,
+    "win%": 58.3
+   },
+   "ref": {
+    "n": 48,
+    "sumR": 0.88,
+    "meanR": 0.0183,
+    "pf": 1.564,
+    "tstat": 1.14,
+    "win%": 39.6
+   }
+  },
+  {
+   "spec": {
+    "family": "C",
+    "pair": "GBPUSD",
+    "rsi_p": 2,
+    "lo": 30,
+    "hi": 70,
+    "hold": 5
+   },
+   "fit": {
+    "n": 38,
+    "sumR": 6.32,
+    "meanR": 0.1663,
+    "pf": 2.976,
+    "tstat": 2.67,
+    "win%": 65.8
+   },
+   "holdout": {
+    "n": 9,
+    "sumR": 1.03,
+    "meanR": 0.1146,
+    "pf": 2.531,
+    "tstat": 1.11,
+    "win%": 55.6
+   },
+   "ref": {
+    "n": 42,
+    "sumR": -2.37,
+    "meanR": -0.0564,
+    "pf": 0.707,
+    "tstat": -0.93,
+    "win%": 40.5
+   }
+  },
+  {
+   "spec": {
+    "family": "A",
+    "pair": "GBPUSD",
+    "dow": 0,
+    "hour": 0,
+    "hold": 24,
+    "dir": 1
+   },
+   "fit": {
+    "n": 42,
+    "sumR": 2.68,
+    "meanR": 0.0639,
+    "pf": 2.642,
+    "tstat": 2.47,
+    "win%": 64.3
+   },
+   "holdout": {
+    "n": 11,
+    "sumR": 0.6,
+    "meanR": 0.0542,
+    "pf": 2.532,
+    "tstat": 1.11,
+    "win%": 63.6
+   },
+   "ref": {
+    "n": 48,
+    "sumR": 1.91,
+    "meanR": 0.0398,
+    "pf": 1.714,
+    "tstat": 1.45,
+    "win%": 58.3
+   }
+  },
+  {
+   "spec": {
+    "family": "A",
+    "pair": "GBPJPY",
+    "dow": 0,
+    "hour": 8,
+    "hold": 12,
+    "dir": 1
+   },
+   "fit": {
+    "n": 41,
+    "sumR": 1.83,
+    "meanR": 0.0447,
+    "pf": 2.788,
+    "tstat": 2.46,
+    "win%": 68.3
+   },
+   "holdout": {
+    "n": 12,
+    "sumR": 0.82,
+    "meanR": 0.0684,
+    "pf": 4.619,
+    "tstat": 2.08,
+    "win%": 66.7
+   },
+   "ref": {
+    "n": 48,
+    "sumR": 1.56,
+    "meanR": 0.0326,
+    "pf": 1.991,
+    "tstat": 1.94,
+    "win%": 56.2
+   }
+  },
+  {
+   "spec": {
+    "family": "C",
+    "pair": "GBPJPY",
+    "rsi_p": 2,
+    "lo": 20,
+    "hi": 80,
+    "hold": 3
+   },
+   "fit": {
+    "n": 48,
+    "sumR": 5.15,
+    "meanR": 0.1073,
+    "pf": 2.656,
+    "tstat": 2.25,
+    "win%": 64.6
+   },
+   "holdout": {
+    "n": 12,
+    "sumR": 1.09,
+    "meanR": 0.0905,
+    "pf": 2.061,
+    "tstat": 0.95,
+    "win%": 58.3
+   },
+   "ref": {
+    "n": 58,
+    "sumR": 0.03,
+    "meanR": 0.0005,
+    "pf": 1.004,
+    "tstat": 0.01,
+    "win%": 46.6
+   }
+  },
+  {
+   "spec": {
+    "family": "A",
+    "pair": "USDCHF",
+    "dow": 3,
+    "hour": 16,
+    "hold": 6,
+    "dir": -1
+   },
+   "fit": {
+    "n": 43,
+    "sumR": 1.02,
+    "meanR": 0.0238,
+    "pf": 2.576,
+    "tstat": 2.2,
+    "win%": 74.4
+   },
+   "holdout": {
+    "n": 12,
+    "sumR": 0.37,
+    "meanR": 0.0308,
+    "pf": 2.106,
+    "tstat": 0.79,
+    "win%": 33.3
+   },
+   "ref": {
+    "n": 48,
+    "sumR": 1.04,
+    "meanR": 0.0217,
+    "pf": 2.147,
+    "tstat": 2.15,
+    "win%": 68.8
+   }
+  },
+  {
+   "spec": {
+    "family": "A",
+    "pair": "GBPUSD",
+    "dow": 0,
+    "hour": 8,
+    "hold": 12,
+    "dir": 1
+   },
+   "fit": {
+    "n": 41,
+    "sumR": 2.15,
+    "meanR": 0.0524,
+    "pf": 2.498,
+    "tstat": 2.18,
+    "win%": 61.0
+   },
+   "holdout": {
+    "n": 12,
+    "sumR": 0.4,
+    "meanR": 0.0331,
+    "pf": 1.712,
+    "tstat": 0.8,
+    "win%": 58.3
+   },
+   "ref": {
+    "n": 48,
+    "sumR": 0.83,
+    "meanR": 0.0174,
+    "pf": 1.357,
+    "tstat": 0.78,
+    "win%": 45.8
+   }
+  },
+  {
+   "spec": {
+    "family": "C",
+    "pair": "EURJPY",
+    "rsi_p": 2,
+    "lo": 20,
+    "hi": 80,
+    "hold": 5
+   },
+   "fit": {
+    "n": 35,
+    "sumR": 5.96,
+    "meanR": 0.1704,
+    "pf": 2.604,
+    "tstat": 2.16,
+    "win%": 71.4
+   },
+   "holdout": {
+    "n": 8,
+    "sumR": 1.45,
+    "meanR": 0.1812,
+    "pf": 3.876,
+    "tstat": 1.75,
+    "win%": 75.0
+   },
+   "ref": {
+    "n": 38,
+    "sumR": -0.81,
+    "meanR": -0.0212,
+    "pf": 0.857,
+    "tstat": -0.36,
+    "win%": 50.0
+   }
+  },
+  {
+   "spec": {
+    "family": "C",
+    "pair": "EURJPY",
+    "rsi_p": 2,
+    "lo": 30,
+    "hi": 70,
+    "hold": 5
+   },
+   "fit": {
+    "n": 41,
+    "sumR": 6.17,
+    "meanR": 0.1505,
+    "pf": 2.517,
+    "tstat": 2.12,
+    "win%": 70.7
+   },
+   "holdout": {
+    "n": 9,
+    "sumR": 1.94,
+    "meanR": 0.2158,
+    "pf": 6.643,
+    "tstat": 2.34,
+    "win%": 77.8
+   },
+   "ref": {
+    "n": 44,
+    "sumR": -3.23,
+    "meanR": -0.0735,
+    "pf": 0.565,
+    "tstat": -1.49,
+    "win%": 40.9
+   }
+  },
+  {
+   "spec": {
+    "family": "C",
+    "pair": "GBPJPY",
+    "rsi_p": 2,
+    "lo": 30,
+    "hi": 70,
+    "hold": 3
+   },
+   "fit": {
+    "n": 61,
+    "sumR": 5.13,
+    "meanR": 0.0841,
+    "pf": 2.048,
+    "tstat": 2.04,
+    "win%": 62.3
+   },
+   "holdout": {
+    "n": 15,
+    "sumR": 0.07,
+    "meanR": 0.0047,
+    "pf": 1.053,
+    "tstat": 0.07,
+    "win%": 40.0
+   },
+   "ref": {
+    "n": 68,
+    "sumR": 0.86,
+    "meanR": 0.0126,
+    "pf": 1.107,
+    "tstat": 0.34,
+    "win%": 48.5
+   }
+  },
+  {
+   "spec": {
+    "family": "A",
+    "pair": "GBPUSD",
+    "dow": 0,
+    "hour": 4,
+    "hold": 12,
+    "dir": 1
+   },
+   "fit": {
+    "n": 42,
+    "sumR": 1.94,
+    "meanR": 0.0462,
+    "pf": 2.178,
+    "tstat": 2.03,
+    "win%": 61.9
+   },
+   "holdout": {
+    "n": 12,
+    "sumR": 0.62,
+    "meanR": 0.0513,
+    "pf": 2.371,
+    "tstat": 1.14,
+    "win%": 66.7
+   },
+   "ref": {
+    "n": 48,
+    "sumR": 0.65,
+    "meanR": 0.0136,
+    "pf": 1.211,
+    "tstat": 0.53,
+    "win%": 56.2
+   }
+  }
+ ]
+}
