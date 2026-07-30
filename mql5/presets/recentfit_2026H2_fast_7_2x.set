@@ -1,0 +1,23 @@
+; 【直近特化 速攻7.2x】Chien_RecentFit_2026H2_Prop に適用(docs/174/175)。
+; 直近12ヶ月サンプル: 資金化98.5%・中央45日 / 全期間サンプル: 失格32.2%(=正直な悲観バウンド)。
+; 標準4.8x(EA既定)より速いが失格テールが太い。費用予算(失格2回で撤退)の中で選ぶこと。
+InpAcknowledgeBet=true
+InpMonLegs=GBPJPY:0.348,AUDJPY:0.299
+InpV4Legs=USDJPY:0.283
+InpHoldLegs=JP225:0.070
+InpMult=7.2
+InpExpiry=1793491140
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpDailyStopPct=4.0
+InpBalGuardPct=4.0
+InpBalGuardMaxMonth=2
+InpProfitLockEnable=true
+InpLockArmPct=7.9
+InpLockClosePct=8.05
+InpProfitStopPct=8.1
+InpMonHoursUTC=4,6,8,10
+InpMonHoldHours=24
+InpHoldEnable=true
+InpMagicBase=943100

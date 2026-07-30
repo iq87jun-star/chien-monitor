@@ -1,0 +1,21 @@
+; 【直近特化 P2仕上げ】Chien_RecentFit_2026H2_Prop に適用(docs/174/175)。
+; FN Stellar Phase2(目標+5%)用: ロックを5.05/4.9へ・倍率は標準4.8xのまま。
+; P2開始時は InpBaselineReset=true で基準残高を取り直すこと(初回アタッチのみ)。
+InpAcknowledgeBet=true
+InpMonLegs=GBPJPY:0.348,AUDJPY:0.299
+InpV4Legs=USDJPY:0.283
+InpHoldLegs=JP225:0.070
+InpMult=4.8
+InpExpiry=1793491140
+InpInitialBalance=0.0
+InpBaselineReset=true
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpDailyStopPct=4.0
+InpBalGuardPct=4.0
+InpBalGuardMaxMonth=2
+InpProfitLockEnable=true
+InpLockArmPct=4.9
+InpLockClosePct=5.05
+InpProfitStopPct=5.1
+InpMagicBase=943100
