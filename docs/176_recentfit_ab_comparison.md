@@ -103,3 +103,66 @@ Fintokei(パール500万=季節RG3・指数/金系)。RecentFitのGBPJPY月曜LO
    合計リスク(1.25%×複数)に抵触しないか。
 3. FTMOは業者として最頑健でも**このトラックには使わない**(v7重複が同社内で発生)。
 4. 費用予算はB案§5の「チャレンジ2回分で打ち止め」を全体に適用(A/B両方買って4回分にしない)。
+
+## 7.【追補】「同一銘柄」は禁止されていない — 規則の正確な射程と問い合わせ文面
+
+### 7.1 現時点で分かっていること(書面ベース)
+
+| 業者 | 確定している規則 | 出典 |
+|---|---|---|
+| FN | 禁止は**Instant↔チャレンジ間の「同一取引」のみ**。本人名義チャレンジ同士は同一EA・コピーすら公式可 | docs/161 §4③/§5 |
+| FN | 「同一取引」の定義は**未確認**(コピー連結のみか、独立EAの偶発的な同銘柄同方向も含むか) | 本docの論点 |
+| Fintokei | 他社との同一自作戦略の独立並走は可・両建て禁止のみ。**同社内複数口座の扱いは未質問** | docs/173 §1 |
+| FTMO | 同社内の重複について当方の書面確認なし(頑健性評価とは別問題) | docs/94 |
+
+→ **「同一銘柄エントリー」自体を禁じる規約はどの業者にもない**。リスクは
+「同一銘柄×同方向×同時期」の組がFN§4③の「同一取引」と判定されるか、の一点。
+判定基準が書面で曖昧なため、docs/99の方針どおり**購入前に書面で潰す**。
+
+### 7.2 FN返信用質問文(英語・docs/161のメールスレッドへ返信)
+
+> Thank you again for the previous clarifications. Before purchasing an additional
+> Stellar 2-Step challenge account, I would like to confirm the exact scope of the rule
+> "the same trades on multiple accounts are not allowed" between a Stellar Instant
+> account and challenge accounts, as it applies to my own accounts under my own name.
+>
+> My situation: all my accounts are traded by my own private EAs (no copy-trading tools,
+> no account linking; each EA runs independently on its own terminal). My Instant account
+> runs Strategy X, which sometimes goes long GBPJPY on Monday mornings. The new challenge
+> account would run a different EA (Strategy Y, my own), which may also independently
+> go long GBPJPY on some Monday mornings at partially overlapping hours.
+>
+> Questions:
+> (a) Does the "same trades" rule refer to copy-trading / linked or mirrored execution
+>     only, or does it also cover independently generated trades that happen to be in
+>     the same symbol and same direction at a similar time?
+> (b) If two of my own independent EAs (different strategies, different lot sizes)
+>     both happen to hold GBPJPY long on the same day — one on Instant, one on a
+>     challenge account — would that be treated as a violation?
+> (c) If (b) is a violation: is it sufficient to disable the overlapping symbol on one
+>     of the accounts, so that no same-symbol-same-direction overlap can occur?
+> (d) Could you confirm the objective criteria you use to judge "same trades"
+>     (e.g., identical timing, correlated lot sizing), so I can stay clearly compliant?
+>
+> I would appreciate the answer by email for my records.
+
+### 7.3 Fintokei質問文(日本語・docs/173のスレッドへ)
+
+> いつもお世話になっております。追加購入の前に3点確認させてください。
+> 1. 同一名義で通常チャレンジ口座を複数保有し、**それぞれ別の自作EA(別戦略)**を
+>    独立に稼働させることは可能でしょうか。両者が偶発的に同一銘柄・同方向の
+>    ポジションを同時期に持つ場合、規約上の問題はありますか(コピーツール等の連結は
+>    一切ありません)。
+> 2. 購入画面の「オープンポジション最大許容リスク3%」について、これは
+>    (a)1取引ごとのSLベース最大損失、(b)同時保有中の全ポジション合計、
+>    のどちらで計算されますか。複数の自作EAスリーブが同時にポジションを持つ場合の
+>    計算方法を教えてください。
+> 3. ステップ2の利益目標は6%という理解で正しいでしょうか(購入画面で8%→6%と
+>    表示されていたため念のため)。
+
+### 7.4 回答が来るまでの規律
+
+- **どの業者でも、回答前の購入・稼働開始はしない**(docs/170の教訓)。
+- FN回答が「独立EAなら同銘柄同方向も可」なら → FN Stellarが第一候補に昇格(§6判定1)。
+- FN回答が「同銘柄同方向は不可」なら → Fintokei×A案(銘柄重複ゼロ)が確定解。
+- 回答は必ずスクショ保存し、docs/161/173と同様に新docへ一次記録する。
