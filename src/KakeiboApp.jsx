@@ -41,9 +41,18 @@ const todayStr = () => {
 
 const yen = (n) => `¥${Math.abs(n).toLocaleString("ja-JP")}`;
 
+// 「前月25日〜当月24日」を1か月(◯月度)として扱う。
+// 25日以降の日付は翌月度に属する。
+const cycleOf = (dateStr) => {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const dt = new Date(y, m - 1 + (d >= 25 ? 1 : 0), 1);
+  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
+};
+
 const monthLabel = (ym) => {
-  const [y, m] = ym.split("-");
-  return `${y}年${Number(m)}月`;
+  const [y, m] = ym.split("-").map(Number);
+  const start = new Date(y, m - 2, 25);
+  return `${y}年${m}月度(${start.getMonth() + 1}/25〜${m}/24)`;
 };
 
 const dateLabel = (dateStr) => {
@@ -54,7 +63,7 @@ const dateLabel = (dateStr) => {
 
 export default function KakeiboApp() {
   const [entries, setEntries] = useState(loadEntries);
-  const [viewMonth, setViewMonth] = useState(() => todayStr().slice(0, 7));
+  const [viewMonth, setViewMonth] = useState(() => cycleOf(todayStr()));
   const [form, setForm] = useState({
     date: todayStr(), type: "expense", category: CATEGORIES.expense[0], amount: "", memo: "",
   });
@@ -104,7 +113,7 @@ export default function KakeiboApp() {
       [...prev, entry].sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
     );
     setForm((f) => ({ ...f, amount: "", memo: "" }));
-    setViewMonth(entry.date.slice(0, 7));
+    setViewMonth(cycleOf(entry.date));
   };
 
   const removeEntry = (id) => {
@@ -119,7 +128,7 @@ export default function KakeiboApp() {
   };
 
   const monthEntries = useMemo(
-    () => entries.filter((e) => e.date.startsWith(viewMonth)),
+    () => entries.filter((e) => cycleOf(e.date) === viewMonth),
     [entries, viewMonth]
   );
 
