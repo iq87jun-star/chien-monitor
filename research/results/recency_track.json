@@ -1,0 +1,305 @@
+{
+ "meta": {
+  "prereg": "docs/174",
+  "window": "WF 2017-01-01..2026-07-31",
+  "data": "Yahoo日足 2015-01-01..2026-07-31(2026-07は月途中=30日まで)",
+  "method": "docs/111逐語(日次ブロックMC・FN P1+8%・シード7・2万パス)",
+  "inputs": {
+   "EURUSD": "4076520cab16bfb1",
+   "GBPUSD": "1dcb37aa67280df2",
+   "USDJPY": "ca5a714b3041f84e",
+   "AUDUSD": "39b58256af4492d6",
+   "USDCHF": "3eb2817b1d9d7621",
+   "USDCAD": "a8480d0390848993",
+   "NZDUSD": "f3894b2455fa5e0e",
+   "EURJPY": "e7abf0b370c1f63a",
+   "GBPJPY": "c0e34ff0506c7eec",
+   "AUDJPY": "8717f25b55f2abea",
+   "NZDJPY": "f7ec36dbee28b9cb",
+   "CADJPY": "4ffe91fa2ca4a1b7",
+   "CHFJPY": "e612d443d79a2006",
+   "XAUUSD": "981fd7efd86b9d3c",
+   "US500": "75b48b0fcef7984b",
+   "NAS100": "60c6b34977d73467",
+   "GER40": "1f008e6516966f60",
+   "JP225": "9c3f5eacef264f4a",
+   "UK100": "99fe14485f3ee800",
+   "FR40": "5bf2a20b8e64ee7f"
+  },
+  "caveat": "Yahoo日足近似。WF行が実力・IS行は選択バイアス込みの見かけ。"
+ },
+ "variants": {
+  "mean_W6_k2": {
+   "mult": 1.15,
+   "median_months": 3.0,
+   "pass_pct": 74.4,
+   "fail_pct_optimistic": 25.6,
+   "fail_pct_raw": 32.5,
+   "undone_pct": 0.0,
+   "mean_month": 1.17,
+   "sharpe": 0.94,
+   "worst_month": -14.0,
+   "worst_day": -9.7,
+   "yearly": {
+    "2017": 20.9,
+    "2018": -5.9,
+    "2019": 8.3,
+    "2020": 33.9,
+    "2021": 18.4,
+    "2022": -24.9,
+    "2023": 13.7,
+    "2024": 20.4,
+    "2025": 54.1,
+    "2026": 11.0
+   },
+   "flat_months": 0,
+   "turnover_note": "選択ログは results/recency_track_picks.json"
+  },
+  "mean_W6_k3": {
+   "mult": 1.3,
+   "median_months": 3.0,
+   "pass_pct": 77.4,
+   "fail_pct_optimistic": 22.6,
+   "fail_pct_raw": 29.6,
+   "undone_pct": 0.0,
+   "mean_month": 1.16,
+   "sharpe": 1.0,
+   "worst_month": -11.52,
+   "worst_day": -7.88,
+   "yearly": {
+    "2017": 20.4,
+    "2018": -9.7,
+    "2019": 7.9,
+    "2020": 34.5,
+    "2021": 21.2,
+    "2022": -16.3,
+    "2023": 18.5,
+    "2024": 18.1,
+    "2025": 43.9,
+    "2026": 6.2
+   },
+   "flat_months": 0,
+   "turnover_note": "選択ログは results/recency_track_picks.json"
+  },
+  "mean_W6_k5": {
+   "mult": 1.55,
+   "median_months": 3.0,
+   "pass_pct": 74.6,
+   "fail_pct_optimistic": 25.4,
+   "fail_pct_raw": 27.0,
+   "undone_pct": 0.0,
+   "mean_month": 1.19,
+   "sharpe": 1.01,
+   "worst_month": -13.03,
+   "worst_day": -7.32,
+   "yearly": {
+    "2017": 24.8,
+    "2018": -10.0,
+    "2019": 12.3,
+    "2020": 34.0,
+    "2021": 29.3,
+    "2022": -12.2,
+    "2023": 11.9,
+    "2024": 23.5,
+    "2025": 37.1,
+    "2026": -2.3
+   },
+   "flat_months": 0,
+   "turnover_note": "選択ログは results/recency_track_picks.json"
+  },
+  "mean_W12_k2": {
+   "mult": 1.2,
+   "median_months": 3.0,
+   "pass_pct": 74.2,
+   "fail_pct_optimistic": 25.8,
+   "fail_pct_raw": 32.8,
+   "undone_pct": 0.0,
+   "mean_month": 1.05,
+   "sharpe": 0.87,
+   "worst_month": -14.43,
+   "worst_day": -7.86,
+   "yearly": {
+    "2017": 23.3,
+    "2018": -3.1,
+    "2019": 7.3,
+    "2020": 24.2,
+    "2021": 18.0,
+    "2022": -13.9,
+    "2023": -6.1,
+    "2024": 34.7,
+    "2025": 38.4,
+    "2026": 6.4
+   },
+   "flat_months": 0,
+   "turnover_note": "選択ログは results/recency_track_picks.json"
+  },
+  "mean_W12_k3": {
+   "mult": 1.25,
+   "median_months": 3.0,
+   "pass_pct": 75.7,
+   "fail_pct_optimistic": 24.3,
+   "fail_pct_raw": 27.8,
+   "undone_pct": 0.0,
+   "mean_month": 1.19,
+   "sharpe": 1.04,
+   "worst_month": -11.59,
+   "worst_day": -7.28,
+   "yearly": {
+    "2017": 21.7,
+    "2018": -4.0,
+    "2019": 7.2,
+    "2020": 31.1,
+    "2021": 22.2,
+    "2022": -14.7,
+    "2023": 1.7,
+    "2024": 36.2,
+    "2025": 35.7,
+    "2026": 10.8
+   },
+   "flat_months": 0,
+   "turnover_note": "選択ログは results/recency_track_picks.json"
+  },
+  "mean_W12_k5": {
+   "mult": 1.5,
+   "median_months": 3.0,
+   "pass_pct": 79.9,
+   "fail_pct_optimistic": 20.1,
+   "fail_pct_raw": 27.2,
+   "undone_pct": 0.0,
+   "mean_month": 1.39,
+   "sharpe": 1.26,
+   "worst_month": -11.94,
+   "worst_day": -9.61,
+   "yearly": {
+    "2017": 27.0,
+    "2018": -1.5,
+    "2019": 15.2,
+    "2020": 34.3,
+    "2021": 21.1,
+    "2022": -9.8,
+    "2023": 7.1,
+    "2024": 28.8,
+    "2025": 38.9,
+    "2026": 10.8
+   },
+   "flat_months": 0,
+   "turnover_note": "選択ログは results/recency_track_picks.json"
+  },
+  "sharpe_W12_k3": {
+   "mult": 1.95,
+   "median_months": 3.0,
+   "pass_pct": 83.1,
+   "fail_pct_optimistic": 16.9,
+   "fail_pct_raw": 24.9,
+   "undone_pct": 0.0,
+   "mean_month": 1.31,
+   "sharpe": 1.11,
+   "worst_month": -17.75,
+   "worst_day": -7.09,
+   "yearly": {
+    "2017": 19.4,
+    "2018": 1.8,
+    "2019": 2.0,
+    "2020": 39.9,
+    "2021": 20.5,
+    "2022": -4.1,
+    "2023": 10.9,
+    "2024": 23.4,
+    "2025": 44.0,
+    "2026": 3.4
+   },
+   "flat_months": 0,
+   "turnover_note": "選択ログは results/recency_track_picks.json"
+  },
+  "sharpe_W6_k3": {
+   "mult": 2.25,
+   "median_months": 3.0,
+   "pass_pct": 70.5,
+   "fail_pct_optimistic": 29.5,
+   "fail_pct_raw": 34.7,
+   "undone_pct": 0.0,
+   "mean_month": 1.11,
+   "sharpe": 0.79,
+   "worst_month": -19.44,
+   "worst_day": -7.46,
+   "yearly": {
+    "2017": 15.3,
+    "2018": -15.0,
+    "2019": 10.1,
+    "2020": 33.1,
+    "2021": 25.4,
+    "2022": -1.5,
+    "2023": 10.4,
+    "2024": 21.8,
+    "2025": 25.1,
+    "2026": 4.4
+   },
+   "flat_months": 0,
+   "turnover_note": "選択ログは results/recency_track_picks.json"
+  },
+  "対照_季節R4+G3": {
+   "mult": 1.45,
+   "median_months": 3.0,
+   "pass_pct": 94.7,
+   "fail_pct_optimistic": 5.3,
+   "fail_pct_raw": 8.0,
+   "undone_pct": 0.0,
+   "mean_month": 2.43,
+   "sharpe": 2.23,
+   "worst_month": -6.5,
+   "worst_day": -5.17,
+   "yearly": {
+    "2017": 23.0,
+    "2018": 14.9,
+    "2019": 28.3,
+    "2020": 92.0,
+    "2021": 20.1,
+    "2022": 42.8,
+    "2023": 40.4,
+    "2024": 19.4,
+    "2025": 31.5,
+    "2026": 11.3
+   }
+  }
+ },
+ "adopted": "sharpe_W12_k3",
+ "current_pick": {
+  "weights": {
+   "Mon_GBPJPY": 0.4852,
+   "Mon_AUDJPY": 0.4174,
+   "Hold_JP225": 0.0974
+  },
+  "trailing_score_pct": {
+   "Mon_GBPJPY": 253.96,
+   "Mon_AUDJPY": 249.12,
+   "Hold_JP225": 159.96
+  },
+  "is_last12m": {
+   "mean_month": 0.89,
+   "sharpe": 2.62,
+   "worst_month": -0.74,
+   "worst_day": -0.81,
+   "yearly": {
+    "2025": 3.3,
+    "2026": 7.5
+   }
+  },
+  "note": "重みの有効期限3ヶ月(docs/174 §4)・毎月再計算が本則"
+ },
+ "p2_estimate": {
+  "sharpe_W12_k3": {
+   "median_months": 2.0,
+   "pass_pct": 86.9,
+   "fail_pct_optimistic": 13.1,
+   "fail_pct_raw": 18.6,
+   "undone_pct": 0.0
+  },
+  "対照(G3抜き近似)": {
+   "median_months": 2.0,
+   "pass_pct": 95.1,
+   "fail_pct_optimistic": 4.9,
+   "fail_pct_raw": 6.8,
+   "undone_pct": 0.0
+  }
+ }
+}
