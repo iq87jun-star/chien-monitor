@@ -287,6 +287,52 @@ EV試算(B案悲観バウンド p=0.652・初回報酬=口座×4%×分配80%・U
 > different; only the symbol, direction and approximate timing coincide. Is this
 > acceptable, or would you recommend I disable the GBPJPY leg on one of the accounts?
 
+#### 7.6.1【書面記録 2026-07-31 チャット第2信】権限部署への照会指示
+
+追加確認(§7.6ドラフト)への回答(スクショ保存):
+
+> "As previously explained, **this will not be considered Copy Trading**. However, since
+> the support team is not authorized to confirm trading strategies, I recommend that you
+> contact the **Trading Ethics and Standards Team** for further clarification:
+> **tradingethics@fundednext.com**"
+
+- チャット2回目の「非該当」回答+最終権限部署の明示。**tradingethicsからのメール回答が
+  取れれば防衛記録として最強**(サポートチャットより上位の一次資料)。
+- 規律: **tradingethicsの回答が届くまで購入は保留**(チャット2回の「非該当」は心証であり
+  確定ではない)。
+
+#### tradingethics@fundednext.com 宛メール(送付用・英語)
+
+> Subject: Clarification request — my own independent EAs on my Instant and Challenge accounts (same-symbol overlap)
+>
+> Dear Trading Ethics and Standards Team,
+>
+> Your support chat team kindly referred me to you for an authoritative confirmation
+> regarding a planned account setup (chat on 31 July; the agent stated it would not be
+> considered copy trading, but noted your team has the final authority).
+>
+> My situation:
+> - All accounts are under my own name and traded exclusively by my own private Expert
+>   Advisors (no commercial EAs, no copy-trading tools, no account linking; each EA runs
+>   independently on its own terminal).
+> - My Stellar Instant account runs my Strategy X, which may open a GBPJPY BUY on Monday
+>   around 08:00 server time.
+> - I plan to purchase a Stellar 2-Step Challenge account that would run a different EA
+>   of mine (Strategy Y), which may also independently open a GBPJPY BUY within the same
+>   hour on some Mondays.
+> - Lot sizes, risk percentages and stop-loss levels differ between the two accounts;
+>   only the symbol, direction and approximate timing can coincide.
+>
+> Questions:
+> (a) Is this setup acceptable — i.e., NOT treated as "the same trades on multiple
+>     accounts" between my Instant and Challenge accounts?
+> (b) If it is not fully acceptable, would it be sufficient to disable the GBPJPY leg
+>     on one of the accounts, so that no same-symbol, same-direction overlap can occur?
+> (c) Could you share the objective criteria you use to determine "same trades",
+>     so I can stay clearly compliant?
+>
+> I would greatly appreciate a written reply by email for my records. Thank you very much.
+
 ### 7.7 判定の更新(2026-07-31時点)
 
 | 選択肢 | 状態 |
