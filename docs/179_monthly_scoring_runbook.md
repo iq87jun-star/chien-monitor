@@ -5,6 +5,9 @@
 > ⚠ 本ランブック時点の全成果物は `claude/portfolio-comparison-jhncgp` ブランチにある
 > (docs/176-179・EA/プリセット)。研究の履歴はdocs/174-175として
 > `claude/prop-trading-ea-short-term-8ta3be`(A案) / `-ufzpaj`(B案) に分岐している点に注意。
+> 【追記 2026-07-31】採点スレッド用ブランチ `claude/portfolio-comparison-forward-test-gxdo36` に
+> 上記の参照一式を集約済み(docs/98・103・172・173、174A/175A・174B/175B、研究スクリプト)。
+> **月次の記録はdocs/180へ追記する**。
 
 ## 1. 採点対象(毎月初・前月分)
 

@@ -1,0 +1,152 @@
+{
+ "meta": {
+  "window": [
+   "2025-07-01",
+   "2026-07-24"
+  ],
+  "n_path": 20000,
+  "seed": 20260730,
+  "rules": {
+   "p1": 8.0,
+   "p2": 5.0,
+   "daily": 5.0,
+   "max": 10.0
+  },
+  "guards": {
+   "daily": 4.0,
+   "max": 8.0
+  },
+  "caveat": "選定期間そのものをリサンプルしており楽観バイアス込み。上限の目安。"
+ },
+ "sleeve_sumR_window": {
+  "{\"dir\": 1, \"dow\": 0, \"family\": \"A\", \"hold\": 12, \"hour\": 8, \"pair\": \"GBPJPY\"}": 2.65,
+  "{\"family\": \"C\", \"hi\": 80, \"hold\": 3, \"lo\": 20, \"pair\": \"GBPJPY\", \"rsi_p\": 2}": 6.24,
+  "{\"dir\": 1, \"dow\": 0, \"family\": \"A\", \"hold\": 12, \"hour\": 0, \"pair\": \"GBPUSD\"}": 2.45,
+  "{\"family\": \"C\", \"hi\": 70, \"hold\": 5, \"lo\": 30, \"pair\": \"GBPUSD\", \"rsi_p\": 2}": 7.35,
+  "{\"dir\": -1, \"dow\": 3, \"family\": \"A\", \"hold\": 6, \"hour\": 16, \"pair\": \"USDCHF\"}": 1.39
+ },
+ "grid": {
+  "0.5": {
+   "p1_pass%": 80.0,
+   "both_pass%": 79.4,
+   "fail_daily%": 0.0,
+   "fail_max%": 0.0,
+   "guard_stop%": 0.0,
+   "timeout%": 20.01,
+   "p1_days_median": 204,
+   "both_days_median": 340,
+   "hist_ann%": 9.4,
+   "hist_maxDD%": -0.4
+  },
+  "0.75": {
+   "p1_pass%": 98.7,
+   "both_pass%": 98.7,
+   "fail_daily%": 0.0,
+   "fail_max%": 0.0,
+   "guard_stop%": 0.0,
+   "timeout%": 1.28,
+   "p1_days_median": 143,
+   "both_days_median": 238,
+   "hist_ann%": 14.4,
+   "hist_maxDD%": -0.7
+  },
+  "1.0": {
+   "p1_pass%": 99.9,
+   "both_pass%": 99.9,
+   "fail_daily%": 0.0,
+   "fail_max%": 0.0,
+   "guard_stop%": 0.0,
+   "timeout%": 0.15,
+   "p1_days_median": 108,
+   "both_days_median": 180,
+   "hist_ann%": 19.6,
+   "hist_maxDD%": -0.9
+  },
+  "1.25": {
+   "p1_pass%": 99.9,
+   "both_pass%": 99.9,
+   "fail_daily%": 0.0,
+   "fail_max%": 0.0,
+   "guard_stop%": 0.0,
+   "timeout%": 0.06,
+   "p1_days_median": 86,
+   "both_days_median": 145,
+   "hist_ann%": 25.0,
+   "hist_maxDD%": -1.1
+  },
+  "1.5": {
+   "p1_pass%": 100.0,
+   "both_pass%": 100.0,
+   "fail_daily%": 0.0,
+   "fail_max%": 0.0,
+   "guard_stop%": 0.0,
+   "timeout%": 0.03,
+   "p1_days_median": 72,
+   "both_days_median": 122,
+   "hist_ann%": 30.7,
+   "hist_maxDD%": -1.3
+  },
+  "2.0": {
+   "p1_pass%": 100.0,
+   "both_pass%": 100.0,
+   "fail_daily%": 0.0,
+   "fail_max%": 0.0,
+   "guard_stop%": 0.0,
+   "timeout%": 0.01,
+   "p1_days_median": 54,
+   "both_days_median": 92,
+   "hist_ann%": 42.8,
+   "hist_maxDD%": -1.8
+  }
+ },
+ "stress": {
+  "risk1.25_half_edge": {
+   "p1_pass%": 83.7,
+   "both_pass%": 79.7,
+   "fail_daily%": 0.0,
+   "fail_max%": 0.0,
+   "guard_stop%": 0.01,
+   "timeout%": 16.29,
+   "p1_days_median": 148,
+   "both_days_median": 255,
+   "hist_ann%": 11.8,
+   "hist_maxDD%": -2.0
+  },
+  "risk1.25_no_edge": {
+   "p1_pass%": 9.0,
+   "both_pass%": 2.2,
+   "fail_daily%": 0.0,
+   "fail_max%": 0.0,
+   "guard_stop%": 6.39,
+   "timeout%": 84.65,
+   "p1_days_median": 182,
+   "both_days_median": 319,
+   "hist_ann%": -0.1,
+   "hist_maxDD%": -4.7
+  },
+  "risk2.0_half_edge": {
+   "p1_pass%": 95.3,
+   "both_pass%": 93.8,
+   "fail_daily%": 0.0,
+   "fail_max%": 0.0,
+   "guard_stop%": 0.17,
+   "timeout%": 4.5,
+   "p1_days_median": 97,
+   "both_days_median": 170,
+   "hist_ann%": 19.4,
+   "hist_maxDD%": -3.1
+  },
+  "risk2.0_no_edge": {
+   "p1_pass%": 26.4,
+   "both_pass%": 12.2,
+   "fail_daily%": 0.0,
+   "fail_max%": 0.0,
+   "guard_stop%": 25.21,
+   "timeout%": 48.38,
+   "p1_days_median": 136,
+   "both_days_median": 245,
+   "hist_ann%": -0.3,
+   "hist_maxDD%": -7.4
+  }
+ }
+}
