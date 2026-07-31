@@ -1,8 +1,13 @@
 ; ==============================================================
-; Chien_RecentFit5_EA — FTMO配備用プリセット(P1) docs/178
+; Chien_RecentFit5_EA — FTMO#531343523配備用プリセット(P1) docs/178
 ; 前提: FTMO 2-Step Swing口座(週末持越のためStandard不可)
-;       既存PD EA(761130系)を外し残存建玉クローズ後に適用
-; 規則型: P1+8%/P2+5%/静的-10%/日次-5% = FN Stellarと同型(docs/24)
+;       既存PD EA(760820/761130系)を外し残存建玉クローズ後に適用
+; ⚠この口座はフェーズ進行中(docs/167: 7/18時点+2.3%・目標+10%土俵・
+;   基準残高=フェーズ開始10万)。よって:
+;   - InpInitialBalance=100000 を明示(0=自動だと現在残高を基準に
+;     取ってしまいロック/フロア/日次の基準がズレる)
+;   - ロックは目標+10%に合わせ 10.0/10.5
+;     (MetriXのProfit Targetが$8,000表示なら 8.0/8.5 に変更)
 ; P2移行時: InpLockArmPct=5.0 / InpLockClosePct=5.5 /
 ;           InpBaselineReset=true(1回だけ・その後false)
 ; ==============================================================
@@ -12,11 +17,11 @@ InpMaxSpreadBps=10.0
 InpBalGuardPct=4.0
 InpBalGuardMaxMonth=2
 InpAccountFloorDDPct=8.0
-InpInitialBalance=0.0
+InpInitialBalance=100000.0
 InpBaselineReset=false
 InpProfitLockEnable=true
-InpLockArmPct=8.0
-InpLockClosePct=8.5
+InpLockArmPct=10.0
+InpLockClosePct=10.5
 InpS1_GbpUsdMon=true
 InpS2_GbpJpyMon=true
 InpS3_UsdChfThu=true
