@@ -253,7 +253,50 @@ EV試算(B案悲観バウンド p=0.652・初回報酬=口座×4%×分配80%・U
 > 3. (前回未回答分)ステップ2の利益目標は6%でしょうか。また参加費の初回報酬時返金は
 >    現在も適用されますか。
 
-### 7.6 回答が来るまでの規律
+### 7.6【書面記録 2026-07-31】FN回答(ライブチャット・Richard氏・スクショ保存)
+
+> "Copy trading is considered when the **identical trade on the same instrument is
+> executed at the same price, with the same lot size, risk, and other parameters**.
+> However, as you explained, since you will be trading using **Expert Advisors that are
+> designed with different strategies and assigned separately, this will not be regarded
+> as copy trading**. Nevertheless, you must ensure that you do not execute the same trade
+> on both your Challenge Phase Account and your Stellar Instant Account in order to
+> avoid any violations."
+
+#### 解釈と残リスク
+
+1. **「同一取引」の定義が確定**: 同一銘柄×同一価格×同一ロット×同一リスク等**全て一致**した
+   複製取引。**別戦略のEAを別口座に独立配置するのはコピー取引に該当しない** — RecentFit
+   (A案/B案)とInstant PDは別戦略なので原則クリア。
+2. **残る摩擦点は1つ**: A案S2(GBPJPY月曜08:00UTC L)とInstant PD v7(GBPJPY月曜4/6/8/10時UTC L)は
+   **同一銘柄・同方向・同時刻(08:00)にエントリーが重なる**。ロット・リスク%・SLは異なるため
+   定義上は「同一取引」に該当しないが、自動監視で複製と誤認される余地は残る。
+   B案のMonレッグはv7と同一族・同一時刻構成のため摩擦がより大きい(FNでもB案よりA案)。
+3. 対応の選択肢:
+   - (a) 同じチャットで具体シナリオを追加確認(下記ドラフト)→「可」なら全スリーブ稼働
+   - (b) 確認なしで走るなら**S2を無効化**(InpS2入力で可能・事前登録の型は维持したまま
+     1スリーブ落とすだけ。エントリー時刻の改変はしない=後知恵改変の禁止)
+4. チャット回答はスクショで記録済み(docs/161 §5と同格の扱い)。
+
+#### FN追加確認ドラフト(同チャットへ)
+
+> Thank you, that's very clear. One concrete scenario to be 100% safe: my Instant
+> account EA (Strategy X) may open a GBPJPY BUY on Monday around 08:00 server time,
+> and my new Challenge account EA (Strategy Y — a different strategy) may independently
+> open a GBPJPY BUY within the same hour. Lot sizes, risk % and stop-loss levels are
+> different; only the symbol, direction and approximate timing coincide. Is this
+> acceptable, or would you recommend I disable the GBPJPY leg on one of the accounts?
+
+### 7.7 判定の更新(2026-07-31時点)
+
+| 選択肢 | 状態 |
+|---|---|
+| **FN Stellar($50k推奨)×A案** | **本命に確定寄り**: コピー取引の定義クリア+Max Risk3%は取引個別+EV最大(§7.4)。S2重複のみ追加確認 or 無効化で対応 |
+| Fintokei×A案 | トレードグループ3%(§7.5.1)により0.75%減速 or グループガード追加が必要。第3信の回答待ち |
+| FTMO / B案のFN配備 | 見送り(v7との同一族・同一時刻重複が濃い) |
+| パール季節RG3(稼働直前) | **§7.5.1 #4の同時保有実損チェックを稼働前に実施**(本トラックとは独立の緊急タスク) |
+
+### 7.8 回答が来るまでの規律
 
 - **どの業者でも、回答前の購入・稼働開始はしない**(docs/170の教訓)。
 - FN回答が「独立EAなら同銘柄同方向も可」なら → FN Stellarが第一候補に昇格(§6判定1)。
