@@ -1,0 +1,32 @@
+; ==============================================================
+; Chien_RecentFit5_EA — FTMO配備用プリセット(P1) docs/178
+; 前提: FTMO 2-Step Swing口座(週末持越のためStandard不可)
+;       既存PD EA(761130系)を外し残存建玉クローズ後に適用
+; 規則型: P1+8%/P2+5%/静的-10%/日次-5% = FN Stellarと同型(docs/24)
+; P2移行時: InpLockArmPct=5.0 / InpLockClosePct=5.5 /
+;           InpBaselineReset=true(1回だけ・その後false)
+; ==============================================================
+InpRiskPerTradePct=1.25
+InpMultOverride=1.0
+InpMaxSpreadBps=10.0
+InpBalGuardPct=4.0
+InpBalGuardMaxMonth=2
+InpAccountFloorDDPct=8.0
+InpInitialBalance=0.0
+InpBaselineReset=false
+InpProfitLockEnable=true
+InpLockArmPct=8.0
+InpLockClosePct=8.5
+InpS1_GbpUsdMon=true
+InpS2_GbpJpyMon=true
+InpS3_UsdChfThu=true
+InpS4_GbpUsdRsi=true
+InpS5_GbpJpyRsi=true
+InpSymGBPUSD=GBPUSD
+InpSymGBPJPY=GBPJPY
+InpSymUSDCHF=USDCHF
+InpServerToUtcHours=-999
+InpMagicBase=941200
+InpSlAtrMult=3.0
+InpMinHoldSeconds=150
+InpNotifyEnable=true

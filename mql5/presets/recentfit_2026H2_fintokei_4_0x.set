@@ -1,0 +1,33 @@
+; ==============================================================
+; Chien_RecentFit_2026H2_Prop — Fintokeiパール500万配備用(ステップ1) docs/178
+; Fintokei適合(docs/176 §7.5系の書面回答を反映):
+;  - JP225 Hold除外(常時保有はトレードグループが永久リセットされず
+;    確定損累積で3%警告線に必ず到達する構造) → 3レッグ再正規化
+;  - 倍率4.8→4.0(グループ3%警告の回避余白。月中DD生≈-3.85%)
+;  - 日次はequity基準-4%新規停止+balance基準-4%全決済の二段
+;    (⚠含み益+1%超を持ち越した日はFintokei線-5%がガードより上に
+;     来る稀な窓がある=docs/178 §4注記)
+; ステップ2(目標6%)移行時: InpLockArmPct=5.9 / InpLockClosePct=6.05 /
+;   InpProfitStopPct=6.1 / InpBaselineReset=true(1回だけ・その後false)
+; ==============================================================
+InpAcknowledgeBet=true
+InpMonLegs=GBPJPY:0.374,AUDJPY:0.322
+InpV4Legs=USDJPY:0.304
+InpHoldLegs=
+InpHoldEnable=false
+InpMult=4.0
+InpInitialBalance=0.0
+InpBaselineReset=false
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpDailyStopPct=4.0
+InpBalGuardPct=4.0
+InpBalGuardMaxMonth=2
+InpProfitLockEnable=true
+InpLockArmPct=7.9
+InpLockClosePct=8.05
+InpProfitStopPct=8.1
+InpNotifyEnable=true
+InpNotifyEntries=true
+InpNotifyDayWarnPct=3.0
+InpMagicBase=943100

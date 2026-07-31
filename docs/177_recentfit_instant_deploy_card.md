@@ -1,4 +1,8 @@
-# 177.【配備カード】直近特化(RecentFit)Instant版 — FN Stellar Instant 20k・2026-08稼働
+# 177.【配備カード・不採用】直近特化(RecentFit)Instant版 — FN Stellar Instant 20k
+
+> ⚠ **本配備は2026-07-31のユーザー最終決定(docs/178)により不採用**。
+> Instant 20kはPD_noV4(正攻法)を継続し、RecentFitはFTMO(A案)+Fintokei(B案)へ配備。
+> EA(`Chien_RecentFit_2026H2_Instant.mq5`)は将来の転用判断に備えて温存。以下は記録として保持。
 
 > 2026-07-31 ユーザー決定「B案をインスタント用に作成。8月から稼働」(docs/176 §7.8.2の試算を受けて)。
 > EA: `mql5/Chien_RecentFit_2026H2_Instant.mq5` v1.0。
