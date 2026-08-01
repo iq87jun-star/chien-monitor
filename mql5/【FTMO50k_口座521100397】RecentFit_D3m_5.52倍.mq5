@@ -1,6 +1,6 @@
 //+------------------------------------------------------------------+
-//| ★FTMO50k C6mトラック焼き込み版(docs/180事前登録・docs/181結果) |
-//|  倍率6.0・期限2026.09.30・Hold無効・ロック9.9/10.05(FTMO P1+10%)      |
+//| ★FTMO50k D3mトラック 口座521100397(FTMO-Server2) 焼き込み版(docs/180/181) |
+//|  倍率5.52・期限2026.08.31・Hold無効・ロック9.9/10.05(FTMO P1+10%)      |
 //|  P2(+5%)移行時: LockArm=4.9 / LockClose=5.05 / ProfitStop=5.1 /    |
 //|                 InpBaselineReset=true(1回だけ・その後false)        |
 //|  ⚠購入前にFTMO同社内重複の書面確認(docs/181 §3)。Swing口座で購入。|
@@ -41,13 +41,13 @@
 input bool   InpAcknowledgeBet  = true;   // 本トラック=直近過剰適合の明示ベット(docs/174)を承認
 
 input group "=== 構成(銘柄:重み CSV。既定=2026-07-30スクリーニング凍結値) ==="
-input string InpMonLegs  = "GBPJPY:0.323,AUDJPY:0.269"; // Mon: 月曜o2o LONG
-input string InpV4Legs   = "NZDUSD:0.207,AUDUSD:0.201";              // v4: 日足k≥4合議
+input string InpMonLegs  = "USDJPY:0.374,GBPJPY:0.139"; // Mon: 月曜o2o LONG
+input string InpV4Legs   = "NZDUSD:0.287,AUDUSD:0.2";              // v4: 日足k≥4合議
 input string InpHoldLegs = "";                        // Hold: 連続LONG
-input double InpMult     = 6.0;    // リスク倍率(標準4.8 / 速攻7.2=.set)
+input double InpMult     = 5.52;    // リスク倍率(標準4.8 / 速攻7.2=.set)
 
 input group "=== 有効期限(直近特化=賞味期限つき。docs/174停止規則) ==="
-input datetime InpExpiry = D'2026.09.30 23:59';  // 期限後は新規停止(再スクリーニングで更新)
+input datetime InpExpiry = D'2026.08.31 23:59';  // 期限後は新規停止(再スクリーニングで更新)
 
 input group "=== 口座/ガード ==="
 input double InpInitialBalance   = 0.0;   // 0=自動(初回アタッチ時の残高を端末に永続保存)
@@ -105,7 +105,7 @@ input bool   InpHolidayFilterEnable = true; // 12/20〜1/3は新規停止
 input group "=== 共通 ==="
 input double InpMinLot = 0.01;
 input double InpMaxLot = 50.0;
-input long   InpMagicBase = 943300;  // Mon=+1/v4=+2/Hold=+3
+input long   InpMagicBase = 943400;  // Mon=+1/v4=+2/Hold=+3
 input int    InpSlippagePoints = 30;
 input bool   InpVerboseLog = true;
 
