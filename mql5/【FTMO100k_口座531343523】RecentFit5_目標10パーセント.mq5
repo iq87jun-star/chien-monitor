@@ -1,10 +1,10 @@
 //+------------------------------------------------------------------+
-//| ★FTMO#531343523専用焼き込み版(docs/178・recentfit5_ftmo_p1.set反映) |
+//| ★FTMO#531343523専用焼き込み版 v1.01(docs/178+S5再試行修正) |
 //|  基準残高100000(フェーズ開始値・自動検出は使わない)                |
 //|  ロック10.0/10.5(FTMO P1目標+10%実査確定)・通知ON                  |
-//|  P2移行時: InpLockArmPct=5.0 / InpLockClosePct=5.5 /               |
-//|            InpBaselineReset=true(1回だけ・その後false)             |
-//|  ⚠Standard口座: P1/P2は週末持越可・資金化後はS4/S5要対応(docs/178)|
+//|  v1.01: 族C(S4/S5)のバー内再試行を追加(スプレッド/市場閉スキップが |
+//|         当日恒久化するバグの修正・2026-08-03 S5事象)               |
+//|  P2移行時: InpLockArmPct=5.0 / InpLockClosePct=5.5 / BaselineReset |
 //| Chien_RecentFit5_EA.mq5                                          |
 //| 直近フィット・トラック v1.0 (docs/174-175)                        |
 //|                                                                  |
@@ -33,7 +33,7 @@
 //|  規則失格0%。2.0%は速度優先オプションだが剥落時guard_stop25%)。    |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor recent-fit track"
-#property version   "1.00"
+#property version   "1.01"
 #property strict
 #include <Trade/Trade.mqh>
 
@@ -340,18 +340,30 @@ void TrySleeveA(int idx)
       g_weekKey[idx]=wk;
 }
 
+int g_cTries[NSLV];   // v1.01: 族Cのバー内再試行カウンタ
+
 void TrySleeveC(int idx)
 {
    datetime cur=(datetime)SeriesInfoInteger(g_sym[idx],PERIOD_D1,SERIES_LASTBAR_DATE);
    if(cur==0||cur==g_lastD1[idx]) return;               // 新D1バーのみ判定(始値エントリーの近似)
-   g_lastD1[idx]=cur;
-   if(CountSleeve(idx)>0) return;
+   // v1.01修正: バー消費はエントリー成立/シグナルなし時のみ。
+   // 旧実装は試行前に消費していたため、バー切替直後のスプレッド拡大や市場閉で
+   // スキップすると当日中に再試行されずスリーブが1日空振りした(2026-08-03 S5事象)。
+   if(CountSleeve(idx)>0){ g_lastD1[idx]=cur; g_cTries[idx]=0; return; }
    double r=RsiD1(g_sym[idx],g_def[idx].rsiPeriod);
    int dir=0;
    if(r<g_def[idx].rsiLo) dir=1;
    else if(r>g_def[idx].rsiHi) dir=-1;
-   if(dir==0) return;
-   OpenSleeve(idx,dir,StringFormat("RF5-S%d RSI%.0f",idx+1,r));
+   if(dir==0){ g_lastD1[idx]=cur; g_cTries[idx]=0; return; }
+   if(OpenSleeve(idx,dir,StringFormat("RF5-S%d RSI%.0f",idx+1,r))){
+      g_lastD1[idx]=cur; g_cTries[idx]=0;
+   }else{
+      g_cTries[idx]++;                                  // 30秒タイマーで再試行(最大120回≈1時間)
+      if(g_cTries[idx]>=120){
+         PrintFormat("[GIVEUP S%d] %d回失敗→当バーを断念",idx+1,g_cTries[idx]);
+         g_lastD1[idx]=cur; g_cTries[idx]=0;
+      }
+   }
 }
 
 //=== ライフサイクル ===============================================
