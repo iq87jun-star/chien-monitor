@@ -26,7 +26,7 @@
 //|     GBPJPY月曜LONGはFTMO PD口座のv7と同一日・同方向になり得る。   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.00"
+#property version   "1.01"
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
@@ -461,15 +461,17 @@ void EntriesMon(datetime utc)
       if(sp<InpMinStopPips){ sp=InpMinStopPips; sd=sp*pip; }
       double ask=SymbolInfoDouble(sym,SYMBOL_ASK), bid=SymbolInfoDouble(sym,SYMBOL_BID);
       if(ask<=0||bid<=0) continue;
-      if((ask-bid)/pip>SpreadCapFor(sym)){ g_lastShotMon[key]=hourBar; continue; }
+      // v1.01修正: スプレッド超過・発注失敗ではショット枠を消費しない(同時間帯内で30秒毎に再試行)
+      if((ask-bid)/pip>SpreadCapFor(sym)) continue;
       double notional=g_initBal*g_monW[s]*InpMult/nh;   // 1ショット=重み×倍率÷ショット数
       double lots=LotsForNotional(sym,notional); if(lots<InpMinLot){ g_lastShotMon[key]=hourBar; continue; }
       int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
       double sl=NormalizeDouble(ask-sd,dg);
-      g_lastShotMon[key]=hourBar;
       if(trade.Buy(lots,sym,0.0,sl,0.0,StringFormat("RFMon_%s_h%d",sym,g_monHours[slot])))
-         { if(InpVerboseLog) PrintFormat("[Mon ENTRY] LONG %s h%dUTC lots=%.2f notional=%.0f SL=%.3f",sym,g_monHours[slot],lots,notional,sl);
+         { g_lastShotMon[key]=hourBar;
+           if(InpVerboseLog) PrintFormat("[Mon ENTRY] LONG %s h%dUTC lots=%.2f notional=%.0f SL=%.3f",sym,g_monHours[slot],lots,notional,sl);
            if(InpNotifyEntries) Notify(StringFormat("IN Mon %s %.2f",sym,lots)); }
+      else PrintFormat("[Mon RETRY] %s h%d 発注失敗ret=%d(同時間帯内で再試行)",sym,g_monHours[slot],(int)trade.ResultRetcode());
    }
 }
 
@@ -478,9 +480,9 @@ int V4Signal(string sym, int rsiHandle)
 {
    double c[]; ArraySetAsSeries(c,true);
    int need=MathMax(InpV4_BBwin+2, InpV4_streak+3);
-   if(CopyClose(sym,PERIOD_D1,1,need+2,c)<need+1) return 0;
+   if(CopyClose(sym,PERIOD_D1,1,need+2,c)<need+1) return -99;   // v1.01: データ未同期(0=合議不成立と区別)
    double rb[1];
-   if(rsiHandle==INVALID_HANDLE || CopyBuffer(rsiHandle,0,1,1,rb)<1) return 0;
+   if(rsiHandle==INVALID_HANDLE || CopyBuffer(rsiHandle,0,1,1,rb)<1) return -99;
    double rsi=rb[0];
    double mean=0; for(int k=1;k<=InpV4_BBwin;k++) mean+=c[k]; mean/=InpV4_BBwin;
    double var=0; for(int k=1;k<=InpV4_BBwin;k++) var+=(c[k]-mean)*(c[k]-mean); var/=(InpV4_BBwin-1);
@@ -504,6 +506,17 @@ void ManageV4Exit()
          PrintFormat("[v4 TIME EXIT %dd] %s",heldDays,posinfo.Symbol()); }
    }
 }
+int g_v4Tries[MAXLEG];   // v1.01: v4のバー内再試行カウンタ
+
+void V4Fail(int i, datetime db, string why)
+{
+   g_v4Tries[i]++;                                   // 30秒タイマーで再試行(最大120回≈1時間)
+   if(g_v4Tries[i]>=120){
+      PrintFormat("[v4 GIVEUP] %s %s %d回失敗→当バー断念",g_v4Sym[i],why,g_v4Tries[i]);
+      g_lastV4Bar[i]=db; g_v4Tries[i]=0;
+   }
+}
+
 void EntriesV4()
 {
    if(g_nV4==0) return;
@@ -514,25 +527,36 @@ void EntriesV4()
       string sym=g_v4Sym[i];
       datetime db=(datetime)iTime(sym,PERIOD_D1,0);
       if(db==0 || db==g_lastV4Bar[i]) continue;
-      g_lastV4Bar[i]=db;
-      if(CountPos(sym,g_mV4)>0) continue;
+      // v1.01修正: バー消費は「成立/合議不成立の確定/既保有」時のみ。
+      // 旧実装は判定前に消費していたため、データ未同期・発注失敗が当日空振りに恒久化した。
+      if(CountPos(sym,g_mV4)>0){ g_lastV4Bar[i]=db; g_v4Tries[i]=0; continue; }
       int sig=V4Signal(sym,g_rsiD1[i]);
-      if(sig==0) continue;
-      double atr=AtrAt(g_atrD1[i]); if(atr<=0) continue;
+      if(sig==-99){ V4Fail(i,db,"データ未同期"); continue; }
+      if(sig==0){
+         if(InpVerboseLog && g_v4Tries[i]==0) PrintFormat("[v4 EVAL] %s 合議不成立(バー%s)",sym,TimeToString(db,TIME_DATE));
+         g_lastV4Bar[i]=db; g_v4Tries[i]=0; continue; }
+      double atr=AtrAt(g_atrD1[i]);
+      if(atr<=0){ V4Fail(i,db,"ATR未取得"); continue; }
       double sd=InpV4_SLatr*atr; double tpd=InpV4_RR*sd;
       double notional=g_initBal*g_v4W[i]*InpMult;
-      double lots=LotsForNotional(sym,notional); if(lots<InpMinLot) continue;
+      double lots=LotsForNotional(sym,notional);
+      if(lots<InpMinLot){ g_lastV4Bar[i]=db; g_v4Tries[i]=0; continue; }   // 恒久条件=消費
       int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
+      bool ok=false;
       if(sig>0){ double e=SymbolInfoDouble(sym,SYMBOL_ASK);
          double sl=NormalizeDouble(e-sd,dg), tp=NormalizeDouble(e+tpd,dg);
-         if(trade.Buy(lots,sym,0.0,sl,tp,"RFv4_"+sym)){
+         ok=trade.Buy(lots,sym,0.0,sl,tp,"RFv4_"+sym);
+         if(ok){
             if(InpVerboseLog) PrintFormat("[v4 ENTRY] LONG %s lots=%.2f notional=%.0f",sym,lots,notional);
             if(InpNotifyEntries) Notify(StringFormat("IN v4 L %s %.2f",sym,lots)); } }
       else     { double e=SymbolInfoDouble(sym,SYMBOL_BID);
          double sl=NormalizeDouble(e+sd,dg), tp=NormalizeDouble(e-tpd,dg);
-         if(trade.Sell(lots,sym,0.0,sl,tp,"RFv4_"+sym)){
+         ok=trade.Sell(lots,sym,0.0,sl,tp,"RFv4_"+sym);
+         if(ok){
             if(InpVerboseLog) PrintFormat("[v4 ENTRY] SHORT %s lots=%.2f notional=%.0f",sym,lots,notional);
             if(InpNotifyEntries) Notify(StringFormat("IN v4 S %s %.2f",sym,lots)); } }
+      if(ok){ g_lastV4Bar[i]=db; g_v4Tries[i]=0; }
+      else  V4Fail(i,db,StringFormat("発注失敗ret=%d",(int)trade.ResultRetcode()));
    }
 }
 
