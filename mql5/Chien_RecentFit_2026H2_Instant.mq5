@@ -30,8 +30,12 @@
 //|    こと(EA初期化のHWMが実態より低いとガードが甘くなる)。          |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.00"
+#property version   "1.02"
 #property strict
+//| v1.01(Prop版から移植): v4のデータ未同期/発注失敗のバー内再試行・  |
+//|   合議不成立の可視化・Monショット枠の発注前消費修正               |
+//| v1.02: 日次ガード基準の再起動復元(同日中の再アタッチで基準が      |
+//|   現在残高に再アンカーされ緩むのを防ぐ)・Mon時刻数の範囲保護      |
 #property description "[RecentFit 2026H2 INSTANT] FN Stellar Instant 20k. Mon GBPJPY+AUDJPY / v4 USDJPY (JP225 dropped). mult 4.0. Trailing -6pct guard (breakeven lock, equity-HWM), no profit target, +10pct notify. Expiry 2026-10-31."
 
 #include <Trade/Trade.mqh>
@@ -289,6 +293,8 @@ int OnInit()
    g_nV4  =ParseLegs(InpV4Legs,  g_v4Sym,  g_v4W,  "v4");
    g_nHold=(InpHoldEnable? ParseLegs(InpHoldLegs,g_holdSym,g_holdW,"Hold") : 0);
    int nh=SplitHours(InpMonHoursUTC,g_monHours);
+   if(nh>8){ ArrayResize(g_monHours,8); nh=8;                       // v1.02: g_lastShotMon[MAXLEG*8]の範囲保護
+      Print("⚠ Mon時刻は最大8個まで→先頭8個のみ使用"); }
    if(g_nMon==0 && g_nV4==0 && g_nHold==0){ Print("レッグが1つも解決できず"); return INIT_FAILED; }
    if(g_nMon>0 && nh==0){ Print("Mon時刻のパース失敗"); return INIT_FAILED; }
    g_mMon=InpMagicBase+1; g_mV4=InpMagicBase+2; g_mHold=InpMagicBase+3;
@@ -330,7 +336,7 @@ int OnInit()
       g_rsiD1[i]=iRSI(g_v4Sym[i],PERIOD_D1,InpV4_RSI,PRICE_CLOSE); }
    ArrayInitialize(g_lastShotMon,0); ArrayInitialize(g_lastV4Bar,0); ArrayInitialize(g_lastHoldTry,0);
    trade.SetDeviationInPoints(InpSlippagePoints);
-   ResetDay(TimeCurrent());
+   RestoreOrResetDay();
    double wsum=0; for(int i=0;i<g_nMon;i++) wsum+=g_monW[i];
    for(int i=0;i<g_nV4;i++) wsum+=g_v4W[i];
    for(int i=0;i<g_nHold;i++) wsum+=g_holdW[i];
@@ -350,8 +356,29 @@ void OnDeinit(const int reason){
 datetime DayStart(datetime t){ MqlDateTime s; TimeToStruct(t,s); s.hour=0;s.min=0;s.sec=0; return StructToTime(s); }
 void ResetDay(datetime t){ g_curDay=DayStart(t); g_dayStartEq=AccountInfoDouble(ACCOUNT_EQUITY); g_dayBlocked=false;
    g_dayStartBal=AccountInfoDouble(ACCOUNT_BALANCE);
+   if(g_gvName!=""){ GlobalVariableSet(g_gvName+"_dk",(double)(long)g_curDay);   // v1.02: 日次基準を永続化
+      GlobalVariableSet(g_gvName+"_db",g_dayStartBal);
+      GlobalVariableSet(g_gvName+"_de",g_dayStartEq); }
    if(g_gvName!="" && g_initBal>0) GlobalVariableSet(g_gvName,g_initBal);
    if(g_gvHwm!="" && g_hwm>0) GlobalVariableSet(g_gvHwm,g_hwm); }
+// v1.02: 日次基準の復元(同日中の再起動で日次ガード基準が現在残高に
+// 再アンカーされ、実質の日次許容損失が広がるのを防ぐ)。日付が変わって
+// いれば通常のResetDayにフォールバック。
+void RestoreOrResetDay()
+{
+   datetime today=DayStart(TimeCurrent());
+   double dk=(g_gvName!="" && GlobalVariableCheck(g_gvName+"_dk"))? GlobalVariableGet(g_gvName+"_dk") : 0.0;
+   double db=(g_gvName!="" && GlobalVariableCheck(g_gvName+"_db"))? GlobalVariableGet(g_gvName+"_db") : 0.0;
+   if((datetime)(long)dk==today && db>0.0){
+      g_curDay=today; g_dayStartBal=db;
+      g_dayStartEq=(GlobalVariableCheck(g_gvName+"_de")? GlobalVariableGet(g_gvName+"_de") : 0.0);
+      if(g_dayStartEq<=0.0) g_dayStartEq=AccountInfoDouble(ACCOUNT_EQUITY);
+      if(GlobalVariableCheck(g_gvName+"_bd") && (datetime)(long)GlobalVariableGet(g_gvName+"_bd")==today) g_balBlockDay=today;
+      if(GlobalVariableCheck(g_gvName+"_ds") && (datetime)(long)GlobalVariableGet(g_gvName+"_ds")==today) g_dayBlocked=true;
+      PrintFormat("[日次基準復元] 日開始bal=%.2f eq=%.2f%s%s",g_dayStartBal,g_dayStartEq,
+                  (g_balBlockDay==today?" BAL_GUARD継続":""),(g_dayBlocked?" DAILY_STOP継続":""));
+   }else ResetDay(TimeCurrent());
+}
 double AtrAt(int handle){ double a[1]; if(handle==INVALID_HANDLE||CopyBuffer(handle,0,1,1,a)<1) return 0.0; return a[0]; }
 
 //--- v1.44: balance基準日次ガード(ティック評価・翌日再開・月内上限)
@@ -378,7 +405,8 @@ void BalGuardCheck()
    if(beq>g_dayStartBal*(1.0-InpBalGuardPct/100.0)) return;
    g_balBlockDay=g_curDay; g_balFires++;
    if(g_balFires>InpBalGuardMaxMonth) g_balMonthHalt=true;
-   if(g_gvName!="") GlobalVariableSet(g_gvName+"_bg",(double)((long)bmk*100+g_balFires));
+   if(g_gvName!=""){ GlobalVariableSet(g_gvName+"_bg",(double)((long)bmk*100+g_balFires));
+                     GlobalVariableSet(g_gvName+"_bd",(double)(long)g_balBlockDay); }   // v1.02: 当日停止も永続化
    CloseAllMine("BAL_GUARD");
    PrintFormat("[BAL GUARD] eq %.2f <= 日開始bal %.2f -%.1f%% → 全決済・当日停止(月内%d回目%s)",
                beq,g_dayStartBal,InpBalGuardPct,g_balFires,(g_balMonthHalt?"・月末まで停止":""));
@@ -456,6 +484,7 @@ void OnTimer()
          g_ntfWarnDay=g_curDay;
          Notify(StringFormat("日次-%.1f%%警告 eq=%.0f",InpNotifyDayWarnPct,equity)); FlushNotify(); }
       if(dpnl<=-g_initBal*InpDailyStopPct/100.0 && !g_dayBlocked){ g_dayBlocked=true;
+         if(g_gvName!="") GlobalVariableSet(g_gvName+"_ds",(double)(long)g_curDay);   // v1.02: 当日停止も永続化
          PrintFormat("[DAILY STOP] %.2f",dpnl);
          Notify(StringFormat("DAILY_STOP -%.1f%% 当日新規停止",InpDailyStopPct)); FlushNotify(); }
    }
@@ -505,15 +534,17 @@ void EntriesMon(datetime utc)
       if(sp<InpMinStopPips){ sp=InpMinStopPips; sd=sp*pip; }
       double ask=SymbolInfoDouble(sym,SYMBOL_ASK), bid=SymbolInfoDouble(sym,SYMBOL_BID);
       if(ask<=0||bid<=0) continue;
-      if((ask-bid)/pip>SpreadCapFor(sym)){ g_lastShotMon[key]=hourBar; continue; }
+      // v1.01修正: スプレッド超過・発注失敗ではショット枠を消費しない(同時間帯内で30秒毎に再試行)
+      if((ask-bid)/pip>SpreadCapFor(sym)) continue;
       double notional=g_initBal*g_monW[s]*InpMult/nh;   // 1ショット=重み×倍率÷ショット数
       double lots=LotsForNotional(sym,notional); if(lots<InpMinLot){ g_lastShotMon[key]=hourBar; continue; }
       int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
       double sl=NormalizeDouble(ask-sd,dg);
-      g_lastShotMon[key]=hourBar;
       if(trade.Buy(lots,sym,0.0,sl,0.0,StringFormat("RFIMon_%s_h%d",sym,g_monHours[slot])))
-         { if(InpVerboseLog) PrintFormat("[Mon ENTRY] LONG %s h%dUTC lots=%.2f notional=%.0f SL=%.3f",sym,g_monHours[slot],lots,notional,sl);
+         { g_lastShotMon[key]=hourBar;
+           if(InpVerboseLog) PrintFormat("[Mon ENTRY] LONG %s h%dUTC lots=%.2f notional=%.0f SL=%.3f",sym,g_monHours[slot],lots,notional,sl);
            if(InpNotifyEntries) Notify(StringFormat("IN Mon %s %.2f",sym,lots)); }
+      else PrintFormat("[Mon RETRY] %s h%d 発注失敗ret=%d(同時間帯内で再試行)",sym,g_monHours[slot],(int)trade.ResultRetcode());
    }
 }
 
@@ -522,9 +553,9 @@ int V4Signal(string sym, int rsiHandle)
 {
    double c[]; ArraySetAsSeries(c,true);
    int need=MathMax(InpV4_BBwin+2, InpV4_streak+3);
-   if(CopyClose(sym,PERIOD_D1,1,need+2,c)<need+1) return 0;
+   if(CopyClose(sym,PERIOD_D1,1,need+2,c)<need+1) return -99;   // v1.01: データ未同期(0=合議不成立と区別)
    double rb[1];
-   if(rsiHandle==INVALID_HANDLE || CopyBuffer(rsiHandle,0,1,1,rb)<1) return 0;
+   if(rsiHandle==INVALID_HANDLE || CopyBuffer(rsiHandle,0,1,1,rb)<1) return -99;
    double rsi=rb[0];
    double mean=0; for(int k=1;k<=InpV4_BBwin;k++) mean+=c[k]; mean/=InpV4_BBwin;
    double var=0; for(int k=1;k<=InpV4_BBwin;k++) var+=(c[k]-mean)*(c[k]-mean); var/=(InpV4_BBwin-1);
@@ -548,6 +579,17 @@ void ManageV4Exit()
          PrintFormat("[v4 TIME EXIT %dd] %s",heldDays,posinfo.Symbol()); }
    }
 }
+int g_v4Tries[MAXLEG];   // v1.01: v4のバー内再試行カウンタ
+
+void V4Fail(int i, datetime db, string why)
+{
+   g_v4Tries[i]++;                                   // 30秒タイマーで再試行(最大120回≈1時間)
+   if(g_v4Tries[i]>=120){
+      PrintFormat("[v4 GIVEUP] %s %s %d回失敗→当バー断念",g_v4Sym[i],why,g_v4Tries[i]);
+      g_lastV4Bar[i]=db; g_v4Tries[i]=0;
+   }
+}
+
 void EntriesV4()
 {
    if(g_nV4==0) return;
@@ -558,25 +600,36 @@ void EntriesV4()
       string sym=g_v4Sym[i];
       datetime db=(datetime)iTime(sym,PERIOD_D1,0);
       if(db==0 || db==g_lastV4Bar[i]) continue;
-      g_lastV4Bar[i]=db;
-      if(CountPos(sym,g_mV4)>0) continue;
+      // v1.01修正: バー消費は「成立/合議不成立の確定/既保有」時のみ。
+      // 旧実装は判定前に消費していたため、データ未同期・発注失敗が当日空振りに恒久化した。
+      if(CountPos(sym,g_mV4)>0){ g_lastV4Bar[i]=db; g_v4Tries[i]=0; continue; }
       int sig=V4Signal(sym,g_rsiD1[i]);
-      if(sig==0) continue;
-      double atr=AtrAt(g_atrD1[i]); if(atr<=0) continue;
+      if(sig==-99){ V4Fail(i,db,"データ未同期"); continue; }
+      if(sig==0){
+         if(InpVerboseLog && g_v4Tries[i]==0) PrintFormat("[v4 EVAL] %s 合議不成立(バー%s)",sym,TimeToString(db,TIME_DATE));
+         g_lastV4Bar[i]=db; g_v4Tries[i]=0; continue; }
+      double atr=AtrAt(g_atrD1[i]);
+      if(atr<=0){ V4Fail(i,db,"ATR未取得"); continue; }
       double sd=InpV4_SLatr*atr; double tpd=InpV4_RR*sd;
       double notional=g_initBal*g_v4W[i]*InpMult;
-      double lots=LotsForNotional(sym,notional); if(lots<InpMinLot) continue;
+      double lots=LotsForNotional(sym,notional);
+      if(lots<InpMinLot){ g_lastV4Bar[i]=db; g_v4Tries[i]=0; continue; }   // 恒久条件=消費
       int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
+      bool ok=false;
       if(sig>0){ double e=SymbolInfoDouble(sym,SYMBOL_ASK);
          double sl=NormalizeDouble(e-sd,dg), tp=NormalizeDouble(e+tpd,dg);
-         if(trade.Buy(lots,sym,0.0,sl,tp,"RFIv4_"+sym)){
+         ok=trade.Buy(lots,sym,0.0,sl,tp,"RFIv4_"+sym);
+         if(ok){
             if(InpVerboseLog) PrintFormat("[v4 ENTRY] LONG %s lots=%.2f notional=%.0f",sym,lots,notional);
             if(InpNotifyEntries) Notify(StringFormat("IN v4 L %s %.2f",sym,lots)); } }
       else     { double e=SymbolInfoDouble(sym,SYMBOL_BID);
          double sl=NormalizeDouble(e+sd,dg), tp=NormalizeDouble(e-tpd,dg);
-         if(trade.Sell(lots,sym,0.0,sl,tp,"RFIv4_"+sym)){
+         ok=trade.Sell(lots,sym,0.0,sl,tp,"RFIv4_"+sym);
+         if(ok){
             if(InpVerboseLog) PrintFormat("[v4 ENTRY] SHORT %s lots=%.2f notional=%.0f",sym,lots,notional);
             if(InpNotifyEntries) Notify(StringFormat("IN v4 S %s %.2f",sym,lots)); } }
+      if(ok){ g_lastV4Bar[i]=db; g_v4Tries[i]=0; }
+      else  V4Fail(i,db,StringFormat("発注失敗ret=%d",(int)trade.ResultRetcode()));
    }
 }
 

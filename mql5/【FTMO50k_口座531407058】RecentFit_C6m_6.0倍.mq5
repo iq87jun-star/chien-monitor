@@ -32,7 +32,7 @@
 //|     GBPJPY月曜LONGはFTMO PD口座のv7と同一日・同方向になり得る。   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.01"
+#property version   "1.02"
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
@@ -131,7 +131,6 @@ bool     g_halted=false, g_dayBlocked=false, g_passLocked=false, g_expired=false
 string   g_ntfBuf=""; bool g_ntfArm=false; datetime g_ntfWarnDay=0;
 string   g_gvName="";
 long     g_mMon=0, g_mV4=0, g_mHold=0;
-datetime g_rgLastLog=0;
 string   g_sizeWarned="";
 
 //==================================================================
@@ -284,6 +283,8 @@ int OnInit()
    g_nV4  =ParseLegs(InpV4Legs,  g_v4Sym,  g_v4W,  "v4");
    g_nHold=(InpHoldEnable? ParseLegs(InpHoldLegs,g_holdSym,g_holdW,"Hold") : 0);
    int nh=SplitHours(InpMonHoursUTC,g_monHours);
+   if(nh>8){ ArrayResize(g_monHours,8); nh=8;                       // v1.02: g_lastShotMon[MAXLEG*8]の範囲保護
+      Print("⚠ Mon時刻は最大8個まで→先頭8個のみ使用"); }
    if(g_nMon==0 && g_nV4==0 && g_nHold==0){ Print("レッグが1つも解決できず"); return INIT_FAILED; }
    if(g_nMon>0 && nh==0){ Print("Mon時刻のパース失敗"); return INIT_FAILED; }
    g_mMon=InpMagicBase+1; g_mV4=InpMagicBase+2; g_mHold=InpMagicBase+3;
@@ -308,7 +309,7 @@ int OnInit()
       g_rsiD1[i]=iRSI(g_v4Sym[i],PERIOD_D1,InpV4_RSI,PRICE_CLOSE); }
    ArrayInitialize(g_lastShotMon,0); ArrayInitialize(g_lastV4Bar,0); ArrayInitialize(g_lastHoldTry,0);
    trade.SetDeviationInPoints(InpSlippagePoints);
-   ResetDay(TimeCurrent());
+   RestoreOrResetDay();
    double wsum=0; for(int i=0;i<g_nMon;i++) wsum+=g_monW[i];
    for(int i=0;i<g_nV4;i++) wsum+=g_v4W[i];
    for(int i=0;i<g_nHold;i++) wsum+=g_holdW[i];
@@ -328,7 +329,28 @@ void OnDeinit(const int reason){
 datetime DayStart(datetime t){ MqlDateTime s; TimeToStruct(t,s); s.hour=0;s.min=0;s.sec=0; return StructToTime(s); }
 void ResetDay(datetime t){ g_curDay=DayStart(t); g_dayStartEq=AccountInfoDouble(ACCOUNT_EQUITY); g_dayBlocked=false;
    g_dayStartBal=AccountInfoDouble(ACCOUNT_BALANCE);
+   if(g_gvName!=""){ GlobalVariableSet(g_gvName+"_dk",(double)(long)g_curDay);   // v1.02: 日次基準を永続化
+      GlobalVariableSet(g_gvName+"_db",g_dayStartBal);
+      GlobalVariableSet(g_gvName+"_de",g_dayStartEq); }
    if(g_gvName!="" && g_initBal>0) GlobalVariableSet(g_gvName,g_initBal); }
+// v1.02: 日次基準の復元(同日中の再起動で日次ガード基準が現在残高に
+// 再アンカーされ、実質の日次許容損失が広がるのを防ぐ)。日付が変わって
+// いれば通常のResetDayにフォールバック。
+void RestoreOrResetDay()
+{
+   datetime today=DayStart(TimeCurrent());
+   double dk=(g_gvName!="" && GlobalVariableCheck(g_gvName+"_dk"))? GlobalVariableGet(g_gvName+"_dk") : 0.0;
+   double db=(g_gvName!="" && GlobalVariableCheck(g_gvName+"_db"))? GlobalVariableGet(g_gvName+"_db") : 0.0;
+   if((datetime)(long)dk==today && db>0.0){
+      g_curDay=today; g_dayStartBal=db;
+      g_dayStartEq=(GlobalVariableCheck(g_gvName+"_de")? GlobalVariableGet(g_gvName+"_de") : 0.0);
+      if(g_dayStartEq<=0.0) g_dayStartEq=AccountInfoDouble(ACCOUNT_EQUITY);
+      if(GlobalVariableCheck(g_gvName+"_bd") && (datetime)(long)GlobalVariableGet(g_gvName+"_bd")==today) g_balBlockDay=today;
+      if(GlobalVariableCheck(g_gvName+"_ds") && (datetime)(long)GlobalVariableGet(g_gvName+"_ds")==today) g_dayBlocked=true;
+      PrintFormat("[日次基準復元] 日開始bal=%.2f eq=%.2f%s%s",g_dayStartBal,g_dayStartEq,
+                  (g_balBlockDay==today?" BAL_GUARD継続":""),(g_dayBlocked?" DAILY_STOP継続":""));
+   }else ResetDay(TimeCurrent());
+}
 double AtrAt(int handle){ double a[1]; if(handle==INVALID_HANDLE||CopyBuffer(handle,0,1,1,a)<1) return 0.0; return a[0]; }
 
 //--- v1.44: balance基準日次ガード(ティック評価・翌日再開・月内上限)
@@ -355,7 +377,8 @@ void BalGuardCheck()
    if(beq>g_dayStartBal*(1.0-InpBalGuardPct/100.0)) return;
    g_balBlockDay=g_curDay; g_balFires++;
    if(g_balFires>InpBalGuardMaxMonth) g_balMonthHalt=true;
-   if(g_gvName!="") GlobalVariableSet(g_gvName+"_bg",(double)((long)bmk*100+g_balFires));
+   if(g_gvName!=""){ GlobalVariableSet(g_gvName+"_bg",(double)((long)bmk*100+g_balFires));
+                     GlobalVariableSet(g_gvName+"_bd",(double)(long)g_balBlockDay); }   // v1.02: 当日停止も永続化
    CloseAllMine("BAL_GUARD");
    PrintFormat("[BAL GUARD] eq %.2f <= 日開始bal %.2f -%.1f%% → 全決済・当日停止(月内%d回目%s)",
                beq,g_dayStartBal,InpBalGuardPct,g_balFires,(g_balMonthHalt?"・月末まで停止":""));
@@ -418,6 +441,7 @@ void OnTimer()
          g_ntfWarnDay=g_curDay;
          Notify(StringFormat("日次-%.1f%%警告 eq=%.0f",InpNotifyDayWarnPct,equity)); FlushNotify(); }
       if(dpnl<=-g_initBal*InpDailyStopPct/100.0 && !g_dayBlocked){ g_dayBlocked=true;
+         if(g_gvName!="") GlobalVariableSet(g_gvName+"_ds",(double)(long)g_curDay);   // v1.02: 当日停止も永続化
          PrintFormat("[DAILY STOP] %.2f",dpnl);
          Notify(StringFormat("DAILY_STOP -%.1f%% 当日新規停止",InpDailyStopPct)); FlushNotify(); }
    }

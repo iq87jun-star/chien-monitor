@@ -27,7 +27,7 @@
 //|  規則失格0%。2.0%は速度優先オプションだが剥落時guard_stop25%)。    |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor recent-fit track"
-#property version   "1.01"
+#property version   "1.02"
 #property strict
 #include <Trade/Trade.mqh>
 
@@ -245,7 +245,9 @@ void BalGuardCheck()
    int bdk=bt.year*1000+bt.day_of_year, bmk=bt.year*100+bt.mon;
    double beq=AccountInfoDouble(ACCOUNT_EQUITY);
    if(bdk!=g_dayKey){ g_dayKey=bdk; g_dayHalt=false;
-      g_dayStartBal=AccountInfoDouble(ACCOUNT_BALANCE); }
+      g_dayStartBal=AccountInfoDouble(ACCOUNT_BALANCE);
+      if(g_gvName!=""){ GlobalVariableSet(g_gvName+"_dk",(double)bdk);        // v1.02: 日次基準を永続化
+                        GlobalVariableSet(g_gvName+"_db",g_dayStartBal); } }
    if(bmk!=g_balFireMonth){
       g_balFireMonth=bmk; g_balFires=0; g_balMonthHalt=false;
       string bgv=g_gvName+"_bg";
@@ -258,7 +260,8 @@ void BalGuardCheck()
    if(beq>g_dayStartBal*(1.0-InpBalGuardPct/100.0)) return;
    g_balBlockDayKey=bdk; g_balFires++; g_dayHalt=true;
    if(g_balFires>InpBalGuardMaxMonth) g_balMonthHalt=true;
-   if(g_gvName!="") GlobalVariableSet(g_gvName+"_bg",(double)((long)bmk*100+g_balFires));
+   if(g_gvName!=""){ GlobalVariableSet(g_gvName+"_bg",(double)((long)bmk*100+g_balFires));
+                     GlobalVariableSet(g_gvName+"_bd",(double)bdk); }         // v1.02: 当日停止も永続化
    CloseAllMine("BAL_GUARD");
    PrintFormat("[BAL GUARD] eq %.2f <= 日開始bal %.2f -%.1f%% → 全決済・当日停止(月内%d回目%s)",
                beq,g_dayStartBal,InpBalGuardPct,g_balFires,(g_balMonthHalt?"・月末まで停止":""));
@@ -334,7 +337,7 @@ void TrySleeveA(int idx)
       g_weekKey[idx]=wk;
 }
 
-int g_cTries[NSLV];   // v1.01: 族Cのバー内再試行カウンタ
+datetime g_cFirstFail[NSLV];   // v1.02: 族Cのバー内再試行の初回失敗時刻(時間ベースの断念判定)
 
 void TrySleeveC(int idx)
 {
@@ -343,19 +346,24 @@ void TrySleeveC(int idx)
    // v1.01修正: バー消費はエントリー成立/シグナルなし時のみ。
    // 旧実装は試行前に消費していたため、バー切替直後のスプレッド拡大や市場閉で
    // スキップすると当日中に再試行されずスリーブが1日空振りした(2026-08-03 S5事象)。
-   if(CountSleeve(idx)>0){ g_lastD1[idx]=cur; g_cTries[idx]=0; return; }
+   if(CountSleeve(idx)>0){ g_lastD1[idx]=cur; g_cFirstFail[idx]=0; return; }
    double r=RsiD1(g_sym[idx],g_def[idx].rsiPeriod);
    int dir=0;
    if(r<g_def[idx].rsiLo) dir=1;
    else if(r>g_def[idx].rsiHi) dir=-1;
-   if(dir==0){ g_lastD1[idx]=cur; g_cTries[idx]=0; return; }
+   if(dir==0){ g_lastD1[idx]=cur; g_cFirstFail[idx]=0; return; }
    if(OpenSleeve(idx,dir,StringFormat("RF5-S%d RSI%.0f",idx+1,r))){
-      g_lastD1[idx]=cur; g_cTries[idx]=0;
+      g_lastD1[idx]=cur; g_cFirstFail[idx]=0;
    }else{
-      g_cTries[idx]++;                                  // 30秒タイマーで再試行(最大120回≈1時間)
-      if(g_cTries[idx]>=120){
-         PrintFormat("[GIVEUP S%d] %d回失敗→当バーを断念",idx+1,g_cTries[idx]);
-         g_lastD1[idx]=cur; g_cTries[idx]=0;
+      // v1.02修正: 断念判定を回数(120回)から時間(1時間)に変更。
+      // 本関数はOnTick駆動のため回数上限だと活発な相場で数十秒〜数分で
+      // 断念してしまい、ロールオーバーのスプレッド拡大(数分〜30分)を
+      // 待ちきれず当日空振りが再発し得た。
+      datetime now=TimeCurrent();
+      if(g_cFirstFail[idx]==0) g_cFirstFail[idx]=now;
+      else if(now-g_cFirstFail[idx]>=3600){
+         PrintFormat("[GIVEUP S%d] 1時間再試行しても建てられず→当バーを断念",idx+1);
+         g_lastD1[idx]=cur; g_cFirstFail[idx]=0;
       }
    }
 }
@@ -378,7 +386,7 @@ int OnInit()
    wantSym[3]=InpSymGBPUSD; wantEna[3]=InpS4_GbpUsdRsi;
    wantSym[4]=InpSymGBPJPY; wantEna[4]=InpS5_GbpJpyRsi;
    for(int i=0;i<NSLV;i++){
-      g_ena[i]=wantEna[i]; g_weekKey[i]=-1; g_lastD1[i]=0; g_atrH[i]=INVALID_HANDLE;
+      g_ena[i]=wantEna[i]; g_weekKey[i]=-1; g_lastD1[i]=0; g_cFirstFail[i]=0; g_atrH[i]=INVALID_HANDLE;
       g_sym[i]=ResolveSymbol(wantSym[i]);
       if(g_sym[i]==""){
          if(g_ena[i]) PrintFormat("[WARN] S%d: 銘柄'%s'を解決できず→スリーブ無効",i+1,wantSym[i]);
@@ -397,9 +405,25 @@ int OnInit()
       GlobalVariableSet(g_gvName,g_initBal);
    }else g_initBal=GlobalVariableGet(g_gvName);
 
+   // v1.02: 日次ガード基準の復元(同日中の再起動で基準が現在残高に
+   // 再アンカーされ、実質の日次許容損失が広がるのを防ぐ)
+   {
+      MqlDateTime t0; TimeToStruct(TimeCurrent(),t0);
+      int nowKey=t0.year*1000+t0.day_of_year;
+      if(GlobalVariableCheck(g_gvName+"_dk") && (int)GlobalVariableGet(g_gvName+"_dk")==nowKey){
+         double db=GlobalVariableCheck(g_gvName+"_db")? GlobalVariableGet(g_gvName+"_db") : 0.0;
+         if(db>0.0){ g_dayKey=nowKey; g_dayStartBal=db;
+            PrintFormat("[日次基準復元] 日開始balance=%.2f",db); }
+      }
+      if(GlobalVariableCheck(g_gvName+"_bd") && (int)GlobalVariableGet(g_gvName+"_bd")==nowKey){
+         g_balBlockDayKey=nowKey; g_dayHalt=true;
+         Print("[日次基準復元] 当日はBAL_GUARD発動済み→新規停止を継続");
+      }
+   }
+
    g_trade.SetDeviationInPoints(30);
    EventSetTimer(30);
-   PrintFormat("[INIT] RecentFit5 v1.0 risk=%.2f%%×%.2fx magic=%I64d+1..%d 基準残高=%.2f guard=日次-%.1f%%/floor-%.1f%%/lock+%.1f→+%.1f%%",
+   PrintFormat("[INIT] RecentFit5 v1.02 risk=%.2f%%×%.2fx magic=%I64d+1..%d 基準残高=%.2f guard=日次-%.1f%%/floor-%.1f%%/lock+%.1f→+%.1f%%",
                InpRiskPerTradePct,InpMultOverride,InpMagicBase,NSLV,g_initBal,
                InpBalGuardPct,InpAccountFloorDDPct,InpLockArmPct,InpLockClosePct);
    for(int i=0;i<NSLV;i++)
