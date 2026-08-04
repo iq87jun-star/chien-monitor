@@ -1,0 +1,710 @@
+{
+ "meta": {
+  "purpose": "中相関の閾値感度探索(docs/183 §6起点・事前登録前)",
+  "seed": 7,
+  "thresholds": [
+   0.7,
+   0.85,
+   1.0
+  ],
+  "rule": "選抜〜MCはdocs/182 §5の1年特化ルールをそのまま適用",
+  "inputs": {
+   "ADAUSD": "28f296ab68332e94",
+   "AUDJPY": "ae2f2247bf976119",
+   "AUDUSD": "1815bca3a8a727f1",
+   "BTCUSD": "beab1e3efb6d7b73",
+   "CADJPY": "886580c86b5b9b25",
+   "CHFJPY": "0496f02040119976",
+   "DOGEUSD": "948dd49c0a5d3e92",
+   "ETHUSD": "a956dfae91e715c9",
+   "EURJPY": "7a264d2787846519",
+   "EURUSD": "9347baf5682358de",
+   "FR40": "f16a81d9b464de59",
+   "GBPJPY": "afc26f25c8bca781",
+   "GBPUSD": "53df814b42f0f1ef",
+   "GER40": "d2476ca1f5b343b8",
+   "JP225": "d96e6f6d8ebe86c8",
+   "LTCUSD": "decf9d9bf049cdc2",
+   "NAS100": "e427ee86ca01f672",
+   "NZDJPY": "92e04cc76f2c76ce",
+   "NZDUSD": "8792d9fd11a93cd0",
+   "SOLUSD": "e1f97cbfd80acbca",
+   "UK100": "ea8f3658cb8a1d0c",
+   "US500": "85acf153b2ca8a78",
+   "USDCAD": "53ab678e8cb1ac83",
+   "USDCHF": "adb6c93f49988e60",
+   "USDJPY": "ac1696c7a59fedd8",
+   "XAUUSD": "80d276843e0a0f8a",
+   "XRPUSD": "994f88cc270216ff"
+  }
+ },
+ "max_rho": {
+  "EURUSD": {
+   "max_abs": 0.859,
+   "vs": "USDCHF"
+  },
+  "USDCAD": {
+   "max_abs": 0.677,
+   "vs": "AUDUSD"
+  },
+  "NZDJPY": {
+   "max_abs": 0.872,
+   "vs": "AUDJPY"
+  },
+  "CADJPY": {
+   "max_abs": 0.84,
+   "vs": "USDJPY"
+  },
+  "CHFJPY": {
+   "max_abs": 0.827,
+   "vs": "EURJPY"
+  },
+  "UK100": {
+   "max_abs": 0.804,
+   "vs": "GER40"
+  },
+  "FR40": {
+   "max_abs": 0.921,
+   "vs": "GER40"
+  },
+  "BTCUSD": {
+   "max_abs": 0.5,
+   "vs": "US500"
+  },
+  "ETHUSD": {
+   "max_abs": 0.534,
+   "vs": "US500"
+  },
+  "SOLUSD": {
+   "max_abs": 0.481,
+   "vs": "US500"
+  },
+  "XRPUSD": {
+   "max_abs": 0.492,
+   "vs": "US500"
+  },
+  "LTCUSD": {
+   "max_abs": 0.378,
+   "vs": "US500"
+  },
+  "ADAUSD": {
+   "max_abs": 0.445,
+   "vs": "US500"
+  },
+  "DOGEUSD": {
+   "max_abs": 0.429,
+   "vs": "US500"
+  }
+ },
+ "runs": {
+  "TH_0.7": {
+   "universe": [
+    "USDCAD",
+    "BTCUSD",
+    "ETHUSD",
+    "SOLUSD",
+    "XRPUSD",
+    "LTCUSD",
+    "ADAUSD",
+    "DOGEUSD"
+   ],
+   "selected": {
+    "TSMOM_ADAUSD": 0.5,
+    "TSMOM_LTCUSD": 0.5
+   },
+   "ranking_top8": {
+    "TSMOM_ADAUSD": {
+     "family": "TSMOM",
+     "symbol": "ADAUSD",
+     "stats": {
+      "n_active": 363,
+      "cum_12m": 95.42,
+      "cum_6m": 37.99,
+      "score": 1.26,
+      "std_active": 4.072,
+      "worst_day_12m": -22.17,
+      "cum_full": -93.3
+     }
+    },
+    "TSMOM_LTCUSD": {
+     "family": "TSMOM",
+     "symbol": "LTCUSD",
+     "stats": {
+      "n_active": 334,
+      "cum_12m": 35.34,
+      "cum_6m": 15.63,
+      "score": 0.83,
+      "std_active": 3.032,
+      "worst_day_12m": -23.27,
+      "cum_full": -51.6
+     }
+    },
+    "TSMOM_DOGEUSD": {
+     "family": "TSMOM",
+     "symbol": "DOGEUSD",
+     "stats": {
+      "n_active": 304,
+      "cum_12m": 28.76,
+      "cum_6m": 15.4,
+      "score": 0.72,
+      "std_active": 4.037,
+      "worst_day_12m": -22.29,
+      "cum_full": 91.3
+     }
+    },
+    "TSMOM_XRPUSD": {
+     "family": "TSMOM",
+     "symbol": "XRPUSD",
+     "stats": {
+      "n_active": 334,
+      "cum_12m": 26.13,
+      "cum_6m": 25.77,
+      "score": 0.69,
+      "std_active": 3.32,
+      "worst_day_12m": -21.26,
+      "cum_full": -99.9
+     }
+    },
+    "TSMOM_BTCUSD": {
+     "family": "TSMOM",
+     "symbol": "BTCUSD",
+     "stats": {
+      "n_active": 334,
+      "cum_12m": 15.03,
+      "cum_6m": 9.27,
+      "score": 0.55,
+      "std_active": 2.257,
+      "worst_day_12m": -12.52,
+      "cum_full": 1514.6
+     }
+    },
+    "TSMOM_SOLUSD": {
+     "family": "TSMOM",
+     "symbol": "SOLUSD",
+     "stats": {
+      "n_active": 363,
+      "cum_12m": 4.51,
+      "cum_6m": 15.52,
+      "score": 0.41,
+      "std_active": 3.69,
+      "worst_day_12m": -14.63,
+      "cum_full": 211.2
+     }
+    },
+    "TSMOM_ETHUSD": {
+     "family": "TSMOM",
+     "symbol": "ETHUSD",
+     "stats": {
+      "n_active": 304,
+      "cum_12m": -5.78,
+      "cum_6m": 2.66,
+      "score": 0.22,
+      "std_active": 3.663,
+      "worst_day_12m": -13.27,
+      "cum_full": -82.3
+     }
+    },
+    "Hold_ETHUSD": {
+     "family": "Hold",
+     "symbol": "ETHUSD",
+     "stats": {
+      "n_active": 363,
+      "cum_12m": -49.3,
+      "cum_6m": -22.65,
+      "score": -0.7,
+      "std_active": 3.473,
+      "worst_day_12m": -15.01,
+      "cum_full": 408.4
+     }
+    }
+   },
+   "mult": 0.12,
+   "m_star_12m": 0.15,
+   "worst_day_12m": -2.73,
+   "intramonth_dd_12m": -3.22,
+   "cum_12m_scaled": 8.7,
+   "monthly_12m": {
+    "2025-08": 0.96,
+    "2025-09": -0.06,
+    "2025-10": -1.87,
+    "2025-11": 2.13,
+    "2025-12": 1.47,
+    "2026-01": 1.99,
+    "2026-02": 0.31,
+    "2026-03": 0.8,
+    "2026-04": -0.39,
+    "2026-05": 0.53,
+    "2026-06": 4.01,
+    "2026-07": -1.38
+   },
+   "mc_FN_stellar_12m": {
+    "p1_pass": 47.7,
+    "funded": 15.6,
+    "fail": 0.7,
+    "p1_days_med": 154,
+    "funded_days_med": 206,
+    "funded_days_p90": 251
+   },
+   "mc_FN_stellar_full": {
+    "p1_pass": 28.0,
+    "funded": 7.3,
+    "fail": 7.9,
+    "p1_days_med": 143,
+    "funded_days_med": 196,
+    "funded_days_p90": 248
+   },
+   "mc_FTMO_12m": {
+    "p1_pass": 33.6,
+    "funded": 8.9,
+    "fail": 0.6,
+    "p1_days_med": 176,
+    "funded_days_med": 216,
+    "funded_days_p90": 253
+   },
+   "mc_FTMO_full": {
+    "p1_pass": 18.0,
+    "funded": 4.3,
+    "fail": 7.5,
+    "p1_days_med": 161,
+    "funded_days_med": 210,
+    "funded_days_p90": 250
+   },
+   "corr_vs_deployed": {
+    "v7_FNInstant": {
+     "full": -0.048,
+     "m12": null
+    },
+    "EMon_FNInstant": {
+     "full": -0.027,
+     "m12": null
+    },
+    "E5_FNInstant": {
+     "full": 0.128,
+     "m12": -0.14
+    },
+    "B_Fintokei": {
+     "full": -0.062,
+     "m12": null
+    },
+    "C_FTMO50k": {
+     "full": -0.049,
+     "m12": null
+    },
+    "D_FTMO50k": {
+     "full": -0.011,
+     "m12": null
+    }
+   }
+  },
+  "TH_0.85": {
+   "universe": [
+    "USDCAD",
+    "CADJPY",
+    "CHFJPY",
+    "UK100",
+    "BTCUSD",
+    "ETHUSD",
+    "SOLUSD",
+    "XRPUSD",
+    "LTCUSD",
+    "ADAUSD",
+    "DOGEUSD"
+   ],
+   "selected": {
+    "Hold_UK100": 0.577,
+    "TSMOM_ADAUSD": 0.18,
+    "TSMOM_LTCUSD": 0.242
+   },
+   "ranking_top8": {
+    "Hold_UK100": {
+     "family": "Hold",
+     "symbol": "UK100",
+     "stats": {
+      "n_active": 251,
+      "cum_12m": 18.73,
+      "cum_6m": 6.38,
+      "score": 1.56,
+      "std_active": 0.72,
+      "worst_day_12m": -2.75,
+      "cum_full": 68.0
+     }
+    },
+    "TSMOM_UK100": {
+     "family": "TSMOM",
+     "symbol": "UK100",
+     "stats": {
+      "n_active": 251,
+      "cum_12m": 18.73,
+      "cum_6m": 6.38,
+      "score": 1.56,
+      "std_active": 0.72,
+      "worst_day_12m": -2.75,
+      "cum_full": -25.4
+     }
+    },
+    "TSMOM_ADAUSD": {
+     "family": "TSMOM",
+     "symbol": "ADAUSD",
+     "stats": {
+      "n_active": 363,
+      "cum_12m": 95.42,
+      "cum_6m": 37.99,
+      "score": 1.26,
+      "std_active": 4.072,
+      "worst_day_12m": -22.17,
+      "cum_full": -93.3
+     }
+    },
+    "TSMOM_LTCUSD": {
+     "family": "TSMOM",
+     "symbol": "LTCUSD",
+     "stats": {
+      "n_active": 334,
+      "cum_12m": 35.34,
+      "cum_6m": 15.63,
+      "score": 0.83,
+      "std_active": 3.032,
+      "worst_day_12m": -23.27,
+      "cum_full": -51.6
+     }
+    },
+    "Mon_UK100": {
+     "family": "Mon",
+     "symbol": "UK100",
+     "stats": {
+      "n_active": 48,
+      "cum_12m": 2.84,
+      "cum_6m": 0.22,
+      "score": 0.76,
+      "std_active": 0.542,
+      "worst_day_12m": -1.24,
+      "cum_full": -3.7
+     }
+    },
+    "TSMOM_DOGEUSD": {
+     "family": "TSMOM",
+     "symbol": "DOGEUSD",
+     "stats": {
+      "n_active": 304,
+      "cum_12m": 28.76,
+      "cum_6m": 15.4,
+      "score": 0.72,
+      "std_active": 4.037,
+      "worst_day_12m": -22.29,
+      "cum_full": 91.3
+     }
+    },
+    "TSMOM_XRPUSD": {
+     "family": "TSMOM",
+     "symbol": "XRPUSD",
+     "stats": {
+      "n_active": 334,
+      "cum_12m": 26.13,
+      "cum_6m": 25.77,
+      "score": 0.69,
+      "std_active": 3.32,
+      "worst_day_12m": -21.26,
+      "cum_full": -99.9
+     }
+    },
+    "TSMOM_BTCUSD": {
+     "family": "TSMOM",
+     "symbol": "BTCUSD",
+     "stats": {
+      "n_active": 334,
+      "cum_12m": 15.03,
+      "cum_6m": 9.27,
+      "score": 0.55,
+      "std_active": 2.257,
+      "worst_day_12m": -12.52,
+      "cum_full": 1514.6
+     }
+    }
+   },
+   "mult": 0.28,
+   "m_star_12m": 0.35,
+   "worst_day_12m": -2.83,
+   "intramonth_dd_12m": -3.43,
+   "cum_12m_scaled": 11.2,
+   "monthly_12m": {
+    "2025-08": 0.97,
+    "2025-09": 0.21,
+    "2025-10": -1.09,
+    "2025-11": 1.79,
+    "2025-12": 1.68,
+    "2026-01": 2.56,
+    "2026-02": 1.43,
+    "2026-03": -0.43,
+    "2026-04": -0.06,
+    "2026-05": 0.59,
+    "2026-06": 3.86,
+    "2026-07": -0.7
+   },
+   "mc_FN_stellar_12m": {
+    "p1_pass": 57.7,
+    "funded": 21.7,
+    "fail": 0.3,
+    "p1_days_med": 151,
+    "funded_days_med": 207,
+    "funded_days_p90": 250
+   },
+   "mc_FN_stellar_full": {
+    "p1_pass": 33.6,
+    "funded": 10.5,
+    "fail": 8.2,
+    "p1_days_med": 137,
+    "funded_days_med": 191,
+    "funded_days_p90": 246
+   },
+   "mc_FTMO_12m": {
+    "p1_pass": 42.5,
+    "funded": 13.5,
+    "fail": 0.3,
+    "p1_days_med": 173,
+    "funded_days_med": 217,
+    "funded_days_p90": 253
+   },
+   "mc_FTMO_full": {
+    "p1_pass": 23.0,
+    "funded": 6.6,
+    "fail": 7.8,
+    "p1_days_med": 158,
+    "funded_days_med": 205,
+    "funded_days_p90": 251
+   },
+   "corr_vs_deployed": {
+    "v7_FNInstant": {
+     "full": 0.031,
+     "m12": null
+    },
+    "EMon_FNInstant": {
+     "full": -0.002,
+     "m12": null
+    },
+    "E5_FNInstant": {
+     "full": 0.132,
+     "m12": -0.032
+    },
+    "B_Fintokei": {
+     "full": 0.012,
+     "m12": null
+    },
+    "C_FTMO50k": {
+     "full": 0.036,
+     "m12": null
+    },
+    "D_FTMO50k": {
+     "full": 0.063,
+     "m12": null
+    }
+   }
+  },
+  "TH_1.0": {
+   "universe": [
+    "EURUSD",
+    "USDCAD",
+    "NZDJPY",
+    "CADJPY",
+    "CHFJPY",
+    "UK100",
+    "FR40",
+    "BTCUSD",
+    "ETHUSD",
+    "SOLUSD",
+    "XRPUSD",
+    "LTCUSD",
+    "ADAUSD",
+    "DOGEUSD"
+   ],
+   "selected": {
+    "Mon_NZDJPY": 0.463,
+    "Hold_UK100": 0.38,
+    "TSMOM_ADAUSD": 0.067,
+    "TSMOM_LTCUSD": 0.09
+   },
+   "ranking_top8": {
+    "Mon_NZDJPY": {
+     "family": "Mon",
+     "symbol": "NZDJPY",
+     "stats": {
+      "n_active": 52,
+      "cum_12m": 5.06,
+      "cum_6m": 3.39,
+      "score": 1.57,
+      "std_active": 0.441,
+      "worst_day_12m": -0.83,
+      "cum_full": 42.7
+     }
+    },
+    "Hold_UK100": {
+     "family": "Hold",
+     "symbol": "UK100",
+     "stats": {
+      "n_active": 251,
+      "cum_12m": 18.73,
+      "cum_6m": 6.38,
+      "score": 1.56,
+      "std_active": 0.72,
+      "worst_day_12m": -2.75,
+      "cum_full": 68.0
+     }
+    },
+    "TSMOM_UK100": {
+     "family": "TSMOM",
+     "symbol": "UK100",
+     "stats": {
+      "n_active": 251,
+      "cum_12m": 18.73,
+      "cum_6m": 6.38,
+      "score": 1.56,
+      "std_active": 0.72,
+      "worst_day_12m": -2.75,
+      "cum_full": -25.4
+     }
+    },
+    "TSMOM_ADAUSD": {
+     "family": "TSMOM",
+     "symbol": "ADAUSD",
+     "stats": {
+      "n_active": 363,
+      "cum_12m": 95.42,
+      "cum_6m": 37.99,
+      "score": 1.26,
+      "std_active": 4.072,
+      "worst_day_12m": -22.17,
+      "cum_full": -93.3
+     }
+    },
+    "TSMOM_LTCUSD": {
+     "family": "TSMOM",
+     "symbol": "LTCUSD",
+     "stats": {
+      "n_active": 334,
+      "cum_12m": 35.34,
+      "cum_6m": 15.63,
+      "score": 0.83,
+      "std_active": 3.032,
+      "worst_day_12m": -23.27,
+      "cum_full": -51.6
+     }
+    },
+    "Mon_UK100": {
+     "family": "Mon",
+     "symbol": "UK100",
+     "stats": {
+      "n_active": 48,
+      "cum_12m": 2.84,
+      "cum_6m": 0.22,
+      "score": 0.76,
+      "std_active": 0.542,
+      "worst_day_12m": -1.24,
+      "cum_full": -3.7
+     }
+    },
+    "v4_EURUSD": {
+     "family": "v4",
+     "symbol": "EURUSD",
+     "stats": {
+      "n_active": 23,
+      "cum_12m": 2.0,
+      "cum_6m": 0.3,
+      "score": 0.75,
+      "std_active": 0.558,
+      "worst_day_12m": -0.73,
+      "cum_full": -3.6
+     }
+    },
+    "TSMOM_DOGEUSD": {
+     "family": "TSMOM",
+     "symbol": "DOGEUSD",
+     "stats": {
+      "n_active": 304,
+      "cum_12m": 28.76,
+      "cum_6m": 15.4,
+      "score": 0.72,
+      "std_active": 4.037,
+      "worst_day_12m": -22.29,
+      "cum_full": 91.3
+     }
+    }
+   },
+   "mult": 0.8,
+   "m_star_12m": 1.0,
+   "worst_day_12m": -3.13,
+   "intramonth_dd_12m": -3.83,
+   "cum_12m_scaled": 16.7,
+   "monthly_12m": {
+    "2025-08": 1.19,
+    "2025-09": 0.43,
+    "2025-10": -0.33,
+    "2025-11": 2.07,
+    "2025-12": 1.58,
+    "2026-01": 3.65,
+    "2026-02": 2.32,
+    "2026-03": -0.91,
+    "2026-04": 1.08,
+    "2026-05": 0.84,
+    "2026-06": 3.81,
+    "2026-07": -0.03
+   },
+   "mc_FN_stellar_12m": {
+    "p1_pass": 77.9,
+    "funded": 46.1,
+    "fail": 0.3,
+    "p1_days_med": 129,
+    "funded_days_med": 190,
+    "funded_days_p90": 245
+   },
+   "mc_FN_stellar_full": {
+    "p1_pass": 46.9,
+    "funded": 20.4,
+    "fail": 11.6,
+    "p1_days_med": 122,
+    "funded_days_med": 176,
+    "funded_days_p90": 243
+   },
+   "mc_FTMO_12m": {
+    "p1_pass": 66.4,
+    "funded": 34.2,
+    "fail": 0.3,
+    "p1_days_med": 153,
+    "funded_days_med": 204,
+    "funded_days_p90": 250
+   },
+   "mc_FTMO_full": {
+    "p1_pass": 35.6,
+    "funded": 14.3,
+    "fail": 10.8,
+    "p1_days_med": 143,
+    "funded_days_med": 189,
+    "funded_days_p90": 245
+   },
+   "corr_vs_deployed": {
+    "v7_FNInstant": {
+     "full": 0.307,
+     "m12": null
+    },
+    "EMon_FNInstant": {
+     "full": 0.148,
+     "m12": null
+    },
+    "E5_FNInstant": {
+     "full": 0.12,
+     "m12": 0.046
+    },
+    "B_Fintokei": {
+     "full": 0.26,
+     "m12": null
+    },
+    "C_FTMO50k": {
+     "full": 0.258,
+     "m12": null
+    },
+    "D_FTMO50k": {
+     "full": 0.202,
+     "m12": null
+    }
+   }
+  }
+ }
+}
