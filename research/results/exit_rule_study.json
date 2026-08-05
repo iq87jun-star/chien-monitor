@@ -1,0 +1,411 @@
+{
+ "meta": {
+  "purpose": "決済ルールのテクニカル化の探索(docs/188)",
+  "seed": 7,
+  "caveat": "日足近似・同日TP/SL両接触はSL先着仮定。事後選択バイアスあり=採用時は要事前登録。",
+  "inputs": {
+   "ADAUSD": "28f296ab68332e94",
+   "AUDJPY": "ae2f2247bf976119",
+   "AUDUSD": "1815bca3a8a727f1",
+   "BTCUSD": "beab1e3efb6d7b73",
+   "CADJPY": "886580c86b5b9b25",
+   "CHFJPY": "0496f02040119976",
+   "DOGEUSD": "948dd49c0a5d3e92",
+   "ETHUSD": "a956dfae91e715c9",
+   "EURJPY": "7a264d2787846519",
+   "EURUSD": "9347baf5682358de",
+   "FR40": "f16a81d9b464de59",
+   "GBPJPY": "afc26f25c8bca781",
+   "GBPUSD": "53df814b42f0f1ef",
+   "GER40": "d2476ca1f5b343b8",
+   "JP225": "d96e6f6d8ebe86c8",
+   "LTCUSD": "decf9d9bf049cdc2",
+   "NAS100": "e427ee86ca01f672",
+   "NZDJPY": "92e04cc76f2c76ce",
+   "NZDUSD": "8792d9fd11a93cd0",
+   "SOLUSD": "e1f97cbfd80acbca",
+   "UK100": "ea8f3658cb8a1d0c",
+   "US500": "85acf153b2ca8a78",
+   "USDCAD": "53ab678e8cb1ac83",
+   "USDCHF": "adb6c93f49988e60",
+   "USDJPY": "ac1696c7a59fedd8",
+   "XAUUSD": "80d276843e0a0f8a",
+   "XRPUSD": "994f88cc270216ff"
+  }
+ },
+ "cells": {
+  "Mon_GBPJPY": {
+   "o2o": {
+    "label": "o2o",
+    "cum_full": 33.0,
+    "cum_12m": 6.71,
+    "vol_ann": 8.8,
+    "worst_day": -2.14,
+    "mdd_full": -3.26,
+    "mwin": 62.0,
+    "score12": 2.54
+   },
+   "close": {
+    "label": "close",
+    "cum_full": -6.0,
+    "cum_12m": -0.15,
+    "vol_ann": 0.4,
+    "worst_day": -0.13,
+    "mdd_full": -0.21,
+    "mwin": 9.0,
+    "score12": -0.91
+   },
+   "sl1.0": {
+    "label": "sl1.0",
+    "cum_full": 20.9,
+    "cum_12m": 5.88,
+    "vol_ann": 9.1,
+    "worst_day": -2.14,
+    "mdd_full": -2.96,
+    "mwin": 61.0,
+    "score12": 2.09
+   },
+   "tp1sl15": {
+    "label": "tp1sl15",
+    "cum_full": 22.8,
+    "cum_12m": 5.67,
+    "vol_ann": 9.2,
+    "worst_day": -2.26,
+    "mdd_full": -3.28,
+    "mwin": 63.0,
+    "score12": 2.07
+   }
+  },
+  "Mon_AUDJPY": {
+   "o2o": {
+    "label": "o2o",
+    "cum_full": 53.2,
+    "cum_12m": 7.68,
+    "vol_ann": 9.8,
+    "worst_day": -2.11,
+    "mdd_full": -2.56,
+    "mwin": 57.0,
+    "score12": 2.49
+   },
+   "close": {
+    "label": "close",
+    "cum_full": -11.2,
+    "cum_12m": -0.53,
+    "vol_ann": 0.5,
+    "worst_day": -0.3,
+    "mdd_full": -0.26,
+    "mwin": 6.0,
+    "score12": -2.24
+   },
+   "sl1.0": {
+    "label": "sl1.0",
+    "cum_full": 41.4,
+    "cum_12m": 7.21,
+    "vol_ann": 10.1,
+    "worst_day": -2.37,
+    "mdd_full": -3.96,
+    "mwin": 56.0,
+    "score12": 2.25
+   },
+   "tp1sl15": {
+    "label": "tp1sl15",
+    "cum_full": 43.3,
+    "cum_12m": 7.5,
+    "vol_ann": 9.9,
+    "worst_day": -2.69,
+    "mdd_full": -3.89,
+    "mwin": 59.0,
+    "score12": 2.46
+   }
+  },
+  "Mon_USDJPY": {
+   "o2o": {
+    "label": "o2o",
+    "cum_full": 10.4,
+    "cum_12m": -1.3,
+    "vol_ann": 7.2,
+    "worst_day": -1.39,
+    "mdd_full": -2.91,
+    "mwin": 53.0,
+    "score12": -0.55
+   },
+   "close": {
+    "label": "close",
+    "cum_full": -8.3,
+    "cum_12m": -0.16,
+    "vol_ann": 0.5,
+    "worst_day": -0.17,
+    "mdd_full": -0.19,
+    "mwin": 5.0,
+    "score12": -0.67
+   },
+   "sl1.0": {
+    "label": "sl1.0",
+    "cum_full": 8.1,
+    "cum_12m": -2.16,
+    "vol_ann": 7.3,
+    "worst_day": -1.55,
+    "mdd_full": -2.91,
+    "mwin": 54.0,
+    "score12": -0.85
+   },
+   "tp1sl15": {
+    "label": "tp1sl15",
+    "cum_full": 4.7,
+    "cum_12m": -1.71,
+    "vol_ann": 7.3,
+    "worst_day": -2.28,
+    "mdd_full": -2.91,
+    "mwin": 51.0,
+    "score12": -0.67
+   }
+  },
+  "v4_USDJPY": {
+   "current": {
+    "label": "current",
+    "cum_full": -2.7,
+    "cum_12m": 4.71,
+    "vol_ann": 10.2,
+    "worst_day": -3.17,
+    "mdd_full": -3.55,
+    "mwin": 45.0,
+    "score12": 2.04
+   },
+   "rsi50": {
+    "label": "rsi50",
+    "cum_full": 0.6,
+    "cum_12m": 4.42,
+    "vol_ann": 9.9,
+    "worst_day": -3.17,
+    "mdd_full": -3.55,
+    "mwin": 45.0,
+    "score12": 1.86
+   },
+   "tp08": {
+    "label": "tp08",
+    "cum_full": 3.3,
+    "cum_12m": 2.98,
+    "vol_ann": 10.3,
+    "worst_day": -2.12,
+    "mdd_full": -3.55,
+    "mwin": 57.0,
+    "score12": 1.44
+   },
+   "time3": {
+    "label": "time3",
+    "cum_full": 4.3,
+    "cum_12m": 1.98,
+    "vol_ann": 9.7,
+    "worst_day": -2.12,
+    "mdd_full": -3.53,
+    "mwin": 57.0,
+    "score12": 1.06
+   }
+  },
+  "v4_NZDUSD": {
+   "current": {
+    "label": "current",
+    "cum_full": 11.5,
+    "cum_12m": 3.07,
+    "vol_ann": 10.3,
+    "worst_day": -3.18,
+    "mdd_full": -6.62,
+    "mwin": 56.0,
+    "score12": 0.87
+   },
+   "rsi50": {
+    "label": "rsi50",
+    "cum_full": 9.3,
+    "cum_12m": 1.51,
+    "vol_ann": 10.2,
+    "worst_day": -3.18,
+    "mdd_full": -6.62,
+    "mwin": 57.0,
+    "score12": 0.41
+   },
+   "tp08": {
+    "label": "tp08",
+    "cum_full": 17.5,
+    "cum_12m": 4.04,
+    "vol_ann": 10.9,
+    "worst_day": -3.18,
+    "mdd_full": -5.58,
+    "mwin": 64.0,
+    "score12": 1.36
+   },
+   "time3": {
+    "label": "time3",
+    "cum_full": 13.1,
+    "cum_12m": 2.76,
+    "vol_ann": 10.6,
+    "worst_day": -3.18,
+    "mdd_full": -6.62,
+    "mwin": 57.0,
+    "score12": 1.0
+   }
+  },
+  "v4_AUDUSD": {
+   "current": {
+    "label": "current",
+    "cum_full": 18.3,
+    "cum_12m": 1.17,
+    "vol_ann": 10.6,
+    "worst_day": -3.33,
+    "mdd_full": -6.19,
+    "mwin": 52.0,
+    "score12": 0.51
+   },
+   "rsi50": {
+    "label": "rsi50",
+    "cum_full": 15.2,
+    "cum_12m": -1.13,
+    "vol_ann": 10.4,
+    "worst_day": -3.33,
+    "mdd_full": -6.19,
+    "mwin": 52.0,
+    "score12": -0.34
+   },
+   "tp08": {
+    "label": "tp08",
+    "cum_full": 17.0,
+    "cum_12m": 0.63,
+    "vol_ann": 11.2,
+    "worst_day": -3.33,
+    "mdd_full": -6.1,
+    "mwin": 52.0,
+    "score12": 0.33
+   },
+   "time3": {
+    "label": "time3",
+    "cum_full": 10.7,
+    "cum_12m": 0.11,
+    "vol_ann": 10.2,
+    "worst_day": -3.33,
+    "mdd_full": -6.19,
+    "mwin": 55.0,
+    "score12": 0.06
+   }
+  },
+  "Hold_JP225": {
+   "current": {
+    "label": "current",
+    "cum_full": 212.5,
+    "cum_12m": 48.69,
+    "vol_ann": 21.7,
+    "worst_day": -12.4,
+    "mdd_full": -22.45,
+    "mwin": 61.0,
+    "score12": 1.57
+   },
+   "sma200": {
+    "label": "sma200",
+    "cum_full": 58.9,
+    "cum_12m": 49.58,
+    "vol_ann": 18.2,
+    "worst_day": -5.81,
+    "mdd_full": -12.83,
+    "mwin": 53.0,
+    "score12": 1.6
+   },
+   "sma100": {
+    "label": "sma100",
+    "cum_full": 27.5,
+    "cum_12m": 36.29,
+    "vol_ann": 17.7,
+    "worst_day": -5.36,
+    "mdd_full": -14.47,
+    "mwin": 47.0,
+    "score12": 1.28
+   }
+  }
+ },
+ "composites": {
+  "B現行": {
+   "stats": {
+    "label": "B現行",
+    "cum_full": 27.2,
+    "cum_12m": 6.42,
+    "vol_ann": 5.1,
+    "worst_day": -1.25,
+    "mdd_full": -2.19,
+    "mwin": 59.0,
+    "score12": 3.16
+   },
+   "mult": 6.0,
+   "mc_fn_12m": {
+    "p1_pass": 100.0,
+    "funded": 100.0,
+    "fail": 0.0,
+    "p1_days_med": 14,
+    "funded_days_med": 25,
+    "funded_days_p90": 40
+   },
+   "mc_fn_full": {
+    "p1_pass": 81.7,
+    "funded": 68.8,
+    "fail": 31.2,
+    "p1_days_med": 20,
+    "funded_days_med": 38,
+    "funded_days_p90": 86
+   }
+  },
+  "B変種_close": {
+   "stats": {
+    "label": "B変種_close",
+    "cum_full": -5.6,
+    "cum_12m": 1.1,
+    "vol_ann": 2.1,
+    "worst_day": -0.96,
+    "mdd_full": -1.13,
+    "mwin": 22.0,
+    "score12": 1.48
+   },
+   "mult": 6.0,
+   "mc_fn_12m": {
+    "p1_pass": 98.4,
+    "funded": 92.4,
+    "fail": 0.0,
+    "p1_days_med": 81,
+    "funded_days_med": 135,
+    "funded_days_p90": 216
+   },
+   "mc_fn_full": {
+    "p1_pass": 22.7,
+    "funded": 7.7,
+    "fail": 69.8,
+    "p1_days_med": 81,
+    "funded_days_med": 137,
+    "funded_days_p90": 223
+   }
+  },
+  "B変種_slのみ": {
+   "stats": {
+    "label": "B変種_slのみ",
+    "cum_full": 19.6,
+    "cum_12m": 5.97,
+    "vol_ann": 5.3,
+    "worst_day": -1.79,
+    "mdd_full": -2.19,
+    "mwin": 57.0,
+    "score12": 2.82
+   },
+   "mult": 5.44,
+   "mc_fn_12m": {
+    "p1_pass": 100.0,
+    "funded": 99.9,
+    "fail": 0.1,
+    "p1_days_med": 16,
+    "funded_days_med": 29,
+    "funded_days_p90": 47
+   },
+   "mc_fn_full": {
+    "p1_pass": 77.1,
+    "funded": 62.5,
+    "fail": 37.4,
+    "p1_days_med": 23,
+    "funded_days_med": 44,
+    "funded_days_p90": 99
+   }
+  }
+ }
+}
