@@ -1,0 +1,260 @@
+{
+ "B_Fintokei(4.0x)": {
+  "現行": {
+   "cum12": 28.0,
+   "wd12": -1.66,
+   "mdd12": -2.14,
+   "mc12": {
+    "p1_pass": 100.0,
+    "funded": 100.0,
+    "fail": 0.0,
+    "p1_days_med": 21,
+    "funded_days_med": 37,
+    "funded_days_p90": 54
+   },
+   "mcfull": {
+    "p1_pass": 85.2,
+    "funded": 75.1,
+    "fail": 23.8,
+    "p1_days_med": 37,
+    "funded_days_med": 68,
+    "funded_days_p90": 149
+   }
+  },
+  "導入a_控えめ(Mon現行+v4TP0.8)": {
+   "cum12": 25.4,
+   "wd12": -1.66,
+   "mdd12": -2.14,
+   "mc12": {
+    "p1_pass": 100.0,
+    "funded": 100.0,
+    "fail": 0.0,
+    "p1_days_med": 21,
+    "funded_days_med": 37,
+    "funded_days_p90": 56
+   },
+   "mcfull": {
+    "p1_pass": 87.2,
+    "funded": 77.5,
+    "fail": 21.8,
+    "p1_days_med": 34,
+    "funded_days_med": 63,
+    "funded_days_p90": 137
+   }
+  },
+  "導入b_SL追加(Mon SL1.0+v4TP0.8)": {
+   "cum12": 23.2,
+   "wd12": -2.34,
+   "mdd12": -3.1,
+   "mc12": {
+    "p1_pass": 100.0,
+    "funded": 100.0,
+    "fail": 0.0,
+    "p1_days_med": 22,
+    "funded_days_med": 40,
+    "funded_days_p90": 63
+   },
+   "mcfull": {
+    "p1_pass": 81.2,
+    "funded": 68.6,
+    "fail": 30.5,
+    "p1_days_med": 35,
+    "funded_days_med": 65,
+    "funded_days_p90": 142
+   }
+  },
+  "導入c_フル(Mon TPSL+v4 RSI50)": {
+   "cum12": 25.4,
+   "wd12": -2.32,
+   "mdd12": -3.08,
+   "mc12": {
+    "p1_pass": 100.0,
+    "funded": 100.0,
+    "fail": 0.0,
+    "p1_days_med": 24,
+    "funded_days_med": 42,
+    "funded_days_p90": 66
+   },
+   "mcfull": {
+    "p1_pass": 82.3,
+    "funded": 70.3,
+    "fail": 28.4,
+    "p1_days_med": 38,
+    "funded_days_med": 70,
+    "funded_days_p90": 153
+   }
+  }
+ },
+ "C_FTMO50k(6.0x)": {
+  "現行": {
+   "cum12": 34.0,
+   "wd12": -2.91,
+   "mdd12": -5.35,
+   "mc12": {
+    "p1_pass": 99.9,
+    "funded": 99.7,
+    "fail": 0.3,
+    "p1_days_med": 27,
+    "funded_days_med": 45,
+    "funded_days_p90": 78
+   },
+   "mcfull": {
+    "p1_pass": 83.8,
+    "funded": 73.2,
+    "fail": 26.5,
+    "p1_days_med": 34,
+    "funded_days_med": 57,
+    "funded_days_p90": 123
+   }
+  },
+  "導入a_控えめ(Mon現行+v4TP0.8)": {
+   "cum12": 34.7,
+   "wd12": -2.91,
+   "mdd12": -5.35,
+   "mc12": {
+    "p1_pass": 99.9,
+    "funded": 99.8,
+    "fail": 0.2,
+    "p1_days_med": 24,
+    "funded_days_med": 39,
+    "funded_days_p90": 66
+   },
+   "mcfull": {
+    "p1_pass": 83.7,
+    "funded": 74.1,
+    "fail": 25.7,
+    "p1_days_med": 32,
+    "funded_days_med": 54,
+    "funded_days_p90": 116
+   }
+  },
+  "導入b_SL追加(Mon SL1.0+v4TP0.8)": {
+   "cum12": 31.7,
+   "wd12": -3.08,
+   "mdd12": -6.54,
+   "mc12": {
+    "p1_pass": 99.7,
+    "funded": 99.2,
+    "fail": 0.8,
+    "p1_days_med": 25,
+    "funded_days_med": 41,
+    "funded_days_p90": 72
+   },
+   "mcfull": {
+    "p1_pass": 78.8,
+    "funded": 67.1,
+    "fail": 32.6,
+    "p1_days_med": 32,
+    "funded_days_med": 54,
+    "funded_days_p90": 118
+   }
+  },
+  "導入c_フル(Mon TPSL+v4 RSI50)": {
+   "cum12": 25.0,
+   "wd12": -4.33,
+   "mdd12": -6.53,
+   "mc12": {
+    "p1_pass": 99.0,
+    "funded": 97.4,
+    "fail": 2.6,
+    "p1_days_med": 33,
+    "funded_days_med": 55,
+    "funded_days_p90": 102
+   },
+   "mcfull": {
+    "p1_pass": 79.8,
+    "funded": 68.3,
+    "fail": 31.4,
+    "p1_days_med": 35,
+    "funded_days_med": 57,
+    "funded_days_p90": 129
+   }
+  }
+ },
+ "D_FTMO50k(5.52x)": {
+  "現行": {
+   "cum12": 8.4,
+   "wd12": -3.19,
+   "mdd12": -5.49,
+   "mc12": {
+    "p1_pass": 85.0,
+    "funded": 73.5,
+    "fail": 19.6,
+    "p1_days_med": 65,
+    "funded_days_med": 107,
+    "funded_days_p90": 202
+   },
+   "mcfull": {
+    "p1_pass": 76.1,
+    "funded": 62.2,
+    "fail": 34.4,
+    "p1_days_med": 52,
+    "funded_days_med": 86,
+    "funded_days_p90": 179
+   }
+  },
+  "導入a_控えめ(Mon現行+v4TP0.8)": {
+   "cum12": 9.4,
+   "wd12": -3.19,
+   "mdd12": -5.49,
+   "mc12": {
+    "p1_pass": 92.0,
+    "funded": 84.9,
+    "fail": 9.7,
+    "p1_days_med": 63,
+    "funded_days_med": 103,
+    "funded_days_p90": 196
+   },
+   "mcfull": {
+    "p1_pass": 77.8,
+    "funded": 64.9,
+    "fail": 32.1,
+    "p1_days_med": 50,
+    "funded_days_med": 82,
+    "funded_days_p90": 176
+   }
+  },
+  "導入b_SL追加(Mon SL1.0+v4TP0.8)": {
+   "cum12": 6.8,
+   "wd12": -3.19,
+   "mdd12": -6.01,
+   "mc12": {
+    "p1_pass": 83.8,
+    "funded": 72.0,
+    "fail": 18.9,
+    "p1_days_med": 70,
+    "funded_days_med": 113,
+    "funded_days_p90": 208
+   },
+   "mcfull": {
+    "p1_pass": 73.4,
+    "funded": 59.4,
+    "fail": 37.9,
+    "p1_days_med": 49,
+    "funded_days_med": 81,
+    "funded_days_p90": 174
+   }
+  },
+  "導入c_フル(Mon TPSL+v4 RSI50)": {
+   "cum12": 1.4,
+   "wd12": -5.94,
+   "mdd12": -7.18,
+   "mc12": {
+    "p1_pass": 65.3,
+    "funded": 46.9,
+    "fail": 43.7,
+    "p1_days_med": 68,
+    "funded_days_med": 111,
+    "funded_days_p90": 209
+   },
+   "mcfull": {
+    "p1_pass": 68.4,
+    "funded": 53.4,
+    "fail": 43.7,
+    "p1_days_med": 51,
+    "funded_days_med": 84,
+    "funded_days_p90": 174
+   }
+  }
+ }
+}
