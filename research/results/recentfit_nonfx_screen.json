@@ -1,0 +1,869 @@
+{
+ "meta": {
+  "purpose": "非FX分散トラック候補調査(現ブックと低相関の直近フィット・セル)",
+  "universe": [
+   "XAUUSD",
+   "WTI",
+   "NATGAS",
+   "BTCUSD",
+   "ETHUSD",
+   "US500",
+   "NAS100",
+   "GER40",
+   "JP225",
+   "UK100",
+   "FR40"
+  ],
+  "window_all": "2016-01-01..2026-07-29",
+  "window_12m": "2025-08-01",
+  "window_6m": "2026-02-01",
+  "seed": 7,
+  "selection_rule": "recentfit_screen.pyと同一(score降順/活動≥15/12m>0∧6m>0/Top4/銘柄1・ファミリー2/逆ボラcap40%)",
+  "book_proxy": [
+   "Mon_GBPJPY",
+   "Mon_AUDJPY",
+   "Mon_USDJPY",
+   "Mon_GBPUSD",
+   "v4_USDJPY",
+   "v4_NZDUSD",
+   "v4_AUDUSD"
+  ],
+  "book_proxy_note": "A案S3(木曜USDCHF)・S4/S5(RSI2逆張り)は生成式が無いため近似から除外",
+  "mc_rule": "FTMO 2-Step P1+10%→P2+5%・静的DD−10%・日次−4%クリップ・5日ブロックBS",
+  "caveat": "直近窓で選び直近窓で測る=構造的に楽観。full_historyが正直な悲観バウンド。Yahoo日足近似・配当除く。JP225採用時はFN100k季節RG3と別業者配備が必要",
+  "inputs": {
+   "AUDJPY": "ae2f2247bf976119",
+   "AUDUSD": "1815bca3a8a727f1",
+   "BTCUSD": "beab1e3efb6d7b73",
+   "CADJPY": "886580c86b5b9b25",
+   "CHFJPY": "0496f02040119976",
+   "ETHUSD": "a956dfae91e715c9",
+   "EURJPY": "7a264d2787846519",
+   "EURUSD": "9347baf5682358de",
+   "FR40": "f16a81d9b464de59",
+   "GBPJPY": "afc26f25c8bca781",
+   "GBPUSD": "53df814b42f0f1ef",
+   "GER40": "d2476ca1f5b343b8",
+   "JP225": "d96e6f6d8ebe86c8",
+   "NAS100": "e427ee86ca01f672",
+   "NATGAS": "e173702c5c83e690",
+   "NZDJPY": "92e04cc76f2c76ce",
+   "NZDUSD": "8792d9fd11a93cd0",
+   "UK100": "ea8f3658cb8a1d0c",
+   "US500": "85acf153b2ca8a78",
+   "USDCAD": "53ab678e8cb1ac83",
+   "USDCHF": "adb6c93f49988e60",
+   "USDJPY": "ac1696c7a59fedd8",
+   "WTI": "ab738771968f9586",
+   "XAUUSD": "80d276843e0a0f8a"
+  }
+ },
+ "ranking": {
+  "v4_BTCUSD": {
+   "family": "v4",
+   "symbol": "BTCUSD",
+   "stats": {
+    "n_active_12m": 87,
+    "cum_12m": 54.99,
+    "cum_6m": 28.56,
+    "score_12m": 2.04,
+    "std_active_12m": 2.445,
+    "worst_day_12m": -5.89,
+    "cum_full": -93.1
+   },
+   "corr_book": {
+    "full": 0.036,
+    "12m": 0.088
+   }
+  },
+  "Hold_JP225": {
+   "family": "Hold",
+   "symbol": "JP225",
+   "stats": {
+    "n_active_12m": 241,
+    "cum_12m": 48.69,
+    "cum_6m": 14.87,
+    "score_12m": 1.57,
+    "std_active_12m": 1.779,
+    "worst_day_12m": -5.2,
+    "cum_full": 212.5
+   },
+   "corr_book": {
+    "full": 0.114,
+    "12m": 0.068
+   }
+  },
+  "TSMOM_JP225": {
+   "family": "TSMOM",
+   "symbol": "JP225",
+   "stats": {
+    "n_active_12m": 241,
+    "cum_12m": 48.69,
+    "cum_6m": 14.87,
+    "score_12m": 1.57,
+    "std_active_12m": 1.779,
+    "worst_day_12m": -5.2,
+    "cum_full": -20.6
+   },
+   "corr_book": {
+    "full": -0.038,
+    "12m": 0.068
+   }
+  },
+  "Hold_UK100": {
+   "family": "Hold",
+   "symbol": "UK100",
+   "stats": {
+    "n_active_12m": 251,
+    "cum_12m": 18.73,
+    "cum_6m": 6.38,
+    "score_12m": 1.56,
+    "std_active_12m": 0.72,
+    "worst_day_12m": -2.75,
+    "cum_full": 68.0
+   },
+   "corr_book": {
+    "full": 0.159,
+    "12m": 0.023
+   }
+  },
+  "TSMOM_UK100": {
+   "family": "TSMOM",
+   "symbol": "UK100",
+   "stats": {
+    "n_active_12m": 251,
+    "cum_12m": 18.73,
+    "cum_6m": 6.38,
+    "score_12m": 1.56,
+    "std_active_12m": 0.72,
+    "worst_day_12m": -2.75,
+    "cum_full": -25.4
+   },
+   "corr_book": {
+    "full": -0.062,
+    "12m": 0.023
+   }
+  },
+  "Mon_JP225": {
+   "family": "Mon",
+   "symbol": "JP225",
+   "stats": {
+    "n_active_12m": 43,
+    "cum_12m": 13.17,
+    "cum_6m": 3.83,
+    "score_12m": 1.36,
+    "std_active_12m": 1.443,
+    "worst_day_12m": -2.1,
+    "cum_full": 28.2
+   },
+   "corr_book": {
+    "full": 0.357,
+    "12m": 0.084
+   }
+  },
+  "TSMOM_XAUUSD": {
+   "family": "TSMOM",
+   "symbol": "XAUUSD",
+   "stats": {
+    "n_active_12m": 190,
+    "cum_12m": 31.22,
+    "cum_6m": -3.02,
+    "score_12m": 1.18,
+    "std_active_12m": 1.871,
+    "worst_day_12m": -11.37,
+    "cum_full": 100.5
+   },
+   "corr_book": {
+    "full": -0.01,
+    "12m": -0.032
+   }
+  },
+  "Hold_US500": {
+   "family": "Hold",
+   "symbol": "US500",
+   "stats": {
+    "n_active_12m": 249,
+    "cum_12m": 14.72,
+    "cum_6m": 5.12,
+    "score_12m": 1.14,
+    "std_active_12m": 0.808,
+    "worst_day_12m": -2.71,
+    "cum_full": 241.2
+   },
+   "corr_book": {
+    "full": 0.175,
+    "12m": 0.154
+   }
+  },
+  "Hold_NAS100": {
+   "family": "Hold",
+   "symbol": "NAS100",
+   "stats": {
+    "n_active_12m": 249,
+    "cum_12m": 15.03,
+    "cum_6m": 3.87,
+    "score_12m": 0.86,
+    "std_active_12m": 1.154,
+    "worst_day_12m": -4.18,
+    "cum_full": 367.9
+   },
+   "corr_book": {
+    "full": 0.14,
+    "12m": 0.149
+   }
+  },
+  "Mon_GER40": {
+   "family": "Mon",
+   "symbol": "GER40",
+   "stats": {
+    "n_active_12m": 51,
+    "cum_12m": 7.07,
+    "cum_6m": 10.7,
+    "score_12m": 0.86,
+    "std_active_12m": 1.164,
+    "worst_day_12m": -2.76,
+    "cum_full": 75.9
+   },
+   "corr_book": {
+    "full": 0.267,
+    "12m": 0.15
+   }
+  },
+  "Hold_XAUUSD": {
+   "family": "Hold",
+   "symbol": "XAUUSD",
+   "stats": {
+    "n_active_12m": 249,
+    "cum_12m": 21.79,
+    "cum_6m": -14.66,
+    "score_12m": 0.84,
+    "std_active_12m": 1.78,
+    "worst_day_12m": -11.37,
+    "cum_full": 252.2
+   },
+   "corr_book": {
+    "full": -0.026,
+    "12m": -0.017
+   }
+  },
+  "v4_NAS100": {
+   "family": "v4",
+   "symbol": "NAS100",
+   "stats": {
+    "n_active_12m": 50,
+    "cum_12m": 5.8,
+    "cum_6m": 1.12,
+    "score_12m": 0.8,
+    "std_active_12m": 1.039,
+    "worst_day_12m": -2.4,
+    "cum_full": 29.8
+   },
+   "corr_book": {
+    "full": 0.027,
+    "12m": -0.011
+   }
+  },
+  "Mon_UK100": {
+   "family": "Mon",
+   "symbol": "UK100",
+   "stats": {
+    "n_active_12m": 48,
+    "cum_12m": 2.84,
+    "cum_6m": 0.22,
+    "score_12m": 0.76,
+    "std_active_12m": 0.542,
+    "worst_day_12m": -1.24,
+    "cum_full": -3.7
+   },
+   "corr_book": {
+    "full": 0.249,
+    "12m": -0.04
+   }
+  },
+  "Hold_WTI": {
+   "family": "Hold",
+   "symbol": "WTI",
+   "stats": {
+    "n_active_12m": 248,
+    "cum_12m": 21.22,
+    "cum_6m": 29.13,
+    "score_12m": 0.63,
+    "std_active_12m": 3.373,
+    "worst_day_12m": -16.41,
+    "cum_full": 115.6
+   },
+   "corr_book": {
+    "full": 0.03,
+    "12m": -0.034
+   }
+  },
+  "Mon_US500": {
+   "family": "Mon",
+   "symbol": "US500",
+   "stats": {
+    "n_active_12m": 48,
+    "cum_12m": 2.65,
+    "cum_6m": 1.16,
+    "score_12m": 0.59,
+    "std_active_12m": 0.671,
+    "worst_day_12m": -1.82,
+    "cum_full": 59.3
+   },
+   "corr_book": {
+    "full": 0.315,
+    "12m": 0.206
+   }
+  },
+  "Hold_FR40": {
+   "family": "Hold",
+   "symbol": "FR40",
+   "stats": {
+    "n_active_12m": 253,
+    "cum_12m": 7.54,
+    "cum_6m": 3.16,
+    "score_12m": 0.58,
+    "std_active_12m": 0.9,
+    "worst_day_12m": -3.46,
+    "cum_full": 74.5
+   },
+   "corr_book": {
+    "full": 0.179,
+    "12m": -0.024
+   }
+  },
+  "TSMOM_BTCUSD": {
+   "family": "TSMOM",
+   "symbol": "BTCUSD",
+   "stats": {
+    "n_active_12m": 334,
+    "cum_12m": 15.72,
+    "cum_6m": 9.6,
+    "score_12m": 0.56,
+    "std_active_12m": 2.257,
+    "worst_day_12m": -12.52,
+    "cum_full": 1620.2
+   },
+   "corr_book": {
+    "full": -0.004,
+    "12m": -0.128
+   }
+  },
+  "v4_GER40": {
+   "family": "v4",
+   "symbol": "GER40",
+   "stats": {
+    "n_active_12m": 34,
+    "cum_12m": 3.18,
+    "cum_6m": 1.2,
+    "score_12m": 0.52,
+    "std_active_12m": 1.099,
+    "worst_day_12m": -1.85,
+    "cum_full": 9.3
+   },
+   "corr_book": {
+    "full": 0.065,
+    "12m": 0.014
+   }
+  },
+  "Mon_BTCUSD": {
+   "family": "Mon",
+   "symbol": "BTCUSD",
+   "stats": {
+    "n_active_12m": 52,
+    "cum_12m": 5.81,
+    "cum_6m": 15.71,
+    "score_12m": 0.44,
+    "std_active_12m": 2.17,
+    "worst_day_12m": -4.61,
+    "cum_full": 383.8
+   },
+   "corr_book": {
+    "full": 0.118,
+    "12m": 0.26
+   }
+  },
+  "Hold_GER40": {
+   "family": "Hold",
+   "symbol": "GER40",
+   "stats": {
+    "n_active_12m": 251,
+    "cum_12m": 5.16,
+    "cum_6m": 3.44,
+    "score_12m": 0.39,
+    "std_active_12m": 1.022,
+    "worst_day_12m": -3.44,
+    "cum_full": 132.4
+   },
+   "corr_book": {
+    "full": 0.174,
+    "12m": 0.062
+   }
+  },
+  "Mon_ETHUSD": {
+   "family": "Mon",
+   "symbol": "ETHUSD",
+   "stats": {
+    "n_active_12m": 52,
+    "cum_12m": 6.68,
+    "cum_6m": 36.65,
+    "score_12m": 0.38,
+    "std_active_12m": 3.573,
+    "worst_day_12m": -8.66,
+    "cum_full": 10.5
+   },
+   "corr_book": {
+    "full": 0.13,
+    "12m": 0.193
+   }
+  },
+  "Mon_NAS100": {
+   "family": "Mon",
+   "symbol": "NAS100",
+   "stats": {
+    "n_active_12m": 48,
+    "cum_12m": 2.44,
+    "cum_6m": 0.3,
+    "score_12m": 0.37,
+    "std_active_12m": 1.056,
+    "worst_day_12m": -3.56,
+    "cum_full": 126.8
+   },
+   "corr_book": {
+    "full": 0.18,
+    "12m": 0.139
+   }
+  },
+  "Hold_NATGAS": {
+   "family": "Hold",
+   "symbol": "NATGAS",
+   "stats": {
+    "n_active_12m": 249,
+    "cum_12m": -12.8,
+    "cum_6m": -37.61,
+    "score_12m": 0.36,
+    "std_active_12m": 5.882,
+    "worst_day_12m": -47.48,
+    "cum_full": 9.5
+   },
+   "corr_book": {
+    "full": 0.026,
+    "12m": -0.197
+   }
+  },
+  "Mon_XAUUSD": {
+   "family": "Mon",
+   "symbol": "XAUUSD",
+   "stats": {
+    "n_active_12m": 48,
+    "cum_12m": 2.11,
+    "cum_6m": -11.11,
+    "score_12m": 0.27,
+    "std_active_12m": 1.331,
+    "worst_day_12m": -3.24,
+    "cum_full": -14.3
+   },
+   "corr_book": {
+    "full": -0.034,
+    "12m": -0.069
+   }
+  },
+  "TSMOM_ETHUSD": {
+   "family": "TSMOM",
+   "symbol": "ETHUSD",
+   "stats": {
+    "n_active_12m": 304,
+    "cum_12m": -4.64,
+    "cum_6m": 3.28,
+    "score_12m": 0.24,
+    "std_active_12m": 3.664,
+    "worst_day_12m": -13.27,
+    "cum_full": -80.4
+   },
+   "corr_book": {
+    "full": -0.011,
+    "12m": -0.1
+   }
+  },
+  "TSMOM_WTI": {
+   "family": "TSMOM",
+   "symbol": "WTI",
+   "stats": {
+    "n_active_12m": 192,
+    "cum_12m": -1.98,
+    "cum_6m": 3.39,
+    "score_12m": 0.21,
+    "std_active_12m": 3.518,
+    "worst_day_12m": -16.41,
+    "cum_full": 100.6
+   },
+   "corr_book": {
+    "full": -0.019,
+    "12m": -0.016
+   }
+  },
+  "v4_FR40": {
+   "family": "v4",
+   "symbol": "FR40",
+   "stats": {
+    "n_active_12m": 27,
+    "cum_12m": 0.91,
+    "cum_6m": -0.85,
+    "score_12m": 0.2,
+    "std_active_12m": 1.023,
+    "worst_day_12m": -2.05,
+    "cum_full": 8.3
+   },
+   "corr_book": {
+    "full": 0.036,
+    "12m": 0.131
+   }
+  },
+  "v4_NATGAS": {
+   "family": "v4",
+   "symbol": "NATGAS",
+   "stats": {
+    "n_active_12m": 65,
+    "cum_12m": -4.83,
+    "cum_6m": 39.0,
+    "score_12m": 0.12,
+    "std_active_12m": 6.084,
+    "worst_day_12m": -11.65,
+    "cum_full": 51.7
+   },
+   "corr_book": {
+    "full": 0.03,
+    "12m": 0.332
+   }
+  },
+  "v4_JP225": {
+   "family": "v4",
+   "symbol": "JP225",
+   "stats": {
+    "n_active_12m": 58,
+    "cum_12m": 0.08,
+    "cum_6m": -4.62,
+    "score_12m": 0.05,
+    "std_active_12m": 1.161,
+    "worst_day_12m": -2.51,
+    "cum_full": 14.2
+   },
+   "corr_book": {
+    "full": 0.047,
+    "12m": -0.023
+   }
+  },
+  "v4_ETHUSD": {
+   "family": "v4",
+   "symbol": "ETHUSD",
+   "stats": {
+    "n_active_12m": 81,
+    "cum_12m": -4.16,
+    "cum_6m": 8.02,
+    "score_12m": 0.04,
+    "std_active_12m": 3.795,
+    "worst_day_12m": -7.6,
+    "cum_full": -96.9
+   },
+   "corr_book": {
+    "full": -0.003,
+    "12m": 0.01
+   }
+  },
+  "TSMOM_NATGAS": {
+   "family": "TSMOM",
+   "symbol": "NATGAS",
+   "stats": {
+    "n_active_12m": 187,
+    "cum_12m": -41.08,
+    "cum_6m": -36.27,
+    "score_12m": -0.11,
+    "std_active_12m": 6.404,
+    "worst_day_12m": -47.48,
+    "cum_full": -92.3
+   },
+   "corr_book": {
+    "full": 0.003,
+    "12m": -0.216
+   }
+  },
+  "TSMOM_FR40": {
+   "family": "TSMOM",
+   "symbol": "FR40",
+   "stats": {
+    "n_active_12m": 234,
+    "cum_12m": -6.22,
+    "cum_6m": -5.43,
+    "score_12m": -0.42,
+    "std_active_12m": 0.87,
+    "worst_day_12m": -4.49,
+    "cum_full": -54.3
+   },
+   "corr_book": {
+    "full": -0.087,
+    "12m": -0.125
+   }
+  },
+  "TSMOM_US500": {
+   "family": "TSMOM",
+   "symbol": "US500",
+   "stats": {
+    "n_active_12m": 249,
+    "cum_12m": -6.07,
+    "cum_6m": -13.92,
+    "score_12m": -0.43,
+    "std_active_12m": 0.811,
+    "worst_day_12m": -2.71,
+    "cum_full": -5.8
+   },
+   "corr_book": {
+    "full": 0.031,
+    "12m": 0.061
+   }
+  },
+  "Mon_FR40": {
+   "family": "Mon",
+   "symbol": "FR40",
+   "stats": {
+    "n_active_12m": 51,
+    "cum_12m": -3.84,
+    "cum_6m": 5.13,
+    "score_12m": -0.49,
+    "std_active_12m": 1.044,
+    "worst_day_12m": -2.77,
+    "cum_full": 9.9
+   },
+   "corr_book": {
+    "full": 0.287,
+    "12m": 0.048
+   }
+  },
+  "v4_US500": {
+   "family": "v4",
+   "symbol": "US500",
+   "stats": {
+    "n_active_12m": 40,
+    "cum_12m": -2.55,
+    "cum_6m": -4.07,
+    "score_12m": -0.5,
+    "std_active_12m": 0.775,
+    "worst_day_12m": -1.75,
+    "cum_full": -4.4
+   },
+   "corr_book": {
+    "full": 0.012,
+    "12m": 0.012
+   }
+  },
+  "TSMOM_NAS100": {
+   "family": "TSMOM",
+   "symbol": "NAS100",
+   "stats": {
+    "n_active_12m": 228,
+    "cum_12m": -9.41,
+    "cum_6m": -18.19,
+    "score_12m": -0.5,
+    "std_active_12m": 1.117,
+    "worst_day_12m": -4.18,
+    "cum_full": 68.2
+   },
+   "corr_book": {
+    "full": 0.039,
+    "12m": 0.045
+   }
+  },
+  "Hold_ETHUSD": {
+   "family": "Hold",
+   "symbol": "ETHUSD",
+   "stats": {
+    "n_active_12m": 363,
+    "cum_12m": -48.68,
+    "cum_6m": -22.18,
+    "score_12m": -0.68,
+    "std_active_12m": 3.472,
+    "worst_day_12m": -15.01,
+    "cum_full": 464.5
+   },
+   "corr_book": {
+    "full": 0.046,
+    "12m": 0.076
+   }
+  },
+  "v4_WTI": {
+   "family": "v4",
+   "symbol": "WTI",
+   "stats": {
+    "n_active_12m": 54,
+    "cum_12m": -23.35,
+    "cum_6m": -28.16,
+    "score_12m": -0.8,
+    "std_active_12m": 3.825,
+    "worst_day_12m": -10.87,
+    "cum_full": -4.5
+   },
+   "corr_book": {
+    "full": 0.019,
+    "12m": 0.082
+   }
+  },
+  "TSMOM_GER40": {
+   "family": "TSMOM",
+   "symbol": "GER40",
+   "stats": {
+    "n_active_12m": 208,
+    "cum_12m": -13.82,
+    "cum_6m": -10.25,
+    "score_12m": -0.9,
+    "std_active_12m": 1.058,
+    "worst_day_12m": -5.06,
+    "cum_full": -25.5
+   },
+   "corr_book": {
+    "full": -0.07,
+    "12m": -0.021
+   }
+  },
+  "Hold_BTCUSD": {
+   "family": "Hold",
+   "symbol": "BTCUSD",
+   "stats": {
+    "n_active_12m": 363,
+    "cum_12m": -45.12,
+    "cum_6m": -18.96,
+    "score_12m": -1.17,
+    "std_active_12m": 2.268,
+    "worst_day_12m": -14.13,
+    "cum_full": 13713.2
+   },
+   "corr_book": {
+    "full": 0.041,
+    "12m": 0.1
+   }
+  },
+  "v4_XAUUSD": {
+   "family": "v4",
+   "symbol": "XAUUSD",
+   "stats": {
+    "n_active_12m": 51,
+    "cum_12m": -14.49,
+    "cum_6m": -0.56,
+    "score_12m": -1.23,
+    "std_active_12m": 1.7,
+    "worst_day_12m": -4.52,
+    "cum_full": -34.7
+   },
+   "corr_book": {
+    "full": 0.036,
+    "12m": 0.061
+   }
+  },
+  "Mon_WTI": {
+   "family": "Mon",
+   "symbol": "WTI",
+   "stats": {
+    "n_active_12m": 48,
+    "cum_12m": -30.33,
+    "cum_6m": -32.55,
+    "score_12m": -1.37,
+    "std_active_12m": 3.481,
+    "worst_day_12m": -12.55,
+    "cum_full": -123.9
+   },
+   "corr_book": {
+    "full": 0.079,
+    "12m": -0.203
+   }
+  },
+  "Mon_NATGAS": {
+   "family": "Mon",
+   "symbol": "NATGAS",
+   "stats": {
+    "n_active_12m": 48,
+    "cum_12m": -42.23,
+    "cum_6m": -43.93,
+    "score_12m": -1.53,
+    "std_active_12m": 4.661,
+    "worst_day_12m": -12.2,
+    "cum_full": -25.2
+   },
+   "corr_book": {
+    "full": 0.035,
+    "12m": -0.179
+   }
+  },
+  "v4_UK100": {
+   "family": "v4",
+   "symbol": "UK100",
+   "stats": {
+    "n_active_12m": 50,
+    "cum_12m": -8.04,
+    "cum_6m": -5.43,
+    "score_12m": -1.75,
+    "std_active_12m": 0.667,
+    "worst_day_12m": -2.46,
+    "cum_full": 17.0
+   },
+   "corr_book": {
+    "full": 0.023,
+    "12m": 0.145
+   }
+  }
+ },
+ "selected": {
+  "v4_BTCUSD": 0.131,
+  "Hold_JP225": 0.18,
+  "Hold_UK100": 0.413,
+  "Mon_GER40": 0.276
+ },
+ "composite_corr_vs_book": {
+  "full": 0.227,
+  "12m": 0.143
+ },
+ "variants": {
+  "standard": {
+   "mult": 1.56,
+   "recent12m": {
+    "p1_pass": 97.6,
+    "funded": 94.7,
+    "fail": 2.1,
+    "p1_days_med": 64,
+    "p1_days_p90": 139,
+    "funded_days_med": 102,
+    "funded_days_p90": 187
+   },
+   "full_history": {
+    "p1_pass": 57.0,
+    "funded": 38.0,
+    "fail": 41.6,
+    "p1_days_med": 87,
+    "p1_days_p90": 192,
+    "funded_days_med": 133,
+    "funded_days_p90": 225
+   },
+   "recent_worst_day": -2.78,
+   "recent_worst_intramonth_dd": -6.31
+  },
+  "fast_1.5x": {
+   "mult": 2.34,
+   "recent12m": {
+    "p1_pass": 95.4,
+    "funded": 92.0,
+    "fail": 7.7,
+    "p1_days_med": 40,
+    "p1_days_p90": 96,
+    "funded_days_med": 66,
+    "funded_days_p90": 133
+   },
+   "full_history": {
+    "p1_pass": 63.0,
+    "funded": 47.1,
+    "fail": 50.5,
+    "p1_days_med": 50,
+    "p1_days_p90": 132,
+    "funded_days_med": 83,
+    "funded_days_p90": 172
+   },
+   "recent_worst_day": -4.17,
+   "recent_worst_intramonth_dd": -9.34
+  }
+ }
+}
