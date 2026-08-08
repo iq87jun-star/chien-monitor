@@ -2,43 +2,41 @@
 //| ★FTMO100k Swing 非FX分散トラック焼き込み版(docs/182・口座購入後に番号反映) |
 //|  構成: Hold UK100 41.3%/JP225 18.0% + Mon GER40 27.6% + v4 BTCUSD 13.1% |
 //|  (research/results/recentfit_nonfx_screen.json 2026-08-06 選抜・凍結)   |
-//|  倍率1.56・期限2026.10.31・ロック9.9/10.05(FTMO P1+10%)                |
-//|  P2(+5%)移行時: LockArm=4.9 / LockClose=5.05 / ProfitStop=5.1 /        |
+//|  倍率1.56・期限2026.10.31・ロック9.9/10.1/10.15(FTMO P1+10%)           |
+//|  P2(+5%)移行時: LockArm=4.9 / LockClose=5.1 / ProfitStop=5.15 /        |
 //|                 InpBaselineReset=true(1回だけ・その後false)             |
-//|  ⚠必須条件: Swing口座(週末保有)+スワップフリー承認(Hold6割=指数連続保有。|
-//|    スワップ有りでは年率≈6%の減衰でエッジが消える。docs/182 §3)           |
-//|  ⚠本焼き込み限定コード変更: PipOf()を非FX対応(point×10)に修正 —         |
-//|    GER40のMonスプレッド判定が旧実装では恒久超過になるため(docs/182 §5)   |
-//|      Chien_RecentFit_2026H2_Prop — 直近特化トラック v1.0          |
-//|            (docs/174 設計・事前登録 / docs/175 計測結果)           |
+//|  ⚠必須条件: Swing口座(週末保有: Hold連続+BTC週末)+スワップフリー承認     |
+//|    (Hold 59.3%×1.56x≈口座0.93倍の指数を常時保有。スワップ有りでは       |
+//|     年率≈6%の減衰でエッジが消える。承認不可なら配備中止=docs/182 §3)     |
+//|  ⚠本焼き込み限定コード変更(base未反映・docs/182 §5):                    |
+//|    PipOf()を計算モード判別に変更 — FX=point×10 / 非FX=1.0価格単位。      |
+//|    (旧実装は非JPY一律pip=0.0001でGER40のMonスプレッド判定が恒久超過。    |
+//|     v1.02のpoint×10案もdigits=2ブローカーではcap3.0が0.3指数pt相当と    |
+//|     なり同じ症状が再発するため、digits非依存の価格単位に固定)            |
 //|                                                                   |
-//|  ★このEAは「正攻法」(10年検証・LOYO・docs/172の稼働体制)とは別の   |
-//|    明示的なEVベット: 直近12/6ヶ月だけで伸びているセルを事前固定    |
-//|    ルールで選抜した構成。耐久エッジの主張はしない。               |
-//|    直近レジームが数ヶ月続けばチャレンジを高速通過できる、に張る。 |
+//|  本トラックの性質(docs/174/182):                                  |
+//|  ★「正攻法」(10年検証・LOYO・docs/172の稼働体制)とは別の明示的な   |
+//|    EVベット: 直近12/6ヶ月だけで伸びているセルを事前固定ルールで    |
+//|    選抜した構成。耐久エッジの主張はしない(Hold 59.3%=指数ロング   |
+//|    ベータ。v4 BTCUSDは全期間−93%の純レジームベット=13.1%に抑制)。 |
 //|                                                                   |
-//|  構成(recentfit_screen.py 2026-07-30凍結・docs/175):              |
-//|    Mon  GBPJPY 34.8% / AUDJPY 29.9%  (月曜o2o LONG・24h)          |
-//|    v4   USDJPY 28.3%                 (日足k≥4合議・SL/TP付き)     |
-//|    Hold JP225   7.0%                 (連続LONG・災害SLのみ)       |
-//|    倍率: 標準4.8x / 速攻7.2x(.set) — 直近12ヶ月窓のガード逆算値   |
-//|                                                                   |
-//|  数字(docs/175・楽観/悲観の両バウンド併記が本トラックの規律):     |
-//|    直近12ヶ月サンプル: 資金化到達99.9%・中央68日(標準4.8x)        |
-//|    全期間サンプル:     資金化到達65.2%・失格24.8%(同)             |
+//|  数字(recentfit_nonfx_screen.json・楽観/悲観の両バウンド併記):    |
+//|    直近12ヶ月サンプル: funded 96.5%・中央103日(標準1.56x)         |
+//|    全期間サンプル:     funded 42.9%・失格48.3%(同・悲観バウンド)  |
 //|    →真値はこの間のどこか。直近寄りに賭けるのが本トラックの本質。  |
 //|                                                                   |
-//|  停止規則(docs/174 事前登録・変更はdocsの追記で):                 |
-//|    ・有効期限(既定2026-10-31)を過ぎたら新規停止=再スクリーニング  |
-//|      必須(同じ固定ルールを再実行して構成を入れ替える)             |
-//|    ・チャレンジ失格2回でトラック撤退(费用予算の上限)              |
-//|  ⚠ 正攻法稼働口座とは別口座・できれば別業者で(重複取引規則)。     |
-//|     GBPJPY月曜LONGはFTMO PD口座のv7と同一日・同方向になり得る。   |
+//|  停止規則(docs/182 §6 事前登録・変更はdocsの追記で):              |
+//|    ・有効期限2026-10-31で新規停止 → recentfit_nonfx_screen.py     |
+//|      再実行で構成更新。⚠Hold建玉は時間決済を持たない(−15%災害SL  |
+//|      のみ)ため、期限到達時に手仕舞い/継続をdocsで判断すること。   |
+//|    ・guard_stop月内2回でBAL_GUARD月末停止(EA自動)。               |
+//|    ・本トラックは通算失格1回で終了(docs/180 §2の短命トラック扱い)。|
+//|    ・スワップフリー剥奪時はHold即時手仕舞い・新規停止・再選定。   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.02"
+#property version   "1.03"
 #property strict
-#property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
+#property description "[RF NonFX] FTMO 100k Swing non-FX diversification (docs/182). Hold UK100+JP225 / Mon GER40 / v4 BTCUSD. mult 1.56 std / 2.34 fast. Balance guard -4 tick, floor -9, FTMO P1 lock 9.9/10.1. Expiry 2026-10-31."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -57,7 +55,7 @@ input datetime InpExpiry = D'2026.10.31 23:59';  // 期限後は新規停止(再
 input group "=== 口座/ガード ==="
 input double InpInitialBalance   = 0.0;   // 0=自動(初回アタッチ時の残高を端末に永続保存)
 input bool   InpBaselineReset    = false; // 新フェーズ開始時のみtrue=基準残高を取り直す
-input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%(FN Stellar=静的10%)
+input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%(FTMO=静的10%)
 input double InpAccountFloorDDPct= 9.0;   // 全停止ライン%(-10%枠の手前)
 input double InpDailyStopPct     = 4.0;   // 日次equity−この%で当日新規停止(規約−5%手前)
 
@@ -65,11 +63,11 @@ input group "=== v1.44 balance基準日次ガード(docs/170/171) ==="
 input double InpBalGuardPct      = 4.0;   // equity≤日開始balance−この%で全決済+当日停止(0=無効)
 input int    InpBalGuardMaxMonth = 2;     // 月内発動上限(超過は月末まで新規停止)
 
-input group "=== 利益ロック(FN Stellar P1=+8%。P2は5.05/4.9に変更) ==="
+input group "=== 利益ロック(FTMO P1=+10%。P2移行時は4.9/5.1/5.15に変更) ==="
 input bool   InpProfitLockEnable = true;
 input double InpLockArmPct    = 9.9;   // equity+この%で新規停止
-input double InpLockClosePct  = 10.05; // equity+この%で全決済し恒久ロック(PASS_LOCK)
-input double InpProfitStopPct = 10.1;  // +この%で新規停止(保険)
+input double InpLockClosePct  = 10.1;  // equity+この%で全決済し恒久ロック(PASS_LOCK)。v1.03: 決済スリッページ余裕を0.05→0.1%に拡大
+input double InpProfitStopPct = 10.15; // +この%で新規停止(保険)
 
 input group "=== プッシュ通知(docs/112) ==="
 input bool   InpNotifyEnable     = true;
@@ -81,9 +79,9 @@ input string InpMonHoursUTC   = "4,6,8,10";
 input int    InpMonHoldHours  = 24;
 input int    InpAtrPeriodH1   = 24;
 input double InpCatastropheATR= 2.5;    // 災害SL=2.5×ATR(H1)
-input double InpMinStopPips   = 10.0;
+input double InpMinStopPips   = 10.0;                   // 最小SL距離(単位はPipOf: FX=pip/非FX=価格単位)
 input double InpMaxSpreadPips = 3.0;
-input string InpMonSpreadCaps = "GER40:3.0";            // 銘柄別上限(pip=point×10単位)
+input string InpMonSpreadCaps = "GER40:3.0";            // 銘柄別上限(単位はPipOf: FX=pip(point×10)/非FX=価格単位=指数pt)
 
 input group "=== v4 レッグ設定(日足k≥4合議) ==="
 input int    InpV4_RSI       = 14;
@@ -203,10 +201,17 @@ int SplitHours(string csv, int &arr[])
    ArrayResize(arr,m); return m;
 }
 double PipOf(string s){
-   // 非FX(指数/暗号)対応: pip=point×10。5桁/3桁FXでは従来値(0.0001/0.01)と一致。
-   double pt=SymbolInfoDouble(s,SYMBOL_POINT);
-   if(pt>0) return pt*10.0;
-   return (StringFind(s,"JPY")>=0)? 0.01 : 0.0001; }
+   // v1.03(docs/182 §5): 計算モードで判別。FX=point×10(5桁/3桁で従来値0.0001/0.01)。
+   // 非FX(指数/暗号CFD)=1.0価格単位(指数ポイント/ドル) — digits非依存。
+   // (v1.02のpoint×10一律はGER40がdigits=2のブローカーでcap3.0が0.3指数pt相当に
+   //  なり、修正したはずの「スプレッド恒久超過→Mon発注不能」が単位設定で再発するため)
+   long cm=SymbolInfoInteger(s,SYMBOL_TRADE_CALC_MODE);
+   if(cm==SYMBOL_CALC_MODE_FOREX || cm==SYMBOL_CALC_MODE_FOREX_NO_LEVERAGE){
+      double pt=SymbolInfoDouble(s,SYMBOL_POINT);
+      if(pt>0) return pt*10.0;
+      return (StringFind(s,"JPY")>=0)? 0.01 : 0.0001;
+   }
+   return 1.0; }
 
 //--- v1.32(docs/153): サイズ二重チェック(tick値経路 vs 損益計算経路の保守側)
 double MoneyPerUnit(string sym)
@@ -323,7 +328,7 @@ int OnInit()
    for(int i=0;i<g_nHold;i++) wsum+=g_holdW[i];
    PrintFormat("[INIT RecentFit] initBal=%.0f mult=%.1f Σw=%.3f (グロス想定≈%.1fx) expiry=%s Magic=%I64d/%I64d/%I64d",
       g_initBal,InpMult,wsum,wsum*InpMult,TimeToString(InpExpiry,TIME_DATE),g_mMon,g_mV4,g_mHold);
-   Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
+   Print("[NOTE] 非FX分散・直近特化トラック(docs/174/182)。Swing口座+スワップフリー承認が配備前提。期限後は新規停止=再スクリーニング必須。");
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }
@@ -406,7 +411,7 @@ void OnTimer()
    // 有効期限(docs/174停止規則): 期限後は新規停止。建玉は通常管理(時間切れ決済のみ)。
    if(!g_expired && now>=InpExpiry){
       g_expired=true;
-      Print("[EXPIRY] 有効期限到達 → 新規停止。recentfit_screen.py を再実行し構成を更新すること(docs/174)。");
+      Print("[EXPIRY] 有効期限到達 → 新規停止。recentfit_nonfx_screen.py を再実行し構成を更新すること(docs/182 §6)。⚠Hold建玉は時間決済なし(−15%災害SLのみ)=手仕舞い/継続をdocsで判断。");
       Notify("EXPIRY 新規停止(再スクリーニング必須)"); FlushNotify();
    }
 
@@ -431,7 +436,7 @@ void OnTimer()
          Notify(StringFormat("ARM %+.2f%% 新規停止(LOCK=+%.2f%%)",gainPct,InpLockClosePct)); }
       else if(!armNow) g_ntfArm=false;
    }
-   Comment(StringFormat("Chien_RecentFit_2026H2 | gain %+.2f%% | mult %.1f | %s",gainPct,InpMult,
+   Comment(StringFormat("RF_NonFX_FTMO100kSwing | gain %+.2f%% | mult %.2f | %s",gainPct,InpMult,
           (g_passLocked?"PASS_LOCK":
            (g_halted?"HALTED":
             (g_expired?"EXPIRED(新規停止)":
@@ -627,16 +632,18 @@ void EntriesHold()
    }
 }
 //+------------------------------------------------------------------+
-//| 残存リスク(誠実な記録・docs/175):                                 |
+//| 残存リスク(誠実な記録・docs/182):                                 |
 //|  ・本構成は直近12ヶ月窓で選び直近12ヶ月窓で校正=構造的に楽観。    |
-//|    全期間サンプルでは失格24.8%(標準4.8x)/32.2%(速攻7.2x)。        |
+//|    全期間サンプルでは失格48.3%(標準1.56x)/51.3%(速攻2.34x)。      |
+//|  ・Hold 59.3%は指数ロングベータ(分散効果は本物だがエッジではない)。|
+//|    v4 BTCUSDは全期間−93%の純レジームベット(逆ボラ加重で13.1%)。   |
 //|  ・選抜セルはノイズで入れ替わる(docs/165で実証済み)。本トラックは |
-//|    それを承知の上のEVベット=チャレンジ費用2回分が損失上限。       |
-//|  ・Mon GBPJPY/AUDJPYは正攻法口座のv7/v7x(5月等)・FTMO PDのv7と    |
-//|    同一日・同方向になり得る=別業者での運用を推奨(重複取引規則)。  |
+//|    それを承知の上のEVベット=通算失格1回で終了(docs/180 §2)。      |
 //|  ・想定元本サイジング: 研究セル(価格変化率×重み)と直接パリティ。  |
 //|    ガード類はリスクベースEA(v1.44)と同一。                        |
 //|  ・日次ガードはティック評価だが週末ギャップ/急変時のスリップは    |
-//|    防げない(docs/169クラッシュ監査参照)。                         |
-//|  ・JP225 Holdは配当調整・スワップが業者差大=デモで実測すること。  |
+//|    防げない(BTC週末保有あり・docs/169クラッシュ監査参照)。        |
+//|  ・UK100/JP225 Holdは配当調整・スワップフリー可否が業者差大=     |
+//|    デモ実測+FTMO書面確認が配備前提(docs/182 §3)。GER40のスプレッド|
+//|    上限3.0(価格単位)もデモ実測で最終化のこと(docs/182 §8)。       |
 //+------------------------------------------------------------------+

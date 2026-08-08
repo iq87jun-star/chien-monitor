@@ -134,9 +134,11 @@ def main():
     comps = {"A_FTMO100k": comp_A, "B_Fintokei": comp_B, "C_FTMO50k": comp_C, "D_FTMO50k": comp_D}
     tot = sum(CAP.values())
     cur = aligned_sum([comps[k] for k in CAP], [CAP[k] / tot for k in CAP])
-    # 非FXを新規50k口座に配備した想定
-    tot2 = tot + 50.0
-    caps2 = {**{k: CAP[k] / tot2 for k in CAP}, "NonFX_50k": 50.0 / tot2}
+    # 非FXを新規100k Swing口座に配備した想定(docs/182 §3の実配備に一致。
+    # 2026-08-08修正: 旧実装は50k想定でdocs/182 §1の引用値と配備規模が不整合だった)
+    NEW_CAP = 100.0
+    tot2 = tot + NEW_CAP
+    caps2 = {**{k: CAP[k] / tot2 for k in CAP}, "NonFX_100k": NEW_CAP / tot2}
     combined = aligned_sum([comps[k] for k in CAP] + [comp_N], list(caps2.values()))
 
     print("[4/4] 指標と相関")
@@ -146,7 +148,7 @@ def main():
             metrics(comp_D, "D案 3ヶ月(FTMO50k 5.52x)"),
             metrics(comp_N, f"非FX新案(標準{nfx_mult}x)"),
             metrics(cur, "現行合算(資金加重)"),
-            metrics(combined, "現行+非FX50k合算")]
+            metrics(combined, "現行+非FX100k合算")]
     for r in rows:
         print(f"  {r['label']:26s} 12m={r['cum_12m']:>7}% 6m={r['cum_6m']:>7}% "
               f"Sh12m={r['sharpe_12m']} 最悪日12m={r['worst_day_12m']}% 月中DD12m={r['worst_intramonth_dd_12m']}%")
