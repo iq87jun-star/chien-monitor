@@ -1,0 +1,194 @@
+{
+ "meta": {
+  "purpose": "現行4口座ポートフォリオ vs 非FX新案の同一物差し比較",
+  "approx": [
+   "S1/S2/Mon=月曜o2o(実EAは12h)",
+   "S3=木曜o2o SHORT(実EAは6h)",
+   "S4/S5=RSI2逆張りD1再現",
+   "A案倍率=4.8(等ウェイト近似を同一規則で校正)",
+   "Fintokei=¥500万≈$32k",
+   "Yahoo日足近似・実口座成績ではない"
+  ],
+  "deployed_mults": {
+   "A": 4.8,
+   "B": 4.0,
+   "C": 6.0,
+   "D": 5.52,
+   "NonFX": 1.56
+  },
+  "capital_weights": {
+   "A_FTMO100k": 0.3546099290780142,
+   "B_Fintokei": 0.11347517730496454,
+   "C_FTMO50k": 0.1773049645390071,
+   "D_FTMO50k": 0.1773049645390071,
+   "NonFX_50k": 0.1773049645390071
+  }
+ },
+ "portfolios": {
+  "A案 RecentFit5(FTMO100k)": {
+   "label": "A案 RecentFit5(FTMO100k)",
+   "cum_12m": 28.55,
+   "cum_6m": 18.56,
+   "cagr_full": 2.02,
+   "sharpe_12m": 2.77,
+   "vol_12m_ann": 9.57,
+   "worst_day_12m": -1.93,
+   "worst_intramonth_dd_12m": -2.89,
+   "max_dd_12m": -3.26,
+   "worst_day_full": -8.9,
+   "max_dd_full": -42.97
+  },
+  "B案 2026H2(Fintokei 4.0x)": {
+   "label": "B案 2026H2(Fintokei 4.0x)",
+   "cum_12m": 27.95,
+   "cum_6m": 16.47,
+   "cagr_full": 8.98,
+   "sharpe_12m": 5.84,
+   "vol_12m_ann": 14.58,
+   "worst_day_12m": -1.66,
+   "worst_intramonth_dd_12m": -2.14,
+   "max_dd_12m": -2.14,
+   "worst_day_full": -4.99,
+   "max_dd_full": -21.26
+  },
+  "C案 6ヶ月(FTMO50k 6.0x)": {
+   "label": "C案 6ヶ月(FTMO50k 6.0x)",
+   "cum_12m": 33.99,
+   "cum_6m": 29.31,
+   "cagr_full": 15.25,
+   "sharpe_12m": 4.19,
+   "vol_12m_ann": 18.56,
+   "worst_day_12m": -2.91,
+   "worst_intramonth_dd_12m": -5.35,
+   "max_dd_12m": -5.35,
+   "worst_day_full": -7.96,
+   "max_dd_full": -44.22
+  },
+  "D案 3ヶ月(FTMO50k 5.52x)": {
+   "label": "D案 3ヶ月(FTMO50k 5.52x)",
+   "cum_12m": 8.44,
+   "cum_6m": 14.71,
+   "cagr_full": 7.21,
+   "sharpe_12m": 1.43,
+   "vol_12m_ann": 15.62,
+   "worst_day_12m": -3.19,
+   "worst_intramonth_dd_12m": -5.49,
+   "max_dd_12m": -9.08,
+   "worst_day_full": -8.71,
+   "max_dd_full": -33.79
+  },
+  "非FX新案(標準1.56x)": {
+   "label": "非FX新案(標準1.56x)",
+   "cum_12m": 42.61,
+   "cum_6m": 20.26,
+   "cagr_full": 4.63,
+   "sharpe_12m": 2.76,
+   "vol_12m_ann": 11.58,
+   "worst_day_12m": -2.78,
+   "worst_intramonth_dd_12m": -6.31,
+   "max_dd_12m": -6.31,
+   "worst_day_full": -9.55,
+   "max_dd_full": -47.37
+  },
+  "現行合算(資金加重)": {
+   "label": "現行合算(資金加重)",
+   "cum_12m": 25.16,
+   "cum_6m": 19.76,
+   "cagr_full": 7.23,
+   "sharpe_12m": 2.86,
+   "vol_12m_ann": 8.12,
+   "worst_day_12m": -1.7,
+   "worst_intramonth_dd_12m": -3.78,
+   "max_dd_12m": -3.78,
+   "worst_day_full": -7.43,
+   "max_dd_full": -35.12
+  },
+  "現行+非FX50k合算": {
+   "label": "現行+非FX50k合算",
+   "cum_12m": 28.26,
+   "cum_6m": 19.95,
+   "cagr_full": 6.98,
+   "sharpe_12m": 3.24,
+   "vol_12m_ann": 6.84,
+   "worst_day_12m": -1.46,
+   "worst_intramonth_dd_12m": -3.03,
+   "max_dd_12m": -3.11,
+   "worst_day_full": -6.01,
+   "max_dd_full": -35.84
+  }
+ },
+ "corr_12m": {
+  "A案": {
+   "A案": 1.0,
+   "B案": 0.49,
+   "C案": 0.53,
+   "D案": 0.31,
+   "非FX": 0.14
+  },
+  "B案": {
+   "A案": 0.49,
+   "B案": 1.0,
+   "C案": 0.85,
+   "D案": 0.52,
+   "非FX": 0.06
+  },
+  "C案": {
+   "A案": 0.53,
+   "B案": 0.85,
+   "C案": 1.0,
+   "D案": 0.79,
+   "非FX": 0.15
+  },
+  "D案": {
+   "A案": 0.31,
+   "B案": 0.52,
+   "C案": 0.79,
+   "D案": 1.0,
+   "非FX": 0.12
+  },
+  "非FX": {
+   "A案": 0.14,
+   "B案": 0.06,
+   "C案": 0.15,
+   "D案": 0.12,
+   "非FX": 1.0
+  }
+ },
+ "corr_full": {
+  "A案": {
+   "A案": 1.0,
+   "B案": 0.34,
+   "C案": 0.35,
+   "D案": 0.21,
+   "非FX": 0.07
+  },
+  "B案": {
+   "A案": 0.34,
+   "B案": 1.0,
+   "C案": 0.78,
+   "D案": 0.5,
+   "非FX": 0.21
+  },
+  "C案": {
+   "A案": 0.35,
+   "B案": 0.78,
+   "C案": 1.0,
+   "D案": 0.84,
+   "非FX": 0.22
+  },
+  "D案": {
+   "A案": 0.21,
+   "B案": 0.5,
+   "C案": 0.84,
+   "D案": 1.0,
+   "非FX": 0.16
+  },
+  "非FX": {
+   "A案": 0.07,
+   "B案": 0.21,
+   "C案": 0.22,
+   "D案": 0.16,
+   "非FX": 1.0
+  }
+ }
+}
