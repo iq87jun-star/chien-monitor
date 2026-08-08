@@ -13,6 +13,7 @@ recentfit_portfolio_compare.py — 現行配備ポートフォリオ vs 非FX新
 - A案は各スリーブ等リスク(1.25%/回)を等ウェイト×校正倍率で近似
 - Fintokei資金は¥500万≈$32k(155円)と仮定
 - Yahoo日足・配当除く。数字は全て近似であり実口座成績ではない
+- 合算は非FX=50k(当初比較の参考値)と100k(実配備・docs/182)の両方を出力
 出力: results/recentfit_portfolio_compare.json
 """
 import os, sys, json
@@ -134,10 +135,13 @@ def main():
     comps = {"A_FTMO100k": comp_A, "B_Fintokei": comp_B, "C_FTMO50k": comp_C, "D_FTMO50k": comp_D}
     tot = sum(CAP.values())
     cur = aligned_sum([comps[k] for k in CAP], [CAP[k] / tot for k in CAP])
-    # 非FXを新規50k口座に配備した想定
-    tot2 = tot + 50.0
-    caps2 = {**{k: CAP[k] / tot2 for k in CAP}, "NonFX_50k": 50.0 / tot2}
-    combined = aligned_sum([comps[k] for k in CAP] + [comp_N], list(caps2.values()))
+    # 非FXを新規口座に配備した想定(50k=当初比較の参考値 / 100k=実配備・docs/182)
+    def combined_with(nfx_cap):
+        totx = tot + nfx_cap
+        capsx = {**{k: CAP[k] / totx for k in CAP}, f"NonFX_{int(nfx_cap)}k": nfx_cap / totx}
+        return capsx, aligned_sum([comps[k] for k in CAP] + [comp_N], list(capsx.values()))
+    caps2, combined = combined_with(50.0)
+    caps3, combined100 = combined_with(100.0)
 
     print("[4/4] 指標と相関")
     rows = [metrics(comp_A, "A案 RecentFit5(FTMO100k)"),
@@ -146,7 +150,8 @@ def main():
             metrics(comp_D, "D案 3ヶ月(FTMO50k 5.52x)"),
             metrics(comp_N, f"非FX新案(標準{nfx_mult}x)"),
             metrics(cur, "現行合算(資金加重)"),
-            metrics(combined, "現行+非FX50k合算")]
+            metrics(combined, "現行+非FX50k合算"),
+            metrics(combined100, "現行+非FX100k合算")]
     for r in rows:
         print(f"  {r['label']:26s} 12m={r['cum_12m']:>7}% 6m={r['cum_6m']:>7}% "
               f"Sh12m={r['sharpe_12m']} 最悪日12m={r['worst_day_12m']}% 月中DD12m={r['worst_intramonth_dd_12m']}%")
@@ -164,7 +169,7 @@ def main():
                           "S4/S5=RSI2逆張りD1再現", f"A案倍率={a_mult}(等ウェイト近似を同一規則で校正)",
                           "Fintokei=¥500万≈$32k", "Yahoo日足近似・実口座成績ではない"],
                   deployed_mults=dict(A=a_mult, B=4.0, C=6.0, D=5.52, NonFX=nfx_mult),
-                  capital_weights=caps2),
+                  capital_weights=caps2, capital_weights_100k=caps3),
         portfolios={r["label"]: r for r in rows},
         corr_12m=corr12.to_dict(), corr_full=corr_full.to_dict())
     path = os.path.join(HERE, "results", "recentfit_portfolio_compare.json")
