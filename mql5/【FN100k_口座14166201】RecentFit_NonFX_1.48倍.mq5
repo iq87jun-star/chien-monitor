@@ -1,5 +1,6 @@
 //+------------------------------------------------------------------+
-//| ★FN Stellar 100k 2-Step 非FX分散トラック焼き込み版(docs/182改訂版) |
+//| ★FN Stellar 100k 2-Step 口座14166201(FundedNext-Server2) 焼き込み版 |
+//|  (docs/182改訂版・2026-08-09購入 $634.99・Swap Free・EAアドオン)      |
 //|  構成(FN適合・FN内銘柄重複ゼロ): Hold UK100 49.1%/WTI 15.3% +      |
 //|   v4 BTCUSD 21.1% + Mon ETHUSD 14.5%                              |
 //|  (research/results/recentfit_nonfx_fn_adapted.json 2026-08-08凍結) |
@@ -149,6 +150,11 @@ string ResolveSymbol(string want)
    string U=want; StringToUpper(U);
    if(StringFind(U,"JP225")>=0 || StringFind(U,"JPN")>=0 || StringFind(U,"NIK")>=0){
       bases[nb++]="JP225"; bases[nb++]="JPN225"; bases[nb++]="NIKKEI225"; bases[nb++]="JP225Cash"; bases[nb++]="NI225"; bases[nb++]="JPN225.cash"; }
+   if(StringFind(U,"UK100")>=0 || StringFind(U,"FTSE")>=0){                      // 本焼き込み: UK100別名
+      bases[nb++]="UK100"; bases[nb++]="FTSE100"; bases[nb++]="UK100Cash"; bases[nb++]="UK100.cash"; }
+   if(StringFind(U,"WTI")>=0 || StringFind(U,"USOIL")>=0 || StringFind(U,"XTI")>=0){  // 本焼き込み: WTI別名
+      bases[nb++]="WTI"; bases[nb++]="USOIL"; bases[nb++]="XTIUSD"; bases[nb++]="USOUSD";
+      bases[nb++]="USOil"; bases[nb++]="CrudeOIL"; bases[nb++]="OILUSD"; }
    ArrayResize(bases,nb);
    for(int b=0;b<nb;b++)
       for(int s=0;s<ArraySize(suf);s++){
