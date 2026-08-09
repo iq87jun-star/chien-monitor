@@ -57,9 +57,9 @@ FN内のコンプラ感度が高い前提で運用する。ニュース制約は
 | 合算 | 現行FN 120k(Instant20k+100k)+新規100k=220k ≤ 300k枠 |
 
 **購入記録(2026-08-09)**: 口座 **14166201** / FundedNext-Server2 / Swap Free / EAアドオン /
-Stellar 2-Step P1 100K。銘柄実在確認: BTCUSD・ETHUSD・UK100(いずれも同名で存在)。
-WTIの正式名称(USOIL等の可能性)はEnergiesフォルダで確認中 — EA側はResolveSymbolに
-WTI/USOIL/XTIUSD/USOUSD等の別名を焼き込み済みで自動解決する。
+Stellar 2-Step P1 100K。銘柄実在確認(全数完了): BTCUSD・ETHUSD・UK100(同名)、
+WTI=**USOUSD**(Commoditiesフォルダ・2026-08-09確認)。EAのResolveSymbol別名リストに
+USOUSDを含むため修正不要で自動解決。
 
 ## 5. EA設定(焼き込み済み)
 
