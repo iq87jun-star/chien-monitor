@@ -61,6 +61,11 @@ Stellar 2-Step P1 100K。銘柄実在確認(全数完了): BTCUSD・ETHUSD・UK1
 WTI=**USOUSD**(Commoditiesフォルダ・2026-08-09確認)。EAのResolveSymbol別名リストに
 USOUSDを含むため修正不要で自動解決。
 
+**稼働開始(2026-08-09)**: EA装着・[INIT]確認済み(initBal=100000/Σw=1.000/mult=1.48/
+expiry 2026.10.31/Magic 943601-3)。WTI→USOUSD解決ログ・v4 BTCUSD判定稼働・
+Hold 2本のロット検算OK(UK100 0.47lot≈$69k/USOUSD 2.92lot≈$22.6k=目標通り)。
+土曜のため[market closed]で待機中 → 日曜22時UTC市場再開で約定見込み。
+
 ## 5. EA設定(焼き込み済み)
 
 - レッグ: Mon `ETHUSD:0.145` / v4 `BTCUSD:0.211` / Hold `UK100:0.491,WTI:0.153`
@@ -92,7 +97,7 @@ USOUSDを含むため修正不要で自動解決。
 - [x] 購入(§7-2)→ $634.99・口座14166201記録済み・EAファイル名反映済み
 - [ ] PipOf非FX対応のbase反映(既存FX焼き込みは挙動不変を確認の上)
 - [ ] 資金化後のニュース制約の書面確認(§3)
-- [ ] docs/179更新
+- [x] docs/179更新(非FX分散トラックを月次採点対象に追加済み)
 
 ## 9. 記録: FTMO版(不採用)
 
