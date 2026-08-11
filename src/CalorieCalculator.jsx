@@ -50,8 +50,8 @@ const fmt = (n) => Math.round(n).toLocaleString("ja-JP");
 
 export default function CalorieCalculator() {
   // ---- プロフィール ----
-  const [weight, setWeight] = useState("70");
-  const [height, setHeight] = useState("170");
+  const [weight, setWeight] = useState("86");
+  const [height, setHeight] = useState("176");
   const [age, setAge]       = useState("40");
   const [sex, setSex]       = useState("male");
 
