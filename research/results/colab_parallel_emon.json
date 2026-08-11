@@ -1,0 +1,1328 @@
+{
+  "hunt": [
+    {
+      "label": "NAS100_Mon_L",
+      "family": "F2_idxDOW",
+      "net_pct": 139.1,
+      "win_pct": 60.0,
+      "maxDD_pct": -17.0,
+      "n": 469,
+      "perm_p": 0.0005,
+      "corr_v7": 0.11
+    },
+    {
+      "label": "US500_Mon_L",
+      "family": "F2_idxDOW",
+      "net_pct": 66.8,
+      "win_pct": 60.0,
+      "maxDD_pct": -12.9,
+      "n": 469,
+      "perm_p": 0.0045,
+      "corr_v7": 0.22
+    },
+    {
+      "label": "GER40_Mon_L",
+      "family": "F2_idxDOW",
+      "net_pct": 82.7,
+      "win_pct": 52.0,
+      "maxDD_pct": -11.8,
+      "n": 496,
+      "perm_p": 0.0079,
+      "corr_v7": 0.26
+    },
+    {
+      "label": "BTCUSD_Mon_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": 336.9,
+      "win_pct": 51.0,
+      "maxDD_pct": -44.9,
+      "n": 521,
+      "perm_p": 0.0166,
+      "corr_v7": 0.05
+    },
+    {
+      "label": "XAGUSD_Tue_L",
+      "family": "F4_commDOW",
+      "net_pct": 130.8,
+      "win_pct": 52.0,
+      "maxDD_pct": -40.8,
+      "n": 518,
+      "perm_p": 0.0216,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "ETHUSD_Sat_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": 192.6,
+      "win_pct": 53.0,
+      "maxDD_pct": -33.6,
+      "n": 448,
+      "perm_p": 0.0279,
+      "corr_v7": -0.0
+    },
+    {
+      "label": "UK100_Wed_L",
+      "family": "F2_idxDOW",
+      "net_pct": 37.9,
+      "win_pct": 54.0,
+      "maxDD_pct": -11.8,
+      "n": 517,
+      "perm_p": 0.0476,
+      "corr_v7": -0.1
+    },
+    {
+      "label": "UK100_Thu_S",
+      "family": "F2_idxDOW",
+      "net_pct": 39.1,
+      "win_pct": 47.0,
+      "maxDD_pct": -23.2,
+      "n": 517,
+      "perm_p": 0.0609,
+      "corr_v7": 0.02
+    },
+    {
+      "label": "BTCUSD_Wed_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": 143.7,
+      "win_pct": 51.0,
+      "maxDD_pct": -55.6,
+      "n": 522,
+      "perm_p": 0.0732,
+      "corr_v7": -0.01
+    },
+    {
+      "label": "XAUUSD_TOM_L",
+      "family": "F1_idxTOM",
+      "net_pct": 40.6,
+      "win_pct": 54.0,
+      "maxDD_pct": -13.1,
+      "n": 483,
+      "perm_p": 0.0747,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "GER40_TOM_L",
+      "family": "F1_idxTOM",
+      "net_pct": 39.4,
+      "win_pct": 55.0,
+      "maxDD_pct": -14.3,
+      "n": 483,
+      "perm_p": 0.0836,
+      "corr_v7": 0.1
+    },
+    {
+      "label": "NAS100_Tue_L",
+      "family": "F2_idxDOW",
+      "net_pct": 35.0,
+      "win_pct": 54.0,
+      "maxDD_pct": -23.7,
+      "n": 518,
+      "perm_p": 0.1131,
+      "corr_v7": -0.17
+    },
+    {
+      "label": "WTI_Fri_L",
+      "family": "F4_commDOW",
+      "net_pct": 80.3,
+      "win_pct": 55.0,
+      "maxDD_pct": -53.1,
+      "n": 507,
+      "perm_p": 0.1156,
+      "corr_v7": 0.09
+    },
+    {
+      "label": "JP225_Mon_L",
+      "family": "F2_idxDOW",
+      "net_pct": 28.1,
+      "win_pct": 53.0,
+      "maxDD_pct": -15.2,
+      "n": 449,
+      "perm_p": 0.1363,
+      "corr_v7": 0.38
+    },
+    {
+      "label": "XAUUSD_Thu_L",
+      "family": "F4_commDOW",
+      "net_pct": 23.6,
+      "win_pct": 52.0,
+      "maxDD_pct": -17.9,
+      "n": 507,
+      "perm_p": 0.1415,
+      "corr_v7": -0.05
+    },
+    {
+      "label": "WTI_Mon_S",
+      "family": "F4_commDOW",
+      "net_pct": 228.7,
+      "win_pct": 51.0,
+      "maxDD_pct": -52.3,
+      "n": 467,
+      "perm_p": 0.1451,
+      "corr_v7": -0.11
+    },
+    {
+      "label": "UK100_Tue_L",
+      "family": "F2_idxDOW",
+      "net_pct": 20.7,
+      "win_pct": 53.0,
+      "maxDD_pct": -14.5,
+      "n": 514,
+      "perm_p": 0.1581,
+      "corr_v7": 0.11
+    },
+    {
+      "label": "WTI_Thu_L",
+      "family": "F4_commDOW",
+      "net_pct": 52.5,
+      "win_pct": 53.0,
+      "maxDD_pct": -37.3,
+      "n": 507,
+      "perm_p": 0.1599,
+      "corr_v7": -0.13
+    },
+    {
+      "label": "ETHUSD_Wed_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": 54.0,
+      "win_pct": 49.0,
+      "maxDD_pct": -69.5,
+      "n": 447,
+      "perm_p": 0.1787,
+      "corr_v7": -0.08
+    },
+    {
+      "label": "BTCUSD_Sat_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": 43.3,
+      "win_pct": 51.0,
+      "maxDD_pct": -40.3,
+      "n": 522,
+      "perm_p": 0.1825,
+      "corr_v7": -0.14
+    },
+    {
+      "label": "GER40_Thu_S",
+      "family": "F2_idxDOW",
+      "net_pct": 19.1,
+      "win_pct": 46.0,
+      "maxDD_pct": -22.5,
+      "n": 514,
+      "perm_p": 0.2156,
+      "corr_v7": -0.03
+    },
+    {
+      "label": "US500_TOM_L",
+      "family": "F1_idxTOM",
+      "net_pct": 16.8,
+      "win_pct": 57.0,
+      "maxDD_pct": -11.0,
+      "n": 483,
+      "perm_p": 0.2234,
+      "corr_v7": 0.09
+    },
+    {
+      "label": "NAS100_TOM_L",
+      "family": "F1_idxTOM",
+      "net_pct": 20.1,
+      "win_pct": 54.0,
+      "maxDD_pct": -14.3,
+      "n": 483,
+      "perm_p": 0.2374,
+      "corr_v7": 0.09
+    },
+    {
+      "label": "XAUUSD_Tue_L",
+      "family": "F4_commDOW",
+      "net_pct": 14.8,
+      "win_pct": 51.0,
+      "maxDD_pct": -25.2,
+      "n": 518,
+      "perm_p": 0.2527,
+      "corr_v7": 0.08
+    },
+    {
+      "label": "RV_BTCUSD_ETHUSD_MO",
+      "family": "F5_relval",
+      "net_pct": 22.7,
+      "win_pct": 8.0,
+      "maxDD_pct": -38.8,
+      "n": 2178,
+      "perm_p": 0.2561,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "US500_Tue_L",
+      "family": "F2_idxDOW",
+      "net_pct": 10.8,
+      "win_pct": 52.0,
+      "maxDD_pct": -16.3,
+      "n": 518,
+      "perm_p": 0.2694,
+      "corr_v7": -0.11
+    },
+    {
+      "label": "JP225_Wed_L",
+      "family": "F2_idxDOW",
+      "net_pct": 12.3,
+      "win_pct": 51.0,
+      "maxDD_pct": -18.6,
+      "n": 500,
+      "perm_p": 0.2707,
+      "corr_v7": -0.19
+    },
+    {
+      "label": "GER40_Wed_L",
+      "family": "F2_idxDOW",
+      "net_pct": 13.6,
+      "win_pct": 53.0,
+      "maxDD_pct": -20.7,
+      "n": 512,
+      "perm_p": 0.272,
+      "corr_v7": 0.14
+    },
+    {
+      "label": "ETHUSD_Mon_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": 10.7,
+      "win_pct": 51.0,
+      "maxDD_pct": -70.6,
+      "n": 447,
+      "perm_p": 0.2755,
+      "corr_v7": 0.08
+    },
+    {
+      "label": "ETHUSD_Thu_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": 5.8,
+      "win_pct": 53.0,
+      "maxDD_pct": -73.0,
+      "n": 448,
+      "perm_p": 0.2806,
+      "corr_v7": 0.03
+    },
+    {
+      "label": "BTCUSD_Fri_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": 4.9,
+      "win_pct": 51.0,
+      "maxDD_pct": -48.7,
+      "n": 522,
+      "perm_p": 0.3242,
+      "corr_v7": -0.05
+    },
+    {
+      "label": "NAS100_Wed_L",
+      "family": "F2_idxDOW",
+      "net_pct": 8.0,
+      "win_pct": 53.0,
+      "maxDD_pct": -31.6,
+      "n": 515,
+      "perm_p": 0.3474,
+      "corr_v7": 0.18
+    },
+    {
+      "label": "ETHUSD_Fri_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": -8.1,
+      "win_pct": 50.0,
+      "maxDD_pct": -65.6,
+      "n": 448,
+      "perm_p": 0.3534,
+      "corr_v7": -0.04
+    },
+    {
+      "label": "XAUUSD_Wed_L",
+      "family": "F4_commDOW",
+      "net_pct": 6.1,
+      "win_pct": 52.0,
+      "maxDD_pct": -10.4,
+      "n": 515,
+      "perm_p": 0.3549,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "JP225_Tue_L",
+      "family": "F2_idxDOW",
+      "net_pct": 6.8,
+      "win_pct": 47.0,
+      "maxDD_pct": -25.3,
+      "n": 498,
+      "perm_p": 0.356,
+      "corr_v7": -0.01
+    },
+    {
+      "label": "GER40_Tue_L",
+      "family": "F2_idxDOW",
+      "net_pct": 5.9,
+      "win_pct": 54.0,
+      "maxDD_pct": -17.4,
+      "n": 511,
+      "perm_p": 0.3651,
+      "corr_v7": -0.01
+    },
+    {
+      "label": "US500_Wed_L",
+      "family": "F2_idxDOW",
+      "net_pct": 3.0,
+      "win_pct": 54.0,
+      "maxDD_pct": -25.5,
+      "n": 515,
+      "perm_p": 0.402,
+      "corr_v7": 0.06
+    },
+    {
+      "label": "WTI_Tue_S",
+      "family": "F4_commDOW",
+      "net_pct": 48.5,
+      "win_pct": 48.0,
+      "maxDD_pct": -60.9,
+      "n": 518,
+      "perm_p": 0.4121,
+      "corr_v7": -0.09
+    },
+    {
+      "label": "RV_EURUSD_GBPUSD_MR",
+      "family": "F5_relval",
+      "net_pct": 1.5,
+      "win_pct": 5.0,
+      "maxDD_pct": -9.9,
+      "n": 2541,
+      "perm_p": 0.4176,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "JP225_Fri_L",
+      "family": "F2_idxDOW",
+      "net_pct": 1.4,
+      "win_pct": 53.0,
+      "maxDD_pct": -24.2,
+      "n": 498,
+      "perm_p": 0.4231,
+      "corr_v7": 0.16
+    },
+    {
+      "label": "UK100_Mon_L",
+      "family": "F2_idxDOW",
+      "net_pct": 1.8,
+      "win_pct": 51.0,
+      "maxDD_pct": -22.5,
+      "n": 471,
+      "perm_p": 0.4273,
+      "corr_v7": 0.19
+    },
+    {
+      "label": "UK100_TOM_L",
+      "family": "F1_idxTOM",
+      "net_pct": 0.4,
+      "win_pct": 52.0,
+      "maxDD_pct": -19.0,
+      "n": 483,
+      "perm_p": 0.4514,
+      "corr_v7": -0.0
+    },
+    {
+      "label": "XAUUSD_Fri_L",
+      "family": "F4_commDOW",
+      "net_pct": -1.8,
+      "win_pct": 52.0,
+      "maxDD_pct": -20.3,
+      "n": 507,
+      "perm_p": 0.4755,
+      "corr_v7": -0.01
+    },
+    {
+      "label": "XAGUSD_Fri_L",
+      "family": "F4_commDOW",
+      "net_pct": -15.4,
+      "win_pct": 51.0,
+      "maxDD_pct": -41.6,
+      "n": 507,
+      "perm_p": 0.4805,
+      "corr_v7": 0.04
+    },
+    {
+      "label": "WTI_Wed_L",
+      "family": "F4_commDOW",
+      "net_pct": -19.6,
+      "win_pct": 51.0,
+      "maxDD_pct": -51.3,
+      "n": 515,
+      "perm_p": 0.515,
+      "corr_v7": -0.17
+    },
+    {
+      "label": "XAGUSD_Wed_L",
+      "family": "F4_commDOW",
+      "net_pct": -8.4,
+      "win_pct": 49.0,
+      "maxDD_pct": -27.5,
+      "n": 515,
+      "perm_p": 0.5181,
+      "corr_v7": -0.03
+    },
+    {
+      "label": "JP225_Thu_L",
+      "family": "F2_idxDOW",
+      "net_pct": -4.6,
+      "win_pct": 50.0,
+      "maxDD_pct": -27.5,
+      "n": 496,
+      "perm_p": 0.5346,
+      "corr_v7": 0.11
+    },
+    {
+      "label": "US500_Fri_L",
+      "family": "F2_idxDOW",
+      "net_pct": -5.3,
+      "win_pct": 55.0,
+      "maxDD_pct": -22.1,
+      "n": 506,
+      "perm_p": 0.5364,
+      "corr_v7": 0.27
+    },
+    {
+      "label": "ETHUSD_Sun_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": -35.3,
+      "win_pct": 49.0,
+      "maxDD_pct": -51.9,
+      "n": 447,
+      "perm_p": 0.5435,
+      "corr_v7": -0.04
+    },
+    {
+      "label": "GER40_Fri_L",
+      "family": "F2_idxDOW",
+      "net_pct": -8.4,
+      "win_pct": 56.0,
+      "maxDD_pct": -29.8,
+      "n": 504,
+      "perm_p": 0.5495,
+      "corr_v7": 0.12
+    },
+    {
+      "label": "RV_XAUUSD_XAGUSD_MR",
+      "family": "F5_relval",
+      "net_pct": -13.0,
+      "win_pct": 7.0,
+      "maxDD_pct": -32.6,
+      "n": 2454,
+      "perm_p": 0.5533,
+      "corr_v7": 0.11
+    },
+    {
+      "label": "US500_Thu_L",
+      "family": "F2_idxDOW",
+      "net_pct": -6.4,
+      "win_pct": 55.0,
+      "maxDD_pct": -26.6,
+      "n": 506,
+      "perm_p": 0.5634,
+      "corr_v7": -0.01
+    },
+    {
+      "label": "BTCUSD_Tue_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": -35.9,
+      "win_pct": 49.0,
+      "maxDD_pct": -58.6,
+      "n": 521,
+      "perm_p": 0.572,
+      "corr_v7": 0.08
+    },
+    {
+      "label": "XAGUSD_Mon_L",
+      "family": "F4_commDOW",
+      "net_pct": -16.9,
+      "win_pct": 49.0,
+      "maxDD_pct": -39.4,
+      "n": 466,
+      "perm_p": 0.5971,
+      "corr_v7": -0.04
+    },
+    {
+      "label": "BTCUSD_Thu_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -54.6,
+      "win_pct": 50.0,
+      "maxDD_pct": -72.8,
+      "n": 522,
+      "perm_p": 0.6209,
+      "corr_v7": 0.11
+    },
+    {
+      "label": "NAS100_Fri_L",
+      "family": "F2_idxDOW",
+      "net_pct": -15.4,
+      "win_pct": 54.0,
+      "maxDD_pct": -37.7,
+      "n": 506,
+      "perm_p": 0.6344,
+      "corr_v7": 0.22
+    },
+    {
+      "label": "NAS100_Thu_L",
+      "family": "F2_idxDOW",
+      "net_pct": -14.5,
+      "win_pct": 54.0,
+      "maxDD_pct": -37.1,
+      "n": 506,
+      "perm_p": 0.6381,
+      "corr_v7": -0.04
+    },
+    {
+      "label": "JP225_TOM_L",
+      "family": "F1_idxTOM",
+      "net_pct": -16.4,
+      "win_pct": 49.0,
+      "maxDD_pct": -32.6,
+      "n": 483,
+      "perm_p": 0.682,
+      "corr_v7": 0.05
+    },
+    {
+      "label": "ETHUSD_Tue_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -59.1,
+      "win_pct": 50.0,
+      "maxDD_pct": -73.4,
+      "n": 447,
+      "perm_p": 0.684,
+      "corr_v7": -0.02
+    },
+    {
+      "label": "XAGUSD_Thu_S",
+      "family": "F4_commDOW",
+      "net_pct": -29.8,
+      "win_pct": 46.0,
+      "maxDD_pct": -61.3,
+      "n": 507,
+      "perm_p": 0.6964,
+      "corr_v7": -0.02
+    },
+    {
+      "label": "RV_XAUUSD_XAGUSD_MO",
+      "family": "F5_relval",
+      "net_pct": -26.1,
+      "win_pct": 6.0,
+      "maxDD_pct": -40.2,
+      "n": 2454,
+      "perm_p": 0.6985,
+      "corr_v7": -0.1
+    },
+    {
+      "label": "BTCUSD_Sun_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": -42.1,
+      "win_pct": 49.0,
+      "maxDD_pct": -56.7,
+      "n": 521,
+      "perm_p": 0.7125,
+      "corr_v7": -0.04
+    },
+    {
+      "label": "XAUUSD_Mon_L",
+      "family": "F4_commDOW",
+      "net_pct": -13.3,
+      "win_pct": 48.0,
+      "maxDD_pct": -28.6,
+      "n": 466,
+      "perm_p": 0.7149,
+      "corr_v7": -0.27
+    },
+    {
+      "label": "NAS100_Fri_S",
+      "family": "F2_idxDOW",
+      "net_pct": -21.8,
+      "win_pct": 43.0,
+      "maxDD_pct": -26.9,
+      "n": 506,
+      "perm_p": 0.7209,
+      "corr_v7": -0.23
+    },
+    {
+      "label": "NAS100_Thu_S",
+      "family": "F2_idxDOW",
+      "net_pct": -21.3,
+      "win_pct": 42.0,
+      "maxDD_pct": -42.7,
+      "n": 506,
+      "perm_p": 0.7324,
+      "corr_v7": 0.04
+    },
+    {
+      "label": "XAGUSD_Thu_L",
+      "family": "F4_commDOW",
+      "net_pct": -38.3,
+      "win_pct": 49.0,
+      "maxDD_pct": -44.3,
+      "n": 507,
+      "perm_p": 0.7745,
+      "corr_v7": 0.02
+    },
+    {
+      "label": "WTI_Tue_L",
+      "family": "F4_commDOW",
+      "net_pct": -171.9,
+      "win_pct": 49.0,
+      "maxDD_pct": -235.3,
+      "n": 518,
+      "perm_p": 0.7915,
+      "corr_v7": 0.09
+    },
+    {
+      "label": "ETHUSD_Tue_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": -71.0,
+      "win_pct": 47.0,
+      "maxDD_pct": -83.2,
+      "n": 447,
+      "perm_p": 0.7999,
+      "corr_v7": 0.02
+    },
+    {
+      "label": "GER40_Fri_S",
+      "family": "F2_idxDOW",
+      "net_pct": -26.8,
+      "win_pct": 41.0,
+      "maxDD_pct": -41.9,
+      "n": 504,
+      "perm_p": 0.8009,
+      "corr_v7": -0.12
+    },
+    {
+      "label": "JP225_TOM_S",
+      "family": "F1_idxTOM",
+      "net_pct": -25.1,
+      "win_pct": 48.0,
+      "maxDD_pct": -36.8,
+      "n": 483,
+      "perm_p": 0.8101,
+      "corr_v7": -0.05
+    },
+    {
+      "label": "UK100_Fri_S",
+      "family": "F2_idxDOW",
+      "net_pct": -19.5,
+      "win_pct": 44.0,
+      "maxDD_pct": -26.2,
+      "n": 506,
+      "perm_p": 0.8195,
+      "corr_v7": -0.08
+    },
+    {
+      "label": "RV_BTCUSD_ETHUSD_MR",
+      "family": "F5_relval",
+      "net_pct": -62.8,
+      "win_pct": 6.0,
+      "maxDD_pct": -65.3,
+      "n": 2178,
+      "perm_p": 0.8264,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "BTCUSD_Thu_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": -76.9,
+      "win_pct": 45.0,
+      "maxDD_pct": -89.1,
+      "n": 522,
+      "perm_p": 0.8323,
+      "corr_v7": -0.11
+    },
+    {
+      "label": "WTI_Wed_S",
+      "family": "F4_commDOW",
+      "net_pct": -54.2,
+      "win_pct": 47.0,
+      "maxDD_pct": -62.4,
+      "n": 515,
+      "perm_p": 0.8364,
+      "corr_v7": 0.17
+    },
+    {
+      "label": "RV_US500_NAS100_MR",
+      "family": "F5_relval",
+      "net_pct": -9.9,
+      "win_pct": 7.0,
+      "maxDD_pct": -10.9,
+      "n": 2455,
+      "perm_p": 0.8367,
+      "corr_v7": -0.11
+    },
+    {
+      "label": "UK100_Fri_L",
+      "family": "F2_idxDOW",
+      "net_pct": -20.7,
+      "win_pct": 51.0,
+      "maxDD_pct": -26.6,
+      "n": 506,
+      "perm_p": 0.8384,
+      "corr_v7": 0.07
+    },
+    {
+      "label": "XAGUSD_Fri_S",
+      "family": "F4_commDOW",
+      "net_pct": -56.0,
+      "win_pct": 47.0,
+      "maxDD_pct": -65.5,
+      "n": 507,
+      "perm_p": 0.8552,
+      "corr_v7": -0.04
+    },
+    {
+      "label": "XAGUSD_Mon_S",
+      "family": "F4_commDOW",
+      "net_pct": -42.1,
+      "win_pct": 48.0,
+      "maxDD_pct": -51.3,
+      "n": 466,
+      "perm_p": 0.8658,
+      "corr_v7": 0.04
+    },
+    {
+      "label": "XAUUSD_Mon_S",
+      "family": "F4_commDOW",
+      "net_pct": -24.1,
+      "win_pct": 46.0,
+      "maxDD_pct": -34.1,
+      "n": 466,
+      "perm_p": 0.8726,
+      "corr_v7": 0.27
+    },
+    {
+      "label": "US500_Fri_S",
+      "family": "F2_idxDOW",
+      "net_pct": -26.6,
+      "win_pct": 41.0,
+      "maxDD_pct": -31.0,
+      "n": 506,
+      "perm_p": 0.875,
+      "corr_v7": -0.27
+    },
+    {
+      "label": "US500_Thu_S",
+      "family": "F2_idxDOW",
+      "net_pct": -25.0,
+      "win_pct": 42.0,
+      "maxDD_pct": -37.6,
+      "n": 506,
+      "perm_p": 0.8765,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "NAS100_Wed_S",
+      "family": "F2_idxDOW",
+      "net_pct": -38.8,
+      "win_pct": 43.0,
+      "maxDD_pct": -42.5,
+      "n": 515,
+      "perm_p": 0.9094,
+      "corr_v7": -0.18
+    },
+    {
+      "label": "ETHUSD_Sun_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -77.9,
+      "win_pct": 47.0,
+      "maxDD_pct": -83.1,
+      "n": 447,
+      "perm_p": 0.9165,
+      "corr_v7": 0.04
+    },
+    {
+      "label": "BTCUSD_Tue_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -76.0,
+      "win_pct": 47.0,
+      "maxDD_pct": -84.6,
+      "n": 521,
+      "perm_p": 0.9225,
+      "corr_v7": -0.08
+    },
+    {
+      "label": "BTCUSD_Sun_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -66.7,
+      "win_pct": 46.0,
+      "maxDD_pct": -70.9,
+      "n": 521,
+      "perm_p": 0.9245,
+      "corr_v7": 0.04
+    },
+    {
+      "label": "JP225_Thu_S",
+      "family": "F2_idxDOW",
+      "net_pct": -33.8,
+      "win_pct": 47.0,
+      "maxDD_pct": -40.7,
+      "n": 496,
+      "perm_p": 0.9353,
+      "corr_v7": -0.11
+    },
+    {
+      "label": "US500_Wed_S",
+      "family": "F2_idxDOW",
+      "net_pct": -32.6,
+      "win_pct": 41.0,
+      "maxDD_pct": -33.7,
+      "n": 515,
+      "perm_p": 0.9385,
+      "corr_v7": -0.06
+    },
+    {
+      "label": "GER40_Tue_S",
+      "family": "F2_idxDOW",
+      "net_pct": -34.5,
+      "win_pct": 43.0,
+      "maxDD_pct": -35.3,
+      "n": 511,
+      "perm_p": 0.9401,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "XAGUSD_Wed_S",
+      "family": "F4_commDOW",
+      "net_pct": -49.3,
+      "win_pct": 47.0,
+      "maxDD_pct": -53.0,
+      "n": 515,
+      "perm_p": 0.9406,
+      "corr_v7": 0.03
+    },
+    {
+      "label": "XAUUSD_Fri_S",
+      "family": "F4_commDOW",
+      "net_pct": -37.0,
+      "win_pct": 44.0,
+      "maxDD_pct": -43.3,
+      "n": 507,
+      "perm_p": 0.9426,
+      "corr_v7": 0.0
+    },
+    {
+      "label": "NAS100_TOM_S",
+      "family": "F1_idxTOM",
+      "net_pct": -43.8,
+      "win_pct": 43.0,
+      "maxDD_pct": -48.5,
+      "n": 483,
+      "perm_p": 0.945,
+      "corr_v7": -0.09
+    },
+    {
+      "label": "JP225_Fri_S",
+      "family": "F2_idxDOW",
+      "net_pct": -38.5,
+      "win_pct": 46.0,
+      "maxDD_pct": -44.3,
+      "n": 498,
+      "perm_p": 0.9519,
+      "corr_v7": -0.16
+    },
+    {
+      "label": "ETHUSD_Thu_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": -92.1,
+      "win_pct": 43.0,
+      "maxDD_pct": -94.5,
+      "n": 448,
+      "perm_p": 0.9553,
+      "corr_v7": -0.03
+    },
+    {
+      "label": "ETHUSD_Fri_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -87.4,
+      "win_pct": 45.0,
+      "maxDD_pct": -90.0,
+      "n": 448,
+      "perm_p": 0.9556,
+      "corr_v7": 0.03
+    },
+    {
+      "label": "GER40_Wed_S",
+      "family": "F2_idxDOW",
+      "net_pct": -39.6,
+      "win_pct": 43.0,
+      "maxDD_pct": -43.9,
+      "n": 512,
+      "perm_p": 0.9613,
+      "corr_v7": -0.14
+    },
+    {
+      "label": "WTI_Mon_L",
+      "family": "F4_commDOW",
+      "net_pct": -126.1,
+      "win_pct": 47.0,
+      "maxDD_pct": -151.5,
+      "n": 467,
+      "perm_p": 0.9647,
+      "corr_v7": 0.11
+    },
+    {
+      "label": "ETHUSD_Mon_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -91.6,
+      "win_pct": 45.0,
+      "maxDD_pct": -94.4,
+      "n": 447,
+      "perm_p": 0.966,
+      "corr_v7": -0.08
+    },
+    {
+      "label": "GER40_Thu_L",
+      "family": "F2_idxDOW",
+      "net_pct": -42.9,
+      "win_pct": 52.0,
+      "maxDD_pct": -44.0,
+      "n": 514,
+      "perm_p": 0.9679,
+      "corr_v7": 0.02
+    },
+    {
+      "label": "UK100_Mon_S",
+      "family": "F2_idxDOW",
+      "net_pct": -35.7,
+      "win_pct": 43.0,
+      "maxDD_pct": -39.8,
+      "n": 471,
+      "perm_p": 0.9706,
+      "corr_v7": -0.19
+    },
+    {
+      "label": "JP225_Tue_S",
+      "family": "F2_idxDOW",
+      "net_pct": -41.2,
+      "win_pct": 50.0,
+      "maxDD_pct": -42.6,
+      "n": 498,
+      "perm_p": 0.976,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "BTCUSD_Fri_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -85.8,
+      "win_pct": 44.0,
+      "maxDD_pct": -87.6,
+      "n": 522,
+      "perm_p": 0.9779,
+      "corr_v7": 0.04
+    },
+    {
+      "label": "WTI_Thu_S",
+      "family": "F4_commDOW",
+      "net_pct": -75.1,
+      "win_pct": 44.0,
+      "maxDD_pct": -79.2,
+      "n": 507,
+      "perm_p": 0.9779,
+      "corr_v7": 0.12
+    },
+    {
+      "label": "UK100_TOM_S",
+      "family": "F1_idxTOM",
+      "net_pct": -35.2,
+      "win_pct": 44.0,
+      "maxDD_pct": -34.9,
+      "n": 483,
+      "perm_p": 0.9796,
+      "corr_v7": 0.0
+    },
+    {
+      "label": "US500_TOM_S",
+      "family": "F1_idxTOM",
+      "net_pct": -39.3,
+      "win_pct": 42.0,
+      "maxDD_pct": -42.0,
+      "n": 483,
+      "perm_p": 0.9798,
+      "corr_v7": -0.09
+    },
+    {
+      "label": "US500_Tue_S",
+      "family": "F2_idxDOW",
+      "net_pct": -36.5,
+      "win_pct": 43.0,
+      "maxDD_pct": -37.3,
+      "n": 518,
+      "perm_p": 0.9816,
+      "corr_v7": 0.12
+    },
+    {
+      "label": "WTI_Fri_S",
+      "family": "F4_commDOW",
+      "net_pct": -81.8,
+      "win_pct": 42.0,
+      "maxDD_pct": -84.7,
+      "n": 507,
+      "perm_p": 0.9826,
+      "corr_v7": -0.09
+    },
+    {
+      "label": "RV_AUDUSD_NZDUSD_MO",
+      "family": "F5_relval",
+      "net_pct": -12.6,
+      "win_pct": 7.0,
+      "maxDD_pct": -15.8,
+      "n": 2541,
+      "perm_p": 0.9871,
+      "corr_v7": -0.14
+    },
+    {
+      "label": "ETHUSD_Wed_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -93.4,
+      "win_pct": 47.0,
+      "maxDD_pct": -97.1,
+      "n": 447,
+      "perm_p": 0.9874,
+      "corr_v7": 0.08
+    },
+    {
+      "label": "JP225_Wed_S",
+      "family": "F2_idxDOW",
+      "net_pct": -43.5,
+      "win_pct": 45.0,
+      "maxDD_pct": -43.8,
+      "n": 500,
+      "perm_p": 0.988,
+      "corr_v7": 0.19
+    },
+    {
+      "label": "NAS100_Tue_S",
+      "family": "F2_idxDOW",
+      "net_pct": -49.7,
+      "win_pct": 42.0,
+      "maxDD_pct": -49.8,
+      "n": 518,
+      "perm_p": 0.9898,
+      "corr_v7": 0.17
+    },
+    {
+      "label": "XAUUSD_Wed_S",
+      "family": "F4_commDOW",
+      "net_pct": -40.2,
+      "win_pct": 44.0,
+      "maxDD_pct": -45.5,
+      "n": 515,
+      "perm_p": 0.9902,
+      "corr_v7": -0.01
+    },
+    {
+      "label": "RV_US500_NAS100_MO",
+      "family": "F5_relval",
+      "net_pct": -21.8,
+      "win_pct": 7.0,
+      "maxDD_pct": -25.0,
+      "n": 2455,
+      "perm_p": 0.9904,
+      "corr_v7": 0.13
+    },
+    {
+      "label": "XAUUSD_Tue_S",
+      "family": "F4_commDOW",
+      "net_pct": -46.0,
+      "win_pct": 45.0,
+      "maxDD_pct": -49.4,
+      "n": 518,
+      "perm_p": 0.9912,
+      "corr_v7": -0.08
+    },
+    {
+      "label": "GER40_TOM_S",
+      "family": "F1_idxTOM",
+      "net_pct": -49.9,
+      "win_pct": 43.0,
+      "maxDD_pct": -51.9,
+      "n": 483,
+      "perm_p": 0.9942,
+      "corr_v7": -0.1
+    },
+    {
+      "label": "JP225_Mon_S",
+      "family": "F2_idxDOW",
+      "net_pct": -48.9,
+      "win_pct": 44.0,
+      "maxDD_pct": -49.9,
+      "n": 449,
+      "perm_p": 0.9956,
+      "corr_v7": -0.38
+    },
+    {
+      "label": "RV_AUDUSD_NZDUSD_MR",
+      "family": "F5_relval",
+      "net_pct": -15.4,
+      "win_pct": 6.0,
+      "maxDD_pct": -15.7,
+      "n": 2541,
+      "perm_p": 0.9962,
+      "corr_v7": 0.14
+    },
+    {
+      "label": "XAUUSD_TOM_S",
+      "family": "F1_idxTOM",
+      "net_pct": -54.7,
+      "win_pct": 41.0,
+      "maxDD_pct": -55.3,
+      "n": 483,
+      "perm_p": 0.9982,
+      "corr_v7": -0.01
+    },
+    {
+      "label": "XAUUSD_Thu_S",
+      "family": "F4_commDOW",
+      "net_pct": -48.7,
+      "win_pct": 43.0,
+      "maxDD_pct": -58.0,
+      "n": 507,
+      "perm_p": 0.9982,
+      "corr_v7": 0.05
+    },
+    {
+      "label": "BTCUSD_Sat_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -85.9,
+      "win_pct": 37.0,
+      "maxDD_pct": -85.4,
+      "n": 522,
+      "perm_p": 0.9982,
+      "corr_v7": 0.13
+    },
+    {
+      "label": "UK100_Tue_S",
+      "family": "F2_idxDOW",
+      "net_pct": -47.3,
+      "win_pct": 41.0,
+      "maxDD_pct": -49.3,
+      "n": 514,
+      "perm_p": 0.9984,
+      "corr_v7": -0.11
+    },
+    {
+      "label": "BTCUSD_Wed_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -94.4,
+      "win_pct": 46.0,
+      "maxDD_pct": -95.2,
+      "n": 522,
+      "perm_p": 0.9986,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "XAGUSD_Tue_S",
+      "family": "F4_commDOW",
+      "net_pct": -81.3,
+      "win_pct": 44.0,
+      "maxDD_pct": -83.0,
+      "n": 518,
+      "perm_p": 0.9992,
+      "corr_v7": -0.01
+    },
+    {
+      "label": "BTCUSD_Mon_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -97.1,
+      "win_pct": 45.0,
+      "maxDD_pct": -97.2,
+      "n": 521,
+      "perm_p": 0.9995,
+      "corr_v7": -0.05
+    },
+    {
+      "label": "UK100_Thu_L",
+      "family": "F2_idxDOW",
+      "net_pct": -54.8,
+      "win_pct": 48.0,
+      "maxDD_pct": -60.2,
+      "n": 517,
+      "perm_p": 0.9998,
+      "corr_v7": -0.02
+    },
+    {
+      "label": "GER40_Mon_S",
+      "family": "F2_idxDOW",
+      "net_pct": -62.0,
+      "win_pct": 44.0,
+      "maxDD_pct": -62.5,
+      "n": 496,
+      "perm_p": 0.9999,
+      "corr_v7": -0.26
+    },
+    {
+      "label": "NAS100_Mon_S",
+      "family": "F2_idxDOW",
+      "net_pct": -71.0,
+      "win_pct": 37.0,
+      "maxDD_pct": -71.7,
+      "n": 469,
+      "perm_p": 1.0,
+      "corr_v7": -0.11
+    },
+    {
+      "label": "UK100_Wed_S",
+      "family": "F2_idxDOW",
+      "net_pct": -54.0,
+      "win_pct": 42.0,
+      "maxDD_pct": -54.1,
+      "n": 517,
+      "perm_p": 1.0,
+      "corr_v7": 0.1
+    },
+    {
+      "label": "US500_Mon_S",
+      "family": "F2_idxDOW",
+      "net_pct": -56.7,
+      "win_pct": 37.0,
+      "maxDD_pct": -57.2,
+      "n": 469,
+      "perm_p": 1.0,
+      "corr_v7": -0.21
+    },
+    {
+      "label": "RV_EURUSD_GBPUSD_MO",
+      "family": "F5_relval",
+      "net_pct": -26.9,
+      "win_pct": 4.0,
+      "maxDD_pct": -28.7,
+      "n": 2541,
+      "perm_p": 1.0,
+      "corr_v7": -0.05
+    },
+    {
+      "label": "ETHUSD_Sat_S",
+      "family": "F3_cryptoDOW",
+      "net_pct": -93.9,
+      "win_pct": 40.0,
+      "maxDD_pct": -93.6,
+      "n": 448,
+      "perm_p": 1.0,
+      "corr_v7": 0.0
+    }
+  ],
+  "N": 130,
+  "alpha": 0.0003846153846153846,
+  "emon_gates": {
+    "G1_10y": true,
+    "G3_perm<Bonf": false,
+    "G4_placebo": true,
+    "G5_jackknife": false,
+    "G6_IS/OOS": "True",
+    "G7_WF>=4/5": true,
+    "G8_cost2x": "True",
+    "G9_-10%fit": true
+  },
+  "emon_grade": "STRONG-LEAD",
+  "emon_full": {
+    "net_pct": 87.0,
+    "win_pct": 56.0,
+    "maxDD_pct": -14.9,
+    "n": 516
+  },
+  "corr": {
+    "emon_v7": 0.221,
+    "emon_e5": -0.061,
+    "v7_e5": 0.029
+  }
+}

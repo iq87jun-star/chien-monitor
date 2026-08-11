@@ -1,0 +1,384 @@
+{
+  "n_tests": 130,
+  "alpha_bonf": 0.000385,
+  "sig_count": 7,
+  "bonferroni_survivors": 0,
+  "span": [
+    "2016-06",
+    "2026-06"
+  ],
+  "all_significant": [
+    {
+      "label": "NAS100_Mon_L",
+      "family": "F2_idxDOW",
+      "net_pct": 139.1,
+      "win_pct": 60.0,
+      "maxDD_pct": -17.0,
+      "n": 469,
+      "perm_p": 0.0008,
+      "corr_v7": 0.11
+    },
+    {
+      "label": "US500_Mon_L",
+      "family": "F2_idxDOW",
+      "net_pct": 66.8,
+      "win_pct": 60.0,
+      "maxDD_pct": -12.9,
+      "n": 469,
+      "perm_p": 0.0045,
+      "corr_v7": 0.22
+    },
+    {
+      "label": "GER40_Mon_L",
+      "family": "F2_idxDOW",
+      "net_pct": 82.7,
+      "win_pct": 52.0,
+      "maxDD_pct": -11.8,
+      "n": 496,
+      "perm_p": 0.0077,
+      "corr_v7": 0.26
+    },
+    {
+      "label": "BTCUSD_Mon_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": 336.9,
+      "win_pct": 51.0,
+      "maxDD_pct": -44.9,
+      "n": 521,
+      "perm_p": 0.0163,
+      "corr_v7": 0.05
+    },
+    {
+      "label": "XAGUSD_Tue_L",
+      "family": "F4_commDOW",
+      "net_pct": 130.8,
+      "win_pct": 52.0,
+      "maxDD_pct": -40.8,
+      "n": 518,
+      "perm_p": 0.0195,
+      "corr_v7": 0.01
+    },
+    {
+      "label": "ETHUSD_Sat_L",
+      "family": "F3_cryptoDOW",
+      "net_pct": 192.6,
+      "win_pct": 53.0,
+      "maxDD_pct": -33.6,
+      "n": 448,
+      "perm_p": 0.0293,
+      "corr_v7": -0.0
+    },
+    {
+      "label": "UK100_Wed_L",
+      "family": "F2_idxDOW",
+      "net_pct": 37.9,
+      "win_pct": 54.0,
+      "maxDD_pct": -11.8,
+      "n": 517,
+      "perm_p": 0.0457,
+      "corr_v7": -0.1
+    }
+  ],
+  "detail": {
+    "NAS100_Mon_L": {
+      "full": {
+        "net_pct": 139.1,
+        "win_pct": 60.0,
+        "maxDD_pct": -17.0,
+        "n": 469,
+        "perm_p": 0.0008,
+        "corr_v7": 0.11
+      },
+      "bonferroni_survivor": false,
+      "IS": {
+        "net_pct": 47.4,
+        "win_pct": 64.0,
+        "maxDD_pct": -17.0,
+        "n": 234
+      },
+      "oos": {
+        "net_pct": 62.2,
+        "win_pct": 57.0,
+        "maxDD_pct": -10.5,
+        "n": 235,
+        "perm_p": 0.0063
+      },
+      "jackknife_max_p": 0.041,
+      "jackknife": {
+        "2016": 0.001,
+        "2017": 0.0,
+        "2018": 0.0,
+        "2019": 0.001,
+        "2020": 0.041,
+        "2021": 0.0,
+        "2022": 0.002,
+        "2023": 0.004,
+        "2024": 0.001,
+        "2025": 0.001,
+        "2026": 0.003
+      },
+      "cost_net": {
+        "1x": 139.1,
+        "2x": 107.8,
+        "3x": 80.6
+      }
+    },
+    "US500_Mon_L": {
+      "full": {
+        "net_pct": 66.8,
+        "win_pct": 60.0,
+        "maxDD_pct": -12.9,
+        "n": 469,
+        "perm_p": 0.0045,
+        "corr_v7": 0.22
+      },
+      "bonferroni_survivor": false,
+      "IS": {
+        "net_pct": 27.5,
+        "win_pct": 62.0,
+        "maxDD_pct": -12.9,
+        "n": 234
+      },
+      "oos": {
+        "net_pct": 30.8,
+        "win_pct": 58.0,
+        "maxDD_pct": -7.9,
+        "n": 235,
+        "perm_p": 0.019
+      },
+      "jackknife_max_p": 0.086,
+      "jackknife": {
+        "2016": 0.003,
+        "2017": 0.005,
+        "2018": 0.0,
+        "2019": 0.006,
+        "2020": 0.086,
+        "2021": 0.007,
+        "2022": 0.004,
+        "2023": 0.013,
+        "2024": 0.006,
+        "2025": 0.01,
+        "2026": 0.009
+      },
+      "cost_net": {
+        "1x": 66.8,
+        "2x": 44.9,
+        "3x": 25.9
+      }
+    },
+    "GER40_Mon_L": {
+      "full": {
+        "net_pct": 82.7,
+        "win_pct": 52.0,
+        "maxDD_pct": -11.8,
+        "n": 496,
+        "perm_p": 0.0077,
+        "corr_v7": 0.26
+      },
+      "bonferroni_survivor": false,
+      "IS": {
+        "net_pct": 47.4,
+        "win_pct": 53.0,
+        "maxDD_pct": -11.0,
+        "n": 248
+      },
+      "oos": {
+        "net_pct": 23.9,
+        "win_pct": 51.0,
+        "maxDD_pct": -11.8,
+        "n": 248,
+        "perm_p": 0.101
+      },
+      "jackknife_max_p": 0.149,
+      "jackknife": {
+        "2016": 0.006,
+        "2017": 0.008,
+        "2018": 0.003,
+        "2019": 0.008,
+        "2020": 0.149,
+        "2021": 0.008,
+        "2022": 0.005,
+        "2023": 0.005,
+        "2024": 0.011,
+        "2025": 0.014,
+        "2026": 0.023
+      },
+      "cost_net": {
+        "1x": 82.7,
+        "2x": 57.5,
+        "3x": 35.7
+      }
+    },
+    "BTCUSD_Mon_L": {
+      "full": {
+        "net_pct": 336.9,
+        "win_pct": 51.0,
+        "maxDD_pct": -44.9,
+        "n": 521,
+        "perm_p": 0.0163,
+        "corr_v7": 0.05
+      },
+      "bonferroni_survivor": false,
+      "IS": {
+        "net_pct": 322.3,
+        "win_pct": 53.0,
+        "maxDD_pct": -43.2,
+        "n": 260
+      },
+      "oos": {
+        "net_pct": 3.5,
+        "win_pct": 50.0,
+        "maxDD_pct": -43.1,
+        "n": 261,
+        "perm_p": 0.3693
+      },
+      "jackknife_max_p": 0.155,
+      "jackknife": {
+        "2016": 0.019,
+        "2017": 0.155,
+        "2018": 0.004,
+        "2019": 0.031,
+        "2020": 0.071,
+        "2021": 0.013,
+        "2022": 0.013,
+        "2023": 0.018,
+        "2024": 0.048,
+        "2025": 0.015,
+        "2026": 0.032
+      },
+      "cost_net": {
+        "1x": 336.9,
+        "2x": 134.0,
+        "3x": 25.3
+      }
+    },
+    "XAGUSD_Tue_L": {
+      "full": {
+        "net_pct": 130.8,
+        "win_pct": 52.0,
+        "maxDD_pct": -40.8,
+        "n": 518,
+        "perm_p": 0.0195,
+        "corr_v7": 0.01
+      },
+      "bonferroni_survivor": false,
+      "IS": {
+        "net_pct": 9.3,
+        "win_pct": 51.0,
+        "maxDD_pct": -34.7,
+        "n": 259
+      },
+      "oos": {
+        "net_pct": 111.1,
+        "win_pct": 53.0,
+        "maxDD_pct": -20.9,
+        "n": 259,
+        "perm_p": 0.0112
+      },
+      "jackknife_max_p": 0.144,
+      "jackknife": {
+        "2016": 0.021,
+        "2017": 0.03,
+        "2018": 0.024,
+        "2019": 0.048,
+        "2020": 0.005,
+        "2021": 0.009,
+        "2022": 0.043,
+        "2023": 0.016,
+        "2024": 0.013,
+        "2025": 0.144,
+        "2026": 0.056
+      },
+      "cost_net": {
+        "1x": 130.8,
+        "2x": 69.2,
+        "3x": 24.0
+      }
+    },
+    "ETHUSD_Sat_L": {
+      "full": {
+        "net_pct": 192.6,
+        "win_pct": 53.0,
+        "maxDD_pct": -33.6,
+        "n": 448,
+        "perm_p": 0.0293,
+        "corr_v7": -0.0
+      },
+      "bonferroni_survivor": false,
+      "IS": {
+        "net_pct": 223.9,
+        "win_pct": 57.0,
+        "maxDD_pct": -24.6,
+        "n": 224
+      },
+      "oos": {
+        "net_pct": -9.7,
+        "win_pct": 49.0,
+        "maxDD_pct": -32.7,
+        "n": 224,
+        "perm_p": 0.5387
+      },
+      "jackknife_max_p": 0.065,
+      "jackknife": {
+        "2017": 0.035,
+        "2018": 0.052,
+        "2019": 0.053,
+        "2020": 0.065,
+        "2021": 0.05,
+        "2022": 0.013,
+        "2023": 0.019,
+        "2024": 0.039,
+        "2025": 0.029,
+        "2026": 0.021
+      },
+      "cost_net": {
+        "1x": 192.6,
+        "2x": 56.4,
+        "3x": -16.5
+      }
+    },
+    "UK100_Wed_L": {
+      "full": {
+        "net_pct": 37.9,
+        "win_pct": 54.0,
+        "maxDD_pct": -11.8,
+        "n": 517,
+        "perm_p": 0.0457,
+        "corr_v7": -0.1
+      },
+      "bonferroni_survivor": false,
+      "IS": {
+        "net_pct": 9.2,
+        "win_pct": 53.0,
+        "maxDD_pct": -11.8,
+        "n": 258
+      },
+      "oos": {
+        "net_pct": 26.3,
+        "win_pct": 55.0,
+        "maxDD_pct": -10.7,
+        "n": 259,
+        "perm_p": 0.0272
+      },
+      "jackknife_max_p": 0.104,
+      "jackknife": {
+        "2016": 0.058,
+        "2017": 0.048,
+        "2018": 0.053,
+        "2019": 0.026,
+        "2020": 0.04,
+        "2021": 0.104,
+        "2022": 0.086,
+        "2023": 0.027,
+        "2024": 0.041,
+        "2025": 0.078,
+        "2026": 0.104
+      },
+      "cost_net": {
+        "1x": 37.9,
+        "2x": 12.2,
+        "3x": -8.8
+      }
+    }
+  }
+}

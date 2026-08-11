@@ -1,0 +1,21 @@
+; FundedNext Stellar EA v5 — H4 時系列モメンタム(TSMOM) 研究用プリセット
+; ★ 検証結果: ❌ NO-GO(本番不可)。順列 p<.05 は GBPJPY のみ、真MaxDD -35〜-150%。
+; プールPF1.18は相関JPYクロスを束ねた錯覚で、ペア別+順列で消滅。詳細 docs/11。
+; 本ファイルはストラテジーテスターでの再現確認(負の結果検証)用。
+InpLookback=40
+InpTrendEma=200
+InpAtrPeriod=14
+InpAtrSLMult=2.0
+InpRR=3.0
+InpHoldH4Bars=60
+InpMinStopPips=6.0
+InpMaxStopPips=400.0
+InpRiskPerTradePct=0.25
+InpProfitTargetPct=8.0
+InpEquityFloorDDPct=10.0
+InpDailyStopPct=5.0
+InpMaxTradesPerDay=3
+InpMaxDailyRiskPct=0.75
+InpMinLot=0.01
+InpMaxSpreadPips=3.0
+InpMagic=540005

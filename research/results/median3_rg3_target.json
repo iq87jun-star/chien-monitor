@@ -1,0 +1,147 @@
+{
+  "data_source": "Yahoo(fixed-window)",
+  "sleeve": {
+    "raw": {
+      "net_pct": 56.9,
+      "maxDD_pct": -15.3,
+      "n": 120
+    },
+    "RG3": {
+      "net_pct": 41.6,
+      "maxDD_pct": -6.4,
+      "n": 115
+    }
+  },
+  "grids": {
+    "FundedNext +8% / median-3": {
+      "v4:E-Mon 55:45|raw": {
+        "mult": 2.15,
+        "p95DD": -21.0,
+        "pass_pct": 79.8,
+        "fail_pct": 20.2,
+        "med": 4
+      },
+      "v4:E-Mon 55:45|RG3": {
+        "mult": 2.08,
+        "p95DD": -19.0,
+        "pass_pct": 83.4,
+        "fail_pct": 16.6,
+        "med": 3
+      },
+      "v4:E-Mon 70:30|raw": {
+        "mult": 2.12,
+        "p95DD": -23.0,
+        "pass_pct": 78.7,
+        "fail_pct": 21.3,
+        "med": 4
+      },
+      "v4:E-Mon 70:30|RG3": {
+        "mult": 1.98,
+        "p95DD": -21.0,
+        "pass_pct": 83.5,
+        "fail_pct": 16.5,
+        "med": 4
+      },
+      "v4:E-Mon 40:60|raw": {
+        "mult": 2.32,
+        "p95DD": -23.0,
+        "pass_pct": 78.5,
+        "fail_pct": 21.5,
+        "med": 3
+      },
+      "v4:E-Mon 40:60|RG3": {
+        "mult": 2.25,
+        "p95DD": -21.0,
+        "pass_pct": 82.9,
+        "fail_pct": 17.1,
+        "med": 4
+      },
+      "v4 単独|raw": {
+        "mult": 1.55,
+        "p95DD": -25.0,
+        "pass_pct": 76.8,
+        "fail_pct": 23.2,
+        "med": 4
+      },
+      "E-Mon 単独|raw": {
+        "mult": 2.27,
+        "p95DD": -36.0,
+        "pass_pct": 67.1,
+        "fail_pct": 32.9,
+        "med": 3
+      },
+      "E-Mon 単独|RG3": {
+        "mult": 1.94,
+        "p95DD": -26.0,
+        "pass_pct": 71.2,
+        "fail_pct": 28.8,
+        "med": 3
+      }
+    },
+    "FundedNext +8% / median-4": {
+      "v4:E-Mon 55:45|raw": {
+        "mult": 1.83,
+        "p95DD": -18.0,
+        "pass_pct": 82.8,
+        "fail_pct": 17.2,
+        "med": 5
+      },
+      "v4:E-Mon 55:45|RG3": {
+        "mult": 1.77,
+        "p95DD": -17.0,
+        "pass_pct": 88.5,
+        "fail_pct": 11.5,
+        "med": 5
+      },
+      "v4:E-Mon 70:30|raw": {
+        "mult": 1.68,
+        "p95DD": -18.0,
+        "pass_pct": 83.5,
+        "fail_pct": 16.5,
+        "med": 5
+      },
+      "v4:E-Mon 70:30|RG3": {
+        "mult": 1.63,
+        "p95DD": -17.0,
+        "pass_pct": 87.4,
+        "fail_pct": 12.6,
+        "med": 5
+      },
+      "v4:E-Mon 40:60|raw": {
+        "mult": 1.92,
+        "p95DD": -20.0,
+        "pass_pct": 80.6,
+        "fail_pct": 19.4,
+        "med": 5
+      },
+      "v4:E-Mon 40:60|RG3": {
+        "mult": 1.76,
+        "p95DD": -16.0,
+        "pass_pct": 86.1,
+        "fail_pct": 13.9,
+        "med": 4
+      },
+      "v4 単独|raw": {
+        "mult": 1.25,
+        "p95DD": -20.0,
+        "pass_pct": 78.6,
+        "fail_pct": 21.4,
+        "med": 5
+      },
+      "E-Mon 単独|raw": {
+        "mult": 1.73,
+        "p95DD": -28.0,
+        "pass_pct": 68.6,
+        "fail_pct": 31.4,
+        "med": 4
+      },
+      "E-Mon 単独|RG3": {
+        "mult": 1.61,
+        "p95DD": -22.0,
+        "pass_pct": 73.0,
+        "fail_pct": 27.0,
+        "med": 4
+      }
+    }
+  }
+}

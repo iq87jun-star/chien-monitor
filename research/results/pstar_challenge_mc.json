@@ -1,0 +1,143 @@
+{
+  "保守 (−6%)": {
+    "scale": 3.704,
+    "p95_annual_maxDD": -6.0,
+    "P1": {
+      "pass_pct": 99.7,
+      "fail_pct": 0.3,
+      "timeout_pct": 0.0,
+      "med_month": 9,
+      "p25": 6,
+      "p75": 14,
+      "p90": 20
+    },
+    "P2": {
+      "pass_pct": 99.8,
+      "fail_pct": 0.2,
+      "timeout_pct": 0.0,
+      "med_month": 6,
+      "p25": 4,
+      "p75": 9,
+      "p90": 14
+    },
+    "both_pass_pct": 99.5,
+    "both_med_month": 15
+  },
+  "中庸 (−8%)": {
+    "scale": 4.972,
+    "p95_annual_maxDD": -8.0,
+    "P1": {
+      "pass_pct": 99.0,
+      "fail_pct": 1.0,
+      "timeout_pct": 0.0,
+      "med_month": 7,
+      "p25": 4,
+      "p75": 11,
+      "p90": 16
+    },
+    "P2": {
+      "pass_pct": 99.1,
+      "fail_pct": 0.9,
+      "timeout_pct": 0.0,
+      "med_month": 4,
+      "p25": 3,
+      "p75": 7,
+      "p90": 12
+    },
+    "both_pass_pct": 98.1,
+    "both_med_month": 11
+  },
+  "攻め (−10%)": {
+    "scale": 6.0,
+    "p95_annual_maxDD": -9.6,
+    "P1": {
+      "pass_pct": 97.9,
+      "fail_pct": 2.1,
+      "timeout_pct": 0.0,
+      "med_month": 5,
+      "p25": 4,
+      "p75": 9,
+      "p90": 14
+    },
+    "P2": {
+      "pass_pct": 98.2,
+      "fail_pct": 1.8,
+      "timeout_pct": 0.0,
+      "med_month": 4,
+      "p25": 2,
+      "p75": 6,
+      "p90": 10
+    },
+    "both_pass_pct": 96.1,
+    "both_med_month": 9
+  },
+  "超攻め×1.5": {
+    "scale": 9.0,
+    "p95_annual_maxDD": -14.2,
+    "P1": {
+      "pass_pct": 94.5,
+      "fail_pct": 5.5,
+      "timeout_pct": 0.0,
+      "med_month": 4,
+      "p25": 2,
+      "p75": 6,
+      "p90": 10
+    },
+    "P2": {
+      "pass_pct": 95.2,
+      "fail_pct": 4.8,
+      "timeout_pct": 0.0,
+      "med_month": 2,
+      "p25": 1,
+      "p75": 4,
+      "p90": 7
+    },
+    "both_pass_pct": 90.0
+  },
+  "超攻め×2.0": {
+    "scale": 12.0,
+    "p95_annual_maxDD": -18.6,
+    "P1": {
+      "pass_pct": 89.1,
+      "fail_pct": 10.9,
+      "timeout_pct": 0.0,
+      "med_month": 3,
+      "p25": 2,
+      "p75": 4,
+      "p90": 7
+    },
+    "P2": {
+      "pass_pct": 90.1,
+      "fail_pct": 9.9,
+      "timeout_pct": 0.0,
+      "med_month": 2,
+      "p25": 1,
+      "p75": 3,
+      "p90": 5
+    },
+    "both_pass_pct": 80.3
+  },
+  "超攻め×3.0": {
+    "scale": 18.0,
+    "p95_annual_maxDD": -27.2,
+    "P1": {
+      "pass_pct": 79.8,
+      "fail_pct": 20.2,
+      "timeout_pct": 0.0,
+      "med_month": 2,
+      "p25": 1,
+      "p75": 3,
+      "p90": 4
+    },
+    "P2": {
+      "pass_pct": 83.6,
+      "fail_pct": 16.4,
+      "timeout_pct": 0.0,
+      "med_month": 1,
+      "p25": 1,
+      "p75": 2,
+      "p90": 3
+    },
+    "both_pass_pct": 66.7
+  }
+}

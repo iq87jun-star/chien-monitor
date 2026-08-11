@@ -1,0 +1,28 @@
+; 【分散案D 中央3ヶ月・高リスク×1.5】Chien_PortfolioD_AllInOne_PROP に適用。
+; 中央2ヶ月に短縮されるが 失格18%級/p95年DD−26%(Yahoo近似・docs/76)。
+; ⚠ 掛け金返金なし業者(FN)では非推奨寄り=再挑戦コスト前提の超速攻。標準(4.9%)との差を理解の上で。
+; サイズ: v7 2.92%/wk・v4 0.88%/tr・E-Mon 2.92%/wk・E5 2.34%leg。ガードは標準と同一。
+InpScenario=1
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY,USDJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpEMonSymbols=NAS100,US500,GER40
+InpInitialBalance=0.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpV7HoursUTC=4,6,8,10
+InpV7ShotsPerWeek=12
+InpV7HoldHours=24
+InpEMonWeekday=1
+InpEMonHoursUTC=9,14
+InpEMonShotsPerWeek=6
+InpEMonHoldHours=24
+InpEMonRegimeGate=true
+InpRG_SMA=200
+InpRG_VolWin=20
+InpRG_VolLB=252
+InpRG_VolQ=0.80
+InpMagicBase=760720
+InpSlippagePoints=30
+InpVerboseLog=true

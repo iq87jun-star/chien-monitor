@@ -1,0 +1,61 @@
+{
+  "Q1_mult_55_45": 1.99,
+  "Q1": {
+    "pass_pct": 85.2,
+    "fail_pct": 14.8,
+    "timeout_pct": 0.0,
+    "med_month": 3,
+    "p25": 2,
+    "p75": 6,
+    "p90": 9
+  },
+  "v4:E-Mon 55:45 (確定)": {
+    "mult": 1.99,
+    "p95DD": -19.5,
+    "pass_pct": 85.2,
+    "fail_pct": 14.8,
+    "med": 3
+  },
+  "v4:E-Mon 70:30 (v4厚)": {
+    "mult": 1.97,
+    "p95DD": -21.6,
+    "pass_pct": 84.5,
+    "fail_pct": 15.5,
+    "med": 3
+  },
+  "v4:E-Mon 40:60 (指数厚)": {
+    "mult": 2.12,
+    "p95DD": -23.1,
+    "pass_pct": 84.2,
+    "fail_pct": 15.8,
+    "med": 3
+  },
+  "v4 単独 100": {
+    "mult": 1.44,
+    "p95DD": -24.4,
+    "pass_pct": 78.6,
+    "fail_pct": 21.4,
+    "med": 3
+  },
+  "E-Mon 単独 100": {
+    "mult": 2.07,
+    "p95DD": -38.3,
+    "pass_pct": 71.7,
+    "fail_pct": 28.3,
+    "med": 3
+  },
+  "v4:E-Mon:暗号 50:35:15": {
+    "mult": 2.26,
+    "p95DD": -20.3,
+    "pass_pct": 84.7,
+    "fail_pct": 15.3,
+    "med": 3
+  },
+  "v4:E-Mon:暗号 45:30:25": {
+    "mult": 2.33,
+    "p95DD": -21.0,
+    "pass_pct": 85.6,
+    "fail_pct": 14.4,
+    "med": 3
+  }
+}
