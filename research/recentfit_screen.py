@@ -255,7 +255,10 @@ def cell_stats(s):
 
 
 def select_cells(table):
-    """事前固定ルール: score降順→フィルタ→銘柄1・ファミリー2制約→Top4→逆ボラ加重(cap40%)"""
+    """事前固定ルール: score降順→フィルタ→銘柄1・ファミリー2制約→Top4→逆ボラ加重(cap40%)
+    注(2026-08-08レビュー): capは一回適用→再正規化のため、最終加重はcapを僅かに超え得る
+    (例: 2026-08-06非FX選抜のHold_UK100=41.3%)。事前登録済み規則の事後変更を避けるため
+    実装は変更しない。次回スクリーニングでcapを厳密化する場合はdocsに変更を事前登録すること。"""
     ok = [(k, v) for k, v in table.items()
           if v["stats"]["n_active_12m"] >= MIN_ACTIVE_12M
           and v["stats"]["cum_12m"] > 0 and v["stats"]["cum_6m"] > 0
@@ -304,7 +307,9 @@ def mc_challenge(daily, mult, rng, n=N_MC, block=5, max_days=250):
     5日ブロックブートストラップ。返り値: 到達率・失格率・所要日数分位。"""
     r = np.clip(np.asarray(daily.values, float) * mult, -DAY_GUARD, None)
     nb = len(r) - block + 1
-    starts = rng.integers(0, nb, size=(n, max_days // block + 2))
+    # v2026-08-08修正: 旧実装は max_days//block+2=52ブロック=260日分しか生成せず、
+    # P2判定が意図(max_days*2=500日)の半分強で打ち切られていた(funded率が下振れ=保守側)。
+    starts = rng.integers(0, nb, size=(n, (max_days * 2) // block + 1))
     paths = r[(starts[:, :, None] + np.arange(block)[None, None, :])].reshape(n, -1)[:, :max_days * 2]
     eq = np.cumprod(1 + paths, axis=1)
     p1_days = np.full(n, -1); p2_days = np.full(n, -1); failed = np.zeros(n, bool)
