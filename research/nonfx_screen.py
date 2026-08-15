@@ -47,13 +47,16 @@ def fetch_daily(ysym, rng="10y"):
     return rows
 
 # ------------------------------------------------------------------ universe
-# (Yahooシンボル, 表示名, CFD相当) — 非FX: 指数/貴金属/エネルギー/銅
+# (Yahooシンボル, 表示名, CFD相当) — 非FX。
+# rev5(2026-08-15): FN取扱銘柄に整合(help.fundednext.com 8224087 実査)。
+#   COPPER/NATGASはFNに存在しないため除去。UKOIL=FNのUKOUSD(Brent)。
+#   FN表記: US500=SPX500 / NAS100=NDX100 / GER40=GER30(EA別名で解決)。
 UNIVERSE = [
     ("^N225", "JP225"), ("^GSPC", "US500"), ("^DJI", "US30"), ("^NDX", "NAS100"),
     ("^GDAXI", "GER40"), ("^FTSE", "UK100"), ("^STOXX50E", "EUSTX50"),
     ("^HSI", "HK50"), ("^AXJO", "AUS200"),
-    ("GC=F", "XAUUSD"), ("SI=F", "XAGUSD"), ("PL=F", "XPTUSD"), ("HG=F", "COPPER"),
-    ("CL=F", "USOIL"), ("BZ=F", "UKOIL"), ("NG=F", "NATGAS"),
+    ("GC=F", "XAUUSD"), ("SI=F", "XAGUSD"), ("PL=F", "XPTUSD"),
+    ("CL=F", "USOIL"), ("BZ=F", "UKOIL"),
 ]
 # 現行全ブックのプロキシ(相関除外用)。2026-08-15改訂:
 # claude/ea-code-review-integration-p8p06z の焼き込みEA群から全口座のレッグを抽出。

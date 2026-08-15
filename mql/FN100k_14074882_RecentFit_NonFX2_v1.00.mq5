@@ -5,11 +5,16 @@
 //|  ⚠正式配備前の残タスク: p8p06z系recentfit_nonfx_screen.pyでの     |
 //|    再校正+MC / FNデモでの銘柄実在・スプレッド実測(docs/182 §7同様)|
 //|                                                                   |
-//|  構成(Σw=1.0): DOW US500火L 0.308 / HK50月L 0.208 / 銅火L 0.142 / |
-//|    JP225水L 0.140 / 銀火L 0.060 + v4 銅 0.142                     |
+//|  構成(Σw=1.0・rev5=FN取扱銘柄整合): DOW US500火L 0.309 /          |
+//|    HK50月L 0.209 / HK50木S 0.209 / JP225水L 0.140 /               |
+//|    XPT火L 0.072 / 銀火L 0.060 (v4なし)                            |
+//|  ★FN銘柄実在(2026-08-15 help.fundednext.com 8224087実査):         |
+//|    SPX500/HK50/JP225/XAGUSD/XPTUSD 全て取扱あり。                 |
+//|    銅・NATGASはFNに無いためrev4構成から除去→再選抜済み。          |
+//|    US500はFN表記SPX500(ResolveSymbol別名で自動解決)。             |
 //|  校正(0.8×規則移植・コスト未計上の近似):                          |
-//|    12M窓パリティ=2.36x(12M+52%) / 悲観(全期間窓)=0.64x(12M+14%)   |
-//|    既定1.0x=中間(12M+22%/全期間最悪日-1.8%/全期間DD-9.4%→フロア   |
+//|    12M窓パリティ=2.92x(12M+61%) / 悲観(全期間窓)=0.68x(12M+14%)   |
+//|    既定1.0x=中間(12M+21%/全期間最悪日-1.5%/全期間DD-9.3%→フロア   |
 //|    -8%で停止側に倒れる)。正攻法資金化口座のため引き上げは慎重に。 |
 //|                                                                   |
 //|  土俵(FN想定・要フェーズ確認): 日次-5%(日開始max(bal,eq))/静的-10%|
@@ -28,7 +33,7 @@
 //|     レッグ毎に指定可能に(SYM:重み:曜日:方向 のCSV)               |
 //|   ②PipOf非FX対応(point×10・#14166201焼き込みと同方式。           |
 //|     docs/182 §8のbase反映残タスクは別途)                          |
-//|   ③ResolveSymbol別名にHK50/US500/銀/銅系を追加                    |
+//|   ③ResolveSymbol別名にHK50/US500(SPX500)/銀/白金系を追加          |
 //|   ④日次アンカーをFNサーバー日(TimeCurrent)に変更(Fintokei UTC0    |
 //|     から変更。FNダッシュボードの日次線とデモで要突合)             |
 //|   ⑤FN土俵の既定値(フロア-8/日次-4/-4)・利益ロック既定無効        |
@@ -42,7 +47,7 @@
 #property copyright "chien-monitor research"
 #property version   "1.00"
 #property strict
-#property description "[RecentFit NonFX2 FN100k 14074882] DOW US500-Tue/HK50-Mon/COPPER-Tue/JP225-Wed/XAG-Tue L + v4 COPPER. mult 1.0 (calib 0.64 pess / 2.36 12m). Floor -8 (tick), daily -4 stop / -4 close (server day, max(bal,eq)). Lock off (funded). Expiry 2026-10-15 UTC."
+#property description "[RecentFit NonFX2 FN100k 14074882] DOW US500-Tue-L/HK50-Mon-L/HK50-Thu-S/JP225-Wed-L/XPT-Tue-L/XAG-Tue-L. mult 1.0 (calib 0.68 pess / 2.92 12m). Floor -8 (tick), daily -4 stop / -4 close (server day, max(bal,eq)). Lock off (funded). Expiry 2026-10-15 UTC."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -50,8 +55,8 @@
 input bool   InpAcknowledgeBet  = true;   // 本トラック=直近過剰適合の明示ベット(docs/174)を承認
 
 input group "=== 構成(DOW: 銘柄:重み:曜日(1-5orMon..Fri):方向(L/S)) ==="
-input string InpDowLegs  = "US500:0.308:Tue:L,HK50:0.208:Mon:L,COPPER:0.142:Tue:L,JP225:0.140:Wed:L,XAGUSD:0.060:Tue:L";
-input string InpV4Legs   = "COPPER:0.142";              // v4: 日足k≥4合議
+input string InpDowLegs  = "US500:0.309:Tue:L,HK50:0.209:Mon:L,HK50:0.209:Thu:S,JP225:0.140:Wed:L,XPTUSD:0.072:Tue:L,XAGUSD:0.060:Tue:L";
+input string InpV4Legs   = "";                          // v4: rev5では不使用(銅がFN非取扱で脱落)
 input string InpHoldLegs = "";                          // Hold: 本構成では不使用
 input double InpMult     = 1.0;    // リスク倍率(悲観0.64/12M窓2.36。正攻法口座=慎重に)
 
@@ -89,7 +94,7 @@ input int    InpAtrPeriodH1   = 24;
 input double InpCatastropheATR= 2.5;    // 災害SL=2.5×ATR(H1)
 input double InpMinStopPips   = 10.0;
 input double InpMaxSpreadPips = 3.0;
-input string InpDowSpreadCaps = "US500:10.0,HK50:60.0,COPPER:8.0,JP225:120.0,XAGUSD:4.0"; // pip=point×10単位・デモ実測で最終化
+input string InpDowSpreadCaps = "US500:10.0,HK50:60.0,JP225:120.0,XPTUSD:20.0,XAGUSD:4.0"; // pip=point×10単位・デモ実測で最終化
 
 input group "=== v4 レッグ設定(日足k≥4合議) ==="
 input int    InpV4_RSI       = 14;
@@ -159,8 +164,8 @@ string ResolveSymbol(string want)
       bases[nb++]="US500"; bases[nb++]="SPX500"; bases[nb++]="SP500"; bases[nb++]="US500Cash"; bases[nb++]="USA500"; }
    if(StringFind(U,"XAG")>=0 || StringFind(U,"SILVER")>=0){
       bases[nb++]="XAGUSD"; bases[nb++]="SILVER"; bases[nb++]="Silver"; }
-   if(StringFind(U,"COPPER")>=0 || StringFind(U,"XCU")>=0){
-      bases[nb++]="COPPER"; bases[nb++]="Copper"; bases[nb++]="XCUUSD"; bases[nb++]="Copper-C"; bases[nb++]="HG"; }
+   if(StringFind(U,"XPT")>=0 || StringFind(U,"PLATINUM")>=0){
+      bases[nb++]="XPTUSD"; bases[nb++]="PLATINUM"; bases[nb++]="Platinum"; }
    ArrayResize(bases,nb);
    for(int b=0;b<nb;b++)
       for(int s=0;s<ArraySize(suf);s++){
@@ -722,8 +727,12 @@ void EntriesHold()
 //|    HK50寄り1:30UTC/JP225寄り0:00UTCも同様のズレあり。             |
 //|  ・日次アンカー=サーバー日(TimeCurrent)。FNダッシュボードの       |
 //|    日次線とデモで突合してから本番稼働のこと。                     |
-//|  ・銘柄名(HK50/US500/COPPER/XAGUSD/JP225)のFN実在はデモで要確認。 |
-//|    COPPERはFNに無い可能性あり→無ければ重み欠落=サイズ縮小側。    |
+//|  ・銘柄実在はFN公式ヘルプで確認済(SPX500/HK50/JP225/XPT/XAG)。    |
+//|    最終確認はMT5デモの気配表示で(ヘルプとサーバーの差異に備え)。  |
+//|  ・XPT/XAGはスプレッド広め(合計w=0.132に抑制)。デモ実測で         |
+//|    InpDowSpreadCaps暫定値を最終化のこと。                         |
+//|  ・火曜集中(US500+XPT+XAG=w0.441)。火曜の同時DDが日次ガードに     |
+//|    当たり得る。HK50はL(月)/S(木)の2セル=同一銘柄上限ちょうど。    |
 //|  ・週末・窓ギャップは指数・商品でFXより大(docs/169)。災害SLは     |
 //|    ギャップを跳び越え得る。                                       |
 //|  ・置き換え運用: 季節RG3の停止を確認してから起動(ヘッダー⚠参照)。 |
