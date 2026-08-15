@@ -55,13 +55,26 @@ UNIVERSE = [
     ("GC=F", "XAUUSD"), ("SI=F", "XAGUSD"), ("PL=F", "XPTUSD"), ("HG=F", "COPPER"),
     ("CL=F", "USOIL"), ("BZ=F", "UKOIL"), ("NG=F", "NATGAS"),
 ]
-# 現行C6mレッグのプロキシ(相関除外用・FX)
+# 現行全ブックのプロキシ(相関除外用)。2026-08-15改訂:
+# claude/ea-code-review-integration-p8p06z の焼き込みEA群から全口座のレッグを抽出。
+#   Instant20k/パール500万: Mon GBPJPY/AUDJPY + v4 USDJPY
+#   C6m系(FTMO50k/速攻プロ2000万): Mon GBPJPY/AUDJPY + v4 NZDUSD/AUDUSD
+#   D3m(FTMO50k): Mon USDJPY/GBPJPY + v4 NZDUSD/AUDUSD
+#   fn100k非FX(FN#14166201): Mon ETHUSD + v4 BTCUSD + Hold UK100/WTI
 CURRENT_LEGS = [
     ("GBPJPY=X", "cur_Mon_GBPJPY", "DOW", ("Mon", +1)),
     ("AUDJPY=X", "cur_Mon_AUDJPY", "DOW", ("Mon", +1)),
+    ("USDJPY=X", "cur_Mon_USDJPY", "DOW", ("Mon", +1)),
+    ("ETH-USD", "cur_Mon_ETHUSD", "DOW", ("Mon", +1)),
+    ("USDJPY=X", "cur_v4_USDJPY", "V4", None),
     ("NZDUSD=X", "cur_v4_NZDUSD", "V4", None),
     ("AUDUSD=X", "cur_v4_AUDUSD", "V4", None),
+    ("BTC-USD", "cur_v4_BTCUSD", "V4", None),
+    ("^FTSE", "cur_Hold_UK100", "HOLD", None),
+    ("CL=F", "cur_Hold_WTI", "HOLD", None),
 ]
+# fn100k(FN#14166201)が使用中の銘柄は候補から除外(同一銘柄・同方向の重複回避)
+EXCLUDE_SYMBOLS = {"UK100", "USOIL"}
 DOWS = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 
 # ------------------------------------------------------------ cell simulators
@@ -199,6 +212,12 @@ def season_yearly(rows, month, direction):
     return out
 
 
+def hold_daily_returns(rows):
+    """Hold(連続LONG)プロキシ: 終値ベース日次リターン。"""
+    return {rows[i][0]: (rows[i][4] - rows[i - 1][4]) / rows[i - 1][4]
+            for i in range(1, len(rows))}
+
+
 def season_daily_returns(rows, month, direction):
     out = {}
     for i in range(1, len(rows)):
@@ -260,6 +279,8 @@ def main():
             rows = fetch_daily(ysym)
             if fam == "DOW":
                 cur[name] = dow_daily_returns(rows, DOWS.index(arg[0]), arg[1])
+            elif fam == "HOLD":
+                cur[name] = hold_daily_returns(rows)
             else:
                 cur[name] = v4_daily_returns(rows)
             print(f"[cur ] {name} ok", file=sys.stderr)
@@ -309,6 +330,8 @@ def main():
     MIN_N = {"DOW": 30, "V4": 5, "SEASON": 8}
     pool = []
     for c in cells:
+        if c[2] in EXCLUDE_SYMBOLS:
+            continue
         fam = c[1]
         n = c[6]["years"] if fam == "SEASON" else c[4]["n"]
         if n < MIN_N[fam]: continue
