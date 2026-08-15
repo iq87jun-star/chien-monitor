@@ -73,8 +73,12 @@ CURRENT_LEGS = [
     ("^FTSE", "cur_Hold_UK100", "HOLD", None),
     ("CL=F", "cur_Hold_WTI", "HOLD", None),
 ]
-# fn100k(FN#14166201)が使用中の銘柄は候補から除外(同一銘柄・同方向の重複回避)
-EXCLUDE_SYMBOLS = {"UK100", "USOIL"}
+# 銘柄除外(2026-08-15 rev3: 稼働先=FN100k #14074882 ユーザー決定):
+#   UK100/USOIL: FN#14166201(非FXトラック)使用中 — FN口座間の同一取引禁止
+#   JP225/XAUUSD: #14074882自身で稼働中の季節RG3(指数/金系)との同一口座内
+#     積み上がり回避。⚠RG3の正確な構成はこのリポジトリに無い(docs/103/172系) —
+#     判明分のみ除外。並走時はRG3構成と本選抜の突合を配備前に必ず行うこと。
+EXCLUDE_SYMBOLS = {"UK100", "USOIL", "JP225", "XAUUSD"}
 DOWS = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 
 # ------------------------------------------------------------ cell simulators
@@ -378,20 +382,48 @@ def main():
         print(f"  {c[0]:24s} w={w:.3f} vol={ann_vol(data[c[2]])*100:5.1f}% "
               f"12Mtot={c[4]['tot']*100:+6.2f}%{ex} | 現行相関: {rhos}")
 
-    # ポートフォリオ合成の直近12M(等重み確認用)
+    # ポートフォリオ合成(全期間+直近12M)
     port = {}
     for c in picked:
         w = invvols[c[0]] / tot_iv
         for d, v in c[3].items():
-            if d >= yr_ago:
-                port[d] = port.get(d, 0.0) + w * v
+            port[d] = port.get(d, 0.0) + w * v
     ps = window_stats(port, yr_ago, today)
     days = sorted(port)
-    eqty, peak, mdd = 0.0, 0.0, 0.0
+    eqty, peak, mdd12 = 0.0, 0.0, 0.0
     for d in days:
-        eqty += port[d]; peak = max(peak, eqty); mdd = min(mdd, eqty - peak)
-    print(f"\n=== 合成(直近12M・Σw=1.0倍率1.0): tot={ps['tot']*100:+.2f}% 稼働日={ps['n']} maxDD={mdd*100:.2f}% ===")
-    print("(注: 重み合計1.0基準。実運用の倍率はプロップ土俵毎に別途校正)")
+        if d < yr_ago: continue
+        eqty += port[d]; peak = max(peak, eqty); mdd12 = min(mdd12, eqty - peak)
+    print(f"\n=== 合成(直近12M・Σw=1.0倍率1.0): tot={ps['tot']*100:+.2f}% 稼働日={ps['n']} maxDD={mdd12*100:.2f}% ===")
+
+    # 倍率校正(recentfit_screen.py:calibrate 移植): 最悪日≥-day_cap かつ
+    # 最悪DD≥-floor_cap(8%) を満たす最大倍率×0.8。
+    # オリジナル規則は直近12M系列に対して校正(=直近特化の明示ベット)。
+    # 全期間系列での校正値は悲観バウンドとして併記。
+    def calibrate(series, day_cap):
+        if not series: return 0.0
+        wd = min(series.values())
+        eqty = peak = mdd = 0.0
+        for d in sorted(series):
+            eqty += series[d]; peak = max(peak, eqty); mdd = min(mdd, eqty - peak)
+        m = 0.05; best = 0.05
+        while m <= 6.0:
+            if wd * m >= -day_cap and mdd * m >= -0.08:
+                best = m
+            else:
+                break
+            m = round(m + 0.05, 2)
+        return round(0.8 * best, 2), wd, mdd
+
+    port12 = {d: v for d, v in port.items() if d >= yr_ago}
+    for tag, series, day_cap in (
+            ("オリジナル規則パリティ(12M窓・EA日次-4%)", port12, 0.04),
+            ("RG3並走保守(12M窓・日次予算-3%)", port12, 0.03),
+            ("悲観バウンド(全期間窓・-4%)", port, 0.04)):
+        mult, wd, mdd = calibrate(series, day_cap)
+        print(f"[校正 {tag}] 窓内最悪日={wd*100:.2f}% maxDD={mdd*100:.2f}% → mult={mult} "
+              f"(倍率後: 最悪日{wd*mult*100:.2f}%/DD{mdd*mult*100:.2f}%/12M合成{ps['tot']*mult*100:+.1f}%)")
+    print("(注: 校正はコスト未計上の近似。正式配備はp8p06zのrecentfit_nonfx_screen.py系で再校正+MC必須)")
 
 
 if __name__ == "__main__":
