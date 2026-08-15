@@ -36,9 +36,15 @@ SEL_T = {"US500_Tue_L": (2.47, 52), "HK50_Mon_L": (3.57, 50),
          "HK50_Thu_S": (1.93, 50), "JP225_Wed_L": (2.02, 47),
          "XPTUSD_Tue_L": (1.66, 52), "XAGUSD_Tue_L": (2.56, 52)}
 N_DOW_TESTS = 140          # rev5ユニバース14銘柄 x 5曜日 x 2方向
-SHOTS = 4                  # InpDowHoursUTC = "4,6,8,10"
+SHOTS = 4                  # ショット数(v1.00/v1.01 とも各レッグ4本)
 INIT_BAL = 100000.0        # InpInitialBalance 推奨値
-MULT = 1.0                 # InpMult 既定値
+MULT = 1.0                 # v1.00 の InpMult 既定値
+# v1.01 の稼働設定(XPT除外・逆ボラ再正規化・窓外基準の倍率)
+V101_LEGS = [("US500", "Tue", +1, 0.333), ("HK50", "Mon", +1, 0.225),
+             ("HK50", "Thu", -1, 0.225), ("JP225", "Wed", +1, 0.152),
+             ("XAGUSD", "Tue", +1, 0.065)]
+V101_BAL = 100000.0
+V101_MULT = 0.72
 
 
 def tag(sym, dow, dirn):
@@ -239,25 +245,83 @@ def main():
         print(line)
 
     # -------------------------------------------------- 8. ロット粒度
-    hr("[8] ロット粒度 — 1ショットの想定元本が最小ロットに届くか")
-    print(f"1ショット想定元本 = InpInitialBalance({INIT_BAL:.0f}) x w x mult({MULT}) "
-          f"/ ショット数({SHOTS})")
-    print("最小取引額 = 最小ロット x 契約サイズ x 価格。前者 < 後者ならレッグは無音で消える。")
-    print("(LotsForNotional が 0 を返し、そのショット枠は消費される)\n")
+    hr("[8] ロット粒度 — 1ショットの想定元本が最小ロットに届くか (v1.01設定)")
+    print(f"レッグ想定元本 = InpInitialBalance({V101_BAL:.0f}) x w x mult({V101_MULT})")
+    print("最小取引額 = 最小ロット x 契約サイズ x 価格。")
+    print("v1.00 は 1ショットが最小取引額に届かないと無音でレッグが消えた。")
+    print("v1.01 は RefreshShots() がショット数を自動的に減らして建玉サイズを確保する。\n")
     specs = {"US500": [(1, 0.01), (1, 0.1)], "HK50": [(1, 0.01), (1, 0.1)],
              "JP225": [(1, 0.01), (1, 0.1)],
-             "XPTUSD": [(50, 0.01), (100, 0.01), (100, 0.1)],
              "XAGUSD": [(1000, 0.01), (5000, 0.01)]}
-    print(f"{'レッグ':22s} {'1ショット$':>11s} {'契約':>7s} {'最小ロ':>7s} {'最小取引額$':>12s} {'判定':>10s}")
-    for sym, dow, dirn, w in LEGS:
-        shot = INIT_BAL * w * MULT / SHOTS
+    print(f"{'レッグ':22s} {'契約':>7s} {'最小ロ':>7s} {'最小取引額$':>12s} "
+          f"{'v1.00(4shot)':>14s} {'v1.01 実効shot':>15s}")
+    for sym, dow, dirn, w in V101_LEGS:
+        full = V101_BAL * w * V101_MULT
         for cs, ml in specs[sym]:
             # HK50/JP225 は現地通貨建て。USD換算の概算レートを当てる。
             fx = {"HK50": 1 / 7.8, "JP225": 1 / 148.0}.get(sym, 1.0)
             mn = ml * cs * px[sym] * fx
-            ok = "OK" if mn <= shot else "✗ 建たない"
-            print(f"{tag(sym, dow, dirn):22s} {shot:11.0f} {cs:7d} {ml:7.2f} {mn:12.0f} {ok:>10s}")
+            v100 = "OK" if mn <= full / SHOTS else "✗ 消える"
+            n = SHOTS                       # v1.01: 建つまでショット数を減らす
+            while n > 1 and full / n < mn:
+                n -= 1
+            v101 = f"{n} shot" if full / n >= mn else "✗ 建たない"
+            print(f"{tag(sym, dow, dirn):22s} {cs:7d} {ml:7.2f} {mn:12.0f} "
+                  f"{v100:>14s} {v101:>15s}")
     print("\n※ 契約サイズ/最小ロット/ステップは FN のデモ気配で要確認(ここは候補値)。")
+    print("※ EA起動時の [INIT SIZE] ログに実値が出るので、そちらで最終確認すること。")
+
+    # ------------------------------------------------ 9. v1.00 vs v1.01
+    hr("[9] v1.00 vs v1.01 — 最適化の効果")
+    v101 = [("US500", "Tue", +1, 0.333), ("HK50", "Mon", +1, 0.225),
+            ("HK50", "Thu", -1, 0.225), ("JP225", "Wed", +1, 0.152),
+            ("XAGUSD", "Tue", +1, 0.065)]
+
+    def compose(legs, sl_k=None):
+        """sl_k を与えると k*ATR(D1,14) の災害SLを被せる(日足OHLC近似)。"""
+        p = defaultdict(float)
+        for sym, dow, dirn, w in legs:
+            rows = data[sym]
+            di = N.DOWS.index(dow)
+            at = N.atr14(rows)
+            for i in range(len(rows) - 1):
+                if datetime.strptime(rows[i][0], "%Y-%m-%d").weekday() != di:
+                    continue
+                e = rows[i][1]
+                raw = dirn * (rows[i + 1][1] - e) / e
+                if sl_k is None or at[i] is None or at[i] <= 0:
+                    p[rows[i + 1][0]] += w * raw
+                    continue
+                sl = sl_k * at[i] / e
+                hit = ((min(rows[i][3], rows[i + 1][3]) <= e * (1 - sl)) if dirn > 0
+                       else (max(rows[i][2], rows[i + 1][2]) >= e * (1 + sl)))
+                p[rows[i + 1][0]] += w * (-sl if hit else raw)
+        return p
+
+    def rule08(s):
+        """0.8x 校正規則: 最悪日>=-4% かつ maxDD>=-8% を満たす最大倍率 x 0.8。"""
+        m, best = 0.05, 0.0
+        while m <= 6.0:
+            if s['worst'] * m >= -0.04 and s['mdd'] * m >= -0.08:
+                best = m
+            else:
+                break
+            m = round(m + 0.05, 2)
+        return round(0.8 * best, 2)
+
+    print(f"{'':30s} {'mult':>6s} {'窓外maxDD':>10s} {'窓外年率':>9s} {'選抜窓12M':>10s} {'フロア-8%':>10s}")
+    for lab, legs, k, fixed in (
+            ("v1.00 (6セル・SLなし相当)", LEGS, None, 1.00),
+            ("v1.01 (5セル・SL 5xATR(D1))", v101, 5.0, 0.72)):
+        p = compose(legs, k)
+        o = perf(p, "0000", yr)
+        i = perf(p, yr, today)
+        rule = rule08(o)
+        print(f"{lab:30s} {fixed:6.2f} {o['mdd'] * fixed * 100:9.2f}% "
+              f"{o['cagr'] * fixed * 100:8.2f}% {i['tot'] * fixed * 100:9.1f}% "
+              f"{'突破' if o['mdd'] * fixed <= -0.08 else '余裕あり':>10s}")
+        print(f"{'  (0.8x規則が出す倍率)':30s} {rule:6.2f}")
+    print("\n※ v1.00 の mult 1.0 は自身の校正規則(0.68)から乖離しており、窓外DDがフロアを突破する。")
 
 
 if __name__ == "__main__":
