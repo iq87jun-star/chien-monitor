@@ -1,9 +1,9 @@
 # PoE2相場モニター 自動更新パイプライン
 # 6時間ごとに相場データを取得し、変化があればAI記事を生成してサイトを再デプロイする。
 #
-# 必要な設定(リポジトリのSettings):
+# 必要な設定:
 #   - Secrets: ANTHROPIC_API_KEY(未設定でもデータ更新のみ動作する)
-#   - Pages:   Source を「Deploy from a branch」→ gh-pages ブランチに設定
+#   - Pages: 設定不要(configure-pagesのenablementで自動有効化される)
 # ※ scheduleトリガーはデフォルトブランチ上のワークフローにのみ有効。
 
 name: poe2-auto-update
@@ -15,6 +15,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 concurrency:
   group: poe2-auto-update
@@ -58,8 +60,23 @@ jobs:
         working-directory: poe2
         run: npm run build
 
-      - name: Deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Enable & configure GitHub Pages
+        uses: actions/configure-pages@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: poe2/dist
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: poe2/dist
+
+  deploy:
+    needs: update
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
