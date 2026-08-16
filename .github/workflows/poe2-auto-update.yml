@@ -1,0 +1,65 @@
+# PoE2相場モニター 自動更新パイプライン
+# 6時間ごとに相場データを取得し、変化があればAI記事を生成してサイトを再デプロイする。
+#
+# 必要な設定(リポジトリのSettings):
+#   - Secrets: ANTHROPIC_API_KEY(未設定でもデータ更新のみ動作する)
+#   - Pages:   Source を「Deploy from a branch」→ gh-pages ブランチに設定
+# ※ scheduleトリガーはデフォルトブランチ上のワークフローにのみ有効。
+
+name: poe2-auto-update
+
+on:
+  schedule:
+    - cron: "23 */6 * * *" # 6時間ごと(UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: poe2-auto-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: poe2/package-lock.json
+
+      - name: Install dependencies
+        working-directory: poe2
+        run: npm ci
+
+      - name: Run data pipeline (fetch → aggregate → generate)
+        working-directory: poe2
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: npm run pipeline
+
+      - name: Commit updated data
+        run: |
+          git config user.name "poe2-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add poe2/data poe2/content
+          if git diff --cached --quiet; then
+            echo "no data changes"
+          else
+            git commit -m "chore(poe2): auto-update market data [skip ci]"
+            git push
+          fi
+
+      - name: Build site
+        working-directory: poe2
+        run: npm run build
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: poe2/dist
