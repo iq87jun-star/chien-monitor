@@ -501,7 +501,7 @@ int OnInit()
    double wsum=0; for(int i=0;i<g_nDow;i++) wsum+=g_dowW[i];
    for(int i=0;i<g_nV4;i++) wsum+=g_v4W[i];
    for(int i=0;i<g_nHold;i++) wsum+=g_holdW[i];
-   PrintFormat("[INIT RF-NonFX2 v1.02] initBal=%.0f mult=%.2f Σw=%.3f (グロス想定≈%.2fx) floor=-%.1f%% daily=-%.1f/-%.1f%% lock=%s expiry=%s Magic=%I64d/%I64d/%I64d",
+   PrintFormat("[INIT RF-NonFX2 v1.03] initBal=%.0f mult=%.2f Σw=%.3f (グロス想定≈%.2fx) floor=-%.1f%% daily=-%.1f/-%.1f%% lock=%s expiry=%s Magic=%I64d/%I64d/%I64d",
       g_initBal,InpMult,wsum,wsum*InpMult,InpAccountFloorDDPct,InpDailyStopPct,InpBalGuardPct,
       (InpProfitLockEnable?StringFormat("%.2f/%.2f",InpLockArmPct,InpLockClosePct):"off"),
       TimeToString(InpExpiry,TIME_DATE),g_mDow,g_mV4,g_mHold);
