@@ -3,7 +3,8 @@
 #
 # 必要な設定:
 #   - Secrets: ANTHROPIC_API_KEY(未設定でもデータ更新のみ動作する)
-#   - Pages: 設定不要(configure-pagesのenablementで自動有効化される)
+#   - Pages: gh-pagesブランチが作られると自動有効化される。されない場合のみ
+#     Settings → Pages で Source: Deploy from a branch → gh-pages を選択
 # ※ scheduleトリガーはデフォルトブランチ上のワークフローにのみ有効。
 
 name: poe2-auto-update
@@ -15,8 +16,6 @@ on:
 
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 concurrency:
   group: poe2-auto-update
@@ -30,7 +29,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: poe2/package-lock.json
 
@@ -60,23 +59,8 @@ jobs:
         working-directory: poe2
         run: npm run build
 
-      - name: Enable & configure GitHub Pages
-        uses: actions/configure-pages@v5
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          enablement: true
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: poe2/dist
-
-  deploy:
-    needs: update
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: poe2/dist
