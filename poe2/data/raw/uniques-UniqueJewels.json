@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 328,
-   "chaos": 8.75
+   "exalted": 346.4,
+   "chaos": 10.54
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,19 +42,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 620.3,
-   "listingCount": 151,
+   "primaryValue": 625,
+   "listingCount": 148,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 0.05,
+    "totalChange": -8.36,
     "data": [
+     null,
      0,
      null,
+     0.26,
+     -9.05,
      null,
-     10,
-     null,
-     10.29,
-     0.05
+     -8.36
     ]
    },
    "explicitModifiers": [
@@ -75,19 +75,19 @@
    "levelRequired": 0,
    "category": "Vaal [Jewel]",
    "limitedTo": 1,
-   "primaryValue": 34,
-   "listingCount": 1481,
+   "primaryValue": 35,
+   "listingCount": 1468,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 13.33,
+    "totalChange": 16.67,
     "data": [
-     0,
-     null,
      null,
      0,
      null,
      0,
-     13.33
+     13.33,
+     null,
+     16.67
     ]
    },
    "explicitModifiers": [
@@ -184,19 +184,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 11.08,
-   "listingCount": 61,
+   "primaryValue": 13,
+   "listingCount": 68,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 116.1,
+    "totalChange": 46.08,
     "data": [
+     null,
      0,
      null,
+     -1.11,
+     24.51,
      null,
-     73.58,
-     null,
-     71.65,
-     116.1
+     46.08
     ]
    },
    "explicitModifiers": [
@@ -219,18 +219,18 @@
    "limitedTo": 1,
    "radius": "Variable",
    "primaryValue": 8,
-   "listingCount": 1468,
+   "listingCount": 1421,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 14.29,
+    "totalChange": 0,
     "data": [
+     null,
      0,
      null,
+     0,
+     0,
      null,
-     14.29,
-     null,
-     14.29,
-     14.29
+     0
     ]
    },
    "explicitModifiers": [
@@ -289,18 +289,18 @@
    "limitedTo": 1,
    "radius": "Small",
    "primaryValue": 7,
-   "listingCount": 3550,
+   "listingCount": 3755,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 14.8,
+    "totalChange": -12.5,
     "data": [
+     null,
      0,
      null,
+     -12.5,
+     -12.5,
      null,
-     31.19,
-     null,
-     14.8,
-     14.8
+     -12.5
     ]
    },
    "explicitModifiers": [
@@ -401,19 +401,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 3.76,
-   "listingCount": 91,
+   "primaryValue": 3.63,
+   "listingCount": 94,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 88.02,
+    "totalChange": 20.84,
     "data": [
+     null,
      0,
      null,
+     -8.32,
+     25.34,
      null,
-     50,
-     null,
-     37.52,
-     88.02
+     20.84
     ]
    },
    "explicitModifiers": [
@@ -434,19 +434,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 3.05,
-   "listingCount": 174,
+   "primaryValue": 2.39,
+   "listingCount": 208,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -20.04,
+    "totalChange": 1.92,
     "data": [
+     null,
      0,
      null,
+     19.38,
+     29.96,
      null,
-     -38.47,
-     null,
-     -26.55,
-     -20.04
+     1.92
     ]
    },
    "explicitModifiers": [
@@ -467,19 +467,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 1,
-   "listingCount": 8790,
+   "primaryValue": 1.16,
+   "listingCount": 8765,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -35.55,
+    "totalChange": -1.71,
     "data": [
+     null,
      0,
      null,
+     35.89,
+     -15.08,
      null,
-     -24.1,
-     null,
-     3.13,
-     -35.55
+     -1.71
     ]
    },
    "explicitModifiers": [
@@ -552,19 +552,19 @@
    "levelRequired": 0,
    "category": "Kalguuran [Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.3886,
+   "primaryValue": 0.5197,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -13.77,
+    "totalChange": 15.67,
     "data": [
+     null,
      0,
      null,
+     1.35,
+     -13.5,
      null,
-     -0.31,
-     null,
-     1.03,
-     -13.77
+     15.67
     ]
    },
    "explicitModifiers": [
@@ -587,6 +587,33 @@
    ]
   },
   {
+   "id": 402,
+   "itemId": "Megalomaniac Diamond",
+   "detailsId": "megalomaniac-diamond",
+   "name": "Megalomaniac",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
+   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.1444,
+   "listingCount": 10000,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": -5.22,
+    "data": [
+     null,
+     0,
+     null,
+     -49.84,
+     -49.97,
+     null,
+     -5.22
+    ]
+   }
+  },
+  {
    "id": 400,
    "itemId": "Flesh Crucible Diamond",
    "detailsId": "flesh-crucible-diamond",
@@ -597,19 +624,19 @@
    "levelRequired": 0,
    "category": "Vaal [Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.1143,
-   "listingCount": 8543,
+   "primaryValue": 0.09487,
+   "listingCount": 8509,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -3.91,
+    "totalChange": -22.18,
     "data": [
+     null,
      0,
      null,
+     -6.24,
+     -6.24,
      null,
-     2.49,
-     null,
-     -3.91,
-     -3.91
+     -22.18
     ]
    },
    "explicitModifiers": [
@@ -782,19 +809,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.09144,
+   "primaryValue": 0.08661,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 12.27,
+    "totalChange": 89.56,
     "data": [
+     null,
      0,
      null,
+     100.7,
+     100.1,
      null,
-     -43.9,
-     null,
-     12.56,
-     12.27
+     89.56
     ]
    },
    "explicitModifiers": [
@@ -1081,33 +1108,6 @@
    ]
   },
   {
-   "id": 402,
-   "itemId": "Megalomaniac Diamond",
-   "detailsId": "megalomaniac-diamond",
-   "name": "Megalomaniac",
-   "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
-   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 1,
-   "primaryValue": 0.0762,
-   "listingCount": 10000,
-   "corrupted": true,
-   "sparkLine": {
-    "totalChange": -29.83,
-    "data": [
-     0,
-     null,
-     null,
-     40.24,
-     null,
-     -29.65,
-     -29.83
-    ]
-   }
-  },
-  {
    "id": 401,
    "itemId": "From Nothing Diamond",
    "detailsId": "from-nothing-diamond",
@@ -1119,19 +1119,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 0.06096,
+   "primaryValue": 0.06351,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 12.27,
+    "totalChange": -16.6,
     "data": [
+     null,
      0,
      null,
+     -25.36,
+     -19.95,
      null,
-     40.24,
-     null,
-     4.68,
-     12.27
+     -16.6
     ]
    },
    "explicitModifiers": [
@@ -1256,19 +1256,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00305,
+   "primaryValue": 0.00289,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 12.13,
+    "totalChange": -5.25,
     "data": [
+     null,
      0,
      null,
+     0.33,
+     0,
      null,
-     12.13,
-     null,
-     12.5,
-     12.13
+     -5.25
     ]
    },
    "explicitModifiers": [
@@ -2138,6 +2138,10 @@
     },
     {
      "text": "+(1-2) to Level of all Flame Breath Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Shockburst Rounds Skills",
      "optional": true
     }
    ]
