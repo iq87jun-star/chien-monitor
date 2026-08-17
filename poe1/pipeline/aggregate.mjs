@@ -62,6 +62,7 @@ export async function aggregate() {
         value: l.chaosValue,
         listingCount: l.listingCount ?? 0,
         change7d: round1(l.sparkLine?.totalChange ?? 0),
+        spark: l.sparkLine?.data ?? [],
         icon: l.icon ?? null,
       });
     }

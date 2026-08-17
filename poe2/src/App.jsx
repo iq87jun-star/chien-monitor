@@ -42,6 +42,114 @@ function Change({ pct }) {
   );
 }
 
+
+function Sparkline({ data, color }) {
+  const pts = (data ?? []).filter((v) => typeof v === "number");
+  if (pts.length < 2) return <span style={{ width: 56, flexShrink: 0 }} />;
+  const min = Math.min(...pts);
+  const max = Math.max(...pts);
+  const range = max - min || 1;
+  const w = 56;
+  const h = 18;
+  const points = pts
+    .map(
+      (v, i) =>
+        `${((i / (pts.length - 1)) * w).toFixed(1)},${(h - 2 - ((v - min) / range) * (h - 4)).toFixed(1)}`,
+    )
+    .join(" ");
+  return (
+    <svg width={w} height={h} style={{ flexShrink: 0, opacity: 0.9 }} aria-hidden="true">
+      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" />
+    </svg>
+  );
+}
+
+function Converter({ currencies, rateOf, unitLabel, defaultFrom, defaultTo }) {
+  const find = (id) => currencies.find((c) => c.id === id);
+  const [amount, setAmount] = useState("1");
+  const [fromId, setFromId] = useState(find(defaultFrom) ? defaultFrom : currencies[0]?.id);
+  const [toId, setToId] = useState(find(defaultTo) ? defaultTo : currencies[1]?.id);
+  const opts = currencies.slice(0, 25);
+  const num = parseFloat(String(amount).replace(/,/g, ""));
+  const from = find(fromId);
+  const to = find(toId);
+  const result =
+    Number.isFinite(num) && from && to ? (num * rateOf(from)) / rateOf(to) : null;
+  const fmtResult = (v) =>
+    v >= 1000
+      ? Math.round(v).toLocaleString()
+      : v >= 1
+        ? v.toFixed(2)
+        : v.toPrecision(3);
+  const selStyle = {
+    background: T.surfaceVar,
+    color: T.text,
+    border: `1px solid ${T.outline}`,
+    borderRadius: T.r.sm,
+    padding: "8px 6px",
+    fontSize: 13,
+    maxWidth: "100%",
+  };
+  return (
+    <div style={{ display: "grid", gap: 10 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+        <input
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          inputMode="decimal"
+          style={{ ...selStyle, width: 90 }}
+          aria-label="数量"
+        />
+        <select value={fromId} onChange={(e) => setFromId(e.target.value)} style={selStyle}>
+          {opts.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        <button
+          onClick={() => {
+            setFromId(toId);
+            setToId(fromId);
+          }}
+          style={{
+            background: "none",
+            border: `1px solid ${T.outline}`,
+            color: T.goldLight,
+            borderRadius: T.r.full,
+            padding: "6px 12px",
+            cursor: "pointer",
+            fontSize: 14,
+          }}
+          aria-label="入れ替え"
+        >
+          ⇄
+        </button>
+        <select value={toId} onChange={(e) => setToId(e.target.value)} style={selStyle}>
+          {opts.map((c) => (
+            <option key={c.id} value={c.id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div style={{ fontSize: 15, color: T.text }}>
+        {result !== null && from && to ? (
+          <>
+            <b style={{ color: T.goldLight }}>{fmtResult(result)}</b>{" "}
+            <span style={{ fontSize: 12, color: T.textMed }}>{to.name}</span>
+            <span style={{ fontSize: 11, color: T.textLow, marginLeft: 8 }}>
+              (1 {from.name} ≈ {fmtResult(rateOf(from) / rateOf(to))} {to.name})
+            </span>
+          </>
+        ) : (
+          <span style={{ color: T.textLow, fontSize: 13 }}>数量を入力してください</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function Card({ title, sub, children }) {
   return (
     <section
@@ -95,6 +203,7 @@ function UniqueRow({ u }) {
           {u.baseType} ・ 出品{u.listingCount}
         </div>
       </div>
+      <Sparkline data={u.spark} color={u.change7d >= 0 ? T.up : T.down} />
       <div style={{ textAlign: "right" }}>
         <div style={{ fontSize: 13, color: T.text, fontWeight: 600 }}>
           {fmtRate(u.value)} <span style={{ fontSize: 10, color: T.textLow }}>ex</span>
@@ -215,6 +324,16 @@ export default function App() {
           gap: 16,
         }}
       >
+        <Card title="🔁 通貨換算ツール" sub="現在レートで換算(6時間ごと自動更新)">
+          <Converter
+            currencies={economy.currencies}
+            rateOf={(c) => c.rateInExalted}
+            unitLabel=""
+            defaultFrom="divine"
+            defaultTo="exalted"
+          />
+        </Card>
+
         {/* AI生成記事 */}
         {articles.length > 0 && (
           <Card
@@ -268,6 +387,7 @@ export default function App() {
                     {c.name}
                   </span>
                   <span style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    <Sparkline data={c.spark} color={c.change7d >= 0 ? T.up : T.down} />
                     <span style={{ fontSize: 13, fontWeight: 700, color: T.goldLight }}>
                       {fmtRate(c.rateInExalted)}
                     </span>
