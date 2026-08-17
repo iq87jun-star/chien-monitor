@@ -37,10 +37,16 @@ jobs:
         working-directory: poe2
         run: npm ci
 
-      - name: Run data pipeline (fetch → aggregate → generate)
+      - name: Run data pipeline (fetch → aggregate → ladder → generate → x-post)
         working-directory: poe2
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GGG_CLIENT_ID: ${{ secrets.GGG_CLIENT_ID }}
+          GGG_CLIENT_SECRET: ${{ secrets.GGG_CLIENT_SECRET }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
         run: npm run pipeline
 
       - name: Commit updated data

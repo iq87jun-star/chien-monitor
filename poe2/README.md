@@ -56,12 +56,39 @@ npm run build        # 本番ビルド → dist/
 - フッターにAdSense等の広告ユニットを挿入(`src/App.jsx` 末尾にコメントで位置を明記)
 - 独自価値: 「日本語で読めるPoE2相場+パッチ自動解説」はpoe.ninja型サイトの日本語版として空白領域
 
-## フェーズ2(未実装)
+## フェーズ2(実装済み・認証情報の投入で有効化)
 
-- **ビルドメタ統計**: GGG公式ラダーAPIはOAuthクライアント登録が必要
-  ([developer docs](https://www.pathofexile.com/developer/docs))。
-  登録後、ラダー上位1,000キャラのクラス/スキル構成を集計して「今リーグの人気ビルド」ページを追加予定
-- X(Twitter)速報bot: パッチ検知時に要約を自動ポスト
+どちらもSecrets未設定の間は自動でスキップされ、他の機能に影響しない。
+
+### A. 人気ビルド統計(`pipeline/fetch-ladder.mjs`)
+
+公式ラダーAPI(上位1,000キャラ)からクラス/アセンダンシー分布と上位キャラ一覧を集計し、
+サイトに「人気クラス分布」カードを表示する。
+
+**有効化手順(GGGのOAuthクライアント登録):**
+1. https://www.pathofexile.com/developer/docs を確認し、案内に従って
+   `oauth@grindinggear.com` 宛にOAuthクライアント登録を申請する
+   (アプリ名、用途 = ladder statistics website、grant type = client_credentials、
+   scope = `service:leagues:ladder` を記載)。承認まで数日〜数週間かかる場合がある
+2. 発行された client_id / client_secret をリポジトリSecretsに
+   `GGG_CLIENT_ID` / `GGG_CLIENT_SECRET` として登録
+
+### B. X(Twitter)速報bot(`pipeline/post-x.mjs`)
+
+新しいパッチ関連ニュースの検知時と、新しいAI記事の公開時に自動ポストする
+(1回の実行で最大2ポスト、重複ポストは `data/site/posted.json` で防止)。
+
+**有効化手順(X開発者登録):**
+1. bot用のXアカウントでログインし https://developer.x.com/ で開発者登録(Freeプランで可。
+   Freeは投稿数に月間上限があるが本botの頻度なら十分)
+2. Project & App を作成 → App の「User authentication settings」で
+   Read and write 権限を設定
+3. 「Keys and tokens」で API Key / API Key Secret / Access Token / Access Token Secret
+   の4つを生成し、リポジトリSecretsに `X_API_KEY` / `X_API_SECRET` /
+   `X_ACCESS_TOKEN` / `X_ACCESS_TOKEN_SECRET` として登録
+
+## フェーズ3(未実装)
+
 - 同一パイプラインの横展開(別ゲーム)
 
 ## 注意事項

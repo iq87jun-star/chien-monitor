@@ -1,6 +1,7 @@
 import { useState } from "react";
 import economy from "../data/site/economy.json";
 import news from "../data/site/news.json";
+import builds from "../data/site/builds.json";
 import articlesData from "../content/articles.json";
 
 // ダークファンタジー寄りの配色(PoE2の雰囲気に合わせる)
@@ -309,6 +310,67 @@ export default function App() {
             </div>
           </Card>
         </div>
+
+        {/* ビルドメタ統計(公式ラダーAPI設定後に表示される) */}
+        {builds.available && (
+          <Card
+            title="🏆 人気クラス分布"
+            sub={`公式ラダー上位${builds.totalEntries}キャラの集計(アセンダンシー別)`}
+          >
+            <div style={{ display: "grid", gap: 6 }}>
+              {builds.classes.slice(0, 12).map((c) => (
+                <div key={c.name} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <span style={{ fontSize: 12, color: T.text, width: 140, flexShrink: 0 }}>
+                    {c.name}
+                  </span>
+                  <div
+                    style={{
+                      flex: 1,
+                      height: 14,
+                      background: T.surfaceVar,
+                      borderRadius: T.r.full,
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${Math.max(c.pct, 1)}%`,
+                        height: "100%",
+                        background: T.gold,
+                      }}
+                    />
+                  </div>
+                  <span style={{ fontSize: 12, color: T.goldLight, width: 52, textAlign: "right" }}>
+                    {c.pct}%
+                  </span>
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 14 }}>
+              <div style={{ fontSize: 12, color: T.textLow, marginBottom: 6 }}>
+                ラダー上位キャラ
+              </div>
+              {builds.top.slice(0, 10).map((t) => (
+                <div
+                  key={t.rank}
+                  style={{
+                    display: "flex",
+                    gap: 10,
+                    fontSize: 12,
+                    padding: "4px 2px",
+                    borderBottom: `1px solid ${T.outline}`,
+                    color: T.textMed,
+                  }}
+                >
+                  <span style={{ width: 28, color: T.goldLight }}>#{t.rank}</span>
+                  <span style={{ flex: 1, color: T.text }}>{t.name}</span>
+                  <span>{t.class}</span>
+                  <span style={{ width: 46, textAlign: "right" }}>Lv{t.level}</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
 
         <div
           style={{
