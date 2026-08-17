@@ -1,11 +1,9 @@
-# PoE2相場モニター 自動更新パイプライン
-# 6時間ごとに相場データを取得し、変化があればAI記事を生成してサイトを再デプロイする。
+# ゲーム相場モニター群 自動更新パイプライン
+# 6時間ごとに各サイト(poe2 / poe1 / tarkov / ff14)のデータを取得し、
+# 変化があればAI記事を生成してGitHub Pagesへ再デプロイする。
 #
-# 必要な設定:
-#   - Secrets: ANTHROPIC_API_KEY(未設定でもデータ更新のみ動作する)
-#   - Pages: gh-pagesブランチが作られると自動有効化される。されない場合のみ
-#     Settings → Pages で Source: Deploy from a branch → gh-pages を選択
-# ※ scheduleトリガーはデフォルトブランチ上のワークフローにのみ有効。
+# Secrets(任意・未設定の機能は自動スキップ):
+#   ANTHROPIC_API_KEY(AI記事) / X_*(PoE2のX速報) / GGG_*(PoE2ビルド統計)
 
 name: poe2-auto-update
 
@@ -30,15 +28,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: poe2/package-lock.json
 
-      - name: Install dependencies
-        working-directory: poe2
-        run: npm ci
-
-      - name: Run data pipeline (fetch → aggregate → ladder → generate → x-post)
-        working-directory: poe2
+      - name: Run pipelines and build all sites
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           GGG_CLIENT_ID: ${{ secrets.GGG_CLIENT_ID }}
@@ -47,26 +38,35 @@ jobs:
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
           X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-        run: npm run pipeline
+        run: |
+          set -e
+          for site in poe2 poe1 tarkov ff14; do
+            echo "===== $site ====="
+            (cd "$site" && npm ci && npm run pipeline && npm run build)
+          done
 
       - name: Commit updated data
         run: |
-          git config user.name "poe2-monitor-bot"
+          git config user.name "market-monitor-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add poe2/data poe2/content
+          git add poe2/data poe2/content poe1/data poe1/content tarkov/data tarkov/content ff14/data ff14/content
           if git diff --cached --quiet; then
             echo "no data changes"
           else
-            git commit -m "chore(poe2): auto-update market data [skip ci]"
+            git commit -m "chore: auto-update market data [skip ci]"
             git push
           fi
 
-      - name: Build site
-        working-directory: poe2
-        run: npm run build
+      - name: Assemble combined site
+        run: |
+          mkdir -p site-dist
+          cp portal/index.html site-dist/index.html
+          for site in poe2 poe1 tarkov ff14; do
+            cp -r "$site/dist" "site-dist/$site"
+          done
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: poe2/dist
+          publish_dir: site-dist
