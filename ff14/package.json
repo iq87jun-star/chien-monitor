@@ -1,0 +1,24 @@
+{
+  "name": "ff14-jp-market-monitor",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "fetch": "node pipeline/fetch-data.mjs",
+    "aggregate": "node pipeline/aggregate.mjs",
+    "generate": "node pipeline/generate-articles.mjs",
+    "pipeline": "node pipeline/run.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^5.0.0"
+  }
+}
