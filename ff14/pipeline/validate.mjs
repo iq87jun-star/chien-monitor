@@ -31,8 +31,8 @@ export function validateArticleNumbers(article, allowed) {
   ].join("\n");
 
   const violations = [];
-  for (const m of texts.matchAll(/\d+(?:\.\d+)?/g)) {
-    const numStr = m[0];
+  for (const m of texts.matchAll(/\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?/g)) {
+    const numStr = m[0].replace(/,/g, "");
     const num = Number(numStr);
     // 文章表現上の小さい数(「3つの要因」等)・年・バージョン番号断片は許容
     if (num <= 12) continue;
