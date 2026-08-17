@@ -12,6 +12,10 @@ export function collectAllowedNumbers(obj, set = new Set()) {
       Math.round(obj * 100) / 100,
       Math.abs(Math.round(obj * 10) / 10),
       Math.round(Math.abs(obj)),
+      // 「万」「千」単位で書かれた場合の換算値も許容する
+      Math.round(obj / 1000),
+      Math.round((obj / 10000) * 10) / 10,
+      Math.round(obj / 10000),
     ];
     for (const v of variants) set.add(String(v));
   } else if (Array.isArray(obj)) {
@@ -37,9 +41,13 @@ export function validateArticleNumbers(article, allowed) {
     // 文章表現上の小さい数(「3つの要因」等)・年・バージョン番号断片は許容
     if (num <= 12) continue;
     if (num >= 2024 && num <= 2030) continue;
-    if (!allowed.has(numStr) && !allowed.has(String(Math.round(num)))) {
-      violations.push(numStr);
-    }
+    if (allowed.has(numStr) || allowed.has(String(Math.round(num)))) continue;
+    // 許可数値との相対誤差1.5%(または±1)以内の丸め表記は許容する
+    const nearMiss = [...allowed].some((a) => {
+      const av = Number(a);
+      return Number.isFinite(av) && Math.abs(num - av) <= Math.max(1, Math.abs(av) * 0.015);
+    });
+    if (!nearMiss) violations.push(numStr);
   }
   return violations;
 }
