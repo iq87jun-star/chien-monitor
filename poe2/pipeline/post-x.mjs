@@ -7,7 +7,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { SITE_DIR, CONTENT_DIR } from "./config.mjs";
 
-const SITE_URL = "https://iq87jun-star.github.io/chien-monitor/poe2/";
+const SITE_URL = "https://game-souba.com/poe2/";
 const MAX_POSTS_PER_RUN = 2;
 
 // --- OAuth 1.0a 署名(依存ライブラリなし) ---

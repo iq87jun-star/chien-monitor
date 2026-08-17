@@ -6,7 +6,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { SITE_DIR, CONTENT_DIR } from "./config.mjs";
 
-const SITE_URL = "https://iq87jun-star.github.io/chien-monitor/ff14/";
+const SITE_URL = "https://game-souba.com/ff14/";
 const MAX_POSTS_PER_RUN = 1;
 
 const pctEncode = (s) =>
