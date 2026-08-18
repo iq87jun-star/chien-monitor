@@ -1,0 +1,68 @@
+# ポケカ海外相場モニター 自動更新パイプライン
+# Cardmarket価格はTCGdex側で1日1回(朝8時UTC頃)更新されるため、1日2回取得する。
+# 変化があればAI記事を生成し、デプロイ先が設定されていればGitHub Pagesへ再デプロイする。
+#
+# Secrets(任意・未設定の機能は自動スキップ):
+#   ANTHROPIC_API_KEY  … AI記事生成
+#   TORECA_DEPLOY_TOKEN / TORECA_DEPLOY_REPO … 別リポジトリのgh-pagesへのデプロイ
+#     (ジャンルが違うためgame-souba.comとはドメイン・リポジトリを分ける方針。
+#      TORECA_DEPLOY_REPO は "owner/repo" 形式)
+
+name: toreca-auto-update
+
+on:
+  schedule:
+    - cron: "17 9,21 * * *" # 1日2回(UTC)。Cardmarket更新(8時UTC頃)の後
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: toreca-auto-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run pipeline and build
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set -e
+          cd toreca
+          npm ci
+          npm run pipeline
+          npm run build
+
+      - name: Commit updated data
+        run: |
+          git config user.name "market-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add toreca/data toreca/content
+          if git diff --cached --quiet; then
+            echo "no data changes"
+          else
+            git commit -m "chore: auto-update toreca market data [skip ci]"
+            # 他サイトの自動更新ワークフローと同時に走った場合に備えてrebaseしつつプッシュ
+            for i in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
+              sleep $((i * 5))
+            done
+          fi
+
+      - name: Deploy to external gh-pages
+        # デプロイ先リポジトリのSecretsが未設定の間はスキップ(データ更新だけでも動く)
+        if: ${{ secrets.TORECA_DEPLOY_TOKEN != '' && secrets.TORECA_DEPLOY_REPO != '' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.TORECA_DEPLOY_TOKEN }}
+          external_repository: ${{ secrets.TORECA_DEPLOY_REPO }}
+          publish_dir: toreca/dist
