@@ -4,6 +4,8 @@
 #
 # Secrets(任意・未設定の機能は自動スキップ):
 #   ANTHROPIC_API_KEY  … AI記事生成
+#   X_API_KEY / X_API_SECRET(アプリ共通)+ TORECA_X_ACCESS_TOKEN /
+#     TORECA_X_ACCESS_TOKEN_SECRET(bot垢) … X(Twitter)速報
 #   TORECA_DEPLOY_TOKEN / TORECA_DEPLOY_REPO … 別リポジトリのgh-pagesへのデプロイ
 #     (ジャンルが違うためgame-souba.comとはドメイン・リポジトリを分ける方針。
 #      TORECA_DEPLOY_REPO は "owner/repo" 形式)
@@ -39,6 +41,10 @@ jobs:
       - name: Run pipeline and build
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          TORECA_X_ACCESS_TOKEN: ${{ secrets.TORECA_X_ACCESS_TOKEN }}
+          TORECA_X_ACCESS_TOKEN_SECRET: ${{ secrets.TORECA_X_ACCESS_TOKEN_SECRET }}
         run: |
           set -e
           cd toreca
