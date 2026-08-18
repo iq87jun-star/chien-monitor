@@ -25,6 +25,10 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    # step単位のif式ではsecretsコンテキストが使えないため、一度envに写して判定する
+    env:
+      TORECA_DEPLOY_TOKEN: ${{ secrets.TORECA_DEPLOY_TOKEN }}
+      TORECA_DEPLOY_REPO: ${{ secrets.TORECA_DEPLOY_REPO }}
     steps:
       - uses: actions/checkout@v4
 
@@ -60,7 +64,7 @@ jobs:
 
       - name: Deploy to external gh-pages
         # デプロイ先リポジトリのSecretsが未設定の間はスキップ(データ更新だけでも動く)
-        if: ${{ secrets.TORECA_DEPLOY_TOKEN != '' && secrets.TORECA_DEPLOY_REPO != '' }}
+        if: ${{ env.TORECA_DEPLOY_TOKEN != '' && env.TORECA_DEPLOY_REPO != '' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.TORECA_DEPLOY_TOKEN }}
