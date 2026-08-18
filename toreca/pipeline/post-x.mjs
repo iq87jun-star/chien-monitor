@@ -115,7 +115,8 @@ export async function postToX() {
     queue.push({
       kind: "article",
       key: newArticle.id,
-      text: `📊 ${newArticle.title}\n\n${newArticle.summary.slice(0, 80)}…\n\n全文→ ${SITE_URL}\n${HASHTAGS}`,
+      // 記事の個別ページへ直リンク(OGPカード表示でCTRを上げる)
+      text: `📊 ${newArticle.title}\n\n${newArticle.summary.slice(0, 80)}…\n\n全文→ ${SITE_URL}articles/${newArticle.id}/\n${HASHTAGS}`,
     });
   }
 

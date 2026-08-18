@@ -181,6 +181,13 @@ function Article({ a, expanded, onToggle }) {
           海外市場動向
         </span>
         <span style={{ fontSize: 11, color: T.textLow }}>{fmtDate(a.createdAt)}</span>
+        <a
+          href={`articles/${a.id}/`}
+          style={{ fontSize: 11, color: T.textLow, marginLeft: "auto" }}
+          title="この記事の単独ページ"
+        >
+          記事ページ🔗
+        </a>
       </div>
       <h3
         style={{ margin: "0 0 6px", fontSize: 15, color: T.text, cursor: "pointer" }}
