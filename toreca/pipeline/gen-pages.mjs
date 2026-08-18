@@ -5,7 +5,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { ROOT, CONTENT_DIR } from "./config.mjs";
 
-export const SITE_URL = "https://iq87jun-star.github.io/toreca-kaigai/";
+export const SITE_URL = "https://pokeca-kaigai.com/";
 const DIST = path.join(ROOT, "dist");
 
 const esc = (s) =>

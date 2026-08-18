@@ -9,7 +9,7 @@ import path from "node:path";
 import crypto from "node:crypto";
 import { SITE_DIR, CONTENT_DIR, SIGNIFICANT_CHANGE_PCT } from "./config.mjs";
 
-const SITE_URL = "https://iq87jun-star.github.io/toreca-kaigai/";
+const SITE_URL = "https://pokeca-kaigai.com/";
 const MAX_POSTS_PER_RUN = 2;
 const HASHTAGS = "#ポケカ #ポケモンカード";
 
