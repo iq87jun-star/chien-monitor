@@ -69,12 +69,32 @@ npm run build        # 本番ビルド → dist/
 - Claude API: 記事生成は「大きな変化があった時 or 20時間ごと」に1回のみ(他サイトと同じ)
 - TCGdex / Frankfurter: 無料・キー不要
 
-## フェーズ2(未実装)
+## X(Twitter)速報bot(実装済み・認証情報の投入で有効化)
+
+急騰カードの検知時(7日比+25%超の上昇率トップ)と、新しいAI記事の公開時に自動ポストする
+(1回の実行で最大2ポスト、重複ポストは `data/site/posted.json` で防止)。
+Secrets未設定の間は自動でスキップされ、他の機能に影響しない。
+
+**有効化手順:**
+1. bot用のXアカウントを新規作成(例: `@toreca_kaigai`。ポスト先になるアカウント)
+2. そのアカウントでログインし https://developer.x.com/ で開発者登録(Freeプランで可。
+   Freeは投稿数に月間上限があるが本botの頻度=1日最大4ポストなら十分)
+3. Project & App を作成 → App の「User authentication settings」で
+   Read and write 権限を設定
+4. 「Keys and tokens」で API Key / API Key Secret / Access Token / Access Token Secret
+   の4つを生成し、リポジトリSecretsに登録:
+   - `X_API_KEY` / `X_API_SECRET` … PoE2 bot用に登録済みならそのまま共用可
+     (別アプリにするなら上書きせず新規アプリのキーをこの名前で登録している方に合わせる)
+   - `TORECA_X_ACCESS_TOKEN` / `TORECA_X_ACCESS_TOKEN_SECRET` … 手順4のAccess Token側
+
+※ 既にPoE2用のXアプリがある場合は、**bot用の新アカウントにそのアプリを認可**して
+   Access Tokenだけ発行し直す運用も可能(X_API_KEY/X_API_SECRETは共用)。
+
+## フェーズ3(未実装)
 
 - **マイナーTCG対応**: [JustTCG API](https://justtcg.com)(無料枠 月1,000コール)で
   ワンピースカード・Union Arena・ガンダムカードゲーム・hololiveカード等へ拡張。
   国内相場サイトが手薄な新興タイトルはほぼ競合不在
-- **X(Twitter)速報bot**: 急騰検知時の自動ポスト(poe2/ff14の `post-x.mjs` を流用)
 - **PSA鑑定品価格**: eBay売却実績系のデータ源が確保できれば追加
 
 ## 注意事項
