@@ -7,7 +7,7 @@ import crypto from "node:crypto";
 import { SITE_DIR, CONTENT_DIR } from "./config.mjs";
 
 const SITE_URL = "https://game-souba.com/tarkov/";
-const MAX_POSTS_PER_RUN = 1;
+const MAX_POSTS_PER_RUN = 2;
 
 const pctEncode = (s) =>
   encodeURIComponent(s).replace(
@@ -80,27 +80,60 @@ export async function postToX() {
     accessSecret: TARKOV_X_ACCESS_TOKEN_SECRET,
   };
 
+  const economy = await readJson(path.join(SITE_DIR, "economy.json"), null);
   const articles = (await readJson(path.join(CONTENT_DIR, "articles.json"), { articles: [] }))
     .articles;
   const statePath = path.join(SITE_DIR, "posted.json");
   const state = await readJson(statePath, { articleIds: [] });
 
+  const queue = [];
+
+  // 1. 未ポストの新着記事(最新1件だけ)
   const newArticle = articles.find((a) => !state.articleIds.includes(a.id));
-  if (!newArticle) {
+  if (newArticle) {
+    queue.push({
+      kind: "article",
+      key: newArticle.id,
+      text: `📊 ${newArticle.title}\n\n${newArticle.summary.slice(0, 80)}…\n\n全文→ ${SITE_URL}\n#タルコフ #EFT`,
+    });
+  }
+
+  // 2. デイリー急騰ランキング(日本時間で1日1回・データ取得できている時だけ)
+  const todayJst = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+  const top3 =
+    economy?.available !== false
+      ? (economy?.gainers ?? []).filter((g) => g.change48h > 0).slice(0, 3)
+      : [];
+  if (state.lastRankingDate !== todayJst && top3.length === 3) {
+    const lines = top3
+      .map((g, i) => `${i + 1}. ${g.name} +${g.change48h}%`)
+      .join("\n");
+    queue.push({
+      kind: "ranking",
+      key: todayJst,
+      text: `📈 フリマ本日の急騰TOP3\n\n${lines}\n\n※48時間変動率・6時間ごと自動集計\n詳細→ ${SITE_URL}\n#タルコフ #EFT`,
+    });
+  }
+
+  if (queue.length === 0) {
     console.log("x-bot: nothing new to post");
     return;
   }
 
-  const text = `📊 ${newArticle.title}\n\n${newArticle.summary.slice(0, 80)}…\n\n全文→ ${SITE_URL}\n#タルコフ #EFT`;
-  try {
-    const result = await postTweet(text, creds);
-    console.log(`x-bot: posted article (tweet id: ${result.data?.id})`);
-    state.articleIds.push(newArticle.id);
-    state.articleIds = state.articleIds.slice(-200);
-    await fs.writeFile(statePath, JSON.stringify(state, null, 1));
-  } catch (err) {
-    console.warn(`x-bot: post failed — ${err.message}`);
+  for (const item of queue.slice(0, MAX_POSTS_PER_RUN)) {
+    try {
+      const result = await postTweet(item.text, creds);
+      console.log(`x-bot: posted ${item.kind} (tweet id: ${result.data?.id})`);
+      if (item.kind === "ranking") state.lastRankingDate = item.key;
+      else state.articleIds.push(item.key);
+    } catch (err) {
+      console.warn(`x-bot: post failed — ${err.message}`);
+      break;
+    }
   }
+
+  state.articleIds = state.articleIds.slice(-200);
+  await fs.writeFile(statePath, JSON.stringify(state, null, 1));
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
