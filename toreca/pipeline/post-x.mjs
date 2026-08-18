@@ -1,7 +1,8 @@
 // X(Twitter)速報bot
 // 急騰カードの検知時と新しいAI記事の公開時に自動ポストする。
 // 認証情報が未設定なら何もせず正常終了する。
-// 必要な環境変数: X_API_KEY, X_API_SECRET(アプリ共通),
+// 必要な環境変数: TORECA_X_API_KEY, TORECA_X_API_SECRET(toreca専用アプリのキー。
+//                未設定ならゲーム系ボット共通の X_API_KEY / X_API_SECRET を使う)、
 //                TORECA_X_ACCESS_TOKEN, TORECA_X_ACCESS_TOKEN_SECRET(bot垢のトークン)
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -71,15 +72,18 @@ async function readJson(file, fallback = null) {
 }
 
 export async function postToX() {
-  const { X_API_KEY, X_API_SECRET, TORECA_X_ACCESS_TOKEN, TORECA_X_ACCESS_TOKEN_SECRET } =
-    process.env;
-  if (!X_API_KEY || !X_API_SECRET || !TORECA_X_ACCESS_TOKEN || !TORECA_X_ACCESS_TOKEN_SECRET) {
+  // toreca専用アプリのキーを優先し、無ければゲーム系ボット共通のアプリキーを使う。
+  // Access Tokenは「apiKey側のアプリで発行されたもの」でないと認証が通らない点に注意。
+  const apiKey = process.env.TORECA_X_API_KEY || process.env.X_API_KEY;
+  const apiSecret = process.env.TORECA_X_API_SECRET || process.env.X_API_SECRET;
+  const { TORECA_X_ACCESS_TOKEN, TORECA_X_ACCESS_TOKEN_SECRET } = process.env;
+  if (!apiKey || !apiSecret || !TORECA_X_ACCESS_TOKEN || !TORECA_X_ACCESS_TOKEN_SECRET) {
     console.log("x-bot: X API credentials not set — skipping");
     return;
   }
   const creds = {
-    apiKey: X_API_KEY,
-    apiSecret: X_API_SECRET,
+    apiKey,
+    apiSecret,
     accessToken: TORECA_X_ACCESS_TOKEN,
     accessSecret: TORECA_X_ACCESS_TOKEN_SECRET,
   };

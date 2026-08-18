@@ -83,12 +83,13 @@ Secrets未設定の間は自動でスキップされ、他の機能に影響し�
    Read and write 権限を設定
 4. 「Keys and tokens」で API Key / API Key Secret / Access Token / Access Token Secret
    の4つを生成し、リポジトリSecretsに登録:
-   - `X_API_KEY` / `X_API_SECRET` … PoE2 bot用に登録済みならそのまま共用可
-     (別アプリにするなら上書きせず新規アプリのキーをこの名前で登録している方に合わせる)
+   - `TORECA_X_API_KEY` / `TORECA_X_API_SECRET` … 手順4のAPI Key側
    - `TORECA_X_ACCESS_TOKEN` / `TORECA_X_ACCESS_TOKEN_SECRET` … 手順4のAccess Token側
 
-※ 既にPoE2用のXアプリがある場合は、**bot用の新アカウントにそのアプリを認可**して
-   Access Tokenだけ発行し直す運用も可能(X_API_KEY/X_API_SECRETは共用)。
+⚠️ ゲーム系ボット(PoE2/FF14)が使用中の `X_API_KEY` / `X_API_SECRET` は
+   **上書きしないこと**(既存ボットが停止する)。torecaは `TORECA_X_API_KEY` 側を
+   優先して使い、未設定の場合のみ共通キーにフォールバックする。
+   Access Tokenは「そのAPI Keyを発行したアプリ」で生成したものでないと認証が通らない。
 
 ## フェーズ3(未実装)
 

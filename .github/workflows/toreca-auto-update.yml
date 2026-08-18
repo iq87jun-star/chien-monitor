@@ -43,6 +43,8 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          TORECA_X_API_KEY: ${{ secrets.TORECA_X_API_KEY }}
+          TORECA_X_API_SECRET: ${{ secrets.TORECA_X_API_SECRET }}
           TORECA_X_ACCESS_TOKEN: ${{ secrets.TORECA_X_ACCESS_TOKEN }}
           TORECA_X_ACCESS_TOKEN_SECRET: ${{ secrets.TORECA_X_ACCESS_TOKEN_SECRET }}
         run: |
