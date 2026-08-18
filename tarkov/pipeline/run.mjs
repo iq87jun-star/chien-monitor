@@ -2,6 +2,7 @@
 import { fetchAll } from "./fetch-data.mjs";
 import { aggregate } from "./aggregate.mjs";
 import { generateArticles } from "./generate-articles.mjs";
+import { postToX } from "./post-x.mjs";
 
 try {
   // fetchはAPI障害時に警告のみで戻る(既存rawを保持)。aggregateはraw欠如時に
@@ -15,7 +16,10 @@ try {
 }
 
 // 以降のステップは任意機能(認証情報がある時だけ動く)。失敗しても他を巻き添えにしない
-for (const [name, step] of [["article generation", generateArticles]]) {
+for (const [name, step] of [
+  ["article generation", generateArticles],
+  ["x posting", postToX],
+]) {
   try {
     await step();
   } catch (err) {

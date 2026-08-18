@@ -40,6 +40,8 @@ jobs:
           X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
           FF14_X_ACCESS_TOKEN: ${{ secrets.FF14_X_ACCESS_TOKEN }}
           FF14_X_ACCESS_TOKEN_SECRET: ${{ secrets.FF14_X_ACCESS_TOKEN_SECRET }}
+          TARKOV_X_ACCESS_TOKEN: ${{ secrets.TARKOV_X_ACCESS_TOKEN }}
+          TARKOV_X_ACCESS_TOKEN_SECRET: ${{ secrets.TARKOV_X_ACCESS_TOKEN_SECRET }}
         run: |
           set -e
           for site in poe2 poe1 tarkov ff14; do
