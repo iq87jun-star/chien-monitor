@@ -82,6 +82,7 @@ export async function postToX() {
   };
 
   const news = await readJson(path.join(SITE_DIR, "news.json"), { items: [] });
+  const economy = await readJson(path.join(SITE_DIR, "economy.json"), null);
   const articles = (await readJson(path.join(CONTENT_DIR, "articles.json"), { articles: [] }))
     .articles;
   const statePath = path.join(SITE_DIR, "posted.json");
@@ -109,6 +110,20 @@ export async function postToX() {
     });
   }
 
+  // 3. デイリー急騰ランキング(日本時間で1日1回だけ)
+  const todayJst = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+  const top3 = (economy?.gainers ?? []).filter((g) => g.change7d > 0).slice(0, 3);
+  if (state.lastRankingDate !== todayJst && top3.length === 3) {
+    const lines = top3
+      .map((g, i) => `${i + 1}. ${g.name} +${g.change7d}%`)
+      .join("\n");
+    queue.push({
+      kind: "ranking",
+      key: todayJst,
+      text: `📈 PoE2 本日の急騰TOP3(${economy.league})\n\n${lines}\n\n※7日間変動率・6時間ごと自動集計\n詳細→ ${SITE_URL}\n#PoE2 #PathofExile2`,
+    });
+  }
+
   if (queue.length === 0) {
     console.log("x-bot: nothing new to post");
     return;
@@ -119,6 +134,7 @@ export async function postToX() {
       const result = await postTweet(item.text, creds);
       console.log(`x-bot: posted ${item.kind} (tweet id: ${result.data?.id})`);
       if (item.kind === "news") state.newsGids.push(item.key);
+      else if (item.kind === "ranking") state.lastRankingDate = item.key;
       else state.articleIds.push(item.key);
     } catch (err) {
       // 認証エラーや制限は警告に留め、他の処理を巻き添えにしない

@@ -278,6 +278,22 @@ function Article({ a, expanded, onToggle }) {
       >
         {expanded ? "閉じる" : "続きを読む"}
       </button>
+      <a
+        href={`articles/${a.id}/`}
+        style={{
+          marginTop: 10,
+          marginLeft: 8,
+          display: "inline-block",
+          color: T.textMed,
+          fontSize: 12,
+          textDecoration: "none",
+          border: `1px solid ${T.outline}`,
+          borderRadius: T.r.full,
+          padding: "4px 14px",
+        }}
+      >
+        記事ページへ →
+      </a>
     </article>
   );
 }
@@ -350,6 +366,12 @@ export default function App() {
                 />
               ))}
             </div>
+            <a
+              href="articles/"
+              style={{ fontSize: 12, color: T.textMed, textDecoration: "underline" }}
+            >
+              過去記事の一覧を見る →
+            </a>
           </Card>
         )}
 

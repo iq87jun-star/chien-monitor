@@ -9,7 +9,7 @@ name: poe2-auto-update
 
 on:
   schedule:
-    - cron: "23 */6 * * *" # 6時間ごと(UTC)
+    - cron: "23 3,9,12,22 * * *" # JST 7:23 / 12:23 / 18:23 / 21:23 (Xのゴールデンタイムに合わせる)
   workflow_dispatch:
 
 permissions:
@@ -65,7 +65,8 @@ jobs:
         run: |
           mkdir -p site-dist
           cp portal/index.html site-dist/index.html
-          cp portal/sitemap.xml portal/robots.txt site-dist/
+          cp portal/robots.txt portal/ogp.png site-dist/
+          node scripts/generate-sitemap.mjs
           for site in poe2 poe1 tarkov ff14; do
             cp -r "$site/dist" "site-dist/$site"
           done
