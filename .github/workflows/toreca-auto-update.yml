@@ -78,3 +78,4 @@ jobs:
           personal_token: ${{ secrets.TORECA_DEPLOY_TOKEN }}
           external_repository: ${{ secrets.TORECA_DEPLOY_REPO }}
           publish_dir: toreca/dist
+          cname: pokeca-kaigai.com
