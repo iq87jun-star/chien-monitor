@@ -10,6 +10,8 @@ import crypto from "node:crypto";
 import { SITE_DIR, CONTENT_DIR, SIGNIFICANT_CHANGE_PCT } from "./config.mjs";
 
 const SITE_URL = "https://pokeca-kaigai.com/";
+// GAでX bot経由の流入を判別するためのUTMパラメータ(t.coで短縮されるため文字数コストなし)
+const UTM = (campaign) => `?utm_source=x&utm_medium=social&utm_campaign=${campaign}`;
 const MAX_POSTS_PER_RUN = 2;
 const HASHTAGS = "#ポケカ #ポケモンカード";
 
@@ -105,7 +107,7 @@ export async function postToX() {
     queue.push({
       kind: "spike",
       key: spike.id,
-      text: `📈【ポケカ海外相場 急騰】\n${spike.name}(${spike.set})\n€${spike.eur}(${jpy})・7日平均比 +${spike.change7d}%\n\n海外市場(Cardmarket)の値動きを毎日自動集計→ ${SITE_URL}\n${HASHTAGS}`,
+      text: `📈【ポケカ海外相場 急騰】\n${spike.name}(${spike.set})\n€${spike.eur}(${jpy})・7日平均比 +${spike.change7d}%\n\n海外市場(Cardmarket)の値動きを毎日自動集計→ ${SITE_URL}${UTM("spike")}\n${HASHTAGS}`,
     });
   }
 
@@ -116,7 +118,7 @@ export async function postToX() {
       kind: "article",
       key: newArticle.id,
       // 記事の個別ページへ直リンク(OGPカード表示でCTRを上げる)
-      text: `📊 ${newArticle.title}\n\n${newArticle.summary.slice(0, 80)}…\n\n全文→ ${SITE_URL}articles/${newArticle.id}/\n${HASHTAGS}`,
+      text: `📊 ${newArticle.title}\n\n${newArticle.summary.slice(0, 80)}…\n\n全文→ ${SITE_URL}articles/${newArticle.id}/${UTM("article")}\n${HASHTAGS}`,
     });
   }
 

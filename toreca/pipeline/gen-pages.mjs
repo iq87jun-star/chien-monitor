@@ -8,6 +8,17 @@ import { ROOT, CONTENT_DIR } from "./config.mjs";
 export const SITE_URL = "https://pokeca-kaigai.com/";
 const DIST = path.join(ROOT, "dist");
 
+// GA4測定ID。当面はゲーム系サイトと共通プロパティ(ホスト名で区別可能)。
+// ポケカ専用プロパティを作成したらここと index.html を差し替える
+const GA_ID = "G-7LZS5DCBSG";
+const GA_SNIPPET = `<script async src="https://www.googletagmanager.com/gtag/js?id=${GA_ID}"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_ID}');
+</script>`;
+
 const esc = (s) =>
   String(s ?? "")
     .replaceAll("&", "&amp;")
@@ -33,6 +44,7 @@ function articleHtml(a) {
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+${GA_SNIPPET}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(a.title)} | ポケカ海外相場モニター</title>
 <meta name="description" content="${esc(a.summary)}">
