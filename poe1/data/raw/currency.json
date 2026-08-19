@@ -17,7 +17,7 @@
    }
   ],
   "rates": {
-   "divine": 0.005019
+   "divine": 0.005
   },
   "primary": "chaos",
   "secondary": "divine"
@@ -25,1958 +25,1939 @@
  "lines": [
   {
    "id": "accelerating-catalyst",
-   "primaryValue": 1.62,
-   "volumePrimaryValue": 1232,
+   "primaryValue": 1.44,
+   "volumePrimaryValue": 1074,
    "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.6164,
+   "maxVolumeRate": 0.6964,
    "sparkline": {
-    "totalChange": 29.01,
+    "totalChange": -4.57,
     "data": [
-     10.05,
-     23.7,
-     43.13,
-     21.16,
-     42.01,
-     21.43,
-     29.01
+     -10.47,
+     26.27,
+     6.6,
+     11,
+     12.34,
+     -4.55,
+     -4.57
     ]
    }
   },
   {
    "id": "chaos",
    "primaryValue": 1,
-   "volumePrimaryValue": 14504992,
+   "volumePrimaryValue": 18445970,
    "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 199.2,
+   "maxVolumeRate": 200,
    "sparkline": {
-    "totalChange": -4.67,
+    "totalChange": -2.49,
     "data": [
-     -1.86,
-     -1.94,
-     -3.03,
-     -4.17,
-     -4.38,
-     -4.4,
-     -4.67
+     0.65,
+     0.67,
+     -1.18,
+     -2.31,
+     -1.47,
+     -1.9,
+     -2.49
     ]
    }
   },
   {
    "id": "divine",
-   "primaryValue": 199.2,
-   "volumePrimaryValue": 14504992,
+   "primaryValue": 200,
+   "volumePrimaryValue": 18445970,
    "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.005019,
+   "maxVolumeRate": 0.005,
    "sparkline": {
-    "totalChange": 4.9,
+    "totalChange": 2.56,
     "data": [
-     1.9,
-     1.98,
-     3.13,
-     4.35,
-     4.58,
-     4.61,
-     4.9
-    ]
-   }
-  },
-  {
-   "id": "blessed",
-   "primaryValue": 0.09176,
-   "volumePrimaryValue": 543,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 10.9,
-   "sparkline": {
-    "totalChange": -20.87,
-    "data": [
-     -27.03,
-     -36.85,
-     -30.35,
-     -39.14,
-     -29.77,
-     -11.02,
-     -20.87
-    ]
-   }
-  },
-  {
-   "id": "abrasive-catalyst",
-   "primaryValue": 1.47,
-   "volumePrimaryValue": 3280,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.6814,
-   "sparkline": {
-    "totalChange": 17.87,
-    "data": [
-     -5.24,
-     16.36,
-     22.12,
-     21.33,
-     20.92,
-     25.88,
-     17.87
-    ]
-   }
-  },
-  {
-   "id": "alch",
-   "primaryValue": 0.04935,
-   "volumePrimaryValue": 5669,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 20.26,
-   "sparkline": {
-    "totalChange": -22.61,
-    "data": [
-     -11.03,
-     -3.07,
-     0,
-     -6.79,
-     -12.49,
-     -20.45,
-     -22.61
-    ]
-   }
-  },
-  {
-   "id": "alchemy-shard",
-   "primaryValue": 0.8387,
-   "volumePrimaryValue": 17.33,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 1.19,
-   "sparkline": {
-    "totalChange": -16.13,
-    "data": [
-     0,
-     246,
-     70.97,
-     null,
-     -82.58,
-     -83.33,
-     -16.13
-    ]
-   }
-  },
-  {
-   "id": "alt",
-   "primaryValue": 0.113,
-   "volumePrimaryValue": 76678,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 8.85,
-   "sparkline": {
-    "totalChange": -4.25,
-    "data": [
-     14.71,
-     12.6,
-     9.44,
-     3.91,
-     2.45,
-     -5.08,
-     -4.25
-    ]
-   }
-  },
-  {
-   "id": "ancient-orb",
-   "primaryValue": 8.15,
-   "volumePrimaryValue": 162591,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.1228,
-   "sparkline": {
-    "totalChange": 1.12,
-    "data": [
-     0.67,
-     -4.39,
-     -4.62,
-     0.02,
-     14.35,
-     3.78,
-     1.12
-    ]
-   }
-  },
-  {
-   "id": "annul",
-   "primaryValue": 8.67,
-   "volumePrimaryValue": 98621,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.1154,
-   "sparkline": {
-    "totalChange": -2.71,
-    "data": [
-     3.77,
-     0.67,
-     5.56,
-     21.5,
-     7.8,
-     1.93,
-     -2.71
-    ]
-   }
-  },
-  {
-   "id": "aug",
-   "primaryValue": 0.04501,
-   "volumePrimaryValue": 4513,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 22.22,
-   "sparkline": {
-    "totalChange": -26.2,
-    "data": [
-     9.59,
-     10.56,
-     3.17,
-     1,
-     -25.29,
-     -26.47,
-     -26.2
-    ]
-   }
-  },
-  {
-   "id": "awakeners-orb",
-   "primaryValue": 545.7,
-   "volumePrimaryValue": 105687,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.001832,
-   "sparkline": {
-    "totalChange": 73.97,
-    "data": [
-     20.11,
-     56.4,
-     55.87,
-     47.65,
-     51.81,
-     66.59,
-     73.97
-    ]
-   }
-  },
-  {
-   "id": "bauble",
-   "primaryValue": 0.1626,
-   "volumePrimaryValue": 2724,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 6.15,
-   "sparkline": {
-    "totalChange": -8.45,
-    "data": [
-     19.36,
-     6.75,
-     8.71,
-     33.64,
-     28.63,
-     3.8,
-     -8.45
-    ]
-   }
-  },
-  {
-   "id": "chance",
-   "primaryValue": 0.1046,
-   "volumePrimaryValue": 32709,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 9.56,
-   "sparkline": {
-    "totalChange": 40.15,
-    "data": [
-     2.54,
-     12.62,
-     13.9,
-     25.5,
-     32.63,
-     34.68,
-     40.15
-    ]
-   }
-  },
-  {
-   "id": "dead-mans-sulphur",
-   "primaryValue": 0.01078,
-   "volumePrimaryValue": 919081,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 18477,
-   "sparkline": {
-    "totalChange": 39.57,
-    "data": [
-     -8.89,
-     -1.91,
-     6.15,
-     7.49,
-     14.91,
-     24.54,
-     39.57
-    ]
-   }
-  },
-  {
-   "id": "elders-exalted-orb",
-   "primaryValue": 46.75,
-   "volumePrimaryValue": 11656,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.02139,
-   "sparkline": {
-    "totalChange": 12.86,
-    "data": [
-     -2.03,
-     4.32,
-     -0.76,
-     17.41,
-     13.61,
-     23.38,
-     12.86
-    ]
-   }
-  },
-  {
-   "id": "eldritch-chaos-orb",
-   "primaryValue": 30.95,
-   "volumePrimaryValue": 119567,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.03231,
-   "sparkline": {
-    "totalChange": -11.76,
-    "data": [
-     -1.32,
-     -11.95,
-     -15.17,
-     -6.72,
+     -0.64,
      -0.67,
-     -7.59,
-     -11.76
-    ]
-   }
-  },
-  {
-   "id": "eldritch-exalted-orb",
-   "primaryValue": 2.4,
-   "volumePrimaryValue": 3210,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.4173,
-   "sparkline": {
-    "totalChange": -13.47,
-    "data": [
-     6.11,
-     -0.31,
-     2.33,
-     4.81,
-     2.97,
-     -4.95,
-     -13.47
-    ]
-   }
-  },
-  {
-   "id": "eldritch-orb-of-annulment",
-   "primaryValue": 28.8,
-   "volumePrimaryValue": 77342,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.03472,
-   "sparkline": {
-    "totalChange": -15.16,
-    "data": [
-     -2.63,
-     -17.38,
-     -13.64,
-     -0.97,
-     5.87,
-     -6.01,
-     -15.16
-    ]
-   }
-  },
-  {
-   "id": "enkindling-orb",
-   "primaryValue": 0.758,
-   "volumePrimaryValue": 8962,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 1.32,
-   "sparkline": {
-    "totalChange": -29.26,
-    "data": [
-     5.09,
-     -10.64,
-     -5.78,
-     -2.58,
-     -3.4,
-     -19,
-     -29.26
-    ]
-   }
-  },
-  {
-   "id": "exalted",
-   "primaryValue": 1.29,
-   "volumePrimaryValue": 75792,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.7724,
-   "sparkline": {
-    "totalChange": -21.6,
-    "data": [
-     9.1,
-     12.84,
-     12.59,
-     -2.43,
-     -8.59,
-     -14.38,
-     -21.6
-    ]
-   }
-  },
-  {
-   "id": "exceptional-eldritch-ichor",
-   "primaryValue": 85.03,
-   "volumePrimaryValue": 36167,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.01176,
-   "sparkline": {
-    "totalChange": 0.47,
-    "data": [
-     10.78,
-     11.41,
-     17.32,
-     11.1,
-     2.98,
-     2.44,
-     0.47
-    ]
-   }
-  },
-  {
-   "id": "fertile-catalyst",
-   "primaryValue": 15.6,
-   "volumePrimaryValue": 30791,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.0641,
-   "sparkline": {
-    "totalChange": 16.76,
-    "data": [
-     15.67,
-     11,
-     13.23,
-     1.91,
-     0.24,
-     11.68,
-     16.76
-    ]
-   }
-  },
-  {
-   "id": "fracturing-orb",
-   "primaryValue": 319.7,
-   "volumePrimaryValue": 319704,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.003128,
-   "sparkline": {
-    "totalChange": -10.77,
-    "data": [
-     -5.99,
-     -12.27,
-     -8.47,
-     2.48,
-     -5.72,
-     -11.97,
-     -10.77
-    ]
-   }
-  },
-  {
-   "id": "fracturing-shard",
-   "primaryValue": 14.81,
-   "volumePrimaryValue": 1219,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.06754,
-   "sparkline": {
-    "totalChange": -17.06,
-    "data": [
-     -7.38,
-     -18.46,
-     -13.98,
-     -6.64,
-     -9.69,
-     -16.68,
-     -17.06
-    ]
-   }
-  },
-  {
-   "id": "fusing",
-   "primaryValue": 0.07761,
-   "volumePrimaryValue": 25965,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 12.89,
-   "sparkline": {
-    "totalChange": 26.24,
-    "data": [
-     21.9,
-     14.79,
-     33.29,
-     39.46,
-     39.82,
-     21.75,
-     26.24
-    ]
-   }
-  },
-  {
-   "id": "grand-eldritch-ember",
-   "primaryValue": 13.32,
-   "volumePrimaryValue": 184092,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.07508,
-   "sparkline": {
-    "totalChange": 12.7,
-    "data": [
-     -0.47,
-     -7.02,
-     9.87,
-     11.4,
-     6.82,
-     7.04,
-     12.7
-    ]
-   }
-  },
-  {
-   "id": "grand-eldritch-ichor",
-   "primaryValue": 4.32,
-   "volumePrimaryValue": 84730,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.2316,
-   "sparkline": {
-    "totalChange": -13.93,
-    "data": [
-     -2.58,
-     -8.77,
-     6.33,
-     5.41,
-     -0.01,
-     -8,
-     -13.93
-    ]
-   }
-  },
-  {
-   "id": "greater-eldritch-ember",
-   "primaryValue": 0.9733,
-   "volumePrimaryValue": 20348,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 1.03,
-   "sparkline": {
-    "totalChange": 1.49,
-    "data": [
-     5.54,
-     7.72,
-     8.05,
-     10.3,
-     14.22,
-     8.43,
-     1.49
-    ]
-   }
-  },
-  {
-   "id": "greater-eldritch-ichor",
-   "primaryValue": 0.2188,
-   "volumePrimaryValue": 4341,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 4.57,
-   "sparkline": {
-    "totalChange": -29.89,
-    "data": [
-     -1.2,
-     -9.29,
-     -0.19,
-     10.18,
-     1.73,
-     -15.47,
-     -29.89
-    ]
-   }
-  },
-  {
-   "id": "hinekoras-lock",
-   "primaryValue": 26824,
-   "volumePrimaryValue": 5449766,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 0.007428,
-   "sparkline": {
-    "totalChange": 19.24,
-    "data": [
-     -8.72,
-     -11.08,
-     -4.86,
-     7.94,
-     17.38,
-     11.7,
-     19.24
-    ]
-   }
-  },
-  {
-   "id": "imbued-catalyst",
-   "primaryValue": 1.37,
-   "volumePrimaryValue": 2715,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.73,
-   "sparkline": {
-    "totalChange": 14.1,
-    "data": [
-     -3.67,
-     19.26,
-     22.69,
-     26.95,
-     19.44,
-     29.17,
-     14.1
-    ]
-   }
-  },
-  {
-   "id": "instilling-orb",
-   "primaryValue": 0.05513,
-   "volumePrimaryValue": 533.2,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 18.14,
-   "sparkline": {
-    "totalChange": -33.89,
-    "data": [
-     4.49,
-     -19.85,
-     -12.33,
-     -13.96,
-     -14.49,
-     -22.3,
-     -33.89
-    ]
-   }
-  },
-  {
-   "id": "intrinsic-catalyst",
-   "primaryValue": 2.03,
-   "volumePrimaryValue": 10403,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.4921,
-   "sparkline": {
-    "totalChange": 18.77,
-    "data": [
-     16.56,
-     23.4,
-     11.13,
-     15.2,
-     10.13,
-     9.17,
-     18.77
-    ]
-   }
-  },
-  {
-   "id": "jewellers",
-   "primaryValue": 0.01212,
-   "volumePrimaryValue": 3435,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 82.5,
-   "sparkline": {
-    "totalChange": 46.08,
-    "data": [
-     15.36,
-     26.81,
-     42.87,
-     38.72,
-     46.25,
-     42.59,
-     46.08
-    ]
-   }
-  },
-  {
-   "id": "lesser-eldritch-ember",
-   "primaryValue": 0.0982,
-   "volumePrimaryValue": 1546,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 10.18,
-   "sparkline": {
-    "totalChange": 8.31,
-    "data": [
-     8.27,
-     -5.49,
-     -3.58,
-     23.76,
-     46.98,
-     20.17,
-     8.31
-    ]
-   }
-  },
-  {
-   "id": "lesser-eldritch-ichor",
-   "primaryValue": 0.0305,
-   "volumePrimaryValue": 523.3,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 32.79,
-   "sparkline": {
-    "totalChange": -48.03,
-    "data": [
-     0.37,
-     9.88,
-     -12.02,
-     27.45,
-     29.15,
-     1.48,
-     -48.03
-    ]
-   }
-  },
-  {
-   "id": "mavens-chisel-of-avarice",
-   "primaryValue": 46.32,
-   "volumePrimaryValue": 68505,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.02159,
-   "sparkline": {
-    "totalChange": -3.2,
-    "data": [
-     -3.06,
-     0.03,
-     -14.24,
-     -15.75,
-     -9.33,
-     11.5,
-     -3.2
-    ]
-   }
-  },
-  {
-   "id": "mavens-chisel-of-scarabs",
-   "primaryValue": 50.89,
-   "volumePrimaryValue": 46236,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.01965,
-   "sparkline": {
-    "totalChange": 77.89,
-    "data": [
-     -11.63,
-     5.33,
-     10.97,
-     20.09,
-     18.38,
-     7.05,
-     77.89
-    ]
-   }
-  },
-  {
-   "id": "orb-of-binding",
-   "primaryValue": 0.01419,
-   "volumePrimaryValue": 17,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 70.49,
-   "sparkline": {
-    "totalChange": -49.3,
-    "data": [
-     -27.12,
-     -4.22,
-     -17.13,
-     -23.76,
-     -2.23,
-     -39,
-     -49.3
-    ]
-   }
-  },
-  {
-   "id": "orb-of-conflict",
-   "primaryValue": 226.5,
-   "volumePrimaryValue": 120277,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 0.8796,
-   "sparkline": {
-    "totalChange": 19.23,
-    "data": [
-     3.95,
-     19.46,
-     7.79,
-     0.85,
-     -1.35,
-     1.37,
-     19.23
-    ]
-   }
-  },
-  {
-   "id": "orb-of-intention",
-   "primaryValue": 0.5405,
-   "volumePrimaryValue": 10,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 1.85,
-   "sparkline": {
-    "totalChange": -43.03,
-    "data": [
-     -33.14,
-     -53.29,
-     -31.42,
-     1.19,
-     -7.75,
-     -25.45,
-     -43.03
-    ]
-   }
-  },
-  {
-   "id": "orb-of-remembrance",
-   "primaryValue": 92.43,
-   "volumePrimaryValue": 51882,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.01082,
-   "sparkline": {
-    "totalChange": 58.44,
-    "data": [
-     -13.21,
-     -6.94,
-     47.83,
-     15.98,
-     25.87,
-     48.27,
-     58.44
-    ]
-   }
-  },
-  {
-   "id": "orb-of-unmaking",
-   "primaryValue": 0.1526,
-   "volumePrimaryValue": 5527,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 6.55,
-   "sparkline": {
-    "totalChange": -10.13,
-    "data": [
-     8.97,
-     -3.67,
-     9.98,
-     10.55,
-     15.49,
-     1.82,
-     -10.13
-    ]
-   }
-  },
-  {
-   "id": "orb-of-unravelling",
-   "primaryValue": 6.88,
-   "volumePrimaryValue": 1271,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.1454,
-   "sparkline": {
-    "totalChange": 28.4,
-    "data": [
-     18.38,
-     11.2,
-     11.52,
-     21.82,
-     20.87,
-     13.15,
-     28.4
-    ]
-   }
-  },
-  {
-   "id": "primal-lifeforce",
-   "primaryValue": 0.03784,
-   "volumePrimaryValue": 348943,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 5265,
-   "sparkline": {
-    "totalChange": 9.93,
-    "data": [
-     4.61,
-     2.98,
-     3.45,
-     1.22,
-     8.08,
-     11.96,
-     9.93
-    ]
-   }
-  },
-  {
-   "id": "redeemers-exalted-orb",
-   "primaryValue": 54.49,
-   "volumePrimaryValue": 3033,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.01835,
-   "sparkline": {
-    "totalChange": 21.08,
-    "data": [
-     -8.85,
-     66.47,
-     13.72,
-     26.46,
-     44.27,
-     38.57,
-     21.08
-    ]
-   }
-  },
-  {
-   "id": "reflecting-mist",
-   "primaryValue": 437.9,
-   "volumePrimaryValue": 61820,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.002284,
-   "sparkline": {
-    "totalChange": -30.87,
-    "data": [
-     -24.75,
-     -59.97,
-     -42.18,
-     -34.54,
-     -28.12,
-     -32.21,
-     -30.87
-    ]
-   }
-  },
-  {
-   "id": "regal",
-   "primaryValue": 0.0547,
-   "volumePrimaryValue": 520.2,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 18.28,
-   "sparkline": {
-    "totalChange": -40.77,
-    "data": [
-     21.14,
-     1.43,
-     -1.69,
-     -18.4,
-     -15.36,
-     -28.66,
-     -40.77
-    ]
-   }
-  },
-  {
-   "id": "regret",
-   "primaryValue": 0.606,
-   "volumePrimaryValue": 18483,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 1.65,
-   "sparkline": {
-    "totalChange": -15.46,
-    "data": [
-     2.47,
-     -3.04,
-     7.03,
-     16.35,
-     15.24,
-     0.9,
-     -15.46
-    ]
-   }
-  },
-  {
-   "id": "sacred-lifeforce",
-   "primaryValue": 30.8,
-   "volumePrimaryValue": 12321,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.03246,
-   "sparkline": {
-    "totalChange": -20.1,
-    "data": [
-     7.45,
-     9.9,
-     3.43,
-     -2.59,
-     -6.42,
-     -11.24,
-     -20.1
-    ]
-   }
-  },
-  {
-   "id": "sandswept-lifeforce",
-   "primaryValue": 200.4,
-   "volumePrimaryValue": 36442,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.00499,
-   "sparkline": {
-    "totalChange": -56.96,
-    "data": [
-     -1.79,
-     -5.28,
-     -17.85,
-     -28.59,
-     -28.24,
-     -44.24,
-     -56.96
-    ]
-   }
-  },
-  {
-   "id": "scour",
-   "primaryValue": 0.5425,
-   "volumePrimaryValue": 67776,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 1.84,
-   "sparkline": {
-    "totalChange": 43.53,
-    "data": [
-     -0.68,
-     7.3,
-     11.07,
-     29.84,
-     30.31,
-     27.15,
-     43.53
-    ]
-   }
-  },
-  {
-   "id": "scrap",
-   "primaryValue": 0.05701,
-   "volumePrimaryValue": 1895,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 17.54,
-   "sparkline": {
-    "totalChange": -6.22,
-    "data": [
-     -1.94,
-     -18.54,
-     -4.13,
-     -2,
-     -0.93,
-     -9.15,
-     -6.22
-    ]
-   }
-  },
-  {
-   "id": "shapers-exalted-orb",
-   "primaryValue": 101,
-   "volumePrimaryValue": 20892,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.0099,
-   "sparkline": {
-    "totalChange": 0.61,
-    "data": [
-     14.63,
-     18.94,
-     1.07,
-     14.21,
-     -0.89,
-     0.61,
-     0.61
-    ]
-   }
-  },
-  {
-   "id": "tainted-blacksmiths-whetstone",
-   "primaryValue": 0.3046,
-   "volumePrimaryValue": 251,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 3.28,
-   "sparkline": {
-    "totalChange": -11.09,
-    "data": [
-     45.31,
-     4.7,
-     4.05,
-     31.16,
-     44.51,
-     66.88,
-     -11.09
-    ]
-   }
-  },
-  {
-   "id": "tainted-exalted-orb",
-   "primaryValue": 195.9,
-   "volumePrimaryValue": 19293,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 1.02,
-   "sparkline": {
-    "totalChange": 44.46,
-    "data": [
-     37.96,
-     1.84,
-     20.45,
-     27.03,
-     67.36,
-     33.22,
-     44.46
-    ]
-   }
-  },
-  {
-   "id": "tainted-orb-of-fusing",
-   "primaryValue": 8.56,
-   "volumePrimaryValue": 10486,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.1168,
-   "sparkline": {
-    "totalChange": -11.87,
-    "data": [
-     1.62,
-     -5.28,
-     -13.17,
-     -6.79,
-     3.29,
-     -8.59,
-     -11.87
-    ]
-   }
-  },
-  {
-   "id": "tempering-catalyst",
-   "primaryValue": 3.58,
-   "volumePrimaryValue": 4456,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.2795,
-   "sparkline": {
-    "totalChange": 35.45,
-    "data": [
-     19.33,
-     19.27,
-     50.18,
-     7.81,
-     45.85,
-     26.67,
-     35.45
-    ]
-   }
-  },
-  {
-   "id": "turbulent-catalyst",
-   "primaryValue": 1.69,
-   "volumePrimaryValue": 3880,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.5915,
-   "sparkline": {
-    "totalChange": 19.46,
-    "data": [
-     -6.14,
-     11.48,
-     12.66,
-     25.15,
-     14.52,
-     16.63,
-     19.46
-    ]
-   }
-  },
-  {
-   "id": "veiled-exalted-orb",
-   "primaryValue": 3320,
-   "volumePrimaryValue": 293852,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 0.06001,
-   "sparkline": {
-    "totalChange": 50.46,
-    "data": [
-     15.79,
-     56.39,
-     53.86,
-     52.24,
-     51.05,
-     58.95,
-     50.46
-    ]
-   }
-  },
-  {
-   "id": "vivid-lifeforce",
-   "primaryValue": 0.07027,
-   "volumePrimaryValue": 2236718,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 2835,
-   "sparkline": {
-    "totalChange": 6.1,
-    "data": [
-     3.9,
-     -0.56,
-     -1.82,
-     -5.23,
-     0.4,
-     7.28,
-     6.1
-    ]
-   }
-  },
-  {
-   "id": "wild-lifeforce",
-   "primaryValue": 0.0191,
-   "volumePrimaryValue": 108157,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 10433,
-   "sparkline": {
-    "totalChange": 3.42,
-    "data": [
-     -1.42,
-     1.49,
-     0.83,
-     2.85,
-     15.09,
-     14.92,
-     3.42
-    ]
-   }
-  },
-  {
-   "id": "chrome",
-   "primaryValue": 2.49,
-   "volumePrimaryValue": 144240,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.4013,
-   "sparkline": {
-    "totalChange": 11.12,
-    "data": [
-     11.35,
-     4.55,
-     17.66,
-     21.27,
-     15.51,
-     15.4,
-     11.12
-    ]
-   }
-  },
-  {
-   "id": "crusaders-exalted-orb",
-   "primaryValue": 70.7,
-   "volumePrimaryValue": 3641,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.01414,
-   "sparkline": {
-    "totalChange": 51.03,
-    "data": [
-     4.19,
-     52.53,
-     28.04,
-     17.93,
-     62.33,
-     58.54,
-     51.03
-    ]
-   }
-  },
-  {
-   "id": "exceptional-eldritch-ember",
-   "primaryValue": 92.45,
-   "volumePrimaryValue": 35470,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.01082,
-   "sparkline": {
-    "totalChange": -7.23,
-    "data": [
-     2.67,
-     2.19,
-     5.03,
-     2.59,
-     -7.83,
-     -9.25,
-     -7.23
-    ]
-   }
-  },
-  {
-   "id": "flesh-of-xesht",
-   "primaryValue": 48.78,
-   "volumePrimaryValue": 6837,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.0205,
-   "sparkline": {
-    "totalChange": 54.37,
-    "data": [
-     15.42,
-     13.14,
-     -5.72,
-     -10.46,
-     5.93,
-     21.72,
-     54.37
-    ]
-   }
-  },
-  {
-   "id": "foulborn-exalted-orb",
-   "primaryValue": 985.7,
-   "volumePrimaryValue": 103009,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 0.2021,
-   "sparkline": {
-    "totalChange": -1.86,
-    "data": [
-     -2.52,
-     -2.46,
-     -2.32,
-     -0.19,
-     -1.57,
-     -2.89,
-     -1.86
-    ]
-   }
-  },
-  {
-   "id": "foulborn-orb-of-augmentation",
-   "primaryValue": 1.62,
-   "volumePrimaryValue": 579.2,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.6155,
-   "sparkline": {
-    "totalChange": 12.85,
-    "data": [
-     36.5,
-     34.16,
-     74.77,
-     21.61,
-     28.23,
-     32.94,
-     12.85
-    ]
-   }
-  },
-  {
-   "id": "foulborn-regal-orb",
-   "primaryValue": 8.89,
-   "volumePrimaryValue": 2469,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.1125,
-   "sparkline": {
-    "totalChange": -7.32,
-    "data": [
-     20.72,
-     6.71,
-     -13.49,
-     -16.75,
-     13.74,
-     11.07,
-     -7.32
-    ]
-   }
-  },
-  {
-   "id": "gcp",
-   "primaryValue": 1.14,
-   "volumePrimaryValue": 52586,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.8774,
-   "sparkline": {
-    "totalChange": -15.4,
-    "data": [
-     -7.63,
-     -12.02,
-     6.1,
-     16.52,
-     7.28,
-     -5.45,
-     -15.4
-    ]
-   }
-  },
-  {
-   "id": "hunters-exalted-orb",
-   "primaryValue": 335.5,
-   "volumePrimaryValue": 18954,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.002981,
-   "sparkline": {
-    "totalChange": 56.55,
-    "data": [
-     17.59,
-     34.01,
-     36.64,
-     37.96,
-     38.17,
-     49.05,
-     56.55
-    ]
-   }
-  },
-  {
-   "id": "mavens-chisel-of-divination",
-   "primaryValue": 81.52,
-   "volumePrimaryValue": 65368,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.01227,
-   "sparkline": {
-    "totalChange": 26.11,
-    "data": [
-     -0.93,
-     -8.19,
-     -7.79,
-     -17.16,
-     0.73,
-     5.42,
-     26.11
-    ]
-   }
-  },
-  {
-   "id": "mavens-chisel-of-procurement",
-   "primaryValue": 29.71,
-   "volumePrimaryValue": 49961,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.03366,
-   "sparkline": {
-    "totalChange": 188.8,
-    "data": [
-     31.26,
-     35.55,
-     28.21,
-     47.05,
-     66.31,
-     144.3,
-     188.8
-    ]
-   }
-  },
-  {
-   "id": "mavens-chisel-of-proliferation",
-   "primaryValue": 32,
-   "volumePrimaryValue": 41956,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.03125,
-   "sparkline": {
-    "totalChange": 48.45,
-    "data": [
-     -0.62,
-     0.58,
-     -3.76,
-     -2.06,
-     11.3,
-     47.55,
-     48.45
-    ]
-   }
-  },
-  {
-   "id": "mavens-orb",
-   "primaryValue": 904.4,
-   "volumePrimaryValue": 103703,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.001106,
-   "sparkline": {
-    "totalChange": 3.62,
-    "data": [
-     -18.64,
-     -1.24,
      1.2,
-     3.55,
-     2.54,
-     4.47,
-     3.62
-    ]
-   }
-  },
-  {
-   "id": "mirror",
-   "primaryValue": 178770,
-   "volumePrimaryValue": 24521307,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 0.001115,
-   "sparkline": {
-    "totalChange": 13.2,
-    "data": [
-     -6.14,
-     -5.57,
-     -3.19,
-     -0.8,
-     5.5,
-     8.35,
-     13.2
-    ]
-   }
-  },
-  {
-   "id": "mirror-shard",
-   "primaryValue": 9084,
-   "volumePrimaryValue": 1529201,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 0.02193,
-   "sparkline": {
-    "totalChange": 5.94,
-    "data": [
-     -11.49,
-     -12.14,
-     -10.03,
-     -7.71,
-     -1.35,
-     -0.35,
-     5.94
-    ]
-   }
-  },
-  {
-   "id": "noxious-catalyst",
-   "primaryValue": 1.48,
-   "volumePrimaryValue": 3436,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.676,
-   "sparkline": {
-    "totalChange": 20.14,
-    "data": [
-     -1.56,
-     15.44,
-     18.56,
-     26.29,
-     26.07,
-     25.52,
-     20.14
-    ]
-   }
-  },
-  {
-   "id": "portal",
-   "primaryValue": 0.02058,
-   "volumePrimaryValue": 2967,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 48.59,
-   "sparkline": {
-    "totalChange": 17.5,
-    "data": [
-     14.98,
-     37.76,
-     29.96,
-     45.25,
-     40.24,
-     24.47,
-     17.5
-    ]
-   }
-  },
-  {
-   "id": "prismatic-catalyst",
-   "primaryValue": 46.22,
-   "volumePrimaryValue": 79118,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.02163,
-   "sparkline": {
-    "totalChange": 19.24,
-    "data": [
-     6.78,
-     -2.43,
-     3.31,
-     1.96,
-     5.27,
-     20.61,
-     19.24
-    ]
-   }
-  },
-  {
-   "id": "rogues-marker",
-   "primaryValue": 0.0004826,
-   "volumePrimaryValue": 9660,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 2072,
-   "sparkline": {
-    "totalChange": 18.76,
-    "data": [
-     -4.07,
-     -3.33,
-     -12.12,
-     -19.07,
-     -11.72,
-     -5.13,
-     18.76
-    ]
-   }
-  },
-  {
-   "id": "sacred-orb",
-   "primaryValue": 39.32,
-   "volumePrimaryValue": 26155,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.02543,
-   "sparkline": {
-    "totalChange": -6.52,
-    "data": [
-     -0.86,
-     0.82,
-     -0.76,
-     12.81,
-     24.99,
-     5.16,
-     -6.52
-    ]
-   }
-  },
-  {
-   "id": "stacked-deck",
-   "primaryValue": 3.32,
-   "volumePrimaryValue": 2495403,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 60.03,
-   "sparkline": {
-    "totalChange": -0.38,
-    "data": [
-     0,
-     -3.21,
-     -7.69,
-     -8.66,
-     -2.23,
-     -0.6,
-     -0.38
-    ]
-   }
-  },
-  {
-   "id": "tailoring-orb",
-   "primaryValue": 337.3,
-   "volumePrimaryValue": 206583,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 0.5907,
-   "sparkline": {
-    "totalChange": 75.83,
-    "data": [
-     25.68,
-     8.54,
-     14.59,
-     69.51,
-     83.23,
-     71.41,
-     75.83
-    ]
-   }
-  },
-  {
-   "id": "tainted-armourers-scrap",
-   "primaryValue": 0.6645,
-   "volumePrimaryValue": 1572,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 1.5,
-   "sparkline": {
-    "totalChange": -32.5,
-    "data": [
-     4.47,
-     47.98,
-     -10.78,
-     -3.73,
-     -12.63,
-     -13.94,
-     -32.5
-    ]
-   }
-  },
-  {
-   "id": "tainted-catalyst",
-   "primaryValue": 12.9,
-   "volumePrimaryValue": 27744,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.07753,
-   "sparkline": {
-    "totalChange": 4.33,
-    "data": [
-     5.09,
-     4.6,
-     4.75,
-     1.16,
-     -2.84,
-     4.36,
-     4.33
-    ]
-   }
-  },
-  {
-   "id": "tainted-chaos-orb",
-   "primaryValue": 8.45,
-   "volumePrimaryValue": 1107,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.1184,
-   "sparkline": {
-    "totalChange": 19.18,
-    "data": [
-     40,
-     38.01,
-     17.74,
-     18.07,
-     4.22,
-     12.53,
-     19.18
-    ]
-   }
-  },
-  {
-   "id": "tainted-chromatic-orb",
-   "primaryValue": 3.36,
-   "volumePrimaryValue": 17493,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.2978,
-   "sparkline": {
-    "totalChange": -2.7,
-    "data": [
-     -1.11,
-     0.56,
-     2.14,
-     3.07,
-     6.01,
-     6.56,
-     -2.7
-    ]
-   }
-  },
-  {
-   "id": "tainted-divine-orb",
-   "primaryValue": 1086,
-   "volumePrimaryValue": 569640,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 0.1835,
-   "sparkline": {
-    "totalChange": 17.33,
-    "data": [
-     -11.63,
-     -14.73,
-     1,
-     4.55,
-     16.06,
-     22.67,
-     17.33
-    ]
-   }
-  },
-  {
-   "id": "tainted-divine-teardrop",
-   "primaryValue": 723,
-   "volumePrimaryValue": 21087,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 0.2756,
-   "sparkline": {
-    "totalChange": -22.79,
-    "data": [
-     -1.98,
-     -5.71,
-     -0.63,
-     -2.06,
-     2.76,
-     -0.58,
-     -22.79
-    ]
-   }
-  },
-  {
-   "id": "tainted-jewellers-orb",
-   "primaryValue": 0.4385,
-   "volumePrimaryValue": 765.3,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 2.28,
-   "sparkline": {
-    "totalChange": 22.07,
-    "data": [
-     20.08,
-     143.8,
-     6.56,
-     68.94,
-     13.26,
-     27.36,
-     22.07
-    ]
-   }
-  },
-  {
-   "id": "tainted-mythic-orb",
-   "primaryValue": 6.77,
-   "volumePrimaryValue": 3391,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.1478,
-   "sparkline": {
-    "totalChange": -14.47,
-    "data": [
-     0.57,
-     -4.95,
-     1.91,
-     3.55,
-     0.16,
-     -10.43,
-     -14.47
-    ]
-   }
-  },
-  {
-   "id": "tempering-orb",
-   "primaryValue": 259.9,
-   "volumePrimaryValue": 136516,
-   "maxVolumeCurrency": "divine",
-   "maxVolumeRate": 0.7667,
-   "sparkline": {
-    "totalChange": 27.17,
-    "data": [
-     20.42,
-     24.4,
-     20.14,
-     30.55,
-     47.12,
-     40.15,
-     27.17
-    ]
-   }
-  },
-  {
-   "id": "transmute",
-   "primaryValue": 0.008527,
-   "volumePrimaryValue": 1723,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 117.3,
-   "sparkline": {
-    "totalChange": -17.31,
-    "data": [
-     -2.82,
-     -8.71,
-     -9.64,
-     -6.49,
-     -11.37,
-     -22.73,
-     -17.31
-    ]
-   }
-  },
-  {
-   "id": "unstable-catalyst",
-   "primaryValue": 3.54,
-   "volumePrimaryValue": 3891,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.2828,
-   "sparkline": {
-    "totalChange": -5.12,
-    "data": [
-     15.48,
-     30.93,
-     3.22,
-     1.08,
-     -6.9,
-     -7.79,
-     -5.12
-    ]
-   }
-  },
-  {
-   "id": "vaal",
-   "primaryValue": 0.4922,
-   "volumePrimaryValue": 38579,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 2.03,
-   "sparkline": {
-    "totalChange": 6.31,
-    "data": [
-     7.48,
-     20.76,
-     -5.13,
-     14.37,
-     9.45,
-     10.77,
-     6.31
-    ]
-   }
-  },
-  {
-   "id": "veiled-chaos-orb",
-   "primaryValue": 86.96,
-   "volumePrimaryValue": 65237,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.0115,
-   "sparkline": {
-    "totalChange": 17.29,
-    "data": [
-     15.56,
-     21.13,
-     12.26,
-     -4.56,
-     7.45,
-     5.83,
-     17.29
-    ]
-   }
-  },
-  {
-   "id": "warlords-exalted-orb",
-   "primaryValue": 197.1,
-   "volumePrimaryValue": 10612,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 0.005073,
-   "sparkline": {
-    "totalChange": 10.08,
-    "data": [
-     -21.27,
-     7.08,
-     -9.58,
-     -10.24,
-     -3,
-     3.98,
-     10.08
-    ]
-   }
-  },
-  {
-   "id": "whetstone",
-   "primaryValue": 0.02016,
-   "volumePrimaryValue": 363.8,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 49.61,
-   "sparkline": {
-    "totalChange": -28.32,
-    "data": [
-     8.25,
-     3.75,
-     -2.04,
-     -2.01,
-     -14.59,
-     -19.31,
-     -28.32
-    ]
-   }
-  },
-  {
-   "id": "wisdom",
-   "primaryValue": 0.006608,
-   "volumePrimaryValue": 311.5,
-   "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 151.3,
-   "sparkline": {
-    "totalChange": 8.98,
-    "data": [
-     28.8,
-     9.52,
-     38.53,
-     16.85,
-     0.59,
-     -5.68,
-     8.98
+     2.37,
+     1.49,
+     1.94,
+     2.56
     ]
    }
   },
   {
    "id": "alteration-shard",
-   "primaryValue": 0.3333,
-   "volumePrimaryValue": 0.1667,
+   "primaryValue": 1.36,
+   "volumePrimaryValue": 22.17,
    "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 3,
+   "maxVolumeRate": 0.7368,
    "sparkline": {
-    "totalChange": -66.67,
+    "totalChange": 35.71,
     "data": [
      0,
      -94.74,
      0,
-     null,
-     4353,
-     -62.86,
-     -66.67
+     9569,
+     -4.76,
+     -6.21,
+     35.71
+    ]
+   }
+  },
+  {
+   "id": "blessed",
+   "primaryValue": 0.05238,
+   "volumePrimaryValue": 456.3,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 19.09,
+   "sparkline": {
+    "totalChange": -40.85,
+    "data": [
+     -16.17,
+     -3.2,
+     -19.11,
+     10.36,
+     -10.32,
+     29.48,
+     -40.85
+    ]
+   }
+  },
+  {
+   "id": "abrasive-catalyst",
+   "primaryValue": 1.36,
+   "volumePrimaryValue": 4278,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.7333,
+   "sparkline": {
+    "totalChange": 20.75,
+    "data": [
+     11.71,
+     41.91,
+     30.03,
+     42.82,
+     32.93,
+     28.05,
+     20.75
+    ]
+   }
+  },
+  {
+   "id": "alch",
+   "primaryValue": 0.05301,
+   "volumePrimaryValue": 6493,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 18.86,
+   "sparkline": {
+    "totalChange": -13.57,
+    "data": [
+     -5.46,
+     10.15,
+     -3.61,
+     -5.65,
+     -13.49,
+     -11.45,
+     -13.57
+    ]
+   }
+  },
+  {
+   "id": "alt",
+   "primaryValue": 0.101,
+   "volumePrimaryValue": 79283,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 9.9,
+   "sparkline": {
+    "totalChange": -27.56,
+    "data": [
+     -4.62,
+     -6.31,
+     -8,
+     -15.44,
+     -14.03,
+     -20.4,
+     -27.56
+    ]
+   }
+  },
+  {
+   "id": "ancient-orb",
+   "primaryValue": 8.26,
+   "volumePrimaryValue": 201448,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 24.21,
+   "sparkline": {
+    "totalChange": -10.97,
+    "data": [
+     -8.17,
+     -7.61,
+     -10.74,
+     6.16,
+     1.28,
+     -3.85,
+     -10.97
+    ]
+   }
+  },
+  {
+   "id": "annul",
+   "primaryValue": 8.45,
+   "volumePrimaryValue": 127663,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.1183,
+   "sparkline": {
+    "totalChange": -4.6,
+    "data": [
+     3.79,
+     0.43,
+     14.23,
+     12.74,
+     6.88,
+     1.33,
+     -4.6
+    ]
+   }
+  },
+  {
+   "id": "aug",
+   "primaryValue": 0.04354,
+   "volumePrimaryValue": 5494,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 22.97,
+   "sparkline": {
+    "totalChange": -33.05,
+    "data": [
+     3.75,
+     3.41,
+     -4.94,
+     -17.02,
+     -33.51,
+     -24.54,
+     -33.05
+    ]
+   }
+  },
+  {
+   "id": "awakeners-orb",
+   "primaryValue": 529.8,
+   "volumePrimaryValue": 153386,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.001887,
+   "sparkline": {
+    "totalChange": 66.34,
+    "data": [
+     34.7,
+     59.16,
+     50.05,
+     42.32,
+     55.96,
+     62.99,
+     66.34
+    ]
+   }
+  },
+  {
+   "id": "bauble",
+   "primaryValue": 0.1634,
+   "volumePrimaryValue": 3535,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 6.12,
+   "sparkline": {
+    "totalChange": -24.6,
+    "data": [
+     -6.5,
+     -15.23,
+     -2.25,
+     18.64,
+     -6.41,
+     -16.44,
+     -24.6
+    ]
+   }
+  },
+  {
+   "id": "chance",
+   "primaryValue": 0.1064,
+   "volumePrimaryValue": 41263,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 9.4,
+   "sparkline": {
+    "totalChange": 37.59,
+    "data": [
+     1.68,
+     10.15,
+     12.74,
+     27.19,
+     28.56,
+     32.06,
+     37.59
+    ]
+   }
+  },
+  {
+   "id": "dead-mans-sulphur",
+   "primaryValue": 0.01009,
+   "volumePrimaryValue": 1257622,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 19818,
+   "sparkline": {
+    "totalChange": 44.55,
+    "data": [
+     2.89,
+     14.38,
+     19.39,
+     20.01,
+     33.08,
+     41.83,
+     44.55
+    ]
+   }
+  },
+  {
+   "id": "elders-exalted-orb",
+   "primaryValue": 44.21,
+   "volumePrimaryValue": 16292,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.02262,
+   "sparkline": {
+    "totalChange": 15.22,
+    "data": [
+     10.71,
+     5.92,
+     10.81,
+     27.23,
+     29.56,
+     28.38,
+     15.22
+    ]
+   }
+  },
+  {
+   "id": "eldritch-chaos-orb",
+   "primaryValue": 29.64,
+   "volumePrimaryValue": 138694,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.03374,
+   "sparkline": {
+    "totalChange": -12.91,
+    "data": [
+     -1.71,
+     -11.83,
+     -10.71,
+     -0.4,
+     1.89,
+     -8.62,
+     -12.91
+    ]
+   }
+  },
+  {
+   "id": "eldritch-exalted-orb",
+   "primaryValue": 2.55,
+   "volumePrimaryValue": 5594,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.3924,
+   "sparkline": {
+    "totalChange": -14.54,
+    "data": [
+     -2.35,
+     -12.64,
+     -2.16,
+     -2.84,
+     -8.4,
+     -12.54,
+     -14.54
+    ]
+   }
+  },
+  {
+   "id": "eldritch-orb-of-annulment",
+   "primaryValue": 29.53,
+   "volumePrimaryValue": 111382,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.03386,
+   "sparkline": {
+    "totalChange": -15.83,
+    "data": [
+     -10.84,
+     -22.94,
+     -11.48,
+     2.44,
+     -0.11,
+     -11.94,
+     -15.83
+    ]
+   }
+  },
+  {
+   "id": "enkindling-orb",
+   "primaryValue": 0.7691,
+   "volumePrimaryValue": 11724,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 1.3,
+   "sparkline": {
+    "totalChange": -34.82,
+    "data": [
+     -11.26,
+     -14.02,
+     -14.44,
+     -8.62,
+     -17.75,
+     -27.59,
+     -34.82
+    ]
+   }
+  },
+  {
+   "id": "exalted",
+   "primaryValue": 1.35,
+   "volumePrimaryValue": 100937,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.7419,
+   "sparkline": {
+    "totalChange": -17.88,
+    "data": [
+     12.4,
+     19.36,
+     6.55,
+     -6.72,
+     -8.87,
+     -19.72,
+     -17.88
+    ]
+   }
+  },
+  {
+   "id": "exceptional-eldritch-ichor",
+   "primaryValue": 84.79,
+   "volumePrimaryValue": 62063,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.01179,
+   "sparkline": {
+    "totalChange": 0.51,
+    "data": [
+     13.81,
+     14.06,
+     17.95,
+     6.15,
+     2.6,
+     1.22,
+     0.51
+    ]
+   }
+  },
+  {
+   "id": "fertile-catalyst",
+   "primaryValue": 15.75,
+   "volumePrimaryValue": 43606,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.06348,
+   "sparkline": {
+    "totalChange": 3.24,
+    "data": [
+     1,
+     -0.06,
+     -6.5,
+     -11.72,
+     -7.79,
+     1.86,
+     3.24
+    ]
+   }
+  },
+  {
+   "id": "fracturing-orb",
+   "primaryValue": 321.9,
+   "volumePrimaryValue": 421129,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.003107,
+   "sparkline": {
+    "totalChange": -10.01,
+    "data": [
+     -9.21,
+     -11.46,
+     -4.09,
+     1.03,
+     -9.87,
+     -10.04,
+     -10.01
+    ]
+   }
+  },
+  {
+   "id": "fracturing-shard",
+   "primaryValue": 14.55,
+   "volumePrimaryValue": 1246,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.06873,
+   "sparkline": {
+    "totalChange": -15.27,
+    "data": [
+     -8.52,
+     -11.87,
+     -9.61,
+     -0.25,
+     -10.13,
+     -10.22,
+     -15.27
+    ]
+   }
+  },
+  {
+   "id": "fusing",
+   "primaryValue": 0.08193,
+   "volumePrimaryValue": 33253,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 12.21,
+   "sparkline": {
+    "totalChange": -18.52,
+    "data": [
+     -31.93,
+     -23.01,
+     -16.06,
+     -12.42,
+     -19.78,
+     -18.59,
+     -18.52
+    ]
+   }
+  },
+  {
+   "id": "grand-eldritch-ember",
+   "primaryValue": 14.24,
+   "volumePrimaryValue": 226087,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.07024,
+   "sparkline": {
+    "totalChange": 27.89,
+    "data": [
+     3.92,
+     4.33,
+     19.99,
+     18.15,
+     13.15,
+     14.42,
+     27.89
+    ]
+   }
+  },
+  {
+   "id": "grand-eldritch-ichor",
+   "primaryValue": 4.58,
+   "volumePrimaryValue": 100554,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.2183,
+   "sparkline": {
+    "totalChange": -5.67,
+    "data": [
+     -1.11,
+     -0.36,
+     10.18,
+     7.73,
+     0.93,
+     8.19,
+     -5.67
+    ]
+   }
+  },
+  {
+   "id": "greater-eldritch-ember",
+   "primaryValue": 1.03,
+   "volumePrimaryValue": 30065,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.9722,
+   "sparkline": {
+    "totalChange": -5.48,
+    "data": [
+     -10.31,
+     0.85,
+     -5.72,
+     7.44,
+     -5.16,
+     -3.83,
+     -5.48
+    ]
+   }
+  },
+  {
+   "id": "greater-eldritch-ichor",
+   "primaryValue": 0.2356,
+   "volumePrimaryValue": 6554,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 4.24,
+   "sparkline": {
+    "totalChange": -37.14,
+    "data": [
+     -24.82,
+     -19.07,
+     -13.74,
+     -8.96,
+     -22.84,
+     -30.38,
+     -37.14
+    ]
+   }
+  },
+  {
+   "id": "hinekoras-lock",
+   "primaryValue": 29970,
+   "volumePrimaryValue": 5444585,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 0.006674,
+   "sparkline": {
+    "totalChange": 39.49,
+    "data": [
+     -5.94,
+     -6.91,
+     3.82,
+     21.84,
+     22.67,
+     16.21,
+     39.49
+    ]
+   }
+  },
+  {
+   "id": "imbued-catalyst",
+   "primaryValue": 1.22,
+   "volumePrimaryValue": 3388,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.8188,
+   "sparkline": {
+    "totalChange": 12.85,
+    "data": [
+     18.81,
+     35.37,
+     34.33,
+     51.64,
+     29.18,
+     32.21,
+     12.85
+    ]
+   }
+  },
+  {
+   "id": "instilling-orb",
+   "primaryValue": 0.07349,
+   "volumePrimaryValue": 932.8,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 13.61,
+   "sparkline": {
+    "totalChange": -23.77,
+    "data": [
+     -19.43,
+     -24.62,
+     -26.03,
+     -21.4,
+     -28.5,
+     -37.92,
+     -23.77
+    ]
+   }
+  },
+  {
+   "id": "intrinsic-catalyst",
+   "primaryValue": 1.93,
+   "volumePrimaryValue": 15973,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.5169,
+   "sparkline": {
+    "totalChange": 7.58,
+    "data": [
+     16.91,
+     18.27,
+     1.69,
+     7.44,
+     5.7,
+     2.06,
+     7.58
+    ]
+   }
+  },
+  {
+   "id": "jewellers",
+   "primaryValue": 0.01319,
+   "volumePrimaryValue": 4007,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 75.79,
+   "sparkline": {
+    "totalChange": 33.51,
+    "data": [
+     -4.8,
+     22.25,
+     16.96,
+     20.51,
+     21.8,
+     21.03,
+     33.51
+    ]
+   }
+  },
+  {
+   "id": "lesser-eldritch-ember",
+   "primaryValue": 0.07679,
+   "volumePrimaryValue": 1916,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 13.02,
+   "sparkline": {
+    "totalChange": -28.74,
+    "data": [
+     -17.25,
+     -13.45,
+     -11.24,
+     32.16,
+     7.63,
+     3.96,
+     -28.74
+    ]
+   }
+  },
+  {
+   "id": "lesser-eldritch-ichor",
+   "primaryValue": 0.02165,
+   "volumePrimaryValue": 537.8,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 46.18,
+   "sparkline": {
+    "totalChange": -69.13,
+    "data": [
+     -11.55,
+     -33.05,
+     -9.11,
+     34.52,
+     -9.14,
+     -13.1,
+     -69.13
+    ]
+   }
+  },
+  {
+   "id": "mavens-chisel-of-avarice",
+   "primaryValue": 42.71,
+   "volumePrimaryValue": 92013,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.02341,
+   "sparkline": {
+    "totalChange": -6.04,
+    "data": [
+     1.82,
+     3.53,
+     -13.71,
+     -6.39,
+     -0.31,
+     12.71,
+     -6.04
+    ]
+   }
+  },
+  {
+   "id": "mavens-chisel-of-scarabs",
+   "primaryValue": 34.89,
+   "volumePrimaryValue": 36261,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.02866,
+   "sparkline": {
+    "totalChange": 43.9,
+    "data": [
+     9.58,
+     26.74,
+     37.47,
+     38.25,
+     36.97,
+     23.59,
+     43.9
+    ]
+   }
+  },
+  {
+   "id": "orb-of-binding",
+   "primaryValue": 0.01651,
+   "volumePrimaryValue": 59.5,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 60.56,
+   "sparkline": {
+    "totalChange": -8.42,
+    "data": [
+     6.33,
+     46.37,
+     29.88,
+     41.05,
+     22.01,
+     18.28,
+     -8.42
+    ]
+   }
+  },
+  {
+   "id": "orb-of-conflict",
+   "primaryValue": 289.9,
+   "volumePrimaryValue": 213746,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.00345,
+   "sparkline": {
+    "totalChange": 67.39,
+    "data": [
+     19.5,
+     26.49,
+     11.58,
+     8.14,
+     8.38,
+     15.22,
+     67.39
+    ]
+   }
+  },
+  {
+   "id": "orb-of-intention",
+   "primaryValue": 0.4551,
+   "volumePrimaryValue": 13.5,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 2.2,
+   "sparkline": {
+    "totalChange": 31.65,
+    "data": [
+     79.29,
+     76.94,
+     82.92,
+     153.4,
+     137.9,
+     101,
+     31.65
+    ]
+   }
+  },
+  {
+   "id": "orb-of-remembrance",
+   "primaryValue": 95.89,
+   "volumePrimaryValue": 67761,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.01043,
+   "sparkline": {
+    "totalChange": 79.27,
+    "data": [
+     -4.23,
+     16.72,
+     61.36,
+     33.14,
+     44.03,
+     72.36,
+     79.27
+    ]
+   }
+  },
+  {
+   "id": "orb-of-unmaking",
+   "primaryValue": 0.1725,
+   "volumePrimaryValue": 6726,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 5.8,
+   "sparkline": {
+    "totalChange": -14.42,
+    "data": [
+     -14.66,
+     -10.82,
+     -7.34,
+     6.62,
+     -13.25,
+     -12.72,
+     -14.42
+    ]
+   }
+  },
+  {
+   "id": "orb-of-unravelling",
+   "primaryValue": 6.59,
+   "volumePrimaryValue": 1576,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.1517,
+   "sparkline": {
+    "totalChange": 11.22,
+    "data": [
+     7.96,
+     -0.82,
+     1.58,
+     17.24,
+     7.53,
+     -2.16,
+     11.22
+    ]
+   }
+  },
+  {
+   "id": "primal-lifeforce",
+   "primaryValue": 0.03779,
+   "volumePrimaryValue": 416696,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 5293,
+   "sparkline": {
+    "totalChange": 1.45,
+    "data": [
+     -4.31,
+     -3.19,
+     -5.87,
+     -3.07,
+     3.32,
+     3.17,
+     1.45
+    ]
+   }
+  },
+  {
+   "id": "redeemers-exalted-orb",
+   "primaryValue": 58.43,
+   "volumePrimaryValue": 4908,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.01711,
+   "sparkline": {
+    "totalChange": 53.82,
+    "data": [
+     47.3,
+     43.97,
+     43.58,
+     39.64,
+     83.9,
+     37.13,
+     53.82
+    ]
+   }
+  },
+  {
+   "id": "reflecting-mist",
+   "primaryValue": 477,
+   "volumePrimaryValue": 145810,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 0.4193,
+   "sparkline": {
+    "totalChange": -31.54,
+    "data": [
+     -40.57,
+     -51.31,
+     -36.08,
+     -33.55,
+     -30.57,
+     -38.09,
+     -31.54
+    ]
+   }
+  },
+  {
+   "id": "regal",
+   "primaryValue": 0.05267,
+   "volumePrimaryValue": 1230,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 18.98,
+   "sparkline": {
+    "totalChange": -52.42,
+    "data": [
+     -3.6,
+     -15.14,
+     -23.11,
+     -28.86,
+     -33.73,
+     -44.45,
+     -52.42
+    ]
+   }
+  },
+  {
+   "id": "regret",
+   "primaryValue": 0.6013,
+   "volumePrimaryValue": 22552,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 1.66,
+   "sparkline": {
+    "totalChange": -22.43,
+    "data": [
+     -9.41,
+     -5.86,
+     0.51,
+     13.98,
+     0.36,
+     -7.7,
+     -22.43
+    ]
+   }
+  },
+  {
+   "id": "sacred-lifeforce",
+   "primaryValue": 32.12,
+   "volumePrimaryValue": 15486,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.03114,
+   "sparkline": {
+    "totalChange": -23.3,
+    "data": [
+     -0.13,
+     1.18,
+     -8.26,
+     -8.79,
+     -16.82,
+     -30.06,
+     -23.3
+    ]
+   }
+  },
+  {
+   "id": "sandswept-lifeforce",
+   "primaryValue": 216.9,
+   "volumePrimaryValue": 60238,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.004609,
+   "sparkline": {
+    "totalChange": -54.03,
+    "data": [
+     -6.86,
+     -10.45,
+     -24.49,
+     -27.7,
+     -33.31,
+     -53.16,
+     -54.03
+    ]
+   }
+  },
+  {
+   "id": "scour",
+   "primaryValue": 0.4788,
+   "volumePrimaryValue": 84120,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 2.09,
+   "sparkline": {
+    "totalChange": 27.55,
+    "data": [
+     1.67,
+     16.77,
+     16.22,
+     31.44,
+     30.36,
+     29.66,
+     27.55
+    ]
+   }
+  },
+  {
+   "id": "scrap",
+   "primaryValue": 0.0539,
+   "volumePrimaryValue": 1991,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 18.55,
+   "sparkline": {
+    "totalChange": -12.6,
+    "data": [
+     -9.71,
+     -15.78,
+     -0.46,
+     -2.68,
+     -4.81,
+     -6.51,
+     -12.6
+    ]
+   }
+  },
+  {
+   "id": "shapers-exalted-orb",
+   "primaryValue": 88.89,
+   "volumePrimaryValue": 25274,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.01125,
+   "sparkline": {
+    "totalChange": -8.55,
+    "data": [
+     27.81,
+     10.93,
+     5.17,
+     20.99,
+     -0.47,
+     2.02,
+     -8.55
+    ]
+   }
+  },
+  {
+   "id": "tainted-blacksmiths-whetstone",
+   "primaryValue": 0.5701,
+   "volumePrimaryValue": 486.5,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 1.75,
+   "sparkline": {
+    "totalChange": 10.62,
+    "data": [
+     -15.96,
+     -37.56,
+     -16.14,
+     -16.01,
+     0.18,
+     -25.57,
+     10.62
+    ]
+   }
+  },
+  {
+   "id": "tainted-exalted-orb",
+   "primaryValue": 145.8,
+   "volumePrimaryValue": 11689,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.006858,
+   "sparkline": {
+    "totalChange": 43.54,
+    "data": [
+     1.45,
+     3.52,
+     7.59,
+     23.85,
+     36.63,
+     30.81,
+     43.54
+    ]
+   }
+  },
+  {
+   "id": "tainted-orb-of-fusing",
+   "primaryValue": 7.92,
+   "volumePrimaryValue": 12181,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.1263,
+   "sparkline": {
+    "totalChange": -22.11,
+    "data": [
+     -4.81,
+     -17.37,
+     -13.32,
+     -1.75,
+     -7.88,
+     -9.39,
+     -22.11
+    ]
+   }
+  },
+  {
+   "id": "tempering-catalyst",
+   "primaryValue": 3.21,
+   "volumePrimaryValue": 4656,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.3115,
+   "sparkline": {
+    "totalChange": 15.29,
+    "data": [
+     17.86,
+     68.76,
+     6.18,
+     5.07,
+     42.71,
+     22.74,
+     15.29
+    ]
+   }
+  },
+  {
+   "id": "turbulent-catalyst",
+   "primaryValue": 1.42,
+   "volumePrimaryValue": 4866,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.7051,
+   "sparkline": {
+    "totalChange": 7.23,
+    "data": [
+     5.93,
+     23.25,
+     22.81,
+     32.66,
+     22.44,
+     22.35,
+     7.23
+    ]
+   }
+  },
+  {
+   "id": "veiled-exalted-orb",
+   "primaryValue": 3323,
+   "volumePrimaryValue": 414329,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 0.06018,
+   "sparkline": {
+    "totalChange": 41.85,
+    "data": [
+     24.65,
+     45.48,
+     45.96,
+     43.27,
+     45.69,
+     50.03,
+     41.85
+    ]
+   }
+  },
+  {
+   "id": "vivid-lifeforce",
+   "primaryValue": 0.07389,
+   "volumePrimaryValue": 2478408,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 2707,
+   "sparkline": {
+    "totalChange": 4.87,
+    "data": [
+     -4.75,
+     -3.3,
+     -9.85,
+     -9.55,
+     -2.16,
+     1.36,
+     4.87
+    ]
+   }
+  },
+  {
+   "id": "wild-lifeforce",
+   "primaryValue": 0.01907,
+   "volumePrimaryValue": 137843,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 10490,
+   "sparkline": {
+    "totalChange": 1.24,
+    "data": [
+     -2.94,
+     1.53,
+     -1.56,
+     7.47,
+     14.14,
+     13.13,
+     1.24
+    ]
+   }
+  },
+  {
+   "id": "chrome",
+   "primaryValue": 2.9,
+   "volumePrimaryValue": 211015,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 68.87,
+   "sparkline": {
+    "totalChange": 8.03,
+    "data": [
+     -2.62,
+     2.87,
+     9.69,
+     4.62,
+     2.25,
+     -2.65,
+     8.03
+    ]
+   }
+  },
+  {
+   "id": "crusaders-exalted-orb",
+   "primaryValue": 68.56,
+   "volumePrimaryValue": 5748,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.01458,
+   "sparkline": {
+    "totalChange": 48.53,
+    "data": [
+     30.56,
+     40.76,
+     23,
+     39.88,
+     68.04,
+     54.81,
+     48.53
+    ]
+   }
+  },
+  {
+   "id": "exceptional-eldritch-ember",
+   "primaryValue": 122.7,
+   "volumePrimaryValue": 73372,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 1.63,
+   "sparkline": {
+    "totalChange": 2.88,
+    "data": [
+     -1.13,
+     -7.37,
+     -1.86,
+     -10.82,
+     -18.47,
+     -18.8,
+     2.88
+    ]
+   }
+  },
+  {
+   "id": "flesh-of-xesht",
+   "primaryValue": 46.91,
+   "volumePrimaryValue": 8280,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.02132,
+   "sparkline": {
+    "totalChange": 29.2,
+    "data": [
+     0.48,
+     -9.42,
+     -20.92,
+     -17.16,
+     -0.23,
+     -3.53,
+     29.2
+    ]
+   }
+  },
+  {
+   "id": "foulborn-exalted-orb",
+   "primaryValue": 990.9,
+   "volumePrimaryValue": 90340,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 0.2018,
+   "sparkline": {
+    "totalChange": 0.29,
+    "data": [
+     -0.84,
+     -0.39,
+     -0.06,
+     2.96,
+     -0.55,
+     -0.88,
+     0.29
+    ]
+   }
+  },
+  {
+   "id": "foulborn-orb-of-augmentation",
+   "primaryValue": 1.65,
+   "volumePrimaryValue": 879.8,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.6043,
+   "sparkline": {
+    "totalChange": -17.45,
+    "data": [
+     -3.84,
+     2.15,
+     17.13,
+     -3.67,
+     -7.52,
+     4.81,
+     -17.45
+    ]
+   }
+  },
+  {
+   "id": "foulborn-regal-orb",
+   "primaryValue": 8.8,
+   "volumePrimaryValue": 3486,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.1136,
+   "sparkline": {
+    "totalChange": -30.03,
+    "data": [
+     -13.93,
+     -25.81,
+     -36.79,
+     -22.42,
+     -14.6,
+     -22.69,
+     -30.03
+    ]
+   }
+  },
+  {
+   "id": "gcp",
+   "primaryValue": 1.3,
+   "volumePrimaryValue": 73821,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.769,
+   "sparkline": {
+    "totalChange": -4.71,
+    "data": [
+     -13.38,
+     -8.13,
+     10.73,
+     17.58,
+     -1.4,
+     -3.23,
+     -4.71
+    ]
+   }
+  },
+  {
+   "id": "hunters-exalted-orb",
+   "primaryValue": 315.2,
+   "volumePrimaryValue": 25112,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.003172,
+   "sparkline": {
+    "totalChange": 53.12,
+    "data": [
+     35.23,
+     39.49,
+     42.9,
+     44.29,
+     46.18,
+     62.78,
+     53.12
+    ]
+   }
+  },
+  {
+   "id": "mavens-chisel-of-divination",
+   "primaryValue": 67.47,
+   "volumePrimaryValue": 77714,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.01482,
+   "sparkline": {
+    "totalChange": 2.12,
+    "data": [
+     -5.72,
+     -7.47,
+     -13.93,
+     -10.13,
+     -2.14,
+     3.41,
+     2.12
+    ]
+   }
+  },
+  {
+   "id": "mavens-chisel-of-procurement",
+   "primaryValue": 37.23,
+   "volumePrimaryValue": 86769,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.02686,
+   "sparkline": {
+    "totalChange": 207.8,
+    "data": [
+     12.55,
+     21.73,
+     10.63,
+     36.89,
+     50.11,
+     128.6,
+     207.8
+    ]
+   }
+  },
+  {
+   "id": "mavens-chisel-of-proliferation",
+   "primaryValue": 31.51,
+   "volumePrimaryValue": 57487,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.03174,
+   "sparkline": {
+    "totalChange": 41.59,
+    "data": [
+     -3.39,
+     -4.22,
+     -8.11,
+     -1.28,
+     18.14,
+     47.94,
+     41.59
+    ]
+   }
+  },
+  {
+   "id": "mavens-orb",
+   "primaryValue": 862.3,
+   "volumePrimaryValue": 144731,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.00116,
+   "sparkline": {
+    "totalChange": 25.18,
+    "data": [
+     10.06,
+     26.05,
+     29.8,
+     31.72,
+     30.68,
+     30.43,
+     25.18
+    ]
+   }
+  },
+  {
+   "id": "mirror",
+   "primaryValue": 190134,
+   "volumePrimaryValue": 34477635,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 0.001052,
+   "sparkline": {
+    "totalChange": 21.84,
+    "data": [
+     -5.97,
+     -3.03,
+     -1.25,
+     4.92,
+     8.33,
+     11.64,
+     21.84
+    ]
+   }
+  },
+  {
+   "id": "mirror-shard",
+   "primaryValue": 9931,
+   "volumePrimaryValue": 2525878,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 0.02014,
+   "sparkline": {
+    "totalChange": 22.55,
+    "data": [
+     -8.13,
+     -5.69,
+     -4.44,
+     3.04,
+     5.23,
+     8.82,
+     22.55
+    ]
+   }
+  },
+  {
+   "id": "noxious-catalyst",
+   "primaryValue": 1.32,
+   "volumePrimaryValue": 3935,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.7581,
+   "sparkline": {
+    "totalChange": 8.98,
+    "data": [
+     4.01,
+     20.24,
+     22.89,
+     32.54,
+     27.55,
+     20.76,
+     8.98
+    ]
+   }
+  },
+  {
+   "id": "portal",
+   "primaryValue": 0.02175,
+   "volumePrimaryValue": 3264,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 45.98,
+   "sparkline": {
+    "totalChange": -3.08,
+    "data": [
+     0.29,
+     -8.24,
+     3.32,
+     13.59,
+     4.14,
+     -3.57,
+     -3.08
+    ]
+   }
+  },
+  {
+   "id": "prismatic-catalyst",
+   "primaryValue": 46.19,
+   "volumePrimaryValue": 99071,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.02165,
+   "sparkline": {
+    "totalChange": 9.2,
+    "data": [
+     -6.62,
+     -4.47,
+     -8.05,
+     -7.45,
+     3.7,
+     9.7,
+     9.2
+    ]
+   }
+  },
+  {
+   "id": "rogues-marker",
+   "primaryValue": 0.0003699,
+   "volumePrimaryValue": 7942,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 2704,
+   "sparkline": {
+    "totalChange": -2.87,
+    "data": [
+     4.01,
+     -2.51,
+     -8.49,
+     -14.99,
+     -0.15,
+     -2.39,
+     -2.87
+    ]
+   }
+  },
+  {
+   "id": "sacred-orb",
+   "primaryValue": 41.68,
+   "volumePrimaryValue": 42071,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.02399,
+   "sparkline": {
+    "totalChange": 0.27,
+    "data": [
+     1.72,
+     -1.78,
+     6.89,
+     22.29,
+     18.83,
+     0.76,
+     0.27
+    ]
+   }
+  },
+  {
+   "id": "stacked-deck",
+   "primaryValue": 3.41,
+   "volumePrimaryValue": 2502243,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 58.69,
+   "sparkline": {
+    "totalChange": -0.37,
+    "data": [
+     -4.08,
+     -5.3,
+     -12.12,
+     -7.06,
+     -3.76,
+     -0.81,
+     -0.37
+    ]
+   }
+  },
+  {
+   "id": "tailoring-orb",
+   "primaryValue": 335.7,
+   "volumePrimaryValue": 294154,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 0.5958,
+   "sparkline": {
+    "totalChange": 51.87,
+    "data": [
+     7.76,
+     -3.92,
+     11.43,
+     61.09,
+     59.3,
+     47.72,
+     51.87
+    ]
+   }
+  },
+  {
+   "id": "tainted-armourers-scrap",
+   "primaryValue": 0.6606,
+   "volumePrimaryValue": 2246,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 1.51,
+   "sparkline": {
+    "totalChange": -43.12,
+    "data": [
+     3.12,
+     -26.19,
+     -19.63,
+     -24.25,
+     -25.48,
+     -31.77,
+     -43.12
+    ]
+   }
+  },
+  {
+   "id": "tainted-catalyst",
+   "primaryValue": 12.71,
+   "volumePrimaryValue": 44558,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.07869,
+   "sparkline": {
+    "totalChange": 4.57,
+    "data": [
+     8.84,
+     12.42,
+     2.2,
+     1.49,
+     0.86,
+     4.15,
+     4.57
+    ]
+   }
+  },
+  {
+   "id": "tainted-chaos-orb",
+   "primaryValue": 8.21,
+   "volumePrimaryValue": 521.5,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.1218,
+   "sparkline": {
+    "totalChange": -12.1,
+    "data": [
+     9.31,
+     -15.87,
+     -4.56,
+     -20.99,
+     -21.05,
+     -10.99,
+     -12.1
+    ]
+   }
+  },
+  {
+   "id": "tainted-chromatic-orb",
+   "primaryValue": 4.06,
+   "volumePrimaryValue": 34734,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.2463,
+   "sparkline": {
+    "totalChange": 15.69,
+    "data": [
+     -3.31,
+     -1.55,
+     1.61,
+     3.18,
+     4.73,
+     1.67,
+     15.69
+    ]
+   }
+  },
+  {
+   "id": "tainted-divine-orb",
+   "primaryValue": 1084,
+   "volumePrimaryValue": 880696,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 0.1846,
+   "sparkline": {
+    "totalChange": 21.52,
+    "data": [
+     -11.65,
+     -2.68,
+     7.03,
+     10.31,
+     26.59,
+     26.31,
+     21.52
+    ]
+   }
+  },
+  {
+   "id": "tainted-divine-teardrop",
+   "primaryValue": 745,
+   "volumePrimaryValue": 41470,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 0.2685,
+   "sparkline": {
+    "totalChange": -15.77,
+    "data": [
+     3.79,
+     2.78,
+     6.01,
+     3.38,
+     13.81,
+     -10.17,
+     -15.77
+    ]
+   }
+  },
+  {
+   "id": "tainted-jewellers-orb",
+   "primaryValue": 0.2599,
+   "volumePrimaryValue": 655.8,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 3.85,
+   "sparkline": {
+    "totalChange": -43.14,
+    "data": [
+     51.9,
+     -15.67,
+     20.91,
+     -13.03,
+     -3.33,
+     -28.59,
+     -43.14
+    ]
+   }
+  },
+  {
+   "id": "tainted-mythic-orb",
+   "primaryValue": 9.43,
+   "volumePrimaryValue": 6039,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.1061,
+   "sparkline": {
+    "totalChange": 7.36,
+    "data": [
+     -11.84,
+     -9.92,
+     -6.8,
+     -6.62,
+     -16.93,
+     -17.36,
+     7.36
+    ]
+   }
+  },
+  {
+   "id": "tempering-orb",
+   "primaryValue": 272,
+   "volumePrimaryValue": 247918,
+   "maxVolumeCurrency": "divine",
+   "maxVolumeRate": 0.7354,
+   "sparkline": {
+    "totalChange": 14.06,
+    "data": [
+     4.75,
+     5.47,
+     6.62,
+     14.97,
+     27.47,
+     19.46,
+     14.06
     ]
    }
   },
   {
    "id": "transmutation-shard",
-   "primaryValue": 1,
-   "volumePrimaryValue": 0.1667,
+   "primaryValue": 15.56,
+   "volumePrimaryValue": 217.8,
    "maxVolumeCurrency": "chaos",
-   "maxVolumeRate": 1,
+   "maxVolumeRate": 0.06427,
    "sparkline": {
-    "totalChange": 0,
+    "totalChange": 1456,
     "data": [
      0,
      null,
-     null,
      0,
      0,
      null,
-     0
+     null,
+     1456
+    ]
+   }
+  },
+  {
+   "id": "transmute",
+   "primaryValue": 0.007787,
+   "volumePrimaryValue": 1476,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 128.4,
+   "sparkline": {
+    "totalChange": -30,
+    "data": [
+     -13.44,
+     -19.53,
+     -13.33,
+     -13.92,
+     -23.54,
+     -24.7,
+     -30
+    ]
+   }
+  },
+  {
+   "id": "unstable-catalyst",
+   "primaryValue": 3.93,
+   "volumePrimaryValue": 6787,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.2545,
+   "sparkline": {
+    "totalChange": -1.96,
+    "data": [
+     11.03,
+     22.42,
+     -10.17,
+     -8.54,
+     -13.74,
+     -13.12,
+     -1.96
+    ]
+   }
+  },
+  {
+   "id": "vaal",
+   "primaryValue": 0.4409,
+   "volumePrimaryValue": 38376,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 2.27,
+   "sparkline": {
+    "totalChange": -12.8,
+    "data": [
+     5.92,
+     -7.82,
+     -8.33,
+     4.01,
+     0.31,
+     -3.63,
+     -12.8
+    ]
+   }
+  },
+  {
+   "id": "veiled-chaos-orb",
+   "primaryValue": 96.09,
+   "volumePrimaryValue": 98761,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.01041,
+   "sparkline": {
+    "totalChange": 16.09,
+    "data": [
+     8.44,
+     5.89,
+     -5.85,
+     -10.66,
+     -2.67,
+     -3.61,
+     16.09
+    ]
+   }
+  },
+  {
+   "id": "warlords-exalted-orb",
+   "primaryValue": 290.4,
+   "volumePrimaryValue": 20229,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 0.003444,
+   "sparkline": {
+    "totalChange": 135.9,
+    "data": [
+     28.99,
+     58.85,
+     25.27,
+     35.31,
+     45.03,
+     54.33,
+     135.9
+    ]
+   }
+  },
+  {
+   "id": "whetstone",
+   "primaryValue": 0.01674,
+   "volumePrimaryValue": 317,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 59.72,
+   "sparkline": {
+    "totalChange": -44.06,
+    "data": [
+     4.9,
+     -12.36,
+     -5.53,
+     -13.5,
+     -25.42,
+     -23.02,
+     -44.06
+    ]
+   }
+  },
+  {
+   "id": "wisdom",
+   "primaryValue": 0.005094,
+   "volumePrimaryValue": 408.5,
+   "maxVolumeCurrency": "chaos",
+   "maxVolumeRate": 196.3,
+   "sparkline": {
+    "totalChange": -43.93,
+    "data": [
+     -24.06,
+     -23.01,
+     -5.7,
+     -31.35,
+     -33.85,
+     -39.27,
+     -43.93
     ]
    }
   }
@@ -2004,6 +1985,13 @@
    "detailsId": "divine-orb"
   },
   {
+   "id": "alteration-shard",
+   "name": "Alteration Shard",
+   "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lSZXJvbGxNYWdpY1NoYXJkIiwic2NhbGUiOjF9XQ/39480d8d0d/CurrencyRerollMagicShard.png",
+   "category": "Currency",
+   "detailsId": "alteration-shard"
+  },
+  {
    "id": "blessed",
    "name": "Blessed Orb",
    "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lJbXBsaWNpdE1vZCIsInNjYWxlIjoxfV0/48e700cc20/CurrencyImplicitMod.png",
@@ -2023,13 +2011,6 @@
    "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlVG9SYXJlIiwic2NhbGUiOjF9XQ/0c72cd1d44/CurrencyUpgradeToRare.png",
    "category": "Currency",
    "detailsId": "orb-of-alchemy"
-  },
-  {
-   "id": "alchemy-shard",
-   "name": "Alchemy Shard",
-   "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlVG9SYXJlU2hhcmQiLCJzY2FsZSI6MX1d/8adca6259f/CurrencyUpgradeToRareShard.png",
-   "category": "Currency",
-   "detailsId": "alchemy-shard"
   },
   {
    "id": "alt",
@@ -2641,6 +2622,13 @@
    "detailsId": "tempering-orb"
   },
   {
+   "id": "transmutation-shard",
+   "name": "Transmutation Shard",
+   "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlVG9NYWdpY1NoYXJkIiwic2NhbGUiOjF9XQ/047a6fc903/CurrencyUpgradeToMagicShard.png",
+   "category": "Currency",
+   "detailsId": "transmutation-shard"
+  },
+  {
    "id": "transmute",
    "name": "Orb of Transmutation",
    "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlVG9NYWdpYyIsInNjYWxlIjoxfV0/ded9e8ee63/CurrencyUpgradeToMagic.png",
@@ -2688,20 +2676,6 @@
    "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lJZGVudGlmaWNhdGlvbiIsInNjYWxlIjoxfV0/c2d03ed3fd/CurrencyIdentification.png",
    "category": "Currency",
    "detailsId": "scroll-of-wisdom"
-  },
-  {
-   "id": "alteration-shard",
-   "name": "Alteration Shard",
-   "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lSZXJvbGxNYWdpY1NoYXJkIiwic2NhbGUiOjF9XQ/39480d8d0d/CurrencyRerollMagicShard.png",
-   "category": "Currency",
-   "detailsId": "alteration-shard"
-  },
-  {
-   "id": "transmutation-shard",
-   "name": "Transmutation Shard",
-   "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lVcGdyYWRlVG9NYWdpY1NoYXJkIiwic2NhbGUiOjF9XQ/047a6fc903/CurrencyUpgradeToMagicShard.png",
-   "category": "Currency",
-   "detailsId": "transmutation-shard"
   }
  ]
 }
