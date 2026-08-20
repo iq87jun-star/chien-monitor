@@ -1,0 +1,10 @@
+{
+  "name": "domain-scout",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "自社サイト用の中古ドメイン発掘パイプライン(依存パッケージなし・Node 22)",
+  "scripts": {
+    "pipeline": "node pipeline/run.mjs"
+  }
+}
