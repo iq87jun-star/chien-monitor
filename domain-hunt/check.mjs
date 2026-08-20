@@ -53,9 +53,10 @@ async function checkAvailability(domain) {
     await sleep(WAIT.jp);
     if (body.includes('該当するデータがありません')) return { state: 'available' };
     if (body.includes('Domain Information')) {
-      // [状態]  Connected (2026/09/30) 等から有効期限を抽出
+      // 属性型(co.jp): [状態] Connected (2026/09/30) / 汎用JP: [有効期限] 2026/09/30
       const m = body.match(/\[状態\]\s*([A-Za-z]+)\s*\((\d{4}\/\d{2}\/\d{2})\)/);
-      return { state: 'registered', jpState: m?.[1], expires: m?.[2] };
+      const g = body.match(/\[有効期限\]\s*(\d{4}\/\d{2}\/\d{2})/);
+      return { state: 'registered', jpState: m?.[1], expires: m?.[2] ?? g?.[1] };
     }
     return { state: 'error:jprs' };
   }
