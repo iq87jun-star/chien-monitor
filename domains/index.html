@@ -63,12 +63,13 @@
   <h2>取得可能なドメイン(スコア順)</h2>
   <div class="controls">
     <input type="search" id="q" placeholder="絞り込み(文字列)">
+    <select id="genre"><option value="">全ジャンル</option></select>
     <select id="tld"><option value="">全TLD</option></select>
     <label class="dim"><input type="checkbox" id="hideRisk"> 要注意フラグを隠す</label>
   </div>
   <div class="scroll"><table id="list">
     <thead><tr>
-      <th>ドメイン</th><th class="num">スコア</th><th class="num">運用歴</th>
+      <th>ドメイン</th><th>ジャンル</th><th class="num">スコア</th><th class="num">運用歴</th>
       <th class="num">被リンク</th><th class="num">名前</th><th>アーカイブ期間</th>
       <th class="num">OPR</th><th>出所</th><th>調査</th>
     </tr></thead>
@@ -114,20 +115,26 @@
     const tlds = [...new Set(R.available.map((d) => d.domain.split(".").slice(1).join(".")))].sort();
     const tldSel = document.getElementById("tld");
     tldSel.innerHTML += tlds.map((t) => `<option>${t}</option>`).join("");
+    const genres = [...new Set(R.available.map((d) => d.genreLabel).filter(Boolean))].sort();
+    const genreSel = document.getElementById("genre");
+    genreSel.innerHTML += genres.map((g) => `<option>${g}</option>`).join("");
 
     function render() {
       const q = document.getElementById("q").value.toLowerCase();
       const tld = tldSel.value;
+      const genre = genreSel.value;
       const hideRisk = document.getElementById("hideRisk").checked;
       const rows = R.available.filter((d) =>
         d.domain.includes(q) &&
         (!tld || d.domain.endsWith("." + tld)) &&
+        (!genre || d.genreLabel === genre) &&
         (!hideRisk || d.flags.length === 0));
       document.querySelector("#list tbody").innerHTML = rows.length
         ? rows.map((d) => `<tr>
             <td class="domain">${d.domain}
               ${d.droppedAt ? '<span class="drop">DROP検知</span>' : ""}
               ${d.flags.map((f) => `<span class="flag">${f}</span>`).join("")}</td>
+            <td class="dim">${d.genreLabel ?? "-"}</td>
             <td class="num score">${d.score}</td>
             <td class="num">${d.parts.history}</td>
             <td class="num">${d.parts.backlink}</td>
@@ -137,9 +144,9 @@
             <td class="dim">${d.source === "manual" ? "手動" : "シード"}</td>
             <td><a href="https://web.archive.org/web/*/${d.domain}" target="_blank" rel="noopener">Wayback</a></td>
           </tr>`).join("")
-        : '<tr><td colspan="9" class="dim">該当なし</td></tr>';
+        : '<tr><td colspan="10" class="dim">該当なし</td></tr>';
     }
-    for (const id of ["q", "tld", "hideRisk"]) {
+    for (const id of ["q", "genre", "tld", "hideRisk"]) {
       document.getElementById(id).addEventListener("input", render);
     }
     render();

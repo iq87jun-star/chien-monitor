@@ -62,7 +62,7 @@ export async function mapLimit(items, limit, fn) {
       try {
         results[i] = await fn(items[i], i);
       } catch (err) {
-        console.warn(`  skip ${items[i]?.domain ?? items[i]}: ${err.message}`);
+        console.warn(`  skip ${items[i]?.domain ?? items[i]?.url ?? items[i]}: ${err.message}`);
         results[i] = null;
       }
     }

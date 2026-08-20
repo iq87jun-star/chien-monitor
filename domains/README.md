@@ -29,8 +29,10 @@ aggregate 採点      運用歴35 + 被リンク30 + 名前の質25 + ニッチ�
 - **ドロップ待ち**: `input/watchlist.txt` に登録済みドメインを書くと毎回チェックし、
   空きに変わった時に `DROP検知` として通知(Actionsログとダッシュボード)
 - **手動実行**: `cd domains && npm run pipeline`
-- **シード追加**: `pipeline/config.mjs` の `SEED_URLS` に「古い外部リンクを多く含む
-  ページ」を足すと、リンク先の失効ドメイン(=被リンク付き中古)を自動発掘する
+- **シード追加**: `pipeline/config.mjs` の `GENRES` 内の `seeds` に「古い外部リンクを
+  多く含むページ」を足すと、リンク先の失効ドメイン(=被リンク付き中古)を自動発掘する
+- **ジャンル追加**: `GENRES` にブロック(label/keywords/seeds)を足すだけで
+  別ジャンルの発掘を並行できる(現在: トレカ・ゲーム/長野ローカル)
 
 ## Open PageRank(任意)
 

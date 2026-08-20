@@ -6,13 +6,16 @@ import path from "node:path";
 import {
   SITE_DIR,
   TLD_WEIGHTS,
-  NICHE_KEYWORDS,
+  GENRES,
   RISK_BRAND_TERMS,
   RISK_SENSITIVE_TERMS,
 } from "./config.mjs";
 import { writeJson } from "./util.mjs";
 
-function scoreDomain(domain, wayback, oprRank) {
+// 手動候補はジャンル不明のため、全ジャンルのキーワードを合わせて判定する
+const ALL_KEYWORDS = [...new Set(Object.values(GENRES).flatMap((g) => g.keywords))];
+
+function scoreDomain(domain, wayback, oprRank, keywords) {
   const [label, ...tldParts] = domain.split(".");
   const tld = tldParts.join(".");
   const parts = {};
@@ -36,7 +39,7 @@ function scoreDomain(domain, wayback, oprRank) {
   if (!/[-0-9]/.test(label)) parts.name += 5;
 
   // --- ニッチ一致 最大10点 ---
-  parts.niche = NICHE_KEYWORDS.some((k) => label.includes(k)) ? 10 : 0;
+  parts.niche = keywords.some((k) => label.includes(k)) ? 10 : 0;
 
   // --- リスク(減点+フラグ) ---
   let penalty = 0;
@@ -61,12 +64,19 @@ export async function aggregate({ domains, watchlist }, checked, { wayback, rank
 
   const available = domains
     .filter(({ domain }) => statusOf(domain) === "available")
-    .map(({ domain, source }) => ({
+    .map(({ domain, source, genre }) => ({
       domain,
       source,
+      genre: genre ?? null,
+      genreLabel: GENRES[genre]?.label ?? null,
       droppedAt: checked[domain]?.droppedAt ?? null,
       opr: ranks[domain] ?? null,
-      ...scoreDomain(domain, wayback[domain], ranks[domain]),
+      ...scoreDomain(
+        domain,
+        wayback[domain],
+        ranks[domain],
+        GENRES[genre]?.keywords ?? ALL_KEYWORDS,
+      ),
     }))
     .sort((a, b) => b.score - a.score);
 

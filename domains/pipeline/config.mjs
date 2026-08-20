@@ -30,12 +30,14 @@ export const WAYBACK_CDX = "https://web.archive.org/cdx/search/cdx";
 // Secrets/環境変数 OPR_API_KEY を設定した時だけ有効
 export const OPR_URL = "https://openpagerank.com/api/v1.0/getPageRank";
 
-// リンク切れ発掘のシードURL。古い外部リンクを多く含むページから
-// リンク先ドメインを抽出し、未登録になったもの(=被リンク付き中古)を探す。
-// 自分のニッチ(トレカ・ゲームeconomy)に合わせて自由に追加してよい
-// Waybackの過去版(web.archive.org/web/<年>/<URL>)をシードにすると、
-// 当時貼られていて今は失効したリンク先(=被リンク付き中古の有力候補)が拾える
-export const SEED_URLS = [
+// ジャンルプロファイル。ジャンルごとに「シードURL」と「一致キーワード」を持ち、
+// レポートでもジャンル別に表示される。新ジャンルはここにブロックを足すだけで増やせる。
+//   seeds    … リンク切れ発掘の対象ページ(古い外部リンクを多く含むページ)。
+//              Waybackの過去版(web.archive.org/web/<年>/<URL>)をシードにすると、
+//              当時貼られていて今は失効したリンク先(=被リンク付き中古の有力候補)が拾える
+//   keywords … ドメイン名に含まれるとニッチ一致でスコア加点(ローマ字部分一致)
+// トレカ・ゲーム系シード
+const SEED_URLS_TCG = [
   "https://ja.wikipedia.org/wiki/%E9%81%8A%E6%88%AF%E7%8E%8B%E3%82%AA%E3%83%95%E3%82%A3%E3%82%B7%E3%83%A3%E3%83%AB%E3%82%AB%E3%83%BC%E3%83%89%E3%82%B2%E3%83%BC%E3%83%A0", // 遊戯王OCG
   "https://ja.wikipedia.org/wiki/%E3%83%9D%E3%82%B1%E3%83%A2%E3%83%B3%E3%82%AB%E3%83%BC%E3%83%89%E3%82%B2%E3%83%BC%E3%83%A0", // ポケモンカードゲーム
   "https://ja.wikipedia.org/wiki/%E3%83%88%E3%83%AC%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%AB%E3%83%BC%E3%83%89%E3%82%B2%E3%83%BC%E3%83%A0", // TCG総論
@@ -59,6 +61,39 @@ export const SEED_URLS = [
   "https://web.archive.org/web/2018/https://ff14.axdx.net/blog.php",
 ];
 
+// 長野ローカル系シード(2026-08検証: 宿・店舗の実ドメインを直リンクで持つページ)
+const SEED_URLS_NAGANO = [
+  "https://nozawa.jp/", // 野沢温泉 宿ガイド(宿公式18件)
+  "https://www.nagano-sci.or.jp/list/", // 県内商工会一覧(44件)
+  "https://www.kisomachi.or.jp/shokokai/sonota/link.html", // 木曽町商工会リンク集(5件)
+  // 過去版: 廃業した宿・合併で消えた商工会・移転した店舗のドメインが残っている
+  "https://web.archive.org/web/2017/https://nozawa.jp/",
+  "https://web.archive.org/web/2016/https://www.nagano-sci.or.jp/list/",
+  "https://web.archive.org/web/2016/https://www.kisomachi.or.jp/shokokai/sonota/link.html",
+];
+
+export const GENRES = {
+  tcg: {
+    label: "トレカ・ゲーム",
+    keywords: [
+      "duel", "card", "cards", "toreca", "tcg", "deck", "poke", "pack",
+      "game", "gamer", "ff14", "raid", "loot", "trade", "item",
+      "souba", "kakaku", "price", "market", "monitor", "kaigai", "yen",
+    ],
+    seeds: SEED_URLS_TCG,
+  },
+  nagano: {
+    label: "長野ローカル",
+    keywords: [
+      "nagano", "shinshu", "hakuba", "nozawa", "kiso", "matsumoto",
+      "karuizawa", "azumino", "suwa", "ueda", "iida", "saku", "chino",
+      "onsen", "yado", "ryokan", "pension", "minshuku", "soba", "ski",
+      "snow", "alps", "kogen",
+    ],
+    seeds: SEED_URLS_NAGANO,
+  },
+};
+
 // 候補にしても意味がない定番ドメイン(シード抽出時に除外)
 export const EXCLUDE_DOMAINS = new Set([
   "wikipedia.org", "wikimedia.org", "wiktionary.org", "wikidata.org", "mediawiki.org",
@@ -77,13 +112,6 @@ export const TLD_WEIGHTS = {
   info: 2,
   biz: 2,
 };
-
-// ニッチ一致キーワード(ドメイン名に含まれるとスコア加点)
-export const NICHE_KEYWORDS = [
-  "duel", "card", "cards", "toreca", "tcg", "deck", "poke", "pack",
-  "game", "gamer", "ff14", "raid", "loot", "trade", "item",
-  "souba", "kakaku", "price", "market", "monitor", "kaigai", "yen",
-];
 
 // 商標・ブランド語(含まれると大きく減点+要注意フラグ)。
 // 転売目的でなくても、公式名そのままのドメインはUDRP/JP-DRPのリスクがある

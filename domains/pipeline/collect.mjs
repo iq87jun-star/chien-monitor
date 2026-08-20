@@ -5,7 +5,7 @@
 //      リンク先ドメインを抽出する(未登録になっていれば「被リンク付き中古」)
 // input/watchlist.txt は別枠で常に監視する(取得したい登録済みドメインのドロップ待ち)。
 import path from "node:path";
-import { RAW_DIR, INPUT_DIR, SEED_URLS, TLD_WEIGHTS, EXCLUDE_DOMAINS } from "./config.mjs";
+import { RAW_DIR, INPUT_DIR, GENRES, TLD_WEIGHTS, EXCLUDE_DOMAINS } from "./config.mjs";
 import { readLines, writeJson, fetchWithRetry, mapLimit } from "./util.mjs";
 
 const TLDS = Object.keys(TLD_WEIGHTS).sort((a, b) => b.length - a.length);
@@ -38,18 +38,21 @@ function extractHosts(html) {
 }
 
 export async function collect() {
-  const seen = new Map(); // domain -> source(最初に見つけた供給元)
+  const seen = new Map(); // domain -> {source, genre}(最初に見つけた供給元)
 
   // --- a) 手動リスト(URLや大文字が混ざっていても正規化して受け入れる) ---
   for (const line of await readLines(path.join(INPUT_DIR, "candidates.txt"))) {
     const host = line.replace(/^https?:\/\//, "").split("/")[0];
     const d = normalizeDomain(host);
-    if (d && !seen.has(d)) seen.set(d, "manual");
+    if (d && !seen.has(d)) seen.set(d, { source: "manual", genre: null });
   }
   const manualCount = seen.size;
 
-  // --- b) シードページのリンク切れ発掘 ---
-  await mapLimit(SEED_URLS, 2, async (url) => {
+  // --- b) シードページのリンク切れ発掘(ジャンルごと) ---
+  const seeds = Object.entries(GENRES).flatMap(([genre, g]) =>
+    g.seeds.map((url) => ({ url, genre })),
+  );
+  await mapLimit(seeds, 2, async ({ url, genre }) => {
     const res = await fetchWithRetry(url);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const hosts = extractHosts(await res.text());
@@ -57,11 +60,13 @@ export async function collect() {
     for (const host of hosts) {
       const d = normalizeDomain(host);
       if (d && !seen.has(d)) {
-        seen.set(d, "seed");
+        seen.set(d, { source: "seed", genre });
         added++;
       }
     }
-    console.log(`collect: ${added} new domains from ${decodeURIComponent(url).slice(0, 60)}…`);
+    console.log(
+      `collect: ${added} new domains [${genre}] from ${decodeURIComponent(url).slice(0, 60)}…`,
+    );
   });
 
   // --- ウォッチリスト(候補とは別枠・毎回必ずチェックする) ---
@@ -71,7 +76,7 @@ export async function collect() {
     if (d && !watchlist.includes(d)) watchlist.push(d);
   }
 
-  const domains = [...seen].map(([domain, source]) => ({ domain, source }));
+  const domains = [...seen].map(([domain, { source, genre }]) => ({ domain, source, genre }));
   await writeJson(path.join(RAW_DIR, "candidates.json"), {
     updatedAt: new Date().toISOString(),
     counts: { manual: manualCount, seed: domains.length - manualCount },
