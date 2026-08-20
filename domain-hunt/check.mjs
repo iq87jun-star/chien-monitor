@@ -67,7 +67,10 @@ async function waybackSnapshot(domain, timestamp) {
   }
 }
 
-const candidates = readFileSync(join(DIR, 'candidates.txt'), 'utf8')
+// 使い方: node check.mjs [候補ファイル] [結果JSON](省略時は candidates.txt / results.json)
+const candidatesFile = process.argv[2] ?? join(DIR, 'candidates.txt');
+const outputFile = process.argv[3] ?? join(DIR, 'results.json');
+const candidates = readFileSync(candidatesFile, 'utf8')
   .split('\n')
   .map((l) => l.replace(/#.*/, '').trim())
   .filter(Boolean);
@@ -100,7 +103,7 @@ const summary = {
   }),
   all: results,
 };
-writeFileSync(join(DIR, 'results.json'), JSON.stringify(summary, null, 2));
+writeFileSync(outputFile, JSON.stringify(summary, null, 2));
 
 console.log(`\n取得可能: ${summary.available.length} / ${results.length}`);
 console.log(`うち運用履歴あり(中古候補): ${summary.availableWithHistory.map((r) => r.domain).join(', ') || 'なし'}`);
