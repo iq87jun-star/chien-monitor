@@ -47,6 +47,16 @@ export const SEED_URLS = [
   "https://web.archive.org/web/2017/https://ja.wikipedia.org/wiki/%E3%83%9D%E3%82%B1%E3%83%A2%E3%83%B3%E3%82%AB%E3%83%BC%E3%83%89%E3%82%B2%E3%83%BC%E3%83%A0",
   "https://web.archive.org/web/2016/https://ja.wikipedia.org/wiki/%E3%83%88%E3%83%AC%E3%83%BC%E3%83%87%E3%82%A3%E3%83%B3%E3%82%B0%E3%82%AB%E3%83%BC%E3%83%89%E3%82%B2%E3%83%BC%E3%83%A0",
   "https://web.archive.org/web/2016/https://ja.wikipedia.org/wiki/%E3%83%95%E3%82%A1%E3%82%A4%E3%83%8A%E3%83%AB%E3%83%95%E3%82%A1%E3%83%B3%E3%82%BF%E3%82%B8%E3%83%BCXIV",
+  // ショップまとめ・アンテナ系(2026-08検証: 店舗・ブログの実ドメインを直リンクで
+  // 多数持つページ。閉店マーク付き店舗も含まれる)
+  "https://akihabara-bc.jp/akihabara-trading-card-shop/", // 秋葉原トレカ80店舗まとめ(36件)
+  "https://esports-ekichika.net/article/osaka-cardshop/", // 大阪カードショップ一覧(16件)
+  "https://yugioh-antenna.com/", // 遊戯王ブログアンテナ(11件)
+  // 上記の過去版: 現行版で消えた閉店店舗・休止ブログのドメインが残っている
+  "https://web.archive.org/web/2022/https://akihabara-bc.jp/akihabara-trading-card-shop/",
+  "https://web.archive.org/web/2019/https://yugioh-antenna.com/",
+  // FF14個人ブログ一覧の過去版(FF14ブログは2018年前後に大量閉鎖)
+  "https://web.archive.org/web/2018/https://ff14.axdx.net/blog.php",
 ];
 
 // 候補にしても意味がない定番ドメイン(シード抽出時に除外)
