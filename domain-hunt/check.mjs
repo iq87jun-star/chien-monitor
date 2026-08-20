@@ -25,8 +25,15 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const WAIT = { com: 500, net: 500, tokyo: 8000, jp: 3000, wayback: 6000 };
 
 async function fetchText(url) {
-  const res = await fetch(url, { headers: { 'user-agent': 'domain-hunt/1.0' } });
-  return { status: res.status, body: await res.text() };
+  for (let attempt = 1; ; attempt++) {
+    try {
+      const res = await fetch(url, { headers: { 'user-agent': 'domain-hunt/1.0' } });
+      return { status: res.status, body: await res.text() };
+    } catch (e) {
+      if (attempt >= 3) return { status: 0, body: '', error: String(e.cause ?? e) };
+      await sleep(2000 * attempt);
+    }
+  }
 }
 
 async function checkAvailability(domain) {
@@ -78,7 +85,8 @@ const candidates = readFileSync(candidatesFile, 'utf8')
 const results = [];
 for (const domain of candidates) {
   const row = { domain, ...(await checkAvailability(domain)) };
-  if (row.state === 'available') {
+  // archive.org へ直接届かない環境では SKIP_WAYBACK=1 で空き判定のみ行う
+  if (row.state === 'available' && !process.env.SKIP_WAYBACK) {
     row.waybackFirst = await waybackSnapshot(domain, '1996');
     row.waybackLast = await waybackSnapshot(domain);
   }
