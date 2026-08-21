@@ -1,0 +1,83 @@
+# 限定コスメ相場モニター 自動更新パイプライン
+# 楽天市場のウォッチリスト対象アイテムの出品価格を1日2回取得し、
+# 履歴を蓄積して騰落を検知、変化があればAI記事を生成して
+# GitHub Pages(cosme-press.com)へ再デプロイする。
+#
+# Secrets(必須は楽天アプリIDのみ・その他未設定の機能は自動スキップ):
+#   COSME_RAKUTEN_APP_ID       … 楽天ウェブサービスのアプリID(無料・データ取得に必須)
+#   COSME_RAKUTEN_AFFILIATE_ID … 楽天アフィリエイトID(任意。設定すると商品リンクが収益化される)
+#   ANTHROPIC_API_KEY          … AI記事生成
+#   COSME_X_API_KEY / COSME_X_API_SECRET / COSME_X_ACCESS_TOKEN /
+#     COSME_X_ACCESS_TOKEN_SECRET … X(Twitter)速報(コスメbot垢)
+#   TORECA_DEPLOY_TOKEN … デプロイ用PAT(toreca用と共用。PAT側で公開リポジトリを追加すること)
+#   COSME_DEPLOY_REPO   … 公開用リポジトリ("owner/repo" 形式)
+
+name: cosme-auto-update
+
+on:
+  schedule:
+    - cron: "37 4,16 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cosme-auto-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # step単位のif式ではsecretsコンテキストが使えないため、一度envに写して判定する
+    env:
+      TORECA_DEPLOY_TOKEN: ${{ secrets.TORECA_DEPLOY_TOKEN }}
+      COSME_DEPLOY_REPO: ${{ secrets.COSME_DEPLOY_REPO }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run pipeline and build
+        env:
+          COSME_RAKUTEN_APP_ID: ${{ secrets.COSME_RAKUTEN_APP_ID }}
+          COSME_RAKUTEN_AFFILIATE_ID: ${{ secrets.COSME_RAKUTEN_AFFILIATE_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          COSME_X_API_KEY: ${{ secrets.COSME_X_API_KEY }}
+          COSME_X_API_SECRET: ${{ secrets.COSME_X_API_SECRET }}
+          COSME_X_ACCESS_TOKEN: ${{ secrets.COSME_X_ACCESS_TOKEN }}
+          COSME_X_ACCESS_TOKEN_SECRET: ${{ secrets.COSME_X_ACCESS_TOKEN_SECRET }}
+        run: |
+          set -e
+          cd cosme
+          npm ci
+          npm run pipeline
+          npm run build
+
+      - name: Commit updated data
+        run: |
+          git config user.name "market-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add cosme/data cosme/content
+          if git diff --cached --quiet; then
+            echo "no data changes"
+          else
+            git commit -m "chore: auto-update cosme market data [skip ci]"
+            # 他サイトの自動更新ワークフローと同時に走った場合に備えてrebaseしつつプッシュ
+            for i in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
+              sleep $((i * 5))
+            done
+          fi
+
+      - name: Deploy to external gh-pages
+        # デプロイ先リポジトリのSecretsが未設定の間はスキップ(データ更新だけでも動く)
+        if: ${{ env.TORECA_DEPLOY_TOKEN != '' && env.COSME_DEPLOY_REPO != '' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.TORECA_DEPLOY_TOKEN }}
+          external_repository: ${{ secrets.COSME_DEPLOY_REPO }}
+          publish_dir: cosme/dist
+          cname: cosme-press.com
