@@ -1,4 +1,5 @@
 import { useState } from "react";
+import PwaInstall from "./PwaInstall.jsx";
 import economy from "../data/site/economy.json";
 import news from "../data/site/news.json";
 import builds from "../data/site/builds.json";
@@ -560,6 +561,7 @@ export default function App() {
           {/* AdSense等の広告ユニットはこの位置に挿入する想定 */}
         </footer>
       </main>
+      <PwaInstall theme={T} />
     </div>
   );
 }
