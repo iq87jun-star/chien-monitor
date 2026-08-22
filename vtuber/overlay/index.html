@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<title>字幕オーバーレイ</title>
+<style>
+  /* OBSのブラウザソース用(背景は透過) */
+  body { margin: 0; background: transparent; font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", sans-serif; }
+  #box { position: fixed; left: 24px; right: 24px; bottom: 24px; display: none; }
+  .bubble { background: rgba(20, 20, 28, 0.82); color: #fff; border-radius: 12px; padding: 10px 16px; margin-top: 8px; font-size: 22px; line-height: 1.5; }
+  .comment { font-size: 16px; color: #cfd6ff; }
+  .name { color: #ffd27f; margin-right: 0.5em; font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="box">
+  <div class="bubble comment"><span class="name" id="c-name"></span><span id="c-text"></span></div>
+  <div class="bubble"><span class="name" id="r-name"></span><span id="r-text"></span></div>
+</div>
+<script>
+  // ボット(bot/overlay.mjs)の /state を1秒ごとに見て字幕を更新する
+  let lastAt = null;
+  async function tick() {
+    try {
+      const s = await (await fetch("/state")).json();
+      if (s.updatedAt && s.updatedAt !== lastAt) {
+        lastAt = s.updatedAt;
+        document.getElementById("c-name").textContent = s.comment.author;
+        document.getElementById("c-text").textContent = s.comment.text;
+        document.getElementById("r-name").textContent = s.name;
+        document.getElementById("r-text").textContent = s.reply;
+        document.getElementById("box").style.display = "block";
+      }
+    } catch {}
+  }
+  setInterval(tick, 1000);
+  tick();
+</script>
+</body>
+</html>
