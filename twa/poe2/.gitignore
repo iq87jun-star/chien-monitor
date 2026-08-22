@@ -1,0 +1,5 @@
+# TWAプロジェクトはtwa-manifest.jsonから `bubblewrap update` で再生成できるため、
+# 設定ファイル以外(生成物・署名キー)はコミットしない
+*
+!.gitignore
+!twa-manifest.json
