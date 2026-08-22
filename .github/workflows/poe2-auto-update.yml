@@ -66,6 +66,9 @@ jobs:
           mkdir -p site-dist
           cp portal/index.html site-dist/index.html
           cp portal/robots.txt portal/ogp.png site-dist/
+          # Android(TWA)アプリのドメイン所有証明
+          mkdir -p site-dist/.well-known
+          cp portal/.well-known/assetlinks.json site-dist/.well-known/
           node scripts/generate-sitemap.mjs
           for site in poe2 poe1 tarkov ff14; do
             cp -r "$site/dist" "site-dist/$site"

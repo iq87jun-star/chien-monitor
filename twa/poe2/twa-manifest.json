@@ -1,0 +1,60 @@
+{
+  "packageId": "com.gamesouba.poe2",
+  "host": "game-souba.com",
+  "name": "PoE2相場モニター",
+  "launcherName": "PoE2相場",
+  "display": "standalone",
+  "themeColor": "#1A1712",
+  "themeColorDark": "#000000",
+  "navigationColor": "#000000",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#0F0D0A",
+  "enableNotifications": true,
+  "startUrl": "/poe2/?src=pwa",
+  "iconUrl": "https://game-souba.com/poe2/icon-512.png",
+  "maskableIconUrl": "https://game-souba.com/poe2/icon-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "/home/user/chien-monitor/twa/poe2/android.keystore",
+    "alias": "android"
+  },
+  "appVersionName": "1",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "ウォッチリスト",
+      "shortName": "ウォッチリスト",
+      "url": "https://game-souba.com/poe2/?view=watchlist",
+      "chosenIconUrl": "https://game-souba.com/poe2/icon-192.png"
+    },
+    {
+      "name": "通貨換算",
+      "shortName": "通貨換算",
+      "url": "https://game-souba.com/poe2/?view=convert",
+      "chosenIconUrl": "https://game-souba.com/poe2/icon-192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://game-souba.com/poe2/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://game-souba.com/poe2/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [],
+  "appVersion": "1"
+}
