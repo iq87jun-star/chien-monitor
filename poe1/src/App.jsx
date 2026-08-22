@@ -1,5 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PwaInstall from "./PwaInstall.jsx";
+import {
+  useWatchlist,
+  usePrevDiff,
+  WatchStar,
+  WatchlistCard,
+  currencyKey,
+  uniqueKey,
+} from "./watchlist.jsx";
 import economy from "../data/site/economy.json";
 import news from "../data/site/news.json";
 import builds from "../data/site/builds.json";
@@ -151,9 +159,10 @@ function Converter({ currencies, rateOf, unitLabel, defaultFrom, defaultTo }) {
   );
 }
 
-function Card({ title, sub, children }) {
+function Card({ title, sub, children, id }) {
   return (
     <section
+      id={id}
       style={{
         background: T.surface,
         border: `1px solid ${T.outline}`,
@@ -173,7 +182,7 @@ function Card({ title, sub, children }) {
   );
 }
 
-function UniqueRow({ u }) {
+function UniqueRow({ u, watch }) {
   return (
     <div
       style={{
@@ -184,6 +193,20 @@ function UniqueRow({ u }) {
         borderBottom: `1px solid ${T.outline}`,
       }}
     >
+      {watch && (
+        <WatchStar
+          watched={watch.has(uniqueKey(u))}
+          onToggle={() =>
+            watch.toggle({
+              key: uniqueKey(u),
+              type: "unique",
+              name: u.name,
+              baseType: u.baseType,
+            })
+          }
+          T={T}
+        />
+      )}
       {u.icon && (
         <img src={u.icon} alt="" width={28} height={28} style={{ flexShrink: 0 }} loading="lazy" />
       )}
@@ -303,6 +326,16 @@ export default function App() {
   const [openId, setOpenId] = useState(articlesData.articles[0]?.id ?? null);
   const articles = articlesData.articles;
   const patchNews = news.items.filter((n) => n.isPatch).slice(0, 5);
+  const watch = useWatchlist("poe1");
+  const prevDiff = usePrevDiff("poe1", economy, (c) => c.rateInChaos);
+
+  // アイコン長押しショートカット(manifestのshortcuts)からの遷移先スクロール
+  useEffect(() => {
+    const view = new URLSearchParams(window.location.search).get("view");
+    const id =
+      view === "watchlist" ? "watchlist-card" : view === "convert" ? "converter-card" : null;
+    if (id) document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
   return (
     <div
@@ -341,7 +374,22 @@ export default function App() {
           gap: 16,
         }}
       >
-        <Card title="🔁 通貨換算ツール" sub="現在レートで換算(6時間ごと自動更新)">
+        <WatchlistCard
+          id="watchlist-card"
+          T={T}
+          economy={economy}
+          rateOf={(c) => c.rateInChaos}
+          unit="c"
+          watch={watch}
+          diff={prevDiff}
+          Card={Card}
+          Sparkline={Sparkline}
+          Change={Change}
+          fmtRate={fmtRate}
+          fmtDate={fmtDate}
+        />
+
+        <Card id="converter-card" title="🔁 通貨換算ツール" sub="現在レートで換算(6時間ごと自動更新)">
           <Converter
             currencies={economy.currencies}
             rateOf={(c) => c.rateInChaos}
@@ -400,14 +448,31 @@ export default function App() {
                 >
                   <span
                     style={{
-                      fontSize: 13,
-                      color: T.text,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 2,
+                      flex: 1,
+                      minWidth: 0,
                     }}
                   >
-                    {c.name}
+                    <WatchStar
+                      watched={watch.has(currencyKey(c))}
+                      onToggle={() =>
+                        watch.toggle({ key: currencyKey(c), type: "currency", name: c.name })
+                      }
+                      T={T}
+                    />
+                    <span
+                      style={{
+                        fontSize: 13,
+                        color: T.text,
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {c.name}
+                    </span>
                   </span>
                   <span style={{ display: "flex", gap: 10, alignItems: "center" }}>
                     <Sparkline data={c.spark} color={c.change7d >= 0 ? T.up : T.down} />
@@ -524,17 +589,17 @@ export default function App() {
         >
           <Card title="📈 高騰ユニーク TOP10" sub="直近7日の上昇率(出品5件以上)">
             {economy.gainers.map((u) => (
-              <UniqueRow key={`${u.name}-${u.baseType}`} u={u} />
+              <UniqueRow key={`${u.name}-${u.baseType}`} u={u} watch={watch} />
             ))}
           </Card>
           <Card title="📉 下落ユニーク TOP10" sub="直近7日の下落率(出品5件以上)">
             {economy.losers.map((u) => (
-              <UniqueRow key={`${u.name}-${u.baseType}`} u={u} />
+              <UniqueRow key={`${u.name}-${u.baseType}`} u={u} watch={watch} />
             ))}
           </Card>
           <Card title="👑 高額ユニーク TOP10" sub="現在の取引価格">
             {economy.expensive.map((u) => (
-              <UniqueRow key={`${u.name}-${u.baseType}`} u={u} />
+              <UniqueRow key={`${u.name}-${u.baseType}`} u={u} watch={watch} />
             ))}
           </Card>
         </div>
