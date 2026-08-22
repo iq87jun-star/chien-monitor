@@ -66,6 +66,8 @@ jobs:
           mkdir -p site-dist
           cp portal/index.html site-dist/index.html
           cp portal/robots.txt portal/ogp.png portal/privacy.html site-dist/
+          # Playストア掲載用素材(スマホから直接ダウンロードできるよう配信)
+          cp -r portal/play-assets site-dist/play-assets
           # Android(TWA)アプリのドメイン所有証明
           mkdir -p site-dist/.well-known
           cp portal/.well-known/assetlinks.json site-dist/.well-known/
