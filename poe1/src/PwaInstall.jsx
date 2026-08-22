@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 // PWAまわりのUI: Service Worker登録・インストール誘導・更新通知
 // theme には App.jsx の配色オブジェクト T を渡す
-const DISMISS_KEY = "pwa-install-dismissed";
+const DISMISS_KEY = "poe1:pwa-install-dismissed";
 
 const isStandalone = () =>
   window.matchMedia("(display-mode: standalone)").matches ||
