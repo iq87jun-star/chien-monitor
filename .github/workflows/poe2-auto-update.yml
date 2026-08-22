@@ -65,7 +65,7 @@ jobs:
         run: |
           mkdir -p site-dist
           cp portal/index.html site-dist/index.html
-          cp portal/robots.txt portal/ogp.png site-dist/
+          cp portal/robots.txt portal/ogp.png portal/privacy.html site-dist/
           # Android(TWA)アプリのドメイン所有証明
           mkdir -p site-dist/.well-known
           cp portal/.well-known/assetlinks.json site-dist/.well-known/
