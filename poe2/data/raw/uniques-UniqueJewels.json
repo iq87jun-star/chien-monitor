@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 366.7,
-   "chaos": 10.95
+   "exalted": 359.1,
+   "chaos": 10.68
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,19 +42,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 626,
-   "listingCount": 143,
+   "primaryValue": 638.1,
+   "listingCount": 169,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 0.16,
+    "totalChange": 4.44,
     "data": [
      0,
      null,
-     -2.24,
+     -2.09,
      null,
-     -4.29,
+     2.45,
      null,
-     0.16
+     4.44
     ]
    },
    "explicitModifiers": [
@@ -75,19 +75,19 @@
    "levelRequired": 0,
    "category": "Vaal [Jewel]",
    "limitedTo": 1,
-   "primaryValue": 30.3,
-   "listingCount": 1391,
+   "primaryValue": 32.1,
+   "listingCount": 1360,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -13.43,
+    "totalChange": 7,
     "data": [
      0,
      null,
-     -14.29,
+     0,
      null,
-     -14.29,
+     1,
      null,
-     -13.43
+     7
     ]
    },
    "explicitModifiers": [
@@ -184,24 +184,94 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 9.96,
-   "listingCount": 100,
+   "primaryValue": 10,
+   "listingCount": 87,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -23.39,
+    "totalChange": -16.67,
     "data": [
      0,
      null,
-     -7.69,
+     -16.67,
      null,
-     -23.08,
+     -17,
      null,
-     -23.39
+     -16.67
     ]
    },
    "explicitModifiers": [
     {
      "text": "2% increased [Spirit|Spirit] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 377,
+   "itemId": "Controlled Metamorphosis Diamond",
+   "detailsId": "controlled-metamorphosis-diamond",
+   "name": "Controlled Metamorphosis",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0JyZWFjaEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/9c17747ff2/BreachJewel.png",
+   "flavourText": "Our world was dying, but we chose to survive.\r\nWe broke free from the chains within.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "radius": "Variable",
+   "primaryValue": 8,
+   "listingCount": 1286,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     0,
+     null,
+     -25,
+     null,
+     -25,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Only affects Passives in Small Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Medium Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Large Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Massive Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Medium-Small Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Medium-Large Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Very Large Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Very Small Ring",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius can be Allocated without being connected to your tree",
+     "optional": false
+    },
+    {
+     "text": "-(20-5)% to all [ElementalDamage|Elemental] [Resistances]",
      "optional": false
     }
    ]
@@ -218,19 +288,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 6.5,
-   "listingCount": 4028,
+   "primaryValue": 7,
+   "listingCount": 4073,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -7.14,
+    "totalChange": -0.59,
     "data": [
      0,
      null,
-     0.59,
+     -10.67,
      null,
-     -10.14,
+     -7.69,
      null,
-     -7.14
+     -0.59
     ]
    },
    "explicitModifiers": [
@@ -321,76 +391,6 @@
    ]
   },
   {
-   "id": 377,
-   "itemId": "Controlled Metamorphosis Diamond",
-   "detailsId": "controlled-metamorphosis-diamond",
-   "name": "Controlled Metamorphosis",
-   "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0JyZWFjaEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/9c17747ff2/BreachJewel.png",
-   "flavourText": "Our world was dying, but we chose to survive.\r\nWe broke free from the chains within.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 1,
-   "radius": "Variable",
-   "primaryValue": 6,
-   "listingCount": 1371,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -25,
-    "data": [
-     0,
-     null,
-     0,
-     null,
-     -25,
-     null,
-     -25
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Only affects Passives in Small Ring",
-     "optional": true
-    },
-    {
-     "text": "Only affects Passives in Medium Ring",
-     "optional": true
-    },
-    {
-     "text": "Only affects Passives in Large Ring",
-     "optional": true
-    },
-    {
-     "text": "Only affects Passives in Massive Ring",
-     "optional": true
-    },
-    {
-     "text": "Only affects Passives in Medium-Small Ring",
-     "optional": true
-    },
-    {
-     "text": "Only affects Passives in Medium-Large Ring",
-     "optional": true
-    },
-    {
-     "text": "Only affects Passives in Very Large Ring",
-     "optional": true
-    },
-    {
-     "text": "Only affects Passives in Very Small Ring",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius can be Allocated without being connected to your tree",
-     "optional": false
-    },
-    {
-     "text": "-(20-5)% to all [ElementalDamage|Elemental] [Resistances]",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 380,
    "itemId": "Grand Spectrum Ruby",
    "detailsId": "grand-spectrum-ruby",
@@ -402,18 +402,18 @@
    "category": "[Jewel]",
    "limitedTo": 3,
    "primaryValue": 4,
-   "listingCount": 121,
+   "listingCount": 186,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 10.34,
+    "totalChange": 14.29,
     "data": [
      0,
      null,
-     -3.45,
+     -14.29,
      null,
-     -17.24,
+     14.29,
      null,
-     10.34
+     14.29
     ]
    },
    "explicitModifiers": [
@@ -434,19 +434,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 2.58,
-   "listingCount": 211,
+   "primaryValue": 2.67,
+   "listingCount": 193,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 7.81,
+    "totalChange": 14.42,
     "data": [
      0,
      null,
-     -2.31,
+     2.72,
      null,
-     0.35,
+     10.35,
      null,
-     7.81
+     14.42
     ]
    },
    "explicitModifiers": [
@@ -467,19 +467,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 1.64,
-   "listingCount": 8780,
+   "primaryValue": 1,
+   "listingCount": 8756,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 41.37,
+    "totalChange": -50,
     "data": [
      0,
      null,
-     72.8,
+     -50,
      null,
-     -13.6,
+     -18.19,
      null,
-     41.37
+     -50
     ]
    },
    "explicitModifiers": [
@@ -552,19 +552,19 @@
    "levelRequired": 0,
    "category": "Kalguuran [Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.409,
+   "primaryValue": 0.5011,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -21.29,
+    "totalChange": 9.32,
     "data": [
      0,
      null,
-     -11.79,
+     -17.42,
      null,
-     -27.16,
+     -10.77,
      null,
-     -21.29
+     9.32
     ]
    },
    "explicitModifiers": [
@@ -587,6 +587,33 @@
    ]
   },
   {
+   "id": 402,
+   "itemId": "Megalomaniac Diamond",
+   "detailsId": "megalomaniac-diamond",
+   "name": "Megalomaniac",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
+   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.1392,
+   "listingCount": 10000,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": -3.43,
+    "data": [
+     0,
+     null,
+     -4.86,
+     null,
+     -51.76,
+     null,
+     -3.43
+    ]
+   }
+  },
+  {
    "id": 400,
    "itemId": "Flesh Crucible Diamond",
    "detailsId": "flesh-crucible-diamond",
@@ -597,19 +624,19 @@
    "levelRequired": 0,
    "category": "Vaal [Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.09135,
-   "listingCount": 8244,
+   "primaryValue": 0.09362,
+   "listingCount": 8314,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -3.71,
+    "totalChange": -4.08,
     "data": [
      0,
      null,
-     2.88,
+     -7.88,
      null,
-     -5.23,
+     -6.4,
      null,
-     -3.71
+     -4.08
     ]
    },
    "explicitModifiers": [
@@ -782,19 +809,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.08181,
+   "primaryValue": 0.08352,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -5.54,
+    "totalChange": -3.43,
     "data": [
      0,
      null,
-     -0.14,
+     -27.06,
      null,
-     -27.16,
+     -5.41,
      null,
-     -5.54
+     -3.43
     ]
    },
    "explicitModifiers": [
@@ -1081,33 +1108,6 @@
    ]
   },
   {
-   "id": 402,
-   "itemId": "Megalomaniac Diamond",
-   "detailsId": "megalomaniac-diamond",
-   "name": "Megalomaniac",
-   "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
-   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 1,
-   "primaryValue": 0.06954,
-   "listingCount": 10000,
-   "corrupted": true,
-   "sparkLine": {
-    "totalChange": -51.83,
-    "data": [
-     0,
-     null,
-     -0.14,
-     null,
-     -4.99,
-     null,
-     -51.83
-    ]
-   }
-  },
-  {
    "id": 401,
    "itemId": "From Nothing Diamond",
    "detailsId": "from-nothing-diamond",
@@ -1119,19 +1119,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 0.05454,
+   "primaryValue": 0.04176,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -14.12,
+    "totalChange": -42.06,
     "data": [
      0,
      null,
-     13.49,
+     -23.89,
      null,
-     -13.62,
+     -24.33,
      null,
-     -14.12
+     -42.06
     ]
    },
    "explicitModifiers": [
@@ -1256,19 +1256,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00273,
+   "primaryValue": 0.00278,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -5.54,
+    "totalChange": -3.47,
     "data": [
      0,
      null,
-     -0.35,
+     -4.86,
      null,
-     -5.19,
+     -5.21,
      null,
-     -5.54
+     -3.47
     ]
    },
    "explicitModifiers": [
