@@ -11,7 +11,11 @@ MT4 / MT5 両対応のトレンドフォロー型 EA です。GogoJungle(ゴゴ�
 fx-ea/
 ├── MQL5/ChienTrendRider.mq5   # MetaTrader 5 版ソース
 ├── MQL4/ChienTrendRider.mq4   # MetaTrader 4 版ソース
+├── backtest/results.md        # 10年H1データでの検証結果サマリー
+├── backtest/sweep.py          # 全構成スイープ(IS/OOS分割)の再現スクリプト
+├── backtest/robust.py         # 頑健性チェックの再現スクリプト
 ├── docs/sales-page-draft.md   # GogoJungle 販売ページの原稿ドラフト
+├── docs/cowork-handoff.md     # Cowork 連携用プロンプト集
 └── README.md                  # このファイル
 ```
 
@@ -20,7 +24,8 @@ fx-ea/
 | 要素 | 内容 |
 |---|---|
 | トレンド判定 | EMA50 と EMA200 の位置関係(確定足のみ使用) |
-| エントリー | トレンド方向への RSI 押し目/戻り回復(買い: RSI が 40 を下から上抜け、売り: 60 を上から下抜け) |
+| エントリー(既定) | **ドンチャン(20)ブレイクアウト**: 直近確定足の終値が、その手前20本の高値を上抜けで買い/安値を下抜けで売り(トレンド方向のみ) |
+| エントリー(選択) | RSI 押し目/戻り回復(買い: RSI が 40 を下から上抜け、売り: 60 を上から下抜け)※10年検証で PF<1 のため非推奨 |
 | 損切り | ATR × 2.0(可変) |
 | 利確 | ATR × 3.0(可変、0 で無効化しトレーリングのみ運用可) |
 | 建玉管理 | ブレークイーブン移動 + ATR トレーリングストップ(各 ON/OFF 可) |
@@ -28,7 +33,10 @@ fx-ea/
 | ポジション | 同一通貨ペア・同一マジックナンバーで常に 1 ポジションまで |
 | フィルター | 最大スプレッド、取引時間帯、曜日、金曜クローズ(全てオプション) |
 
-推奨初期環境: **USDJPY / EURUSD の H1**(要バックテストで確認)。
+推奨環境: **USDJPY / GBPJPY の H1**。
+2016–2025 の10年 H1 データによるシミュレーションで、両ペアとも PF 1.18・
+イン/アウトオブサンプル両期間で黒字を確認済み(詳細は `backtest/results.md`)。
+EURJPY は限界的(PF 1.04)なため非推奨。
 エントリー判定は足確定時のみ行うため、ティックの揺らぎによる
 バックテストとリアルの乖離が小さい設計です。
 
@@ -37,8 +45,10 @@ fx-ea/
 | パラメータ | 既定値 | 説明 |
 |---|---|---|
 | InpMagicNumber | 87001 | マジックナンバー(複数通貨で使う場合は変更) |
+| InpEntryMode | DONCHIAN | エントリー方式(DONCHIAN 推奨 / RSI) |
+| InpDonchianPeriod | 20 | ドンチャンチャネル期間 |
 | InpFastEmaPeriod / InpSlowEmaPeriod | 50 / 200 | トレンド判定 EMA |
-| InpRsiBuyLevel / InpRsiSellLevel | 40 / 60 | 押し目・戻り判定の RSI 水準 |
+| InpRsiBuyLevel / InpRsiSellLevel | 40 / 60 | RSI モード時の押し目・戻り水準 |
 | InpAtrSlMult / InpAtrTpMult | 2.0 / 3.0 | SL / TP の ATR 倍率(TP は 0 で無効) |
 | InpLotMode | RISK_PCT | 固定ロット or リスク%方式 |
 | InpRiskPercent | 1.0 | 1 トレードあたりのリスク(残高比%) |

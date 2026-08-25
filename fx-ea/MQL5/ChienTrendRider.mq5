@@ -4,7 +4,8 @@
 //|                                                                  |
 //| Strategy summary                                                 |
 //|   - Trend filter : Fast EMA vs Slow EMA (closed bars only)       |
-//|   - Entry        : RSI pullback recovery in trend direction      |
+//|   - Entry        : Donchian channel breakout in trend direction  |
+//|                    (default) or RSI pullback recovery            |
 //|   - Stop loss    : ATR-based                                     |
 //|   - Take profit  : ATR-based (risk/reward configurable)          |
 //|   - Exits        : Optional break-even and ATR trailing stop     |
@@ -16,7 +17,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.00"
+#property version   "1.10"
 
 #include <Trade\Trade.mqh>
 
@@ -27,6 +28,13 @@ enum ENUM_LOT_MODE
    LOT_RISK_PCT     // Risk % of balance
   };
 
+//--- entry mode
+enum ENUM_ENTRY_MODE
+  {
+   ENTRY_DONCHIAN = 0,  // Donchian breakout (recommended)
+   ENTRY_RSI            // RSI pullback recovery
+  };
+
 //=== Trade settings ===
 input group    "=== Trade settings ==="
 input long     InpMagicNumber      = 87001;        // Magic number
@@ -35,8 +43,10 @@ input int      InpSlippagePoints   = 10;           // Max slippage (points)
 
 //=== Strategy ===
 input group    "=== Strategy ==="
+input ENUM_ENTRY_MODE InpEntryMode = ENTRY_DONCHIAN; // Entry mode
 input int      InpFastEmaPeriod    = 50;           // Fast EMA period
 input int      InpSlowEmaPeriod    = 200;          // Slow EMA period
+input int      InpDonchianPeriod   = 20;           // Donchian channel period
 input int      InpRsiPeriod        = 14;           // RSI period
 input double   InpRsiBuyLevel      = 40.0;         // RSI buy recovery level
 input double   InpRsiSellLevel     = 60.0;         // RSI sell recovery level
@@ -91,6 +101,11 @@ int OnInit()
    if(InpFastEmaPeriod >= InpSlowEmaPeriod)
      {
       Print("Init error: fast EMA period must be smaller than slow EMA period");
+      return(INIT_PARAMETERS_INCORRECT);
+     }
+   if(InpDonchianPeriod < 2)
+     {
+      Print("Init error: Donchian period must be >= 2");
       return(INIT_PARAMETERS_INCORRECT);
      }
 
@@ -184,26 +199,50 @@ bool GetBufferValue(const int handle, const int shift, double &value)
 //+------------------------------------------------------------------+
 void CheckEntry()
   {
-   double emaFast, emaSlow, rsi1, rsi2, atr;
+   double emaFast, emaSlow, atr;
    if(!GetBufferValue(g_hEmaFast, 1, emaFast)) return;
    if(!GetBufferValue(g_hEmaSlow, 1, emaSlow)) return;
-   if(!GetBufferValue(g_hRsi, 1, rsi1))        return;
-   if(!GetBufferValue(g_hRsi, 2, rsi2))        return;
    if(!GetBufferValue(g_hAtr, 1, atr))         return;
    if(atr <= 0.0)                              return;
 
    bool trendUp   = emaFast > emaSlow;
    bool trendDown = emaFast < emaSlow;
 
-   // buy: uptrend, RSI dipped below the buy level and recovered above it
-   if(InpAllowBuy && trendUp && rsi2 < InpRsiBuyLevel && rsi1 >= InpRsiBuyLevel)
+   bool buySignal = false, sellSignal = false;
+
+   if(InpEntryMode == ENTRY_DONCHIAN)
+     {
+      // channel of the InpDonchianPeriod bars BEFORE the last closed bar;
+      // signal = last closed bar breaks out of it in trend direction
+      int hiIdx = iHighest(_Symbol, _Period, MODE_HIGH, InpDonchianPeriod, 2);
+      int loIdx = iLowest(_Symbol, _Period, MODE_LOW, InpDonchianPeriod, 2);
+      if(hiIdx < 0 || loIdx < 0)
+         return;
+      double donHigh = iHigh(_Symbol, _Period, hiIdx);
+      double donLow  = iLow(_Symbol, _Period, loIdx);
+      double close1  = iClose(_Symbol, _Period, 1);
+
+      buySignal  = trendUp   && close1 > donHigh;
+      sellSignal = trendDown && close1 < donLow;
+     }
+   else // ENTRY_RSI
+     {
+      double rsi1, rsi2;
+      if(!GetBufferValue(g_hRsi, 1, rsi1)) return;
+      if(!GetBufferValue(g_hRsi, 2, rsi2)) return;
+
+      // buy: RSI dipped below the buy level and recovered above it
+      buySignal  = trendUp   && rsi2 < InpRsiBuyLevel  && rsi1 >= InpRsiBuyLevel;
+      // sell: RSI rose above the sell level and dropped back below it
+      sellSignal = trendDown && rsi2 > InpRsiSellLevel && rsi1 <= InpRsiSellLevel;
+     }
+
+   if(InpAllowBuy && buySignal)
      {
       OpenPosition(ORDER_TYPE_BUY, atr);
       return;
      }
-
-   // sell: downtrend, RSI rose above the sell level and dropped back below it
-   if(InpAllowSell && trendDown && rsi2 > InpRsiSellLevel && rsi1 <= InpRsiSellLevel)
+   if(InpAllowSell && sellSignal)
       OpenPosition(ORDER_TYPE_SELL, atr);
   }
 
