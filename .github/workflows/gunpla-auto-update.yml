@@ -1,29 +1,29 @@
-# ポケカ国内相場モニター 自動更新パイプライン
+# ガンプラ相場モニター 自動更新パイプライン
 # 楽天市場のウォッチリスト対象(未開封BOX・高額シングル)の出品価格を1日2回取得し、
 # 履歴を蓄積して騰落を検知、変化があればAI記事を生成して
 # GitHub Pages(pokeca.tokyo)へ再デプロイする。
 #
 # Secrets(必須は楽天アプリIDのみ・その他未設定の機能は自動スキップ):
-#   RAKUTEN_APP_ID または POKECA_RAKUTEN_APP_ID … 楽天アプリID(cosme用と共用可)
-#   RAKUTEN_AFFILIATE_ID または POKECA_RAKUTEN_AFFILIATE_ID … 楽天アフィリエイトID(任意)
+#   RAKUTEN_APP_ID または GUNPLA_RAKUTEN_APP_ID … 楽天アプリID(cosme用と共用可)
+#   RAKUTEN_AFFILIATE_ID または GUNPLA_RAKUTEN_AFFILIATE_ID … 楽天アフィリエイトID(任意)
 #   ANTHROPIC_API_KEY … AI記事生成
-#   POKECA_X_API_KEY / POKECA_X_API_SECRET / POKECA_X_ACCESS_TOKEN /
-#     POKECA_X_ACCESS_TOKEN_SECRET … X(Twitter)速報(ポケカbot垢)
+#   GUNPLA_X_API_KEY / GUNPLA_X_API_SECRET / GUNPLA_X_ACCESS_TOKEN /
+#     GUNPLA_X_ACCESS_TOKEN_SECRET … X(Twitter)速報(ポケカbot垢)
 #   TORECA_DEPLOY_TOKEN … デプロイ用PAT(toreca用と共用。PAT側で公開リポジトリを追加すること)
-#   POKECA_DEPLOY_REPO  … 公開用リポジトリ("owner/repo" 形式)
+#   GUNPLA_DEPLOY_REPO  … 公開用リポジトリ("owner/repo" 形式)
 
-name: pokeca-auto-update
+name: gunpla-auto-update
 
 on:
   schedule:
-    - cron: "29 6,18 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
+    - cron: "3 8,20 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: pokeca-auto-update
+  group: gunpla-auto-update
   cancel-in-progress: false
 
 jobs:
@@ -32,7 +32,7 @@ jobs:
     # step単位のif式ではsecretsコンテキストが使えないため、一度envに写して判定する
     env:
       TORECA_DEPLOY_TOKEN: ${{ secrets.TORECA_DEPLOY_TOKEN }}
-      POKECA_DEPLOY_REPO: ${{ secrets.POKECA_DEPLOY_REPO }}
+      GUNPLA_DEPLOY_REPO: ${{ secrets.GUNPLA_DEPLOY_REPO }}
     steps:
       - uses: actions/checkout@v4
 
@@ -40,22 +40,22 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: pokeca/package-lock.json
+          cache-dependency-path: gunpla/package-lock.json
 
       - name: Run pipeline and build
         env:
           RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
           RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
-          POKECA_RAKUTEN_APP_ID: ${{ secrets.POKECA_RAKUTEN_APP_ID }}
-          POKECA_RAKUTEN_AFFILIATE_ID: ${{ secrets.POKECA_RAKUTEN_AFFILIATE_ID }}
+          GUNPLA_RAKUTEN_APP_ID: ${{ secrets.GUNPLA_RAKUTEN_APP_ID }}
+          GUNPLA_RAKUTEN_AFFILIATE_ID: ${{ secrets.GUNPLA_RAKUTEN_AFFILIATE_ID }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          POKECA_X_API_KEY: ${{ secrets.POKECA_X_API_KEY }}
-          POKECA_X_API_SECRET: ${{ secrets.POKECA_X_API_SECRET }}
-          POKECA_X_ACCESS_TOKEN: ${{ secrets.POKECA_X_ACCESS_TOKEN }}
-          POKECA_X_ACCESS_TOKEN_SECRET: ${{ secrets.POKECA_X_ACCESS_TOKEN_SECRET }}
+          GUNPLA_X_API_KEY: ${{ secrets.GUNPLA_X_API_KEY }}
+          GUNPLA_X_API_SECRET: ${{ secrets.GUNPLA_X_API_SECRET }}
+          GUNPLA_X_ACCESS_TOKEN: ${{ secrets.GUNPLA_X_ACCESS_TOKEN }}
+          GUNPLA_X_ACCESS_TOKEN_SECRET: ${{ secrets.GUNPLA_X_ACCESS_TOKEN_SECRET }}
         run: |
           set -e
-          cd pokeca
+          cd gunpla
           npm ci
           npm run pipeline
           npm run build
@@ -64,11 +64,11 @@ jobs:
         run: |
           git config user.name "market-monitor-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add pokeca/data pokeca/content
+          git add gunpla/data gunpla/content
           if git diff --cached --quiet; then
             echo "no data changes"
           else
-            git commit -m "chore: auto-update pokeca market data [skip ci]"
+            git commit -m "chore: auto-update gunpla market data [skip ci]"
             # 他サイトの自動更新ワークフローと同時に走った場合に備えてrebaseしつつプッシュ
             for i in 1 2 3; do
               git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
@@ -78,10 +78,10 @@ jobs:
 
       - name: Deploy to external gh-pages
         # デプロイ先リポジトリのSecretsが未設定の間はスキップ(データ更新だけでも動く)
-        if: ${{ env.TORECA_DEPLOY_TOKEN != '' && env.POKECA_DEPLOY_REPO != '' }}
+        if: ${{ env.TORECA_DEPLOY_TOKEN != '' && env.GUNPLA_DEPLOY_REPO != '' }}
         uses: peaceiris/actions-gh-pages@v4
         with:
           personal_token: ${{ secrets.TORECA_DEPLOY_TOKEN }}
-          external_repository: ${{ secrets.POKECA_DEPLOY_REPO }}
-          publish_dir: pokeca/dist
-          cname: pokeca.tokyo
+          external_repository: ${{ secrets.GUNPLA_DEPLOY_REPO }}
+          publish_dir: gunpla/dist
+          cname: gunpla-souba.com
