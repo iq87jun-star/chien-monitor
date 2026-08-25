@@ -1,27 +1,16 @@
 {
  "available": true,
- "generatedAt": "2026-08-25T10:15:18.054Z",
- "fetchedAt": "2026-08-25T10:15:18.036Z",
+ "generatedAt": "2026-08-25T22:02:50.007Z",
+ "fetchedAt": "2026-08-25T22:02:49.994Z",
  "fx": {
-  "eurJpy": 185.6,
-  "date": "2026-08-24"
+  "eurJpy": 185.7,
+  "date": "2026-08-25"
  },
  "totals": {
   "cardsFetched": 14053,
-  "rankedCards": 789
+  "rankedCards": 788
  },
  "gainers": [
-  {
-   "id": 55737443,
-   "name": "Exxod, Master of The Guard",
-   "type": "Effect Monster",
-   "archetype": "Sphinx",
-   "ban": null,
-   "eur": 5.7,
-   "usd": 0.9,
-   "jpy": 1058,
-   "change7d": 91.9
-  },
   {
    "id": 92517928,
    "name": "Galaxy-Eyes Antimatter Dragon",
@@ -30,7 +19,7 @@
    "ban": null,
    "eur": 2.05,
    "usd": 0,
-   "jpy": 380,
+   "jpy": 381,
    "change7d": 68
   },
   {
@@ -45,6 +34,28 @@
    "change7d": 68
   },
   {
+   "id": 55737443,
+   "name": "Exxod, Master of The Guard",
+   "type": "Effect Monster",
+   "archetype": "Sphinx",
+   "ban": null,
+   "eur": 4.9,
+   "usd": 1.01,
+   "jpy": 910,
+   "change7d": 65
+  },
+  {
+   "id": 56741506,
+   "name": "Sky Striker Ace - Azalea Temperance",
+   "type": "Link Effect Monster",
+   "archetype": "Sky Striker",
+   "ban": null,
+   "eur": 2.23,
+   "usd": 1.91,
+   "jpy": 414,
+   "change7d": 42
+  },
+  {
    "id": 80102359,
    "name": "Reinforced Human Psychic Borg",
    "type": "Effect Monster",
@@ -52,7 +63,7 @@
    "ban": null,
    "eur": 2.75,
    "usd": 5.21,
-   "jpy": 510,
+   "jpy": 511,
    "change7d": 41.8
   },
   {
@@ -67,37 +78,26 @@
    "change7d": 36.4
   },
   {
-   "id": 56741506,
-   "name": "Sky Striker Ace - Azalea Temperance",
-   "type": "Link Effect Monster",
-   "archetype": "Sky Striker",
-   "ban": null,
-   "eur": 2.03,
-   "usd": 1.92,
-   "jpy": 377,
-   "change7d": 29.3
-  },
-  {
-   "id": 33846209,
-   "name": "Gemini Spark",
-   "type": "Quick-Play Spell",
+   "id": 73915052,
+   "name": "Sheep Token",
+   "type": "Token",
    "archetype": null,
    "ban": null,
-   "eur": 3.54,
-   "usd": 4.95,
-   "jpy": 657,
-   "change7d": 28.3
+   "eur": 3.11,
+   "usd": 0,
+   "jpy": 578,
+   "change7d": 31.8
   },
   {
-   "id": 22377092,
-   "name": "Trap Holic",
-   "type": "Normal Trap",
-   "archetype": null,
+   "id": 8310162,
+   "name": "Malefic Paradox Dragon",
+   "type": "Synchro Effect Monster",
+   "archetype": "Malefic",
    "ban": null,
-   "eur": 4.51,
-   "usd": 2.65,
-   "jpy": 837,
-   "change7d": 27.8
+   "eur": 3.18,
+   "usd": 5.88,
+   "jpy": 591,
+   "change7d": 29.8
   },
   {
    "id": 29795530,
@@ -111,28 +111,50 @@
    "change7d": 27.3
   },
   {
-   "id": 44330099,
-   "name": "Emissary of Darkness Token",
-   "type": "Token",
-   "archetype": null,
+   "id": 23204029,
+   "name": "Contrast HERO Chaos",
+   "type": "Fusion Effect Monster",
+   "archetype": "Elemental HERO",
    "ban": null,
-   "eur": 3.69,
-   "usd": 1.58,
-   "jpy": 685,
-   "change7d": 25.1
+   "eur": 3.43,
+   "usd": 4.97,
+   "jpy": 637,
+   "change7d": 26.1
   }
  ],
  "losers": [
+  {
+   "id": 37301660,
+   "name": "WINDS OF VICTORY",
+   "type": "Equip Spell",
+   "archetype": null,
+   "ban": null,
+   "eur": 84.78,
+   "usd": 169.77,
+   "jpy": 15744,
+   "change7d": -30.8
+  },
   {
    "id": 598988,
    "name": "Malefic Rainbow Dragon",
    "type": "Effect Monster",
    "archetype": "Malefic",
    "ban": null,
-   "eur": 2.6,
-   "usd": 3.77,
-   "jpy": 483,
-   "change7d": -24.6
+   "eur": 2.48,
+   "usd": 3.79,
+   "jpy": 461,
+   "change7d": -28.1
+  },
+  {
+   "id": 71791814,
+   "name": "Magical Musketeer Max",
+   "type": "Link Effect Monster",
+   "archetype": "Magical Musket",
+   "ban": null,
+   "eur": 2.11,
+   "usd": 1.51,
+   "jpy": 392,
+   "change7d": -26
   },
   {
    "id": 14365823,
@@ -140,21 +162,32 @@
    "type": "Link Effect Monster",
    "archetype": "Trickstar",
    "ban": null,
-   "eur": 3.08,
+   "eur": 3.01,
    "usd": 3.01,
-   "jpy": 572,
-   "change7d": -24.1
+   "jpy": 559,
+   "change7d": -25.9
   },
   {
-   "id": 10485110,
-   "name": "Ocean Dragon Lord - Neo-Daedalus",
-   "type": "Effect Monster",
-   "archetype": "Umi",
+   "id": 85899505,
+   "name": "Timaeus the United Magical Dragon",
+   "type": "Fusion Effect Monster",
+   "archetype": null,
    "ban": null,
-   "eur": 2.4,
-   "usd": 4.97,
-   "jpy": 445,
-   "change7d": -21.6
+   "eur": 2.85,
+   "usd": 7,
+   "jpy": 529,
+   "change7d": -24.8
+  },
+  {
+   "id": 96334243,
+   "name": "Sea Monster of Theseus",
+   "type": "Fusion Tuner Monster",
+   "archetype": null,
+   "ban": null,
+   "eur": 8.22,
+   "usd": 14.56,
+   "jpy": 1526,
+   "change7d": -23.6
   },
   {
    "id": 89552119,
@@ -164,7 +197,7 @@
    "ban": null,
    "eur": 6.24,
    "usd": 0.05,
-   "jpy": 1158,
+   "jpy": 1159,
    "change7d": -20.5
   },
   {
@@ -186,52 +219,19 @@
    "ban": null,
    "eur": 2.69,
    "usd": 4.75,
-   "jpy": 499,
+   "jpy": 500,
    "change7d": -19.2
   },
   {
-   "id": 85899505,
-   "name": "Timaeus the United Magical Dragon",
-   "type": "Fusion Effect Monster",
-   "archetype": null,
-   "ban": null,
-   "eur": 3.09,
-   "usd": 6.51,
-   "jpy": 574,
-   "change7d": -18.5
-  },
-  {
-   "id": 71791814,
-   "name": "Magical Musketeer Max",
-   "type": "Link Effect Monster",
-   "archetype": "Magical Musket",
-   "ban": null,
-   "eur": 2.36,
-   "usd": 1.51,
-   "jpy": 438,
-   "change7d": -17.2
-  },
-  {
-   "id": 78364470,
-   "name": "Constellar Pollux",
+   "id": 10485110,
+   "name": "Ocean Dragon Lord - Neo-Daedalus",
    "type": "Effect Monster",
-   "archetype": "Constellar",
+   "archetype": "Umi",
    "ban": null,
-   "eur": 2.66,
-   "usd": 1.31,
-   "jpy": 494,
-   "change7d": -17.1
-  },
-  {
-   "id": 73599290,
-   "name": "Soul Drain",
-   "type": "Continuous Trap",
-   "archetype": null,
-   "ban": null,
-   "eur": 3.11,
-   "usd": 3.87,
-   "jpy": 577,
-   "change7d": -16.8
+   "eur": 2.49,
+   "usd": 5.03,
+   "jpy": 462,
+   "change7d": -18.6
   }
  ],
  "expensive": [
@@ -243,7 +243,7 @@
    "ban": null,
    "eur": 720.91,
    "usd": 0,
-   "jpy": 133801,
+   "jpy": 133873,
    "change7d": 0
   },
   {
@@ -254,7 +254,7 @@
    "ban": null,
    "eur": 559.24,
    "usd": 717.65,
-   "jpy": 103795,
+   "jpy": 103851,
    "change7d": -2.7
   },
   {
@@ -265,7 +265,7 @@
    "ban": null,
    "eur": 454.44,
    "usd": 349.98,
-   "jpy": 84344,
+   "jpy": 84390,
    "change7d": 0
   },
   {
@@ -276,7 +276,7 @@
    "ban": null,
    "eur": 302.89,
    "usd": 0,
-   "jpy": 56216,
+   "jpy": 56247,
    "change7d": 0
   },
   {
@@ -287,7 +287,7 @@
    "ban": null,
    "eur": 229.87,
    "usd": 364.96,
-   "jpy": 42664,
+   "jpy": 42687,
    "change7d": 0
   },
   {
@@ -298,7 +298,7 @@
    "ban": null,
    "eur": 200,
    "usd": 0,
-   "jpy": 37120,
+   "jpy": 37140,
    "change7d": 0
   },
   {
@@ -309,7 +309,7 @@
    "ban": null,
    "eur": 192.85,
    "usd": 94.99,
-   "jpy": 35793,
+   "jpy": 35812,
    "change7d": 0
   },
   {
@@ -320,7 +320,7 @@
    "ban": null,
    "eur": 188.91,
    "usd": 0,
-   "jpy": 35062,
+   "jpy": 35081,
    "change7d": 0
   },
   {
@@ -331,7 +331,7 @@
    "ban": null,
    "eur": 178.7,
    "usd": 112,
-   "jpy": 33167,
+   "jpy": 33185,
    "change7d": -4.2
   },
   {
@@ -342,7 +342,7 @@
    "ban": null,
    "eur": 150.74,
    "usd": 0,
-   "jpy": 27977,
+   "jpy": 27992,
    "change7d": 4.5
   }
  ],
@@ -353,10 +353,10 @@
    "type": "Xyz Effect Monster",
    "archetype": "Heart",
    "ban": "Forbidden",
-   "eur": 15.91,
+   "eur": 15.69,
    "usd": 13.41,
-   "jpy": 2953,
-   "change7d": 2.8
+   "jpy": 2914,
+   "change7d": 1.4
   },
   {
    "id": 80453041,
@@ -364,10 +364,10 @@
    "type": "Fusion Effect Monster",
    "archetype": "Phantom Knights",
    "ban": "Limited",
-   "eur": 12.83,
+   "eur": 12.3,
    "usd": 10.54,
-   "jpy": 2381,
-   "change7d": -2.8
+   "jpy": 2284,
+   "change7d": -6.8
   },
   {
    "id": 8633261,
@@ -375,21 +375,10 @@
    "type": "Effect Monster",
    "archetype": "Ryzeal",
    "ban": "Semi-Limited",
-   "eur": 9.5,
-   "usd": 6.98,
-   "jpy": 1763,
-   "change7d": 0.3
-  },
-  {
-   "id": 63101919,
-   "name": "Tempest Magician",
-   "type": "Synchro Effect Monster",
-   "archetype": null,
-   "ban": "Forbidden",
-   "eur": 8.59,
-   "usd": 9.81,
-   "jpy": 1594,
-   "change7d": 3.5
+   "eur": 9.19,
+   "usd": 6.87,
+   "jpy": 1707,
+   "change7d": -3
   },
   {
    "id": 93016201,
@@ -398,9 +387,20 @@
    "archetype": null,
    "ban": "Forbidden",
    "eur": 8.32,
-   "usd": 9.26,
-   "jpy": 1544,
+   "usd": 9.13,
+   "jpy": 1545,
    "change7d": 0
+  },
+  {
+   "id": 63101919,
+   "name": "Tempest Magician",
+   "type": "Synchro Effect Monster",
+   "archetype": null,
+   "ban": "Forbidden",
+   "eur": 8.25,
+   "usd": 9.92,
+   "jpy": 1532,
+   "change7d": -0.6
   },
   {
    "id": 23557835,
@@ -420,7 +420,7 @@
    "archetype": null,
    "ban": "Forbidden",
    "eur": 7.31,
-   "usd": 10.12,
+   "usd": 10.01,
    "jpy": 1357,
    "change7d": 3.2
   },
@@ -430,10 +430,10 @@
    "type": "Link Effect Monster",
    "archetype": "Spright",
    "ban": "Forbidden",
-   "eur": 6.64,
+   "eur": 6.38,
    "usd": 4.28,
-   "jpy": 1232,
-   "change7d": 0
+   "jpy": 1185,
+   "change7d": -3.9
   },
   {
    "id": 92731385,
@@ -441,10 +441,10 @@
    "type": "Fusion Effect Monster",
    "archetype": "Tearlaments",
    "ban": "Forbidden",
-   "eur": 5.65,
+   "eur": 5.67,
    "usd": 4.06,
-   "jpy": 1049,
-   "change7d": 1.3
+   "jpy": 1053,
+   "change7d": 1.6
   },
   {
    "id": 35844557,
@@ -452,10 +452,10 @@
    "type": "Effect Monster",
    "archetype": "Ryzeal",
    "ban": "Semi-Limited",
-   "eur": 5.42,
+   "eur": 5.31,
    "usd": 7.83,
-   "jpy": 1006,
-   "change7d": -3.9
+   "jpy": 986,
+   "change7d": -5.9
   }
  ]
 }
