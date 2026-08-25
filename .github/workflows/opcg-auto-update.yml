@@ -1,0 +1,87 @@
+# ワンピカ国内相場モニター 自動更新パイプライン
+# 楽天市場のウォッチリスト対象(未開封BOX・高額シングル)の出品価格を1日2回取得し、
+# 履歴を蓄積して騰落を検知、変化があればAI記事を生成して
+# GitHub Pages(pokeca.tokyo)へ再デプロイする。
+#
+# Secrets(必須は楽天アプリIDのみ・その他未設定の機能は自動スキップ):
+#   RAKUTEN_APP_ID または OPCG_RAKUTEN_APP_ID … 楽天アプリID(cosme用と共用可)
+#   RAKUTEN_AFFILIATE_ID または OPCG_RAKUTEN_AFFILIATE_ID … 楽天アフィリエイトID(任意)
+#   ANTHROPIC_API_KEY … AI記事生成
+#   OPCG_X_API_KEY / OPCG_X_API_SECRET / OPCG_X_ACCESS_TOKEN /
+#     OPCG_X_ACCESS_TOKEN_SECRET … X(Twitter)速報(ポケカbot垢)
+#   TORECA_DEPLOY_TOKEN … デプロイ用PAT(toreca用と共用。PAT側で公開リポジトリを追加すること)
+#   OPCG_DEPLOY_REPO  … 公開用リポジトリ("owner/repo" 形式)
+
+name: opcg-auto-update
+
+on:
+  schedule:
+    - cron: "13 7,19 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: opcg-auto-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # step単位のif式ではsecretsコンテキストが使えないため、一度envに写して判定する
+    env:
+      TORECA_DEPLOY_TOKEN: ${{ secrets.TORECA_DEPLOY_TOKEN }}
+      OPCG_DEPLOY_REPO: ${{ secrets.OPCG_DEPLOY_REPO }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: opcg/package-lock.json
+
+      - name: Run pipeline and build
+        env:
+          RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+          OPCG_RAKUTEN_APP_ID: ${{ secrets.OPCG_RAKUTEN_APP_ID }}
+          OPCG_RAKUTEN_AFFILIATE_ID: ${{ secrets.OPCG_RAKUTEN_AFFILIATE_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPCG_X_API_KEY: ${{ secrets.OPCG_X_API_KEY }}
+          OPCG_X_API_SECRET: ${{ secrets.OPCG_X_API_SECRET }}
+          OPCG_X_ACCESS_TOKEN: ${{ secrets.OPCG_X_ACCESS_TOKEN }}
+          OPCG_X_ACCESS_TOKEN_SECRET: ${{ secrets.OPCG_X_ACCESS_TOKEN_SECRET }}
+        run: |
+          set -e
+          cd opcg
+          npm ci
+          npm run pipeline
+          npm run build
+
+      - name: Commit updated data
+        run: |
+          git config user.name "market-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add opcg/data opcg/content
+          if git diff --cached --quiet; then
+            echo "no data changes"
+          else
+            git commit -m "chore: auto-update opcg market data [skip ci]"
+            # 他サイトの自動更新ワークフローと同時に走った場合に備えてrebaseしつつプッシュ
+            for i in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
+              sleep $((i * 5))
+            done
+          fi
+
+      - name: Deploy to external gh-pages
+        # デプロイ先リポジトリのSecretsが未設定の間はスキップ(データ更新だけでも動く)
+        if: ${{ env.TORECA_DEPLOY_TOKEN != '' && env.OPCG_DEPLOY_REPO != '' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.TORECA_DEPLOY_TOKEN }}
+          external_repository: ${{ secrets.OPCG_DEPLOY_REPO }}
+          publish_dir: opcg/dist
+          cname: opcg-souba.com
