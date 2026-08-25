@@ -1,0 +1,78 @@
+# MTG海外相場モニター 自動更新パイプライン
+# Scryfallの価格(TCGplayer側で1日1回更新)を1日2回取得し、履歴を蓄積して騰落を検知、
+# 変化があればAI記事を生成してGitHub Pages(mtg-kaigai.com)へ再デプロイする。
+#
+# Secrets(任意・未設定の機能は自動スキップ):
+#   ANTHROPIC_API_KEY  … AI記事生成
+#   MTG_X_API_KEY / MTG_X_API_SECRET / MTG_X_ACCESS_TOKEN /
+#     MTG_X_ACCESS_TOKEN_SECRET … X(Twitter)速報(MTG bot垢)
+#   TORECA_DEPLOY_TOKEN … デプロイ用PAT(toreca/duel用と共用。PAT側で公開リポジトリを追加すること)
+#   MTG_DEPLOY_REPO    … 公開用リポジトリ("owner/repo" 形式)
+
+name: mtg-auto-update
+
+on:
+  schedule:
+    - cron: "38 9,21 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mtg-auto-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    # step単位のif式ではsecretsコンテキストが使えないため、一度envに写して判定する
+    env:
+      TORECA_DEPLOY_TOKEN: ${{ secrets.TORECA_DEPLOY_TOKEN }}
+      MTG_DEPLOY_REPO: ${{ secrets.MTG_DEPLOY_REPO }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run pipeline and build
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MTG_X_API_KEY: ${{ secrets.MTG_X_API_KEY }}
+          MTG_X_API_SECRET: ${{ secrets.MTG_X_API_SECRET }}
+          MTG_X_ACCESS_TOKEN: ${{ secrets.MTG_X_ACCESS_TOKEN }}
+          MTG_X_ACCESS_TOKEN_SECRET: ${{ secrets.MTG_X_ACCESS_TOKEN_SECRET }}
+        run: |
+          set -e
+          cd mtg
+          npm ci
+          npm run pipeline
+          npm run build
+
+      - name: Commit updated data
+        run: |
+          git config user.name "market-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add mtg/data mtg/content
+          if git diff --cached --quiet; then
+            echo "no data changes"
+          else
+            git commit -m "chore: auto-update mtg market data [skip ci]"
+            # 他サイトの自動更新ワークフローと同時に走った場合に備えてrebaseしつつプッシュ
+            for i in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
+              sleep $((i * 5))
+            done
+          fi
+
+      - name: Deploy to external gh-pages
+        # デプロイ先リポジトリのSecretsが未設定の間はスキップ(データ更新だけでも動く)
+        if: ${{ env.TORECA_DEPLOY_TOKEN != '' && env.MTG_DEPLOY_REPO != '' }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.TORECA_DEPLOY_TOKEN }}
+          external_repository: ${{ secrets.MTG_DEPLOY_REPO }}
+          publish_dir: mtg/dist
+          cname: mtg-kaigai.com

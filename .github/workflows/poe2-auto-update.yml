@@ -1,9 +1,9 @@
 # ゲーム相場モニター群 自動更新パイプライン
-# 6時間ごとに各サイト(poe2 / poe1 / tarkov / ff14)のデータを取得し、
+# 6時間ごとに各サイト(poe2 / poe1 / tarkov / ff14 / cs2 / warframe)のデータを取得し、
 # 変化があればAI記事を生成してGitHub Pagesへ再デプロイする。
 #
 # Secrets(任意・未設定の機能は自動スキップ):
-#   ANTHROPIC_API_KEY(AI記事) / X_*(PoE2のX速報) / GGG_*(PoE2ビルド統計)
+#   ANTHROPIC_API_KEY(AI記事) / X_*(各サイトのX速報) / GGG_*(PoE2ビルド統計)
 
 name: poe2-auto-update
 
@@ -42,9 +42,13 @@ jobs:
           FF14_X_ACCESS_TOKEN_SECRET: ${{ secrets.FF14_X_ACCESS_TOKEN_SECRET }}
           TARKOV_X_ACCESS_TOKEN: ${{ secrets.TARKOV_X_ACCESS_TOKEN }}
           TARKOV_X_ACCESS_TOKEN_SECRET: ${{ secrets.TARKOV_X_ACCESS_TOKEN_SECRET }}
+          CS2_X_ACCESS_TOKEN: ${{ secrets.CS2_X_ACCESS_TOKEN }}
+          CS2_X_ACCESS_TOKEN_SECRET: ${{ secrets.CS2_X_ACCESS_TOKEN_SECRET }}
+          WARFRAME_X_ACCESS_TOKEN: ${{ secrets.WARFRAME_X_ACCESS_TOKEN }}
+          WARFRAME_X_ACCESS_TOKEN_SECRET: ${{ secrets.WARFRAME_X_ACCESS_TOKEN_SECRET }}
         run: |
           set -e
-          for site in poe2 poe1 tarkov ff14; do
+          for site in poe2 poe1 tarkov ff14 cs2 warframe; do
             echo "===== $site ====="
             (cd "$site" && npm ci && npm run pipeline && npm run build)
           done
@@ -53,7 +57,7 @@ jobs:
         run: |
           git config user.name "market-monitor-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add poe2/data poe2/content poe1/data poe1/content tarkov/data tarkov/content ff14/data ff14/content
+          git add poe2/data poe2/content poe1/data poe1/content tarkov/data tarkov/content ff14/data ff14/content cs2/data cs2/content warframe/data warframe/content
           if git diff --cached --quiet; then
             echo "no data changes"
           else
@@ -72,7 +76,7 @@ jobs:
           mkdir -p site-dist/.well-known
           cp portal/.well-known/assetlinks.json site-dist/.well-known/
           node scripts/generate-sitemap.mjs
-          for site in poe2 poe1 tarkov ff14; do
+          for site in poe2 poe1 tarkov ff14 cs2 warframe; do
             cp -r "$site/dist" "site-dist/$site"
           done
 

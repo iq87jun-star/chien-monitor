@@ -2,7 +2,7 @@
 import fs from "node:fs/promises";
 
 const BASE = "https://game-souba.com";
-const SITES = ["poe2", "poe1", "tarkov", "ff14"];
+const SITES = ["poe2", "poe1", "tarkov", "ff14", "cs2", "warframe"];
 
 const urls = [{ loc: `${BASE}/`, changefreq: "daily", priority: "1.0" }];
 
