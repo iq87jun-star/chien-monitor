@@ -33,6 +33,8 @@ function articleHtml(a) {
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7LZS5DCBSG"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-7LZS5DCBSG');</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(a.title)} | 遊戯王海外相場モニター</title>
 <meta name="description" content="${esc(a.summary)}">
