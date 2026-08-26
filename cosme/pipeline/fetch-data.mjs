@@ -10,6 +10,7 @@ import {
   CONTENT_DIR,
   USER_AGENT,
   RAKUTEN_API,
+  RAKUTEN_API_OPENAPI,
   RAKUTEN_GENRE_BEAUTY,
   HITS_PER_ITEM,
   REQUEST_INTERVAL_MS,
@@ -58,6 +59,10 @@ export async function fetchAll() {
   const appId = process.env.COSME_RAKUTEN_APP_ID || process.env.RAKUTEN_APP_ID;
   const affiliateId =
     process.env.COSME_RAKUTEN_AFFILIATE_ID || process.env.RAKUTEN_AFFILIATE_ID || "";
+  const accessKey =
+    process.env.COSME_RAKUTEN_ACCESS_KEY || process.env.RAKUTEN_ACCESS_KEY || "";
+  // アクセスキーがあれば新エンドポイント、なければ従来どおり旧エンドポイントを使う
+  const endpoint = accessKey ? RAKUTEN_API_OPENAPI : RAKUTEN_API;
   if (!appId) {
     console.warn(
       "fetch: COSME_RAKUTEN_APP_ID not set — keeping existing raw data " +
@@ -85,9 +90,10 @@ export async function fetchAll() {
       formatVersion: "2",
     });
     if (affiliateId) params.set("affiliateId", affiliateId);
+    if (accessKey) params.set("accessKey", accessKey);
 
     try {
-      const body = await fetchJson(`${RAKUTEN_API}?${params}`);
+      const body = await fetchJson(`${endpoint}?${params}`);
       const listings = (body?.Items ?? [])
         .filter((i) => i.itemPrice >= MIN_LISTING_JPY && !NG_WORDS.test(i.itemName ?? ""))
         .sort((a, b) => a.itemPrice - b.itemPrice);
