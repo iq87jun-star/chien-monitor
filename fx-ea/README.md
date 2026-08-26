@@ -9,8 +9,10 @@ MT4 / MT5 両対応のトレンドフォロー型 EA です。GogoJungle(ゴゴ�
 
 ```
 fx-ea/
-├── MQL5/ChienTrendRider.mq5   # MetaTrader 5 版ソース
-├── MQL4/ChienTrendRider.mq4   # MetaTrader 4 版ソース
+├── MQL5/ChienTrendRider.mq5        # MT5 版(パラメータ調整可・販売用ベース)
+├── MQL4/ChienTrendRider.mq4        # MT4 版(同上)
+├── MQL5/ChienTrendRider_v130.mq5   # MT5 検証専用ビルド(設定をコードに固定)
+├── MQL4/ChienTrendRider_v130.mq4   # MT4 検証専用ビルド(同上)
 ├── backtest/results.md        # 10年H1データでの検証結果サマリー
 ├── backtest/sweep.py          # 全構成スイープ(IS/OOS分割)の再現スクリプト
 ├── backtest/robust.py         # 頑健性チェックの再現スクリプト
@@ -61,10 +63,38 @@ v1.10 の MT5 実測を受けて決済ロジックを見直した経緯も同フ
 | InpCloseOnFriday | false | 金曜指定時刻に全決済して週末を跨がない |
 | InpEcnMode(MT4 のみ) | false | ECN 口座向け: 約定後に SL/TP を後付け |
 
+## 2つのビルドの使い分け
+
+| ビルド | ファイル | 用途 |
+|---|---|---|
+| **検証専用 v1.30** | `ChienTrendRider_v130.*` | バックテストで正しい成績を取るためのビルド。ロジックと資金管理の値を**コンパイル時定数**にしてあり、`input` ではないためテスターの保存済みパラメータセットで上書きできない。マジックナンバーは 87130 |
+| **調整可能 v1.20** | `ChienTrendRider.*` | 販売用のベース。全パラメータを `input` で公開。マジックナンバーは 87001 |
+
+ロジックと既定設定は両者で同一。**まず v1.30 で成績を確定させ**、その数値を
+販売ページに使う。販売する製品は用途に応じてどちらでもよいが、購入者が
+設定を触れるほうが商品価値は高いため、最終的には v1.20 系を配布する想定。
+
+v1.30 で固定されている値:
+
+| 項目 | 値 |
+|---|---|
+| エントリー | ドンチャン 20 + EMA 50/200 |
+| 損切り | ATR × 2.0 |
+| 利確 | ATR × 4.0 |
+| トレーリング | ATR × 4.0 |
+| ブレークイーブン | **OFF** |
+| リスク | 残高の **0.5%** / トレード |
+
+変更できるのは マジックナンバー・注文コメント・スリッページ・最大スプレッド
+(MT4 は加えて ECN モード)のみ。いずれも成績には影響しない。
+
 ## コンパイル手順
 
-- **MT5**: MetaEditor で `MQL5/ChienTrendRider.mq5` を開きコンパイル → `.ex5`
-- **MT4**: MetaEditor で `MQL4/ChienTrendRider.mq4` を開きコンパイル → `.ex4`
+- **MT5**: MetaEditor で `MQL5/` 内の対象ファイルを開きコンパイル → `.ex5`
+- **MT4**: MetaEditor で `MQL4/` 内の対象ファイルを開きコンパイル → `.ex4`
+
+いずれも `MQL5/Experts`(MT4 は `MQL4/Experts`)に置くこと。
+`Indicators` フォルダに置くとテスターの「エキスパート」一覧に出てこない。
 
 外部インクルード(標準ライブラリ `Trade.mqh` のみ)・DLL 不要のため、
 そのままコンパイルが通る構成です。
