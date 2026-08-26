@@ -12,7 +12,7 @@
 //|            channel of the 20 bars before it, in trend direction   |
 //|   Stop   : ATR(14) x 2.0    Target : ATR(14) x 4.0                |
 //|   Trail  : ATR(14) x 4.0    BreakEven : OFF                       |
-|   Regime : trade only when |EMA50-EMA200| >= ATR x 2.0            |
+//|   Regime : trade only when |EMA50-EMA200| >= ATR x 2.0            |
 //|   Risk   : 0.5% of balance per trade                              |
 //|   One position at a time. No averaging down, no martingale.       |
 //+------------------------------------------------------------------+

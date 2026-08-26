@@ -17,9 +17,9 @@
 //|   Stop   : ATR(14) x 2.0                                          |
 //|   Target : ATR(14) x 4.0                                          |
 //|   Trail  : ATR(14) x 4.0                                          |
-|   Regime : trade only when |EMA50-EMA200| >= ATR x 2.0, i.e. once |
-|            the trend is established. Tested on GBPJPY: it raises  |
-|            the profit factor in BOTH halves of the sample.        |
+//|   Regime : trade only when |EMA50-EMA200| >= ATR x 2.0, i.e. once |
+//|            the trend is established. Tested on GBPJPY: it raises  |
+//|            the profit factor in BOTH halves of the sample.        |
 //|   BreakEven : OFF (it closed winners early and cut the PF)        |
 //|   Risk   : 0.5% of balance per trade                              |
 //|   One position at a time. No averaging down, no martingale.       |
