@@ -125,7 +125,39 @@ int OnInit()
    g_trade.SetDeviationInPoints(InpSlippagePoints);
    g_trade.SetTypeFillingBySymbol(_Symbol);
 
+   LogSettings();
+
    return(INIT_SUCCEEDED);
+  }
+
+//+------------------------------------------------------------------+
+//| Log the settings actually in use                                 |
+//|                                                                  |
+//| The tester keeps the parameter set from the previous run and does |
+//| not pick up new defaults after a recompile, so print what is      |
+//| really active instead of assuming the defaults apply.             |
+//+------------------------------------------------------------------+
+void LogSettings()
+  {
+   PrintFormat("=== ChienTrendRider v1.20 settings in use ===");
+   PrintFormat("Entry     : %s (Donchian %d, EMA %d/%d)",
+               (InpEntryMode == ENTRY_DONCHIAN) ? "DONCHIAN" : "RSI",
+               InpDonchianPeriod, InpFastEmaPeriod, InpSlowEmaPeriod);
+   PrintFormat("Exits     : SL=ATR x %.2f  TP=ATR x %.2f  BreakEven=%s  Trailing=%s (ATR x %.2f)",
+               InpAtrSlMult, InpAtrTpMult,
+               InpUseBreakEven ? "ON" : "off",
+               InpUseTrailing  ? "ON" : "off", InpTrailAtrMult);
+   PrintFormat("Lots      : %s  risk=%.2f%%  fixed=%.2f",
+               (InpLotMode == LOT_RISK_PCT) ? "RISK_PCT" : "FIXED",
+               InpRiskPercent, InpFixedLot);
+   PrintFormat("Filters   : maxSpread=%d  timeFilter=%s  closeOnFriday=%s",
+               InpMaxSpreadPoints,
+               InpUseTimeFilter ? "ON" : "off",
+               InpCloseOnFriday ? "ON" : "off");
+
+   if(InpUseBreakEven)
+      Print("WARNING: break-even is ON. Backtests show it closes winners early "
+            "and lowers the profit factor. The tested default is OFF.");
   }
 
 //+------------------------------------------------------------------+
