@@ -14,6 +14,8 @@ fx-ea/
 ├── backtest/results.md        # 10年H1データでの検証結果サマリー
 ├── backtest/sweep.py          # 全構成スイープ(IS/OOS分割)の再現スクリプト
 ├── backtest/robust.py         # 頑健性チェックの再現スクリプト
+├── backtest/sim2_intrabar.py  # イントラバー(ティック近似)モデル
+├── backtest/sweep2_exits.py   # 決済パラメータの二重モデル検証
 ├── docs/sales-page-draft.md   # GogoJungle 販売ページの原稿ドラフト
 ├── docs/cowork-handoff.md     # Cowork 連携用プロンプト集
 └── README.md                  # このファイル
@@ -27,16 +29,17 @@ fx-ea/
 | エントリー(既定) | **ドンチャン(20)ブレイクアウト**: 直近確定足の終値が、その手前20本の高値を上抜けで買い/安値を下抜けで売り(トレンド方向のみ) |
 | エントリー(選択) | RSI 押し目/戻り回復(買い: RSI が 40 を下から上抜け、売り: 60 を上から下抜け)※10年検証で PF<1 のため非推奨 |
 | 損切り | ATR × 2.0(可変) |
-| 利確 | ATR × 3.0(可変、0 で無効化しトレーリングのみ運用可) |
-| 建玉管理 | ブレークイーブン移動 + ATR トレーリングストップ(各 ON/OFF 可) |
+| 利確 | ATR × 4.0(可変、0 で無効化しトレーリングのみ運用可) |
+| 建玉管理 | ATR×4.0 トレーリングストップ。ブレークイーブンは既定 OFF(有効にすると勝ちトレードを早期に刈り PF が悪化することを MT5 実測で確認) |
 | ロット | 固定ロット or 残高比リスク%(SL 幅から逆算) |
 | ポジション | 同一通貨ペア・同一マジックナンバーで常に 1 ポジションまで |
 | フィルター | 最大スプレッド、取引時間帯、曜日、金曜クローズ(全てオプション) |
 
 推奨環境: **USDJPY / GBPJPY の H1**。
-2016–2025 の10年 H1 データによるシミュレーションで、両ペアとも PF 1.18・
-イン/アウトオブサンプル両期間で黒字を確認済み(詳細は `backtest/results.md`)。
-EURJPY は限界的(PF 1.04)なため非推奨。
+2016–2025 の10年 H1 データによる検証で、両ペアとも PF 1.18–1.19・
+イン/アウトオブサンプル両期間で黒字を確認(詳細は `backtest/results.md`)。
+EURJPY は限界的(PF 1.07)なため非推奨。
+v1.10 の MT5 実測を受けて決済ロジックを見直した経緯も同ファイルに記載。
 エントリー判定は足確定時のみ行うため、ティックの揺らぎによる
 バックテストとリアルの乖離が小さい設計です。
 
@@ -49,10 +52,10 @@ EURJPY は限界的(PF 1.04)なため非推奨。
 | InpDonchianPeriod | 20 | ドンチャンチャネル期間 |
 | InpFastEmaPeriod / InpSlowEmaPeriod | 50 / 200 | トレンド判定 EMA |
 | InpRsiBuyLevel / InpRsiSellLevel | 40 / 60 | RSI モード時の押し目・戻り水準 |
-| InpAtrSlMult / InpAtrTpMult | 2.0 / 3.0 | SL / TP の ATR 倍率(TP は 0 で無効) |
+| InpAtrSlMult / InpAtrTpMult | 2.0 / 4.0 | SL / TP の ATR 倍率(TP は 0 で無効) |
 | InpLotMode | RISK_PCT | 固定ロット or リスク%方式 |
-| InpRiskPercent | 1.0 | 1 トレードあたりのリスク(残高比%) |
-| InpUseBreakEven / InpUseTrailing | true / true | 建玉管理の ON/OFF |
+| InpRiskPercent | 0.5 | 1 トレードあたりのリスク(残高比%) |
+| InpUseBreakEven / InpUseTrailing | false / true | 建玉管理の ON/OFF(BE は既定 OFF 推奨) |
 | InpMaxSpreadPoints | 30 | エントリー時の最大許容スプレッド(0 で無効) |
 | InpUseTimeFilter | false | 取引時間帯フィルター(サーバー時間) |
 | InpCloseOnFriday | false | 金曜指定時刻に全決済して週末を跨がない |

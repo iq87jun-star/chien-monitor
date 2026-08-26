@@ -19,7 +19,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.10"
+#property version   "1.20"
 #property strict
 
 //--- lot sizing mode
@@ -54,7 +54,7 @@ extern double  InpRsiBuyLevel      = 40.0;         // RSI buy recovery level
 extern double  InpRsiSellLevel     = 60.0;         // RSI sell recovery level
 extern int     InpAtrPeriod        = 14;           // ATR period
 extern double  InpAtrSlMult        = 2.0;          // Stop loss = ATR x this
-extern double  InpAtrTpMult        = 3.0;          // Take profit = ATR x this (0 = no TP)
+extern double  InpAtrTpMult        = 4.0;          // Take profit = ATR x this (0 = no TP)
 extern bool    InpAllowBuy         = true;         // Allow long trades
 extern bool    InpAllowSell        = true;         // Allow short trades
 
@@ -62,16 +62,16 @@ extern bool    InpAllowSell        = true;         // Allow short trades
 extern string  __money__           = "=== Money management ===";
 extern ENUM_LOT_MODE InpLotMode    = LOT_RISK_PCT; // Lot sizing mode
 extern double  InpFixedLot         = 0.10;         // Fixed lot size
-extern double  InpRiskPercent      = 1.0;          // Risk % per trade
+extern double  InpRiskPercent      = 0.5;          // Risk % per trade
 extern double  InpMaxLot           = 10.0;         // Max lot cap
 
 //=== Exit management ===
 extern string  __exit__            = "=== Exit management ===";
-extern bool    InpUseBreakEven     = true;         // Use break-even
+extern bool    InpUseBreakEven     = false;        // Use break-even (off: it cuts winners short)
 extern double  InpBreakEvenAtr     = 1.0;          // Break-even trigger (ATR x)
 extern double  InpBreakEvenLockAtr = 0.1;          // Locked profit at BE (ATR x)
 extern bool    InpUseTrailing      = true;         // Use ATR trailing stop
-extern double  InpTrailAtrMult     = 2.0;          // Trailing distance (ATR x)
+extern double  InpTrailAtrMult     = 4.0;          // Trailing distance (ATR x)
 
 //=== Filters ===
 extern string  __filters__         = "=== Filters ===";

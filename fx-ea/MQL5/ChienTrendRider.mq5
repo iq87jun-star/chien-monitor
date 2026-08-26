@@ -17,7 +17,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.10"
+#property version   "1.20"
 
 #include <Trade\Trade.mqh>
 
@@ -52,7 +52,7 @@ input double   InpRsiBuyLevel      = 40.0;         // RSI buy recovery level
 input double   InpRsiSellLevel     = 60.0;         // RSI sell recovery level
 input int      InpAtrPeriod        = 14;           // ATR period
 input double   InpAtrSlMult        = 2.0;          // Stop loss = ATR x this
-input double   InpAtrTpMult        = 3.0;          // Take profit = ATR x this (0 = no TP)
+input double   InpAtrTpMult        = 4.0;          // Take profit = ATR x this (0 = no TP)
 input bool     InpAllowBuy         = true;         // Allow long trades
 input bool     InpAllowSell        = true;         // Allow short trades
 
@@ -60,16 +60,16 @@ input bool     InpAllowSell        = true;         // Allow short trades
 input group    "=== Money management ==="
 input ENUM_LOT_MODE InpLotMode     = LOT_RISK_PCT; // Lot sizing mode
 input double   InpFixedLot         = 0.10;         // Fixed lot size
-input double   InpRiskPercent      = 1.0;          // Risk % per trade
+input double   InpRiskPercent      = 0.5;          // Risk % per trade
 input double   InpMaxLot           = 10.0;         // Max lot cap
 
 //=== Exit management ===
 input group    "=== Exit management ==="
-input bool     InpUseBreakEven     = true;         // Use break-even
+input bool     InpUseBreakEven     = false;        // Use break-even (off: it cuts winners short)
 input double   InpBreakEvenAtr     = 1.0;          // Break-even trigger (ATR x)
 input double   InpBreakEvenLockAtr = 0.1;          // Locked profit at BE (ATR x)
 input bool     InpUseTrailing      = true;         // Use ATR trailing stop
-input double   InpTrailAtrMult     = 2.0;          // Trailing distance (ATR x)
+input double   InpTrailAtrMult     = 4.0;          // Trailing distance (ATR x)
 
 //=== Filters ===
 input group    "=== Filters ==="
