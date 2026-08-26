@@ -13,6 +13,8 @@ fx-ea/
 ├── MQL4/ChienTrendRider.mq4        # MT4 版(同上)
 ├── MQL5/ChienTrendRider_v130.mq5   # MT5 検証専用ビルド(設定をコードに固定)
 ├── MQL4/ChienTrendRider_v130.mq4   # MT4 検証専用ビルド(同上)
+├── MQL5/ChienTrendRider_v140.mq5   # MT5 v1.30 + EMA乖離レジームフィルター
+├── MQL4/ChienTrendRider_v140.mq4   # MT4 同上
 ├── backtest/results.md        # 10年H1データでの検証結果サマリー
 ├── backtest/sweep.py          # 全構成スイープ(IS/OOS分割)の再現スクリプト
 ├── backtest/robust.py         # 頑健性チェックの再現スクリプト
@@ -68,6 +70,7 @@ v1.10 の MT5 実測を受けて決済ロジックを見直した経緯も同フ
 | ビルド | ファイル | 用途 |
 |---|---|---|
 | **検証専用 v1.30** | `ChienTrendRider_v130.*` | バックテストで正しい成績を取るためのビルド。ロジックと資金管理の値を**コンパイル時定数**にしてあり、`input` ではないためテスターの保存済みパラメータセットで上書きできない。マジックナンバーは 87130 |
+| **検証専用 v1.40** | `ChienTrendRider_v140.*` | v1.30 に EMA乖離レジームフィルター(\|EMA50−EMA200\| ≥ ATR×2.0)を追加。GBPJPY で前半・後半とも PF を改善。マジックナンバーは 87140 |
 | **調整可能 v1.20** | `ChienTrendRider.*` | 販売用のベース。全パラメータを `input` で公開。マジックナンバーは 87001 |
 
 ロジックと既定設定は両者で同一。**まず v1.30 で成績を確定させ**、その数値を
