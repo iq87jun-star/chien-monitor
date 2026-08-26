@@ -17,6 +17,11 @@ export const USER_AGENT =
 export const RAKUTEN_API =
   "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601";
 
+// 2026年の新ポータルで発行したアプリはこちらの新エンドポイント + accessKey が必要。
+// アクセスキー未設定時は上の旧エンドポイントにフォールバックする(旧アプリIDとの互換維持)。
+export const RAKUTEN_API_OPENAPI =
+    "https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701";
+
 // 楽天ジャンル「美容・コスメ・香水」。検索ノイズ(関係ない雑貨等)を減らす
 export const RAKUTEN_GENRE_BEAUTY = "100939";
 
