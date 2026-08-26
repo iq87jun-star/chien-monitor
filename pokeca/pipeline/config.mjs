@@ -17,6 +17,11 @@ export const USER_AGENT =
 export const RAKUTEN_API =
   "https://app.rakuten.co.jp/services/api/IchibaItem/Search/20220601";
 
+// 2026年の新ポータルで発行したアプリはこちらの新エンドポイント + accessKey が必要。
+// アクセスキー未設定時は上の旧エンドポイントにフォールバックする(旧アプリIDとの互換維持)。
+export const RAKUTEN_API_OPENAPI =
+    "https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701";
+
 // ジャンル絞り込みは使わない(「ポケモンカード」を含む検索語自体が十分特異なため。
 // 誤ったジャンルIDで在庫を取りこぼすリスクの方が大きい)
 export const RAKUTEN_GENRE = null;

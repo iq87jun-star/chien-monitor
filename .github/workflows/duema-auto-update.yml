@@ -6,6 +6,7 @@
 # Secrets(必須は楽天アプリIDのみ・その他未設定の機能は自動スキップ):
 #   RAKUTEN_APP_ID または DUEMA_RAKUTEN_APP_ID … 楽天アプリID(cosme用と共用可)
 #   RAKUTEN_AFFILIATE_ID または DUEMA_RAKUTEN_AFFILIATE_ID … 楽天アフィリエイトID(任意)
+#   RAKUTEN_ACCESS_KEY または DUEMA_RAKUTEN_ACCESS_KEY … 新ポータル発行アプリのアクセスキー(新エンドポイント利用時に必須)
 #   ANTHROPIC_API_KEY … AI記事生成
 #   DUEMA_X_API_KEY / DUEMA_X_API_SECRET / DUEMA_X_ACCESS_TOKEN /
 #     DUEMA_X_ACCESS_TOKEN_SECRET … X(Twitter)速報(ポケカbot垢)
@@ -48,6 +49,8 @@ jobs:
           RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
           DUEMA_RAKUTEN_APP_ID: ${{ secrets.DUEMA_RAKUTEN_APP_ID }}
           DUEMA_RAKUTEN_AFFILIATE_ID: ${{ secrets.DUEMA_RAKUTEN_AFFILIATE_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          DUEMA_RAKUTEN_ACCESS_KEY: ${{ secrets.DUEMA_RAKUTEN_ACCESS_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           DUEMA_X_API_KEY: ${{ secrets.DUEMA_X_API_KEY }}
           DUEMA_X_API_SECRET: ${{ secrets.DUEMA_X_API_SECRET }}

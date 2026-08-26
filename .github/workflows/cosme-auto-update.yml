@@ -6,6 +6,7 @@
 # Secrets(必須は楽天アプリIDのみ・その他未設定の機能は自動スキップ):
 #   COSME_RAKUTEN_APP_ID       … 楽天ウェブサービスのアプリID(無料・データ取得に必須)
 #   COSME_RAKUTEN_AFFILIATE_ID … 楽天アフィリエイトID(任意。設定すると商品リンクが収益化される)
+#   RAKUTEN_ACCESS_KEY / COSME_RAKUTEN_ACCESS_KEY … 新ポータル発行アプリのアクセスキー(新エンドポイント利用時に必須)
 #   ANTHROPIC_API_KEY          … AI記事生成
 #   COSME_X_API_KEY / COSME_X_API_SECRET / COSME_X_ACCESS_TOKEN /
 #     COSME_X_ACCESS_TOKEN_SECRET … X(Twitter)速報(コスメbot垢)
@@ -48,6 +49,8 @@ jobs:
           RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
           COSME_RAKUTEN_APP_ID: ${{ secrets.COSME_RAKUTEN_APP_ID }}
           COSME_RAKUTEN_AFFILIATE_ID: ${{ secrets.COSME_RAKUTEN_AFFILIATE_ID }}
+          RAKUTEN_ACCESS_KEY: ${{ secrets.RAKUTEN_ACCESS_KEY }}
+          COSME_RAKUTEN_ACCESS_KEY: ${{ secrets.COSME_RAKUTEN_ACCESS_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           COSME_X_API_KEY: ${{ secrets.COSME_X_API_KEY }}
           COSME_X_API_SECRET: ${{ secrets.COSME_X_API_SECRET }}
