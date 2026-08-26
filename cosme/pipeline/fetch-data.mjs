@@ -21,11 +21,11 @@ import {
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-async function fetchJson(url, retries = 2) {
+async function fetchJson(url, extraHeaders = {}, retries = 2) {
   for (let attempt = 0; ; attempt++) {
     try {
       const res = await fetch(url, {
-        headers: { Accept: "application/json", "User-Agent": USER_AGENT },
+        headers: { Accept: "application/json", "User-Agent": USER_AGENT, ...extraHeaders },
       });
       // 429はリトライしても同分内は通らないことが多いので長めに待つ
       if (res.status === 429) throw new Error("HTTP 429 (rate limited)");
@@ -63,6 +63,7 @@ export async function fetchAll() {
     process.env.COSME_RAKUTEN_ACCESS_KEY || process.env.RAKUTEN_ACCESS_KEY || "";
   // アクセスキーがあれば新エンドポイント、なければ従来どおり旧エンドポイントを使う
   const endpoint = accessKey ? RAKUTEN_API_OPENAPI : RAKUTEN_API;
+  const siteOrigin = "https://cosme-press.com"; // 楽天アプリの「許可されたWebサイト」に登録済みのオリジン(新エンドポイント利用時に Origin/Referer として送信)
   if (!appId) {
     console.warn(
       "fetch: COSME_RAKUTEN_APP_ID not set — keeping existing raw data " +
@@ -93,7 +94,10 @@ export async function fetchAll() {
     if (accessKey) params.set("accessKey", accessKey);
 
     try {
-      const body = await fetchJson(`${endpoint}?${params}`);
+      const body = await fetchJson(
+        `${endpoint}?${params}`,
+        accessKey ? { Origin: siteOrigin, Referer: `${siteOrigin}/` } : {},
+      );
       const listings = (body?.Items ?? [])
         .filter((i) => i.itemPrice >= MIN_LISTING_JPY && !NG_WORDS.test(i.itemName ?? ""))
         .sort((a, b) => a.itemPrice - b.itemPrice);
