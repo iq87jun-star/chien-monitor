@@ -25,6 +25,14 @@
 #property indicator_buffers 0
 #property indicator_plots   0
 
+//--- 時間帯一覧の出し方
+enum ENUM_HOUR_TABLE
+  {
+   HT_OFF = 0,   // 出さない
+   HT_TOP,       // スプレッドが開く時間帯の上位のみ + 現在
+   HT_ALL        // 24時間すべて
+  };
+
 //--- 表示位置
 enum ENUM_PANEL_CORNER
   {
@@ -54,7 +62,8 @@ input color  InpColHead        = clrWhite;     // 見出しの色
 input color  InpColGood        = clrLimeGreen; // 良好
 input color  InpColCaution     = clrGold;      // 警戒
 input color  InpColAvoid       = clrTomato;    // 回避
-input bool   InpShowHourTable  = true;  // 時間帯別スプレッドの一覧を出す
+input ENUM_HOUR_TABLE InpHourTable = HT_TOP; // 時間帯一覧の出し方
+input int    InpHourTableTop    = 5;     // 「上位のみ」のときに出す本数
 input bool   InpShowBackdrop    = true;  // 文字の背景に下地を敷く(推奨)
 input color  InpColBackdrop     = C'12,12,16'; // 下地の色
 input int    InpBackdropWidth   = 330;   // 下地の幅(px)
@@ -340,23 +349,50 @@ void Draw()
    SetLine(i++, StringFormat("判定   %s", vtext), vcol);
 
    // --- 時間帯一覧
-   if(InpShowHourTable && g_medValid)
+   if(InpHourTable != HT_OFF && g_medValid)
      {
       SetLine(i++, " ", InpColText);
-      SetLine(i++, "時間帯別スプレッド中央値 (pips)", InpColHead);
+      SetLine(i++, (InpHourTable == HT_ALL)
+                   ? "時間帯別スプレッド中央値 (pips)"
+                   : StringFormat("スプレッドが開く時間帯 上位%d", InpHourTableTop),
+              InpColHead);
+
+      // 表示する時間を決める
+      bool show[24];
+      for(int h = 0; h < 24; h++) show[h] = (InpHourTable == HT_ALL);
+
+      if(InpHourTable == HT_TOP)
+        {
+         // 中央値の大きい順に InpHourTableTop 個を選ぶ
+         int n = MathMax(1, MathMin(24, InpHourTableTop));
+         for(int k = 0; k < n; k++)
+           {
+            int best = -1; double bv = -1.0;
+            for(int h = 0; h < 24; h++)
+              {
+               if(show[h] || g_medSpread[h] <= 0.0) continue;
+               if(g_medSpread[h] > bv) { bv = g_medSpread[h]; best = h; }
+              }
+            if(best < 0) break;
+            show[best] = true;
+           }
+         if(g_medSpread[hour] > 0.0) show[hour] = true;   // 現在の時間帯は必ず出す
+        }
+
       for(int h = 0; h < 24; h++)
         {
-         if(g_medSpread[h] <= 0.0) { SetLine(i++, "", InpColText); continue; }
+         if(!show[h] || g_medSpread[h] <= 0.0) continue;
          string bar = "";
-         int len = (int)MathRound(g_medSpread[h] / MathMax(g_medSpread[g_worstHour], 0.01) * 18.0);
+         int len = (int)MathRound(g_medSpread[h]
+                   / MathMax(g_medSpread[g_worstHour], 0.01) * 18.0);
          for(int k = 0; k < len; k++) bar += "|";
          color hc = (h == hour) ? InpColHead
                   : (h == g_worstHour ? InpColAvoid : InpColText);
-         SetLine(i++, StringFormat("  %02d  %5.1f  %s", h, g_medSpread[h], bar), hc);
+         string tag = (h == hour) ? " ←今" : "";
+         SetLine(i++, StringFormat("  %02d  %5.1f  %s%s", h, g_medSpread[h], bar, tag), hc);
         }
      }
 
-   int used = i;
    // 余った行を消す
    for(; i < LINES + 24; i++) SetLine(i, "", InpColText);
 
