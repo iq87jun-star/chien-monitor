@@ -25,43 +25,57 @@ def bar(v, mx, width=18):
     return "|" * max(0, int(round(v / mx * width)))
 
 def panel_lines(mode):
+    """v1.02 の実際の出力に合わせる(上位5+現在の時間帯、有効件数表示)。"""
     mx = max(HOURS)
+    TOPN = 5
     if mode == "good":
-        hour, spr, med = 9, 0.9, 1.1
-        ratio, rtext, rcls = spr / med, "適正", "good"
+        hour, spr, med = 9, 0.9, HOURS[9]
         atr, mc = 32.4, 36.0
-        vtext, vcls = "○  コスト条件は良好", "good"
-        togo = (0 - hour + 24) % 24
     else:
-        hour, spr, med = 23, 7.8, 3.6
-        ratio, rtext, rcls = spr / med, "回避推奨", "avoid"
+        hour, spr, med = 23, 7.8, HOURS[23]
         atr, mc = 21.6, 2.8
-        vtext, vcls = "×  コストが割高", "avoid"
-        togo = (0 - hour + 24) % 24
+    ratio = spr / med
+    togo = (0 - hour + 24) % 24
+    samples, hours_ready = 1284, 24
 
     L = []
     A = lambda t, c="txt": L.append({"t": t, "c": c})
-    A("定石 零 ─ 環境計", "head")
+    A("定石 零 ─ 環境計  v1.02", "head")
     A(f"USDJPY  H1   {hour:02d}:14 サーバー時刻")
     A(" ")
     A(f"スプレッド        {spr:.1f} pips", "head")
     A(f"  この時間帯の中央値  {med:.1f} pips")
-    A(f"  割高度  {ratio:.2f} 倍   {rtext}", rcls)
+    if ratio >= 2.5:   rt, rcls = "回避推奨", "avoid"
+    elif ratio >= 1.5: rt, rcls = "割高", "caution"
+    else:              rt, rcls = "適正", "good"
+    A(f"  割高度  {ratio:.2f} 倍   {rt}", rcls)
     A(f"想定変動幅 ATR(14)  {atr:.1f} pips", "head")
-    mcls = "good" if mc >= 12 else ("caution" if mc >= 8 else "avoid")
-    mtext = "十分" if mc >= 12 else ("やや不足" if mc >= 8 else "不足")
-    A(f"  変動幅 / スプレッド  {mc:.1f} 倍   {mtext}", mcls)
+    if mc >= 12:  mt, mcls = "十分", "good"
+    elif mc >= 8: mt, mcls = "やや不足", "caution"
+    else:         mt, mcls = "不足", "avoid"
+    A(f"  変動幅 / スプレッド  {mc:.1f} 倍   {mt}", mcls)
     A(f"最もスプレッドが開く時間帯  00:00", "head")
     A(f"  中央値 {HOURS[0]:.1f} pips / あと {togo} 時間",
       "avoid" if togo <= 1 else "txt")
     A(" ")
-    A(f"判定   {vtext}", vcls)
+    score = 0
+    if ratio >= 2.5: score = 2
+    elif ratio >= 1.5: score = 1
+    if mc < 8: score = 2
+    elif mc < 12 and score < 1: score = 1
+    vt = ["○  コスト条件は良好", "△  コスト警戒", "×  コストが割高"][score]
+    A(f"判定   {vt}", ["good", "caution", "avoid"][score])
     A(" ")
-    A("時間帯別スプレッド中央値 (pips)", "head")
-    for h in range(24):
+    A(f"スプレッドが開く時間帯 上位{TOPN} ─ 有効{samples}件/{hours_ready}時間帯", "head")
+
+    top = sorted(range(24), key=lambda h: -HOURS[h])[:TOPN]
+    show = set(top) | {hour}
+    for h in sorted(show):
         cls = "head" if h == hour else ("avoid" if HOURS[h] == mx else "txt")
-        A(f"  {h:02d}  {HOURS[h]:5.1f}  {bar(HOURS[h], mx)}", cls)
+        tag = " ←今" if h == hour else ""
+        A(f"  {h:02d}  {HOURS[h]:5.1f}  {bar(HOURS[h], mx)}{tag}", cls)
     return L
+
 
 CSS = """
 *{margin:0;padding:0;box-sizing:border-box}
