@@ -65,6 +65,452 @@
    },
    "space_size": 540,
    "status": "done"
+  },
+  {
+   "id": "rsi-fx-fade",
+   "note": "FX12ペア RSI(14) 30/70 逆張り 3日保有",
+   "family": "rsi",
+   "params": {
+    "symbols": [
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF",
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "n": 14,
+    "low": 30,
+    "high": 70,
+    "mode": "fade",
+    "hold": 3
+   },
+   "space_size": 324,
+   "status": "done"
+  },
+  {
+   "id": "stoch-fx",
+   "note": "FX12ペア ストキャス(14,3) 売られすぎ圏でのKD交差 3日保有",
+   "family": "stoch",
+   "params": {
+    "symbols": [
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF",
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "n": 14,
+    "smooth": 3,
+    "low": 20,
+    "high": 80,
+    "hold": 3
+   },
+   "space_size": 324,
+   "status": "done"
+  },
+  {
+   "id": "cci-idx-fade",
+   "note": "指数8銘柄 CCI(20) ±100 逆張り 3日保有",
+   "family": "cci",
+   "params": {
+    "symbols": [
+     "JP225",
+     "US500",
+     "US30",
+     "NAS100",
+     "GER40",
+     "UK100",
+     "HK50",
+     "AUS200"
+    ],
+    "n": 20,
+    "thr": 100,
+    "mode": "fade",
+    "hold": 3
+   },
+   "space_size": 144,
+   "status": "done"
+  },
+  {
+   "id": "bb-jpy-fade",
+   "note": "円クロス6ペア ボリンジャー(20,2.0) バンドタッチ逆張り 3日保有",
+   "family": "bb",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "n": 20,
+    "k": 2.0,
+    "mode": "fade",
+    "hold": 3
+   },
+   "space_size": 216,
+   "status": "done"
+  },
+  {
+   "id": "macd-fx",
+   "note": "FX12ペア MACD(12,26,9) シグナル交差 5日保有",
+   "family": "macd",
+   "params": {
+    "symbols": [
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF",
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "fast": 12,
+    "slow": 26,
+    "signal": 9,
+    "hold": 5
+   },
+   "space_size": 108,
+   "status": "done"
+  },
+  {
+   "id": "macross-idx",
+   "note": "指数8銘柄 SMA(20,50)ゴールデン/デッドクロス 10日保有",
+   "family": "macross",
+   "params": {
+    "symbols": [
+     "JP225",
+     "US500",
+     "US30",
+     "NAS100",
+     "GER40",
+     "UK100",
+     "HK50",
+     "AUS200"
+    ],
+    "fast": 20,
+    "slow": 50,
+    "kind": "sma",
+    "hold": 10
+   },
+   "space_size": 576,
+   "status": "done"
+  },
+  {
+   "id": "ichimoku-fx",
+   "note": "FX12ペア 一目均衡表 雲抜け 10日保有",
+   "family": "ichimoku",
+   "params": {
+    "symbols": [
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF",
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "tenkan": 9,
+    "kijun": 26,
+    "senkou": 52,
+    "hold": 10
+   },
+   "space_size": 72,
+   "status": "done"
+  },
+  {
+   "id": "donchian-fx",
+   "note": "FX12ペア ドンチャン(20)ブレイク順張り 5日保有",
+   "family": "donchian",
+   "params": {
+    "symbols": [
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF",
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "n": 20,
+    "mode": "break",
+    "hold": 5
+   },
+   "space_size": 288,
+   "status": "done"
+  },
+  {
+   "id": "adx-fx",
+   "note": "FX12ペア ADX(14)>25 でDI交差順張り 5日保有",
+   "family": "adx",
+   "params": {
+    "symbols": [
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF",
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "n": 14,
+    "thr": 25,
+    "hold": 5
+   },
+   "space_size": 324,
+   "status": "done"
+  },
+  {
+   "id": "gap-idx-fade",
+   "note": "指数8銘柄 ATR0.5倍超の窓開け → 埋め狙い 1日保有",
+   "family": "gap",
+   "params": {
+    "symbols": [
+     "JP225",
+     "US500",
+     "US30",
+     "NAS100",
+     "GER40",
+     "UK100",
+     "HK50",
+     "AUS200"
+    ],
+    "k": 0.5,
+    "n": 14,
+    "mode": "fade",
+    "hold": 1
+   },
+   "space_size": 144,
+   "status": "done"
+  },
+  {
+   "id": "streak-fx-fade",
+   "note": "FX12ペア 4日連続同方向のあと逆張り 2日保有",
+   "family": "streak",
+   "params": {
+    "symbols": [
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF",
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "run": 4,
+    "mode": "fade",
+    "hold": 2
+   },
+   "space_size": 288,
+   "status": "done"
+  },
+  {
+   "id": "rangebreak-idx",
+   "note": "指数8銘柄 前日高安ブレイク順張り 2日保有",
+   "family": "rangebreak",
+   "params": {
+    "symbols": [
+     "JP225",
+     "US500",
+     "US30",
+     "NAS100",
+     "GER40",
+     "UK100",
+     "HK50",
+     "AUS200"
+    ],
+    "mode": "break",
+    "hold": 2
+   },
+   "space_size": 48,
+   "status": "done"
+  },
+  {
+   "id": "inout-fx",
+   "note": "FX12ペア インサイドバー翌日ロング 2日保有",
+   "family": "inout",
+   "params": {
+    "symbols": [
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF",
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "kind": "inside",
+    "direction": 1,
+    "hold": 2
+   },
+   "space_size": 144,
+   "status": "done"
+  },
+  {
+   "id": "atrbreak-jpy-fade",
+   "note": "円クロス6ペア ATR1.5倍超の急変を逆張り 3日保有",
+   "family": "atrbreak",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "n": 14,
+    "k": 1.5,
+    "mode": "fade",
+    "hold": 3
+   },
+   "space_size": 108,
+   "status": "done"
+  },
+  {
+   "id": "volregime-idx",
+   "note": "指数8銘柄 高ボラ局面のみロング 5日保有",
+   "family": "volregime",
+   "params": {
+    "symbols": [
+     "JP225",
+     "US500",
+     "US30",
+     "NAS100",
+     "GER40",
+     "UK100",
+     "HK50",
+     "AUS200"
+    ],
+    "n": 20,
+    "ref": 100,
+    "high_vol": true,
+    "direction": 1,
+    "hold": 5
+   },
+   "space_size": 288,
+   "status": "done"
+  },
+  {
+   "id": "xsect-fx-l20-h5",
+   "note": "FX12ペア 20日騰落の断面ランク 上位2買い下位2売り 5日保有",
+   "family": "xsect",
+   "params": {
+    "symbols": [
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF",
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "look": 20,
+    "hold": 5,
+    "n_side": 2
+   },
+   "space_size": 36,
+   "status": "done"
+  },
+  {
+   "id": "xsect-idx-l60-h10",
+   "note": "指数8銘柄 60日騰落の断面ランク 上位2買い下位2売り 10日保有",
+   "family": "xsect",
+   "params": {
+    "symbols": [
+     "JP225",
+     "US500",
+     "US30",
+     "NAS100",
+     "GER40",
+     "UK100",
+     "HK50",
+     "AUS200"
+    ],
+    "look": 60,
+    "hold": 10,
+    "n_side": 2
+   },
+   "space_size": 36,
+   "status": "done"
+  },
+  {
+   "id": "pairs-eur-gbp",
+   "note": "EURUSD/GBPUSD スプレッド z(30) 2.0SD 平均回帰 5日保有",
+   "family": "pairs",
+   "params": {
+    "a": "EURUSD",
+    "b": "GBPUSD",
+    "win": 30,
+    "thr": 2.0,
+    "hold": 5
+   },
+   "space_size": 162,
+   "status": "done"
+  },
+  {
+   "id": "pairs-aud-nzd",
+   "note": "AUDUSD/NZDUSD スプレッド z(30) 2.0SD 平均回帰 5日保有",
+   "family": "pairs",
+   "params": {
+    "a": "AUDUSD",
+    "b": "NZDUSD",
+    "win": 30,
+    "thr": 2.0,
+    "hold": 5
+   },
+   "space_size": 162,
+   "status": "done"
   }
  ]
 }

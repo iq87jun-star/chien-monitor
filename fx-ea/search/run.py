@@ -59,7 +59,15 @@ def main():
         led["cumulative_tests"] += int(h.get("space_size", 1))
         try:
             series = engine.build(h["family"], h["params"])
-            res = engine.evaluate(series, led["cumulative_tests"])
+            hold = int(h["params"].get("hold", 1))
+            syms = h["params"].get("symbols")
+            if syms is None and h["family"] == "pairs":
+                syms = [h["params"]["a"], h["params"]["b"]]
+            if syms is None and "sym" in h["params"]:
+                syms = [h["params"]["sym"]]
+            bench = engine.benchmark_series(syms, hold) if syms else None
+            res = engine.evaluate(series, led["cumulative_tests"], hold=hold,
+                                  benchmark=bench)
         except Exception as ex:
             res = {"verdict": "エラー", "reason": f"{type(ex).__name__}: {ex}"}
         entry = {"id": h["id"], "note": h.get("note", ""), "family": h["family"],
@@ -77,11 +85,12 @@ def main():
         lines.append(f"### {mark} `{e['id']}` — {r['verdict']}\n")
         lines.append(f"{e['note']}\n")
         if "n" in r and r.get("t") is not None:
-            lines.append(f"| n | t | 必要t | 平均bp | IS bp | OOS bp | WF bp | PF | 勝率 | 負け年 |")
-            lines.append(f"|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|")
-            lines.append(f"| {r['n']} | {r['t']} | {r['need_t']} | {r['mean_bp']} | "
-                         f"{r['is_bp']} | {r['oos_bp']} | {r.get('wf_bp')} | {r['pf']} | "
-                         f"{r['wr']}% | {r['neg_years']}/{r['years']} |")
+            lines.append("| n | 生t | 補正t | 必要t | 平均bp | 常時買持bp | 超過bp | OOS bp | WF bp | PF | 負け年 |")
+            lines.append("|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|")
+            lines.append(f"| {r['n']} | {r['t']} | {r.get('t_adj')} | {r['need_t']} | "
+                         f"{r['mean_bp']} | {r.get('bench_bp')} | {r.get('excess_bp')} | "
+                         f"{r['oos_bp']} | {r.get('wf_bp')} | {r['pf']} | "
+                         f"{r['neg_years']}/{r['years']} |")
         lines.append(f"\n**判定理由**: {r['reason']}\n")
 
     summarize(led, lines)

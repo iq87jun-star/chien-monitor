@@ -63,8 +63,14 @@ def required_t(cumulative_tests):
     import statistics
     return statistics.NormalDist().inv_cdf(1 - p)
 
-def evaluate(series, cum_tests):
-    """series: [(date_str, return_pct), ...] を事前固定プロトコルで判定."""
+def evaluate(series, cum_tests, hold=1, benchmark=None):
+    """series を事前固定プロトコルで判定.
+
+    hold      : 保有営業日数。日次シグナルで hold>1 だと建玉が重なり、
+                取引が独立でなくなって t 値が過大になる。t/sqrt(hold) で補正する。
+    benchmark : 同じ銘柄・同じ保有日数で「常に買い持ち」した場合のリターン列。
+                これを上回らない戦略は、エッジではなく単なる方向性エクスポージャー。
+    """
     if len(series) < MIN_TRADES:
         return {"verdict": "検証不能", "reason": f"取引数 {len(series)} < {MIN_TRADES}",
                 "n": len(series)}
@@ -72,15 +78,13 @@ def evaluate(series, cum_tests):
     xs = [r for _, r in s]
     cut = int(len(xs) * 0.6)
     is_m, oos_m = st.mean(xs[:cut]), st.mean(xs[cut:])
-    t = tstat(xs)
+    t_raw = tstat(xs)
+    t_adj = t_raw / math.sqrt(max(1, hold))
 
-    # 年別
     by = defaultdict(list)
     for d, r in s: by[d[:4]].append(r)
     neg_years = sum(1 for y in by if st.mean(by[y]) < 0)
 
-    # ウォークフォワード: 各年、その年より前だけで平均プラスだったかを見て、
-    # プラスだった年のみ翌年を採用。実運用可能性の代理。
     wf = []
     years = sorted(by)
     for i, y in enumerate(years):
@@ -89,18 +93,28 @@ def evaluate(series, cum_tests):
         if len(hist) >= 30 and st.mean(hist) > 0:
             wf += by[y]
 
+    bm = st.mean(benchmark) if benchmark else None
+    mean = st.mean(xs)
+
     need_t = required_t(cum_tests)
     reasons = []
-    if t < need_t: reasons.append(f"t={t:.2f} < 必要{need_t:.2f}(累積{cum_tests}検定)")
+    if t_adj < need_t:
+        reasons.append(f"補正t={t_adj:.2f}(生t={t_raw:.2f}/√{hold}) < 必要{need_t:.2f}"
+                       f"(累積{cum_tests}検定)")
     if is_m <= 0:  reasons.append(f"IS平均 {is_m*100:.2f}bp <= 0")
     if oos_m <= 0: reasons.append(f"OOS平均 {oos_m*100:.2f}bp <= 0")
     if wf and st.mean(wf) <= 0: reasons.append(f"WF平均 {st.mean(wf)*100:.2f}bp <= 0")
+    if bm is not None and mean <= bm:
+        reasons.append(f"常時買い持ち {bm*100:.2f}bp を上回らない({mean*100:.2f}bp)")
 
     return {
         "verdict": "通過" if not reasons else "棄却",
         "reason": " / ".join(reasons) if reasons else "全基準を満たす",
-        "n": len(xs), "t": round(t, 3), "need_t": round(need_t, 3),
-        "mean_bp": round(st.mean(xs) * 100, 3),
+        "n": len(xs), "t": round(t_raw, 3), "t_adj": round(t_adj, 3),
+        "need_t": round(need_t, 3), "hold": hold,
+        "mean_bp": round(mean * 100, 3),
+        "bench_bp": round(bm * 100, 3) if bm is not None else None,
+        "excess_bp": round((mean - bm) * 100, 3) if bm is not None else None,
         "is_bp": round(is_m * 100, 3), "oos_bp": round(oos_m * 100, 3),
         "wf_bp": round(st.mean(wf) * 100, 3) if wf else None,
         "wf_n": len(wf),
@@ -109,6 +123,19 @@ def evaluate(series, cum_tests):
         "neg_years": neg_years, "years": len(by),
         "first": s[0][0], "last": s[-1][0],
     }
+
+
+def benchmark_series(symbols, hold):
+    """同じ銘柄・同じ保有日数の「常に買い持ち」ベースライン。"""
+    import families as _FF
+    out = []
+    for sym in symbols:
+        rows = rows_of(sym)
+        c = _cost(SYMS[sym][1], hold)
+        sig = [(i, 1) for i in range(len(rows) - hold - 1)]
+        out += [r for _, r in _FF.execute(rows, sig, hold, c)]
+    return out
+
 
 # ---------------------------------------------------------------- families
 def _cost(cls, hold):
@@ -166,17 +193,50 @@ def fam_tom(sym, before, after, direction):
 
 FAMILIES = {"dow": fam_dow, "zrev": fam_zrev, "mom": fam_mom, "tom": fam_tom}
 
+import families as _F
+
+
 def build(family, params):
-    """単一銘柄、または symbols リストによる合成。"""
-    fn = FAMILIES[family]
+    """3系統に振り分ける。
+      - 旧族(dow/zrev/mom/tom): sym を直接受ける
+      - 指標・構造族: rows と cost を受ける(families.SINGLE)
+      - 複数銘柄族(xsect/pairs): 専用シグネチャ
+    params に symbols(リスト)があれば全銘柄で回して合成する。
+    """
     p = dict(params)
-    syms = p.pop("symbols", None)
-    if syms is None:
-        return fn(**p)
-    out = []
-    for s in syms:
-        out += fn(sym=s, **p)
-    return out
+
+    if family == "xsect":
+        syms = p.pop("symbols")
+        data = {s: rows_of(s) for s in syms}
+        return _F.f_xsect(data, lambda n, h: _cost(SYMS[n][1], h), **p)
+
+    if family == "pairs":
+        a, b = p.pop("a"), p.pop("b")
+        cls = SYMS[a][1]
+        return _F.f_pairs(rows_of(a), rows_of(b), COST[cls], **p)
+
+    if family in FAMILIES:
+        fn = FAMILIES[family]
+        syms = p.pop("symbols", None)
+        if syms is None:
+            return fn(**p)
+        out = []
+        for s in syms:
+            out += fn(sym=s, **p)
+        return out
+
+    if family in _F.SINGLE:
+        fn = _F.SINGLE[family]
+        syms = p.pop("symbols", None)
+        if syms is None:
+            syms = [p.pop("sym")]
+        hold = p.get("hold", 1)
+        out = []
+        for s in syms:
+            out += fn(rows_of(s), _cost(SYMS[s][1], hold), **p)
+        return out
+
+    raise KeyError(f"unknown family: {family}")
 
 # ---------------------------------------------------------------- ledger
 LEDGER = os.path.join(HERE, "ledger.json")
