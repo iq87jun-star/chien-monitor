@@ -70,12 +70,15 @@ input int    InpBackdropWidth   = 330;   // 下地の幅(px)
 //--- 内部
 #define PANEL_PREFIX "ChienCM_"
 #define MAX_PER_HOUR 512
+#define MIN_SAMPLES  3      // 1時間帯あたり最低これだけの本数が要る
 #define LINES        14
 
 double   g_medSpread[24];      // 時間帯別のスプレッド中央値(pips)
 bool     g_medValid  = false;
 int      g_worstHour = -1;
 double   g_pip       = 0.0001;
+int      g_hoursReady  = 0;    // 中央値を出せた時間帯の数
+int      g_barsGot     = 0;    // 取得できたH1バー数
 datetime g_lastRebuild = 0;
 datetime g_lastDraw    = 0;
 int      g_buf[24][MAX_PER_HOUR];   // 時間帯別スプレッド(集計用)
@@ -111,7 +114,7 @@ int OnCalculate(const int rates_total, const int prev_calculated,
   {
    // スプレッド分布は1時間に一度だけ組み直す(毎ティックでは重い)
    datetime now = TimeCurrent();
-   if(!g_medValid || now - g_lastRebuild >= 3600)
+   if(!g_medValid ? (now - g_lastRebuild >= 60) : (now - g_lastRebuild >= 3600))
      {
       BuildSpreadProfile();
       g_lastRebuild = now;
@@ -164,7 +167,7 @@ void BuildSpreadProfile()
 
    for(int h = 0; h < 24; h++)
      {
-      if(cnt[h] < 5) { g_medSpread[h] = 0.0; continue; }
+      if(cnt[h] < MIN_SAMPLES) { g_medSpread[h] = 0.0; continue; }
 
       // 挿入ソート(1時間あたり最大512件なので十分)
       for(int a = 1; a < cnt[h]; a++)
@@ -186,7 +189,9 @@ void BuildSpreadProfile()
       if(g_medSpread[h] > worst) { worst = g_medSpread[h]; g_worstHour = h; }
      }
 
-   g_medValid = (filled >= 12);
+   g_hoursReady = filled;
+   g_barsGot    = got;
+   g_medValid   = (filled >= 8);
   }
 
 //+------------------------------------------------------------------+
@@ -227,6 +232,7 @@ void CreateLabels()
       ObjectSetInteger(0, n, OBJPROP_SELECTABLE, false);
       ObjectSetInteger(0, n, OBJPROP_HIDDEN, true);
       ObjectSetInteger(0, n, OBJPROP_BACK, false);
+      ObjectSetInteger(0, n, OBJPROP_TIMEFRAMES, OBJ_NO_PERIODS);
       ObjectSetInteger(0, n, OBJPROP_ANCHOR,
                        (InpCorner == PC_RIGHT_UPPER || InpCorner == PC_RIGHT_LOWER)
                        ? ANCHOR_RIGHT_UPPER : ANCHOR_LEFT_UPPER);
@@ -251,6 +257,14 @@ void SetLine(const int idx, const string text, const color col)
   {
    string n = PANEL_PREFIX + IntegerToString(idx);
    if(ObjectFind(0, n) < 0) return;
+   // 空文字のラベルは既定文字 "Label" で描画されてしまうため、
+   // 使わない行は時間足フィルタで非表示にする
+   if(StringLen(text) == 0)
+     {
+      ObjectSetInteger(0, n, OBJPROP_TIMEFRAMES, OBJ_NO_PERIODS);
+      return;
+     }
+   ObjectSetInteger(0, n, OBJPROP_TIMEFRAMES, OBJ_ALL_PERIODS);
    ObjectSetString(0, n, OBJPROP_TEXT, text);
    ObjectSetInteger(0, n, OBJPROP_COLOR, col);
   }
@@ -281,8 +295,9 @@ void Draw()
    SetLine(i++, StringFormat("スプレッド        %.1f pips", curSpr), InpColHead);
    if(!g_medValid)
      {
-      SetLine(i++, "  履歴が不足しています(集計中)", InpColCaution);
-      SetLine(i++, " ", InpColText);
+      SetLine(i++, StringFormat("  履歴が不足(H1 %d本 / %d時間帯が集計済)",
+              g_barsGot, g_hoursReady), InpColCaution);
+      SetLine(i++, "  H1チャートで Home キーを押し履歴を読み込んでください", InpColCaution);
      }
    else
      {
@@ -334,6 +349,8 @@ void Draw()
    color  vcol  = InpColGood;
    if(score == 1)      { vtext = "△  コスト警戒";   vcol = InpColCaution; }
    else if(score == 2) { vtext = "×  コストが割高"; vcol = InpColAvoid; }
+   // スプレッド分布が未集計のうちは、判定の半分が欠けている。良好と言い切らない
+   if(!g_medValid)     { vtext = "─  判定できません(履歴の集計待ち)"; vcol = InpColCaution; }
    SetLine(i++, StringFormat("判定   %s", vtext), vcol);
 
    // --- 時間帯一覧
