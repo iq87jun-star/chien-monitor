@@ -41,9 +41,10 @@ def render_day(led, lines, day):
         lines.append(f"### {mark} `{e['id']}` — {r['verdict']}\n")
         lines.append(f"{e['note']}\n")
         if "n" in r and r.get("t") is not None:
-            lines.append("| n | 生t | 補正t | 必要t | 平均bp | 常時買持bp | 超過bp | OOS bp | WF bp | PF | 負け年 |")
-            lines.append("|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|")
+            lines.append("| n | 生t | 補正t | 必要t | 日数 | 日次t | 平均bp | 常時買持bp | 超過bp | OOS bp | WF bp | PF | 負け年 |")
+            lines.append("|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|")
             lines.append(f"| {r['n']} | {r['t']} | {r.get('t_adj')} | {r['need_t']} | "
+                         f"{r.get('n_dates')} | {r.get('t_date')} | "
                          f"{r['mean_bp']} | {r.get('bench_bp')} | {r.get('excess_bp')} | "
                          f"{r['oos_bp']} | {r.get('wf_bp')} | {r['pf']} | "
                          f"{r['neg_years']}/{r['years']} |")

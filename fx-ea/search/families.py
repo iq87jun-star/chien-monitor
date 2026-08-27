@@ -347,3 +347,91 @@ def f_xfilter(rows_tgt, rows_ref, cost, n=50, above=True, direction=1, hold=5):
 
 
 SINGLE["nr"] = f_nr
+
+
+# ------------------------------------------------------------ 出来高・断面系
+def f_volspike(rows, cost, n=20, k=2.0, mode="follow", hold=3):
+    """出来高が直近 n 日中央値の k 倍を超えた日の値動き方向に追随/逆行する。
+
+    出来高は Yahoo では指数・商品でしか取れない(FXは常に0)。
+    0 の日はデータ欠損として除外する。
+    """
+    o, h, l, c = _ohlc(rows)
+    v = [r[5] if len(r) > 5 else 0 for r in rows]
+    sig = []
+    for i in range(n, len(rows)):
+        w = [x for x in v[i - n:i] if x > 0]
+        if v[i] <= 0 or len(w) < n // 2: continue
+        med = st.median(w)
+        if med <= 0 or v[i] < k * med: continue
+        mv = c[i] - c[i - 1]
+        if mv == 0: continue
+        d = (1 if mv > 0 else -1) * (1 if mode == "follow" else -1)
+        sig.append((i, d))
+    return execute(rows, sig, hold, cost)
+
+
+def f_breadth(rows_tgt, basket, cost, n=50, thr=0.5, above=True, direction=1, hold=5):
+    """バスケットのうち n 日平均を上回っている銘柄の比率(市場の幅)で局面を判定し、
+    その局面の日だけ tgt を direction 方向に建てる。
+
+    basket: {name: rows}。個別銘柄の値ではなく「何割が上向きか」を条件にする点が
+    volregime(自分自身のボラ)や xfilter(単一の外部指標)と異なる。
+    """
+    up_by_date = defaultdict(lambda: [0, 0])
+    for nm, rows in basket.items():
+        c = [r[4] for r in rows]
+        m = I.sma(c, n)
+        for i, r in enumerate(rows):
+            if m[i] is None: continue
+            cell = up_by_date[r[0]]
+            cell[1] += 1
+            if c[i] > m[i]: cell[0] += 1
+    sig = []
+    for i, r in enumerate(rows_tgt):
+        cell = up_by_date.get(r[0])
+        if not cell or cell[1] < max(2, len(basket) - 1): continue
+        frac = cell[0] / cell[1]
+        if (frac > thr) != above: continue
+        sig.append((i, direction))
+    return execute(rows_tgt, sig, hold, cost)
+
+
+def f_ccystr(data, cost_of, look=20, hold=5):
+    """通貨強弱の断面。各ペアの look 日騰落を「基軸通貨 +・決済通貨 −」に分解して
+    通貨ごとの強さを出し、最強通貨を買い最弱通貨を売る組み合わせのペアを1本建てる。
+
+    xsect が「ペアそのもの」を順位付けるのに対し、これは通貨単位で順位付ける。
+    data: {PAIRNAME(6文字): rows}
+    """
+    idx = {nm: {r[0]: i for i, r in enumerate(rows)} for nm, rows in data.items()}
+    chg_by_date = defaultdict(dict)
+    for nm, rows in data.items():
+        c = [r[4] for r in rows]
+        for i in range(look, len(rows) - hold - 1):
+            chg_by_date[rows[i][0]][nm] = c[i] / c[i - look] - 1
+    pairs = set(data)
+    out = []
+    for d in sorted(chg_by_date):
+        row = chg_by_date[d]
+        if len(row) < len(data): continue
+        acc = defaultdict(list)
+        for nm, ch in row.items():
+            acc[nm[:3]].append(ch)
+            acc[nm[3:]].append(-ch)
+        stren = {k: st.mean(v) for k, v in acc.items() if v}
+        if len(stren) < 3: continue
+        rank = sorted(stren.items(), key=lambda kv: -kv[1])
+        best, worst = rank[0][0], rank[-1][0]
+        nm, dr = (best + worst, 1) if best + worst in pairs else \
+                 (worst + best, -1) if worst + best in pairs else (None, 0)
+        if nm is None: continue
+        rows = data[nm]; i = idx[nm][d]
+        if i + 1 + hold >= len(rows): continue
+        e, x = rows[i + 1][1], rows[i + 1 + hold][1]
+        if e <= 0: continue
+        out.append((d, ((x / e - 1) * 100) * dr - cost_of(nm, hold)))
+    return out
+
+
+SINGLE["volspike"] = f_volspike

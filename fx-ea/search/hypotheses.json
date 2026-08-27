@@ -737,6 +737,183 @@
    },
    "space_size": 27,
    "status": "done"
+  },
+  {
+   "id": "volspike-idx-follow",
+   "note": "指数7銘柄 出来高が20日中央値の1.5倍超えた日の値動き方向に追随 3日保有",
+   "family": "volspike",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 20,
+    "k": 1.5,
+    "mode": "follow",
+    "hold": 3
+   },
+   "space_size": 180,
+   "status": "done"
+  },
+  {
+   "id": "volspike-idx-fade",
+   "note": "指数7銘柄 出来高スパイク日の値動きに逆行(狼狽の反動を取る) 3日保有",
+   "family": "volspike",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 20,
+    "k": 1.5,
+    "mode": "fade",
+    "hold": 3
+   },
+   "space_size": 180,
+   "status": "done"
+  },
+  {
+   "id": "volspike-com-follow",
+   "note": "貴金属2+エネルギー2 出来高1.75倍スパイク日の方向に追随 3日保有",
+   "family": "volspike",
+   "params": {
+    "symbols": [
+     "XAUUSD",
+     "XAGUSD",
+     "USOIL",
+     "UKOIL"
+    ],
+    "n": 20,
+    "k": 1.75,
+    "mode": "follow",
+    "hold": 3
+   },
+   "space_size": 180,
+   "status": "done"
+  },
+  {
+   "id": "breadth-idx-washout",
+   "note": "指数7銘柄のうち50日平均超が3割以下(総崩れ局面)の日だけ指数を買い 5日保有",
+   "family": "breadth",
+   "params": {
+    "basket": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 50,
+    "thr": 0.3,
+    "above": false,
+    "direction": 1,
+    "hold": 5
+   },
+   "space_size": 216,
+   "status": "done"
+  },
+  {
+   "id": "breadth-idx-strong",
+   "note": "指数7銘柄のうち50日平均超が7割超(全面高局面)の日だけ指数を買い 5日保有",
+   "family": "breadth",
+   "params": {
+    "basket": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 50,
+    "thr": 0.7,
+    "above": true,
+    "direction": 1,
+    "hold": 5
+   },
+   "space_size": 216,
+   "status": "done"
+  },
+  {
+   "id": "ccystr-fx",
+   "note": "16ペアから通貨強弱を分解し、最強通貨買い・最弱通貨売りに当たるペアを1本 5日保有",
+   "family": "ccystr",
+   "params": {
+    "symbols": [
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDJPY",
+     "USDCAD",
+     "USDCHF",
+     "EURJPY",
+     "EURGBP",
+     "EURAUD",
+     "GBPJPY",
+     "GBPAUD",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "look": 20,
+    "hold": 5
+   },
+   "space_size": 32,
+   "status": "done"
+  },
+  {
+   "id": "dom-idx-first",
+   "note": "指数7銘柄 月初第1営業日の寄りで買い 1日保有(月初の資金流入効果)",
+   "family": "dom",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "day": 1,
+    "direction": 1,
+    "hold": 1
+   },
+   "space_size": 54,
+   "status": "done"
   }
  ]
 }

@@ -96,6 +96,14 @@ def evaluate(series, cum_tests, hold=1, benchmark=None):
         if len(hist) >= 30 and st.mean(hist) > 0:
             wf += by[y]
 
+    # 診断値: 同じ日に相関の高い複数銘柄を建てても、独立な観測は1日につき1つ。
+    # t/√hold は保有の重複しか補正しないため、多銘柄合成では t が過大に出る。
+    # 判定基準ではない(5基準は変更していない)が、必ず記録して見えるようにする。
+    per_date = defaultdict(list)
+    for d, r in s: per_date[d].append(r)
+    dvals = [st.mean(v) for _, v in sorted(per_date.items())]
+    t_date = tstat(dvals) / math.sqrt(max(1, hold))
+
     bm = st.mean(benchmark) if benchmark else None
     mean = st.mean(xs)
 
@@ -115,6 +123,7 @@ def evaluate(series, cum_tests, hold=1, benchmark=None):
         "reason": " / ".join(reasons) if reasons else "全基準を満たす",
         "n": len(xs), "t": round(t_raw, 3), "t_adj": round(t_adj, 3),
         "need_t": round(need_t, 3), "hold": hold,
+        "n_dates": len(dvals), "t_date": round(t_date, 3),
         "mean_bp": round(mean * 100, 3),
         "bench_bp": round(bm * 100, 3) if bm is not None else None,
         "excess_bp": round((mean - bm) * 100, 3) if bm is not None else None,
@@ -219,6 +228,20 @@ def build(family, params):
         # 2脚それぞれのクラスで、保有日数分のキャリーを含めた往復コストを引く。
         return _F.f_pairs(rows_of(a), rows_of(b),
                           _cost(SYMS[a][1], hold), _cost(SYMS[b][1], hold), **p)
+
+    if family == "ccystr":
+        syms = p.pop("symbols")
+        data = {s: rows_of(s) for s in syms}
+        return _F.f_ccystr(data, lambda n, h: _cost(SYMS[n][1], h), **p)
+
+    if family == "breadth":
+        basket = {s: rows_of(s) for s in p.pop("basket")}
+        syms = p.pop("symbols")
+        hold = p.get("hold", 1)
+        out = []
+        for t in syms:
+            out += _F.f_breadth(rows_of(t), basket, _cost(SYMS[t][1], hold), **p)
+        return out
 
     if family == "lead":
         src = p.pop("src")
