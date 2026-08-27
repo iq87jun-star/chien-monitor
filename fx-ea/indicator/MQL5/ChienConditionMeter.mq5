@@ -55,6 +55,9 @@ input color  InpColGood        = clrLimeGreen; // 良好
 input color  InpColCaution     = clrGold;      // 警戒
 input color  InpColAvoid       = clrTomato;    // 回避
 input bool   InpShowHourTable  = true;  // 時間帯別スプレッドの一覧を出す
+input bool   InpShowBackdrop    = true;  // 文字の背景に下地を敷く(推奨)
+input color  InpColBackdrop     = C'12,12,16'; // 下地の色
+input int    InpBackdropWidth   = 330;   // 下地の幅(px)
 
 //--- 内部
 #define PANEL_PREFIX "ChienCM_"
@@ -191,6 +194,27 @@ void BuildSpreadProfile()
 void CreateLabels()
   {
    ObjectsDeleteAll(0, PANEL_PREFIX);
+
+   // 下地を先に作る(作成順が描画順になるため、必ずラベルより前に置く)
+   if(InpShowBackdrop)
+     {
+      string bg = PANEL_PREFIX + "BG";
+      if(ObjectCreate(0, bg, OBJ_RECTANGLE_LABEL, 0, 0, 0))
+        {
+         ObjectSetInteger(0, bg, OBJPROP_CORNER, CornerOf());
+         ObjectSetInteger(0, bg, OBJPROP_XDISTANCE, InpX - 8);
+         ObjectSetInteger(0, bg, OBJPROP_YDISTANCE, InpY - 8);
+         ObjectSetInteger(0, bg, OBJPROP_XSIZE, InpBackdropWidth);
+         ObjectSetInteger(0, bg, OBJPROP_YSIZE, 16);
+         ObjectSetInteger(0, bg, OBJPROP_BGCOLOR, InpColBackdrop);
+         ObjectSetInteger(0, bg, OBJPROP_BORDER_TYPE, BORDER_FLAT);
+         ObjectSetInteger(0, bg, OBJPROP_COLOR, C'48,48,56');
+         ObjectSetInteger(0, bg, OBJPROP_SELECTABLE, false);
+         ObjectSetInteger(0, bg, OBJPROP_HIDDEN, true);
+         ObjectSetInteger(0, bg, OBJPROP_BACK, false);
+        }
+     }
+
    for(int i = 0; i < LINES + 24; i++)
      {
       string n = PANEL_PREFIX + IntegerToString(i);
@@ -332,8 +356,17 @@ void Draw()
         }
      }
 
+   int used = i;
    // 余った行を消す
    for(; i < LINES + 24; i++) SetLine(i, "", InpColText);
+
+   // 下地を実際に使った行数に合わせる
+   if(InpShowBackdrop)
+     {
+      string bg = PANEL_PREFIX + "BG";
+      if(ObjectFind(0, bg) >= 0)
+         ObjectSetInteger(0, bg, OBJPROP_YSIZE, used * (InpFontSize + 6) + 14);
+     }
 
    ChartRedraw();
   }

@@ -64,6 +64,9 @@ input bool   InpAlertMail   = false; // メールを送る
 input int    InpMaxDays     = 1500;  // 矢印を描く過去日数の上限(0=無制限)
 
 input bool   InpShowPanel   = true;  // 条件パネルを表示する
+input bool   InpShowBackdrop = true; // 文字の背景に下地を敷く(推奨)
+input color  InpColBackdrop  = C'12,12,16'; // 下地の色
+input int    InpBackdropW    = 320;  // 下地の幅(px)
 input int    InpPanelX      = 12;    // パネルの横位置(px)
 input int    InpPanelY      = 22;    // パネルの縦位置(px)
 input int    InpFontSize    = 9;     // 文字サイズ
@@ -291,6 +294,25 @@ int CurrentEval(bool &mb[], bool &ms[])
 //+------------------------------------------------------------------+
 void CreatePanel()
   {
+   if(InpShowBackdrop)
+     {
+      string bg = PFX + "BG";
+      if(ObjectCreate(0, bg, OBJ_RECTANGLE_LABEL, 0, 0, 0))
+        {
+         ObjectSetInteger(0, bg, OBJPROP_CORNER, CORNER_LEFT_UPPER);
+         ObjectSetInteger(0, bg, OBJPROP_XDISTANCE, InpPanelX - 8);
+         ObjectSetInteger(0, bg, OBJPROP_YDISTANCE, InpPanelY - 8);
+         ObjectSetInteger(0, bg, OBJPROP_XSIZE, InpBackdropW);
+         ObjectSetInteger(0, bg, OBJPROP_YSIZE, PANEL_LINES * (InpFontSize + 6) + 14);
+         ObjectSetInteger(0, bg, OBJPROP_BGCOLOR, InpColBackdrop);
+         ObjectSetInteger(0, bg, OBJPROP_BORDER_TYPE, BORDER_FLAT);
+         ObjectSetInteger(0, bg, OBJPROP_COLOR, C'48,48,56');
+         ObjectSetInteger(0, bg, OBJPROP_SELECTABLE, false);
+         ObjectSetInteger(0, bg, OBJPROP_HIDDEN, true);
+         ObjectSetInteger(0, bg, OBJPROP_BACK, false);
+        }
+     }
+
    for(int i = 0; i < PANEL_LINES; i++)
      {
       string n = PFX + "L" + IntegerToString(i);
