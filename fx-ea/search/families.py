@@ -253,12 +253,16 @@ def f_xsect(data, cost_of, look=20, hold=5, n_side=2):
     return out
 
 
-def f_pairs(rows_a, rows_b, cost, win=30, thr=2.0, hold=5):
+def f_pairs(rows_a, rows_b, cost_a, cost_b, win=30, thr=2.0, hold=5):
     """2銘柄の対数価格比の z-score が閾値を超えたら平均回帰を狙う。
-    a を買い b を売る(またはその逆)の合成リターン。"""
+    a を買い b を売る(またはその逆)の合成リターン。
+    cost_a / cost_b は各脚の往復コスト(保有日数分のキャリーを含む)。"""
     import math
     da = {r[0]: r for r in rows_a}; db = {r[0]: r for r in rows_b}
-    dates = sorted(set(da) & set(db))
+    # 2020年4月のWTIのように限月価格がマイナスになる銘柄があるため、
+    # 対数比が定義できない日は除外する(log(負) で落ちる)。
+    dates = sorted(d for d in (set(da) & set(db))
+                   if da[d][4] > 0 and db[d][4] > 0 and da[d][1] > 0 and db[d][1] > 0)
     if len(dates) < win + hold + 2: return []
     spread = [math.log(da[d][4]) - math.log(db[d][4]) for d in dates]
     out = []
@@ -271,7 +275,7 @@ def f_pairs(rows_a, rows_b, cost, win=30, thr=2.0, hold=5):
         d = -1 if z > 0 else 1          # 広がったら縮小に賭ける
         ea, xa = da[dates[i + 1]][1], da[dates[i + 1 + hold]][1]
         eb, xb = db[dates[i + 1]][1], db[dates[i + 1 + hold]][1]
-        r = ((xa / ea - 1) - (xb / eb - 1)) * 100 * d - cost * 2
+        r = ((xa / ea - 1) - (xb / eb - 1)) * 100 * d - (cost_a + cost_b)
         out.append((dates[i], r))
     return out
 
@@ -283,3 +287,63 @@ SINGLE = {
     "gap": f_gap, "rangebreak": f_rangebreak, "dom": f_dom,
     "streak": f_streak, "inout": f_inout, "volregime": f_volregime,
 }
+
+
+# ------------------------------------------------------------ 銘柄間・外部条件系
+def f_lead(rows_src, rows_tgt, cost, thr=0.0, mode="follow", hold=1, ref_win=100):
+    """銘柄間リードラグ: src の当日終値変化を条件に、tgt を翌日の寄りで建てる。
+
+    thr は src 日次リターンの直近 ref_win 日標準偏差に対する倍率。
+    src の確定終値が tgt の建玉時刻(翌営業日の寄り)より前に来る組み合わせでのみ
+    使うこと(例: 米指数の引け → 翌日のアジア指数/FXの寄り)。
+    """
+    cs = [r[4] for r in rows_src]
+    rets = [None] + [cs[i] / cs[i - 1] - 1 for i in range(1, len(cs))]
+    sd = I.rolling_sd([0.0 if x is None else x for x in rets], ref_win)
+    src_by_date = {}
+    for i, r in enumerate(rows_src):
+        if rets[i] is None or sd[i] is None or sd[i] <= 0: continue
+        src_by_date[r[0]] = rets[i] / sd[i]
+    sig = []
+    for i, r in enumerate(rows_tgt):
+        z = src_by_date.get(r[0])
+        if z is None or abs(z) < thr: continue
+        d = (1 if z > 0 else -1) * (1 if mode == "follow" else -1)
+        sig.append((i, d))
+    return execute(rows_tgt, sig, hold, cost)
+
+
+def f_nr(rows, cost, n=7, look=10, mode="follow", hold=3):
+    """ボラ収縮(直近 n 日で最小レンジの足)の翌日に、直近 look 日の
+    方向へ追随(follow)/逆行(fade)する。"""
+    o, h, l, c = _ohlc(rows)
+    rng = [h[i] - l[i] for i in range(len(rows))]
+    sig = []
+    for i in range(max(n, look), len(rows)):
+        if rng[i] <= 0: continue
+        if rng[i] > min(rng[i - n + 1:i + 1]): continue
+        chg = c[i] - c[i - look]
+        if chg == 0: continue
+        d = (1 if chg > 0 else -1) * (1 if mode == "follow" else -1)
+        sig.append((i, d))
+    return execute(rows, sig, hold, cost)
+
+
+def f_xfilter(rows_tgt, rows_ref, cost, n=50, above=True, direction=1, hold=5):
+    """外部指標の局面フィルタ: ref の終値が自身の n 日平均より上(下)の日だけ、
+    tgt を direction 方向に建てる。volregime と違い、条件は別銘柄から取る。"""
+    cr = [r[4] for r in rows_ref]
+    m = I.sma(cr, n)
+    cond_by_date = {}
+    for i, r in enumerate(rows_ref):
+        if m[i] is None: continue
+        cond_by_date[r[0]] = cr[i] > m[i]
+    sig = []
+    for i, r in enumerate(rows_tgt):
+        cond = cond_by_date.get(r[0])
+        if cond is None or cond != above: continue
+        sig.append((i, direction))
+    return execute(rows_tgt, sig, hold, cost)
+
+
+SINGLE["nr"] = f_nr

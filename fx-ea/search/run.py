@@ -29,13 +29,37 @@ def summarize(led, lines):
         lines.append("")
 
 
+def render_day(led, lines, day):
+    """指定日に検定した全エントリを描画する(1日に複数回走らせても当日分が残る)。"""
+    todays = [e for e in led["entries"] if e.get("tested_at") == day]
+    if not todays:
+        return
+    lines.append(f"## 本日({day})の結果 — {len(todays)} 件\n")
+    for e in todays:
+        r = e["result"]
+        mark = {"通過": "○", "棄却": "×", "検証不能": "－"}.get(r["verdict"], "!")
+        lines.append(f"### {mark} `{e['id']}` — {r['verdict']}\n")
+        lines.append(f"{e['note']}\n")
+        if "n" in r and r.get("t") is not None:
+            lines.append("| n | 生t | 補正t | 必要t | 平均bp | 常時買持bp | 超過bp | OOS bp | WF bp | PF | 負け年 |")
+            lines.append("|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|")
+            lines.append(f"| {r['n']} | {r['t']} | {r.get('t_adj')} | {r['need_t']} | "
+                         f"{r['mean_bp']} | {r.get('bench_bp')} | {r.get('excess_bp')} | "
+                         f"{r['oos_bp']} | {r.get('wf_bp')} | {r['pf']} | "
+                         f"{r['neg_years']}/{r['years']} |")
+        lines.append(f"\n**判定理由**: {r['reason']}\n")
+
+
 def main():
     led = engine.load_ledger()
     report_only = "--report" in sys.argv
 
     lines = [f"# 探索レポート — {dt.datetime.now(dt.timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}\n"]
 
+    today = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
+
     if report_only:
+        render_day(led, lines, today)
         summarize(led, lines)
         open(REPORT, "w").write("\n".join(lines))
         print("\n".join(lines))
@@ -46,12 +70,13 @@ def main():
 
     if not pending:
         lines.append("本日の新規仮説なし。台帳の状態のみ報告します。\n")
+        render_day(led, lines, today)
         summarize(led, lines)
         open(REPORT, "w").write("\n".join(lines))
         print("\n".join(lines))
         return
 
-    lines.append(f"本日の検定: **{len(pending)} 件**\n")
+    lines.append(f"今回の検定: **{len(pending)} 件**\n")
     results = []
     for h in pending:
         # 探索空間の大きさを累積検定数に加算する。
@@ -78,20 +103,7 @@ def main():
         results.append(entry)
         h["status"] = "done"
 
-    lines.append("## 本日の結果\n")
-    for e in results:
-        r = e["result"]
-        mark = {"通過": "○", "棄却": "×", "検証不能": "－"}.get(r["verdict"], "!")
-        lines.append(f"### {mark} `{e['id']}` — {r['verdict']}\n")
-        lines.append(f"{e['note']}\n")
-        if "n" in r and r.get("t") is not None:
-            lines.append("| n | 生t | 補正t | 必要t | 平均bp | 常時買持bp | 超過bp | OOS bp | WF bp | PF | 負け年 |")
-            lines.append("|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|--:|")
-            lines.append(f"| {r['n']} | {r['t']} | {r.get('t_adj')} | {r['need_t']} | "
-                         f"{r['mean_bp']} | {r.get('bench_bp')} | {r.get('excess_bp')} | "
-                         f"{r['oos_bp']} | {r.get('wf_bp')} | {r['pf']} | "
-                         f"{r['neg_years']}/{r['years']} |")
-        lines.append(f"\n**判定理由**: {r['reason']}\n")
+    render_day(led, lines, today)
 
     summarize(led, lines)
     engine.save_ledger(led)

@@ -511,6 +511,232 @@
    },
    "space_size": 162,
    "status": "done"
+  },
+  {
+   "id": "lead-us-asia",
+   "note": "米指数(US500)の引け → アジア・欧州指数の翌日寄り追随 1日保有",
+   "family": "lead",
+   "params": {
+    "src": "US500",
+    "symbols": [
+     "JP225",
+     "HK50",
+     "AUS200",
+     "GER40"
+    ],
+    "thr": 0.0,
+    "mode": "follow",
+    "hold": 1
+   },
+   "space_size": 162,
+   "status": "done"
+  },
+  {
+   "id": "lead-oil-cad",
+   "note": "原油(USOIL)1SD超の変動 → 翌日USDCAD/CADJPYを逆方向(原油高=CAD高) 3日保有",
+   "family": "lead",
+   "params": {
+    "src": "USOIL",
+    "symbols": [
+     "USDCAD",
+     "CADJPY"
+    ],
+    "thr": 1.0,
+    "mode": "fade",
+    "hold": 3
+   },
+   "space_size": 108,
+   "status": "done"
+  },
+  {
+   "id": "lead-gold-aud",
+   "note": "金(XAUUSD)1SD超の変動 → 翌日AUDUSD/NZDUSDを同方向 3日保有",
+   "family": "lead",
+   "params": {
+    "src": "XAUUSD",
+    "symbols": [
+     "AUDUSD",
+     "NZDUSD"
+    ],
+    "thr": 1.0,
+    "mode": "follow",
+    "hold": 3
+   },
+   "space_size": 108,
+   "status": "done"
+  },
+  {
+   "id": "xfilter-vix-carry",
+   "note": "VIXが50日平均超(リスクオフ)の日だけ円クロスのキャリー通貨を売り 5日保有",
+   "family": "xfilter",
+   "params": {
+    "ref": "VIX",
+    "symbols": [
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY"
+    ],
+    "n": 50,
+    "above": true,
+    "direction": -1,
+    "hold": 5
+   },
+   "space_size": 216,
+   "status": "done"
+  },
+  {
+   "id": "xfilter-tnx-usdjpy",
+   "note": "米10年金利が50日平均超(金利上昇局面)の日だけUSDJPYを買い 5日保有",
+   "family": "xfilter",
+   "params": {
+    "ref": "US10Y",
+    "symbols": [
+     "USDJPY"
+    ],
+    "n": 50,
+    "above": true,
+    "direction": 1,
+    "hold": 5
+   },
+   "space_size": 216,
+   "status": "done"
+  },
+  {
+   "id": "nr-fx",
+   "note": "FX13ペア ボラ収縮(直近7日で最小レンジ)の翌日に直近10日方向へ追随 3日保有",
+   "family": "nr",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 7,
+    "look": 10,
+    "mode": "follow",
+    "hold": 3
+   },
+   "space_size": 162,
+   "status": "done"
+  },
+  {
+   "id": "pairs-xau-xag",
+   "note": "金銀比(XAUUSD/XAGUSD)の対数スプレッド 2SD乖離で平均回帰 5日保有",
+   "family": "pairs",
+   "params": {
+    "a": "XAUUSD",
+    "b": "XAGUSD",
+    "win": 30,
+    "thr": 2.0,
+    "hold": 5
+   },
+   "space_size": 81,
+   "status": "done"
+  },
+  {
+   "id": "pairs-oil-wti-brent",
+   "note": "WTI/Brentスプレッド 2SD乖離で平均回帰 5日保有",
+   "family": "pairs",
+   "params": {
+    "a": "USOIL",
+    "b": "UKOIL",
+    "win": 30,
+    "thr": 2.0,
+    "hold": 5
+   },
+   "space_size": 27,
+   "status": "done"
+  },
+  {
+   "id": "zrev-met",
+   "note": "貴金属3銘柄 z(20) 2SD下落で買い 3日保有",
+   "family": "zrev",
+   "params": {
+    "symbols": [
+     "XAUUSD",
+     "XAGUSD",
+     "XPTUSD"
+    ],
+    "win": 20,
+    "thr": 2.0,
+    "hold": 3,
+    "direction": 1
+   },
+   "space_size": 108,
+   "status": "done"
+  },
+  {
+   "id": "donchian-eng",
+   "note": "エネルギー2銘柄 ドンチャン20日ブレイク順張り 10日保有",
+   "family": "donchian",
+   "params": {
+    "symbols": [
+     "USOIL",
+     "UKOIL"
+    ],
+    "n": 20,
+    "mode": "break",
+    "hold": 10
+   },
+   "space_size": 36,
+   "status": "done"
+  },
+  {
+   "id": "rsi-cross-fade",
+   "note": "非円クロス3ペア(EURGBP/EURAUD/GBPAUD) RSI(14) 30/70逆張り 3日保有",
+   "family": "rsi",
+   "params": {
+    "symbols": [
+     "EURGBP",
+     "EURAUD",
+     "GBPAUD"
+    ],
+    "n": 14,
+    "low": 30,
+    "high": 70,
+    "mode": "fade",
+    "hold": 3
+   },
+   "space_size": 36,
+   "status": "done"
+  },
+  {
+   "id": "pairs-oil-wti-brent-r2",
+   "note": "WTI/Brentスプレッド 2SD乖離で平均回帰 5日保有(初回は2020年のWTIマイナス価格でエラー、対数比が定義できない日を除外して再検定)",
+   "family": "pairs",
+   "params": {
+    "a": "USOIL",
+    "b": "UKOIL",
+    "win": 30,
+    "thr": 2.0,
+    "hold": 5
+   },
+   "space_size": 27,
+   "status": "done"
+  },
+  {
+   "id": "pairs-oil-wti-brent-r3",
+   "note": "WTI/Brentスプレッド 2SD乖離で平均回帰 5日保有(r2は往復コストのみでキャリーを引いていなかった。2脚分・保有5日分のコストを正しく控除して再検定)",
+   "family": "pairs",
+   "params": {
+    "a": "USOIL",
+    "b": "UKOIL",
+    "win": 30,
+    "thr": 2.0,
+    "hold": 5
+   },
+   "space_size": 27,
+   "status": "done"
   }
  ]
 }

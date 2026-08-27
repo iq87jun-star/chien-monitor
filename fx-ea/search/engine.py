@@ -30,6 +30,8 @@ UNIVERSE = [
     ("CL=F","USOIL","eng"), ("BZ=F","UKOIL","eng"),
 ]
 SYMS = {n: (y, c) for y, n, c in UNIVERSE}
+# 参照専用シンボル(建玉は作らない。局面フィルタの条件としてのみ使う)
+REFS = {"VIX": "^VIX", "US10Y": "^TNX"}
 # 往復コスト(名目比%)。スプレッド+スリッページ+1泊分の金利/スワップの保守値。
 COST = {"fx": 0.020, "idx": 0.030, "met": 0.050, "eng": 0.060}
 # 1泊追加保有あたりの上乗せコスト
@@ -38,7 +40,8 @@ CARRY = {"fx": 0.004, "idx": 0.015, "met": 0.015, "eng": 0.018}
 _CACHE = {}
 def rows_of(name):
     if name not in _CACHE:
-        _CACHE[name] = fetch_daily(SYMS[name][0])
+        ysym = SYMS[name][0] if name in SYMS else REFS[name]
+        _CACHE[name] = fetch_daily(ysym)
     return _CACHE[name]
 
 # ---------------------------------------------------------------- protocol
@@ -212,8 +215,28 @@ def build(family, params):
 
     if family == "pairs":
         a, b = p.pop("a"), p.pop("b")
-        cls = SYMS[a][1]
-        return _F.f_pairs(rows_of(a), rows_of(b), COST[cls], **p)
+        hold = p.get("hold", 5)
+        # 2脚それぞれのクラスで、保有日数分のキャリーを含めた往復コストを引く。
+        return _F.f_pairs(rows_of(a), rows_of(b),
+                          _cost(SYMS[a][1], hold), _cost(SYMS[b][1], hold), **p)
+
+    if family == "lead":
+        src = p.pop("src")
+        syms = p.pop("symbols")
+        hold = p.get("hold", 1)
+        out = []
+        for t in syms:
+            out += _F.f_lead(rows_of(src), rows_of(t), _cost(SYMS[t][1], hold), **p)
+        return out
+
+    if family == "xfilter":
+        ref = p.pop("ref")
+        syms = p.pop("symbols")
+        hold = p.get("hold", 1)
+        out = []
+        for t in syms:
+            out += _F.f_xfilter(rows_of(t), rows_of(ref), _cost(SYMS[t][1], hold), **p)
+        return out
 
     if family in FAMILIES:
         fn = FAMILIES[family]
