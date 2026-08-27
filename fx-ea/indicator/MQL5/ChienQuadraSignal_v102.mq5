@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                          ChienQuadraSignal_v101.mq5   |
+//|                                          ChienQuadraSignal_v102.mq5   |
 //|                                                                  |
 //| 定石 弐 ─ 待ち伏せ シグナル                                       |
 //|                                                                  |
@@ -23,7 +23,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.01"
+#property version   "1.02"
 #property description "定石 弐 ─ 待ち伏せ シグナル: 日足4条件がすべて揃った場面だけを検出します。年に数回しか鳴りません。発注は行いません。"
 #property indicator_chart_window
 #property indicator_buffers 2
@@ -77,7 +77,7 @@ input color  InpColUnmet    = clrGray;       // 条件不成立の色
 input color  InpColBuy      = clrDeepSkyBlue;// 買いの色
 input color  InpColSell     = clrOrangeRed;  // 売りの色
 
-#define PFX "ChienQS101_"
+#define PFX "ChienQS102_"
 #define PANEL_LINES 12
 
 double   g_buyBuf[];
@@ -292,6 +292,18 @@ int CurrentEval(bool &mb[], bool &ms[])
   }
 
 //+------------------------------------------------------------------+
+ENUM_BASE_CORNER QsCorner()
+  {
+   switch(InpPanelCorner)
+     {
+      case QC_RIGHT_UPPER: return(CORNER_RIGHT_UPPER);
+      case QC_LEFT_LOWER:  return(CORNER_LEFT_LOWER);
+      case QC_RIGHT_LOWER: return(CORNER_RIGHT_LOWER);
+     }
+   return(CORNER_LEFT_UPPER);
+  }
+
+//+------------------------------------------------------------------+
 void CreatePanel()
   {
    if(InpShowBackdrop)
@@ -299,7 +311,7 @@ void CreatePanel()
       string bg = PFX + "BG";
       if(ObjectCreate(0, bg, OBJ_RECTANGLE_LABEL, 0, 0, 0))
         {
-         ObjectSetInteger(0, bg, OBJPROP_CORNER, CORNER_LEFT_UPPER);
+         ObjectSetInteger(0, bg, OBJPROP_CORNER, QsCorner());
          ObjectSetInteger(0, bg, OBJPROP_XDISTANCE, InpPanelX - 8);
          ObjectSetInteger(0, bg, OBJPROP_YDISTANCE, InpPanelY - 8);
          ObjectSetInteger(0, bg, OBJPROP_XSIZE, InpBackdropW);
@@ -317,7 +329,10 @@ void CreatePanel()
      {
       string n = PFX + "L" + IntegerToString(i);
       if(!ObjectCreate(0, n, OBJ_LABEL, 0, 0, 0)) continue;
-      ObjectSetInteger(0, n, OBJPROP_CORNER, CORNER_LEFT_UPPER);
+      ObjectSetInteger(0, n, OBJPROP_CORNER, QsCorner());
+      ObjectSetInteger(0, n, OBJPROP_ANCHOR,
+                       (InpPanelCorner == QC_RIGHT_UPPER || InpPanelCorner == QC_RIGHT_LOWER)
+                       ? ANCHOR_RIGHT_UPPER : ANCHOR_LEFT_UPPER);
       ObjectSetInteger(0, n, OBJPROP_XDISTANCE, InpPanelX);
       ObjectSetInteger(0, n, OBJPROP_YDISTANCE, InpPanelY + i * (InpFontSize + 6));
       ObjectSetInteger(0, n, OBJPROP_FONTSIZE, InpFontSize);
@@ -367,7 +382,7 @@ void DrawPanel()
    if(!buySide) cond[3] = StringFormat("当日 %.1f%% 超の上昇", InpMovePercent);
 
    int i = 0;
-   SetLine(i++, "定石 弐 ─ 待ち伏せ  v1.01", InpColHead);
+   SetLine(i++, "定石 弐 ─ 待ち伏せ  v1.02", InpColHead);
    SetLine(i++, StringFormat("%s  日足で判定中", _Symbol), InpColHead);
    SetLine(i++, " ", InpColHead);
    SetLine(i++, buySide ? "買い方向の条件" : "売り方向の条件",

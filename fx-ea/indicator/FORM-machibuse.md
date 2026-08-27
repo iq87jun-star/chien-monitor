@@ -103,9 +103,9 @@ FX・CFD
 ## 11. 商品ファイル
 
 ```
-ChienQuadraSignal_v101.zip
-  ├ ChienQuadraSignal_v101.ex5      (MT5用・コンパイル済み)
-  ├ ChienQuadraSignal_v101.ex4      (MT4用・コンパイル済み)
+ChienQuadraSignal_v102.zip
+  ├ ChienQuadraSignal_v102.ex5      (MT5用・コンパイル済み)
+  ├ ChienQuadraSignal_v102.ex4      (MT4用・コンパイル済み)
   └ 取扱説明書.pdf              (MANUAL-machibuse.md をPDF化)
 ```
 

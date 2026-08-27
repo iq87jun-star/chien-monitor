@@ -12,7 +12,7 @@
 | 環境計 v1.03 の表示 | ○ USDJPY H1 / GBPJPY M15 で動作 |
 | スプレッドの自前蓄積 | ○ 13分で51件→53件、翌朝までにGBPJPYで143件/23時間帯 |
 | 判定の正しさ | ○ 測定不能時は「保留」、測れているときのみ○/△/× |
-| 待ち伏せ v1.00 の表示 | ○ USDJPY H4 で4条件パネルが動作 |
+| 待ち伏せ v1.02 の表示 | ○ USDJPY H4 で4条件パネルが動作 |
 | コンパイル | ○ MT5で通過 |
 
 ## 実測で商品の主張が裏付けられました
@@ -51,8 +51,8 @@ GBPJPY の時間帯別スプレッド中央値(有効143件/23時間帯):
 
 | ファイル | 場所 |
 |---|---|
-| `ChienQuadraSignal_v101.mq5` | `indicator/MQL5/` |
-| `ChienQuadraSignal_v101.mq4` | `indicator/MQL4/` |
+| `ChienQuadraSignal_v102.mq5` | `indicator/MQL5/` |
+| `ChienQuadraSignal_v102.mq4` | `indicator/MQL4/` |
 | 商品名・キャッチコピー・商品概要 | `indicator/SALES-quadra.md` |
 | 取扱説明書 | `indicator/MANUAL-machibuse.md` |
 | 登録フォーム入力シート | `indicator/FORM-machibuse.md` |
