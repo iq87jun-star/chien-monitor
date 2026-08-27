@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                        ChienConditionMeter_v101.m  |
+//|                                        ChienConditionMeter_v102.m  |
 //|                                                                  |
 //| 定石 零 ─ 環境計                                                  |
 //|                                                                  |
@@ -22,8 +22,7 @@
 #property version   "1.02"
 #property description "定石 零 ─ 環境計: スプレッド割高度・想定変動幅・時間帯コストを可視化します。売買シグナルは出しません。"
 #property indicator_chart_window
-#property indicator_buffers 0
-#property indicator_plots   0
+#property strict
 
 //--- 時間帯一覧の出し方
 enum ENUM_HOUR_TABLE
@@ -69,12 +68,11 @@ input color  InpColBackdrop     = C'12,12,16'; // 下地の色
 input int    InpBackdropWidth   = 330;   // 下地の幅(px)
 
 //--- 内部
-#define PANEL_PREFIX "ChienCM101_"
+#define PANEL_PREFIX "ChienCM102_"
 #define MAX_PER_HOUR 512
 #define MIN_SAMPLES  2      // 1時間帯あたり最低これだけの本数が要る
 #define LINES        14
 
-int      g_hAtr = INVALID_HANDLE;
 double   g_medSpread[24];      // 時間帯別のスプレッド中央値(pips)
 bool     g_medValid  = false;
 int      g_worstHour = -1;
@@ -89,13 +87,6 @@ int      g_buf[24][MAX_PER_HOUR];   // 時間帯別スプレッド(集計用)
 //+------------------------------------------------------------------+
 int OnInit()
   {
-   g_hAtr = iATR(_Symbol, _Period, InpAtrPeriod);
-   if(g_hAtr == INVALID_HANDLE)
-     {
-      Print("環境計: ATRハンドルの作成に失敗しました");
-      return(INIT_FAILED);
-     }
-
    int digits = (int)SymbolInfoInteger(_Symbol, SYMBOL_DIGITS);
    double point = SymbolInfoDouble(_Symbol, SYMBOL_POINT);
    g_pip = (digits == 3 || digits == 5) ? point * 10.0 : point;
@@ -103,7 +94,7 @@ int OnInit()
 
    for(int i = 0; i < 24; i++) g_medSpread[i] = 0.0;
 
-   IndicatorSetString(INDICATOR_SHORTNAME, "定石 零 ─ 環境計");
+   IndicatorShortName("定石 零 ─ 環境計");
    CreateLabels();
    return(INIT_SUCCEEDED);
   }
@@ -111,7 +102,6 @@ int OnInit()
 //+------------------------------------------------------------------+
 void OnDeinit(const int reason)
   {
-   if(g_hAtr != INVALID_HANDLE) IndicatorRelease(g_hAtr);
    ObjectsDeleteAll(0, PANEL_PREFIX);
    ChartRedraw();
   }
@@ -254,7 +244,7 @@ void CreateLabels()
   }
 
 //+------------------------------------------------------------------+
-ENUM_BASE_CORNER CornerOf()
+int CornerOf()
   {
    switch(InpCorner)
      {
@@ -294,10 +284,8 @@ void Draw()
    double medNow  = (g_medValid && g_medSpread[hour] > 0.0) ? g_medSpread[hour] : 0.0;
    double ratio   = (medNow > 0.0) ? curSpr / medNow : 0.0;
 
-   double atrBuf[1];
-   double atrPips = 0.0;
-   if(CopyBuffer(g_hAtr, 0, 0, 1, atrBuf) == 1 && atrBuf[0] > 0.0)
-      atrPips = atrBuf[0] / g_pip;
+   double atrVal  = iATR(_Symbol, _Period, InpAtrPeriod, 0);
+   double atrPips = (atrVal > 0.0) ? atrVal / g_pip : 0.0;
    double moveCost = (curSpr > 0.0) ? atrPips / curSpr : 0.0;
 
    int i = 0;
@@ -456,6 +444,6 @@ string PeriodName()
       case PERIOD_D1:  return("D1");   case PERIOD_W1:  return("W1");
       case PERIOD_MN1: return("MN1");
      }
-   return(EnumToString(_Period));
+   return("TF" + IntegerToString(_Period));
   }
 //+------------------------------------------------------------------+

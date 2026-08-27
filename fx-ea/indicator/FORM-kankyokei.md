@@ -93,12 +93,12 @@ FX・CFD
 **認証なしの場合**
 ```
 ChienConditionMeter.zip
-  ├ ChienConditionMeter_v101.ex5   (MT5用・コンパイル済み)
-  ├ ChienConditionMeter_v101.ex4   (MT4用・コンパイル済み)
+  ├ ChienConditionMeter_v102.ex5   (MT5用・コンパイル済み)
+  ├ ChienConditionMeter_v102.ex4   (MT4用・コンパイル済み)
   └ 取扱説明書.pdf                  (SALES.md の説明書をPDF化)
 ```
 
-※ ソースのファイル名は `ChienConditionMeter_v101` です。
+※ ソースのファイル名は `ChienConditionMeter_v102` です。
 検証中に旧ビルドと区別するため版番号を付けています。
 配布時に版番号なしの名前に戻すこともできます。ご希望があればお知らせください。
 
