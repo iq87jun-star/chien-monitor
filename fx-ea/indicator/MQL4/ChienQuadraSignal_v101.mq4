@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                          ChienQuadraSignal.mq5   |
+//|                                          ChienQuadraSignal_v101.mq4   |
 //|                                                                  |
 //| 定石 弐 ─ 待ち伏せ シグナル                                       |
 //|                                                                  |
@@ -23,19 +23,13 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.00"
+#property version   "1.01"
+#property strict
 #property description "定石 弐 ─ 待ち伏せ シグナル: 日足4条件がすべて揃った場面だけを検出します。年に数回しか鳴りません。発注は行いません。"
 #property indicator_chart_window
 #property indicator_buffers 2
-#property indicator_plots   2
-
-#property indicator_label1  "買いシグナル"
-#property indicator_type1   DRAW_ARROW
 #property indicator_color1  clrDeepSkyBlue
 #property indicator_width1  3
-
-#property indicator_label2  "売りシグナル"
-#property indicator_type2   DRAW_ARROW
 #property indicator_color2  clrOrangeRed
 #property indicator_width2  3
 
@@ -63,6 +57,8 @@ input bool   InpAlertMail   = false; // メールを送る
 //=== パネル =========================================================
 input int    InpMaxDays     = 1500;  // 矢印を描く過去日数の上限(0=無制限)
 
+input int    InpArrowWidth  = 3;     // 矢印の太さ
+
 input bool   InpShowPanel   = true;  // 条件パネルを表示する
 input bool   InpShowBackdrop = true; // 文字の背景に下地を敷く(推奨)
 input color  InpColBackdrop  = C'12,12,16'; // 下地の色
@@ -77,13 +73,11 @@ input color  InpColUnmet    = clrGray;       // 条件不成立の色
 input color  InpColBuy      = clrDeepSkyBlue;// 買いの色
 input color  InpColSell     = clrOrangeRed;  // 売りの色
 
-#define PFX "ChienQS_"
+#define PFX "ChienQS101_"
 #define PANEL_LINES 12
 
 double   g_buyBuf[];
 double   g_sellBuf[];
-int      g_hRsi = INVALID_HANDLE;
-int      g_hAtr = INVALID_HANDLE;
 datetime g_lastAlert = 0;
 // 直近確定日足の判定キャッシュ(毎ティックの再計算を避ける)
 datetime g_cacheDay  = 0;
@@ -93,26 +87,21 @@ bool     g_cacheBuy[4], g_cacheSell[4];
 //+------------------------------------------------------------------+
 int OnInit()
   {
-   SetIndexBuffer(0, g_buyBuf,  INDICATOR_DATA);
-   SetIndexBuffer(1, g_sellBuf, INDICATOR_DATA);
-   PlotIndexSetInteger(0, PLOT_ARROW, 233);   // 上向き
-   PlotIndexSetInteger(1, PLOT_ARROW, 234);   // 下向き
-   PlotIndexSetInteger(0, PLOT_ARROW_SHIFT, -12);
-   PlotIndexSetInteger(1, PLOT_ARROW_SHIFT,  12);
-   PlotIndexSetDouble(0, PLOT_EMPTY_VALUE, EMPTY_VALUE);
-   PlotIndexSetDouble(1, PLOT_EMPTY_VALUE, EMPTY_VALUE);
+   IndicatorBuffers(2);
+   SetIndexBuffer(0, g_buyBuf);
+   SetIndexBuffer(1, g_sellBuf);
+   SetIndexStyle(0, DRAW_ARROW, EMPTY, InpArrowWidth, clrNONE);
+   SetIndexStyle(1, DRAW_ARROW, EMPTY, InpArrowWidth, clrNONE);
+   SetIndexArrow(0, 233);   // 上向き
+   SetIndexArrow(1, 234);   // 下向き
+   SetIndexEmptyValue(0, EMPTY_VALUE);
+   SetIndexEmptyValue(1, EMPTY_VALUE);
+   SetIndexLabel(0, "買いシグナル");
+   SetIndexLabel(1, "売りシグナル");
    ArraySetAsSeries(g_buyBuf,  false);
    ArraySetAsSeries(g_sellBuf, false);
 
-   g_hRsi = iRSI(_Symbol, PERIOD_D1, InpRsiPeriod, PRICE_CLOSE);
-   g_hAtr = iATR(_Symbol, PERIOD_D1, InpAtrPeriod);
-   if(g_hRsi == INVALID_HANDLE || g_hAtr == INVALID_HANDLE)
-     {
-      Print("待ち伏せ: 日足インジケーターの作成に失敗しました");
-      return(INIT_FAILED);
-     }
-
-   IndicatorSetString(INDICATOR_SHORTNAME, "定石 弐 ─ 待ち伏せ");
+   IndicatorShortName("定石 弐 ─ 待ち伏せ");
    if(InpShowPanel) CreatePanel();
    return(INIT_SUCCEEDED);
   }
@@ -120,8 +109,6 @@ int OnInit()
 //+------------------------------------------------------------------+
 void OnDeinit(const int reason)
   {
-   if(g_hRsi != INVALID_HANDLE) IndicatorRelease(g_hRsi);
-   if(g_hAtr != INVALID_HANDLE) IndicatorRelease(g_hAtr);
    ObjectsDeleteAll(0, PFX);
    ChartRedraw();
   }
@@ -136,9 +123,7 @@ int EvalDay(const int shift, bool &metBuy[], bool &metSell[])
    ArrayResize(metBuy, 4);  ArrayResize(metSell, 4);
    for(int k = 0; k < 4; k++) { metBuy[k] = false; metSell[k] = false; }
 
-   double rsiArr[1];
-   if(CopyBuffer(g_hRsi, 0, shift, 1, rsiArr) != 1) return(0);
-   double rsi = rsiArr[0];
+   double rsi = iRSI(_Symbol, PERIOD_D1, InpRsiPeriod, PRICE_CLOSE, shift);
 
    // 直前 InpZWindow 本の平均と標本標準偏差(判定バー自身は含めない)
    double sum = 0.0, sum2 = 0.0;
@@ -201,18 +186,24 @@ int OnCalculate(const int rates_total, const int prev_calculated,
                 const double &close[], const long &tick_volume[],
                 const long &volume[], const int &spread[])
   {
+   ArraySetAsSeries(time,  false);
+   ArraySetAsSeries(open,  false);
+   ArraySetAsSeries(high,  false);
+   ArraySetAsSeries(low,   false);
+   ArraySetAsSeries(close, false);
+
    if(rates_total < 60) return(0);
 
    int need = MathMax(InpZWindow, MathMax(InpRsiPeriod, InpAtrPeriod)) + 5;
-   if(Bars(_Symbol, PERIOD_D1) < need + 5) return(0);
+   if(iBars(_Symbol, PERIOD_D1) < need + 5) return(0);
 
    int start = (prev_calculated > 1) ? prev_calculated - 1 : 1;
 
    // 履歴が長いチャートで初回計算が重くならないよう、描画範囲を絞る
    if(InpMaxDays > 0 && prev_calculated == 0)
      {
-      datetime cutoff = iTime(_Symbol, PERIOD_D1, MathMin(InpMaxDays,
-                              Bars(_Symbol, PERIOD_D1) - 1));
+      datetime cutoff = iTime(_Symbol, PERIOD_D1, (int)MathMin(InpMaxDays,
+                              iBars(_Symbol, PERIOD_D1) - 1));
       if(cutoff > 0)
          for(int j = 1; j < rates_total; j++)
             if(time[j] >= cutoff) { start = MathMax(start, j); break; }
@@ -324,6 +315,7 @@ void CreatePanel()
       ObjectSetString(0, n, OBJPROP_FONT, InpFontName);
       ObjectSetInteger(0, n, OBJPROP_SELECTABLE, false);
       ObjectSetInteger(0, n, OBJPROP_HIDDEN, true);
+      ObjectSetInteger(0, n, OBJPROP_TIMEFRAMES, OBJ_NO_PERIODS);
       ObjectSetString(0, n, OBJPROP_TEXT, "");
      }
   }
@@ -333,6 +325,13 @@ void SetLine(const int idx, const string text, const color col)
   {
    string n = PFX + "L" + IntegerToString(idx);
    if(ObjectFind(0, n) < 0) return;
+   // 空文字のラベルは既定文字 "Label" で描画されるため、使わない行は非表示にする
+   if(StringLen(text) == 0)
+     {
+      ObjectSetInteger(0, n, OBJPROP_TIMEFRAMES, OBJ_NO_PERIODS);
+      return;
+     }
+   ObjectSetInteger(0, n, OBJPROP_TIMEFRAMES, OBJ_ALL_PERIODS);
    ObjectSetString(0, n, OBJPROP_TEXT, text);
    ObjectSetInteger(0, n, OBJPROP_COLOR, col);
   }
@@ -359,7 +358,7 @@ void DrawPanel()
    if(!buySide) cond[3] = StringFormat("当日 %.1f%% 超の上昇", InpMovePercent);
 
    int i = 0;
-   SetLine(i++, "定石 弐 ─ 待ち伏せ", InpColHead);
+   SetLine(i++, "定石 弐 ─ 待ち伏せ  v1.01", InpColHead);
    SetLine(i++, StringFormat("%s  日足で判定中", _Symbol), InpColHead);
    SetLine(i++, " ", InpColHead);
    SetLine(i++, buySide ? "買い方向の条件" : "売り方向の条件",
@@ -401,11 +400,11 @@ void DrawLevels()
       return;
      }
 
-   double atrArr[1];
-   if(CopyBuffer(g_hAtr, 0, 1, 1, atrArr) != 1 || atrArr[0] <= 0.0) return;
+   double atrVal = iATR(_Symbol, PERIOD_D1, InpAtrPeriod, 1);
+   if(atrVal <= 0.0) return;
 
    double entry  = iClose(_Symbol, PERIOD_D1, 1);
-   double slDist = atrArr[0] * InpSlAtrMult;
+   double slDist = atrVal * InpSlAtrMult;
    double sl = (sig > 0) ? entry - slDist : entry + slDist;
    double tp = (sig > 0) ? entry + slDist * InpRewardRatio
                          : entry - slDist * InpRewardRatio;
