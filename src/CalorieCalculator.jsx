@@ -28,6 +28,7 @@ const STAND_OPTIONS = [
   { id:"mid",    label:"立ち仕事+ときどき歩く",     met:2.5 },
   { id:"active", label:"よく動き回る立ち仕事",       met:3.0 },
 ];
+const WALK = { met:3.5, speed:4.8 };  // 普通歩行(約4.8km/h)
 const SAUNA_MET = 1.5;      // 座位安静よりやや高い程度
 const SLEEP_HOURS = 7;      // 睡眠
 const MISC_MET = 1.5;       // その他の生活活動(家事・移動など)
@@ -66,21 +67,24 @@ export function computeDayBurn(profile, day) {
   const stand = STAND_OPTIONS.find(o => o.id === day.standType) ?? STAND_OPTIONS[1];
 
   const bikeHours  = num(day.bikeKm, 0) / bike.speed;
+  const walkHours  = num(day.walkKm, 0) / WALK.speed;
   const standHours = num(day.standH, 0);
   const saunaHours = num(day.saunaMin, 0) / 60;
 
   const bikeKcal  = netKcal(bike.met,  w, bikeHours);
+  const walkKcal  = netKcal(WALK.met,  w, walkHours);
   const standKcal = netKcal(stand.met, w, standHours);
   const saunaKcal = netKcal(SAUNA_MET, w, saunaHours);
 
-  // 睡眠・仕事・通勤・サウナ以外の残り時間は軽い生活活動として加算
-  const miscHours = Math.max(0, 24 - SLEEP_HOURS - standHours - bikeHours - saunaHours);
+  // 睡眠・仕事・通勤・徒歩・サウナ以外の残り時間は軽い生活活動として加算
+  const miscHours = Math.max(0, 24 - SLEEP_HOURS - standHours - bikeHours - walkHours - saunaHours);
   const miscKcal  = netKcal(MISC_MET, w, miscHours);
 
   const bmr = bmrOf(profile);
   return {
-    bmr, bikeHours, bikeKcal, standKcal, saunaKcal, miscHours, miscKcal,
-    total: bmr + bikeKcal + standKcal + saunaKcal + miscKcal,
+    bmr, bikeHours, bikeKcal, walkHours, walkKcal, standHours, standKcal,
+    saunaHours, saunaKcal, miscHours, miscKcal,
+    total: bmr + bikeKcal + walkKcal + standKcal + saunaKcal + miscKcal,
   };
 }
 
@@ -104,6 +108,7 @@ export default function CalorieCalculator() {
   // ---- 通常の生活パターン(変化があれば調整) ----
   const [bikeKm, setBikeKm]       = useState("15");   // 自転車通勤 15km/日
   const [bikePace, setBikePace]   = useState("normal");
+  const [walkKm, setWalkKm]       = useState("2");    // 仕事以外の徒歩 2km/日
   const [standH, setStandH]       = useState("10.5"); // 立ち仕事 10.5時間
   const [standType, setStandType] = useState("mid");
   const [workDays, setWorkDays]   = useState("25");   // 勤務日数/月
@@ -128,8 +133,8 @@ export default function CalorieCalculator() {
     const wd = Math.min(num(workDays, 22), md);
     const offDays = Math.max(0, md - wd);
 
-    const workday = computeDayBurn(profile, { bikeKm, bikePace, standH, standType, saunaMin: 0 });
-    const offday  = computeDayBurn(profile, { bikeKm: 0, bikePace, standH: 0, standType, saunaMin: 0 });
+    const workday = computeDayBurn(profile, { bikeKm, bikePace, walkKm, standH, standType, saunaMin: 0 });
+    const offday  = computeDayBurn(profile, { bikeKm: 0, bikePace, walkKm: 0, standH: 0, standType, saunaMin: 0 });
 
     const saunaPerSession = netKcal(SAUNA_MET, profile.weight, num(saunaMin, 0) / 60);
     const saunaMonth = saunaPerSession * num(saunaPerMonth, 0);
@@ -144,7 +149,7 @@ export default function CalorieCalculator() {
       bmr, workday, offday, saunaPerSession, saunaMonth,
       wd, offDays, md, monthlyBurn, dailyIntake, monthlyIntake, balance,
     };
-  }, [profile, bikeKm, bikePace, standH, standType,
+  }, [profile, bikeKm, bikePace, walkKm, standH, standType,
       workDays, monthDays, saunaPerMonth, saunaMin, meal1, meal2]);
 
   const hasIntake = calc.dailyIntake > 0;
@@ -186,6 +191,7 @@ export default function CalorieCalculator() {
             </Field>
           </Row>
           <Row>
+            <Field label="徒歩 (km/日)"><Input value={walkKm} onChange={setWalkKm} /></Field>
             <Field label="立ち仕事 (時間/日)"><Input value={standH} onChange={setStandH} /></Field>
             <Field label="仕事の内容">
               <Select value={standType} onChange={setStandType}
@@ -224,6 +230,7 @@ export default function CalorieCalculator() {
           <table style={{ width:"100%", borderCollapse:"collapse", fontSize:14 }}>
             <tbody>
               <Tr label={`自転車 約${Math.round(calc.workday.bikeHours*60)}分 (追加消費)`} value={`${fmt(calc.workday.bikeKcal)} kcal/日`} />
+              <Tr label={`徒歩 ${walkKm}km (約${Math.round(calc.workday.walkHours*60)}分)`} value={`${fmt(calc.workday.walkKcal)} kcal/日`} />
               <Tr label={`立ち仕事 ${standH}h (追加消費)`} value={`${fmt(calc.workday.standKcal)} kcal/日`} />
               <Tr label={`その他の生活活動 約${calc.workday.miscHours.toFixed(1)}h`} value={`${fmt(calc.workday.miscKcal)} kcal/日`} />
               <Tr label="基礎代謝" value={`${fmt(calc.bmr)} kcal/日`} />
@@ -259,7 +266,7 @@ export default function CalorieCalculator() {
         </Card>
 
         {/* 日ごとの記録 */}
-        <DailyLog profile={profile} defaults={{ bikeKm, bikePace, standH, standType }} />
+        <DailyLog profile={profile} defaults={{ bikeKm, bikePace, walkKm, standH, standType }} />
 
         <p style={{ fontSize:12, color:T.onSurfaceLow, textAlign:"center", margin:"4px 0 24px" }}>
           ※ METs法による概算です。個人差(体組成・気温・強度)により±10〜15%程度の誤差があります。
@@ -274,6 +281,7 @@ function DailyLog({ profile, defaults }) {
   const [logs, setLogs] = useState(loadLogs);
   const [date, setDate]         = useState(yesterday);
   const [bikeKm, setBikeKm]     = useState(defaults.bikeKm);
+  const [walkKm, setWalkKm]     = useState(defaults.walkKm);
   const [standH, setStandH]     = useState(defaults.standH);
   const [saunaMin, setSaunaMin] = useState("0");
   const [meal1, setMeal1]       = useState("");
@@ -291,7 +299,7 @@ function DailyLog({ profile, defaults }) {
   const rows = useMemo(() => logs
     .map(l => {
       const burn = computeDayBurn(profile, {
-        bikeKm: l.bikeKm, bikePace: defaults.bikePace,
+        bikeKm: l.bikeKm, bikePace: defaults.bikePace, walkKm: l.walkKm,
         standH: l.standH, standType: defaults.standType, saunaMin: l.saunaMin,
       });
       const intake = num(l.meal1, 0) + num(l.meal2, 0);
@@ -313,7 +321,7 @@ function DailyLog({ profile, defaults }) {
   }, [rows]);
 
   const addLog = () => {
-    const entry = { id: `${date}-${logs.length}`, date, bikeKm, standH, saunaMin, meal1, meal2, note };
+    const entry = { id: `${date}-${logs.length}`, date, bikeKm, walkKm, standH, saunaMin, meal1, meal2, note };
     setLogs(prev => [...prev.filter(l => l.date !== date), entry]);
     setMeal1(""); setMeal2(""); setNote("");
   };
@@ -332,6 +340,7 @@ function DailyLog({ profile, defaults }) {
           <input type="date" value={date} onChange={e=>setDate(e.target.value)} style={inputStyle} />
         </Field>
         <Field label="自転車 (km)"><Input value={bikeKm} onChange={setBikeKm} /></Field>
+        <Field label="徒歩 (km)"><Input value={walkKm} onChange={setWalkKm} /></Field>
         <Field label="立ち仕事 (h)"><Input value={standH} onChange={setStandH} /></Field>
         <Field label="サウナ (分)"><Input value={saunaMin} onChange={setSaunaMin} /></Field>
       </Row>
