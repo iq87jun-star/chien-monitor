@@ -19,7 +19,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.01"
+#property version   "1.02"
 #property description "定石 零 ─ 環境計: スプレッド割高度・想定変動幅・時間帯コストを可視化します。売買シグナルは出しません。"
 #property indicator_chart_window
 #property indicator_buffers 0
@@ -81,6 +81,7 @@ int      g_worstHour = -1;
 double   g_pip       = 0.0001;
 int      g_hoursReady  = 0;    // 中央値を出せた時間帯の数
 int      g_barsGot     = 0;    // 取得できたH1バー数
+int      g_samples     = 0;    // スプレッドが記録されていた有効バー数
 datetime g_lastRebuild = 0;
 datetime g_lastDraw    = 0;
 int      g_buf[24][MAX_PER_HOUR];   // 時間帯別スプレッド(集計用)
@@ -201,6 +202,8 @@ void BuildSpreadProfile()
 
    g_hoursReady = filled;
    g_barsGot    = got;
+   g_samples    = 0;
+   for(int h = 0; h < 24; h++) g_samples += cnt[h];
    g_medValid   = (filled >= 8);
   }
 
@@ -298,7 +301,7 @@ void Draw()
    double moveCost = (curSpr > 0.0) ? atrPips / curSpr : 0.0;
 
    int i = 0;
-   SetLine(i++, "定石 零 ─ 環境計  v1.01", InpColHead);
+   SetLine(i++, "定石 零 ─ 環境計  v1.02", InpColHead);
    SetLine(i++, StringFormat("%s  %s   %02d:%02d サーバー時刻",
                 _Symbol, PeriodName(), dt.hour, dt.min), InpColText);
    SetLine(i++, " ", InpColText);
@@ -313,12 +316,21 @@ void Draw()
      }
    else
      {
-      SetLine(i++, StringFormat("  この時間帯の中央値  %.1f pips", medNow), InpColText);
-      color rc = InpColGood;
-      string rt = "適正";
-      if(ratio >= InpRatioAvoid)        { rc = InpColAvoid;   rt = "回避推奨"; }
-      else if(ratio >= InpRatioCaution) { rc = InpColCaution; rt = "割高"; }
-      SetLine(i++, StringFormat("  割高度  %.2f 倍   %s", ratio, rt), rc);
+      if(medNow <= 0.0)
+        {
+         // この時間帯だけ履歴が無い。測れていないのに「適正」と出してはいけない
+         SetLine(i++, "  この時間帯の中央値  未取得", InpColCaution);
+         SetLine(i++, "  割高度  測定不能(この時間帯の履歴待ち)", InpColCaution);
+        }
+      else
+        {
+         SetLine(i++, StringFormat("  この時間帯の中央値  %.1f pips", medNow), InpColText);
+         color rc = InpColGood;
+         string rt = "適正";
+         if(ratio >= InpRatioAvoid)        { rc = InpColAvoid;   rt = "回避推奨"; }
+         else if(ratio >= InpRatioCaution) { rc = InpColCaution; rt = "割高"; }
+         SetLine(i++, StringFormat("  割高度  %.2f 倍   %s", ratio, rt), rc);
+        }
      }
 
    // --- 想定変動幅
@@ -349,7 +361,8 @@ void Draw()
    // --- 総合判定
    SetLine(i++, " ", InpColText);
    int score = 0;   // 0=良好 1=警戒 2=回避
-   if(g_medValid)
+   bool ratioKnown = (medNow > 0.0);
+   if(ratioKnown)
      {
       if(ratio >= InpRatioAvoid) score = 2;
       else if(ratio >= InpRatioCaution) score = 1;
@@ -361,8 +374,11 @@ void Draw()
    color  vcol  = InpColGood;
    if(score == 1)      { vtext = "△  コスト警戒";   vcol = InpColCaution; }
    else if(score == 2) { vtext = "×  コストが割高"; vcol = InpColAvoid; }
-   // スプレッド分布が未集計のうちは、判定の半分が欠けている。良好と言い切らない
-   if(!g_medValid)     { vtext = "─  判定できません(履歴の集計待ち)"; vcol = InpColCaution; }
+   // 割高度が測れていないうちは判定の半分が欠けている。良好と言い切らない
+   if(!g_medValid)
+     { vtext = "─  判定できません(履歴の集計待ち)"; vcol = InpColCaution; }
+   else if(!ratioKnown)
+     { vtext = "─  スプレッド判定は保留(この時間帯の履歴待ち)"; vcol = InpColCaution; }
    SetLine(i++, StringFormat("判定   %s", vtext), vcol);
 
    // --- 時間帯一覧
@@ -370,10 +386,10 @@ void Draw()
      {
       SetLine(i++, " ", InpColText);
       SetLine(i++, (InpHourTable == HT_ALL)
-                   ? StringFormat("時間帯別スプレッド中央値 (pips) ─ 直近%d日分",
-                                  (int)MathRound(g_barsGot / 24.0))
-                   : StringFormat("スプレッドが開く時間帯 上位%d ─ 直近%d日分",
-                                  InpHourTableTop, (int)MathRound(g_barsGot / 24.0)),
+                   ? StringFormat("時間帯別スプレッド中央値 (pips) ─ 有効%d件/%d時間帯",
+                                  g_samples, g_hoursReady)
+                   : StringFormat("スプレッドが開く時間帯 上位%d ─ 有効%d件/%d時間帯",
+                                  InpHourTableTop, g_samples, g_hoursReady),
               InpColHead);
 
       // 表示する時間を決める
