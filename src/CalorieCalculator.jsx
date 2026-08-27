@@ -35,7 +35,7 @@ const FAT_KCAL_PER_KG = 7200;
 const STORAGE_KEY = "calorie-daily-logs-v1";
 
 // Mifflin-St Jeor 基礎代謝
-function bmrOf({ weight, height, age, sex }) {
+export function bmrOf({ weight, height, age, sex }) {
   const base = 10 * weight + 6.25 * height - 5 * age;
   return sex === "male" ? base + 5 : base - 161;
 }
@@ -60,7 +60,7 @@ const yesterday = () => {
 };
 
 // 1日分の消費カロリーを算出(標準パターンにも日ごとの記録にも同じ式を使う)
-function computeDayBurn(profile, day) {
+export function computeDayBurn(profile, day) {
   const w = profile.weight;
   const bike  = BIKE_OPTIONS.find(o => o.id === day.bikePace)  ?? BIKE_OPTIONS[1];
   const stand = STAND_OPTIONS.find(o => o.id === day.standType) ?? STAND_OPTIONS[1];
@@ -98,7 +98,7 @@ export default function CalorieCalculator() {
   // ---- プロフィール ----
   const [weight, setWeight] = useState("86");
   const [height, setHeight] = useState("176");
-  const [age, setAge]       = useState("40");
+  const [age, setAge]       = useState("39");
   const [sex, setSex]       = useState("male");
 
   // ---- 通常の生活パターン(変化があれば調整) ----
@@ -106,7 +106,7 @@ export default function CalorieCalculator() {
   const [bikePace, setBikePace]   = useState("normal");
   const [standH, setStandH]       = useState("10.5"); // 立ち仕事 10.5時間
   const [standType, setStandType] = useState("mid");
-  const [workDays, setWorkDays]   = useState("22");   // 勤務日数/月
+  const [workDays, setWorkDays]   = useState("25");   // 勤務日数/月
   const [monthDays, setMonthDays] = useState("30");
 
   // ---- サウナ(趣味) ----
