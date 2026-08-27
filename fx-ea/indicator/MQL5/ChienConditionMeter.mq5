@@ -393,6 +393,9 @@ void Draw()
         }
      }
 
+   // 下地の高さに使うため、実際に使った行数をここで控える
+   int used = i;
+
    // 余った行を消す
    for(; i < LINES + 24; i++) SetLine(i, "", InpColText);
 
