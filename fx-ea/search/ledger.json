@@ -1,0 +1,127 @@
+{
+ "cumulative_tests": 970,
+ "entries": [
+  {
+   "id": "dow-jpy-mon",
+   "note": "円クロス7ペアの月曜o2o(定石壱の日足近似)",
+   "family": "dow",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "dow": 0,
+    "direction": 1,
+    "hold": 1
+   },
+   "space_size": 70,
+   "tested_at": "2026-08-27",
+   "cum_tests_at_time": 70,
+   "result": {
+    "verdict": "棄却",
+    "reason": "t=-0.54 < 必要3.19(累積70検定) / IS平均 -2.14bp <= 0",
+    "n": 5474,
+    "t": -0.535,
+    "need_t": 3.189,
+    "mean_bp": -0.446,
+    "is_bp": -2.135,
+    "oos_bp": 2.086,
+    "wf_bp": null,
+    "wf_n": 0,
+    "pf": 0.98,
+    "wr": 50.0,
+    "neg_years": 11,
+    "years": 16,
+    "first": "2011-08-29",
+    "last": "2026-08-24"
+   }
+  },
+  {
+   "id": "zrev-jpy-w20-t2-h3",
+   "note": "円クロス z(20) 2.0SD 逆張り 3日保有",
+   "family": "zrev",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "win": 20,
+    "thr": 2.0,
+    "hold": 3,
+    "direction": 1
+   },
+   "space_size": 360,
+   "tested_at": "2026-08-27",
+   "cum_tests_at_time": 430,
+   "result": {
+    "verdict": "棄却",
+    "reason": "t=1.80 < 必要3.68(累積430検定)",
+    "n": 1969,
+    "t": 1.797,
+    "need_t": 3.681,
+    "mean_bp": 4.768,
+    "is_bp": 3.919,
+    "oos_bp": 6.04,
+    "wf_bp": 3.389,
+    "wf_n": 1393,
+    "pf": 1.13,
+    "wr": 53.4,
+    "neg_years": 5,
+    "years": 16,
+    "first": "2011-09-26",
+    "last": "2026-08-05"
+   }
+  },
+  {
+   "id": "mom-fx-l60-h5",
+   "note": "FX 60日モメンタム順張り 5日保有",
+   "family": "mom",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "look": 60,
+    "hold": 5,
+    "direction": 1
+   },
+   "space_size": 540,
+   "tested_at": "2026-08-27",
+   "cum_tests_at_time": 970,
+   "result": {
+    "verdict": "棄却",
+    "reason": "t=-2.51 < 必要3.88(累積970検定) / IS平均 -1.33bp <= 0 / OOS平均 -3.08bp <= 0 / WF平均 -4.18bp <= 0",
+    "n": 18247,
+    "t": -2.507,
+    "need_t": 3.883,
+    "mean_bp": -2.03,
+    "is_bp": -1.332,
+    "oos_bp": -3.077,
+    "wf_bp": -4.184,
+    "wf_n": 3327,
+    "pf": 0.951,
+    "wr": 49.2,
+    "neg_years": 9,
+    "years": 16,
+    "first": "2011-11-22",
+    "last": "2026-08-19"
+   }
+  }
+ ]
+}

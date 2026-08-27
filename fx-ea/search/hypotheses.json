@@ -1,0 +1,70 @@
+{
+ "_comment": "検定したい仮説をここに追加する。status が pending のものだけが実行され、実行後 done になる。同じ仮説を条件だけ変えて再投入すると累積検定数が増え、必要t値が上がる。",
+ "queue": [
+  {
+   "id": "dow-jpy-mon",
+   "note": "円クロス7ペアの月曜o2o(定石壱の日足近似)",
+   "family": "dow",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "dow": 0,
+    "direction": 1,
+    "hold": 1
+   },
+   "space_size": 70,
+   "status": "done"
+  },
+  {
+   "id": "zrev-jpy-w20-t2-h3",
+   "note": "円クロス z(20) 2.0SD 逆張り 3日保有",
+   "family": "zrev",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "CADJPY",
+     "CHFJPY"
+    ],
+    "win": 20,
+    "thr": 2.0,
+    "hold": 3,
+    "direction": 1
+   },
+   "space_size": 360,
+   "status": "done"
+  },
+  {
+   "id": "mom-fx-l60-h5",
+   "note": "FX 60日モメンタム順張り 5日保有",
+   "family": "mom",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "look": 60,
+    "hold": 5,
+    "direction": 1
+   },
+   "space_size": 540,
+   "status": "done"
+  }
+ ]
+}
