@@ -19,7 +19,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.03"
+#property version   "1.04"
 #property description "定石 零 ─ 環境計: スプレッド割高度・想定変動幅・時間帯コストを可視化します。売買シグナルは出しません。"
 #property indicator_chart_window
 #property strict
@@ -65,13 +65,15 @@ input ENUM_HOUR_TABLE InpHourTable = HT_TOP; // 時間帯一覧の出し方
 input int    InpHourTableTop    = 5;     // 「上位のみ」のときに出す本数
 input bool   InpShowBackdrop    = true;  // 文字の背景に下地を敷く(推奨)
 input color  InpColBackdrop     = C'12,12,16'; // 下地の色
-input int    InpBackdropWidth   = 330;   // 下地の幅(px)
+input int    InpBackdropWidth   = 0;     // 下地の幅(px。0で文字サイズから自動)
 
 //--- 内部
 #define PANEL_PREFIX "ChienCM103_"
 #define MAX_PER_HOUR 512
 #define MAX_LIVE     360    // 自前収集の1時間帯あたり保持数(=6日分/毎分1件)
 #define MIN_SAMPLES  2      // 1時間帯あたり最低これだけの本数が要る
+#define BAR_CHAR     "█"    // 横棒の文字(実線ブロック。| だと隙間が目立つ)
+#define BAR_MAX      12     // 横棒の最大長
 #define LINES        14
 
 double   g_medSpread[24];      // 時間帯別のスプレッド中央値(pips)
@@ -296,6 +298,17 @@ void BuildSpreadProfile()
   }
 
 //+------------------------------------------------------------------+
+//| 下地の幅。0 指定なら文字サイズから見積もる                        |
+//+------------------------------------------------------------------+
+int BackdropWidth()
+  {
+   if(InpBackdropWidth > 0) return(InpBackdropWidth);
+   // 最も長い行は見出し「スプレッドが開く時間帯 上位5 ─ 有効000件/00時間帯」
+   // 全角換算で約26文字。文字サイズ1あたり約2.0pxで見積もる
+   return((int)(InpFontSize * 33) + 20);
+  }
+
+//+------------------------------------------------------------------+
 void CreateLabels()
   {
    ObjectsDeleteAll(0, PANEL_PREFIX);
@@ -309,7 +322,7 @@ void CreateLabels()
          ObjectSetInteger(0, bg, OBJPROP_CORNER, CornerOf());
          ObjectSetInteger(0, bg, OBJPROP_XDISTANCE, InpX - 8);
          ObjectSetInteger(0, bg, OBJPROP_YDISTANCE, InpY - 8);
-         ObjectSetInteger(0, bg, OBJPROP_XSIZE, InpBackdropWidth);
+         ObjectSetInteger(0, bg, OBJPROP_XSIZE, BackdropWidth());
          ObjectSetInteger(0, bg, OBJPROP_YSIZE, 16);
          ObjectSetInteger(0, bg, OBJPROP_BGCOLOR, InpColBackdrop);
          ObjectSetInteger(0, bg, OBJPROP_BORDER_TYPE, BORDER_FLAT);
@@ -387,7 +400,7 @@ void Draw()
    double moveCost = (curSpr > 0.0) ? atrPips / curSpr : 0.0;
 
    int i = 0;
-   SetLine(i++, "定石 零 ─ 環境計  v1.03", InpColHead);
+   SetLine(i++, "定石 零 ─ 環境計  v1.04", InpColHead);
    SetLine(i++, StringFormat("%s  %s   %02d:%02d サーバー時刻",
                 _Symbol, PeriodName(), dt.hour, dt.min), InpColText);
    SetLine(i++, " ", InpColText);
@@ -505,8 +518,9 @@ void Draw()
          if(!show[h] || g_medSpread[h] <= 0.0) continue;
          string bar = "";
          int len = (int)MathRound(g_medSpread[h]
-                   / MathMax(g_medSpread[g_worstHour], 0.01) * 18.0);
-         for(int k = 0; k < len; k++) bar += "|";
+                   / MathMax(g_medSpread[g_worstHour], 0.01) * (double)BAR_MAX);
+         if(len < 1 && g_medSpread[h] > 0.0) len = 1;   // 一番短くても1つは出す
+         for(int k = 0; k < len; k++) bar += BAR_CHAR;
          color hc = (h == hour) ? InpColHead
                   : (h == g_worstHour ? InpColAvoid : InpColText);
          string tag = (h == hour) ? " ←今" : "";

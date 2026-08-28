@@ -23,7 +23,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.02"
+#property version   "1.03"
 #property strict
 #property description "定石 弐 ─ 待ち伏せ シグナル: 日足4条件がすべて揃った場面だけを検出します。年に数回しか鳴りません。発注は行いません。"
 #property indicator_chart_window
@@ -62,7 +62,7 @@ input int    InpArrowWidth  = 3;     // 矢印の太さ
 input bool   InpShowPanel   = true;  // 条件パネルを表示する
 input bool   InpShowBackdrop = true; // 文字の背景に下地を敷く(推奨)
 input color  InpColBackdrop  = C'12,12,16'; // 下地の色
-input int    InpBackdropW    = 320;  // 下地の幅(px)
+input int    InpBackdropW    = 0;    // 下地の幅(px。0で文字サイズから自動)
 input int    InpPanelX      = 12;    // パネルの横位置(px)
 input int    InpPanelY      = 22;    // パネルの縦位置(px)
 input int    InpFontSize    = 9;     // 文字サイズ
@@ -305,7 +305,9 @@ void CreatePanel()
          ObjectSetInteger(0, bg, OBJPROP_CORNER, QsCorner());
          ObjectSetInteger(0, bg, OBJPROP_XDISTANCE, InpPanelX - 8);
          ObjectSetInteger(0, bg, OBJPROP_YDISTANCE, InpPanelY - 8);
-         ObjectSetInteger(0, bg, OBJPROP_XSIZE, InpBackdropW);
+         ObjectSetInteger(0, bg, OBJPROP_XSIZE,
+                          InpBackdropW > 0 ? InpBackdropW
+                                           : (int)(InpFontSize * 33) + 20);
          ObjectSetInteger(0, bg, OBJPROP_YSIZE, PANEL_LINES * (InpFontSize + 6) + 14);
          ObjectSetInteger(0, bg, OBJPROP_BGCOLOR, InpColBackdrop);
          ObjectSetInteger(0, bg, OBJPROP_BORDER_TYPE, BORDER_FLAT);
@@ -373,7 +375,7 @@ void DrawPanel()
    if(!buySide) cond[3] = StringFormat("当日 %.1f%% 超の上昇", InpMovePercent);
 
    int i = 0;
-   SetLine(i++, "定石 弐 ─ 待ち伏せ  v1.02", InpColHead);
+   SetLine(i++, "定石 弐 ─ 待ち伏せ  v1.03", InpColHead);
    SetLine(i++, StringFormat("%s  日足で判定中", _Symbol), InpColHead);
    SetLine(i++, " ", InpColHead);
    SetLine(i++, buySide ? "買い方向の条件" : "売り方向の条件",
