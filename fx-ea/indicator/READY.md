@@ -39,8 +39,8 @@ GBPJPY の時間帯別スプレッド中央値(有効143件/23時間帯):
 
 | ファイル | 場所 |
 |---|---|
-| `ChienConditionMeter_v103.mq5` | `indicator/MQL5/` |
-| `ChienConditionMeter_v103.mq4` | `indicator/MQL4/` |
+| `定石零_環境計.mq5` | `indicator/MQL5/` |
+| `定石零_環境計.mq4` | `indicator/MQL4/` |
 | 商品名・キャッチコピー・商品概要 | `indicator/SALES.md` |
 | 取扱説明書(商品概要内に収録) | `indicator/SALES.md` |
 | 登録フォーム入力シート | `indicator/FORM-kankyokei.md` |
@@ -51,8 +51,8 @@ GBPJPY の時間帯別スプレッド中央値(有効143件/23時間帯):
 
 | ファイル | 場所 |
 |---|---|
-| `ChienQuadraSignal_v102.mq5` | `indicator/MQL5/` |
-| `ChienQuadraSignal_v102.mq4` | `indicator/MQL4/` |
+| `定石弐_待ち伏せ.mq5` | `indicator/MQL5/` |
+| `定石弐_待ち伏せ.mq4` | `indicator/MQL4/` |
 | 商品名・キャッチコピー・商品概要 | `indicator/SALES-quadra.md` |
 | 取扱説明書 | `indicator/MANUAL-machibuse.md` |
 | 登録フォーム入力シート | `indicator/FORM-machibuse.md` |
@@ -89,9 +89,9 @@ USDJPYは0時台でも0.5pipsしかなく、跳ねません。
 ### A-3. zipを作る
 
 ```
-ChienConditionMeter_v103.zip
-  ├ ChienConditionMeter_v103.ex5
-  ├ ChienConditionMeter_v103.ex4
+定石零_環境計.zip
+  ├ 定石零_環境計.ex5
+  ├ 定石零_環境計.ex4
   └ 取扱説明書.pdf
 ```
 

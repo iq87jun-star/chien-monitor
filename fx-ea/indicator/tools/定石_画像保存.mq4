@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                                   ChienShot.mq5  |
+//|                                                   定石_画像保存.mq4  |
 //|                                                                  |
 //| チャートだけを画像として保存するスクリプト。                      |
 //|                                                                  |
@@ -9,10 +9,11 @@
 //| チャート領域だけが、指定した大きさで保存されます。                |
 //|                                                                  |
 //| 使い方: チャートにドラッグするだけ。                              |
-//| 保存先: MQL5\Files\(データフォルダは ファイル→データフォルダを開く)|
+//| 保存先: MQL4\Files\(データフォルダは ファイル→データフォルダを開く)|
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property version   "1.00"
+#property strict
 #property script_show_inputs
 #property description "チャートだけを画像として保存します。口座番号やタスクバーは写りません。"
 
@@ -48,9 +49,9 @@ void OnStart()
       return;
      }
 
-   PrintFormat("保存しました: MQL5\\Files\\%s  (%d x %d)", name, InpWidth, InpHeight);
-   Alert("保存しました\n\nMQL5\\Files\\" + name +
-         "\n\nファイル → データフォルダを開く → MQL5 → Files");
+   PrintFormat("保存しました: MQL4\\Files\\%s  (%d x %d)", name, InpWidth, InpHeight);
+   Alert("保存しました\n\nMQL4\\Files\\" + name +
+         "\n\nファイル → データフォルダを開く → MQL4 → Files");
   }
 
 //+------------------------------------------------------------------+
