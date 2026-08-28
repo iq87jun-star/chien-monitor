@@ -19,7 +19,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.08"
+#property version   "1.09"
 #property description "定石 零 ─ 環境計: スプレッド割高度・想定変動幅・時間帯コストを可視化します。売買シグナルは出しません。"
 #property indicator_chart_window
 #property indicator_buffers 0
@@ -457,8 +457,13 @@ void Draw()
 
    bool sprKnown = (curSpr > 0.0);   // 配信停止・休場では 0 が返る
 
+   // 判定は「表示している値」で行う。内部の 1.4999... を 1.50 と表示しながら
+   // しきい値1.5未満として扱うと、画面と判定が食い違う
+   double ratioShown = MathRound(ratio * 100.0) / 100.0;      // 表示は %.2f
+   double moveShown  = MathRound(moveCost * 10.0) / 10.0;     // 表示は %.1f
+
    int i = 0;
-   SetLine(i++, "定石 零 ─ 環境計  v1.08", InpColHead);
+   SetLine(i++, "定石 零 ─ 環境計  v1.09", InpColHead);
    SetLine(i++, StringFormat("%s  %s   %02d:%02d サーバー時刻",
                 _Symbol, PeriodName(), dt.hour, dt.min), InpColText);
    SetLine(i++, " ", InpColText);
@@ -490,9 +495,9 @@ void Draw()
          SetLine(i++, StringFormat("  この時間帯の中央値  %.1f pips", medNow), InpColText);
          color rc = InpColGood;
          string rt = "適正";
-         if(ratio >= InpRatioAvoid)        { rc = InpColAvoid;   rt = "回避推奨"; }
-         else if(ratio >= InpRatioCaution) { rc = InpColCaution; rt = "割高"; }
-         SetLine(i++, StringFormat("  割高度  %.2f 倍   %s", ratio, rt), rc);
+         if(ratioShown >= InpRatioAvoid)        { rc = InpColAvoid;   rt = "回避推奨"; }
+         else if(ratioShown >= InpRatioCaution) { rc = InpColCaution; rt = "割高"; }
+         SetLine(i++, StringFormat("  割高度  %.2f 倍   %s", ratioShown, rt), rc);
         }
      }
 
@@ -505,9 +510,9 @@ void Draw()
      {
       color mc = InpColGood;
       string mt = "十分";
-      if(moveCost < InpMoveCostMin)            { mc = InpColAvoid;   mt = "不足"; }
-      else if(moveCost < InpMoveCostMin * 1.5) { mc = InpColCaution; mt = "やや不足"; }
-      SetLine(i++, StringFormat("  変動幅 / スプレッド  %.1f 倍   %s", moveCost, mt), mc);
+      if(moveShown < InpMoveCostMin)            { mc = InpColAvoid;   mt = "不足"; }
+      else if(moveShown < InpMoveCostMin * 1.5) { mc = InpColCaution; mt = "やや不足"; }
+      SetLine(i++, StringFormat("  変動幅 / スプレッド  %.1f 倍   %s", moveShown, mt), mc);
      }
 
    // --- ロールオーバー
@@ -532,13 +537,13 @@ void Draw()
    bool ratioKnown = (sprKnown && medNow > 0.0);
    if(ratioKnown)
      {
-      if(ratio >= InpRatioAvoid) score = 2;
-      else if(ratio >= InpRatioCaution) score = 1;
+      if(ratioShown >= InpRatioAvoid) score = 2;
+      else if(ratioShown >= InpRatioCaution) score = 1;
      }
    if(sprKnown)
      {
-      if(moveCost < InpMoveCostMin) score = 2;
-      else if(moveCost < InpMoveCostMin * 1.5 && score < 1) score = 1;
+      if(moveShown < InpMoveCostMin) score = 2;
+      else if(moveShown < InpMoveCostMin * 1.5 && score < 1) score = 1;
      }
 
    string vtext = "○  コスト条件は良好";
