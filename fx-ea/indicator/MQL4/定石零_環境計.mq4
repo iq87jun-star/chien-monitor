@@ -19,7 +19,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.05"
+#property version   "1.06"
 #property description "定石 零 ─ 環境計: スプレッド割高度・想定変動幅・時間帯コストを可視化します。売買シグナルは出しません。"
 #property indicator_chart_window
 #property strict
@@ -72,7 +72,7 @@ input int    InpBackdropWidth   = 0;     // 下地の幅(px。0で文字サイ�
 #define MAX_PER_HOUR 512
 #define MAX_LIVE     360    // 自前収集の1時間帯あたり保持数(=6日分/毎分1件)
 #define MIN_SAMPLES  2      // 1時間帯あたり最低これだけの本数が要る
-#define BAR_CHAR     "█"    // 横棒の文字(実線ブロック。| だと隙間が目立つ)
+#define BAR_CHAR     "━"    // 横棒の文字(中央の太線。█は上下の行と繋がる)
 #define BAR_MAX      12     // 横棒の最大長
 #define LINES        14
 
@@ -406,16 +406,22 @@ void Draw()
    SetLine(i++, " ", InpColText);
 
    // --- スプレッド
-   SetLine(i++, StringFormat("スプレッド        %.1f pips", curSpr), InpColHead);
-   if(!g_medValid)
+   if(!sprKnown)
      {
-      SetLine(i++, StringFormat("  履歴が不足(H1 %d本 / %d時間帯が集計済)",
-              g_barsGot, g_hoursReady), InpColCaution);
-      SetLine(i++, "  実測を毎分蓄積中です。しばらく稼働させてください", InpColCaution);
+      SetLine(i++, "スプレッド        取得できません", InpColCaution);
+      SetLine(i++, "  レート配信の停止中か休場の可能性があります", InpColCaution);
+      SetLine(i++, " ", InpColText);
      }
    else
      {
-      if(medNow <= 0.0)
+      SetLine(i++, StringFormat("スプレッド        %.1f pips", curSpr), InpColHead);
+      if(!g_medValid)
+        {
+         SetLine(i++, StringFormat("  履歴が不足(H1 %d本 / %d時間帯が集計済)",
+                 g_barsGot, g_hoursReady), InpColCaution);
+         SetLine(i++, "  実測を毎分蓄積中です。しばらく稼働させてください", InpColCaution);
+        }
+      else if(medNow <= 0.0)
         {
          // この時間帯だけ履歴が無い。測れていないのに「適正」と出してはいけない
          SetLine(i++, "  この時間帯の中央値  未取得", InpColCaution);
@@ -435,11 +441,16 @@ void Draw()
    // --- 想定変動幅
    SetLine(i++, StringFormat("想定変動幅 ATR(%d)  %.1f pips", InpAtrPeriod, atrPips),
            InpColHead);
-   color mc = InpColGood;
-   string mt = "十分";
-   if(moveCost > 0.0 && moveCost < InpMoveCostMin) { mc = InpColAvoid; mt = "不足"; }
-   else if(moveCost > 0.0 && moveCost < InpMoveCostMin * 1.5) { mc = InpColCaution; mt = "やや不足"; }
-   SetLine(i++, StringFormat("  変動幅 / スプレッド  %.1f 倍   %s", moveCost, mt), mc);
+   if(!sprKnown)
+      SetLine(i++, "  変動幅 / スプレッド  測定不能", InpColCaution);
+   else
+     {
+      color mc = InpColGood;
+      string mt = "十分";
+      if(moveCost < InpMoveCostMin)            { mc = InpColAvoid;   mt = "不足"; }
+      else if(moveCost < InpMoveCostMin * 1.5) { mc = InpColCaution; mt = "やや不足"; }
+      SetLine(i++, StringFormat("  変動幅 / スプレッド  %.1f 倍   %s", moveCost, mt), mc);
+     }
 
    // --- ロールオーバー
    if(g_medValid && g_worstHour >= 0)
@@ -460,21 +471,26 @@ void Draw()
    // --- 総合判定
    SetLine(i++, " ", InpColText);
    int score = 0;   // 0=良好 1=警戒 2=回避
-   bool ratioKnown = (medNow > 0.0);
+   bool ratioKnown = (sprKnown && medNow > 0.0);
    if(ratioKnown)
      {
       if(ratio >= InpRatioAvoid) score = 2;
       else if(ratio >= InpRatioCaution) score = 1;
      }
-   if(moveCost > 0.0 && moveCost < InpMoveCostMin) score = 2;
-   else if(moveCost > 0.0 && moveCost < InpMoveCostMin * 1.5 && score < 1) score = 1;
+   if(sprKnown)
+     {
+      if(moveCost < InpMoveCostMin) score = 2;
+      else if(moveCost < InpMoveCostMin * 1.5 && score < 1) score = 1;
+     }
 
    string vtext = "○  コスト条件は良好";
    color  vcol  = InpColGood;
    if(score == 1)      { vtext = "△  コスト警戒";   vcol = InpColCaution; }
    else if(score == 2) { vtext = "×  コストが割高"; vcol = InpColAvoid; }
-   // 割高度が測れていないうちは判定の半分が欠けている。良好と言い切らない
-   if(!g_medValid)
+   // 測れていない項目がある間は「良好」と言い切らない
+   if(!sprKnown)
+     { vtext = "─  判定できません(スプレッド取得待ち)"; vcol = InpColCaution; }
+   else if(!g_medValid)
      { vtext = "─  判定できません(履歴の集計待ち)"; vcol = InpColCaution; }
    else if(!ratioKnown)
      { vtext = "─  スプレッド判定は保留(この時間帯の履歴待ち)"; vcol = InpColCaution; }
