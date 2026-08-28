@@ -19,7 +19,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.07"
+#property version   "1.08"
 #property description "定石 零 ─ 環境計: スプレッド割高度・想定変動幅・時間帯コストを可視化します。売買シグナルは出しません。"
 #property indicator_chart_window
 #property indicator_buffers 0
@@ -458,7 +458,7 @@ void Draw()
    bool sprKnown = (curSpr > 0.0);   // 配信停止・休場では 0 が返る
 
    int i = 0;
-   SetLine(i++, "定石 零 ─ 環境計  v1.07", InpColHead);
+   SetLine(i++, "定石 零 ─ 環境計  v1.08", InpColHead);
    SetLine(i++, StringFormat("%s  %s   %02d:%02d サーバー時刻",
                 _Symbol, PeriodName(), dt.hour, dt.min), InpColText);
    SetLine(i++, " ", InpColText);
@@ -592,8 +592,8 @@ void Draw()
          if(!show[h] || g_medSpread[h] <= 0.0) continue;
          color hc = (h == hour) ? InpColHead
                   : (h == g_worstHour ? InpColAvoid : InpColText);
-         string tag = (h == hour) ? "  ←今" : "";
-         SetLine(i, StringFormat("  %02d  %5.1f", h, g_medSpread[h]) + tag, hc);
+         string mark = (h == hour) ? "> " : "  ";   // 印は行頭に。棒と重ならない
+         SetLine(i, StringFormat("%s%02d  %5.1f", mark, h, g_medSpread[h]), hc);
          // 棒は矩形で描く(文字だと字形や行間に左右され、行同士が繋がる)
          DrawBar(h, i, g_medSpread[h] / MathMax(g_medSpread[g_worstHour], 0.01), hc);
          i++;
