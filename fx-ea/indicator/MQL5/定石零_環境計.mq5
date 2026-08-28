@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//|                                        ChienConditionMeter_v103.m  |
+//|                                            定石零_環境計.mq5  |
 //|                                                                  |
 //| 定石 零 ─ 環境計                                                  |
 //|                                                                  |
@@ -19,7 +19,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.04"
+#property version   "1.05"
 #property description "定石 零 ─ 環境計: スプレッド割高度・想定変動幅・時間帯コストを可視化します。売買シグナルは出しません。"
 #property indicator_chart_window
 #property indicator_buffers 0
@@ -69,7 +69,7 @@ input color  InpColBackdrop     = C'12,12,16'; // 下地の色
 input int    InpBackdropWidth   = 0;     // 下地の幅(px。0で文字サイズから自動)
 
 //--- 内部
-#define PANEL_PREFIX "ChienCM103_"
+#define PANEL_PREFIX "ChienCM_"
 #define MAX_PER_HOUR 512
 #define MAX_LIVE     360    // 自前収集の1時間帯あたり保持数(=6日分/毎分1件)
 #define MIN_SAMPLES  2      // 1時間帯あたり最低これだけの本数が要る
@@ -157,7 +157,7 @@ int OnCalculate(const int rates_total, const int prev_calculated,
      }
 
    // スプレッド分布は1時間に一度だけ組み直す(毎ティックでは重い)
-   if(!g_medValid ? (now - g_lastRebuild >= 60) : (now - g_lastRebuild >= 3600))
+   if(!g_medValid || now - g_lastRebuild >= 3600)
      {
       BuildSpreadProfile();
       g_lastRebuild = now;
@@ -412,7 +412,7 @@ void Draw()
    double moveCost = (curSpr > 0.0) ? atrPips / curSpr : 0.0;
 
    int i = 0;
-   SetLine(i++, "定石 零 ─ 環境計  v1.04", InpColHead);
+   SetLine(i++, "定石 零 ─ 環境計  v1.05", InpColHead);
    SetLine(i++, StringFormat("%s  %s   %02d:%02d サーバー時刻",
                 _Symbol, PeriodName(), dt.hour, dt.min), InpColText);
    SetLine(i++, " ", InpColText);
