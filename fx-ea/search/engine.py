@@ -31,7 +31,10 @@ UNIVERSE = [
 ]
 SYMS = {n: (y, c) for y, n, c in UNIVERSE}
 # 参照専用シンボル(建玉は作らない。局面フィルタの条件としてのみ使う)
-REFS = {"VIX": "^VIX", "US10Y": "^TNX"}
+REFS = {"VIX": "^VIX", "US10Y": "^TNX",
+        "US3M": "^IRX", "US5Y": "^FVX", "US30Y": "^TYX",   # 金利の期間構造
+        "SKEW": "^SKEW", "VVIX": "^VVIX",                   # オプション市場
+        "COPPER": "HG=F"}                                   # 景気の代理
 # 往復コスト(名目比%)。スプレッド+スリッページ+1泊分の金利/スワップの保守値。
 COST = {"fx": 0.020, "idx": 0.030, "met": 0.050, "eng": 0.060}
 # 1泊追加保有あたりの上乗せコスト
@@ -330,6 +333,18 @@ def build(family, params):
         out = []
         for t in syms:
             out += _F.f_lead(rows_of(src), rows_of(t), _cost(SYMS[t][1], hold), **p)
+        return out
+
+    if family == "xspread":
+        # 2つの参照系列の関係(比または差)で局面を判定する。
+        # xfilter が単一系列の水準を見るのに対し、こちらは系列間の関係を見る。
+        a, b = p.pop("a"), p.pop("b")
+        syms = p.pop("symbols")
+        hold = p.get("hold", 1)
+        out = []
+        for t in syms:
+            out += _F.f_xspread(rows_of(t), rows_of(a), rows_of(b),
+                                _cost(SYMS[t][1], hold), **p)
         return out
 
     if family == "xfilter":

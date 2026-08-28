@@ -527,3 +527,101 @@ def i_dowrange(rows, dow=0):
 
 
 FORECAST = {"rangefc": i_rangefc, "volpersist": i_volpersist, "dowrange": i_dowrange}
+
+
+def f_xspread(rows_tgt, rows_a, rows_b, cost, n=200, mode="ratio",
+              above=True, direction=1, hold=5):
+    """2つの参照系列の関係で局面を判定する。
+
+    mode="ratio" なら a/b、"diff" なら a-b の系列を作り、
+    それが自身の n 日平均より上(下)の日だけ tgt を direction 方向に建てる。
+    金利カーブの傾き(10年 − 3ヶ月)や 銅/金 比のような、
+    水準ではなく**系列間の関係**が意味を持つ指標のための族。
+    """
+    da = {r[0]: r[4] for r in rows_a}
+    db = {r[0]: r[4] for r in rows_b}
+    dates = sorted(set(da) & set(db))
+    if len(dates) < n + 2: return []
+    ser = []
+    for d in dates:
+        if mode == "ratio":
+            if db[d] == 0: ser.append(None); continue
+            ser.append(da[d] / db[d])
+        else:
+            ser.append(da[d] - db[d])
+    m = I.sma([0.0 if x is None else x for x in ser], n)
+    cond = {}
+    for i, d in enumerate(dates):
+        if ser[i] is None or m[i] is None: continue
+        cond[d] = ser[i] > m[i]
+    sig = []
+    for i, r in enumerate(rows_tgt):
+        c = cond.get(r[0])
+        if c is None or c != above: continue
+        sig.append((i, direction))
+    return execute(rows_tgt, sig, hold, cost)
+
+
+def i_effratio(rows, n=20):
+    """「いまトレンドが出ているか」の表示に中身があるか。
+
+    効率比 = |n本の正味の値動き| / |1本ごとの値動きの合計|。
+    1 に近いほど一方向、0 に近いほど行ったり来たり。
+    直近 n 本の効率比が、**次の n 本の効率比**を、その銘柄の平年並みの
+    効率比より正確に言い当てられるかを測る。
+    素朴基準 = それまでの全履歴の平均効率比(拡大平均)。
+    """
+    c = [r[4] for r in rows]
+    absd = [0.0] + [abs(c[i] - c[i - 1]) for i in range(1, len(c))]
+    pre = [0.0]
+    for x in absd: pre.append(pre[-1] + x)
+
+    def er(i, j):
+        """バー i+1 〜 j の効率比。"""
+        path = pre[j + 1] - pre[i + 1]
+        return abs(c[j] - c[i]) / path if path > 0 else None
+
+    # 素朴基準に入れてよいのは、目的変数の窓(i+1〜i+n)と重ならない実現値だけ。
+    # i-1 時点の実現値の窓は i〜i+n-1 をカバーしていて重なるため、
+    # n 本ぶん遅らせて積む。遅らせないと素朴基準だけが未来を覗くことになる。
+    run, cnt, out, pend = 0.0, 0, [], []
+    for i in range(n, len(rows) - n):
+        cur = er(i - n, i)
+        nxt = er(i, i + n)
+        if cur is None or nxt is None: continue
+        pend.append(nxt)
+        if len(pend) > n:
+            run += pend.pop(0); cnt += 1
+        if cnt >= 250:
+            base = run / cnt
+            out.append((rows[i + n][0],
+                        abs(nxt - base) - abs(nxt - cur), abs(nxt - base)))
+    return out
+
+
+def i_gapsize(rows, n=14, kind="sma"):
+    """「明日の寄りはどれくらい飛ぶか」の表示に中身があるか。
+
+    窓の大きさ = |始値 − 前日終値| / 前日終値 × 100。
+    直近 n 本の平均窓幅が、翌日の窓幅を、その銘柄の平年並みより
+    正確に言い当てられるかを測る。FXでは窓がほぼ出ないので指数・商品向け。
+    """
+    o = [r[1] for r in rows]; c = [r[4] for r in rows]
+    gap = [None] + [abs(o[i] - c[i - 1]) / c[i - 1] * 100 if c[i - 1] > 0 else None
+                    for i in range(1, len(rows))]
+    run, cnt, out = 0.0, 0, []
+    for i in range(len(rows) - 1):
+        if gap[i] is None: continue
+        run += gap[i]; cnt += 1
+        if cnt < 250 or gap[i + 1] is None: continue
+        w = [x for x in gap[max(1, i - n + 1):i + 1] if x is not None]
+        if len(w) < n: continue
+        pred = sum(w) / len(w) if kind == "sma" else gap[i]
+        act, base = gap[i + 1], run / cnt
+        out.append((rows[i + 1][0],
+                    abs(act - base) - abs(act - pred), abs(act - base)))
+    return out
+
+
+FORECAST["effratio"] = i_effratio
+FORECAST["gapsize"]  = i_gapsize

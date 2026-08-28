@@ -1090,6 +1090,168 @@
    },
    "space_size": 160,
    "status": "done"
+  },
+  {
+   "id": "xspread-curve-idx",
+   "note": "金利カーブ(米10年−3ヶ月)が自身の200日平均より急な局面だけ指数を買い 5日保有",
+   "family": "xspread",
+   "params": {
+    "a": "US10Y",
+    "b": "US3M",
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 200,
+    "mode": "diff",
+    "above": true,
+    "direction": 1,
+    "hold": 5
+   },
+   "space_size": 216,
+   "status": "done"
+  },
+  {
+   "id": "xspread-copper-gold-carry",
+   "note": "銅/金 比が200日平均超(景気拡大の織り込み)の局面だけ円クロスのキャリー通貨を買い 5日保有",
+   "family": "xspread",
+   "params": {
+    "a": "COPPER",
+    "b": "XAUUSD",
+    "symbols": [
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY"
+    ],
+    "n": 200,
+    "mode": "ratio",
+    "above": true,
+    "direction": 1,
+    "hold": 5
+   },
+   "space_size": 144,
+   "status": "done"
+  },
+  {
+   "id": "xfilter-skew-idx",
+   "note": "SKEW指数(オプション市場のテール risk 価格)が100日平均超の局面だけ指数を売り 5日保有",
+   "family": "xfilter",
+   "params": {
+    "ref": "SKEW",
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 100,
+    "above": true,
+    "direction": -1,
+    "hold": 5
+   },
+   "space_size": 72,
+   "status": "done"
+  },
+  {
+   "id": "i-effratio-fx",
+   "track": "indicator",
+   "note": "【指標】FX13ペア 直近20本の効率比は、次の20本の効率比を平年並みより正確に言い当てるか(=「いまトレンドが出ている」表示に中身があるか)",
+   "family": "effratio",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 20
+   },
+   "space_size": 36,
+   "status": "done"
+  },
+  {
+   "id": "i-gapsize-idx",
+   "track": "indicator",
+   "note": "【指標】指数7銘柄 直近14本の平均窓幅は、翌日の窓の大きさを平年並みより正確に言い当てるか",
+   "family": "gapsize",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 14,
+    "kind": "sma"
+   },
+   "space_size": 24,
+   "status": "done"
+  },
+  {
+   "id": "i-effratio-fx-r2",
+   "track": "indicator",
+   "note": "【指標】FX13ペア 効率比の持続性(初回は素朴基準の拡大平均が目的変数の窓と重なり、素朴基準側だけが未来を覗いていた。実現値の積み上げをn本遅らせて再検定)",
+   "family": "effratio",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 20
+   },
+   "space_size": 36,
+   "status": "done"
+  },
+  {
+   "id": "i-effratio-idx-r2",
+   "track": "indicator",
+   "note": "【指標】指数7銘柄 効率比の持続性(同上の修正版)",
+   "family": "effratio",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 20
+   },
+   "space_size": 36,
+   "status": "done"
   }
  ]
 }
