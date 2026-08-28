@@ -24,11 +24,2127 @@
    }
   ],
   "rates": {
-   "exalted": 370.7,
-   "chaos": 11.07
+   "exalted": 390.5,
+   "chaos": 10.97
   },
   "primary": "divine",
   "secondary": "chaos"
  },
- "lines": []
+ "lines": [
+  {
+   "id": 699,
+   "itemId": "Voices Sapphire",
+   "detailsId": "voices-sapphire",
+   "name": "Voices",
+   "baseType": "Sapphire",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVm9pY2VzIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/f989334af4/Voices.png",
+   "flavourText": "Only a madman would ignore a god's instructions.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 600,
+   "listingCount": 162,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": -4.15,
+    "data": [
+     null,
+     0,
+     null,
+     1.93,
+     null,
+     null,
+     -4.15
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Allocates (2-4) [SinisterJewelSockets|Sinister] [Jewel] sockets",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 404,
+   "itemId": "The Adorned Diamond",
+   "detailsId": "the-adorned-diamond",
+   "name": "The Adorned",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RyaWFsbWFzdGVySmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/fa6b8d5683/TrialmasterJewel.png",
+   "flavourText": "At their height, the Vaal glittered under the sun.\r\nA decade, a century, an aeon of prosperity...\r\nnow nothing more than a passing wonder.",
+   "levelRequired": 0,
+   "category": "Vaal [Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 40,
+   "listingCount": 1342,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": 32.01,
+    "data": [
+     null,
+     0,
+     null,
+     5.94,
+     null,
+     null,
+     32.01
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(1-148)% increased Effect of [Jewel] Socket Passive Skills\ncontaining [Corrupted] [ItemRarity|Magic] [Jewel|Jewels]",
+     "optional": true
+    },
+    {
+     "text": "(1-28)% increased [Fire] Damage",
+     "optional": true
+    },
+    {
+     "text": "+(-26-26) to maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "",
+     "optional": true
+    },
+    {
+     "text": "(1-27)% increased [Lightning] Damage",
+     "optional": true
+    },
+    {
+     "text": "(1-10)% reduced [Cold] Damage",
+     "optional": true
+    },
+    {
+     "text": "(2-30)% increased [Cold] Damage",
+     "optional": true
+    },
+    {
+     "text": "(4-29)% reduced [Fire] Damage",
+     "optional": true
+    },
+    {
+     "text": "(1-29)% increased [Evasion|Evasion Rating]",
+     "optional": true
+    },
+    {
+     "text": "(1-30)% reduced [Evasion|Evasion Rating]",
+     "optional": true
+    },
+    {
+     "text": "(1-28)% reduced Global [Physical] Damage",
+     "optional": true
+    },
+    {
+     "text": "(2-14)% increased Effect of [Jewel] Socket Passive Skills\ncontaining [Corrupted] [ItemRarity|Rare] [Jewel|Jewels]",
+     "optional": true
+    },
+    {
+     "text": "(4-30)% reduced [Armour]",
+     "optional": true
+    },
+    {
+     "text": "(3-25)% reduced [Lightning] Damage",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] deal (3-30)% reduced Damage",
+     "optional": true
+    },
+    {
+     "text": "(1-24)% increased [Armour]",
+     "optional": true
+    },
+    {
+     "text": "(20-30)% reduced [Chaos] Damage",
+     "optional": true
+    },
+    {
+     "text": "(8-18)% increased Global [Physical] Damage",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] deal (1-16)% increased Damage",
+     "optional": true
+    },
+    {
+     "text": "(5-30)% increased [Chaos] Damage",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 379,
+   "itemId": "Grand Spectrum Emerald",
+   "detailsId": "grand-spectrum-emerald",
+   "name": "Grand Spectrum",
+   "baseType": "Emerald",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9FbWVyYWxkIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/687a109210/GrandSpectrum_Emerald.png",
+   "flavourText": "An indomitable force of control.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 10,
+   "listingCount": 79,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0.4,
+    "data": [
+     null,
+     0,
+     null,
+     0.4,
+     null,
+     null,
+     0.4
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "2% increased [Spirit|Spirit] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 377,
+   "itemId": "Controlled Metamorphosis Diamond",
+   "detailsId": "controlled-metamorphosis-diamond",
+   "name": "Controlled Metamorphosis",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0JyZWFjaEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/9c17747ff2/BreachJewel.png",
+   "flavourText": "Our world was dying, but we chose to survive.\r\nWe broke free from the chains within.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "radius": "Variable",
+   "primaryValue": 8,
+   "listingCount": 1358,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 33.33,
+    "data": [
+     null,
+     0,
+     null,
+     33.33,
+     null,
+     null,
+     33.33
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Only affects Passives in Small Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Medium Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Large Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Massive Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Medium-Small Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Medium-Large Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Very Large Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Very Small Ring",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius can be Allocated without being connected to your tree",
+     "optional": false
+    },
+    {
+     "text": "-(20-5)% to all [ElementalDamage|Elemental] [Resistances]",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 382,
+   "itemId": "Against the Darkness Time-Lost Diamond",
+   "detailsId": "against-the-darkness-time-lost-diamond",
+   "name": "Against the Darkness",
+   "baseType": "Time-Lost Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NhbmN0dW1KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/95cd807e91/SanctumJewel.png",
+   "flavourText": "After the fires, in the depths of the Winter of the World, all life in the Vastiri banded together. Whether serpent, hyena, human, or golem, hated enemies clasped hand to claw, built refuge, and fought side by side against the Abyssals. Thus, the Third Pact was born.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "radius": "Small",
+   "primaryValue": 5.91,
+   "listingCount": 3715,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -9.04,
+    "data": [
+     null,
+     0,
+     null,
+     7.69,
+     null,
+     null,
+     -9.04
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Strength]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Lightning] Damage",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Fire Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Fire] Damage",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Cold Resistance]",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +8 to maximum Mana",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Shock|Shock] duration on you",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +(11-12) to [Spirit|Spirit]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Fire Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Cold] Damage",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Freeze|Freeze] Duration on you",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Ignite|Ignite] Duration on you",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Intelligence]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Dexterity]",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Lightning Resistance]",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +8 to maximum Life",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-3)% to [Resistances|Chaos Resistance]",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Cold Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Chaos Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Lightning Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Chaos] Damage",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 380,
+   "itemId": "Grand Spectrum Ruby",
+   "detailsId": "grand-spectrum-ruby",
+   "name": "Grand Spectrum",
+   "baseType": "Ruby",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9SdWJ5IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/8d964b3e88/GrandSpectrum_Ruby.png",
+   "flavourText": "A wellspring of vitality bubbling from within.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 3,
+   "listingCount": 141,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -25,
+    "data": [
+     null,
+     0,
+     null,
+     0,
+     null,
+     null,
+     -25
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "2% increased Maximum Life per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 381,
+   "itemId": "Grand Spectrum Sapphire",
+   "detailsId": "grand-spectrum-sapphire",
+   "name": "Grand Spectrum",
+   "baseType": "Sapphire",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
+   "flavourText": "Skin like steel tempered by bright flames.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 2.79,
+   "listingCount": 195,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 8.32,
+    "data": [
+     null,
+     0,
+     null,
+     3.69,
+     null,
+     null,
+     8.32
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+(6-7)% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 384,
+   "itemId": "Undying Hate Timeless Jewel",
+   "detailsId": "undying-hate-timeless-jewel",
+   "name": "Undying Hate",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVW5keWluZ0hhdHJlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/077ca94281/UndyingHatred.png",
+   "flavourText": "They believed themselves driven by necessity,\r\nbut that desperation made them monstrous.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "radius": "Very Large",
+   "primaryValue": 1.42,
+   "listingCount": 8691,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -13.29,
+    "data": [
+     null,
+     0,
+     null,
+     -38.88,
+     null,
+     null,
+     -13.29
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Glorifying the defilement of (2246-27203) souls in tribute to Amanamu\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (86-30871) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (103-30622) souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (112-30638) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (83-30971) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    },
+    {
+     "text": "Conquered Attribute Passive Skills also grant +(2-4) to Tribute",
+     "optional": true
+    },
+    {
+     "text": "Conquered Attribute Passive Skills also grant +(6-8) to [Dexterity]",
+     "optional": true
+    },
+    {
+     "text": "Conquered Attribute Passive Skills also grant +3 to all [Attributes|Attributes]",
+     "optional": true
+    },
+    {
+     "text": "Conquered Attribute Passive Skills also grant +(4-8) to [Intelligence]",
+     "optional": true
+    },
+    {
+     "text": "Conquered Small Passive Skills also grant 4% increased [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "Conquered Small Passive Skills also grant 5% increased [Chaos|Chaos] damage",
+     "optional": true
+    },
+    {
+     "text": "Conquered Small Passive Skills also grant 3% increased [AilmentThreshold|Elemental Ailment Threshold]",
+     "optional": true
+    },
+    {
+     "text": "One Conquered Notable Passive Skill becomes [AbyssJewelHistoricOverrideNotable_T_T_6|Unfettered Hysteria]",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 383,
+   "itemId": "Heroic Tragedy Timeless Jewel",
+   "detailsId": "heroic-tragedy-timeless-jewel",
+   "name": "Heroic Tragedy",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V4cGVkaXRpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8356e82d27/ExpeditionJewel.png",
+   "flavourText": "They believed themselves courageous and selfless,\r\nbut that bravery became the doom at their door.",
+   "levelRequired": 0,
+   "category": "Kalguuran [Jewel]",
+   "radius": "Very Large",
+   "primaryValue": 0.3842,
+   "listingCount": 10000,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -6.09,
+    "data": [
+     null,
+     0,
+     null,
+     22.51,
+     null,
+     null,
+     -6.09
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Remembrancing (101-7971) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "Remembrancing (150-7801) songworthy deeds by the line of Vorana\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "Remembrancing (117-7978) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 400,
+   "itemId": "Flesh Crucible Diamond",
+   "detailsId": "flesh-crucible-diamond",
+   "name": "Flesh Crucible",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVml2aXNlY3Rpb24iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/a97d64a80f/Vivisection.png",
+   "flavourText": "\"Never mind the pain, it's only... making room. Unrelated fact,\r\na person can live a normal life with just one kidney. Or just one\r\nlung. You never know what Vaal technology will cost you...\"",
+   "levelRequired": 0,
+   "category": "Vaal [Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.09114,
+   "listingCount": 8188,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": -0.23,
+    "data": [
+     null,
+     0,
+     null,
+     2.48,
+     null,
+     null,
+     -0.23
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(10-20)% less [Armour], [Evasion] and [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "(10-20)% less Damage",
+     "optional": true
+    },
+    {
+     "text": "(10-20)% less Movement Speed",
+     "optional": true
+    },
+    {
+     "text": "(10-20)% less [Spirit]",
+     "optional": true
+    },
+    {
+     "text": "(10-20)% less maximum Life",
+     "optional": true
+    },
+    {
+     "text": "(10-20)% less maximum Mana",
+     "optional": true
+    },
+    {
+     "text": "[Bulwark]",
+     "optional": true
+    },
+    {
+     "text": "[ChargeCycle|Resonance]",
+     "optional": true
+    },
+    {
+     "text": "[Oasis]",
+     "optional": true
+    },
+    {
+     "text": "[GiantsBlood|Giant's Blood]",
+     "optional": true
+    },
+    {
+     "text": "[KeystoneWildsurgeIncantation|Wildsurge Incantation]",
+     "optional": true
+    },
+    {
+     "text": "[MindOverMatter|Mind Over Matter]",
+     "optional": true
+    },
+    {
+     "text": "[PainAttunement|Pain Attunement]",
+     "optional": true
+    },
+    {
+     "text": "[ResoluteTechnique|Resolute Technique]",
+     "optional": true
+    },
+    {
+     "text": "[UnwaveringStance|Unwavering Stance]",
+     "optional": true
+    },
+    {
+     "text": "[ZealotsOath|Zealot's Oath]",
+     "optional": true
+    },
+    {
+     "text": "[AvatarOfFire|Avatar of Fire]",
+     "optional": true
+    },
+    {
+     "text": "[TrustedKinship|Trusted Kinship]",
+     "optional": true
+    },
+    {
+     "text": "[ChaosInoculation|Chaos Inoculation]",
+     "optional": true
+    },
+    {
+     "text": "[AncestralBond|Ancestral Bond]",
+     "optional": true
+    },
+    {
+     "text": "[Conduit]",
+     "optional": true
+    },
+    {
+     "text": "[CrimsonAssault|Crimson Assault]",
+     "optional": true
+    },
+    {
+     "text": "[ElementalEquilibrium|Elemental Equilibrium]",
+     "optional": true
+    },
+    {
+     "text": "[EternalYouth|Eternal Youth]",
+     "optional": true
+    },
+    {
+     "text": "[HollowPalmTechnique|Hollow Palm Technique]",
+     "optional": true
+    },
+    {
+     "text": "[KeystoneAutoInvocation|Ritual Cadence]",
+     "optional": true
+    },
+    {
+     "text": "[KeystoneFireSpellsBecomeChaosSpells|Blackflame Covenant]",
+     "optional": true
+    },
+    {
+     "text": "[GlancingBlows|Glancing Blows]",
+     "optional": true
+    },
+    {
+     "text": "[ScarredFaith|Scarred Faith]",
+     "optional": true
+    },
+    {
+     "text": "[WhispersOfDoom|Whispers of Doom]",
+     "optional": true
+    },
+    {
+     "text": "[DanceWithDeath|Dance With Death]",
+     "optional": true
+    },
+    {
+     "text": "[LordOfTheWilds|Lord of the Wilds]",
+     "optional": true
+    },
+    {
+     "text": "[BloodMagic|Blood Magic]",
+     "optional": true
+    },
+    {
+     "text": "[Heartstopper]",
+     "optional": true
+    },
+    {
+     "text": "[EldritchBattery|Eldritch Battery]",
+     "optional": true
+    },
+    {
+     "text": "[IronReflexes|Iron Reflexes]",
+     "optional": true
+    },
+    {
+     "text": "[KeystoneDruidicRage|Primal Hunger]",
+     "optional": true
+    },
+    {
+     "text": "[NecromanticTalisman|Necromantic Talisman]",
+     "optional": true
+    },
+    {
+     "text": "[VaalPact|Vaal Pact]",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 401,
+   "itemId": "From Nothing Diamond",
+   "detailsId": "from-nothing-diamond",
+   "name": "From Nothing",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JpdHVhbEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/192c7799d7/RitualJewel.png",
+   "flavourText": "They clawed their way up from the agonising depths of nonexistence,\r\nbreathing deep with joy the exquisite light of meaning.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "radius": "Small",
+   "primaryValue": 0.06915,
+   "listingCount": 10000,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": 26.79,
+    "data": [
+     null,
+     0,
+     null,
+     -23.43,
+     null,
+     null,
+     26.79
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passives in Radius of [passive_keystone_acrobatics|Primal Hunger] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_ancestral_bond|Ancestral Bond] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_dance_with_death|Dance with Death] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_lord_of_the_wilds|Lord of the Wilds] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_necromantic_talisman|Necromantic Talisman] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_pain_attunement|Pain Attunement] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_resolute_technique|Resolute Technique] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_resonance|Resonance] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_hollow_palm_technique|Hollow Palm Technique] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_chaos_inoculation|Chaos Inoculation] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_crimson_dance_|Crimson Assault] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_fire_spells_to_chaos|Blackflame Covenant] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_giants_blood|Giant's Blood] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_glancing_blows_|Glancing Blows] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_iron_reflexes_|Iron Reflexes] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_two_companions|Trusted Kinship] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_wildsurge_incantation|Wildsurge Incantation] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_zealots_oath|Zealot's Oath] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_eternal_youth|Eternal Youth] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_alternate_es_recovery|Scarred Faith] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_avatar_of_fire|Avatar of Fire] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_heartstopper|Heartstopper] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_mind_over_matter|Mind Over Matter] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_oasis|Oasis] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_unwavering_stance_|Unwavering Stance] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_whispers_of_doom|Whispers of Doom] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_elemental_equilibrium|Elemental Equilibrium] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 378,
+   "itemId": "Heart of the Well Diamond",
+   "detailsId": "heart-of-the-well-diamond",
+   "name": "Heart of the Well",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvQXBvc3RhdGVzSGVhcnQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/cc73484d32/ApostatesHeart.png",
+   "flavourText": "Countless souls scream in agonising harmony,\r\nforever sinking under the weight of the newly dead.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.06402,
+   "listingCount": 10000,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -21.75,
+    "data": [
+     null,
+     0,
+     null,
+     2.09,
+     null,
+     null,
+     -21.75
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "[Gain] (9-15)% of Damage as Extra [Fire] Damage",
+     "optional": true
+    },
+    {
+     "text": "(2-3)% increased [Attack] Speed",
+     "optional": true
+    },
+    {
+     "text": "(1-2)% increased Movement Speed",
+     "optional": true
+    },
+    {
+     "text": "(2-3)% of Damage taken [Recoup|Recouped] as Life",
+     "optional": true
+    },
+    {
+     "text": "+1% to [MaximumResistances|Maximum Fire Resistance]",
+     "optional": true
+    },
+    {
+     "text": "(4-8)% increased [Flask|Flask] Effect Duration",
+     "optional": true
+    },
+    {
+     "text": "[Gain] (9-14)% of Damage as Extra [Cold] Damage",
+     "optional": true
+    },
+    {
+     "text": "[Gain] (9-15)% of Damage as Extra [Lightning] Damage",
+     "optional": true
+    },
+    {
+     "text": "(5-10)% chance to [Poison|Poison] on [HitDamage|Hit]",
+     "optional": true
+    },
+    {
+     "text": "(6-12)% increased [CriticalDamageBonus|Critical Damage Bonus]",
+     "optional": true
+    },
+    {
+     "text": "(2-3)% increased Cast Speed",
+     "optional": true
+    },
+    {
+     "text": "(5-10)% chance to [Aggravate] [Bleeding] on targets you [HitDamage|Hit] with [Attack|Attacks]",
+     "optional": true
+    },
+    {
+     "text": "(10-15)% chance when a [Charm|Charm] is used to use another Charm without consuming Charges",
+     "optional": true
+    },
+    {
+     "text": "(4-8)% increased [Critical|Critical Hit] Chance",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] have (3-12)% additional [Physical] Damage Reduction",
+     "optional": true
+    },
+    {
+     "text": "Gain additional [AilmentThreshold|Ailment Threshold] equal to (4-10)% of maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "(4-8)% increased [SkillSpeed|Skill Speed]",
+     "optional": true
+    },
+    {
+     "text": "(6-12)% increased [Stun] Buildup",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] have +(3-4)% to all Elemental [Resistances]",
+     "optional": true
+    },
+    {
+     "text": "Recover (1-2)% of maximum Mana on Kill",
+     "optional": true
+    },
+    {
+     "text": "(4-8)% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
+     "optional": true
+    },
+    {
+     "text": "(6-12)% increased [CriticalDamageBonus|Critical Spell Damage Bonus]",
+     "optional": true
+    },
+    {
+     "text": "(4-8)% increased chance to inflict [Ailments]",
+     "optional": true
+    },
+    {
+     "text": "+1% to all [MaximumResistances|Maximum Elemental Resistances]",
+     "optional": true
+    },
+    {
+     "text": "(5-10)% increased [StunThreshold|Stun Threshold]",
+     "optional": true
+    },
+    {
+     "text": "[Debuff|Debuffs] on you expire (4-8)% faster",
+     "optional": true
+    },
+    {
+     "text": "(2-3)% of Skill Mana Costs [StatConversion|Converted] to Life Costs",
+     "optional": true
+    },
+    {
+     "text": "(15-23)% increased [CullingStrike|Culling Strike] Threshold",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] gain (10-15)% of their maximum Life as Extra maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "(4-8)% increased [Flask|Flask] Charges gained",
+     "optional": true
+    },
+    {
+     "text": "Gain 1 [Rage|Rage] on [Melee] [HitDamage|Hit]",
+     "optional": true
+    },
+    {
+     "text": "Recover (1-2)% of maximum Life on Kill",
+     "optional": true
+    },
+    {
+     "text": "(6-12)% increased [AilmentThreshold|Elemental Ailment Threshold]",
+     "optional": true
+    },
+    {
+     "text": "(6-12)% increased Life Regeneration rate",
+     "optional": true
+    },
+    {
+     "text": "(3-15)% increased Skill Effect Duration",
+     "optional": true
+    },
+    {
+     "text": "+1% to [MaximumResistances|Maximum Lightning Resistance]",
+     "optional": true
+    },
+    {
+     "text": "(40-60)% increased [EnergyShield|Energy Shield] from Equipped Body Armour",
+     "optional": true
+    },
+    {
+     "text": "(15-25)% increased [Exposure] Effect",
+     "optional": true
+    },
+    {
+     "text": "(40-60)% increased [Armour] from Equipped Body Armour",
+     "optional": true
+    },
+    {
+     "text": "(2-3)% of Damage is taken from Mana before Life",
+     "optional": true
+    },
+    {
+     "text": "(5-10)% reduced [Slow|Slowing] Potency of [Debuff|Debuffs] on You",
+     "optional": true
+    },
+    {
+     "text": "+1% to [MaximumResistances|Maximum Cold Resistance]",
+     "optional": true
+    },
+    {
+     "text": "(30-50)% chance to [Pierce|Pierce] an Enemy",
+     "optional": true
+    },
+    {
+     "text": "(5-10)% chance to inflict [Bleeding|Bleeding] on [HitDamage|Hit]",
+     "optional": true
+    },
+    {
+     "text": "(4-8)% increased Mana Regeneration Rate",
+     "optional": true
+    },
+    {
+     "text": "[Gain] (7-13)% of Damage as Extra [Chaos] Damage",
+     "optional": true
+    },
+    {
+     "text": "(40-60)% increased [Evasion] Rating from Equipped Body Armour",
+     "optional": true
+    },
+    {
+     "text": "(20-30)% increased Mana Regeneration Rate while moving",
+     "optional": true
+    },
+    {
+     "text": "Gain [Physical|Physical] [Thorns|Thorns] damage equal to (4.01-5.8)% of [ItemArmour|Item Armour] on [Equipped] Body Armour",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] have (2-3)% increased [Attack] and Cast Speed",
+     "optional": true
+    },
+    {
+     "text": "Recover (2-4)% of maximum Life on Killing a [Poison|Poisoned] Enemy",
+     "optional": true
+    },
+    {
+     "text": "(6-12)% chance for [Trigger] skills to refund half of [Energy] Spent",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] Regenerate (1-3)% of maximum Life per second",
+     "optional": true
+    },
+    {
+     "text": "(8-16)% increased Mana Cost [Efficiency]",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] have (6-12)% increased [Critical|Critical Hit Chance]",
+     "optional": true
+    },
+    {
+     "text": "Gain additional [StunThreshold|Stun Threshold] equal to (4-10)% of maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "Gain (1-2) [Rage] when [HitDamage|Hit] by an Enemy",
+     "optional": true
+    },
+    {
+     "text": "Recover (5-10)% of maximum Mana when a [Charm|Charm] is used",
+     "optional": true
+    },
+    {
+     "text": "(5-8)% increased [Attack] Speed while a [Rarity|Rare or Unique] Enemy is in your [Presence]",
+     "optional": true
+    },
+    {
+     "text": "(2-18)% increased [CooldownRecovery|Cooldown Recovery Rate]",
+     "optional": true
+    },
+    {
+     "text": "(15-25)% increased Damage while your [Companion] is in your [Presence]",
+     "optional": true
+    },
+    {
+     "text": "[DamagingAilments|Damaging Ailments] deal damage (2-4)% faster",
+     "optional": true
+    },
+    {
+     "text": "Regenerate (1-1.5)% of maximum Life per Second if you've used a Life [Flask] in the past 10 seconds",
+     "optional": true
+    },
+    {
+     "text": "(5-10)% of Physical Damage prevented [Recoup|Recouped] as Life",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] [Reviving|Revive] (5-10)% faster",
+     "optional": true
+    },
+    {
+     "text": "(15-25)% chance for [Lightning] Damage with [HitDamage|Hits] to be [Lucky]",
+     "optional": true
+    },
+    {
+     "text": "(40-60)% increased [IceCrystals|Ice Crystal] Life",
+     "optional": true
+    },
+    {
+     "text": "(8-14)% increased speed of [Recoup] Effects",
+     "optional": true
+    },
+    {
+     "text": "[Charm|Charms] applied to you have (15-25)% increased Effect",
+     "optional": true
+    },
+    {
+     "text": "+(2-3.96)% to Thorns [Critical|Critical Hit] Chance",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 402,
+   "itemId": "Megalomaniac Diamond",
+   "detailsId": "megalomaniac-diamond",
+   "name": "Megalomaniac",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
+   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.0589,
+   "listingCount": 10000,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": -15.3,
+    "data": [
+     null,
+     0,
+     null,
+     100.2,
+     null,
+     null,
+     -15.3
+    ]
+   }
+  },
+  {
+   "id": 403,
+   "itemId": "Prism of Belief Diamond",
+   "detailsId": "prism-of-belief-diamond",
+   "name": "Prism of Belief",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NhY3JlZEZsYW1lSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/04600d71f9/SacredFlameJewel.png",
+   "flavourText": "Entropy can be reversed.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.00256,
+   "listingCount": 10000,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": -6.23,
+    "data": [
+     null,
+     0,
+     null,
+     1.83,
+     null,
+     null,
+     -6.23
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+1 to Level of all Bonestorm Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Forge Hammer Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Frost Wall Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Grim Feast Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Armour Breaker Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Barkskin Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Combat Frenzy Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-3) to Level of all Ferocious Roar Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Ice Shards Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Primal Strikes Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Poisonburst Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Sacrifice Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Skeletal Brute Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Snipe Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Walking Calamity Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Wind Serpent's Fury Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Arc Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Arctic Howl Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Bone Offering Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Cull The Weak Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Dark Effigy Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Despair Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Detonating Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Disengage Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Emergency Reload Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Essence Drain Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Flame Wall Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Fortifying Cry Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Fragmentation Rounds Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Hand of Chayula Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Herald of Ash Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Arctic Armour Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Ice Nova Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Boneshatter Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Savage Fury Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Siphoning Strike Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Snap Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Stampede Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Summon Spectre Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Trail of Caltrops Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Trinity Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Unearth Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Wave of Frost Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Cast on Elemental Ailment Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Glacial Lance Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Incendiary Shot Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Lightning Warp Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Lingering Illusion Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Oil Grenade Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Wing Blast Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Mana Tempest Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Temporal Chains Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Cast on Minion Death Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Blood Hunt Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Earthshatter Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Frost Darts Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Hammer of the Gods Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Whirling Slash Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Firestorm Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Armour Piercing Rounds Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Charge Regulation Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Devour Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Furious Slam Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Infernal Cry Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Mana Remnants Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Overwhelming Presence Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Pounce Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Spiral Volley Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Stormcaller Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all War Banner Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Hailstorm Rounds Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Thrashing Vines Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Whirlwind Lance Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Siege Ballista Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Voltaic Mark Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Artillery Ballista Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Herald of Ice Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Raging Spirits Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Shield Charge Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Sunder Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Twister Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Vaulting Impact Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Wolf Pack Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Ghost Dance Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Pain Offering Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Reaper's Invocation Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Ancestral Warrior Totem Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Attrition Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Berserk Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Electrocuting Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Enfeeble Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Feral Invocation Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Freezing Salvo Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Gas Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Herald of Blood Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Herald of Plague Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Siphon Elements Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Soul Offering Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Supercharged Slam Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Withering Presence Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Spear of Solaris Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Volcanic Fissure Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Vulnerability Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Alchemist's Boon Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Briarpatch Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Dread Banner Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Falling Thunder Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Flash Grenade Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Mantra of Destruction Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Plague Bearer Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Wind Blast Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Elemental Weakness Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Escape Shot Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Living Bomb Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Lunar Assault Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Mirage Archer Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Shattering Palm Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Tornado Shot Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Toxic Domain Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Vine Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Cast on Critical Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Stormblast Bolts Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Hexblast Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Gas Grenade Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Defiance Banner Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Detonate Dead Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Fangs of Frost Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Magma Barrier Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Skeletal Cleric Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Molten Blast Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Mortar Cannon Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Skeletal Arsonist Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Tempest Bell Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Fury of the Mountain Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Leap Slam Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Ravenous Swarm Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Rolling Magma Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Blasphemy Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Contagion Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Lightning Rod Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Lightning Spear Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Plasma Blast Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Sniper's Mark Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Ice Strike Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Rampage Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Magnetic Salvo Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Shockchain Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Barrier Invocation Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Fireball Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Flameblast Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Lightning Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Seismic Cry Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Eye of Winter Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Scavenged Plating Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Barrage Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Archmage Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Earthquake Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Elemental Sundering Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Explosive Spear Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all High Velocity Rounds Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Lunar Blessing Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Profane Ritual Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Resonating Shield Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Storm Wave Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Ancestral Cry Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Rapid Assault Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Thunderous Leap Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Voltaic Grenade Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Rake Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Siege Cascade Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Frozen Locus Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Bone Cage Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Eternal Rage Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Rolling Slam Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Shockwave Totem Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Shard Scavenger Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Time of Need Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Cast on Dodge Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Elemental Conflux Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Skeletal Storm Mage Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Staggering Palm Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Rain of Arrows Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Wind Dancer Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Blink Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Iron Ward Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Convalescence Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Gathering Storm Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Glacial Bolt Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Incinerate Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Orb of Storms Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Perfect Strike Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Skeletal Frost Mage Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Tornado Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Ball Lightning Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Permafrost Bolts Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Charged Staff Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Lightning Conduit Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Thunderstorm Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Cross Slash Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Ice-Tipped Arrows Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Toxic Growth Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Bloodhound's Mark Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Storm Lance Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Rapid Shot Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Glacial Cascade Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Tempest Flurry Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Freezing Mark Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Elemental Invocation Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Spearfield Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Herald of Thunder Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Volcano Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Spell Totem Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Killing Palm Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Raise Zombie Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-3) to Level of all Frost Bomb Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Skeletal Sniper Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Flame Breath Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Shockburst Rounds Skills",
+     "optional": true
+    }
+   ]
+  }
+ ]
 }
