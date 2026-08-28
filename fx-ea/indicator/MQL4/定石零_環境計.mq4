@@ -399,8 +399,10 @@ void Draw()
    double atrPips = (atrVal > 0.0) ? atrVal / g_pip : 0.0;
    double moveCost = (curSpr > 0.0) ? atrPips / curSpr : 0.0;
 
+   bool sprKnown = (curSpr > 0.0);   // 配信停止・休場では 0 が返る
+
    int i = 0;
-   SetLine(i++, "定石 零 ─ 環境計  v1.05", InpColHead);
+   SetLine(i++, "定石 零 ─ 環境計  v1.06", InpColHead);
    SetLine(i++, StringFormat("%s  %s   %02d:%02d サーバー時刻",
                 _Symbol, PeriodName(), dt.hour, dt.min), InpColText);
    SetLine(i++, " ", InpColText);
