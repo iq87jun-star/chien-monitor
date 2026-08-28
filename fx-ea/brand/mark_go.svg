@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0%" stop-color="#1B4E6E"/>
+      <stop offset="55%" stop-color="#163E58"/>
+      <stop offset="100%" stop-color="#102E42"/>
+    </linearGradient>
+    <radialGradient id="stone" cx="38%" cy="32%" r="72%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="58%" stop-color="#F3F0E8"/>
+      <stop offset="100%" stop-color="#D9D3C4"/>
+    </radialGradient>
+    <filter id="drop" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="14" stdDeviation="20" flood-color="#07161F" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="100%" height="100%" fill="url(#bg)"/>
+
+  <!-- go board grid: 5 lines each way, inset -->
+  <g stroke="#8FC4E4" stroke-opacity="0.42" stroke-width="6" stroke-linecap="square">
+    <line x1="212" y1="212" x2="812" y2="212"/>
+    <line x1="212" y1="362" x2="812" y2="362"/>
+    <line x1="212" y1="512" x2="812" y2="512"/>
+    <line x1="212" y1="662" x2="812" y2="662"/>
+    <line x1="212" y1="812" x2="812" y2="812"/>
+    <line x1="212" y1="212" x2="212" y2="812"/>
+    <line x1="362" y1="212" x2="362" y2="812"/>
+    <line x1="512" y1="212" x2="512" y2="812"/>
+    <line x1="662" y1="212" x2="662" y2="812"/>
+    <line x1="812" y1="212" x2="812" y2="812"/>
+  </g>
+
+  <!-- star point -->
+  <circle cx="512" cy="512" r="14" fill="#8FC4E4" fill-opacity="0.62"/>
+
+  <!-- the placed stone: one decisive move -->
+  <g filter="url(#drop)">
+    <circle cx="362" cy="362" r="118" fill="url(#stone)"/>
+    <circle cx="362" cy="362" r="118" fill="none" stroke="#0D2634" stroke-opacity="0.22" stroke-width="3"/>
+  </g>
+</svg>
