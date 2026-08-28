@@ -25,22 +25,23 @@ def bar(v, mx, width=18):
     return "|" * max(0, int(round(v / mx * width)))
 
 def panel_lines(mode):
-    """v1.02 の実際の出力に合わせる(上位5+現在の時間帯、有効件数表示)。"""
+    """v1.09 の実際の出力に合わせる(上位5+現在、行頭の印、矩形の棒)。"""
     mx = max(HOURS)
     TOPN = 5
     if mode == "good":
-        hour, spr, med = 9, 0.9, HOURS[9]
+        hour, spr = 9, 0.9
         atr, mc = 32.4, 36.0
     else:
-        hour, spr, med = 23, 7.8, HOURS[23]
+        hour, spr = 23, 7.8
         atr, mc = 21.6, 2.8
-    ratio = spr / med
+    med = HOURS[hour]
+    ratio = round(spr / med, 2)
     togo = (0 - hour + 24) % 24
     samples, hours_ready = 1284, 24
 
     L = []
-    A = lambda t, c="txt": L.append({"t": t, "c": c})
-    A("定石 零 ─ 環境計  v1.02", "head")
+    A = lambda t, c="txt", bar=None: L.append({"t": t, "c": c, "bar": bar})
+    A("定石 零 ─ 環境計  v1.09", "head")
     A(f"USDJPY  H1   {hour:02d}:14 サーバー時刻")
     A(" ")
     A(f"スプレッド        {spr:.1f} pips", "head")
@@ -54,7 +55,7 @@ def panel_lines(mode):
     elif mc >= 8: mt, mcls = "やや不足", "caution"
     else:         mt, mcls = "不足", "avoid"
     A(f"  変動幅 / スプレッド  {mc:.1f} 倍   {mt}", mcls)
-    A(f"最もスプレッドが開く時間帯  00:00", "head")
+    A("最もスプレッドが開く時間帯  00:00", "head")
     A(f"  中央値 {HOURS[0]:.1f} pips / あと {togo} 時間",
       "avoid" if togo <= 1 else "txt")
     A(" ")
@@ -63,17 +64,17 @@ def panel_lines(mode):
     elif ratio >= 1.5: score = 1
     if mc < 8: score = 2
     elif mc < 12 and score < 1: score = 1
-    vt = ["○  コスト条件は良好", "△  コスト警戒", "×  コストが割高"][score]
-    A(f"判定   {vt}", ["good", "caution", "avoid"][score])
+    A(f"判定   {['○  コスト条件は良好','△  コスト警戒','×  コストが割高'][score]}",
+      ["good", "caution", "avoid"][score])
     A(" ")
     A(f"スプレッドが開く時間帯 上位{TOPN} ─ 有効{samples}件/{hours_ready}時間帯", "head")
 
     top = sorted(range(24), key=lambda h: -HOURS[h])[:TOPN]
-    show = set(top) | {hour}
-    for h in sorted(show):
+    for h in sorted(set(top) | {hour}):
         cls = "head" if h == hour else ("avoid" if HOURS[h] == mx else "txt")
-        tag = " ←今" if h == hour else ""
-        A(f"  {h:02d}  {HOURS[h]:5.1f}  {bar(HOURS[h], mx)}{tag}", cls)
+        mark = "&gt; " if h == hour else "&nbsp;&nbsp;"
+        A(f"{mark}{h:02d}  {HOURS[h]:5.1f}".replace(" ", "&nbsp;"),
+          cls, bar=HOURS[h] / mx)
     return L
 
 
@@ -88,20 +89,36 @@ canvas{display:block}
 .pane{position:absolute;left:14px;top:52px;font-size:12.5px;
       line-height:16.5px;white-space:pre;padding:8px 10px 10px 8px;
       background:rgba(12,12,16,0.93);border:1px solid #303038}
+.badge{position:absolute;right:0;bottom:0;font-size:12px;color:#cfcfcf;
+  background:rgba(10,10,12,0.88);border-top:1px solid #3a3a42;
+  border-left:1px solid #3a3a42;padding:6px 12px;letter-spacing:0.02em}
+.row{position:relative}
+.bar{position:absolute;left:96px;top:4px;height:8px}
 .head{color:#ffffff}.txt{color:#d2d2d2}.good{color:#32cd32}
 .caution{color:#ffd700}.avoid{color:#ff6347}
 """
 
 def html(mode, seed):
     lines = panel_lines(mode)
-    spans = "".join(
-        f'<div class="{l["c"]}">{l["t"].replace(" ", "&nbsp;")}</div>' for l in lines)
+    COL = {"head": "#ffffff", "txt": "#d2d2d2", "good": "#32cd32",
+           "caution": "#ffd700", "avoid": "#ff6347"}
+    parts = []
+    for l in lines:
+        txt = l["t"] if "&nbsp;" in l["t"] else l["t"].replace(" ", "&nbsp;")
+        bar = ""
+        if l.get("bar") is not None:
+            w = max(2, int(round(l["bar"] * 156)))
+            bar = (f'<span class="bar" style="width:{w}px;'
+                   f'background:{COL[l["c"]]}"></span>')
+        parts.append(f'<div class="{l["c"]} row">{txt}{bar}</div>')
+    spans = "".join(parts)
     data = json.dumps(candles(150, seed))
     return f"""<!doctype html><meta charset="utf-8"><style>{CSS}</style>
 <div class="win">
   <div class="tab">USDJPY,H1&nbsp;&nbsp;&nbsp;157.204&nbsp;157.288&nbsp;157.161&nbsp;157.242</div>
   <canvas id="c" width="1280" height="814"></canvas>
   <div class="pane">{spans}</div>
+  <div class="badge">表示イメージ ─ 実際の画面とは数値が異なります</div>
 </div>
 <script>
 const d = {data};

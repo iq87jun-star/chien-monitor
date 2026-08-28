@@ -61,6 +61,9 @@ canvas{display:block}
 .pane{position:absolute;left:14px;top:52px;font-size:12.5px;line-height:16.5px;
       white-space:pre;padding:8px 12px 10px 8px;
       background:rgba(12,12,16,0.93);border:1px solid #303038}
+.badge{position:absolute;right:0;bottom:0;font-size:12px;color:#cfcfcf;
+  background:rgba(10,10,12,0.88);border-top:1px solid #3a3a42;
+  border-left:1px solid #3a3a42;padding:6px 12px;letter-spacing:0.02em}
 .head{color:#fff}.unmet{color:#8a8a8a}.met{color:#32cd32}
 .buy{color:#00bfff}.sell{color:#ff4500}
 """
@@ -76,6 +79,7 @@ def html(mode, seed):
   <div class="tab">GBPJPY,Daily&nbsp;&nbsp;&nbsp;191.882&nbsp;192.451&nbsp;190.774&nbsp;190.912</div>
   <canvas id="c" width="1280" height="734"></canvas>
   <div class="pane">{spans}</div>
+  <div class="badge">表示イメージ ─ 実際の画面とは数値が異なります</div>
 </div>
 <script>
 const d = {data}, SIG = {str(sig).lower()};
