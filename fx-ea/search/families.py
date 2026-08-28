@@ -435,3 +435,95 @@ def f_ccystr(data, cost_of, look=20, hold=5):
 
 
 SINGLE["volspike"] = f_volspike
+
+
+# ------------------------------------------------------------ 指標トラック
+# 売買の族が「翌日の方向」を当てにいくのに対し、こちらは
+# 「翌日の変動幅」「いまの局面」を素朴な基準よりうまく言い当てられるかを測る。
+# 返す形が違う: [(日付, 改善, 素朴基準の大きさ)]。
+#   改善 = 素朴基準の誤差 − 予測の誤差  (プラス = 素朴基準より当たっている)
+
+def i_rangefc(rows, n=14, kind="atr"):
+    """翌日の値幅(終値比%)を予測できるか。
+
+    素朴基準 = その銘柄のそれまでの全履歴の平均値幅(拡大平均)。
+    予測      = ATR(n) / EWMA(n) / SMA(n) / 直前の値幅。
+    予測対象は高安幅なので、予測子も高安幅で組む(kind="sma")のが定義として整合する。
+    「想定変動幅の表示に中身があるか」を測る検定。
+    """
+    o, h, l, c = _ohlc(rows)
+    rng = [(h[i] - l[i]) / c[i] * 100 if c[i] > 0 else None for i in range(len(rows))]
+    a = I.atr(h, l, c, n)
+    ew, prev = [None] * len(rows), None
+    k = 2.0 / (n + 1)
+    for i, x in enumerate(rng):
+        if x is None: continue
+        prev = x if prev is None else prev + k * (x - prev)
+        ew[i] = prev
+    out, run, cnt = [], 0.0, 0
+    for i in range(len(rows) - 1):
+        if rng[i] is None: continue
+        run += rng[i]; cnt += 1              # ここまでの履歴のみ(先読みなし)
+        if cnt < 60 or rng[i + 1] is None: continue
+        base_pred = run / cnt
+        if kind == "atr":
+            # 注意: ATRは「真の値幅」でギャップを含む。予測対象の高安幅より
+            # 系統的に大きく出るため、ギャップの大きい銘柄ほど当たらなくなる。
+            pred = None if a[i] is None or c[i] <= 0 else a[i] / c[i] * 100
+        elif kind == "ewma":
+            pred = ew[i]
+        elif kind == "sma":
+            w = [x for x in rng[i - n + 1:i + 1] if x is not None]
+            pred = sum(w) / len(w) if len(w) == n else None
+        else:
+            pred = rng[i]
+        if pred is None: continue
+        act = rng[i + 1]
+        be, me = abs(act - base_pred), abs(act - pred)
+        out.append((rows[i + 1][0], be - me, be))
+    return out
+
+
+def i_volpersist(rows, n=20, q=0.8):
+    """「いま荒れている」の表示に中身があるか。
+
+    直近 n 日の実現ボラがそれまでの履歴の上位 q 分位を超えた日について、
+    翌日の値動きの大きさ |リターン| が無条件の平均をどれだけ上回るかを測る。
+    素朴基準 = それまでの全履歴の平均 |リターン|(拡大平均)。
+    """
+    o, h, l, c = _ohlc(rows)
+    ret = [None] + [c[i] / c[i - 1] - 1 for i in range(1, len(c))]
+    sd = I.rolling_sd([0.0 if x is None else x for x in ret], n)
+    hist, run, cnt, out = [], 0.0, 0, []
+    for i in range(len(rows) - 1):
+        if ret[i] is None: continue
+        run += abs(ret[i]) * 100; cnt += 1
+        if sd[i] is not None: hist.append(sd[i])
+        if cnt < 250 or len(hist) < 250 or ret[i + 1] is None: continue
+        past = sorted(hist[:-1])
+        thr = past[min(len(past) - 1, int(len(past) * q))]
+        if sd[i] is None or sd[i] < thr: continue
+        base = run / cnt
+        out.append((rows[i + 1][0], abs(ret[i + 1]) * 100 - base, base))
+    return out
+
+
+def i_dowrange(rows, dow=0):
+    """「この曜日は動きやすい」の表示に中身があるか。
+
+    その曜日の値幅が、それまでの全履歴の平均値幅をどれだけ上回るかを測る。
+    """
+    import datetime as _dt
+    o, h, l, c = _ohlc(rows)
+    run, cnt, out = 0.0, 0, []
+    for i in range(len(rows)):
+        if c[i] <= 0: continue
+        r = (h[i] - l[i]) / c[i] * 100
+        if cnt >= 250 and _dt.date.fromisoformat(rows[i][0]).weekday() == dow:
+            base = run / cnt
+            out.append((rows[i][0], r - base, base))
+        run += r; cnt += 1                   # 当日を足すのは判定の後(先読みなし)
+    return out
+
+
+FORECAST = {"rangefc": i_rangefc, "volpersist": i_volpersist, "dowrange": i_dowrange}

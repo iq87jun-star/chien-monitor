@@ -137,6 +137,86 @@ def evaluate(series, cum_tests, hold=1, benchmark=None):
     }
 
 
+# ------------------------------------------------- 指標プロトコル v1(事前固定)
+# 売買の族は「翌日の方向」を当てにいく。指標の族は当てにいかない。
+# 商品が主張するのは「変動幅や局面を素朴な想定より正確に示す」ことなので、
+# 素朴な基準に対する改善そのものを検定する。
+#
+#   1. 最低観測数 100
+#   2. 補正t(改善のt / √hold)が累積検定数のBonferroni閾値以上
+#   3. IS(前半60%)/OOS(後半40%)の双方で改善プラス
+#   4. 改善が正の年が全年の 80% 以上(局面依存でないこと)
+#   5. 実用水準 — 平均改善 ÷ 平均素朴基準が 5% 以上
+#
+# 「常時買い持ちを上回る」に相当する対照は、素朴基準として改善の定義に
+# 織り込み済み。累積検定数は売買トラックと共有する(見た回数は同じ台帳で数える)。
+MIN_YEAR_HIT = 0.80
+MIN_GAIN_RATIO = 0.05
+
+
+def evaluate_forecast(series, cum_tests, hold=1):
+    """series: [(日付, 改善, 素朴基準の大きさ)] を指標プロトコル v1 で判定。"""
+    if len(series) < MIN_TRADES:
+        return {"verdict": "検証不能", "reason": f"観測数 {len(series)} < {MIN_TRADES}",
+                "n": len(series)}
+    s = sorted(series)
+    gains = [g for _, g, _ in s]
+    bases = [b for _, _, b in s]
+    cut = int(len(gains) * 0.6)
+    is_m, oos_m = st.mean(gains[:cut]), st.mean(gains[cut:])
+    t_raw = tstat(gains)
+    t_adj = t_raw / math.sqrt(max(1, hold))
+
+    by = defaultdict(list)
+    for d, g, _ in s: by[d[:4]].append(g)
+    hit_years = sum(1 for y in by if st.mean(by[y]) > 0)
+    hit_ratio = hit_years / len(by)
+
+    per_date = defaultdict(list)
+    for d, g, _ in s: per_date[d].append(g)
+    dvals = [st.mean(v) for _, v in sorted(per_date.items())]
+    t_date = tstat(dvals) / math.sqrt(max(1, hold))
+
+    mean_g, mean_b = st.mean(gains), st.mean(bases)
+    ratio = mean_g / mean_b if mean_b else 0.0
+    need_t = required_t(cum_tests)
+
+    reasons = []
+    if t_adj < need_t:
+        reasons.append(f"補正t={t_adj:.2f}(生t={t_raw:.2f}/√{hold}) < 必要{need_t:.2f}"
+                       f"(累積{cum_tests}検定)")
+    if is_m <= 0:  reasons.append(f"IS改善 {is_m:.3f} <= 0")
+    if oos_m <= 0: reasons.append(f"OOS改善 {oos_m:.3f} <= 0")
+    if hit_ratio < MIN_YEAR_HIT:
+        reasons.append(f"改善年 {hit_years}/{len(by)} = {hit_ratio:.0%} < {MIN_YEAR_HIT:.0%}")
+    if ratio < MIN_GAIN_RATIO:
+        reasons.append(f"改善率 {ratio:.1%} < {MIN_GAIN_RATIO:.0%}(実用水準に届かない)")
+
+    return {
+        "verdict": "通過" if not reasons else "棄却",
+        "reason": " / ".join(reasons) if reasons else "全基準を満たす",
+        "n": len(gains), "t": round(t_raw, 3), "t_adj": round(t_adj, 3),
+        "need_t": round(need_t, 3), "hold": hold,
+        "n_dates": len(dvals), "t_date": round(t_date, 3),
+        "gain": round(mean_g, 4), "base": round(mean_b, 4),
+        "gain_ratio": round(ratio, 4),
+        "is_gain": round(is_m, 4), "oos_gain": round(oos_m, 4),
+        "hit_years": hit_years, "years": len(by),
+        "first": s[0][0], "last": s[-1][0],
+    }
+
+
+def build_forecast(family, params):
+    """指標トラックの族を組み立てる。symbols を渡すと全銘柄で回して合成する。"""
+    p = dict(params)
+    fn = _F.FORECAST[family]
+    syms = p.pop("symbols", None) or [p.pop("sym")]
+    out = []
+    for sym in syms:
+        out += fn(rows_of(sym), **p)
+    return out
+
+
 def benchmark_series(symbols, hold):
     """同じ銘柄・同じ保有日数の「常に買い持ち」ベースライン。"""
     import families as _FF

@@ -914,6 +914,182 @@
    },
    "space_size": 54,
    "status": "done"
+  },
+  {
+   "id": "i-rangefc-fx",
+   "track": "indicator",
+   "note": "【指標】FX13ペア ATR(14)は翌日の値幅を、その銘柄の過去平均値幅より正確に言い当てるか",
+   "family": "rangefc",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 14,
+    "kind": "atr"
+   },
+   "space_size": 36,
+   "status": "done"
+  },
+  {
+   "id": "i-rangefc-idx",
+   "track": "indicator",
+   "note": "【指標】指数7銘柄 ATR(14)は翌日の値幅を過去平均値幅より正確に言い当てるか",
+   "family": "rangefc",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 14,
+    "kind": "atr"
+   },
+   "space_size": 36,
+   "status": "done"
+  },
+  {
+   "id": "i-rangefc-fx-last",
+   "track": "indicator",
+   "note": "【指標】FX13ペア 「昨日の値幅」だけでも過去平均より当たるか(ATRの上乗せ分を測るための対照)",
+   "family": "rangefc",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 14,
+    "kind": "last"
+   },
+   "space_size": 36,
+   "status": "done"
+  },
+  {
+   "id": "i-volpersist-fx",
+   "track": "indicator",
+   "note": "【指標】FX13ペア 直近20日ボラが過去の上位20%に入った日の翌日は、実際に平常より大きく動くか",
+   "family": "volpersist",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 20,
+    "q": 0.8
+   },
+   "space_size": 27,
+   "status": "done"
+  },
+  {
+   "id": "i-dowrange-fx-mon",
+   "track": "indicator",
+   "note": "【指標】FX13ペア 月曜の値幅は平常の値幅より大きいか(週明けを「動く日」と表示してよいか)",
+   "family": "dowrange",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "dow": 0
+   },
+   "space_size": 30,
+   "status": "done"
+  },
+  {
+   "id": "i-rangefc-fx-sma",
+   "track": "indicator",
+   "note": "【指標】FX13ペア 高安幅の14日平均は翌日の高安幅を過去平均より正確に言い当てるか(ATR版が負だったのは真の値幅と高安幅の定義ずれによる。予測子を対象と同じ高安幅で組み直した)",
+   "family": "rangefc",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 14,
+    "kind": "sma"
+   },
+   "space_size": 160,
+   "status": "done"
+  },
+  {
+   "id": "i-rangefc-idx-sma",
+   "track": "indicator",
+   "note": "【指標】指数7銘柄 高安幅の14日平均は翌日の高安幅を過去平均より正確に言い当てるか(同上の組み直し)",
+   "family": "rangefc",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 14,
+    "kind": "sma"
+   },
+   "space_size": 160,
+   "status": "done"
   }
  ]
 }
