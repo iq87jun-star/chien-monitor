@@ -19,7 +19,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.06"
+#property version   "1.07"
 #property description "定石 零 ─ 環境計: スプレッド割高度・想定変動幅・時間帯コストを可視化します。売買シグナルは出しません。"
 #property indicator_chart_window
 #property strict
@@ -72,8 +72,7 @@ input int    InpBackdropWidth   = 0;     // 下地の幅(px。0で文字サイ�
 #define MAX_PER_HOUR 512
 #define MAX_LIVE     360    // 自前収集の1時間帯あたり保持数(=6日分/毎分1件)
 #define MIN_SAMPLES  2      // 1時間帯あたり最低これだけの本数が要る
-#define BAR_CHAR     "━"    // 横棒の文字(中央の太線。█は上下の行と繋がる)
-#define BAR_MAX      12     // 横棒の最大長
+#define BAR_PREFIX   "BAR"  // 横棒(矩形オブジェクト)の名前
 #define LINES        14
 
 double   g_medSpread[24];      // 時間帯別のスプレッド中央値(pips)
@@ -95,6 +94,7 @@ bool     g_liveLoaded  = false;
 datetime g_lastRebuild = 0;
 datetime g_lastDraw    = 0;
 int      g_buf[24][MAX_PER_HOUR];   // 時間帯別スプレッド(集計用)
+bool     g_barShown[24];            // この描画で棒を出した時間帯
 
 //+------------------------------------------------------------------+
 int OnInit()
@@ -384,6 +384,50 @@ void SetLine(const int idx, const string text, const color col)
   }
 
 //+------------------------------------------------------------------+
+//| 時間帯の棒を矩形で描く。line は何行目か、frac は最長に対する比    |
+//+------------------------------------------------------------------+
+void DrawBar(const int hour24, const int line, const double frac, const color col)
+  {
+   string n = PANEL_PREFIX + BAR_PREFIX + IntegerToString(hour24);
+   if(ObjectFind(0, n) < 0)
+     {
+      if(!ObjectCreate(0, n, OBJ_RECTANGLE_LABEL, 0, 0, 0)) return;
+      ObjectSetInteger(0, n, OBJPROP_BORDER_TYPE, BORDER_FLAT);
+      ObjectSetInteger(0, n, OBJPROP_SELECTABLE, false);
+      ObjectSetInteger(0, n, OBJPROP_HIDDEN, true);
+      ObjectSetInteger(0, n, OBJPROP_BACK, false);
+     }
+   g_barShown[hour24] = true;
+   int barX0  = InpX + (int)(InpFontSize * 8.0);          // 数値の右側から始める
+   int barMax = (int)(InpFontSize * 13.0);                // 最長の幅
+   int w = (int)MathRound(frac * barMax);
+   if(w < 2) w = 2;                                       // 一番短くても見える
+
+   ObjectSetInteger(0, n, OBJPROP_TIMEFRAMES, OBJ_ALL_PERIODS);
+   ObjectSetInteger(0, n, OBJPROP_CORNER, CornerOf());
+   ObjectSetInteger(0, n, OBJPROP_XDISTANCE, barX0);
+   ObjectSetInteger(0, n, OBJPROP_YDISTANCE, InpY + line * (InpFontSize + 6) + 3);
+   ObjectSetInteger(0, n, OBJPROP_XSIZE, w);
+   ObjectSetInteger(0, n, OBJPROP_YSIZE, MathMax(3, InpFontSize - 4));
+   ObjectSetInteger(0, n, OBJPROP_BGCOLOR, col);
+   ObjectSetInteger(0, n, OBJPROP_COLOR, col);
+  }
+
+//+------------------------------------------------------------------+
+//| 使わなかった時間帯の棒を隠す                                      |
+//+------------------------------------------------------------------+
+void HideUnusedBars()
+  {
+   for(int h = 0; h < 24; h++)
+     {
+      string n = PANEL_PREFIX + BAR_PREFIX + IntegerToString(h);
+      if(ObjectFind(0, n) >= 0 && !g_barShown[h])
+         ObjectSetInteger(0, n, OBJPROP_TIMEFRAMES, OBJ_NO_PERIODS);
+      g_barShown[h] = false;
+     }
+  }
+
+//+------------------------------------------------------------------+
 void Draw()
   {
    MqlDateTime dt;
@@ -402,7 +446,7 @@ void Draw()
    bool sprKnown = (curSpr > 0.0);   // 配信停止・休場では 0 が返る
 
    int i = 0;
-   SetLine(i++, "定石 零 ─ 環境計  v1.06", InpColHead);
+   SetLine(i++, "定石 零 ─ 環境計  v1.07", InpColHead);
    SetLine(i++, StringFormat("%s  %s   %02d:%02d サーバー時刻",
                 _Symbol, PeriodName(), dt.hour, dt.min), InpColText);
    SetLine(i++, " ", InpColText);
@@ -534,17 +578,18 @@ void Draw()
       for(int h = 0; h < 24; h++)
         {
          if(!show[h] || g_medSpread[h] <= 0.0) continue;
-         string bar = "";
-         int len = (int)MathRound(g_medSpread[h]
-                   / MathMax(g_medSpread[g_worstHour], 0.01) * (double)BAR_MAX);
-         if(len < 1 && g_medSpread[h] > 0.0) len = 1;   // 一番短くても1つは出す
-         for(int k = 0; k < len; k++) bar += BAR_CHAR;
          color hc = (h == hour) ? InpColHead
                   : (h == g_worstHour ? InpColAvoid : InpColText);
-         string tag = (h == hour) ? " ←今" : "";
-         SetLine(i++, StringFormat("  %02d  %5.1f  %s%s", h, g_medSpread[h], bar, tag), hc);
+         string tag = (h == hour) ? "  ←今" : "";
+         SetLine(i, StringFormat("  %02d  %5.1f", h, g_medSpread[h]) + tag, hc);
+         // 棒は矩形で描く(文字だと字形や行間に左右され、行同士が繋がる)
+         DrawBar(h, i, g_medSpread[h] / MathMax(g_medSpread[g_worstHour], 0.01), hc);
+         i++;
         }
      }
+   HideUnusedBars();
+
+   if(InpHourTable == HT_OFF || !g_medValid) HideUnusedBars();
 
    // 下地の高さに使うため、実際に使った行数をここで控える
    int used = i;
