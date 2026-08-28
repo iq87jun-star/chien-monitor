@@ -24,6 +24,7 @@ const BIKE_OPTIONS = [
   { id:"fast",   label:"速め (19〜22 km/h)",   speed:20.5, met:8.0 },
 ];
 const STAND_OPTIONS = [
+  { id:"habit",  label:"長時間で慣れている(休憩込み)", met:1.8 },
   { id:"light",  label:"ほぼ立ちっぱなし(軽作業)", met:2.0 },
   { id:"mid",    label:"立ち仕事+ときどき歩く",     met:2.5 },
   { id:"active", label:"よく動き回る立ち仕事",       met:3.0 },
@@ -265,6 +266,9 @@ export default function CalorieCalculator() {
           )}
         </Card>
 
+        {/* 実測からの補正 */}
+        <Calibration modelBurn={calc.workday.total} bmr={calc.bmr} />
+
         {/* 日ごとの記録 */}
         <DailyLog profile={profile} defaults={{ bikeKm, bikePace, walkKm, standH, standType }} />
 
@@ -273,6 +277,56 @@ export default function CalorieCalculator() {
         </p>
       </div>
     </div>
+  );
+}
+
+// ---- 実測からの補正(体重の増減から本当の消費カロリーを逆算する) ----
+function Calibration({ modelBurn, bmr }) {
+  const [days, setDays]         = useState("14");
+  const [avgIntake, setAvgIntake] = useState("");
+  const [startKg, setStartKg]   = useState("");
+  const [endKg, setEndKg]       = useState("");
+
+  const res = useMemo(() => {
+    const d = num(days, 0), ai = num(avgIntake, 0);
+    const s = num(startKg, 0), e = num(endKg, 0);
+    if (d <= 0 || ai <= 0 || s <= 0 || e <= 0) return null;
+    const deltaKg = s - e;                       // プラス = 減った
+    const realBurn = ai + (deltaKg * FAT_KCAL_PER_KG) / d;
+    return { realBurn, deltaKg, ratio: modelBurn > 0 ? realBurn / modelBurn : 0, pal: realBurn / bmr };
+  }, [days, avgIntake, startKg, endKg, modelBurn, bmr]);
+
+  return (
+    <Card title="⚖️ 実測から消費カロリーを補正">
+      <Note>
+        計算どおりに体重が動かないときは、ここで実測から逆算します。2週間以上、
+        朝トイレ後の同じ条件で測った体重と、その間の平均摂取カロリーを入れてください。
+      </Note>
+      <Row>
+        <Field label="期間 (日数)"><Input value={days} onChange={setDays} /></Field>
+        <Field label="期間中の平均摂取 (kcal/日)"><Input value={avgIntake} onChange={setAvgIntake} placeholder="例 2400" /></Field>
+        <Field label="開始時の体重 (kg)"><Input value={startKg} onChange={setStartKg} /></Field>
+        <Field label="終了時の体重 (kg)"><Input value={endKg} onChange={setEndKg} /></Field>
+      </Row>
+
+      {res && (
+        <div style={{ marginTop:8, padding:"14px 16px", borderRadius:T.r.md,
+          background:T.primaryLight, border:`1px solid ${T.outline}` }}>
+          <div style={{ fontSize:13, color:T.onSurfaceMed }}>
+            体重変化 {res.deltaKg >= 0 ? "−" : "+"}{Math.abs(res.deltaKg).toFixed(1)}kg / {days}日
+          </div>
+          <div style={{ fontSize:22, fontWeight:700, color:T.primary, marginTop:4 }}>
+            実測の消費カロリー 約 {fmt(res.realBurn)} kcal/日
+          </div>
+          <div style={{ fontSize:13, color:T.onSurfaceMed, marginTop:6 }}>
+            モデルの推定({fmt(modelBurn)} kcal/日)の <b>{(res.ratio*100).toFixed(0)}%</b> ・
+            PAL {res.pal.toFixed(2)}
+            {res.ratio < 0.9 && "(モデルが高すぎます。立ち仕事のMETを下げるか、摂取の記録漏れを疑ってください)"}
+            {res.ratio > 1.1 && "(モデルが低すぎます。立ち仕事のMETを上げてください)"}
+          </div>
+        </div>
+      )}
+    </Card>
   );
 }
 
