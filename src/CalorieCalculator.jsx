@@ -89,6 +89,13 @@ export function computeDayBurn(profile, day) {
   };
 }
 
+// "86.2, 86.0 86.5" のような入力を平均する(1つだけでも可)
+function meanOf(text) {
+  const xs = String(text).split(/[^0-9.]+/).map(parseFloat).filter(n => Number.isFinite(n) && n > 0);
+  if (!xs.length) return null;
+  return { mean: xs.reduce((a,b)=>a+b,0) / xs.length, n: xs.length };
+}
+
 const loadLogs = () => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -287,38 +294,58 @@ function Calibration({ modelBurn, bmr }) {
   const [startKg, setStartKg]   = useState("");
   const [endKg, setEndKg]       = useState("");
 
+  const startAvg = useMemo(() => meanOf(startKg), [startKg]);
+  const endAvg   = useMemo(() => meanOf(endKg),   [endKg]);
+
   const res = useMemo(() => {
     const d = num(days, 0), ai = num(avgIntake, 0);
-    const s = num(startKg, 0), e = num(endKg, 0);
-    if (d <= 0 || ai <= 0 || s <= 0 || e <= 0) return null;
-    const deltaKg = s - e;                       // プラス = 減った
+    if (d <= 0 || ai <= 0 || !startAvg || !endAvg) return null;
+    const deltaKg = startAvg.mean - endAvg.mean;   // プラス = 減った
     const realBurn = ai + (deltaKg * FAT_KCAL_PER_KG) / d;
-    return { realBurn, deltaKg, ratio: modelBurn > 0 ? realBurn / modelBurn : 0, pal: realBurn / bmr };
-  }, [days, avgIntake, startKg, endKg, modelBurn, bmr]);
+    // 測定1回あたりの誤差±0.3kgが、平均する日数で何kcal/日まで縮むか
+    const noise = 0.3 / Math.sqrt(Math.min(startAvg.n, endAvg.n)) * FAT_KCAL_PER_KG / d;
+    return { realBurn, deltaKg, noise,
+      ratio: modelBurn > 0 ? realBurn / modelBurn : 0, pal: realBurn / bmr };
+  }, [days, avgIntake, startAvg, endAvg, modelBurn, bmr]);
 
   return (
     <Card title="⚖️ 実測から消費カロリーを補正">
       <Note>
-        計算どおりに体重が動かないときは、ここで実測から逆算します。2週間以上、
-        朝トイレ後の同じ条件で測った体重と、その間の平均摂取カロリーを入れてください。
+        計算どおりに体重が動かないときは、ここで実測から逆算します。測定は
+        <b>起床直後・排尿後・朝食前</b>に。排便の有無は問いません(毎日出るとは限らないので、
+        条件に入れるとかえってブレます)。1回の値ではなく<b>7日分をカンマ区切りで入力</b>すると、
+        平均が取られて日々の変動が打ち消されます。
       </Note>
       <Row>
         <Field label="期間 (日数)"><Input value={days} onChange={setDays} /></Field>
-        <Field label="期間中の平均摂取 (kcal/日)"><Input value={avgIntake} onChange={setAvgIntake} placeholder="例 2400" /></Field>
-        <Field label="開始時の体重 (kg)"><Input value={startKg} onChange={setStartKg} /></Field>
-        <Field label="終了時の体重 (kg)"><Input value={endKg} onChange={setEndKg} /></Field>
+        <Field label="期間中の平均摂取 (kcal/日)"><Input value={avgIntake} onChange={setAvgIntake} placeholder="例 2900" /></Field>
       </Row>
+      <Row>
+        <Field label={`最初の7日間の体重 (kg)${startAvg ? ` → 平均 ${startAvg.mean.toFixed(2)} (${startAvg.n}日分)` : ""}`}>
+          <input type="text" inputMode="decimal" value={startKg} onChange={e=>setStartKg(e.target.value)}
+            placeholder="86.2, 86.0, 86.5, 85.9, ..." style={inputStyle} />
+        </Field>
+        <Field label={`最後の7日間の体重 (kg)${endAvg ? ` → 平均 ${endAvg.mean.toFixed(2)} (${endAvg.n}日分)` : ""}`}>
+          <input type="text" inputMode="decimal" value={endKg} onChange={e=>setEndKg(e.target.value)}
+            placeholder="85.4, 85.8, 85.1, 85.6, ..." style={inputStyle} />
+        </Field>
+      </Row>
+      <Note>
+        ※ 期間の日数は「最初の7日間の真ん中の日」から「最後の7日間の真ん中の日」までの間隔です。
+        21日間測ったなら14日、28日間なら21日と入れてください。
+      </Note>
 
       {res && (
         <div style={{ marginTop:8, padding:"14px 16px", borderRadius:T.r.md,
           background:T.primaryLight, border:`1px solid ${T.outline}` }}>
           <div style={{ fontSize:13, color:T.onSurfaceMed }}>
-            体重変化 {res.deltaKg >= 0 ? "−" : "+"}{Math.abs(res.deltaKg).toFixed(1)}kg / {days}日
+            体重変化 {res.deltaKg >= 0 ? "−" : "+"}{Math.abs(res.deltaKg).toFixed(2)}kg / {days}日
           </div>
           <div style={{ fontSize:22, fontWeight:700, color:T.primary, marginTop:4 }}>
             実測の消費カロリー 約 {fmt(res.realBurn)} kcal/日
           </div>
           <div style={{ fontSize:13, color:T.onSurfaceMed, marginTop:6 }}>
+            誤差の目安 ±{fmt(res.noise)} kcal/日 ・
             モデルの推定({fmt(modelBurn)} kcal/日)の <b>{(res.ratio*100).toFixed(0)}%</b> ・
             PAL {res.pal.toFixed(2)}
             {res.ratio < 0.9 && "(モデルが高すぎます。立ち仕事のMETを下げるか、摂取の記録漏れを疑ってください)"}
