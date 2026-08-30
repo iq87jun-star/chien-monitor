@@ -9,9 +9,11 @@
 //|   1. 次のバーの想定値幅(直近 N 本の高安幅の平均)                |
 //|   2. その銘柄・その時間足の平年並みの値幅                         |
 //|   3. 静穏度 = 想定 ÷ 平年並み(いまは平年の何倍か)              |
-//|   4. 自己採点 ─ 直近の実績で、想定値幅が平年並みより              |
-//|      どれだけ誤差を減らせていたか                                 |
+//|   4. 想定の範囲(直近 N 本の高安幅の分位)と、                    |
+//|      その範囲に実際に入った割合                                   |
 //|   5. 想定値幅に対する幅の目安(0.5 / 1.0 / 1.5 倍)              |
+//|   6. 自己採点 ─ 直近の実績で、想定値幅が平年並みより              |
+//|      どれだけ誤差を減らせていたか                                 |
 //|                                                                  |
 //| 売買シグナルは出しません。方向は示しません。                      |
 //| 端末にある足だけで計算します。外部データも DLL も使いません。      |
@@ -34,7 +36,7 @@ enum ENUM_PANEL_CORNER
 
 //=== 計算設定 =======================================================
 input int    InpRangeBars   = 14;    // 想定値幅に使う本数
-input int    InpBaseBars    = 1500;  // 平年並みの算出に使う本数
+input int    InpBaseBars    = 3000;  // 平年並みの算出に使う本数
 input int    InpScoreBars   = 250;   // 自己採点に使う本数
 input int    InpBandBars    = 60;    // 想定の範囲に使う本数
 input double InpBandLo      = 0.10;  // 範囲の下側(分位)
@@ -59,9 +61,9 @@ input bool   InpShowGuide   = true;  // 幅の目安を出す
 input bool   InpShowScore   = true;  // 自己採点を出す
 input bool   InpShowBackdrop   = true;          // 下地を敷く
 input color  InpColBackdrop    = C'22,22,28';   // 下地の色
-input int    InpBackdropWidth  = 300;           // 下地の幅(px)
+input int    InpBackdropWidth  = 0;             // 下地の幅(px。0で文字サイズから自動)
 
-#define PANEL_PREFIX "ChienRM100_"
+#define PANEL_PREFIX "ChienRM_"
 #define LINES        20
 #define MIN_BARS     120   // これ未満では判定しない
 
@@ -222,7 +224,7 @@ void CreateLabels()
          ObjectSetInteger(0, bg, OBJPROP_CORNER, CornerOf());
          ObjectSetInteger(0, bg, OBJPROP_XDISTANCE, InpX - 8);
          ObjectSetInteger(0, bg, OBJPROP_YDISTANCE, InpY - 8);
-         ObjectSetInteger(0, bg, OBJPROP_XSIZE, InpBackdropWidth);
+         ObjectSetInteger(0, bg, OBJPROP_XSIZE, BackdropWidth());
          ObjectSetInteger(0, bg, OBJPROP_YSIZE, 16);
          ObjectSetInteger(0, bg, OBJPROP_BGCOLOR, InpColBackdrop);
          ObjectSetInteger(0, bg, OBJPROP_BORDER_TYPE, BORDER_FLAT);
@@ -254,6 +256,16 @@ void CreateLabels()
      }
   }
 
+
+//+------------------------------------------------------------------+
+//| 下地の幅。0 指定なら文字サイズから見積もる                        |
+//+------------------------------------------------------------------+
+int BackdropWidth()
+  {
+   if(InpBackdropWidth > 0) return(InpBackdropWidth);
+   // 最も長い行は「自己採点(直近 000 本 / 平年並み 0000 本)」で全角換算 約26文字
+   return((int)(InpFontSize * 31) + 20);
+  }
 
 //+------------------------------------------------------------------+
 //| rng[from..to] の p 分位(0〜1)。Python 側の検証と同じ取り方。     |
@@ -332,7 +344,14 @@ void Draw()
       SetLine(i++, "判定できません(足の本数が足りません)", InpColWarn);
       SetLine(i++, StringFormat("必要 %d 本以上。チャートを遡って", MIN_BARS), InpColText);
       SetLine(i++, "読み込ませてください。", InpColText);
+      int usedErr = i;
       for(; i < LINES; i++) SetLine(i, "", InpColText);
+      if(InpShowBackdrop)
+        {
+         string bgE = PANEL_PREFIX + "BG";
+         if(ObjectFind(0, bgE) >= 0)
+            ObjectSetInteger(0, bgE, OBJPROP_YSIZE, usedErr * (InpFontSize + 6) + 14);
+        }
       ChartRedraw();
       return;
      }
@@ -385,7 +404,16 @@ void Draw()
         }
      }
 
+   int used = i;
    for(; i < LINES; i++) SetLine(i, "", InpColText);
+
+   // 下地を実際に使った行数に合わせる(作成時は高さが分からないため)
+   if(InpShowBackdrop)
+     {
+      string bg = PANEL_PREFIX + "BG";
+      if(ObjectFind(0, bg) >= 0)
+         ObjectSetInteger(0, bg, OBJPROP_YSIZE, used * (InpFontSize + 6) + 14);
+     }
    ChartRedraw();
   }
 //+------------------------------------------------------------------+
