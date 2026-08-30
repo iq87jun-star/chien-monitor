@@ -625,3 +625,62 @@ def i_gapsize(rows, n=14, kind="sma"):
 
 FORECAST["effratio"] = i_effratio
 FORECAST["gapsize"]  = i_gapsize
+
+
+def f_combo(rows, cost, conds=None, direction=1, hold=3, need=None):
+    """複数の条件が同じバーで**すべて**揃った翌日に建てる(合流)。
+
+    need を指定すると「n個中k個」でも建てる。条件を緩めたときに
+    優位性が消えるかどうかを測るための対照用。
+    """
+    import conditions as C
+    met, allmet = C.build(rows, conds or [])
+    k = len(conds or [])
+    sig = []
+    for i in range(len(rows)):
+        n_ok = sum(1 for x in met[i] if x is True)
+        hit = allmet[i] if need is None else (n_ok >= need)
+        if hit: sig.append((i, direction))
+    return execute(rows, sig, hold, cost)
+
+
+SINGLE["combo"] = f_combo
+
+
+def i_interval(rows, n=60, lo=0.1, hi=0.9):
+    """値幅の「範囲」の示し方に中身があるか。
+
+    点の予測(i_rangefc)ではなく、区間の予測を測る。
+    直近 n 本の高安幅の分位で作った区間と、全履歴の分位で作った区間を、
+    interval score(= 区間の幅 + 外したときの罰則)で比べる。
+    狭くて、かつ外さない区間ほど良い。値幅計に「8割はこの範囲」と
+    書けるかどうかの根拠になる。
+    """
+    o, h, l, c = _ohlc(rows)
+    rng = [(h[i] - l[i]) / c[i] * 100 if c[i] > 0 else None for i in range(len(rows))]
+    alpha = (1.0 - (hi - lo))
+    hist, out = [], []
+
+    def q(xs, p):
+        s = sorted(xs)
+        return s[min(len(s) - 1, int(len(s) * p))]
+
+    def score(a, b, y):
+        s = b - a
+        if y < a: s += 2.0 / alpha * (a - y)
+        elif y > b: s += 2.0 / alpha * (y - b)
+        return s
+
+    for i in range(len(rows) - 1):
+        if rng[i] is None: continue
+        hist.append(rng[i])
+        if len(hist) < 250 or len(hist) < n or rng[i + 1] is None: continue
+        act = rng[i + 1]
+        w = hist[-n:]
+        sm = score(q(w, lo), q(w, hi), act)          # 直近 n 本の分位
+        sb = score(q(hist, lo), q(hist, hi), act)    # 全履歴の分位
+        out.append((rows[i + 1][0], sb - sm, sb))
+    return out
+
+
+FORECAST["interval"] = i_interval

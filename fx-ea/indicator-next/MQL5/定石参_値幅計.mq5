@@ -18,7 +18,7 @@
 //+------------------------------------------------------------------+
 #property copyright "iq87jun-star"
 #property link      "https://www.gogojungle.co.jp/"
-#property version   "1.00"
+#property version   "1.01"
 #property description "定石 参 ─ 値幅計: 次のバーの想定値幅と、それが平年並みの何倍かを表示します。売買シグナルは出しません。"
 #property indicator_chart_window
 #property indicator_buffers 0
@@ -37,6 +37,9 @@ enum ENUM_PANEL_CORNER
 input int    InpRangeBars   = 14;    // 想定値幅に使う本数
 input int    InpBaseBars    = 1500;  // 平年並みの算出に使う本数
 input int    InpScoreBars   = 250;   // 自己採点に使う本数
+input int    InpBandBars    = 60;    // 想定の範囲に使う本数
+input double InpBandLo      = 0.10;  // 範囲の下側(分位)
+input double InpBandHi      = 0.90;  // 範囲の上側(分位)
 
 //=== 判定のしきい値 =================================================
 input double InpQuietBelow  = 0.85;  // 静穏度: これ未満で「静か」
@@ -60,7 +63,7 @@ input color  InpColBackdrop    = C'22,22,28';   // 下地の色
 input int    InpBackdropWidth  = 300;           // 下地の幅(px)
 
 #define PANEL_PREFIX "ChienRM100_"
-#define LINES        16
+#define LINES        20
 #define MIN_BARS     120   // これ未満では判定しない
 
 //--- 直近の計算結果
@@ -71,6 +74,10 @@ double   g_gain     = 0.0;   // 自己採点の改善率(0〜1)
 int      g_scoreN   = 0;     // 自己採点に使えた本数
 int      g_barsUsed = 0;     // 平年並みに使えた本数
 int      g_scoreBase = 0;    // 自己採点で使った平年並みの本数
+double   g_lo       = 0.0;   // 想定の範囲(下)
+double   g_hi       = 0.0;   // 想定の範囲(上)
+double   g_cover    = 0.0;   // その範囲に実際に入った割合
+int      g_coverN   = 0;     // 被覆率の集計に使えた本数
 bool     g_valid    = false;
 datetime g_lastBar  = 0;
 
@@ -157,13 +164,18 @@ void Recalc()
    g_barsUsed = baseN;
    if(g_base <= 0.0 || g_fc <= 0.0) return;
 
+   // --- 想定の範囲: 直近 InpBandBars 本の高安幅の分位
+   int bandN = (int)MathMin(InpBandBars, n - 1);
+   g_lo = (bandN >= 20) ? Quantile(rng, 1, bandN, InpBandLo) : 0.0;
+   g_hi = (bandN >= 20) ? Quantile(rng, 1, bandN, InpBandHi) : 0.0;
+
    // --- 自己採点
    // 採点する各時点でも平年並みの窓が必要なので、足が少ないチャートでは
    // 表示用より短い窓を使う。短くしないと足りずに一度も採点できなくなる。
    int scoreN = (int)MathMin(InpScoreBars, n - MIN_BARS - 2);
    int sBase  = (int)MathMin(baseN, n - 2 - scoreN);
    double errFc = 0.0, errBase = 0.0;
-   int cnt = 0;
+   int cnt = 0, coverHit = 0, coverN = 0;
    if(scoreN > 0 && sBase >= MIN_BARS)
      {
       for(int k = 1; k <= scoreN; k++)
@@ -179,8 +191,18 @@ void Recalc()
          errFc   += MathAbs(act - fc);
          errBase += MathAbs(act - bs);
          cnt++;
+         // その時点の範囲に、実際の値幅が入っていたかを数える
+         if(bandN >= 20 && k + bandN < n)
+           {
+            double a = Quantile(rng, k + 1, bandN, InpBandLo);
+            double b = Quantile(rng, k + 1, bandN, InpBandHi);
+            if(act >= a && act <= b) coverHit++;
+            coverN++;
+           }
         }
      }
+   g_coverN = coverN;
+   g_cover  = (coverN >= 30) ? (double)coverHit / coverN : 0.0;
    g_scoreN    = cnt;
    g_scoreBase = sBase;
    g_gain      = (cnt >= 30 && errBase > 0.0) ? (errBase - errFc) / errBase : 0.0;
@@ -233,6 +255,23 @@ void CreateLabels()
      }
   }
 
+
+//+------------------------------------------------------------------+
+//| rng[from..to] の p 分位(0〜1)。Python 側の検証と同じ取り方。     |
+//+------------------------------------------------------------------+
+double Quantile(const double &rng[], const int from, const int cnt, const double p)
+  {
+   if(cnt <= 0) return(0.0);
+   double w[];
+   ArrayResize(w, cnt);
+   for(int j = 0; j < cnt; j++) w[j] = rng[from + j];
+   ArraySort(w);
+   int idx = (int)(cnt * p);
+   if(idx > cnt - 1) idx = cnt - 1;
+   if(idx < 0) idx = 0;
+   return(w[idx]);
+  }
+
 //+------------------------------------------------------------------+
 ENUM_BASE_CORNER CornerOf()
   {
@@ -273,7 +312,7 @@ string TfName()
 void Draw()
   {
    int i = 0;
-   SetLine(i++, "定石 参 ─ 値幅計  v1.00", InpColHead);
+   SetLine(i++, "定石 参 ─ 値幅計  v1.01", InpColHead);
    SetLine(i++, StringFormat("%s  %s", _Symbol, TfName()), InpColText);
    SetLine(i++, " ", InpColText);
 
@@ -301,6 +340,16 @@ void Draw()
                              basePips, g_barsUsed), InpColText);
    SetLine(i++, StringFormat("静穏度  %.2f 倍  ─  %s", quiet, qs), qc);
    SetLine(i++, " ", InpColText);
+
+   if(g_hi > g_lo)
+     {
+      SetLine(i++, StringFormat("想定の範囲   %.1f 〜 %.1f pips",
+                                g_lo / g_pip, g_hi / g_pip), InpColHead);
+      if(g_coverN >= 30)
+         SetLine(i++, StringFormat("  この範囲に入った割合  %.0f%%(直近 %d 本)",
+                                   g_cover * 100.0, g_coverN), InpColText);
+      SetLine(i++, " ", InpColText);
+     }
 
    if(InpShowGuide)
      {

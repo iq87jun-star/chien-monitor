@@ -1,5 +1,5 @@
 {
- "cumulative_tests": 8183,
+ "cumulative_tests": 8447,
  "entries": [
   {
    "id": "dow-jpy-mon",
@@ -2667,6 +2667,204 @@
     "years": 15,
     "first": "2012-11-12",
     "last": "2026-08-28"
+   }
+  },
+  {
+   "id": "combo-quadra-fx",
+   "note": "FX13ペア 定石弐の4条件(RSI35/z1.5/3連続/当日0.5%)の合流・買い側 3日保有(壱と同様、日足での近似。決済が違うためMT5実測とは別物)",
+   "family": "combo",
+   "track": "ea",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "conds": [
+     {
+      "k": "rsi",
+      "n": 14,
+      "op": "<",
+      "thr": 35.0
+     },
+     {
+      "k": "z",
+      "win": 20,
+      "op": "<",
+      "thr": -1.5
+     },
+     {
+      "k": "streak",
+      "run": 3,
+      "dirn": -1
+     },
+     {
+      "k": "ret",
+      "op": "<",
+      "pct": -0.5
+     }
+    ],
+    "direction": 1,
+    "hold": 3
+   },
+   "space_size": 120,
+   "protocol": "v2 (重複補正 + 常時買い持ちベンチマーク)",
+   "tested_at": "2026-08-30",
+   "cum_tests_at_time": 8303,
+   "result": {
+    "verdict": "棄却",
+    "reason": "補正t=1.19(生t=2.07/√3) < 必要4.38(累積8303検定)",
+    "n": 746,
+    "t": 2.068,
+    "t_adj": 1.194,
+    "need_t": 4.377,
+    "hold": 3,
+    "n_dates": 406,
+    "t_date": 0.538,
+    "mean_bp": 11.471,
+    "bench_bp": -0.579,
+    "excess_bp": 12.049,
+    "is_bp": 4.912,
+    "oos_bp": 21.275,
+    "wf_bp": 6.985,
+    "wf_n": 539,
+    "pf": 1.243,
+    "wr": 56.4,
+    "neg_years": 4,
+    "years": 16,
+    "first": "2011-10-02",
+    "last": "2026-08-03"
+   }
+  },
+  {
+   "id": "combo-oversold-idx",
+   "note": "指数7銘柄 同じ4条件の合流・買い側 3日保有(弐と同型の仕組みを未検定の銘柄クラスへ)",
+   "family": "combo",
+   "track": "ea",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "conds": [
+     {
+      "k": "rsi",
+      "n": 14,
+      "op": "<",
+      "thr": 35.0
+     },
+     {
+      "k": "z",
+      "win": 20,
+      "op": "<",
+      "thr": -1.5
+     },
+     {
+      "k": "streak",
+      "run": 3,
+      "dirn": -1
+     },
+     {
+      "k": "ret",
+      "op": "<",
+      "pct": -0.5
+     }
+    ],
+    "direction": 1,
+    "hold": 3
+   },
+   "space_size": 120,
+   "protocol": "v2 (重複補正 + 常時買い持ちベンチマーク)",
+   "tested_at": "2026-08-30",
+   "cum_tests_at_time": 8423,
+   "result": {
+    "verdict": "棄却",
+    "reason": "補正t=1.43(生t=2.48/√3) < 必要4.38(累積8423検定)",
+    "n": 432,
+    "t": 2.485,
+    "t_adj": 1.434,
+    "need_t": 4.38,
+    "hold": 3,
+    "n_dates": 257,
+    "t_date": 1.139,
+    "mean_bp": 41.494,
+    "bench_bp": 7.861,
+    "excess_bp": 33.633,
+    "is_bp": 52.143,
+    "oos_bp": 25.551,
+    "wf_bp": 16.729,
+    "wf_n": 302,
+    "pf": 1.4,
+    "wr": 60.2,
+    "neg_years": 3,
+    "years": 16,
+    "first": "2011-10-03",
+    "last": "2026-07-29"
+   }
+  },
+  {
+   "id": "i-interval-fx",
+   "note": "【指標】FX13ペア 直近60本の分位で作った値幅の8割区間は、全履歴の分位で作った区間より良いか(狭くて外さないか)。値幅計に「8割はこの範囲」と書けるかの根拠",
+   "family": "interval",
+   "track": "indicator",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 60,
+    "lo": 0.1,
+    "hi": 0.9
+   },
+   "space_size": 24,
+   "protocol": "指標v1 (素朴基準に対する改善)",
+   "tested_at": "2026-08-30",
+   "cum_tests_at_time": 8447,
+   "result": {
+    "verdict": "通過",
+    "reason": "全基準を満たす",
+    "n": 47546,
+    "t": 31.586,
+    "t_adj": 31.586,
+    "need_t": 4.381,
+    "hold": 1,
+    "n_dates": 3661,
+    "t_date": 15.415,
+    "gain": 0.137,
+    "base": 1.4153,
+    "gain_ratio": 0.0968,
+    "is_gain": 0.1465,
+    "oos_gain": 0.1229,
+    "hit_years": 15,
+    "years": 15,
+    "first": "2012-08-12",
+    "last": "2026-08-30"
    }
   }
  ],

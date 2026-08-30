@@ -14,6 +14,8 @@ import engine
 
 RANGE_BARS = 14
 BASE_BARS  = 3000
+BAND_BARS  = 60
+BAND_LO, BAND_HI = 0.10, 0.90
 FX = ["USDJPY","EURJPY","GBPJPY","AUDJPY","NZDJPY","CADJPY","CHFJPY",
       "EURUSD","GBPUSD","AUDUSD","NZDUSD","USDCAD","USDCHF"]
 IDX = ["US500","NAS100","US30","JP225","HK50","GER40","UK100"]
@@ -54,6 +56,48 @@ OUT = []
 def emit(line=""):
     OUT.append(line)
     print(line)
+
+
+def band(rows, n=BAND_BARS, lo=BAND_LO, hi=BAND_HI):
+    """MQL5 の Quantile / 被覆率の数え方と同じ計算。
+
+    直近 n 本の高安幅の分位で作った範囲に、次の1本が実際に入った割合を返す。
+    「8割はこの範囲」と書けるかどうかは、名目ではなく**実測**で決める。
+    """
+    rng = [r[2] - r[3] for r in rows]
+
+    def q(w, p):
+        srt = sorted(w)
+        return srt[min(len(srt) - 1, int(len(srt) * p))]
+
+    hit = tot = 0
+    wm = wb = 0.0
+    hist = []
+    for i in range(len(rng) - 1):
+        hist.append(rng[i])
+        if len(hist) < max(250, n): continue
+        w = hist[-n:]
+        a, b = q(w, lo), q(w, hi)
+        ba, bb = q(hist, lo), q(hist, hi)
+        act = rng[i + 1]
+        hit += (a <= act <= b); tot += 1
+        wm += b - a; wb += bb - ba
+    if not tot: return None
+    return {"cover": hit / tot, "narrow": wm / wb if wb else 0, "n": tot}
+
+
+def report_band(title, syms):
+    emit(f"\n### {title}\n")
+    emit("| 銘柄 | n | 範囲に入った割合 | 全履歴の範囲に対する幅 |")
+    emit("|---|--:|--:|--:|")
+    cov = []
+    for s in syms:
+        r = band(engine.rows_of(s))
+        if not r: continue
+        cov.append(r["cover"])
+        emit(f"| {s} | {r['n']:,} | **{r['cover']:.1%}** | {r['narrow']:.2f} 倍 |")
+    emit(f"\n- 平均 **{st.mean(cov):.1%}** / 最低 {min(cov):.1%} / 最高 {max(cov):.1%}")
+    return cov
 
 
 def report(title, syms):
@@ -130,6 +174,14 @@ if __name__ == "__main__":
     g2, y2 = report("株価指数 7銘柄", IDX)
     emit(f"\n## 全20銘柄\n\n- 平均 **{st.mean(g1 + g2):+.1%}**"
          f" / 最低 {min(g1 + g2):+.1%} / 最高 {max(g1 + g2):+.1%}")
+
+    emit(f"\n## 想定の範囲(分位 {BAND_LO:.0%}〜{BAND_HI:.0%}・直近{BAND_BARS}本)\n")
+    emit("名目は8割だが、**実測は8割に届かない**。販売資料には実測値を書くこと。")
+    c1 = report_band("FX 13ペア", FX)
+    c2 = report_band("株価指数 7銘柄", IDX)
+    emit(f"\n**全20銘柄の平均被覆率 {st.mean(c1 + c2):.1%}**"
+         f"(最低 {min(c1 + c2):.1%})。全履歴の分位で作る範囲より狭く、"
+         f"被覆はほぼ同じ。狭くて外さない分だけ良い。")
     if ev:
         dest = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "..", "indicator-next", "EVIDENCE.md")

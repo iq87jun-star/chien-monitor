@@ -1252,6 +1252,128 @@
    },
    "space_size": 36,
    "status": "done"
+  },
+  {
+   "id": "combo-quadra-fx",
+   "note": "FX13ペア 定石弐の4条件(RSI35/z1.5/3連続/当日0.5%)の合流・買い側 3日保有(壱と同様、日足での近似。決済が違うためMT5実測とは別物)",
+   "family": "combo",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "conds": [
+     {
+      "k": "rsi",
+      "n": 14,
+      "op": "<",
+      "thr": 35.0
+     },
+     {
+      "k": "z",
+      "win": 20,
+      "op": "<",
+      "thr": -1.5
+     },
+     {
+      "k": "streak",
+      "run": 3,
+      "dirn": -1
+     },
+     {
+      "k": "ret",
+      "op": "<",
+      "pct": -0.5
+     }
+    ],
+    "direction": 1,
+    "hold": 3
+   },
+   "space_size": 120,
+   "status": "done"
+  },
+  {
+   "id": "combo-oversold-idx",
+   "note": "指数7銘柄 同じ4条件の合流・買い側 3日保有(弐と同型の仕組みを未検定の銘柄クラスへ)",
+   "family": "combo",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "conds": [
+     {
+      "k": "rsi",
+      "n": 14,
+      "op": "<",
+      "thr": 35.0
+     },
+     {
+      "k": "z",
+      "win": 20,
+      "op": "<",
+      "thr": -1.5
+     },
+     {
+      "k": "streak",
+      "run": 3,
+      "dirn": -1
+     },
+     {
+      "k": "ret",
+      "op": "<",
+      "pct": -0.5
+     }
+    ],
+    "direction": 1,
+    "hold": 3
+   },
+   "space_size": 120,
+   "status": "done"
+  },
+  {
+   "id": "i-interval-fx",
+   "track": "indicator",
+   "note": "【指標】FX13ペア 直近60本の分位で作った値幅の8割区間は、全履歴の分位で作った区間より良いか(狭くて外さないか)。値幅計に「8割はこの範囲」と書けるかの根拠",
+   "family": "interval",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 60,
+    "lo": 0.1,
+    "hi": 0.9
+   },
+   "space_size": 24,
+   "status": "done"
   }
  ]
 }

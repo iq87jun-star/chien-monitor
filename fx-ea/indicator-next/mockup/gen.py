@@ -41,8 +41,8 @@ def measured(rows, k=14):
 
 
 SCENES = {
-    "quiet": dict(gain=16.4, seed=7,  tail=0.82),
-    "busy":  dict(gain=21.9, seed=21, tail=1.27),
+    "quiet": dict(gain=16.4, cover=77, seed=7,  tail=0.82),
+    "busy":  dict(gain=21.9, cover=76, seed=21, tail=1.27),
 }
 
 
@@ -56,12 +56,15 @@ def panel_lines(scene, rows):
 
     L = []
     A = lambda t, c="txt": L.append({"t": t, "c": c})
-    A("定石 参 ─ 値幅計  v1.00", "head")
+    A("定石 参 ─ 値幅計  v1.01", "head")
     A("USDJPY  D1")
     A(" ")
     A(f"次のバーの想定値幅   {fc:.1f} pips", "head")
     A(f"平年並み             {base:.1f} pips  (3000本)")
     A(f"静穏度  {quiet:.2f} 倍  ─  {qs}", qc)
+    A(" ")
+    A(f"想定の範囲   {fc*0.74:.1f} 〜 {fc*1.38:.1f} pips", "head")
+    A(f"  この範囲に入った割合  {s['cover']}%(直近 250 本)")
     A(" ")
     A("想定値幅に対する幅の目安", "head")
     A(f"  0.5倍 {fc*0.5:.1f}  /  1.0倍 {fc:.1f}  /  1.5倍 {fc*1.5:.1f}")

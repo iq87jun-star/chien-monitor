@@ -151,6 +151,7 @@ python3 attack.py <hypothesis-id>
 | `dowrange` | 「この曜日は動きやすい」に中身があるか | `dow` |
 | `effratio` | 「いまトレンドが出ている」に中身があるか | `n` |
 | `gapsize` | 「明日の寄りはどれくらい飛ぶか」 | `n` `kind` |
+| `interval` | 値幅の**範囲**の示し方に中身があるか | `n` `lo` `hi` |
 
 **`effratio` は測ると大きくマイナスに出る**(FX −38.1% / 指数 −38.9%、
 どちらも改善年 0/15)。トレンド判定の表示には中身がない。詳細は HANDOFF 2.62節。
@@ -190,7 +191,7 @@ python3 mirror_rangemeter.py --evidence
 
 商品は `fx-ea/indicator-next/`(定石 参 ─ 値幅計)。
 
-## 商品の主張を実データで確認する — firerate.py
+## 商品の主張を実データで確認する — firerate.py / quadra_check.py
 
 ```
 python3 firerate.py
@@ -200,11 +201,19 @@ python3 firerate.py
 現在の対象は 定石弐 待ち伏せ の「1通貨ペアあたり年に数回」。
 **実測 年3.6回/ペアで主張どおり。**
 
+```
+python3 quadra_check.py
+```
+
+同じく弐の「3条件に緩めると9通り全滅」の確認。
+**再現しなかった**(3条件でも保有日数5通りすべてでプラス)。
+ただし4条件・3条件ともノイズと区別がつかない水準。詳細は HANDOFF 2.69節。
+
 条件は説明文ではなく `indicator/MQL5/定石弐_待ち伏せ.mq5` の `EvalDay` に
 合わせること(当日変動は前日終値比・標準偏差は標本)。説明文から起こすと
 桁が変わる。仮説の検定ではないので台帳には加算しない。
 
-## 実装済みの族(売買トラック・25)
+## 実装済みの族(売買トラック・26)
 
 ### 価格・カレンダー系
 | family | 内容 | 主なパラメータ |
@@ -251,6 +260,27 @@ python3 firerate.py
 | `xfilter` | 外部指標の局面フィルタ | `ref` `symbols` `n` `above` `direction` `hold` |
 | `breadth` | 市場の幅(バスケットの何割が上向きか)の局面 | `basket` `symbols` `n` `thr` `above` `direction` `hold` |
 | `xspread` | 2つの参照系列の関係(比/差)の局面 | `a` `b` `symbols` `n` `mode` `above` `direction` `hold` |
+
+### 条件の合流(combo)
+
+| family | 内容 | 主なパラメータ |
+|---|---|---|
+| `combo` | 複数の条件が同じバーで**すべて**揃った翌日に建てる | `conds` `direction` `hold` `need` |
+
+`conds` は `conditions.py` の述語のリスト:
+
+```json
+"conds": [{"k":"rsi","n":14,"op":"<","thr":35.0},
+          {"k":"z","win":20,"op":"<","thr":-1.5},
+          {"k":"streak","run":3,"dirn":-1},
+          {"k":"ret","op":"<","pct":-0.5}]
+```
+
+使える条件は `rsi` `z` `streak` `ret` `vol` `range`。
+`need` を指定すると「n個中k個」でも建てる(条件を緩めた対照用)。
+
+**種別キーは `"k"`。** 条件側の引数に `k` を使わない(`streak` は `run`、
+`range` は `mult`)のはそのため。条件の列は銘柄ごとにメモ化している。
 | `ccystr` | 通貨強弱の断面 最強通貨買い・最弱通貨売り | `symbols` `look` `hold` |
 
 ### 出来高系
