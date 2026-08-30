@@ -28,6 +28,10 @@ UNIVERSE = [
     ("^HSI","HK50","idx"), ("^AXJO","AUS200","idx"),
     ("GC=F","XAUUSD","met"), ("SI=F","XAGUSD","met"), ("PL=F","XPTUSD","met"),
     ("CL=F","USOIL","eng"), ("BZ=F","UKOIL","eng"),
+    # 暗号資産。週7日取引なので営業日の概念が他と違う。
+    # エキゾチック通貨(TRY/ZAR/MXN)は入れない。損益のほとんどがスワップで、
+    # このエンジンはスワップを測れない(7節)。測れないものを検定しない。
+    ("BTC-USD","BTCUSD","cry"), ("ETH-USD","ETHUSD","cry"),
 ]
 SYMS = {n: (y, c) for y, n, c in UNIVERSE}
 # 参照専用シンボル(建玉は作らない。局面フィルタの条件としてのみ使う)
@@ -36,9 +40,9 @@ REFS = {"VIX": "^VIX", "US10Y": "^TNX",
         "SKEW": "^SKEW", "VVIX": "^VVIX",                   # オプション市場
         "COPPER": "HG=F"}                                   # 景気の代理
 # 往復コスト(名目比%)。スプレッド+スリッページ+1泊分の金利/スワップの保守値。
-COST = {"fx": 0.020, "idx": 0.030, "met": 0.050, "eng": 0.060}
+COST = {"fx": 0.020, "idx": 0.030, "met": 0.050, "eng": 0.060, "cry": 0.100}
 # 1泊追加保有あたりの上乗せコスト
-CARRY = {"fx": 0.004, "idx": 0.015, "met": 0.015, "eng": 0.018}
+CARRY = {"fx": 0.004, "idx": 0.015, "met": 0.015, "eng": 0.018, "cry": 0.030}
 
 _CACHE = {}
 def rows_of(name):

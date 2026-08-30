@@ -1374,6 +1374,83 @@
    },
    "space_size": 24,
    "status": "done"
+  },
+  {
+   "id": "i-rangefc-crypto",
+   "track": "indicator",
+   "note": "【指標】暗号資産2銘柄 高安幅の14日平均は翌日の高安幅を平年並みより正確に言い当てるか(値幅計を暗号資産で使えるかの確認)",
+   "family": "rangefc",
+   "params": {
+    "symbols": [
+     "BTCUSD",
+     "ETHUSD"
+    ],
+    "n": 14,
+    "kind": "sma"
+   },
+   "space_size": 36,
+   "status": "done"
+  },
+  {
+   "id": "i-interval-crypto",
+   "track": "indicator",
+   "note": "【指標】暗号資産2銘柄 直近60本の分位で作った値幅の範囲は全履歴の分位より良いか",
+   "family": "interval",
+   "params": {
+    "symbols": [
+     "BTCUSD",
+     "ETHUSD"
+    ],
+    "n": 60,
+    "lo": 0.1,
+    "hi": 0.9
+   },
+   "space_size": 24,
+   "status": "done"
+  },
+  {
+   "id": "i-quiethit-fx",
+   "track": "indicator",
+   "note": "【指標】FX13ペア 値幅計が「静か」と出した日の翌バーは、実際に平年並みを下回るか(無条件の割合との比較)",
+   "family": "quiethit",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 14,
+    "base_bars": 3000,
+    "thr": 0.85
+   },
+   "space_size": 24,
+   "status": "done"
+  },
+  {
+   "id": "mom-crypto",
+   "note": "暗号資産2銘柄 直近20日の騰落方向に追随 5日保有(未検定の銘柄クラス。往復0.10%+1泊0.03%で計算)",
+   "family": "mom",
+   "params": {
+    "symbols": [
+     "BTCUSD",
+     "ETHUSD"
+    ],
+    "look": 20,
+    "hold": 5,
+    "direction": 1
+   },
+   "space_size": 36,
+   "status": "done"
   }
  ]
 }

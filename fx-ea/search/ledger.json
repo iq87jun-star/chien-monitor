@@ -1,5 +1,5 @@
 {
- "cumulative_tests": 8447,
+ "cumulative_tests": 8567,
  "entries": [
   {
    "id": "dow-jpy-mon",
@@ -2865,6 +2865,176 @@
     "years": 15,
     "first": "2012-08-12",
     "last": "2026-08-30"
+   }
+  },
+  {
+   "id": "i-rangefc-crypto",
+   "note": "【指標】暗号資産2銘柄 高安幅の14日平均は翌日の高安幅を平年並みより正確に言い当てるか(値幅計を暗号資産で使えるかの確認)",
+   "family": "rangefc",
+   "track": "indicator",
+   "params": {
+    "symbols": [
+     "BTCUSD",
+     "ETHUSD"
+    ],
+    "n": 14,
+    "kind": "sma"
+   },
+   "space_size": 36,
+   "protocol": "指標v1 (素朴基準に対する改善)",
+   "tested_at": "2026-08-30",
+   "cum_tests_at_time": 8483,
+   "result": {
+    "verdict": "通過",
+    "reason": "全基準を満たす",
+    "n": 7461,
+    "t": 23.308,
+    "t_adj": 23.308,
+    "need_t": 4.381,
+    "hold": 1,
+    "n_dates": 4305,
+    "t_date": 19.413,
+    "gain": 0.52,
+    "base": 2.716,
+    "gain_ratio": 0.1915,
+    "is_gain": 0.4541,
+    "oos_gain": 0.6188,
+    "hit_years": 13,
+    "years": 13,
+    "first": "2014-11-16",
+    "last": "2026-08-30"
+   }
+  },
+  {
+   "id": "i-interval-crypto",
+   "note": "【指標】暗号資産2銘柄 直近60本の分位で作った値幅の範囲は全履歴の分位より良いか",
+   "family": "interval",
+   "track": "indicator",
+   "params": {
+    "symbols": [
+     "BTCUSD",
+     "ETHUSD"
+    ],
+    "n": 60,
+    "lo": 0.1,
+    "hi": 0.9
+   },
+   "space_size": 24,
+   "protocol": "指標v1 (素朴基準に対する改善)",
+   "tested_at": "2026-08-30",
+   "cum_tests_at_time": 8507,
+   "result": {
+    "verdict": "通過",
+    "reason": "全基準を満たす",
+    "n": 7081,
+    "t": 10.64,
+    "t_adj": 10.64,
+    "need_t": 4.382,
+    "hold": 1,
+    "n_dates": 4115,
+    "t_date": 9.043,
+    "gain": 1.0673,
+    "base": 12.1838,
+    "gain_ratio": 0.0876,
+    "is_gain": 0.8676,
+    "oos_gain": 1.3666,
+    "hit_years": 12,
+    "years": 12,
+    "first": "2015-05-25",
+    "last": "2026-08-30"
+   }
+  },
+  {
+   "id": "i-quiethit-fx",
+   "note": "【指標】FX13ペア 値幅計が「静か」と出した日の翌バーは、実際に平年並みを下回るか(無条件の割合との比較)",
+   "family": "quiethit",
+   "track": "indicator",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 14,
+    "base_bars": 3000,
+    "thr": 0.85
+   },
+   "space_size": 24,
+   "protocol": "指標v1 (素朴基準に対する改善)",
+   "tested_at": "2026-08-30",
+   "cum_tests_at_time": 8531,
+   "result": {
+    "verdict": "通過",
+    "reason": "全基準を満たす",
+    "n": 21285,
+    "t": 48.275,
+    "t_adj": 48.275,
+    "need_t": 4.383,
+    "hold": 1,
+    "n_dates": 2859,
+    "t_date": 19.618,
+    "gain": 0.1266,
+    "base": 0.6976,
+    "gain_ratio": 0.1815,
+    "is_gain": 0.1234,
+    "oos_gain": 0.1315,
+    "hit_years": 13,
+    "years": 14,
+    "first": "2013-07-28",
+    "last": "2026-08-30"
+   }
+  },
+  {
+   "id": "mom-crypto",
+   "note": "暗号資産2銘柄 直近20日の騰落方向に追随 5日保有(未検定の銘柄クラス。往復0.10%+1泊0.03%で計算)",
+   "family": "mom",
+   "track": "ea",
+   "params": {
+    "symbols": [
+     "BTCUSD",
+     "ETHUSD"
+    ],
+    "look": 20,
+    "hold": 5,
+    "direction": 1
+   },
+   "space_size": 36,
+   "protocol": "v2 (重複補正 + 常時買い持ちベンチマーク)",
+   "tested_at": "2026-08-30",
+   "cum_tests_at_time": 8567,
+   "result": {
+    "verdict": "棄却",
+    "reason": "補正t=3.43(生t=7.67/√5) < 必要4.38(累積8567検定)",
+    "n": 4003,
+    "t": 7.673,
+    "t_adj": 3.431,
+    "need_t": 4.384,
+    "hold": 5,
+    "n_dates": 2681,
+    "t_date": 3.104,
+    "mean_bp": 96.412,
+    "bench_bp": 65.241,
+    "excess_bp": 31.17,
+    "is_bp": 152.209,
+    "oos_bp": 12.786,
+    "wf_bp": 98.676,
+    "wf_n": 3766,
+    "pf": 1.417,
+    "wr": 52.7,
+    "neg_years": 3,
+    "years": 13,
+    "first": "2014-10-18",
+    "last": "2026-08-24"
    }
   }
  ],

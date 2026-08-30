@@ -19,6 +19,7 @@ BAND_LO, BAND_HI = 0.10, 0.90
 FX = ["USDJPY","EURJPY","GBPJPY","AUDJPY","NZDJPY","CADJPY","CHFJPY",
       "EURUSD","GBPUSD","AUDUSD","NZDUSD","USDCAD","USDCHF"]
 IDX = ["US500","NAS100","US30","JP225","HK50","GER40","UK100"]
+CRY = ["BTCUSD","ETHUSD"]
 
 
 def score(rows, range_bars=RANGE_BARS, base_bars=BASE_BARS):
@@ -100,6 +101,45 @@ def report_band(title, syms):
     return cov
 
 
+def quiet_hit(rows, n=RANGE_BARS, base_bars=BASE_BARS, thr=0.85):
+    """出荷コードの「静か」判定が当たっている割合と、無条件の割合。
+
+    静穏度 = 直近 n 本の平均値幅 ÷ 直近 base_bars 本の平均値幅 < thr のとき「静か」。
+    そう出た日の翌バーが平年並みを下回った割合を、無条件の割合と比べる。
+    """
+    rng = [r[2] - r[3] for r in rows]
+    hist = []
+    q_hit = q_tot = u_hit = u_tot = 0
+    for i in range(len(rng) - 1):
+        hist.append(rng[i])
+        b = min(base_bars, len(hist))
+        if b < 250 or len(hist) <= n: continue
+        base = sum(hist[-b:]) / b
+        if base <= 0: continue
+        fc = sum(hist[-n:]) / n
+        low = rng[i + 1] < base
+        u_hit += low; u_tot += 1
+        if fc / base < thr:
+            q_hit += low; q_tot += 1
+    if q_tot < 100: return None
+    return {"quiet": q_hit / q_tot, "uncond": u_hit / u_tot, "n": q_tot}
+
+
+def report_quiet(title, syms):
+    emit(f"\n### {title}\n")
+    emit("| 銘柄 | 「静か」と出た日数 | そのとき下回った割合 | 無条件の割合 |")
+    emit("|---|--:|--:|--:|")
+    qs, us = [], []
+    for s in syms:
+        r = quiet_hit(engine.rows_of(s))
+        if not r: continue
+        qs.append(r["quiet"]); us.append(r["uncond"])
+        emit(f"| {s} | {r['n']:,} | **{r['quiet']:.1%}** | {r['uncond']:.1%} |")
+    emit(f"\n- 「静か」のとき 平均 **{st.mean(qs):.1%}** / 無条件 {st.mean(us):.1%}"
+         f" / 最低 {min(qs):.1%}")
+    return qs, us
+
+
 def report(title, syms):
     emit(f"\n## {title}\n")
     emit("| 銘柄 | n | 誤差の削減 | 改善した年 |")
@@ -172,16 +212,31 @@ if __name__ == "__main__":
     emit("データ: Yahoo Finance 日足 15年。誤差は各バーの高安幅に対する平均絶対誤差。")
     g1, y1 = report("FX 13ペア", FX)
     g2, y2 = report("株価指数 7銘柄", IDX)
-    emit(f"\n## 全20銘柄\n\n- 平均 **{st.mean(g1 + g2):+.1%}**"
-         f" / 最低 {min(g1 + g2):+.1%} / 最高 {max(g1 + g2):+.1%}")
+    g3, y3 = report("暗号資産 2銘柄", CRY)
+    emit(f"\n## 全22銘柄\n\n- 平均 **{st.mean(g1 + g2 + g3):+.1%}**"
+         f" / 最低 {min(g1 + g2 + g3):+.1%} / 最高 {max(g1 + g2 + g3):+.1%}")
 
     emit(f"\n## 想定の範囲(分位 {BAND_LO:.0%}〜{BAND_HI:.0%}・直近{BAND_BARS}本)\n")
     emit("名目は8割だが、**実測は8割に届かない**。販売資料には実測値を書くこと。")
     c1 = report_band("FX 13ペア", FX)
     c2 = report_band("株価指数 7銘柄", IDX)
-    emit(f"\n**全20銘柄の平均被覆率 {st.mean(c1 + c2):.1%}**"
-         f"(最低 {min(c1 + c2):.1%})。全履歴の分位で作る範囲より狭く、"
+    c3 = report_band("暗号資産 2銘柄", CRY)
+    emit(f"\n**全22銘柄の平均被覆率 {st.mean(c1 + c2 + c3):.1%}**"
+         f"(最低 {min(c1 + c2 + c3):.1%})。全履歴の分位で作る範囲より狭く、"
          f"被覆はほぼ同じ。狭くて外さない分だけ良い。")
+
+    emit(f"\n## 「静か」判定の的中率(静穏度 < 0.85)\n")
+    emit("「静か」と出た日の翌バーが、実際に平年並みを下回った割合。")
+    q1, u1 = report_quiet("FX 13ペア", FX)
+    q2, u2 = report_quiet("株価指数 7銘柄", IDX)
+    emit(f"\n**「静か」のとき {st.mean(q1 + q2):.1%} / 無条件 {st.mean(u1 + u2):.1%}"
+         f"(最低 {min(q1 + q2):.1%})**")
+    emit("""
+留保: 台帳(`i-quiethit-fx`)では全13ペア・14年中13年で改善し、日次集約後も
+t=19.6(必要4.38)と堅い。**ただし連続する「静か」局面を1件にまとめると
+31局面しかなく、その単位では成立しない(勝ち15/31)。**
+日ごとの判断には使えるが、「静かな局面」という単位での主張はできない。
+販売資料には**日ごとの割合としてのみ**書くこと。""")
     if ev:
         dest = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                             "..", "indicator-next", "EVIDENCE.md")
