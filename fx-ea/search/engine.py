@@ -213,14 +213,42 @@ def evaluate_forecast(series, cum_tests, hold=1):
     }
 
 
+def resample_weekly(rows):
+    """日足を週足にまとめる。始値=週初の始値・高安=週内の高安・終値=週末の終値。
+
+    日中足は取れないが、上位足なら日足から作れる。
+    「日足でしか測っていない」という制約を、上側には少しだけ動かせる。
+    """
+    out, cur = [], None
+    for r in rows:
+        y, w, _ = dt.date.fromisoformat(r[0]).isocalendar()
+        key = (y, w)
+        if cur is None or cur[0] != key:
+            if cur is not None: out.append(cur[1])
+            cur = (key, [r[0], r[1], r[2], r[3], r[4], r[5] if len(r) > 5 else 0])
+        else:
+            b = cur[1]
+            b[2] = max(b[2], r[2]); b[3] = min(b[3], r[3]); b[4] = r[4]
+            if len(r) > 5: b[5] += r[5]
+    if cur is not None: out.append(cur[1])
+    # 最後の週は途中までしかない(今週分)。値幅が小さく出るので落とす。
+    return out[:-1] if out else out
+
+
 def build_forecast(family, params):
-    """指標トラックの族を組み立てる。symbols を渡すと全銘柄で回して合成する。"""
+    """指標トラックの族を組み立てる。symbols を渡すと全銘柄で回して合成する。
+
+    tf="W" を渡すと日足を週足にまとめてから検定する。
+    """
     p = dict(params)
+    tf = p.pop("tf", "D")
     fn = _F.FORECAST[family]
     syms = p.pop("symbols", None) or [p.pop("sym")]
     out = []
     for sym in syms:
-        out += fn(rows_of(sym), **p)
+        rows = rows_of(sym)
+        if tf == "W": rows = resample_weekly(rows)
+        out += fn(rows, **p)
     return out
 
 

@@ -1451,6 +1451,86 @@
    },
    "space_size": 36,
    "status": "done"
+  },
+  {
+   "id": "i-busyhit-fx",
+   "track": "indicator",
+   "note": "【指標】FX13ペア 値幅計が「荒い」と出した日(静穏度>1.15)の翌バーは、実際に平年並みを上回るか。静か側だけ検定して荒い側を出しているのは片手落ちなので測る",
+   "family": "quiethit",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 14,
+    "base_bars": 3000,
+    "thr": 1.15,
+    "side": "busy"
+   },
+   "space_size": 24,
+   "status": "done"
+  },
+  {
+   "id": "i-busyhit-idx",
+   "track": "indicator",
+   "note": "【指標】指数7銘柄 同じく「荒い」判定の的中率",
+   "family": "quiethit",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 14,
+    "base_bars": 3000,
+    "thr": 1.15,
+    "side": "busy"
+   },
+   "space_size": 24,
+   "status": "done"
+  },
+  {
+   "id": "i-rangefc-w1-fx",
+   "track": "indicator",
+   "note": "【指標】FX13ペア 週足で、直近8本の値幅平均は翌週の値幅を平年並みより正確に言い当てるか(日足以外でも成り立つかの確認。日中足は取れないが上位足なら日足から作れる)",
+   "family": "rangefc",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 8,
+    "kind": "sma",
+    "tf": "W"
+   },
+   "space_size": 24,
+   "status": "done"
   }
  ]
 }

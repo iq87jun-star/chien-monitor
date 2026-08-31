@@ -1,5 +1,5 @@
 {
- "cumulative_tests": 8567,
+ "cumulative_tests": 8639,
  "entries": [
   {
    "id": "dow-jpy-mon",
@@ -3034,6 +3034,152 @@
     "neg_years": 3,
     "years": 13,
     "first": "2014-10-18",
+    "last": "2026-08-24"
+   }
+  },
+  {
+   "id": "i-busyhit-fx",
+   "note": "【指標】FX13ペア 値幅計が「荒い」と出した日(静穏度>1.15)の翌バーは、実際に平年並みを上回るか。静か側だけ検定して荒い側を出しているのは片手落ちなので測る",
+   "family": "quiethit",
+   "track": "indicator",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 14,
+    "base_bars": 3000,
+    "thr": 1.15,
+    "side": "busy"
+   },
+   "space_size": 24,
+   "protocol": "指標v1 (素朴基準に対する改善)",
+   "tested_at": "2026-08-31",
+   "cum_tests_at_time": 8591,
+   "result": {
+    "verdict": "通過",
+    "reason": "全基準を満たす",
+    "n": 8133,
+    "t": 58.34,
+    "t_adj": 58.34,
+    "need_t": 4.384,
+    "hold": 1,
+    "n_dates": 1678,
+    "t_date": 27.714,
+    "gain": 0.3129,
+    "base": 0.3274,
+    "gain_ratio": 0.9557,
+    "is_gain": 0.3179,
+    "oos_gain": 0.3053,
+    "hit_years": 14,
+    "years": 14,
+    "first": "2013-07-30",
+    "last": "2026-08-18"
+   }
+  },
+  {
+   "id": "i-busyhit-idx",
+   "note": "【指標】指数7銘柄 同じく「荒い」判定の的中率",
+   "family": "quiethit",
+   "track": "indicator",
+   "params": {
+    "symbols": [
+     "US500",
+     "NAS100",
+     "US30",
+     "JP225",
+     "HK50",
+     "GER40",
+     "UK100"
+    ],
+    "n": 14,
+    "base_bars": 3000,
+    "thr": 1.15,
+    "side": "busy"
+   },
+   "space_size": 24,
+   "protocol": "指標v1 (素朴基準に対する改善)",
+   "tested_at": "2026-08-31",
+   "cum_tests_at_time": 8615,
+   "result": {
+    "verdict": "通過",
+    "reason": "全基準を満たす",
+    "n": 6339,
+    "t": 59.237,
+    "t_adj": 59.237,
+    "need_t": 4.385,
+    "hold": 1,
+    "n_dates": 2060,
+    "t_date": 33.817,
+    "gain": 0.3449,
+    "base": 0.3535,
+    "gain_ratio": 0.9758,
+    "is_gain": 0.3657,
+    "oos_gain": 0.3137,
+    "hit_years": 12,
+    "years": 14,
+    "first": "2013-09-10",
+    "last": "2026-08-28"
+   }
+  },
+  {
+   "id": "i-rangefc-w1-fx",
+   "note": "【指標】FX13ペア 週足で、直近8本の値幅平均は翌週の値幅を平年並みより正確に言い当てるか(日足以外でも成り立つかの確認。日中足は取れないが上位足なら日足から作れる)",
+   "family": "rangefc",
+   "track": "indicator",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 8,
+    "kind": "sma",
+    "tf": "W"
+   },
+   "space_size": 24,
+   "protocol": "指標v1 (素朴基準に対する改善)",
+   "tested_at": "2026-08-31",
+   "cum_tests_at_time": 8639,
+   "result": {
+    "verdict": "通過",
+    "reason": "全基準を満たす",
+    "n": 9399,
+    "t": 20.775,
+    "t_adj": 20.775,
+    "need_t": 4.385,
+    "hold": 1,
+    "n_dates": 725,
+    "t_date": 9.972,
+    "gain": 0.1209,
+    "base": 0.7741,
+    "gain_ratio": 0.1561,
+    "is_gain": 0.1429,
+    "oos_gain": 0.0878,
+    "hit_years": 12,
+    "years": 15,
+    "first": "2012-10-22",
     "last": "2026-08-24"
    }
   }

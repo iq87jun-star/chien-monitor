@@ -686,13 +686,15 @@ def i_interval(rows, n=60, lo=0.1, hi=0.9):
 FORECAST["interval"] = i_interval
 
 
-def i_quiethit(rows, n=14, base_bars=3000, thr=0.85):
-    """値幅計の「静か」表示が当たっているか。
+def i_quiethit(rows, n=14, base_bars=3000, thr=0.85, side="quiet"):
+    """値幅計の「静か」「荒い」表示が当たっているか。
 
     静穏度 = 直近 n 本の平均値幅 ÷ 直近 base_bars 本の平均値幅。
-    これが thr 未満のとき「静か」と出す。そう出た日の翌バーが、実際に
-    平年並みを下回った割合を、**無条件で下回る割合**と比べる。
+      side="quiet": 静穏度 < thr のとき「静か」→ 翌バーが平年並みを下回るか
+      side="busy" : 静穏度 > thr のとき「荒い」→ 翌バーが平年並みを上回るか
     素朴基準 = それまでの全履歴での無条件の割合(拡大平均)。
+
+    出荷している表示そのものを測るので、既定値は MQL の input と揃えてある。
     """
     o, h, l, c = _ohlc(rows)
     rng = [(h[i] - l[i]) / c[i] * 100 if c[i] > 0 else None for i in range(len(rows))]
@@ -708,8 +710,10 @@ def i_quiethit(rows, n=14, base_bars=3000, thr=0.85):
         base = sum(hist[-b:]) / b
         fc = sum(hist[-n:]) / n
         if base <= 0: continue
-        hit = 1.0 if rng[i + 1] < base else 0.0
-        if tot >= 250 and fc / base < thr:
+        hit = (1.0 if rng[i + 1] < base else 0.0) if side == "quiet" \
+              else (1.0 if rng[i + 1] > base else 0.0)
+        fires = (fc / base < thr) if side == "quiet" else (fc / base > thr)
+        if tot >= 250 and fires:
             p0 = below / tot                      # ここまでの無条件の割合
             out.append((rows[i + 1][0], hit - p0, p0))
         below += hit; tot += 1                    # 実現値を足すのは判定の後

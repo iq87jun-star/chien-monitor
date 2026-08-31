@@ -101,11 +101,13 @@ def report_band(title, syms):
     return cov
 
 
-def quiet_hit(rows, n=RANGE_BARS, base_bars=BASE_BARS, thr=0.85):
+def quiet_hit(rows, n=RANGE_BARS, base_bars=BASE_BARS, thr=0.85, side="quiet"):
     """出荷コードの「静か」判定が当たっている割合と、無条件の割合。
 
-    静穏度 = 直近 n 本の平均値幅 ÷ 直近 base_bars 本の平均値幅 < thr のとき「静か」。
-    そう出た日の翌バーが平年並みを下回った割合を、無条件の割合と比べる。
+    静穏度 = 直近 n 本の平均値幅 ÷ 直近 base_bars 本の平均値幅。
+      side="quiet": < thr で「静か」→ 翌バーが平年並みを下回った割合
+      side="busy" : > thr で「荒い」→ 翌バーが平年並みを上回った割合
+    いずれも無条件の割合と比べる。
     """
     rng = [r[2] - r[3] for r in rows]
     hist = []
@@ -117,25 +119,28 @@ def quiet_hit(rows, n=RANGE_BARS, base_bars=BASE_BARS, thr=0.85):
         base = sum(hist[-b:]) / b
         if base <= 0: continue
         fc = sum(hist[-n:]) / n
-        low = rng[i + 1] < base
-        u_hit += low; u_tot += 1
-        if fc / base < thr:
-            q_hit += low; q_tot += 1
+        hit = (rng[i + 1] < base) if side == "quiet" else (rng[i + 1] > base)
+        fires = (fc / base < thr) if side == "quiet" else (fc / base > thr)
+        u_hit += hit; u_tot += 1
+        if fires:
+            q_hit += hit; q_tot += 1
     if q_tot < 100: return None
     return {"quiet": q_hit / q_tot, "uncond": u_hit / u_tot, "n": q_tot}
 
 
-def report_quiet(title, syms):
+def report_quiet(title, syms, side="quiet", thr=0.85):
+    lab = "静か" if side == "quiet" else "荒い"
+    dir_ = "下回った" if side == "quiet" else "上回った"
     emit(f"\n### {title}\n")
-    emit("| 銘柄 | 「静か」と出た日数 | そのとき下回った割合 | 無条件の割合 |")
+    emit(f"| 銘柄 | 「{lab}」と出た日数 | そのとき{dir_}割合 | 無条件の割合 |")
     emit("|---|--:|--:|--:|")
     qs, us = [], []
     for s in syms:
-        r = quiet_hit(engine.rows_of(s))
+        r = quiet_hit(engine.rows_of(s), thr=thr, side=side)
         if not r: continue
         qs.append(r["quiet"]); us.append(r["uncond"])
         emit(f"| {s} | {r['n']:,} | **{r['quiet']:.1%}** | {r['uncond']:.1%} |")
-    emit(f"\n- 「静か」のとき 平均 **{st.mean(qs):.1%}** / 無条件 {st.mean(us):.1%}"
+    emit(f"\n- 「{lab}」のとき 平均 **{st.mean(qs):.1%}** / 無条件 {st.mean(us):.1%}"
          f" / 最低 {min(qs):.1%}")
     return qs, us
 
@@ -225,12 +230,35 @@ if __name__ == "__main__":
          f"(最低 {min(c1 + c2 + c3):.1%})。全履歴の分位で作る範囲より狭く、"
          f"被覆はほぼ同じ。狭くて外さない分だけ良い。")
 
+    emit(f"\n## 週足での値幅予測(直近8本 / 平年並みは取得できる全週)\n")
+    emit("日中足は取れないが、上位足なら日足からまとめられる。"
+         "**日足だけの話ではない**ことの確認。")
+    emit("\n| クラス | n | 誤差の削減 |")
+    emit("|---|--:|--:|")
+    for nm, syms in (("FX 13ペア", FX), ("株価指数 7銘柄", IDX)):
+        gs, ns = [], 0
+        for sym in syms:
+            r = score(engine.resample_weekly(engine.rows_of(sym)),
+                      range_bars=8, base_bars=BASE_BARS)
+            if r: gs.append(r["gain"]); ns += r["n"]
+        emit(f"| {nm} | {ns:,} | **{st.mean(gs):+.1%}** |")
+
     emit(f"\n## 「静か」判定の的中率(静穏度 < 0.85)\n")
     emit("「静か」と出た日の翌バーが、実際に平年並みを下回った割合。")
     q1, u1 = report_quiet("FX 13ペア", FX)
     q2, u2 = report_quiet("株価指数 7銘柄", IDX)
     emit(f"\n**「静か」のとき {st.mean(q1 + q2):.1%} / 無条件 {st.mean(u1 + u2):.1%}"
          f"(最低 {min(q1 + q2):.1%})**")
+    emit(f"\n## 「荒い」判定の的中率(静穏度 > 1.15)\n")
+    b1, v1 = report_quiet("FX 13ペア", FX, side="busy", thr=1.15)
+    b2, v2 = report_quiet("株価指数 7銘柄", IDX, side="busy", thr=1.15)
+    emit(f"\n**「荒い」のとき {st.mean(b1 + b2):.1%} / 無条件 {st.mean(v1 + v2):.1%}"
+         f"(最低 {min(b1 + b2):.1%})**")
+    emit("""
+「荒い」側は「静か」側より頑健。連続する局面をひとつにまとめても成立する
+(FX 48局面・勝ち35/48・生t 2.83 / 指数 42局面・勝ち30/42)。
+静か側は局面単位では成立しない(下記)。**同じパネルの2つの表示で強さが違う。**""")
+
     emit("""
 留保: 台帳(`i-quiethit-fx`)では全13ペア・14年中13年で改善し、日次集約後も
 t=19.6(必要4.38)と堅い。**ただし連続する「静か」局面を1件にまとめると
