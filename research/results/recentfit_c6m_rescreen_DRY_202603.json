@@ -1,0 +1,276 @@
+{
+ "meta": {
+  "purpose": "C案 直近6ヶ月トラックの再スクリーニング(docs/180 §2 + docs/197のλ=1.0)",
+  "as_of": "2026-03-31",
+  "dry_run": true,
+  "seed": 7,
+  "lam": 0.5,
+  "sel_window": "2025-10-01..2026-03-31",
+  "conf_window": "2026-01-01..2026-03-31",
+  "target_account": "FTMO50k_531407058",
+  "book_excluded_from_composite": [
+   "FN100k_14074882"
+  ],
+  "approx": [
+   "S1/S2/Mon = 月曜o2o(実EAは12h保有・24hのものもある)",
+   "S3 = 木曜o2o SHORT(実EAは16UTC+6h)",
+   "S4/S5 = RSI(2)逆張りをD1で再現",
+   "A案は各スリーブ等リスク(1.25%/回)を等ウェイト0.2で近似",
+   "Fintokeiパール ¥500万≈$32k / 速攻プロ ¥2,000万≈$129k(155円換算)",
+   "Yahoo日足近似・実口座成績ではない"
+  ]
+ },
+ "versions": {
+  "lambda_0": {
+   "selected": {
+    "v4_USDJPY": 0.315,
+    "Mon_GBPJPY": 0.351,
+    "Mon_AUDJPY": 0.27,
+    "Hold_XAUUSD": 0.064
+   },
+   "mult": 3.68,
+   "m_sel": 5.6,
+   "m_12m": 4.6,
+   "top8_adjscore": [
+    [
+     "v4_USDJPY",
+     2.035
+    ],
+    [
+     "Mon_GBPJPY",
+     1.587
+    ],
+    [
+     "Mon_AUDJPY",
+     1.433
+    ],
+    [
+     "Mon_NZDJPY",
+     0.998
+    ],
+    [
+     "Mon_UK100",
+     0.93
+    ],
+    [
+     "Hold_XAUUSD",
+     0.907
+    ],
+    [
+     "Mon_JP225",
+     0.778
+    ],
+    [
+     "Hold_JP225",
+     0.756
+    ]
+   ],
+   "legs": {
+    "v4_USDJPY": {
+     "rho_book": 0.425,
+     "n_active": 27,
+     "cum_sel": 4.71,
+     "cum_conf": 1.39,
+     "cum_12m": 5.08,
+     "score": 2.035,
+     "std_active": 0.004376947023700226,
+     "cum_full": -2.7
+    },
+    "Mon_GBPJPY": {
+     "rho_book": 0.782,
+     "n_active": 26,
+     "cum_sel": 3.2,
+     "cum_conf": 1.87,
+     "cum_12m": 4.23,
+     "score": 1.587,
+     "std_active": 0.00392530988317347,
+     "cum_full": 28.7
+    },
+    "Mon_AUDJPY": {
+     "rho_book": 0.908,
+     "n_active": 26,
+     "cum_sel": 3.77,
+     "cum_conf": 2.74,
+     "cum_12m": 6.47,
+     "score": 1.433,
+     "std_active": 0.005108866744911207,
+     "cum_full": 48.4
+    },
+    "Hold_XAUUSD": {
+     "rho_book": 0.146,
+     "n_active": 125,
+     "cum_sel": 20.64,
+     "cum_conf": 7.28,
+     "cum_12m": 47.94,
+     "score": 0.907,
+     "std_active": 0.02137178154193736,
+     "cum_full": 306.6
+    }
+   },
+   "rho_book_composite": 0.582,
+   "rho_book_composite_12m": 0.592,
+   "mc": {
+    "sel_6m": {
+     "p1_pass": 99.8,
+     "funded": 99.7,
+     "fail": 0.1,
+     "p1_days_med": 62,
+     "p1_days_p90": 119,
+     "funded_days_med": 100,
+     "funded_days_p90": 169
+    },
+    "recent12m": {
+     "p1_pass": 99.2,
+     "funded": 99.1,
+     "fail": 0.1,
+     "p1_days_med": 78,
+     "p1_days_p90": 146,
+     "funded_days_med": 126,
+     "funded_days_p90": 212
+    },
+    "full": {
+     "p1_pass": 66.0,
+     "funded": 58.6,
+     "fail": 14.5,
+     "p1_days_med": 117,
+     "p1_days_p90": 212,
+     "funded_days_med": 202,
+     "funded_days_p90": 342
+    }
+   }
+  },
+  "lambda_adopted": {
+   "selected": {
+    "v4_USDJPY": 0.327,
+    "Mon_GBPJPY": 0.364,
+    "Mon_UK100": 0.242,
+    "Hold_XAUUSD": 0.067
+   },
+   "mult": 2.8,
+   "m_sel": 5.35,
+   "m_12m": 3.5,
+   "top8_adjscore": [
+    [
+     "v4_USDJPY",
+     1.603
+    ],
+    [
+     "Mon_GBPJPY",
+     0.966
+    ],
+    [
+     "Mon_UK100",
+     0.93
+    ],
+    [
+     "Hold_XAUUSD",
+     0.841
+    ],
+    [
+     "Mon_AUDJPY",
+     0.782
+    ],
+    [
+     "Hold_JP225",
+     0.705
+    ],
+    [
+     "v4_GBPUSD",
+     0.656
+    ],
+    [
+     "Mon_JP225",
+     0.647
+    ]
+   ],
+   "legs": {
+    "v4_USDJPY": {
+     "rho_book": 0.425,
+     "n_active": 27,
+     "cum_sel": 4.71,
+     "cum_conf": 1.39,
+     "cum_12m": 5.08,
+     "score": 2.035,
+     "std_active": 0.004376947023700226,
+     "cum_full": -2.7
+    },
+    "Mon_GBPJPY": {
+     "rho_book": 0.782,
+     "n_active": 26,
+     "cum_sel": 3.2,
+     "cum_conf": 1.87,
+     "cum_12m": 4.23,
+     "score": 1.587,
+     "std_active": 0.00392530988317347,
+     "cum_full": 28.7
+    },
+    "Mon_UK100": {
+     "rho_book": -0.04,
+     "n_active": 26,
+     "cum_sel": 2.79,
+     "cum_conf": 1.74,
+     "cum_12m": 1.85,
+     "score": 0.93,
+     "std_active": 0.005905268191841976,
+     "cum_full": -2.4
+    },
+    "Hold_XAUUSD": {
+     "rho_book": 0.146,
+     "n_active": 125,
+     "cum_sel": 20.64,
+     "cum_conf": 7.28,
+     "cum_12m": 47.94,
+     "score": 0.907,
+     "std_active": 0.02137178154193736,
+     "cum_full": 306.6
+    }
+   },
+   "rho_book_composite": 0.409,
+   "rho_book_composite_12m": 0.476,
+   "mc": {
+    "sel_6m": {
+     "p1_pass": 99.1,
+     "funded": 99.1,
+     "fail": 0.0,
+     "p1_days_med": 90,
+     "p1_days_p90": 155,
+     "funded_days_med": 143,
+     "funded_days_p90": 221
+    },
+    "recent12m": {
+     "p1_pass": 92.2,
+     "funded": 91.8,
+     "fail": 0.4,
+     "p1_days_med": 118,
+     "p1_days_p90": 200,
+     "funded_days_med": 191,
+     "funded_days_p90": 291
+    },
+    "full": {
+     "p1_pass": 39.5,
+     "funded": 31.2,
+     "fail": 12.9,
+     "p1_days_med": 152,
+     "p1_days_p90": 228,
+     "funded_days_med": 261,
+     "funded_days_p90": 415
+    }
+   }
+  }
+ },
+ "penalty_effect": {
+  "pushed_out": [
+   "Mon_AUDJPY"
+  ],
+  "pulled_in": [
+   "Mon_UK100"
+  ],
+  "unchanged": [
+   "Hold_XAUUSD",
+   "Mon_GBPJPY",
+   "v4_USDJPY"
+  ],
+  "d_rho_book": -0.173,
+  "d_mult": -0.88
+ }
+}

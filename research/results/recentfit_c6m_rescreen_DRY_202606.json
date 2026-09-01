@@ -4,7 +4,7 @@
   "as_of": "2026-06-30",
   "dry_run": true,
   "seed": 7,
-  "lam": 1.0,
+  "lam": 0.5,
   "sel_window": "2025-12-31..2026-06-30",
   "conf_window": "2026-03-31..2026-06-30",
   "target_account": "FTMO50k_531407058",
@@ -61,8 +61,8 @@
      1.328
     ],
     [
-     "TSMOM_ETHUSD",
-     1.153
+     "Mon_EURJPY",
+     1.125
     ]
    ],
    "legs": {
@@ -139,20 +139,28 @@
     }
    }
   },
-  "lambda_1": {
+  "lambda_adopted": {
    "selected": {
-    "Hold_JP225": 0.193,
-    "v4_USDCHF": 0.431,
-    "Mon_GER40": 0.275,
-    "TSMOM_ETHUSD": 0.101
+    "Mon_GBPJPY": 0.459,
+    "Hold_JP225": 0.107,
+    "Mon_GER40": 0.153,
+    "v4_USDCHF": 0.281
    },
-   "mult": 1.16,
-   "m_sel": 2.5,
-   "m_12m": 1.45,
+   "mult": 6.0,
+   "m_sel": 9.0,
+   "m_12m": 8.25,
    "top8_adjscore": [
+    [
+     "Mon_GBPJPY",
+     1.639
+    ],
     [
      "Hold_JP225",
      1.594
+    ],
+    [
+     "Mon_GER40",
+     1.41
     ],
     [
      "v4_USDCHF",
@@ -163,27 +171,29 @@
      1.328
     ],
     [
-     "Mon_GER40",
-     1.246
+     "Mon_AUDJPY",
+     1.277
     ],
     [
-     "TSMOM_ETHUSD",
-     1.153
-    ],
-    [
-     "TSMOM_BTCUSD",
-     1.004
-    ],
-    [
-     "v4_NZDUSD",
-     0.845
+     "Mon_NZDJPY",
+     1.065
     ],
     [
      "Mon_US500",
-     0.708
+     0.851
     ]
    ],
    "legs": {
+    "Mon_GBPJPY": {
+     "rho_book": 0.792,
+     "n_active": 26,
+     "cum_sel": 5.1,
+     "cum_conf": 3.17,
+     "cum_12m": 6.76,
+     "score": 2.713,
+     "std_active": 0.003608835193782596,
+     "cum_full": 32.7
+    },
     "Hold_JP225": {
      "rho_book": -0.068,
      "n_active": 119,
@@ -193,16 +203,6 @@
      "score": 1.594,
      "std_active": 0.02025350693268285,
      "cum_full": 256.6
-    },
-    "v4_USDCHF": {
-     "rho_book": 0.0,
-     "n_active": 10,
-     "cum_sel": 3.28,
-     "cum_conf": 1.49,
-     "cum_12m": 4.05,
-     "score": 1.334,
-     "std_active": 0.007737756840211124,
-     "cum_full": 15.7
     },
     "Mon_GER40": {
      "rho_book": 0.209,
@@ -214,64 +214,63 @@
      "std_active": 0.014199863736167422,
      "cum_full": 75.3
     },
-    "TSMOM_ETHUSD": {
-     "rho_book": -0.371,
-     "n_active": 123,
-     "cum_sel": 49.46,
-     "cum_conf": 18.23,
-     "cum_12m": -23.14,
-     "score": 1.153,
-     "std_active": 0.0385914301293575,
-     "cum_full": -75.7
+    "v4_USDCHF": {
+     "rho_book": 0.0,
+     "n_active": 10,
+     "cum_sel": 3.28,
+     "cum_conf": 1.49,
+     "cum_12m": 4.05,
+     "score": 1.334,
+     "std_active": 0.007737756840211124,
+     "cum_full": 15.7
     }
    },
-   "rho_book_composite": -0.179,
-   "rho_book_composite_12m": 0.005,
+   "rho_book_composite": 0.311,
+   "rho_book_composite_12m": 0.413,
    "mc": {
     "sel_6m": {
-     "p1_pass": 98.8,
-     "funded": 98.8,
-     "fail": 0.0,
-     "p1_days_med": 86,
-     "p1_days_p90": 156,
-     "funded_days_med": 135,
-     "funded_days_p90": 222
+     "p1_pass": 99.5,
+     "funded": 99.1,
+     "fail": 0.9,
+     "p1_days_med": 22,
+     "p1_days_p90": 48,
+     "funded_days_med": 37,
+     "funded_days_p90": 68
     },
     "recent12m": {
-     "p1_pass": 69.8,
-     "funded": 65.4,
-     "fail": 4.5,
-     "p1_days_med": 129,
-     "p1_days_p90": 216,
-     "funded_days_med": 216,
-     "funded_days_p90": 356
+     "p1_pass": 98.6,
+     "funded": 97.2,
+     "fail": 2.8,
+     "p1_days_med": 31,
+     "p1_days_p90": 73,
+     "funded_days_med": 52,
+     "funded_days_p90": 103
     },
     "full": {
-     "p1_pass": 39.7,
-     "funded": 30.6,
-     "fail": 17.9,
-     "p1_days_med": 147,
-     "p1_days_p90": 229,
-     "funded_days_med": 249,
-     "funded_days_p90": 401
+     "p1_pass": 78.3,
+     "funded": 67.2,
+     "fail": 32.1,
+     "p1_days_med": 46,
+     "p1_days_p90": 121,
+     "funded_days_med": 76,
+     "funded_days_p90": 164
     }
    }
   }
  },
  "penalty_effect": {
   "pushed_out": [
-   "Mon_AUDJPY",
-   "Mon_GBPJPY"
+   "Mon_AUDJPY"
   ],
   "pulled_in": [
-   "Mon_GER40",
-   "TSMOM_ETHUSD"
+   "Mon_GER40"
   ],
   "unchanged": [
    "Hold_JP225",
+   "Mon_GBPJPY",
    "v4_USDCHF"
   ],
-  "d_rho_book": -0.646,
-  "d_mult": -3.76
+  "d_rho_book": -0.156,
+  "d_mult": 1.08
  }
 }

@@ -9,9 +9,10 @@ docs/180 §2の規則 + docs/197の相関ペナルティ λ=1.0 を実装する�
   スコア mean/std×√n / 逆ボラcap40%・銘柄1・族2・Top-4
   倍率 0.8×min(m*_sel, m*_12m)・cap6.0 / MC=FTMO 10-5・3バウンド・シード7
 追加(docs/197・2026-09-30の再スクリーニングから適用):
-  score_adj = score × (1 − λ·max(0, ρ_book)) , λ=1.0
+  score_adj = score × (1 − λ·max(0, ρ_book)) , λ=0.5(docs/197 §8.1で1.0から改訂)
+  選抜母集団は28セル(TSMOM族6本はEA未実装のため事前除外・docs/197 §8.2)
   ρ_book = 当該セルの選抜窓日次リターンと「対象口座を除く稼働中全口座の合成」の相関
-  → **λ=0版とλ=1.0版の両方を必ず出力する**(docs/197 §4の可視化義務)
+  → **λ=0版とλ=0.5版の両方を必ず出力する**(docs/197 §4の可視化義務・母集団は両版とも28セル)
 
 使い方:
   python3 recentfit_c6m_rescreen.py --as-of 2026-09-30      # 本番(9/30に実行)
@@ -27,7 +28,7 @@ sys.path.insert(0, HERE)
 import recentfit_screen as base
 
 SEED = 7
-LAMBDA = 1.0                 # docs/197 §2(変更は本docへの追記が必要)
+LAMBDA = 0.5                 # docs/197 §8.1(2026-09-01改訂・変更は本docへの追記が必要)
 MIN_ACTIVE = 8               # docs/180 §2 トラックC
 MULT_HARD_CAP = 6.0
 W_CAP = 0.40
@@ -150,14 +151,13 @@ def main():
         raise SystemExit(f"[ABORT] 基準日 {END.date()} に対しデータ最終日 {probe.index[-1].date()}。"
                          f"基準日当日以降に実行すること。")
 
-    print("[2/5] セル構築(34セル・docs/174と同一母集団)")
+    print("[2/5] セル構築(28セル=34セル−TSMOM族6本・docs/197 §8.2)")
     cells = {}
     for nm in base.MON_FX + base.MON_IDX:
         cells[f"Mon_{nm}"] = dict(family="Mon", symbol=nm, s=base.mon_cell(nm))
     for nm in base.HOLD_SYMS:
         cells[f"Hold_{nm}"] = dict(family="Hold", symbol=nm, s=base.hold_cell(nm))
-    for nm in base.TSMOM_SYMS:
-        cells[f"TSMOM_{nm}"] = dict(family="TSMOM", symbol=nm, s=base.tsmom_cell(nm))
+    # ⚠ TSMOM族はEA未実装のため母集団から事前除外(docs/197 §8.2・実装可否による除外)
     for p in base.V4_PAIRS:
         cells[f"v4_{p}"] = dict(family="v4", symbol=p, s=base.v4_cell(p))
     base.verify_window([v["s"] for v in cells.values()], expect_end=END)   # docs/192
@@ -174,7 +174,7 @@ def main():
                         stats=stats_for(v["s"], SEL0, CONF0, W12_0, END),
                         rho_book=rho_book(v["s"], book, SEL0, END))
 
-    print("[4/5] 選抜(λ=0 従来規則 / λ=1.0 docs/197)")
+    print(f"[4/5] 選抜(λ=0 従来規則 / λ={LAMBDA} docs/197 §8)")
     out = {"meta": dict(
         purpose="C案 直近6ヶ月トラックの再スクリーニング(docs/180 §2 + docs/197のλ=1.0)",
         as_of=str(END.date()), dry_run=bool(a.dry), seed=SEED, lam=LAMBDA,
@@ -183,7 +183,7 @@ def main():
         book_excluded_from_composite=list(db.NOT_RECONSTRUCTIBLE),
         approx=db.APPROX), "versions": {}}
 
-    for tag, lam in (("lambda_0", 0.0), ("lambda_1", LAMBDA)):
+    for tag, lam in (("lambda_0", 0.0), ("lambda_adopted", LAMBDA)):
         w, ranked = select(table, lam)
         if not w:
             out["versions"][tag] = {"error": "フィルタ通過セルなし=当月は配備しない(docs/180)"}
@@ -207,7 +207,7 @@ def main():
             m = rec["mc"][b]
             print(f"     MC {b:10s} p1={m['p1_pass']:5.1f} funded={m['funded']:5.1f} fail={m['fail']:5.1f}")
 
-    v0, v1 = out["versions"].get("lambda_0", {}), out["versions"].get("lambda_1", {})
+    v0, v1 = out["versions"].get("lambda_0", {}), out["versions"].get("lambda_adopted", {})
     if "selected" in v0 and "selected" in v1:
         s0, s1 = set(v0["selected"]), set(v1["selected"])
         out["penalty_effect"] = dict(
