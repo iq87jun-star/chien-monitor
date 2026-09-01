@@ -1,5 +1,5 @@
 {
- "cumulative_tests": 8639,
+ "cumulative_tests": 8687,
  "entries": [
   {
    "id": "dow-jpy-mon",
@@ -3181,6 +3181,89 @@
     "years": 15,
     "first": "2012-10-22",
     "last": "2026-08-24"
+   }
+  },
+  {
+   "id": "i-rangefc-met-eng",
+   "note": "【指標】貴金属3+エネルギー2 高安幅の14日平均は翌日の高安幅を平年並みより正確に言い当てるか(値幅計を金・原油で使えるかの確認。MT5では大きい客層)",
+   "family": "rangefc",
+   "track": "indicator",
+   "params": {
+    "symbols": [
+     "XAUUSD",
+     "XAGUSD",
+     "XPTUSD",
+     "USOIL",
+     "UKOIL"
+    ],
+    "n": 14,
+    "kind": "sma"
+   },
+   "space_size": 24,
+   "protocol": "指標v1 (素朴基準に対する改善)",
+   "tested_at": "2026-09-01",
+   "cum_tests_at_time": 8663,
+   "result": {
+    "verdict": "通過",
+    "reason": "全基準を満たす",
+    "n": 18514,
+    "t": 22.228,
+    "t_adj": 22.228,
+    "need_t": 4.386,
+    "hold": 1,
+    "n_dates": 3712,
+    "t_date": 17.41,
+    "gain": 0.1501,
+    "base": 1.0025,
+    "gain_ratio": 0.1497,
+    "is_gain": 0.191,
+    "oos_gain": 0.0887,
+    "hit_years": 16,
+    "years": 16,
+    "first": "2011-11-28",
+    "last": "2026-09-01"
+   }
+  },
+  {
+   "id": "i-interval-met-eng",
+   "note": "【指標】貴金属3+エネルギー2 直近60本の分位で作った値幅の範囲は全履歴の分位より良いか",
+   "family": "interval",
+   "track": "indicator",
+   "params": {
+    "symbols": [
+     "XAUUSD",
+     "XAGUSD",
+     "XPTUSD",
+     "USOIL",
+     "UKOIL"
+    ],
+    "n": 60,
+    "lo": 0.1,
+    "hi": 0.9
+   },
+   "space_size": 24,
+   "protocol": "指標v1 (素朴基準に対する改善)",
+   "tested_at": "2026-09-01",
+   "cum_tests_at_time": 8687,
+   "result": {
+    "verdict": "通過",
+    "reason": "全基準を満たす",
+    "n": 17577,
+    "t": 14.318,
+    "t_adj": 14.318,
+    "need_t": 4.387,
+    "hold": 1,
+    "n_dates": 3522,
+    "t_date": 10.828,
+    "gain": 0.7586,
+    "base": 5.2616,
+    "gain_ratio": 0.1442,
+    "is_gain": 0.8932,
+    "oos_gain": 0.5567,
+    "hit_years": 13,
+    "years": 15,
+    "first": "2012-08-29",
+    "last": "2026-09-01"
    }
   }
  ],

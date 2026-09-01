@@ -1531,6 +1531,45 @@
    },
    "space_size": 24,
    "status": "done"
+  },
+  {
+   "id": "i-rangefc-met-eng",
+   "track": "indicator",
+   "note": "【指標】貴金属3+エネルギー2 高安幅の14日平均は翌日の高安幅を平年並みより正確に言い当てるか(値幅計を金・原油で使えるかの確認。MT5では大きい客層)",
+   "family": "rangefc",
+   "params": {
+    "symbols": [
+     "XAUUSD",
+     "XAGUSD",
+     "XPTUSD",
+     "USOIL",
+     "UKOIL"
+    ],
+    "n": 14,
+    "kind": "sma"
+   },
+   "space_size": 24,
+   "status": "done"
+  },
+  {
+   "id": "i-interval-met-eng",
+   "track": "indicator",
+   "note": "【指標】貴金属3+エネルギー2 直近60本の分位で作った値幅の範囲は全履歴の分位より良いか",
+   "family": "interval",
+   "params": {
+    "symbols": [
+     "XAUUSD",
+     "XAGUSD",
+     "XPTUSD",
+     "USOIL",
+     "UKOIL"
+    ],
+    "n": 60,
+    "lo": 0.1,
+    "hi": 0.9
+   },
+   "space_size": 24,
+   "status": "done"
   }
  ]
 }

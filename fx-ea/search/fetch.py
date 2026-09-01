@@ -22,8 +22,19 @@ def fetch_daily(ysym, rng="15y"):
     url = (f"https://query1.finance.yahoo.com/v8/finance/chart/"
            f"{urllib.parse.quote(ysym)}?range={rng}&interval=1d")
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=90) as r:
-        d = json.loads(r.read().decode())
+    try:
+        with urllib.request.urlopen(req, timeout=90) as r:
+            d = json.loads(r.read().decode())
+    except Exception as ex:
+        # 429等で取れないときは、期限切れでも手元のキャッシュで続行する。
+        # 15年の統計に1日の鮮度差は効かない。朝の自動実行を止めないほうが大事。
+        if os.path.exists(fn):
+            cached = json.load(open(fn))
+            if cached and len(cached[0]) >= 6:
+                print(f"fetch: {ysym} の取得に失敗({type(ex).__name__})。"
+                      f"キャッシュ({cached[-1][0]}まで)で続行")
+                return cached
+        raise
     res = d["chart"]["result"][0]
     q = res["indicators"]["quote"][0]
     rows = []

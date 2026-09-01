@@ -20,6 +20,7 @@ FX = ["USDJPY","EURJPY","GBPJPY","AUDJPY","NZDJPY","CADJPY","CHFJPY",
       "EURUSD","GBPUSD","AUDUSD","NZDUSD","USDCAD","USDCHF"]
 IDX = ["US500","NAS100","US30","JP225","HK50","GER40","UK100"]
 CRY = ["BTCUSD","ETHUSD"]
+MET = ["XAUUSD","XAGUSD","XPTUSD","USOIL","UKOIL"]
 
 
 def score(rows, range_bars=RANGE_BARS, base_bars=BASE_BARS):
@@ -218,16 +219,20 @@ if __name__ == "__main__":
     g1, y1 = report("FX 13ペア", FX)
     g2, y2 = report("株価指数 7銘柄", IDX)
     g3, y3 = report("暗号資産 2銘柄", CRY)
-    emit(f"\n## 全22銘柄\n\n- 平均 **{st.mean(g1 + g2 + g3):+.1%}**"
-         f" / 最低 {min(g1 + g2 + g3):+.1%} / 最高 {max(g1 + g2 + g3):+.1%}")
+    g4, y4 = report("貴金属・エネルギー 5銘柄", MET)
+    allg = g1 + g2 + g3 + g4
+    emit(f"\n## 全27銘柄\n\n- 平均 **{st.mean(allg):+.1%}**"
+         f" / 最低 {min(allg):+.1%} / 最高 {max(allg):+.1%}")
 
     emit(f"\n## 想定の範囲(分位 {BAND_LO:.0%}〜{BAND_HI:.0%}・直近{BAND_BARS}本)\n")
     emit("名目は8割だが、**実測は8割に届かない**。販売資料には実測値を書くこと。")
     c1 = report_band("FX 13ペア", FX)
     c2 = report_band("株価指数 7銘柄", IDX)
     c3 = report_band("暗号資産 2銘柄", CRY)
-    emit(f"\n**全22銘柄の平均被覆率 {st.mean(c1 + c2 + c3):.1%}**"
-         f"(最低 {min(c1 + c2 + c3):.1%})。全履歴の分位で作る範囲より狭く、"
+    c4 = report_band("貴金属・エネルギー 5銘柄", MET)
+    allc = c1 + c2 + c3 + c4
+    emit(f"\n**全27銘柄の平均被覆率 {st.mean(allc):.1%}**"
+         f"(最低 {min(allc):.1%})。全履歴の分位で作る範囲より狭く、"
          f"被覆はほぼ同じ。狭くて外さない分だけ良い。")
 
     emit(f"\n## 週足での値幅予測(直近8本 / 平年並みは取得できる全週)\n")
