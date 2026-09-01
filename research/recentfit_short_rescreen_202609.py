@@ -26,6 +26,9 @@ base.DATA = os.path.join(HERE, "data_202609")   # 別キャッシュ(research/.g
 os.makedirs(base.DATA, exist_ok=True)
 base.P2_EPOCH = 1788220799                       # 2026-08-31 23:59:59 UTC
 base.W_ALL1 = pd.Timestamp("2026-08-31")
+# ⚠2026-09-02修正: base.clip()のデフォルト引数は定義時に旧W_ALL1(7/29)で束縛済みのため、
+# 属性の再代入だけではセルが7/29で切り詰められる(初回実行はこのバグで8月データ欠落)。
+base.clip.__defaults__ = (base.W_ALL0, base.W_ALL1)
 base.W12_0 = pd.Timestamp("2025-09-01")          # 倍率校正用の直近12ヶ月
 SEL0  = pd.Timestamp("2026-06-01")               # D: 直近3ヶ月
 CONF0 = pd.Timestamp("2026-07-21")               # 直近6週
