@@ -107,7 +107,15 @@ def load_daily(name):
 def pip_size(p): return 0.01 if p.endswith("JPY") else 0.0001
 
 
-def clip(s, a=W_ALL0, b=W_ALL1):
+def clip(s, a=None, b=None):
+    """⚠2026-09-01修正: 旧実装は `a=W_ALL0, b=W_ALL1` と既定引数で受けていた。
+    既定引数はモジュール定義時に一度だけ評価されるため、呼び出し側が
+    `base.W_ALL1 = ...` で窓をロールしても**セル構築は旧窓のまま truncate されていた**。
+    影響を受けたのは W_ALL1 を再代入する `recentfit_short_rescreen_202609.py`(docs/184)のみ
+    (docs/174-182の各スクリプトは再代入していないため数値は不変)。詳細と再実行結果は docs/192。
+    再代入しない呼び出しでは挙動は完全に同一である。"""
+    a = W_ALL0 if a is None else a
+    b = W_ALL1 if b is None else b
     s = pd.Series(np.asarray(s.values, float), index=pd.DatetimeIndex(s.index))
     return s[(s.index >= a) & (s.index <= b)].dropna()
 
@@ -234,7 +242,9 @@ def e5_composite():
 
 
 # ---------------- 統計・選抜 ----------------
-def win(s, a, b=W_ALL1):
+def win(s, a, b=None):
+    # clip()と同じ既定引数の問題を回避(呼び出し時にモジュール値を読む)
+    b = W_ALL1 if b is None else b
     return s[(s.index >= a) & (s.index <= b)]
 
 
