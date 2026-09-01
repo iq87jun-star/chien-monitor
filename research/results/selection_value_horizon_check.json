@@ -1,0 +1,226 @@
+{
+ "meta": {
+  "purpose": "実験①のカレンダー差補正 docs/187 §6",
+  "seed": 7,
+  "cal_horizon_p1_days": 365,
+  "note": "max_daysをアームごとに暦365日相当の本数へ換算して同一地平で比較"
+ },
+ "arms": {
+  "SEL12": {
+   "n_index_days": 2137,
+   "span_days": 2768,
+   "calendar_days_per_index_day": 1.295,
+   "max_days_used": 282,
+   "sharpe_calendar": 0.94,
+   "vol_ann_calendar": 15.82,
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 74.2,
+     "funded": 63.1,
+     "fail": 31.9,
+     "p1_days_med": 83,
+     "p1_days_p90": 196,
+     "funded_days_med": 137,
+     "funded_days_p90": 271,
+     "p1_days_med_cal": 108,
+     "p1_days_p90_cal": 254,
+     "funded_days_med_cal": 177,
+     "funded_days_p90_cal": 351
+    },
+    "FN_8_5": {
+     "p1_pass": 77.9,
+     "funded": 66.5,
+     "fail": 30.6,
+     "p1_days_med": 66,
+     "p1_days_p90": 175,
+     "funded_days_med": 120,
+     "funded_days_p90": 253,
+     "p1_days_med_cal": 85,
+     "p1_days_p90_cal": 227,
+     "funded_days_med_cal": 155,
+     "funded_days_p90_cal": 328
+    }
+   }
+  },
+  "SEL6": {
+   "n_index_days": 2119,
+   "span_days": 2768,
+   "calendar_days_per_index_day": 1.306,
+   "max_days_used": 279,
+   "sharpe_calendar": 0.85,
+   "vol_ann_calendar": 14.81,
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 70.8,
+     "funded": 59.1,
+     "fail": 34.0,
+     "p1_days_med": 90,
+     "p1_days_p90": 207,
+     "funded_days_med": 150,
+     "funded_days_p90": 289,
+     "p1_days_med_cal": 118,
+     "p1_days_p90_cal": 270,
+     "funded_days_med_cal": 196,
+     "funded_days_p90_cal": 378
+    },
+    "FN_8_5": {
+     "p1_pass": 75.2,
+     "funded": 62.9,
+     "fail": 32.9,
+     "p1_days_med": 72,
+     "p1_days_p90": 185,
+     "funded_days_med": 132,
+     "funded_days_p90": 274,
+     "p1_days_med_cal": 94,
+     "p1_days_p90_cal": 242,
+     "funded_days_med_cal": 172,
+     "funded_days_p90_cal": 358
+    }
+   }
+  },
+  "SEL3": {
+   "n_index_days": 2051,
+   "span_days": 2768,
+   "calendar_days_per_index_day": 1.35,
+   "max_days_used": 270,
+   "sharpe_calendar": 1.22,
+   "vol_ann_calendar": 13.23,
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 78.8,
+     "funded": 71.0,
+     "fail": 19.7,
+     "p1_days_med": 93,
+     "p1_days_p90": 206,
+     "funded_days_med": 158,
+     "funded_days_p90": 294,
+     "p1_days_med_cal": 126,
+     "p1_days_p90_cal": 278,
+     "funded_days_med_cal": 213,
+     "funded_days_p90_cal": 397
+    },
+    "FN_8_5": {
+     "p1_pass": 83.0,
+     "funded": 74.7,
+     "fail": 19.5,
+     "p1_days_med": 75,
+     "p1_days_p90": 187,
+     "funded_days_med": 139,
+     "funded_days_p90": 278,
+     "p1_days_med_cal": 101,
+     "p1_days_p90_cal": 252,
+     "funded_days_med_cal": 188,
+     "funded_days_p90_cal": 375
+    }
+   }
+  },
+  "BROAD_FILT": {
+   "n_index_days": 2452,
+   "span_days": 2768,
+   "calendar_days_per_index_day": 1.129,
+   "max_days_used": 323,
+   "sharpe_calendar": 1.24,
+   "vol_ann_calendar": 13.54,
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 79.9,
+     "funded": 71.9,
+     "fail": 21.6,
+     "p1_days_med": 104,
+     "p1_days_p90": 234,
+     "funded_days_med": 175,
+     "funded_days_p90": 327,
+     "p1_days_med_cal": 117,
+     "p1_days_p90_cal": 264,
+     "funded_days_med_cal": 198,
+     "funded_days_p90_cal": 369
+    },
+    "FN_8_5": {
+     "p1_pass": 83.8,
+     "funded": 75.5,
+     "fail": 20.9,
+     "p1_days_med": 82,
+     "p1_days_p90": 208,
+     "funded_days_med": 154,
+     "funded_days_p90": 306,
+     "p1_days_med_cal": 93,
+     "p1_days_p90_cal": 235,
+     "funded_days_med_cal": 174,
+     "funded_days_p90_cal": 345
+    }
+   }
+  },
+  "BROAD_IV": {
+   "n_index_days": 2717,
+   "span_days": 2768,
+   "calendar_days_per_index_day": 1.019,
+   "max_days_used": 358,
+   "sharpe_calendar": 1.49,
+   "vol_ann_calendar": 11.12,
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 82.8,
+     "funded": 77.1,
+     "fail": 13.6,
+     "p1_days_med": 130,
+     "p1_days_p90": 272,
+     "funded_days_med": 216,
+     "funded_days_p90": 392,
+     "p1_days_med_cal": 132,
+     "p1_days_p90_cal": 277,
+     "funded_days_med_cal": 220,
+     "funded_days_p90_cal": 399
+    },
+    "FN_8_5": {
+     "p1_pass": 86.6,
+     "funded": 80.8,
+     "fail": 13.3,
+     "p1_days_med": 103,
+     "p1_days_p90": 244,
+     "funded_days_med": 191,
+     "funded_days_p90": 369,
+     "p1_days_med_cal": 105,
+     "p1_days_p90_cal": 249,
+     "funded_days_med_cal": 195,
+     "funded_days_p90_cal": 376
+    }
+   }
+  },
+  "BROAD_EW": {
+   "n_index_days": 2717,
+   "span_days": 2768,
+   "calendar_days_per_index_day": 1.019,
+   "max_days_used": 358,
+   "sharpe_calendar": 1.12,
+   "vol_ann_calendar": 12.0,
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 75.4,
+     "funded": 67.5,
+     "fail": 19.8,
+     "p1_days_med": 136,
+     "p1_days_p90": 279,
+     "funded_days_med": 229,
+     "funded_days_p90": 407,
+     "p1_days_med_cal": 139,
+     "p1_days_p90_cal": 284,
+     "funded_days_med_cal": 233,
+     "funded_days_p90_cal": 415
+    },
+    "FN_8_5": {
+     "p1_pass": 81.2,
+     "funded": 72.9,
+     "fail": 19.4,
+     "p1_days_med": 108,
+     "p1_days_p90": 257,
+     "funded_days_med": 201,
+     "funded_days_p90": 389,
+     "p1_days_med_cal": 110,
+     "p1_days_p90_cal": 262,
+     "funded_days_med_cal": 205,
+     "funded_days_p90_cal": 396
+    }
+   }
+  }
+ }
+}
