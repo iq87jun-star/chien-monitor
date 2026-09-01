@@ -267,6 +267,8 @@ def main():
         cells[f"v4_{p}"] = dict(family="v4", symbol=p, s=base.v4_cell(p))
     print(f"  セル数 {len(cells)}")
 
+    base.verify_window([v["s"] for v in cells.values()])   # docs/192の再発防止
+
     rebal_all = pd.date_range(WF_START, WF_LAST, freq="ME")
     arms = list(SEL_RULES) + BROAD_ARMS
     out = {"meta": {

@@ -43,6 +43,7 @@ def main():
     for p in base.V4_PAIRS:
         cells[f"v4_{p}"] = dict(family="v4", symbol=p, s=base.v4_cell(p))
 
+    base.verify_window([v["s"] for v in cells.values()])   # docs/192の再発防止
     print("[2/3] ウォークフォワード(月次入替のみ)")
     rebal = pd.date_range(wf.WF_START, wf.WF_LAST, freq="ME")
     daily = {}

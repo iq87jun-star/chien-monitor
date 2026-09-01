@@ -130,6 +130,7 @@ def main():
     for p in base.V4_PAIRS:
         cells[f"v4_{p}"] = dict(family="v4", symbol=p, s=base.v4_cell(p))
     print(f"  セル数 {len(cells)}")
+    base.verify_window([v["s"] for v in cells.values()])   # docs/192の再発防止
 
     rebal = pd.date_range(wf.WF_START, wf.WF_LAST, freq="ME")
     piecesA = []; piecesB = {a: [] for a in ARMS}

@@ -156,6 +156,7 @@ def main():
         except Exception as e:
             print(f"  {nm} ERR {type(e).__name__} {str(e)[:50]}")
     comps = {k: build(v["legs"]) for k, v in CONFIGS.items()}
+    base.verify_window(list(comps.values()))   # docs/192の再発防止
     for k, s in comps.items():
         s12 = s[s.index >= W12_0]
         print(f"  {k:24s} n={len(s)} 12m累積={float((1+s12).prod()-1)*100:.1f}% "

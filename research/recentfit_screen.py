@@ -351,6 +351,28 @@ def mc_challenge(daily, mult, rng, n=N_MC, block=5, max_days=250):
                 funded_days_med=q(p2_days[okP2], 50), funded_days_p90=q(p2_days[okP2], 90))
 
 
+def verify_window(series_list, expect_end=None, tol_days=7):
+    """窓の自己検証(docs/192の再発防止)。
+
+    構築済みセルの最終日が宣言窓の終端から tol_days を超えて手前にある場合は例外にする。
+    docs/192では clip() の既定引数により全セルが静かに旧窓で打ち切られ、ログに何も出ないまま
+    2ヶ月窓で選抜が走った。**窓のロールを伴うスクリプトはセル構築直後に必ず本関数を呼ぶこと。**
+    tol_days=7 は週末・祝日と、月曜o2oセルの最終日が窓終端の最大6日前になり得ることを吸収する。
+    """
+    exp = W_ALL1 if expect_end is None else expect_end
+    lasts = [s.index[-1] for s in series_list if len(s)]
+    if not lasts:
+        raise RuntimeError("[WINDOW] セルが空。窓またはデータ取得を確認すること。")
+    last = max(lasts)
+    gap = (exp - last).days
+    if gap > tol_days:
+        raise RuntimeError(
+            f"[WINDOW] 宣言窓終端 {exp.date()} に対しセル最終日 {last.date()}(乖離{gap}日)。"
+            f"docs/192のtruncate再発の可能性がある。実行を中止した。")
+    print(f"[WINDOW OK] 宣言終端 {exp.date()} / セル最終日 {last.date()}(乖離{gap}日)")
+    return last
+
+
 def sha256s():
     out = {}
     for f in sorted(os.listdir(DATA)):

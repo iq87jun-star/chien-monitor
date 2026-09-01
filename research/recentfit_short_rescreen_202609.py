@@ -108,6 +108,7 @@ def main():
     for p in base.V4_PAIRS:
         cells[f"v4_{p}"] = dict(family="v4", symbol=p, s=base.v4_cell(p))
 
+    base.verify_window([v["s"] for v in cells.values()])   # docs/192の再発防止
     print("[3/4] D窓統計と選抜")
     table = {}
     for k, v in cells.items():
