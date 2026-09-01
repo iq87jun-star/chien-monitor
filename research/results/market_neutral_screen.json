@@ -1,0 +1,532 @@
+{
+ "meta": {
+  "purpose": "市場中立(相対価値)トラック docs/188",
+  "freeze": "2016-01-01..2026-08-31",
+  "seed": 7,
+  "vol_target_per_leg": 0.01,
+  "vol_lb": 60,
+  "mult_rule": "min(0.8*min(m*_12m,m*_full), 8.0, m_stress, m_notional)",
+  "approx": [
+   "Yahoo日足近似",
+   "実口座成績ではない",
+   "コストは両脚独立計上(保守側)",
+   "スプレッドは配備前デモ実測が必須"
+  ]
+ },
+ "cells": {
+  "RVMR_US500_NAS100": {
+   "family": "RVMR",
+   "symbol": "US500/NAS100",
+   "cls": "Index",
+   "stats_12m": {
+    "n_active": 132,
+    "cum": -2.66,
+    "score": -0.8
+   },
+   "cum_full": -5.62,
+   "sharpe_full": -0.14,
+   "corr_book_12m": -0.03,
+   "corr_spx_12m": -0.09,
+   "gross_med": 2.16,
+   "gross_max_12m": 3.24
+  },
+  "RVMOM_US500_NAS100": {
+   "family": "RVMOM",
+   "symbol": "US500/NAS100",
+   "cls": "Index",
+   "stats_12m": {
+    "n_active": 250,
+    "cum": -4.23,
+    "score": -0.92
+   },
+   "cum_full": -14.77,
+   "sharpe_full": -0.24,
+   "corr_book_12m": 0.07,
+   "corr_spx_12m": 0.12,
+   "gross_med": 2.16,
+   "gross_max_12m": 3.24
+  },
+  "RVMR_GER40_FR40": {
+   "family": "RVMR",
+   "symbol": "GER40/FR40",
+   "cls": "Index",
+   "stats_12m": {
+    "n_active": 107,
+    "cum": -3.14,
+    "score": -0.36
+   },
+   "cum_full": -19.2,
+   "sharpe_full": -0.41,
+   "corr_book_12m": -0.06,
+   "corr_spx_12m": 0.06,
+   "gross_med": 2.37,
+   "gross_max_12m": 3.36
+  },
+  "RVMOM_GER40_FR40": {
+   "family": "RVMOM",
+   "symbol": "GER40/FR40",
+   "cls": "Index",
+   "stats_12m": {
+    "n_active": 252,
+    "cum": -14.2,
+    "score": -1.38
+   },
+   "cum_full": 11.03,
+   "sharpe_full": 0.17,
+   "corr_book_12m": -0.07,
+   "corr_spx_12m": -0.04,
+   "gross_med": 2.37,
+   "gross_max_12m": 3.36
+  },
+  "RVMR_GER40_UK100": {
+   "family": "RVMR",
+   "symbol": "GER40/UK100",
+   "cls": "Index",
+   "stats_12m": {
+    "n_active": 141,
+    "cum": -13.72,
+    "score": -1.4
+   },
+   "cum_full": -12.29,
+   "sharpe_full": -0.13,
+   "corr_book_12m": -0.03,
+   "corr_spx_12m": -0.03,
+   "gross_med": 2.93,
+   "gross_max_12m": 3.53
+  },
+  "RVMOM_GER40_UK100": {
+   "family": "RVMOM",
+   "symbol": "GER40/UK100",
+   "cls": "Index",
+   "stats_12m": {
+    "n_active": 249,
+    "cum": 13.32,
+    "score": 1.0
+   },
+   "cum_full": -28.85,
+   "sharpe_full": -0.22,
+   "corr_book_12m": -0.06,
+   "corr_spx_12m": 0.02,
+   "gross_med": 2.93,
+   "gross_max_12m": 3.53
+  },
+  "RVMR_US500_GER40": {
+   "family": "RVMR",
+   "symbol": "US500/GER40",
+   "cls": "Index",
+   "stats_12m": {
+    "n_active": 143,
+    "cum": 2.96,
+    "score": 0.32
+   },
+   "cum_full": -17.15,
+   "sharpe_full": -0.12,
+   "corr_book_12m": -0.0,
+   "corr_spx_12m": -0.21,
+   "gross_med": 2.45,
+   "gross_max_12m": 3.15
+  },
+  "RVMOM_US500_GER40": {
+   "family": "RVMOM",
+   "symbol": "US500/GER40",
+   "cls": "Index",
+   "stats_12m": {
+    "n_active": 245,
+    "cum": 8.3,
+    "score": 0.58
+   },
+   "cum_full": -14.25,
+   "sharpe_full": -0.01,
+   "corr_book_12m": -0.11,
+   "corr_spx_12m": 0.19,
+   "gross_med": 2.45,
+   "gross_max_12m": 3.15
+  },
+  "RVMR_JP225_US500": {
+   "family": "RVMR",
+   "symbol": "JP225/US500",
+   "cls": "Index",
+   "stats_12m": {
+    "n_active": 132,
+    "cum": 9.22,
+    "score": 0.58
+   },
+   "cum_full": 110.74,
+   "sharpe_full": 0.75,
+   "corr_book_12m": 0.06,
+   "corr_spx_12m": 0.46,
+   "gross_med": 1.86,
+   "gross_max_12m": 2.82
+  },
+  "RVMOM_JP225_US500": {
+   "family": "RVMOM",
+   "symbol": "JP225/US500",
+   "cls": "Index",
+   "stats_12m": {
+    "n_active": 233,
+    "cum": 11.13,
+    "score": 0.6
+   },
+   "cum_full": -49.3,
+   "sharpe_full": -0.22,
+   "corr_book_12m": -0.04,
+   "corr_spx_12m": -0.42,
+   "gross_med": 1.86,
+   "gross_max_12m": 2.82
+  },
+  "RVMR_XAUUSD_XAGUSD": {
+   "family": "RVMR",
+   "symbol": "XAUUSD/XAGUSD",
+   "cls": "Metal",
+   "stats_12m": {
+    "n_active": 128,
+    "cum": -4.01,
+    "score": -0.39
+   },
+   "cum_full": -45.27,
+   "sharpe_full": -0.81,
+   "corr_book_12m": -0.01,
+   "corr_spx_12m": -0.03,
+   "gross_med": 0.97,
+   "gross_max_12m": 1.93
+  },
+  "RVMOM_XAUUSD_XAGUSD": {
+   "family": "RVMOM",
+   "symbol": "XAUUSD/XAGUSD",
+   "cls": "Metal",
+   "stats_12m": {
+    "n_active": 251,
+    "cum": -1.87,
+    "score": -0.11
+   },
+   "cum_full": 23.25,
+   "sharpe_full": 0.24,
+   "corr_book_12m": -0.01,
+   "corr_spx_12m": 0.04,
+   "gross_med": 0.97,
+   "gross_max_12m": 1.93
+  },
+  "RVMR_WTI_NATGAS": {
+   "family": "RVMR",
+   "symbol": "WTI/NATGAS",
+   "cls": "Energy",
+   "stats_12m": {
+    "n_active": 145,
+    "cum": 6.07,
+    "score": 0.39
+   },
+   "cum_full": 10.94,
+   "sharpe_full": 0.2,
+   "corr_book_12m": -0.06,
+   "corr_spx_12m": 0.09,
+   "gross_med": 0.65,
+   "gross_max_12m": 1.01
+  },
+  "RVMOM_WTI_NATGAS": {
+   "family": "RVMOM",
+   "symbol": "WTI/NATGAS",
+   "cls": "Energy",
+   "stats_12m": {
+    "n_active": 251,
+    "cum": -11.2,
+    "score": -0.35
+   },
+   "cum_full": -33.77,
+   "sharpe_full": -0.02,
+   "corr_book_12m": 0.01,
+   "corr_spx_12m": -0.17,
+   "gross_med": 0.65,
+   "gross_max_12m": 1.01
+  },
+  "RVMR_BTCUSD_ETHUSD": {
+   "family": "RVMR",
+   "symbol": "BTCUSD/ETHUSD",
+   "cls": "Crypto",
+   "stats_12m": {
+    "n_active": 195,
+    "cum": 11.77,
+    "score": 1.49
+   },
+   "cum_full": -63.92,
+   "sharpe_full": -1.3,
+   "corr_book_12m": 0.08,
+   "corr_spx_12m": -0.05,
+   "gross_med": 0.83,
+   "gross_max_12m": 1.17
+  },
+  "RVMOM_BTCUSD_ETHUSD": {
+   "family": "RVMOM",
+   "symbol": "BTCUSD/ETHUSD",
+   "cls": "Crypto",
+   "stats_12m": {
+    "n_active": 365,
+    "cum": -5.5,
+    "score": -0.51
+   },
+   "cum_full": 6.68,
+   "sharpe_full": 0.1,
+   "corr_book_12m": 0.02,
+   "corr_spx_12m": -0.13,
+   "gross_med": 0.83,
+   "gross_max_12m": 1.17
+  },
+  "RVMR_AUDUSD_NZDUSD": {
+   "family": "RVMR",
+   "symbol": "AUDUSD/NZDUSD",
+   "cls": "FX",
+   "stats_12m": {
+    "n_active": 173,
+    "cum": -7.98,
+    "score": -1.04
+   },
+   "cum_full": -6.54,
+   "sharpe_full": -0.08,
+   "corr_book_12m": 0.36,
+   "corr_spx_12m": 0.09,
+   "gross_med": 4.18,
+   "gross_max_12m": 5.35
+  },
+  "RVMOM_AUDUSD_NZDUSD": {
+   "family": "RVMOM",
+   "symbol": "AUDUSD/NZDUSD",
+   "cls": "FX",
+   "stats_12m": {
+    "n_active": 259,
+    "cum": 13.5,
+    "score": 1.44
+   },
+   "cum_full": -30.19,
+   "sharpe_full": -0.33,
+   "corr_book_12m": -0.29,
+   "corr_spx_12m": -0.08,
+   "gross_med": 4.18,
+   "gross_max_12m": 5.35
+  },
+  "RVMR_EURUSD_GBPUSD": {
+   "family": "RVMR",
+   "symbol": "EURUSD/GBPUSD",
+   "cls": "FX",
+   "stats_12m": {
+    "n_active": 108,
+    "cum": 3.99,
+    "score": 0.68
+   },
+   "cum_full": 57.28,
+   "sharpe_full": 0.66,
+   "corr_book_12m": 0.03,
+   "corr_spx_12m": 0.07,
+   "gross_med": 5.11,
+   "gross_max_12m": 7.09
+  },
+  "RVMOM_EURUSD_GBPUSD": {
+   "family": "RVMOM",
+   "symbol": "EURUSD/GBPUSD",
+   "cls": "FX",
+   "stats_12m": {
+    "n_active": 259,
+    "cum": 4.14,
+    "score": 0.49
+   },
+   "cum_full": -23.97,
+   "sharpe_full": -0.13,
+   "corr_book_12m": -0.05,
+   "corr_spx_12m": -0.08,
+   "gross_med": 5.11,
+   "gross_max_12m": 7.09
+  },
+  "RVMR_USDCAD_EURUSD": {
+   "family": "RVMR",
+   "symbol": "USDCAD/EURUSD",
+   "cls": "FX",
+   "stats_12m": {
+    "n_active": 142,
+    "cum": 18.35,
+    "score": 0.89
+   },
+   "cum_full": 20.37,
+   "sharpe_full": 0.26,
+   "corr_book_12m": 0.5,
+   "corr_spx_12m": 0.17,
+   "gross_med": 6.5,
+   "gross_max_12m": 8.34
+  },
+  "RVMOM_USDCAD_EURUSD": {
+   "family": "RVMOM",
+   "symbol": "USDCAD/EURUSD",
+   "cls": "FX",
+   "stats_12m": {
+    "n_active": 259,
+    "cum": -27.4,
+    "score": -0.95
+   },
+   "cum_full": -83.67,
+   "sharpe_full": -0.47,
+   "corr_book_12m": -0.39,
+   "corr_spx_12m": -0.1,
+   "gross_med": 6.5,
+   "gross_max_12m": 8.34
+  }
+ },
+ "portfolios": {
+  "MN_BROAD": {
+   "n_cells": 22,
+   "weights": {
+    "RVMR_US500_NAS100": 0.112,
+    "RVMOM_US500_NAS100": 0.111,
+    "RVMOM_BTCUSD_ETHUSD": 0.061,
+    "RVMR_BTCUSD_ETHUSD": 0.059,
+    "RVMOM_AUDUSD_NZDUSD": 0.057,
+    "RVMOM_EURUSD_GBPUSD": 0.056,
+    "RVMR_EURUSD_GBPUSD": 0.056,
+    "RVMR_AUDUSD_NZDUSD": 0.055
+   },
+   "mult": 3.13,
+   "mult_binding": "notional",
+   "mult_components": {
+    "risk": 3.92,
+    "hard_cap": 8.0,
+    "stress": 5.37,
+    "notional": 3.13
+   },
+   "gross_notional_med": 2.29,
+   "gross_notional_max": 3.2,
+   "sharpe_full": -0.51,
+   "sharpe_12m": 0.03,
+   "cum_12m": 0.06,
+   "cum_full": -10.4,
+   "worst_day_12m": -0.37,
+   "worst_day_full": -0.62,
+   "corr_book_12m": -0.06,
+   "corr_book_full": 0.07,
+   "corr_spx_12m": -0.07,
+   "corr_spx_full": 0.03,
+   "mc": {
+    "FTMO_10_5": {
+     "recent_12m": {
+      "p1_pass": 3.4,
+      "funded": 0.9,
+      "fail": 8.5,
+      "p1_days_med": 184,
+      "p1_days_p90": 239,
+      "funded_days_med": 328,
+      "funded_days_p90": 448
+     },
+     "full_pessimistic": {
+      "p1_pass": 1.0,
+      "funded": 0.1,
+      "fail": 28.7,
+      "p1_days_med": 200,
+      "p1_days_p90": 243,
+      "funded_days_med": 276,
+      "funded_days_p90": 410
+     }
+    },
+    "FN_8_5": {
+     "recent_12m": {
+      "p1_pass": 8.2,
+      "funded": 2.3,
+      "fail": 8.6,
+      "p1_days_med": 173,
+      "p1_days_p90": 237,
+      "funded_days_med": 332,
+      "funded_days_p90": 470
+     },
+     "full_pessimistic": {
+      "p1_pass": 2.9,
+      "funded": 0.5,
+      "fail": 29.0,
+      "p1_days_med": 183,
+      "p1_days_p90": 238,
+      "funded_days_med": 328,
+      "funded_days_p90": 423
+     }
+    }
+   },
+   "verdict": {
+    "c1_corr_book": true,
+    "c2_corr_spx": true,
+    "c3_pessimistic_funded_gt_fail": false,
+    "c4_sharpe_full_gt_0_5": false,
+    "ALL_PASS": false
+   }
+  },
+  "MN_SEL": {
+   "n_cells": 4,
+   "weights": {
+    "RVMR_BTCUSD_ETHUSD": 0.341,
+    "RVMOM_AUDUSD_NZDUSD": 0.334,
+    "RVMOM_GER40_UK100": 0.222,
+    "RVMR_USDCAD_EURUSD": 0.104
+   },
+   "mult": 1.24,
+   "mult_binding": "risk",
+   "mult_components": {
+    "risk": 1.24,
+    "hard_cap": 8.0,
+    "stress": 1.77,
+    "notional": 2.78
+   },
+   "gross_notional_med": 2.51,
+   "gross_notional_max": 3.59,
+   "sharpe_full": -0.73,
+   "sharpe_12m": 2.37,
+   "cum_12m": 13.98,
+   "cum_full": -37.5,
+   "worst_day_12m": -1.13,
+   "worst_day_full": -1.88,
+   "corr_book_12m": 0.08,
+   "corr_book_full": 0.12,
+   "corr_spx_12m": 0.02,
+   "corr_spx_full": 0.03,
+   "mc": {
+    "FTMO_10_5": {
+     "recent_12m": {
+      "p1_pass": 64.4,
+      "funded": 62.1,
+      "fail": 0.0,
+      "p1_days_med": 162,
+      "p1_days_p90": 230,
+      "funded_days_med": 265,
+      "funded_days_p90": 386
+     },
+     "full_pessimistic": {
+      "p1_pass": 2.7,
+      "funded": 0.6,
+      "fail": 52.7,
+      "p1_days_med": 170,
+      "p1_days_p90": 232,
+      "funded_days_med": 296,
+      "funded_days_p90": 436
+     }
+    },
+    "FN_8_5": {
+     "recent_12m": {
+      "p1_pass": 76.9,
+      "funded": 74.5,
+      "fail": 0.0,
+      "p1_days_med": 138,
+      "p1_days_p90": 220,
+      "funded_days_med": 245,
+      "funded_days_p90": 372
+     },
+     "full_pessimistic": {
+      "p1_pass": 5.8,
+      "funded": 1.3,
+      "fail": 53.5,
+      "p1_days_med": 155,
+      "p1_days_p90": 229,
+      "funded_days_med": 282,
+      "funded_days_p90": 415
+     }
+    }
+   },
+   "verdict": {
+    "c1_corr_book": true,
+    "c2_corr_spx": true,
+    "c3_pessimistic_funded_gt_fail": false,
+    "c4_sharpe_full_gt_0_5": false,
+    "ALL_PASS": false
+   }
+  }
+ }
+}
