@@ -42,11 +42,13 @@ def fomc_dates():
         html = open(p, encoding="utf-8", errors="ignore").read()
         if y is not None:
             # 例: <h5 class="panel-heading">January 26-27 Meeting - 2016</h5> / "March 15-16 Meeting"
-            MON = r"(January|February|March|April|May|June|July|August|September|October|November|December)"
+            MON = (r"(January|February|March|April|May|June|July|August|September|October|November|December"
+                   r"|Jan|Feb|Mar|Apr|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)")
             # 単月: "March 15-16 Meeting" / 月跨ぎ: "January 31-February 1 Meeting" / 単日・臨時も拾う
             for m in re.finditer(MON + r"\s+(\d{1,2})(?:-(?:" + MON + r"\s+)?(\d{1,2}))?\s+Meeting", html):
                 mon1, d1, mon2, d2 = m.group(1), int(m.group(2)), m.group(3), m.group(4)
-                end_mon = MONTHS[mon2] if mon2 else MONTHS[mon1]
+                def _m(x): return MONTHS[[k for k in MONTHS if k.startswith(x[:3])][0]]
+                end_mon = _m(mon2) if mon2 else _m(mon1)
                 out.add(dt.date(y, end_mon, int(d2) if d2 else d1))
         else:
             # 年ブロック: <h4 ...>2026 FOMC Meetings</h4> の後に月/日の div が並ぶ
