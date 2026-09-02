@@ -1,0 +1,164 @@
+{
+ "meta": {
+  "purpose": "VIX_TERM確認研究 docs/204",
+  "seed": 7,
+  "n_main": 10000,
+  "n_plc": 3000,
+  "n_placebo": 100,
+  "alpha": 0.05,
+  "windows": {
+   "IS": [
+    "2016-01-01",
+    "2021-12-31"
+   ],
+   "OOS": [
+    "2022-01-01",
+    "2026-08-31"
+   ],
+   "FULL": [
+    "2016-01-01",
+    "2026-08-31"
+   ]
+  }
+ },
+ "windows": {
+  "IS": {
+   "skip_rate_bday": 9.2,
+   "n_skipped_active": 151,
+   "perm_p": 0.002,
+   "skipped_mean_ret_pct": -0.056,
+   "raw": {
+    "E_failed": 3.285,
+    "P_CB_new": 28.78,
+    "P_CB_old": 64.7,
+    "E_funded": 3.0,
+    "ann": -0.22,
+    "failed": {
+     "FN_Instant20k_11988011": 84.3,
+     "FTMO100k_531343523": 39.7,
+     "Fintokei_Pearl500": 18.5,
+     "FTMO50k_531407058": 26.9,
+     "FTMO50k_521100397": 29.4,
+     "FN100k_14166201": 39.4,
+     "Fintokei_Sokkou2000_6078225": 90.3
+    }
+   },
+   "gate": {
+    "E_failed": 3.022,
+    "P_CB_new": 22.34,
+    "P_CB_old": 59.01,
+    "E_funded": 2.991,
+    "ann": 0.07,
+    "failed": {
+     "FN_Instant20k_11988011": 76.7,
+     "FTMO100k_531343523": 28.3,
+     "Fintokei_Pearl500": 14.4,
+     "FTMO50k_531407058": 20.6,
+     "FTMO50k_521100397": 28.7,
+     "FN100k_14166201": 39.3,
+     "Fintokei_Sokkou2000_6078225": 94.2
+    }
+   },
+   "placebo": {
+    "p05": 3.055,
+    "med": 3.197,
+    "p95": 3.35,
+    "gate_pct": 4.0
+   }
+  },
+  "OOS": {
+   "skip_rate_bday": 5.26,
+   "n_skipped_active": 61,
+   "perm_p": 0.377,
+   "skipped_mean_ret_pct": 0.007,
+   "raw": {
+    "E_failed": 2.159,
+    "P_CB_new": 6.09,
+    "P_CB_old": 39.5,
+    "E_funded": 4.319,
+    "ann": 3.55,
+    "failed": {
+     "FN_Instant20k_11988011": 69.0,
+     "FTMO100k_531343523": 14.7,
+     "Fintokei_Pearl500": 3.8,
+     "FTMO50k_531407058": 5.3,
+     "FTMO50k_521100397": 7.8,
+     "FN100k_14166201": 27.8,
+     "Fintokei_Sokkou2000_6078225": 87.5
+    }
+   },
+   "gate": {
+    "E_failed": 2.042,
+    "P_CB_new": 4.88,
+    "P_CB_old": 35.2,
+    "E_funded": 4.366,
+    "ann": 3.47,
+    "failed": {
+     "FN_Instant20k_11988011": 61.6,
+     "FTMO100k_531343523": 12.2,
+     "Fintokei_Pearl500": 3.0,
+     "FTMO50k_531407058": 4.8,
+     "FTMO50k_521100397": 6.1,
+     "FN100k_14166201": 27.4,
+     "Fintokei_Sokkou2000_6078225": 89.1
+    }
+   },
+   "placebo": {
+    "p05": 2.056,
+    "med": 2.165,
+    "p95": 2.283,
+    "gate_pct": 3.0
+   }
+  },
+  "FULL": {
+   "skip_rate_bday": 7.48,
+   "n_skipped_active": 212,
+   "perm_p": 0.001,
+   "skipped_mean_ret_pct": -0.0379,
+   "raw": {
+    "E_failed": 2.745,
+    "P_CB_new": 17.58,
+    "P_CB_old": 52.87,
+    "E_funded": 3.595,
+    "ann": 1.41,
+    "failed": {
+     "FN_Instant20k_11988011": 77.6,
+     "FTMO100k_531343523": 28.2,
+     "Fintokei_Pearl500": 10.1,
+     "FTMO50k_531407058": 15.9,
+     "FTMO50k_521100397": 19.1,
+     "FN100k_14166201": 34.8,
+     "Fintokei_Sokkou2000_6078225": 88.8
+    }
+   },
+   "gate": {
+    "E_failed": 2.551,
+    "P_CB_new": 13.5,
+    "P_CB_old": 48.63,
+    "E_funded": 3.628,
+    "ann": 1.54,
+    "failed": {
+     "FN_Instant20k_11988011": 69.9,
+     "FTMO100k_531343523": 20.8,
+     "Fintokei_Pearl500": 7.7,
+     "FTMO50k_531407058": 12.0,
+     "FTMO50k_521100397": 17.8,
+     "FN100k_14166201": 35.1,
+     "Fintokei_Sokkou2000_6078225": 91.9
+    }
+   },
+   "placebo": {
+    "p05": 2.592,
+    "med": 2.716,
+    "p95": 2.823,
+    "gate_pct": 1.0
+   }
+  }
+ },
+ "verdict": {
+  "perm_both": false,
+  "placebo_oos": true,
+  "is_oos_both": true,
+  "result": "LEAD"
+ }
+}
