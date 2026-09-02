@@ -9,10 +9,11 @@ docs/180 §2の規則 + docs/197の相関ペナルティ λ=1.0 を実装する�
   スコア mean/std×√n / 逆ボラcap40%・銘柄1・族2・Top-4
   倍率 0.8×min(m*_sel, m*_12m)・cap6.0 / MC=FTMO 10-5・3バウンド・シード7
 追加(docs/197・2026-09-30の再スクリーニングから適用):
-  score_adj = score × (1 − λ·max(0, ρ_book)) , λ=0.5(docs/197 §8.1で1.0から改訂)
+  既定は λ=0。λ=0の選抜合成が**稼働中のいずれか単一口座**と選抜窓で ρ>0.70 になる場合に限り、
+  その最大相関口座を基準に λ=1.0 で再選抜する(docs/197 §9.1・重複検知時のみ発動)。
   選抜母集団は28セル(TSMOM族6本はEA未実装のため事前除外・docs/197 §8.2)
   ρ_book = 当該セルの選抜窓日次リターンと「対象口座を除く稼働中全口座の合成」の相関
-  → **λ=0版とλ=0.5版の両方を必ず出力する**(docs/197 §4の可視化義務・母集団は両版とも28セル)
+  → **λ=0版と発動版の両方を必ず出力する**(docs/197 §4の可視化義務・母集団は両版とも28セル)
 
 使い方:
   python3 recentfit_c6m_rescreen.py --as-of 2026-09-30      # 本番(9/30に実行)
@@ -28,7 +29,8 @@ sys.path.insert(0, HERE)
 import recentfit_screen as base
 
 SEED = 7
-LAMBDA = 0.5                 # docs/197 §8.1(2026-09-01改訂・変更は本docへの追記が必要)
+LAMBDA = 1.0                 # docs/197 §9.1: 発動時のλ(既定はλ=0=ペナルティなし)
+DUP_RHO_TRIGGER = 0.70       # docs/197 §9.1: 単一口座との相関がこれを超えたときのみ発動
 MIN_ACTIVE = 8               # docs/180 §2 トラックC
 MULT_HARD_CAP = 6.0
 W_CAP = 0.40
@@ -174,16 +176,39 @@ def main():
                         stats=stats_for(v["s"], SEL0, CONF0, W12_0, END),
                         rho_book=rho_book(v["s"], book, SEL0, END))
 
-    print(f"[4/5] 選抜(λ=0 従来規則 / λ={LAMBDA} docs/197 §8)")
+    print("[4/5] 選抜(λ=0 従来規則 → 重複検知で発動判定・docs/197 §9)")
     out = {"meta": dict(
-        purpose="C案 直近6ヶ月トラックの再スクリーニング(docs/180 §2 + docs/197のλ=1.0)",
-        as_of=str(END.date()), dry_run=bool(a.dry), seed=SEED, lam=LAMBDA,
+        purpose="C案 直近6ヶ月トラックの再スクリーニング(docs/180 §2 + docs/197 §9の重複検知ペナルティ)",
+        as_of=str(END.date()), dry_run=bool(a.dry), seed=SEED,
+        lam_when_fired=LAMBDA, dup_rho_trigger=DUP_RHO_TRIGGER,
         sel_window=f"{SEL0.date()}..{END.date()}", conf_window=f"{CONF0.date()}..{END.date()}",
         target_account=TARGET_ACCOUNT,
         book_excluded_from_composite=list(db.NOT_RECONSTRUCTIBLE),
         approx=db.APPROX), "versions": {}}
 
-    for tag, lam in (("lambda_0", 0.0), ("lambda_adopted", LAMBDA)):
+    # docs/197 §9.1: まずλ=0で選抜し、単一口座との最大相関で発動を判定する
+    acct_series = {k: db.account_composite(k) for k in db.BOOK if k != TARGET_ACCOUNT}
+    acct_series = {k: v[v.index <= END] for k, v in acct_series.items()}
+    w0, _ = select(table, 0.0)
+    trigger = dict(fired=False, max_rho=None, counterpart=None, threshold=DUP_RHO_TRIGGER)
+    if w0:
+        c0 = composite(cells, w0, base.W_ALL0, END)
+        rr = {k: rho_book(c0, v, SEL0, END) for k, v in acct_series.items()}
+        cp = max(rr, key=rr.get)
+        trigger = dict(fired=bool(rr[cp] > DUP_RHO_TRIGGER), max_rho=rr[cp], counterpart=cp,
+                       threshold=DUP_RHO_TRIGGER, all_rho=rr)
+        print(f"  重複検知: 単一口座との最大ρ={rr[cp]:+.3f} ({cp}) "
+              f"→ 発動={'YES' if trigger['fired'] else 'no'}(閾値{DUP_RHO_TRIGGER})")
+    out["meta"]["duplication_trigger"] = trigger
+
+    # 発動時のみ、最大相関の「単一口座」を基準にペナルティを掛け直す(ブック合成ではない・docs/198 §2.1)
+    if trigger["fired"]:
+        ref_p = acct_series[trigger["counterpart"]]
+        for k in table:
+            table[k]["rho_book"] = rho_book(cells[k]["s"], ref_p, SEL0, END)
+
+    versions = [("lambda_0", 0.0)] + ([("penalty_fired", LAMBDA)] if trigger["fired"] else [])
+    for tag, lam in versions:
         w, ranked = select(table, lam)
         if not w:
             out["versions"][tag] = {"error": "フィルタ通過セルなし=当月は配備しない(docs/180)"}
@@ -195,7 +220,9 @@ def main():
                    top8_adjscore=[[k, s] for k, s in ranked[:8]],
                    legs={k: dict(rho_book=table[k]["rho_book"], **table[k]["stats"]) for k in w},
                    rho_book_composite=rho_book(comp, book, SEL0, END),
-                   rho_book_composite_12m=rho_book(comp, book, W12_0, END))
+                   rho_book_composite_12m=rho_book(comp, book, W12_0, END),
+                   rho_vs_counterpart=(rho_book(comp, acct_series[trigger["counterpart"]], SEL0, END)
+                                       if trigger.get("counterpart") else None))
         for btag, s in (("sel_6m", wnd(comp, SEL0, END)),
                         ("recent12m", wnd(comp, W12_0, END)),
                         ("full", comp)):
@@ -207,7 +234,7 @@ def main():
             m = rec["mc"][b]
             print(f"     MC {b:10s} p1={m['p1_pass']:5.1f} funded={m['funded']:5.1f} fail={m['fail']:5.1f}")
 
-    v0, v1 = out["versions"].get("lambda_0", {}), out["versions"].get("lambda_adopted", {})
+    v0, v1 = out["versions"].get("lambda_0", {}), out["versions"].get("penalty_fired", {})
     if "selected" in v0 and "selected" in v1:
         s0, s1 = set(v0["selected"]), set(v1["selected"])
         out["penalty_effect"] = dict(
