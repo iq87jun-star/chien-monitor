@@ -1,0 +1,141 @@
+{
+ "521100397": {
+  "balance": 52884.21,
+  "floating": 0.0,
+  "equity": 52884.21,
+  "equity_pct": 5.77,
+  "monthly_by_leg_pct": {
+   "2026-08": {
+    "RFMon_GBPJPY": 0.92,
+    "RFMon_USDJPY": 3.26
+   },
+   "2026-09": {
+    "RFMon_GBPJPY": 0.06,
+    "RFMon_USDJPY": 0.22,
+    "RFv4_NZDUSD": 1.31
+   }
+  },
+  "order_comment_types": {
+   "": 39,
+   "RFMon_USDJPY": 20,
+   "RFMon_GBPJPY": 19,
+   "RFv4_NZDUSD": 1,
+   "[sl": 1
+  },
+  "guard_events": 0,
+  "open_positions": []
+ },
+ "531407058": {
+  "balance": 52462.57,
+  "floating": 0.0,
+  "equity": 52462.57,
+  "equity_pct": 4.93,
+  "monthly_by_leg_pct": {
+   "2026-08": {
+    "RFMon_AUDJPY": 1.31,
+    "RFMon_GBPJPY": 2.38
+   },
+   "2026-09": {
+    "RFMon_AUDJPY": 0.05,
+    "RFMon_GBPJPY": 0.16,
+    "RFv4_NZDUSD": 1.04
+   }
+  },
+  "order_comment_types": {
+   "": 37,
+   "RFMon_AUDJPY": 21,
+   "RFMon_GBPJPY": 20,
+   "[sl": 5,
+   "RFv4_NZDUSD": 1
+  },
+  "guard_events": 0,
+  "open_positions": []
+ },
+ "531343523": {
+  "balance": 94841.17,
+  "floating": 822.99,
+  "equity": 95664.16,
+  "equity_pct": -4.34,
+  "monthly_by_leg_pct": {
+   "2026-06": {
+    "EMon_GER40.cash": 0.28,
+    "EMon_US100.cash": 0.43,
+    "EMon_US500.cash": 0.18,
+    "v4_USDCAD": -0.6,
+    "v7_EURJPY": -0.04,
+    "v7_GBPJPY": 0.9,
+    "v7_USDJPY": 0.61
+   },
+   "2026-07": {
+    "E5_GER40.cash": 0.52,
+    "E5_US100.cash": -0.54,
+    "E5_US500.cash": 0.15,
+    "E5_XAUUSD": -0.11,
+    "EMon_GER40.cash": -0.22,
+    "EMon_US100.cash": -0.92,
+    "EMon_US500.cash": 0.25,
+    "SJUL": -2.33,
+    "v4_AUDUSD": -0.21,
+    "v4_NZDUSD": -0.13,
+    "v7_EURJPY": -1.0,
+    "v7_GBPJPY": -0.22,
+    "v7_USDJPY": -0.42
+   },
+   "2026-08": {
+    "RF5-S1": -0.13,
+    "RF5-S2": 0.37,
+    "RF5-S3": -0.22,
+    "RF5-S4": -1.13,
+    "RF5-S5": -0.63
+   }
+  },
+  "order_comment_types": {
+   "": 105,
+   "[sl": 28,
+   "v7_EURJPY": 20,
+   "v7_GBPJPY": 19,
+   "SJUL": 18,
+   "v7_USDJPY": 16,
+   "EMon_US100.cash": 10,
+   "EMon_US500.cash": 10,
+   "EMon_GER40.cash": 10,
+   "RF5-S1": 5,
+   "RF5-S2": 5,
+   "RF5-S5": 5,
+   "RF5-S4": 4,
+   "RF5-S3": 4,
+   "v4_USDCAD": 1,
+   "v4_AUDUSD": 1,
+   "v4_NZDUSD": 1,
+   "E5_XAUUSD": 1,
+   "E5_US500.cash": 1,
+   "E5_US100.cash": 1,
+   "E5_GER40.cash": 1
+  },
+  "guard_events": 0,
+  "open_positions": [
+   {
+    "symbol": "GBPUSD",
+    "open_time": "2026-08-26 00:06:03",
+    "type": "sell",
+    "volume": "0.75",
+    "open_price": "1.36481",
+    "sl": "1.38053",
+    "market": "1.35277",
+    "profit": "903.0",
+    "comment": "RF5-S4 RSI82"
+   },
+   {
+    "symbol": "GBPJPY",
+    "open_time": "2026-09-01 00:05:11",
+    "type": "buy",
+    "volume": "0.74",
+    "open_price": "216.561",
+    "sl": "214.013",
+    "market": "216.441",
+    "profit": "-55.5",
+    "comment": "RF5-S5 RSI15"
+   }
+  ]
+ }
+}
