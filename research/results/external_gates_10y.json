@@ -1,0 +1,691 @@
+{
+ "meta": {
+  "purpose": "外部状態ゲート docs/203",
+  "seed": 7,
+  "gates": [
+   "VIX_TERM",
+   "VIX_HI",
+   "COT_JPY_SHORT",
+   "FOMC"
+  ],
+  "alpha": 0.0125,
+  "IS": [
+   "2016-01-01",
+   "2021-12-31"
+  ],
+  "OOS": [
+   "2022-01-01",
+   "2026-08-31"
+  ],
+  "n_mc_main": 10000,
+  "n_mc_placebo": 2000,
+  "n_placebo": 100,
+  "n_perm": 1000,
+  "skip_rate_bday": {
+   "VIX_TERM": 7.48,
+   "VIX_HI": 17.36,
+   "COT_JPY_SHORT": 23.22,
+   "FOMC": 5.9
+  }
+ },
+ "targets": {
+  "MON_JPY": {
+   "mult": 2.24,
+   "raw": {
+    "IS": {
+     "ann": 0.87,
+     "maxdd": -5.39,
+     "worst": -1.41,
+     "n_active": 313,
+     "fail": 38.6
+    },
+    "OOS": {
+     "ann": 4.19,
+     "maxdd": -2.1,
+     "worst": -1.21,
+     "n_active": 243,
+     "fail": 0.9
+    },
+    "FULL": {
+     "ann": 2.3,
+     "maxdd": -5.39,
+     "worst": -1.41,
+     "n_active": 556,
+     "fail": 11.5
+    }
+   },
+   "gates": {
+    "VIX_TERM": {
+     "n_skipped_active": 33,
+     "skip_share_active_pct": 5.94,
+     "skipped_mean_ret_pct": 0.0376,
+     "perm_p": 0.485,
+     "windows": {
+      "IS": {
+       "ann": 0.71,
+       "maxdd": -5.57,
+       "worst": -1.26,
+       "n_active": 287,
+       "fail": 37.9
+      },
+      "OOS": {
+       "ann": 4.14,
+       "maxdd": -1.9,
+       "worst": -1.21,
+       "n_active": 236,
+       "fail": 0.7
+      },
+      "FULL": {
+       "ann": 2.19,
+       "maxdd": -5.57,
+       "worst": -1.26,
+       "n_active": 523,
+       "fail": 10.8
+      }
+     },
+     "placebo_pct": {
+      "IS": 44.0,
+      "OOS": 37.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 27.0,
+       "med": 38.8,
+       "p95": 51.9
+      },
+      "OOS": {
+       "p05": 0.2,
+       "med": 0.9,
+       "p95": 1.9
+      }
+     }
+    },
+    "VIX_HI": {
+     "n_skipped_active": 97,
+     "skip_share_active_pct": 17.45,
+     "skipped_mean_ret_pct": 0.0432,
+     "perm_p": 0.506,
+     "windows": {
+      "IS": {
+       "ann": 0.12,
+       "maxdd": -6.41,
+       "worst": -1.26,
+       "n_active": 269,
+       "fail": 55.5
+      },
+      "OOS": {
+       "ann": 4.27,
+       "maxdd": -1.83,
+       "worst": -1.04,
+       "n_active": 190,
+       "fail": 0.1
+      },
+      "FULL": {
+       "ann": 1.92,
+       "maxdd": -6.41,
+       "worst": -1.26,
+       "n_active": 459,
+       "fail": 11.1
+      }
+     },
+     "placebo_pct": {
+      "IS": 87.0,
+      "OOS": 11.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 15.6,
+       "med": 35.9,
+       "p95": 60.6
+      },
+      "OOS": {
+       "p05": 0.1,
+       "med": 1.2,
+       "p95": 3.8
+      }
+     }
+    },
+    "COT_JPY_SHORT": {
+     "n_skipped_active": 129,
+     "skip_share_active_pct": 23.2,
+     "skipped_mean_ret_pct": -0.0043,
+     "perm_p": 0.075,
+     "windows": {
+      "IS": {
+       "ann": 1.36,
+       "maxdd": -3.17,
+       "worst": -1.41,
+       "n_active": 251,
+       "fail": 19.2
+      },
+      "OOS": {
+       "ann": 3.69,
+       "maxdd": -2.03,
+       "worst": -1.21,
+       "n_active": 176,
+       "fail": 0.3
+      },
+      "FULL": {
+       "ann": 2.37,
+       "maxdd": -3.17,
+       "worst": -1.41,
+       "n_active": 427,
+       "fail": 5.1
+      }
+     },
+     "placebo_pct": {
+      "IS": 14.0,
+      "OOS": 15.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 12.6,
+       "med": 32.5,
+       "p95": 59.3
+      },
+      "OOS": {
+       "p05": 0.1,
+       "med": 1.1,
+       "p95": 6.3
+      }
+     }
+    },
+    "FOMC": {
+     "n_skipped_active": 1,
+     "skip_share_active_pct": 0.18,
+     "skipped_mean_ret_pct": 0.0643,
+     "perm_p": 0.537,
+     "windows": {
+      "IS": {
+       "ann": 0.87,
+       "maxdd": -5.39,
+       "worst": -1.41,
+       "n_active": 313,
+       "fail": 38.6
+      },
+      "OOS": {
+       "ann": 4.17,
+       "maxdd": -2.1,
+       "worst": -1.21,
+       "n_active": 242,
+       "fail": 0.9
+      },
+      "FULL": {
+       "ann": 2.3,
+       "maxdd": -5.39,
+       "worst": -1.41,
+       "n_active": 555,
+       "fail": 11.5
+      }
+     },
+     "placebo_pct": {
+      "IS": 86.0,
+      "OOS": 96.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 36.0,
+       "med": 37.9,
+       "p95": 40.4
+      },
+      "OOS": {
+       "p05": 0.7,
+       "med": 0.8,
+       "p95": 0.9
+      }
+     }
+    }
+   }
+  },
+  "V4_FX": {
+   "mult": 2.28,
+   "raw": {
+    "IS": {
+     "ann": 0.61,
+     "maxdd": -3.35,
+     "worst": -0.93,
+     "n_active": 1015,
+     "fail": 4.1
+    },
+    "OOS": {
+     "ann": 1.18,
+     "maxdd": -2.24,
+     "worst": -0.9,
+     "n_active": 749,
+     "fail": 1.1
+    },
+    "FULL": {
+     "ann": 0.86,
+     "maxdd": -3.35,
+     "worst": -0.93,
+     "n_active": 1764,
+     "fail": 2.7
+    }
+   },
+   "gates": {
+    "VIX_TERM": {
+     "n_skipped_active": 132,
+     "skip_share_active_pct": 7.48,
+     "skipped_mean_ret_pct": 0.0027,
+     "perm_p": 0.417,
+     "windows": {
+      "IS": {
+       "ann": 0.53,
+       "maxdd": -2.75,
+       "worst": -0.93,
+       "n_active": 933,
+       "fail": 0.8
+      },
+      "OOS": {
+       "ann": 1.22,
+       "maxdd": -2.13,
+       "worst": -0.6,
+       "n_active": 699,
+       "fail": 0.3
+      },
+      "FULL": {
+       "ann": 0.82,
+       "maxdd": -2.75,
+       "worst": -0.93,
+       "n_active": 1632,
+       "fail": 0.6
+      }
+     },
+     "placebo_pct": {
+      "IS": 0.0,
+      "OOS": 18.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 2.0,
+       "med": 3.5,
+       "p95": 5.9
+      },
+      "OOS": {
+       "p05": 0.1,
+       "med": 0.9,
+       "p95": 2.2
+      }
+     }
+    },
+    "VIX_HI": {
+     "n_skipped_active": 332,
+     "skip_share_active_pct": 18.82,
+     "skipped_mean_ret_pct": 0.004,
+     "perm_p": 0.41,
+     "windows": {
+      "IS": {
+       "ann": 0.47,
+       "maxdd": -2.64,
+       "worst": -0.93,
+       "n_active": 872,
+       "fail": 0.8
+      },
+      "OOS": {
+       "ann": 1.08,
+       "maxdd": -1.26,
+       "worst": -0.54,
+       "n_active": 560,
+       "fail": 0.0
+      },
+      "FULL": {
+       "ann": 0.73,
+       "maxdd": -2.64,
+       "worst": -0.93,
+       "n_active": 1432,
+       "fail": 0.2
+      }
+     },
+     "placebo_pct": {
+      "IS": 14.0,
+      "OOS": 4.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 0.4,
+       "med": 2.5,
+       "p95": 6.8
+      },
+      "OOS": {
+       "p05": 0.1,
+       "med": 0.9,
+       "p95": 4.4
+      }
+     }
+    },
+    "COT_JPY_SHORT": {
+     "n_skipped_active": 225,
+     "skip_share_active_pct": 12.76,
+     "skipped_mean_ret_pct": 0.0071,
+     "perm_p": 0.591,
+     "windows": {
+      "IS": {
+       "ann": 0.61,
+       "maxdd": -2.85,
+       "worst": -0.93,
+       "n_active": 974,
+       "fail": 3.4
+      },
+      "OOS": {
+       "ann": 0.95,
+       "maxdd": -2.13,
+       "worst": -0.9,
+       "n_active": 672,
+       "fail": 1.3
+      },
+      "FULL": {
+       "ann": 0.76,
+       "maxdd": -2.85,
+       "worst": -0.93,
+       "n_active": 1646,
+       "fail": 2.3
+      }
+     },
+     "placebo_pct": {
+      "IS": 57.0,
+      "OOS": 61.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 1.0,
+       "med": 3.1,
+       "p95": 6.6
+      },
+      "OOS": {
+       "p05": 0.1,
+       "med": 1.1,
+       "p95": 2.8
+      }
+     }
+    },
+    "FOMC": {
+     "n_skipped_active": 98,
+     "skip_share_active_pct": 5.56,
+     "skipped_mean_ret_pct": -0.0015,
+     "perm_p": 0.293,
+     "windows": {
+      "IS": {
+       "ann": 0.63,
+       "maxdd": -3.13,
+       "worst": -0.93,
+       "n_active": 958,
+       "fail": 3.3
+      },
+      "OOS": {
+       "ann": 1.19,
+       "maxdd": -2.16,
+       "worst": -0.9,
+       "n_active": 708,
+       "fail": 0.5
+      },
+      "FULL": {
+       "ann": 0.87,
+       "maxdd": -3.13,
+       "worst": -0.93,
+       "n_active": 1666,
+       "fail": 1.5
+      }
+     },
+     "placebo_pct": {
+      "IS": 43.0,
+      "OOS": 20.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 1.8,
+       "med": 3.5,
+       "p95": 5.5
+      },
+      "OOS": {
+       "p05": 0.2,
+       "med": 0.9,
+       "p95": 2.1
+      }
+     }
+    }
+   }
+  },
+  "BOOK": {
+   "mult": 0.76,
+   "raw": {
+    "IS": {
+     "ann": -0.22,
+     "maxdd": -13.56,
+     "worst": -4.17,
+     "n_active": 1693,
+     "fail": 1.4
+    },
+    "OOS": {
+     "ann": 3.55,
+     "maxdd": -2.7,
+     "worst": -0.85,
+     "n_active": 1305,
+     "fail": 0.0
+    },
+    "FULL": {
+     "ann": 1.41,
+     "maxdd": -13.56,
+     "worst": -4.17,
+     "n_active": 2998,
+     "fail": 0.2
+    }
+   },
+   "gates": {
+    "VIX_TERM": {
+     "n_skipped_active": 212,
+     "skip_share_active_pct": 7.07,
+     "skipped_mean_ret_pct": -0.0379,
+     "perm_p": 0.0,
+     "windows": {
+      "IS": {
+       "ann": 0.07,
+       "maxdd": -11.75,
+       "worst": -4.0,
+       "n_active": 1680,
+       "fail": 0.6
+      },
+      "OOS": {
+       "ann": 3.47,
+       "maxdd": -2.36,
+       "worst": -0.85,
+       "n_active": 1305,
+       "fail": 0.0
+      },
+      "FULL": {
+       "ann": 1.54,
+       "maxdd": -11.75,
+       "worst": -4.0,
+       "n_active": 2985,
+       "fail": 0.1
+      }
+     },
+     "placebo_pct": {
+      "IS": 14.0,
+      "OOS": 100.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 0.1,
+       "med": 1.1,
+       "p95": 1.7
+      },
+      "OOS": {
+       "p05": 0.0,
+       "med": 0.0,
+       "p95": 0.0
+      }
+     }
+    },
+    "VIX_HI": {
+     "n_skipped_active": 505,
+     "skip_share_active_pct": 16.84,
+     "skipped_mean_ret_pct": -0.0098,
+     "perm_p": 0.019,
+     "windows": {
+      "IS": {
+       "ann": -0.29,
+       "maxdd": -11.81,
+       "worst": -4.0,
+       "n_active": 1672,
+       "fail": 0.6
+      },
+      "OOS": {
+       "ann": 3.64,
+       "maxdd": -1.33,
+       "worst": -0.62,
+       "n_active": 1287,
+       "fail": 0.0
+      },
+      "FULL": {
+       "ann": 1.41,
+       "maxdd": -11.81,
+       "worst": -4.0,
+       "n_active": 2959,
+       "fail": 0.1
+      }
+     },
+     "placebo_pct": {
+      "IS": 36.0,
+      "OOS": 100.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 0.0,
+       "med": 0.8,
+       "p95": 1.6
+      },
+      "OOS": {
+       "p05": 0.0,
+       "med": 0.0,
+       "p95": 0.0
+      }
+     }
+    },
+    "COT_JPY_SHORT": {
+     "n_skipped_active": 515,
+     "skip_share_active_pct": 17.18,
+     "skipped_mean_ret_pct": 0.0128,
+     "perm_p": 0.879,
+     "windows": {
+      "IS": {
+       "ann": -0.13,
+       "maxdd": -12.19,
+       "worst": -4.17,
+       "n_active": 1693,
+       "fail": 1.1
+      },
+      "OOS": {
+       "ann": 2.99,
+       "maxdd": -1.98,
+       "worst": -0.85,
+       "n_active": 1304,
+       "fail": 0.0
+      },
+      "FULL": {
+       "ann": 1.22,
+       "maxdd": -12.19,
+       "worst": -4.17,
+       "n_active": 2997,
+       "fail": 0.1
+      }
+     },
+     "placebo_pct": {
+      "IS": 77.0,
+      "OOS": 100.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 0.0,
+       "med": 0.8,
+       "p95": 1.6
+      },
+      "OOS": {
+       "p05": 0.0,
+       "med": 0.0,
+       "p95": 0.0
+      }
+     }
+    },
+    "FOMC": {
+     "n_skipped_active": 162,
+     "skip_share_active_pct": 5.4,
+     "skipped_mean_ret_pct": 0.0003,
+     "perm_p": 0.338,
+     "windows": {
+      "IS": {
+       "ann": -0.25,
+       "maxdd": -13.42,
+       "worst": -4.17,
+       "n_active": 1693,
+       "fail": 1.4
+      },
+      "OOS": {
+       "ann": 3.7,
+       "maxdd": -2.89,
+       "worst": -0.85,
+       "n_active": 1305,
+       "fail": 0.0
+      },
+      "FULL": {
+       "ann": 1.46,
+       "maxdd": -13.42,
+       "worst": -4.17,
+       "n_active": 2998,
+       "fail": 0.2
+      }
+     },
+     "placebo_pct": {
+      "IS": 92.0,
+      "OOS": 100.0
+     },
+     "placebo_dist": {
+      "IS": {
+       "p05": 0.1,
+       "med": 1.1,
+       "p95": 1.5
+      },
+      "OOS": {
+       "p05": 0.0,
+       "med": 0.0,
+       "p95": 0.0
+      }
+     }
+    }
+   }
+  }
+ },
+ "verdict": {
+  "VIX_TERM": {
+   "perm": true,
+   "placebo_oos": false,
+   "is_oos_both": false,
+   "result": "LEAD",
+   "d_ann_full": 0.13,
+   "d_fail_full": -0.1
+  },
+  "VIX_HI": {
+   "perm": false,
+   "placebo_oos": false,
+   "is_oos_both": false,
+   "result": "REJECT",
+   "d_ann_full": 0.0,
+   "d_fail_full": -0.1
+  },
+  "COT_JPY_SHORT": {
+   "perm": false,
+   "placebo_oos": false,
+   "is_oos_both": false,
+   "result": "REJECT",
+   "d_ann_full": -0.19,
+   "d_fail_full": -0.1
+  },
+  "FOMC": {
+   "perm": false,
+   "placebo_oos": false,
+   "is_oos_both": false,
+   "result": "REJECT",
+   "d_ann_full": 0.05,
+   "d_fail_full": 0.0
+  }
+ }
+}
