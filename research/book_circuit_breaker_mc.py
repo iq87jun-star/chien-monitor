@@ -63,8 +63,9 @@ def sim_2step(paths, mult, p1, p2, dd, guard):
     return failed, fday
 
 
-def sim_trail(paths, mult, trail, guard):
-    """FN Instant: HWM(equity)から−trail で口座喪失。目標なし。"""
+def sim_trail(paths, mult, trail, guard, lock=True):
+    """FN Instant: フロア=min(HWM−trail, 初期)=建値で止まるトレーリング(docs/177 §1)。目標なし。
+    ⚠ 2026-09-02修正: 初版は lock なし(フロアが上がり続ける)で計算しており失格率が過大だった(docs/202 §10)。"""
     n, T = paths.shape
     eq = np.ones(n); hwm = np.ones(n)
     failed = np.zeros(n, bool); fday = np.full(n, -1)
@@ -75,7 +76,8 @@ def sim_trail(paths, mult, trail, guard):
         r = np.clip(paths[:, t] * mult, -guard, None)
         eq = np.where(alive, eq * (1 + r), eq)
         hwm = np.maximum(hwm, eq)
-        nf = alive & (eq <= hwm - trail); failed |= nf; fday[nf] = t + 1
+        floor = np.minimum(hwm - trail, 1.0) if lock else hwm - trail
+        nf = alive & (eq <= floor); failed |= nf; fday[nf] = t + 1
     return failed, fday
 
 
@@ -213,7 +215,7 @@ def main():
     print(f"  λ=0.5 : CB={a['P_circuit_breaker']}% ρ={a['rho_C_vs_rest']} E[失格]={a['E_failed_accounts']}")
     print(f"  相対変化={rel:+.1f}%  λ=0.5を支持={out['verdict']['supports_lambda_05']}")
 
-    fp = os.path.join(HERE, "results", "book_circuit_breaker_mc.json")
+    fp = os.path.join(HERE, "results", "book_circuit_breaker_mc_lockfix.json")
     with open(fp, "w") as f:
         json.dump(out, f, ensure_ascii=False, indent=1, default=str)
     print("saved:", fp)
