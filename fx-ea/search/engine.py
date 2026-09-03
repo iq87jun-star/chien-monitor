@@ -244,6 +244,17 @@ def build_forecast(family, params):
     tf = p.pop("tf", "D")
     fn = _F.FORECAST[family]
     syms = p.pop("symbols", None) or [p.pop("sym")]
+
+    if family == "corrfc":
+        # 2銘柄1組の族。symbols の全組み合わせで回して合成する
+        import itertools
+        out = []
+        for a, b in itertools.combinations(syms, 2):
+            ra, rb = rows_of(a), rows_of(b)
+            if tf == "W": ra, rb = resample_weekly(ra), resample_weekly(rb)
+            out += fn(ra, rb, **p)
+        return out
+
     out = []
     for sym in syms:
         rows = rows_of(sym)

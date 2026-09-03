@@ -721,3 +721,58 @@ def i_quiethit(rows, n=14, base_bars=3000, thr=0.85, side="quiet"):
 
 
 FORECAST["quiethit"] = i_quiethit
+
+
+def i_corrfc(rows_a, rows_b, n=60):
+    """「この2銘柄はいま同じ動きをしているか」の表示に中身があるか。
+
+    直近 n 本の日次リターン相関が、**次の n 本**の相関を、
+    全履歴の平均相関(素朴基準)より正確に言い当てられるかを測る。
+    複数ポジションの分散が効いているかを示す商品(相関計)の種になるかの検定。
+    素朴基準の積み上げは n 本遅らせる(effratio と同じ先読み対策)。
+    """
+    import math as _m
+    da = {r[0]: r[4] for r in rows_a}
+    db = {r[0]: r[4] for r in rows_b}
+    dates = sorted(set(da) & set(db))
+    if len(dates) < 4 * n + 250: return []
+    ra, rb = [], []
+    for k in range(1, len(dates)):
+        p0, p1 = dates[k - 1], dates[k]
+        if da[p0] <= 0 or db[p0] <= 0: ra.append(0.0); rb.append(0.0); continue
+        ra.append(da[p1] / da[p0] - 1)
+        rb.append(db[p1] / db[p0] - 1)
+    m = len(ra)
+    # 相関を窓で速く出すための累積和
+    sx = [0.0]; sy = [0.0]; sxx = [0.0]; syy = [0.0]; sxy = [0.0]
+    for k in range(m):
+        sx.append(sx[-1] + ra[k]); sy.append(sy[-1] + rb[k])
+        sxx.append(sxx[-1] + ra[k] * ra[k]); syy.append(syy[-1] + rb[k] * rb[k])
+        sxy.append(sxy[-1] + ra[k] * rb[k])
+
+    def corr(i, j):
+        """リターン index i..j-1 の相関。"""
+        c = j - i
+        if c < 3: return None
+        ex = (sx[j] - sx[i]) / c; ey = (sy[j] - sy[i]) / c
+        vx = (sxx[j] - sxx[i]) / c - ex * ex
+        vy = (syy[j] - syy[i]) / c - ey * ey
+        if vx <= 0 or vy <= 0: return None
+        return ((sxy[j] - sxy[i]) / c - ex * ey) / _m.sqrt(vx * vy)
+
+    run, cnt, out, pend = 0.0, 0, [], []
+    for i in range(n, m - n):
+        cur = corr(i - n, i)
+        nxt = corr(i, i + n)
+        if cur is None or nxt is None: continue
+        pend.append(nxt)
+        if len(pend) > n:
+            run += pend.pop(0); cnt += 1
+        if cnt >= 250:
+            base = run / cnt
+            out.append((dates[i + n], abs(nxt - base) - abs(nxt - cur),
+                        abs(nxt - base)))
+    return out
+
+
+FORECAST["corrfc"] = i_corrfc

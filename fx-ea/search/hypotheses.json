@@ -1570,6 +1570,32 @@
    },
    "space_size": 24,
    "status": "done"
+  },
+  {
+   "id": "i-corrfc-fx",
+   "track": "indicator",
+   "note": "【指標】FX13ペアの全78組 直近60本のリターン相関は、次の60本の相関を全履歴の平均相関より正確に言い当てるか(「分散が効いているか」を示す相関計の種になるかの検定)",
+   "family": "corrfc",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 60
+   },
+   "space_size": 24,
+   "status": "done"
   }
  ]
 }

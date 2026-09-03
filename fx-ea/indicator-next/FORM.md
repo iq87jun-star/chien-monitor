@@ -99,7 +99,7 @@ EVIDENCE.md の数値に合わせて概要を直すこと。
 ChienRangeMeter.zip
   ├ 定石参_値幅計.ex5   (MT5用・コンパイル済み)
   ├ 定石参_値幅計.ex4   (MT4用・コンパイル済み)
-  └ 取扱説明書.pdf       (SALES.md の説明書をPDF化)
+  └ 取扱説明書.pdf       (同梱済み。python3 make_manual.py で SALES.md から再生成)
 ```
 
 **認証ありの場合**

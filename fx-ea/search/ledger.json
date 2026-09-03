@@ -1,5 +1,5 @@
 {
- "cumulative_tests": 8687,
+ "cumulative_tests": 8711,
  "entries": [
   {
    "id": "dow-jpy-mon",
@@ -3263,6 +3263,54 @@
     "hit_years": 13,
     "years": 15,
     "first": "2012-08-29",
+    "last": "2026-09-01"
+   }
+  },
+  {
+   "id": "i-corrfc-fx",
+   "note": "【指標】FX13ペアの全78組 直近60本のリターン相関は、次の60本の相関を全履歴の平均相関より正確に言い当てるか(「分散が効いているか」を示す相関計の種になるかの検定)",
+   "family": "corrfc",
+   "track": "indicator",
+   "params": {
+    "symbols": [
+     "USDJPY",
+     "EURJPY",
+     "GBPJPY",
+     "AUDJPY",
+     "NZDJPY",
+     "CADJPY",
+     "CHFJPY",
+     "EURUSD",
+     "GBPUSD",
+     "AUDUSD",
+     "NZDUSD",
+     "USDCAD",
+     "USDCHF"
+    ],
+    "n": 60
+   },
+   "space_size": 24,
+   "protocol": "指標v1 (素朴基準に対する改善)",
+   "tested_at": "2026-09-03",
+   "cum_tests_at_time": 8711,
+   "result": {
+    "verdict": "棄却",
+    "reason": "改善年 8/14 = 57% < 80% / 改善率 4.1% < 5%(実用水準に届かない)",
+    "n": 271001,
+    "t": 23.221,
+    "t_adj": 23.221,
+    "need_t": 4.387,
+    "hold": 1,
+    "n_dates": 3477,
+    "t_date": 7.484,
+    "gain": 0.0071,
+    "base": 0.1713,
+    "gain_ratio": 0.0412,
+    "is_gain": 0.0006,
+    "oos_gain": 0.0168,
+    "hit_years": 8,
+    "years": 14,
+    "first": "2013-04-25",
     "last": "2026-09-01"
    }
   }
