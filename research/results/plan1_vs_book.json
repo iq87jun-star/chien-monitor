@@ -1,0 +1,107 @@
+{
+ "案1a 原案(docs/76: v4 30/v7 25/EMon 25/E5 20)": {
+  "mult": 1.68,
+  "直近12m": {
+   "ann": 4.0,
+   "maxdd": -4.0,
+   "worst": -0.94,
+   "sharpe": 0.79,
+   "funded": 19.4,
+   "fail": 1.9,
+   "med_days": 325
+  },
+  "全期間": {
+   "ann": 5.0,
+   "maxdd": -5.5,
+   "worst": -3.14,
+   "sharpe": 1.06,
+   "funded": 26.0,
+   "fail": 0.8,
+   "med_days": 319
+  },
+  "book_add": {
+   "E_funded": [
+    3.615,
+    3.926
+   ],
+   "E_failed": [
+    2.742,
+    2.744
+   ],
+   "CB_new": [
+    17.65,
+    17.25
+   ]
+  }
+ },
+ "案1b FN適合(v7除外: v4 40/EMon 33/E5 27)": {
+  "mult": 1.6,
+  "直近12m": {
+   "ann": 3.5,
+   "maxdd": -5.5,
+   "worst": -1.21,
+   "sharpe": 0.57,
+   "funded": 24.2,
+   "fail": 9.3,
+   "med_days": 285
+  },
+  "全期間": {
+   "ann": 5.2,
+   "maxdd": -6.1,
+   "worst": -3.16,
+   "sharpe": 0.94,
+   "funded": 32.0,
+   "fail": 2.6,
+   "med_days": 293
+  },
+  "book_add": {
+   "E_funded": [
+    3.615,
+    4.0
+   ],
+   "E_failed": [
+    2.742,
+    2.749
+   ],
+   "CB_new": [
+    17.65,
+    17.25
+   ]
+  }
+ },
+ "案1c FN適合(v7=EURJPYのみ 25)": {
+  "mult": 1.68,
+  "直近12m": {
+   "ann": 4.0,
+   "maxdd": -3.9,
+   "worst": -1.07,
+   "sharpe": 0.78,
+   "funded": 19.8,
+   "fail": 2.3,
+   "med_days": 324
+  },
+  "全期間": {
+   "ann": 5.2,
+   "maxdd": -5.5,
+   "worst": -3.15,
+   "sharpe": 1.08,
+   "funded": 27.7,
+   "fail": 0.8,
+   "med_days": 317
+  },
+  "book_add": {
+   "E_funded": [
+    3.615,
+    3.942
+   ],
+   "E_failed": [
+    2.742,
+    2.744
+   ],
+   "CB_new": [
+    17.65,
+    17.25
+   ]
+  }
+ }
+}
