@@ -33,18 +33,26 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.normpath(os.path.join(HERE, "..", "data_dukascopy"))
 
 
-def get(url, retries=4):
+class FetchError(RuntimeError): pass
+
+REQ_SLEEP = 2.0     # リクエスト間隔(秒)。Dukascopy は断続的に 503(レート制限)を返す
+
+def get(url, retries=12):
+    """404=データ無し(None)。503/429/接続失敗は長めのバックオフで再試行し、尽きたら FetchError(静かに欠損させない)。"""
+    last = None
     for i in range(retries):
         try:
-            with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
-                return r.read()
+            with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=90) as r:
+                data = r.read(); time.sleep(REQ_SLEEP); return data
         except urllib.error.HTTPError as e:
-            if e.code == 404: return None            # データ無し(休日など)
-            if e.code in (429, 503): time.sleep(2 ** i); continue
-            raise
-        except Exception:
-            time.sleep(2 ** i)
-    return None
+            if e.code == 404: time.sleep(REQ_SLEEP); return None
+            last = f"HTTP {e.code}"
+        except Exception as e:
+            last = f"{type(e).__name__}: {str(e)[:60]}"
+        wait = min(10 * (i + 1), 60)
+        print(f"    retry {i+1}/{retries} ({last}) {wait}s待機: {url.split('/datafeed/')[1]}", flush=True)
+        time.sleep(wait)
+    raise FetchError(f"取得失敗(再試行{retries}回): {url} 最終エラー={last}")
 
 
 def decode_candles(raw, scale, base_time):
@@ -125,7 +133,12 @@ def main():
         s = s.strip()
         if s not in INSTR: print(f"  未登録の銘柄: {s}(INSTR に追加してください)"); continue
         print(f"== {s} ({INSTR[s][0]}) {a.tf} {d0}..{d1}")
-        fetch_symbol(s, a.tf, d0, d1, a.force)
+        try:
+            fetch_symbol(s, a.tf, d0, d1, a.force)
+        except FetchError as e:
+            print(f"  !! {s}: {e}\n  !! 部分保存はしない。後で再実行すると未取得分から再開する。", flush=True)
+        except Exception as e:
+            import traceback; print(f"  !! {s}: 予期しない例外 {type(e).__name__}: {e}", flush=True); traceback.print_exc()
     print("\n完了。取得した CSV を git add してこのブランチへ push すると、E5 再現(docs/84 条件(a))に進めます。")
 
 
