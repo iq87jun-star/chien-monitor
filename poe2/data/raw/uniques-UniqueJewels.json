@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 415.1,
-   "chaos": 11.3
+   "exalted": 409.3,
+   "chaos": 10.1
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,19 +42,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 640,
-   "listingCount": 128,
+   "primaryValue": 660,
+   "listingCount": 115,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 6.67,
+    "totalChange": 10,
     "data": [
-     null,
-     null,
      0,
      0,
      null,
      null,
-     6.67
+     6.67,
+     null,
+     10
     ]
    },
    "explicitModifiers": [
@@ -75,19 +75,19 @@
    "levelRequired": 0,
    "category": "Vaal [Jewel]",
    "limitedTo": 1,
-   "primaryValue": 40,
-   "listingCount": 1394,
+   "primaryValue": 39.1,
+   "listingCount": 1377,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": -2.25,
     "data": [
-     null,
-     null,
      0,
      0,
      null,
      null,
-     0
+     0,
+     null,
+     -2.25
     ]
    },
    "explicitModifiers": [
@@ -184,19 +184,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 14.2,
-   "listingCount": 49,
+   "primaryValue": 18,
+   "listingCount": 51,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 42,
+    "totalChange": 80,
     "data": [
-     null,
-     null,
      0,
      0,
      null,
      null,
-     42
+     42,
+     null,
+     80
     ]
    },
    "explicitModifiers": [
@@ -218,19 +218,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 7,
-   "listingCount": 1310,
+   "primaryValue": 8,
+   "listingCount": 1229,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -12.5,
+    "totalChange": 0,
     "data": [
-     null,
-     null,
      0,
      -25,
      null,
      null,
-     -12.5
+     -12.5,
+     null,
+     0
     ]
    },
    "explicitModifiers": [
@@ -288,19 +288,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 7,
-   "listingCount": 3217,
+   "primaryValue": 8,
+   "listingCount": 2657,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 18.4,
+    "totalChange": 35.31,
     "data": [
-     null,
-     null,
      0,
      1.48,
      null,
      null,
-     18.4
+     18.4,
+     null,
+     35.31
     ]
    },
    "explicitModifiers": [
@@ -402,16 +402,16 @@
    "category": "[Jewel]",
    "limitedTo": 3,
    "primaryValue": 4,
-   "listingCount": 112,
+   "listingCount": 109,
    "corrupted": false,
    "sparkLine": {
     "totalChange": 33.33,
     "data": [
-     null,
-     null,
      0,
      33.33,
      null,
+     null,
+     33.33,
      null,
      33.33
     ]
@@ -434,19 +434,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 4,
-   "listingCount": 180,
+   "primaryValue": 3.3,
+   "listingCount": 181,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 43.29,
+    "totalChange": 18.22,
     "data": [
-     null,
-     null,
      0,
      7.47,
      null,
      null,
-     43.29
+     43.29,
+     null,
+     18.22
     ]
    },
    "explicitModifiers": [
@@ -467,19 +467,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 1,
-   "listingCount": 8704,
+   "primaryValue": 1.47,
+   "listingCount": 8632,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -29.52,
+    "totalChange": 3.31,
     "data": [
-     null,
-     null,
      0,
      -29.52,
      null,
      null,
-     -29.52
+     -29.52,
+     null,
+     3.31
     ]
    },
    "explicitModifiers": [
@@ -552,19 +552,19 @@
    "levelRequired": 0,
    "category": "Kalguuran [Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.4625,
+   "primaryValue": 0.684,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 20.4,
+    "totalChange": 78.07,
     "data": [
-     null,
-     null,
      0,
      30.11,
      null,
      null,
-     20.4
+     20.4,
+     null,
+     78.07
     ]
    },
    "explicitModifiers": [
@@ -587,31 +587,146 @@
    ]
   },
   {
-   "id": 402,
-   "itemId": "Megalomaniac Diamond",
-   "detailsId": "megalomaniac-diamond",
-   "name": "Megalomaniac",
+   "id": 401,
+   "itemId": "From Nothing Diamond",
+   "detailsId": "from-nothing-diamond",
+   "name": "From Nothing",
    "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
-   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JpdHVhbEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/192c7799d7/RitualJewel.png",
+   "flavourText": "They clawed their way up from the agonising depths of nonexistence,\r\nbreathing deep with joy the exquisite light of meaning.",
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.106,
+   "radius": "Small",
+   "primaryValue": 0.1019,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 79.97,
+    "totalChange": 47.32,
     "data": [
-     null,
-     null,
      0,
-     17.95,
+     8.42,
      null,
      null,
-     79.97
+     21.94,
+     null,
+     47.32
     ]
-   }
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passives in Radius of [passive_keystone_acrobatics|Primal Hunger] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_ancestral_bond|Ancestral Bond] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_dance_with_death|Dance with Death] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_lord_of_the_wilds|Lord of the Wilds] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_necromantic_talisman|Necromantic Talisman] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_pain_attunement|Pain Attunement] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_resolute_technique|Resolute Technique] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_resonance|Resonance] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_hollow_palm_technique|Hollow Palm Technique] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_chaos_inoculation|Chaos Inoculation] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_crimson_dance_|Crimson Assault] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_fire_spells_to_chaos|Blackflame Covenant] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_giants_blood|Giant's Blood] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_glancing_blows_|Glancing Blows] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_iron_reflexes_|Iron Reflexes] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_two_companions|Trusted Kinship] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_wildsurge_incantation|Wildsurge Incantation] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_zealots_oath|Zealot's Oath] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_eternal_youth|Eternal Youth] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_alternate_es_recovery|Scarred Faith] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_avatar_of_fire|Avatar of Fire] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_heartstopper|Heartstopper] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_mind_over_matter|Mind Over Matter] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_oasis|Oasis] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_unwavering_stance_|Unwavering Stance] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_whispers_of_doom|Whispers of Doom] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_auto_invocation|Ritual Cadence] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_elemental_equilibrium|Elemental Equilibrium] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    }
+   ]
   },
   {
    "id": 400,
@@ -624,19 +739,19 @@
    "levelRequired": 0,
    "category": "Vaal [Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.08852,
-   "listingCount": 8157,
+   "primaryValue": 0.09903,
+   "listingCount": 8063,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -2.87,
+    "totalChange": 8.66,
     "data": [
-     null,
-     null,
      0,
      -13.59,
      null,
      null,
-     -2.87
+     -2.87,
+     null,
+     8.66
     ]
    },
    "explicitModifiers": [
@@ -799,146 +914,31 @@
    ]
   },
   {
-   "id": 401,
-   "itemId": "From Nothing Diamond",
-   "detailsId": "from-nothing-diamond",
-   "name": "From Nothing",
+   "id": 402,
+   "itemId": "Megalomaniac Diamond",
+   "detailsId": "megalomaniac-diamond",
+   "name": "Megalomaniac",
    "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JpdHVhbEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/192c7799d7/RitualJewel.png",
-   "flavourText": "They clawed their way up from the agonising depths of nonexistence,\r\nbreathing deep with joy the exquisite light of meaning.",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
+   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "radius": "Small",
-   "primaryValue": 0.08432,
+   "primaryValue": 0.0491,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 21.94,
+    "totalChange": -16.64,
     "data": [
-     null,
-     null,
      0,
-     8.42,
+     17.95,
      null,
      null,
-     21.94
+     79.97,
+     null,
+     -16.64
     ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Passives in Radius of [passive_keystone_acrobatics|Primal Hunger] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_ancestral_bond|Ancestral Bond] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_dance_with_death|Dance with Death] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_lord_of_the_wilds|Lord of the Wilds] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_necromantic_talisman|Necromantic Talisman] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_pain_attunement|Pain Attunement] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_resolute_technique|Resolute Technique] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_resonance|Resonance] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_hollow_palm_technique|Hollow Palm Technique] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_chaos_inoculation|Chaos Inoculation] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_crimson_dance_|Crimson Assault] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_fire_spells_to_chaos|Blackflame Covenant] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_giants_blood|Giant's Blood] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_glancing_blows_|Glancing Blows] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_iron_reflexes_|Iron Reflexes] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_two_companions|Trusted Kinship] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_wildsurge_incantation|Wildsurge Incantation] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_zealots_oath|Zealot's Oath] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_eternal_youth|Eternal Youth] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_alternate_es_recovery|Scarred Faith] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_avatar_of_fire|Avatar of Fire] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_heartstopper|Heartstopper] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_mind_over_matter|Mind Over Matter] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_oasis|Oasis] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_unwavering_stance_|Unwavering Stance] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_whispers_of_doom|Whispers of Doom] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_auto_invocation|Ritual Cadence] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_elemental_equilibrium|Elemental Equilibrium] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    }
-   ]
+   }
   },
   {
    "id": 378,
@@ -951,19 +951,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.07227,
+   "primaryValue": 0.03664,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 12.89,
+    "totalChange": -42.77,
     "data": [
-     null,
-     null,
      0,
      17.1,
      null,
      null,
-     12.89
+     12.89,
+     null,
+     -42.77
     ]
    },
    "explicitModifiers": [
@@ -1260,19 +1260,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00241,
+   "primaryValue": 0.00244,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -5.86,
+    "totalChange": -4.69,
     "data": [
-     null,
-     null,
      0,
      -2.34,
      null,
      null,
-     -5.86
+     -5.86,
+     null,
+     -4.69
     ]
    },
    "explicitModifiers": [
