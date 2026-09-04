@@ -1,0 +1,163 @@
+{
+ "11988011": {
+  "key": "FN_Instant20k_11988011",
+  "note": "",
+  "start": "2026-08-13",
+  "first": "2026-08-18",
+  "last": "2026-09-01",
+  "n": 11,
+  "R_pct": 0.4,
+  "B_same_window_pct": 0.11,
+  "gap_pct": 0.29,
+  "gap_limit_pct": 8.49,
+  "pct_full": 0.441,
+  "pct_12m": 0.096,
+  "sigma_bt_daily": 1.28,
+  "cusum_h": 4,
+  "cusum_down": 0.0,
+  "cusum_up": 0.0,
+  "cusum_down_max": 0.0,
+  "cusum_up_max": 0.0,
+  "flags": [
+   "なし"
+  ]
+ },
+ "14166201": {
+  "key": "FN100k_14166201",
+  "note": "",
+  "start": "2026-08-10",
+  "first": "2026-08-10",
+  "last": "2026-09-01",
+  "n": 17,
+  "R_pct": -3.38,
+  "B_same_window_pct": 0.1,
+  "gap_pct": -3.48,
+  "gap_limit_pct": 15.43,
+  "pct_full": 0.197,
+  "pct_12m": 0.036,
+  "sigma_bt_daily": 1.871,
+  "cusum_h": 3,
+  "cusum_down": 0.0,
+  "cusum_up": 0.0,
+  "cusum_down_max": 0.25,
+  "cusum_up_max": 0.0,
+  "flags": [
+   "警戒(n日分位<5%)"
+  ]
+ },
+ "521100397": {
+  "key": "FTMO50k_521100397",
+  "note": "8月は旧5.52x構成(参考値)",
+  "start": "2026-08-01",
+  "first": "2026-08-04",
+  "last": "2026-09-01",
+  "n": 21,
+  "R_pct": 5.9,
+  "B_same_window_pct": 5.82,
+  "gap_pct": 0.08,
+  "gap_limit_pct": 9.38,
+  "pct_full": 0.899,
+  "pct_12m": 0.937,
+  "sigma_bt_daily": 1.024,
+  "cusum_h": 5,
+  "cusum_down": 0.0,
+  "cusum_up": 1.06,
+  "cusum_down_max": 0.0,
+  "cusum_up_max": 1.06,
+  "flags": [
+   "なし"
+  ]
+ },
+ "531343523": {
+  "key": "FTMO100k_531343523",
+  "note": "",
+  "start": "2026-08-01",
+  "first": "2026-08-03",
+  "last": "2026-08-31",
+  "n": 21,
+  "R_pct": -1.73,
+  "B_same_window_pct": -2.84,
+  "gap_pct": 1.11,
+  "gap_limit_pct": 7.66,
+  "pct_full": 0.329,
+  "pct_12m": 0.12,
+  "sigma_bt_daily": 0.835,
+  "cusum_h": 5,
+  "cusum_down": 0.0,
+  "cusum_up": 0.0,
+  "cusum_down_max": 0.8,
+  "cusum_up_max": 0.0,
+  "flags": [
+   "なし"
+  ]
+ },
+ "531407058": {
+  "key": "FTMO50k_531407058",
+  "note": "",
+  "start": "2026-08-01",
+  "first": "2026-08-04",
+  "last": "2026-09-01",
+  "n": 21,
+  "R_pct": 5.01,
+  "B_same_window_pct": 3.07,
+  "gap_pct": 1.94,
+  "gap_limit_pct": 14.35,
+  "pct_full": 0.63,
+  "pct_12m": 0.397,
+  "sigma_bt_daily": 1.565,
+  "cusum_h": 4,
+  "cusum_down": 0.0,
+  "cusum_up": 0.29,
+  "cusum_down_max": 0.0,
+  "cusum_up_max": 0.55,
+  "flags": [
+   "なし"
+  ]
+ },
+ "6071612": {
+  "key": "Fintokei_Pearl500",
+  "note": "",
+  "start": "2026-07-29",
+  "first": "2026-07-29",
+  "last": "2026-09-01",
+  "n": 25,
+  "R_pct": 4.63,
+  "B_same_window_pct": 1.95,
+  "gap_pct": 2.69,
+  "gap_limit_pct": 12.8,
+  "pct_full": 0.632,
+  "pct_12m": 0.136,
+  "sigma_bt_daily": 1.28,
+  "cusum_h": 4,
+  "cusum_down": 0.0,
+  "cusum_up": 0.0,
+  "cusum_down_max": 0.1,
+  "cusum_up_max": 1.67,
+  "flags": [
+   "なし"
+  ]
+ },
+ "6078225": {
+  "key": "Fintokei_Sokkou2000_6078225",
+  "note": "",
+  "start": "2026-08-17",
+  "first": "2026-08-18",
+  "last": "2026-09-01",
+  "n": 11,
+  "R_pct": 0.93,
+  "B_same_window_pct": 0.06,
+  "gap_pct": 0.87,
+  "gap_limit_pct": 4.33,
+  "pct_full": 0.557,
+  "pct_12m": 0.325,
+  "sigma_bt_daily": 0.652,
+  "cusum_h": 4,
+  "cusum_down": 0.0,
+  "cusum_up": 0.71,
+  "cusum_down_max": 0.0,
+  "cusum_up_max": 0.71,
+  "flags": [
+   "なし"
+  ]
+ }
+}
