@@ -6,7 +6,9 @@ from e5_replicate_dukascopy import monthly
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DUKA, RF, YAHOO = (os.path.join(HERE, d) for d in ("data_dukascopy", "data_duka_rf", "data"))
-W0, W1 = pd.Timestamp("2016-01-01"), pd.Timestamp("2025-12-31")
+import sys
+W0, W1 = pd.Timestamp(sys.argv[1] if len(sys.argv) > 2 else "2016-01-01"), pd.Timestamp(sys.argv[2] if len(sys.argv) > 2 else "2025-12-31")
+SUFFIX = sys.argv[3] if len(sys.argv) > 3 else ""
 
 
 def prepare(sym):
@@ -60,7 +62,7 @@ def main():
         y = series_on(YAHOO, lambda: db.account_composite(k)); d = series_on(RF, lambda: db.account_composite(k))
         r = compare(y, d); r["verdict"] = verdict(r, acct=True); out["accounts"][k] = r
         print(f"口座 {k:28s} ρ月={r['monthly_rho']:.3f} 累積 Y={r['cum_yahoo']:+6.1f}% D={r['cum_duka']:+6.1f}% DD Y={r['maxdd_yahoo']:.1f} D={r['maxdd_duka']:.1f} → {r['verdict']}")
-    json.dump(out, open(os.path.join(HERE, "results", "deployed_legs_dukascopy.json"), "w"), ensure_ascii=False, indent=1)
+    json.dump(out, open(os.path.join(HERE, "results", f"deployed_legs_dukascopy{SUFFIX}.json"), "w"), ensure_ascii=False, indent=1)
 
 
 if __name__ == "__main__":
