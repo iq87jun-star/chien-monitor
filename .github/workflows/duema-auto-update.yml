@@ -16,7 +16,7 @@ name: duema-auto-update
 
 on:
   schedule:
-    - cron: "47 5,17 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
+    - cron: "47 5 * * *" # 1日1回(UTC 5:47 = JST 14:47)。他サイトのワークフローと時間をずらす
   workflow_dispatch:
 
 permissions:
