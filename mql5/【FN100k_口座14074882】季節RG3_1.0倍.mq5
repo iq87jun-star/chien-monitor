@@ -15,7 +15,7 @@
 //|   ⚠ デモ必須: R4はLOYO合格(docs/105)だがデモ未了。                  |
 //|     実口座投入はデモ1ヶ月採点(docs/103)で分布内を確認後。           |
 //|   v1.44(docs/172): RG3ゲート(EMon/EMonX)+balance基準ガード-4%      |
-//|   v1.45(docs/214/217): G3 第2銘柄 EURUSD(LEAD・0.5%/event)を同じ  |
+//|   v1.45(docs/214/217): G3 第2銘柄 EURUSD(LEAD・0.25%/event)を同じ |
 //|     FOMC窓・同じスリーブ(SL_G3)に追加。ロジック不変・銘柄別ATRサイズ。|
 //|     InpG3Symbol2="" で従来どおり US500 のみ。                       |
 //|   倍率=研究1.0x(到達99.4%/中央9ヶ月MC)。資金化後は再校正。          |
@@ -77,9 +77,9 @@ input group "=== G3 FOMCオーバーレイ(ADOPT・docs/82, 重畳は docs/110) 
 input bool   InpG3Enable        = true;   // G3 FOMCオーバーレイ(既定ON, docs/110)
 input string InpG3Symbol        = "US500";
 input string InpG3Dates         = "2026.01.28,2026.03.18,2026.04.29,2026.06.17,2026.07.29,2026.09.16,2026.10.28,2026.12.09"; // 声明日(毎年Fed公式から更新)
-input double InpG3RiskPct       = 1.0;    // 1イベントのリスク%(ATR(D1)変動≒この%)。DD余白が薄い時は0.5(docs/217)
+input double InpG3RiskPct       = 0.5;    // 1イベントのリスク%(ATR(D1)変動≒この%)。v1.45: 1.0→0.5(9/4時点の余白3.9%・docs/217 §1)
 input string InpG3Symbol2       = "EURUSD"; // v1.45: G3 第2銘柄(docs/214 LEAD)。""=無効
-input double InpG3RiskPct2      = 0.5;    // 第2銘柄の1イベントのリスク%(docs/217: 14074882は余白4.6%→0.5)
+input double InpG3RiskPct2      = 0.25;   // 第2銘柄の1イベントのリスク%(docs/217 §1: 余白3.9%の間は0.25)
 input double InpG3CatATR        = 2.5;    // 災害SL=2.5×ATR(D1)
 input int    InpG3EntryHourET   = 14;     // エントリ=声明24h前(前日のこの時刻ET)
 input int    InpG3ExitMinBefore = 5;      // 声明何分前に手仕舞うか(検証=0分・5分は保守側)
