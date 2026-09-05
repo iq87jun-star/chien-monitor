@@ -10,7 +10,11 @@ import crypto from "node:crypto";
 import { SITE_DIR, CONTENT_DIR, SIGNIFICANT_CHANGE_PCT } from "./config.mjs";
 
 const SITE_URL = "https://pokeca.tokyo/";
-const MAX_POSTS_PER_RUN = 2;
+const MAX_POSTS_PER_RUN = 1;
+
+// JST の暦日を YYYY-MM-DD で返す(1日1回ガード用)
+const jstToday = () =>
+  new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
 const HASHTAGS = "#ポケカ #ポケモンカード";
 
 // --- OAuth 1.0a 署名(依存ライブラリなし) ---
@@ -94,6 +98,14 @@ export async function postToX() {
   const statePath = path.join(SITE_DIR, "posted.json");
   const state = await readJson(statePath, { itemIds: [], articleIds: [] });
 
+  // 1日1回だけ投稿する(X API 従量課金対策)。
+  // ワークフロー自体は1日2回動かしてデータ鮮度を保ちつつ、投稿だけ絞る。
+  const today = jstToday();
+  if (state.lastPostedDate === today) {
+    console.log("x-bot: already posted today (JST) — skip");
+    return;
+  }
+
   const queue = [];
 
   // 1. 未ポストの急騰アイテム(閾値超えの上昇率トップ1件だけ)
@@ -128,6 +140,7 @@ export async function postToX() {
     try {
       const result = await postTweet(item.text, creds);
       console.log(`x-bot: posted ${item.kind} (tweet id: ${result.data?.id})`);
+      state.lastPostedDate = today;
       if (item.kind === "spike") state.itemIds.push(item.key);
       else state.articleIds.push(item.key);
     } catch (err) {
