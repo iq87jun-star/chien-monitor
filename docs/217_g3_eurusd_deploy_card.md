@@ -25,14 +25,25 @@
 1%/event の災害 SL(2.5×ATR ≈ −2.5%)が 2 回続くと枠に届く。→ **EURUSD は 0.5%/event**(プリセット済み)。
 US500 側(季節 EA 内蔵)の `InpG3RiskPct` も 0.5 に下げる案を出す(変更はユーザー判断・季節 EA の再コンパイル不要、入力変更のみ)。
 
-## 3. 手順(EURUSD・14074882)
+## 3. 手順(EURUSD・14074882)— 決定 2026-09-05: 季節RG3 EA に内蔵(v1.45)。別 EA は付けない
 
-1. `mql5/Chien_FOMC_Drift_EA.mq5` v1.10 をコンパイル(ロジックは v1.00 と同一。ヘッダ・コメント・入力説明のみ変更)。
-2. **EURUSD チャート**(H1 で可)に 1 枚アタッチ。プリセット `mql5/presets/fomc_drift_eurusd_fn14074882.set` を読み込む
-   (Magic 930613 / risk 0.5% / 手仕舞い 7 分前 / InitialBalance 100000 明示 / MaxSpread 3bps)。
-3. **US500 チャートには付けない**(季節 EA と二重建てになる)。
-4. ログ確認: 起動時 `[INIT G3/EURUSD] ... イベント8件`。9/15(火)18:00 GMT(=14:00 ET・夏時間)に `[ENTRY G3/EURUSD] LONG`、9/16 17:53 GMT に `[CLOSE WINDOW_END]`。
-5. 同時にデモ口座で `fomc_drift_demo_us500_eurusd.set` を US500/EURUSD に付け、約定・時刻・スワップを記録(docs/82 §3 の手順)。
+ユーザー決定「882 に含める」を受け、`mql5/【FN100k_口座14074882】季節RG3_1.0倍.mq5` を **v1.45** にした。
+変更は G3 スリーブに第 2 銘柄を足しただけ(`InpG3Symbol2="EURUSD"` / `InpG3RiskPct2=0.5`。`""` で従来どおり)。
+US500 側・季節レッグ・ガード・通知・利益ロックは v1.44 と同一。第 2 銘柄も同じ FOMC 窓・同じ SL_G3 スリーブ(Magic 940708)・
+同じ災害 SL・同じ MaxRisk ガード・同じ手仕舞い(`G3_WINDOW_END` で両銘柄を閉じる)に入る。
+
+1. v1.45 をコンパイル(MetaEditor)。**バックテストなし・ロジック不変**(docs/128 のワンクリック EA と同じ扱い)。
+2. 14074882 のチャートで EA を v1.44 → v1.45 に差し替える。入力は前回と同じ値を引き継ぎ、新しい 2 項目だけ確認:
+   `InpG3Symbol2=EURUSD`、`InpG3RiskPct2=0.5`。`InpBaselineReset` は **false のまま**(基準残高を動かさない)。
+   `InpG3ExitMinBefore` は既定 5 のまま。FN の規則が「5 分前後」なら 7 に上げる(§4)。
+3. 起動ログ: `[G3] 有効: US500 ...` に続いて `[G3-2] 有効: EURUSD risk=0.5%/event`。
+   EURUSD が「銘柄解決不可」なら FN の銘柄名(EURUSD.x 等)を `InpG3Symbol2` に入れる。
+4. 9/15(火)18:00 GMT に `[G3 ENTRY] LONG US500` と `[G3-2 ENTRY] LONG EURUSD`、9/16 17:55 GMT に `[CLOSE G3_WINDOW_END]` ×2。
+5. デモ併走: `mql5/presets/fomc_drift_demo_us500_eurusd.set` を **別のデモ口座**で `Chien_FOMC_Drift_EA` v1.10 に読み込み、約定・時刻・スワップを記録(docs/53 §5)。
+
+**残存リスク(正直に)**: v1.45 は本セッションでコンパイルしていない(MT5 無し)。変更は 1 関数の引数化と入力 2 項目・初期化 6 行で、
+参照する関数(`CountSleeve(sleeve,sym)`・`SpreadBps(sym)`・`MoneyPerUnit(sym)`・`ResolveSymbol`)は既存の銘柄引数付きのものをそのまま使う。
+コンパイルエラーが出た場合は行番号を送ってもらえれば修正する。
 
 ## 4. 規則の残確認(ユーザー側)
 
