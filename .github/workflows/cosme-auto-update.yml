@@ -16,7 +16,7 @@ name: cosme-auto-update
 
 on:
   schedule:
-    - cron: "37 4,16 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
+    - cron: "37 4 * * *" # 1日1回(UTC 4:37 = JST 13:37)。他サイトのワークフローと時間をずらす
   workflow_dispatch:
 
 permissions:
