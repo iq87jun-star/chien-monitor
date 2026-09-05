@@ -16,7 +16,7 @@ name: gunpla-auto-update
 
 on:
   schedule:
-    - cron: "3 8,20 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
+    - cron: "3 8 * * *" # 1日1回(UTC 8:03 = JST 17:03)。他サイトのワークフローと時間をずらす
   workflow_dispatch:
 
 permissions:
