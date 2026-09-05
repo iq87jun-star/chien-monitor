@@ -14,7 +14,7 @@ name: toreca-auto-update
 
 on:
   schedule:
-    - cron: "17 9,21 * * *" # 1日2回(UTC)。Cardmarket更新(8時UTC頃)の後
+    - cron: "17 9 * * *" # 1日1回(UTC 9:17 = JST 18:17)。Cardmarket更新(8時UTC頃)の後
   workflow_dispatch:
 
 permissions:
