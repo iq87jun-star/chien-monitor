@@ -16,7 +16,7 @@ name: pokeca-auto-update
 
 on:
   schedule:
-    - cron: "29 6,18 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
+    - cron: "29 6 * * *" # 1日1回(UTC 6:29 = JST 15:29)。他サイトのワークフローと時間をずらす
   workflow_dispatch:
 
 permissions:
