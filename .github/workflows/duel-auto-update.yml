@@ -13,7 +13,7 @@ name: duel-auto-update
 
 on:
   schedule:
-    - cron: "51 9,21 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
+    - cron: "51 9 * * *" # 1日1回(UTC 9:51 = JST 18:51)。他サイトのワークフローと時間をずらす
   workflow_dispatch:
 
 permissions:
