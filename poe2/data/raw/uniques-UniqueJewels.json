@@ -1,3 +1,376 @@
 {
- "lines": []
+ "core": {
+  "items": [
+   {
+    "id": "exalted",
+    "name": "Exalted Orb",
+    "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/ad7c366789/CurrencyAddModToRare.png",
+    "category": "Currency",
+    "detailsId": "exalted-orb"
+   }
+  ],
+  "rates": {},
+  "primary": "exalted",
+  "secondary": "divine"
+ },
+ "lines": [
+  {
+   "id": 378,
+   "itemId": "Heart of the Well Diamond",
+   "detailsId": "heart-of-the-well-diamond",
+   "name": "Heart of the Well",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvQXBvc3RhdGVzSGVhcnQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/cc73484d32/ApostatesHeart.png",
+   "flavourText": "Countless souls scream in agonising harmony,\r\nforever sinking under the weight of the newly dead.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 65,
+   "listingCount": 16,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "[Gain] (9-14)% of Damage as Extra [Cold] Damage",
+     "optional": true
+    },
+    {
+     "text": "[Gain] (9-14)% of Damage as Extra [Fire] Damage",
+     "optional": true
+    },
+    {
+     "text": "[Gain] (13-15)% of Damage as Extra [Lightning] Damage",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] gain 13% of their maximum Life as Extra maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "2% increased [Attack] Speed",
+     "optional": true
+    },
+    {
+     "text": "(6-12)% increased [CriticalDamageBonus|Critical Damage Bonus]",
+     "optional": true
+    },
+    {
+     "text": "(1-2)% increased Movement Speed",
+     "optional": true
+    },
+    {
+     "text": "[Gain] (7-11)% of Damage as Extra [Chaos] Damage",
+     "optional": true
+    },
+    {
+     "text": "Recover 1% of maximum Mana on Kill",
+     "optional": true
+    },
+    {
+     "text": "4% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
+     "optional": true
+    },
+    {
+     "text": "(9-10)% increased [CriticalDamageBonus|Critical Spell Damage Bonus]",
+     "optional": true
+    },
+    {
+     "text": "4% increased [Flask|Flask] Effect Duration",
+     "optional": true
+    },
+    {
+     "text": "7% increased [Stun] Buildup",
+     "optional": true
+    },
+    {
+     "text": "2% increased Cast Speed",
+     "optional": true
+    },
+    {
+     "text": "[DamagingAilments|Damaging Ailments] deal damage (2-3)% faster",
+     "optional": true
+    },
+    {
+     "text": "7% chance to [Aggravate] [Bleeding] on targets you [Hit] with [Attack|Attacks]",
+     "optional": true
+    },
+    {
+     "text": "3% increased [CooldownRecovery|Cooldown Recovery Rate]",
+     "optional": true
+    },
+    {
+     "text": "(4-6)% increased [Critical|Critical Hit] Chance",
+     "optional": true
+    },
+    {
+     "text": "(8-10)% increased [StunThreshold|Stun Threshold]",
+     "optional": true
+    },
+    {
+     "text": "8% increased chance to inflict [Ailments]",
+     "optional": true
+    },
+    {
+     "text": "(8-15)% increased Skill Effect Duration",
+     "optional": true
+    },
+    {
+     "text": "Gain additional [AilmentThreshold|Ailment Threshold] equal to 9% of maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "16% chance for [Lightning] Damage with [Hit|Hits] to be [Lucky]",
+     "optional": true
+    },
+    {
+     "text": "12% chance for [Trigger] skills to refund half of [Energy] Spent",
+     "optional": true
+    },
+    {
+     "text": "19% increased [CullingStrike|Culling Strike] Threshold",
+     "optional": true
+    },
+    {
+     "text": "(49-58)% increased [EnergyShield|Energy Shield] from Equipped Body Armour",
+     "optional": true
+    },
+    {
+     "text": "7% increased [Flask|Flask] Charges gained",
+     "optional": true
+    },
+    {
+     "text": "16% increased Damage while your [Companion] is in your [Presence]",
+     "optional": true
+    },
+    {
+     "text": "8% increased Mana Cost [Efficiency]",
+     "optional": true
+    },
+    {
+     "text": "3% of Skill Mana Costs [StatConversion|Converted] to Life Costs",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 403,
+   "itemId": "Prism of Belief Diamond",
+   "detailsId": "prism-of-belief-diamond",
+   "name": "Prism of Belief",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NhY3JlZEZsYW1lSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/04600d71f9/SacredFlameJewel.png",
+   "flavourText": "Entropy can be reversed.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 5,
+   "listingCount": 84,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+1 to Level of all Ancestral Warrior Totem Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Arctic Armour Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Arctic Howl Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Bloodhound's Mark Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Bone Offering Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Charged Staff Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Earthshatter Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Elemental Invocation Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Enfeeble Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Escape Shot Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Firestorm Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Flicker Strike Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Frost Wall Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Frostbolt Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Herald of Blood Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Herald of Plague Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Herald of Thunder Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Infernal Cry Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Iron Ward Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Lunar Assault Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Magma Barrier Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Mantra of Destruction Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Molten Blast Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Overwhelming Presence Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Permafrost Bolts Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Primal Strikes Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Raging Spirits Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Resonating Shield Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Seismic Cry Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Shield Charge Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Siphoning Strike Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Skeletal Brute Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Skeletal Frost Mage Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Spearfield Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Stormcaller Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Sunder Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Supercharged Slam Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Thunderstorm Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Time of Need Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Voltaic Mark Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all War Banner Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Wave of Frost Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Wind Dancer Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Wind Serpent's Fury Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Withering Presence Skills",
+     "optional": true
+    }
+   ]
+  }
+ ]
 }

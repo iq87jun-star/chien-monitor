@@ -1,3 +1,1396 @@
 {
- "lines": []
+ "core": {
+  "items": [
+   {
+    "id": "exalted",
+    "name": "Exalted Orb",
+    "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/ad7c366789/CurrencyAddModToRare.png",
+    "category": "Currency",
+    "detailsId": "exalted-orb"
+   }
+  ],
+  "rates": {},
+  "primary": "exalted",
+  "secondary": "divine"
+ },
+ "lines": [
+  {
+   "id": 441,
+   "itemId": "Nazir's Judgement Runeforged Steelpoint Quarterstaff",
+   "detailsId": "nazirs-judgement-runeforged-steelpoint-quarterstaff",
+   "name": "Nazir's Judgement",
+   "baseType": "Runeforged Steelpoint Quarterstaff",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9XYXJTdGF2ZXMvVW5pcXVlcy9OYXppcnNKdWRnZW1lbnQiLCJ3IjoyLCJoIjo0LCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d993287a1d/NazirsJudgement.png",
+   "flavourText": "The first witch hunter knew one critical tactic:\r\nnever let your enemy have a clear moment.",
+   "levelRequired": 40,
+   "category": "[Quarterstaff]",
+   "primaryValue": 35,
+   "listingCount": 2,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds (31-33) to (75-78) [Physical|Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "+(63-83) to [Accuracy|Accuracy] Rating",
+     "optional": false
+    },
+    {
+     "text": "(11-20)% increased [Stun|Stun] Duration",
+     "optional": false
+    },
+    {
+     "text": "[Daze|Dazes] on [Hit]",
+     "optional": false
+    },
+    {
+     "text": "(49-50)% increased [Melee] Damage against [HeavyStun|Heavy Stunned] enemies",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: (121-123)-(242-245)",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 10%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.4",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 40",
+     "optional": false
+    },
+    {
+     "text": "[Dexterity|Dex]: 56",
+     "optional": false
+    },
+    {
+     "text": "[Intelligence|Int]: 23",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 438,
+   "itemId": "Splinterheart Runeforged Recurve Bow",
+   "detailsId": "splinterheart-runeforged-recurve-bow",
+   "name": "Splinterheart",
+   "baseType": "Runeforged Recurve Bow",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9Cb3dzL1VuaXF1ZXMvU3BsaW50ZXJoZWFydCIsInciOjIsImgiOjQsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/b52c3b7e08/Splinterheart.png",
+   "flavourText": "The forests of the Vastiri held many secrets\r\nmystical and dark. Men learned not to wander,\r\nlest they return with a strange new purpose.",
+   "levelRequired": 40,
+   "category": "[Bow]",
+   "primaryValue": 20,
+   "listingCount": 1,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "140% increased [Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "+66 to [Accuracy|Accuracy] Rating",
+     "optional": false
+    },
+    {
+     "text": "27% increased [Projectile] Speed",
+     "optional": false
+    },
+    {
+     "text": "Projectiles [Split] towards +2 targets",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: 98-202",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.1",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 40",
+     "optional": false
+    },
+    {
+     "text": "[Dexterity|Dex]: 72",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 21,
+   "itemId": "Trenchtimbre Spiked Club",
+   "detailsId": "trenchtimbre-spiked-club",
+   "name": "Trenchtimbre",
+   "baseType": "Spiked Club",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9PbmVIYW5kV2VhcG9ucy9PbmVIYW5kTWFjZXMvVW5pcXVlcy9UcmVuY2h0aW1icmUiLCJ3IjoyLCJoIjozLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/b07d6d6d58/Trenchtimbre.png",
+   "flavourText": "Ezomyte loyalty was not given to distant leaders.\r\nIt was earned by comrades in arms.",
+   "levelRequired": 16,
+   "category": "Ezomyte [Mace|One Hand Mace]",
+   "primaryValue": 18,
+   "listingCount": 1,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds 15 to 22 [Physical|Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "26% increased [Attack] Speed",
+     "optional": false
+    },
+    {
+     "text": "+1 to Level of all [Minion|Minion] Skills",
+     "optional": false
+    },
+    {
+     "text": "Increases and Reductions to [Minion] [Attack] Speed also affect you",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: 30-46",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.83",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 16",
+     "optional": false
+    },
+    {
+     "text": "[Strength|Str]: 31",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 63,
+   "itemId": "Rampart Raptor Tense Crossbow",
+   "detailsId": "rampart-raptor-tense-crossbow",
+   "name": "Rampart Raptor",
+   "baseType": "Tense Crossbow",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9Dcm9zc2Jvd3MvVW5pcXVlcy9SYW1wYXJ0UmFwdG9yIiwidyI6MiwiaCI6NCwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/72f2d2f130/RampartRaptor.png",
+   "flavourText": "\"His approach to the gate was met with sounding trumpets\r\nand an unfurling of banners. He never saw it coming.\"\r\n- anonymous Brotherhood of Silence report",
+   "levelRequired": 0,
+   "category": "[Crossbow]",
+   "primaryValue": 10.9,
+   "listingCount": 12,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "(21-29)% increased Bolt Speed",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "(40-60)% increased [Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "(30-39)% increased [Attack] Speed",
+     "optional": false
+    },
+    {
+     "text": "30% reduced Reload Speed",
+     "optional": false
+    },
+    {
+     "text": "Bolts fired by [Crossbow|Crossbow] [Attack|Attacks] have 100% chance to not\nexpend [Ammunition] if you've Reloaded [Recently]",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: (11-13)-(21-24)",
+     "optional": false
+    },
+    {
+     "text": "[Cold|Cold] Damage: (6-12)-(10-20)",
+     "optional": true
+    },
+    {
+     "text": "[Lightning|Lightning] Damage: 2-20",
+     "optional": true
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: (2.08-2.23)",
+     "optional": false
+    },
+    {
+     "text": "Reload Time: (0.78-0.85)",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 15",
+     "optional": true
+    },
+    {
+     "text": "[Strength|Str]: 8",
+     "optional": false
+    },
+    {
+     "text": "[Dexterity|Dex]: 8",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 68,
+   "itemId": "Earthbound Voltaic Staff",
+   "detailsId": "earthbound-voltaic-staff",
+   "name": "Earthbound",
+   "baseType": "Voltaic Staff",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9TdGF2ZXMvVW5pcXVlcy9FYXJ0aGJvdW5kIiwidyI6MSwiaCI6NCwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/6262196371/Earthbound.png",
+   "flavourText": "An ancient Azmeri staff, overgrown by roots...",
+   "levelRequired": 78,
+   "category": "[Staff]",
+   "primaryValue": 6.2,
+   "listingCount": 6,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(81-118)% increased [Spell] Damage",
+     "optional": false
+    },
+    {
+     "text": "(10-16)% increased Cast Speed",
+     "optional": false
+    },
+    {
+     "text": "(21-30)% increased Mana Regeneration Rate",
+     "optional": false
+    },
+    {
+     "text": "(22-36)% increased chance to [Shock]",
+     "optional": false
+    },
+    {
+     "text": "[Trigger] Spark Skill on killing a [Shock|Shocked] Enemy",
+     "optional": false
+    }
+   ],
+   "grantedSkillModifiers": [
+    {
+     "text": "Level (4-13) Lightning Bolt",
+     "optional": false
+    },
+    {
+     "text": "Level (4-13) Spark",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 62,
+   "itemId": "Shyaba Temple Maul",
+   "detailsId": "shyaba-temple-maul",
+   "name": "Shyaba",
+   "baseType": "Temple Maul",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9Ud29IYW5kTWFjZXMvVW5pcXVlcy9TaHlhYmEiLCJ3IjoyLCJoIjo0LCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/1404d3a5d3/Shyaba.png",
+   "flavourText": "Be not deceived by the treachery of men.",
+   "levelRequired": 28,
+   "category": "[Mace|Two Hand Mace]",
+   "primaryValue": 5,
+   "listingCount": 2,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+50 [Dexterity] Requirement",
+     "optional": false
+    },
+    {
+     "text": "-15 [Strength] Requirement",
+     "optional": false
+    },
+    {
+     "text": "(80-86)% increased [Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "50% increased [Attack] Speed",
+     "optional": false
+    },
+    {
+     "text": "(16-21)% increased [LightRadius|Light Radius]",
+     "optional": false
+    },
+    {
+     "text": "[Accuracy|Always Hits]",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: (63-65)-(130-134)",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.8",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 28",
+     "optional": false
+    },
+    {
+     "text": "[Strength|Str]: 37",
+     "optional": false
+    },
+    {
+     "text": "[Dexterity|Dex]: 50",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 74,
+   "itemId": "Slivertongue Zealot Bow",
+   "detailsId": "slivertongue-zealot-bow",
+   "name": "Slivertongue",
+   "baseType": "Zealot Bow",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9Cb3dzL1VuaXF1ZXMvU2xpdmVydG9uZ3VlIiwidyI6MiwiaCI6NCwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/d3e0a63593/Slivertongue.png",
+   "flavourText": "A hundred blind heads, each seeking the taste of prey on the air.",
+   "levelRequired": 39,
+   "category": "[Bow]",
+   "primaryValue": 5,
+   "listingCount": 18,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds (40-47) to (65-72) [Physical|Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "+(4.18-5.96)% to [Critical|Critical Hit] Chance",
+     "optional": false
+    },
+    {
+     "text": "[LifeLeech|Leeches] (5.07-7.87)% of [Physical|Physical] Damage as Life",
+     "optional": false
+    },
+    {
+     "text": "[ManaLeech|Leeches] (4.1-6.69)% of [Physical|Physical] Damage as Mana",
+     "optional": false
+    },
+    {
+     "text": "Arrows [Fork]",
+     "optional": false
+    },
+    {
+     "text": "Arrows [Pierce] all targets after [Fork|Forking]",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: (71-78)-(112-119)",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: (9.18-10.96)%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.2",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 39",
+     "optional": false
+    },
+    {
+     "text": "[Dexterity|Dex]: 70",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 427,
+   "itemId": "Hysseg's Claw Runeforged Familial Talisman",
+   "detailsId": "hyssegs-claw-runeforged-familial-talisman",
+   "name": "Hysseg's Claw",
+   "baseType": "Runeforged Familial Talisman",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvT2ZmaGFuZC9UYWxpc21hbnMvVW5pcXVlcy9IYW5kT2ZUaGVDbGFuIiwidyI6MiwiaCI6Miwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/5ff4ad8d36/HandOfTheClan.png",
+   "flavourText": "In a time of great need, surrounded by Abyssals,\r\nthe Wayward Druid came to the Sun Clan's aid.\r\nIt is a debt they have never forgotten.",
+   "levelRequired": 64,
+   "category": "[Talisman]",
+   "primaryValue": 5,
+   "listingCount": 1,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "[Minion|Minions] deal 41% increased Damage",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "97% increased [Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "5% increased Movement Speed",
+     "optional": false
+    },
+    {
+     "text": "+11 to [Strength|Strength]",
+     "optional": false
+    },
+    {
+     "text": "+11 to [Intelligence|Intelligence]",
+     "optional": false
+    },
+    {
+     "text": "8% increased Damage per [Minion]",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: 106-179",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 8%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.25",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 38",
+     "optional": false
+    },
+    {
+     "text": "[Strength|Str]: 45",
+     "optional": false
+    },
+    {
+     "text": "[Intelligence|Int]: 32",
+     "optional": false
+    }
+   ],
+   "grantedSkillModifiers": [
+    {
+     "text": "Level 10 Cackling Companions",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 428,
+   "itemId": "Hoghunt Runeforged Felled Greatclub",
+   "detailsId": "hoghunt-runeforged-felled-greatclub",
+   "name": "Hoghunt",
+   "baseType": "Runeforged Felled Greatclub",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9Ud29IYW5kTWFjZXMvVW5pcXVlcy9Ib2dodW50IiwidyI6MiwiaCI6NCwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/f2611ee9b4/Hoghunt.png",
+   "flavourText": "There was a very clear and delicious\r\nreason why the Ezomytes chose to\r\nstop their flight and settle in Phaaryl.",
+   "levelRequired": 38,
+   "category": "Ezomyte [Mace|Two Hand Mace]",
+   "primaryValue": 5,
+   "listingCount": 1,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds 18 to 27 [Physical|Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "+15% to [Critical|Critical Hit] Chance",
+     "optional": false
+    },
+    {
+     "text": "10% reduced [Attack] Speed",
+     "optional": false
+    },
+    {
+     "text": "+10 to [Strength|Strength]",
+     "optional": false
+    },
+    {
+     "text": "[Maim] on [Critical|Critical Hit]",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: 164-224",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 20%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 0.99",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 38",
+     "optional": false
+    },
+    {
+     "text": "[Strength|Str]: 68",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 433,
+   "itemId": "Tyranny's Grip Runeforged Ironhead Spear",
+   "detailsId": "tyrannys-grip-runeforged-ironhead-spear",
+   "name": "Tyranny's Grip",
+   "baseType": "Runeforged Ironhead Spear",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9PbmVIYW5kV2VhcG9ucy9PbmVIYW5kU3BlYXJzL1VuaXF1ZXMvQXJtc0xlbmd0aCIsInciOjEsImgiOjQsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8e44f1d1ac/ArmsLength.png",
+   "flavourText": "The might of the Eternal Empire was formidable,\r\nbut rebels of every culture stood together as one.",
+   "levelRequired": 38,
+   "category": "Ezomyte [Spear]",
+   "primaryValue": 4,
+   "listingCount": 1,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "163% increased [Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "11% reduced [Attack] Speed",
+     "optional": false
+    },
+    {
+     "text": "+19 to [Strength|Strength]",
+     "optional": false
+    },
+    {
+     "text": "[Strike|Strikes] deal [MeleeSplash|Splash Damage]",
+     "optional": false
+    },
+    {
+     "text": "[Knockback|Knocks Back] Enemies on [Hit]",
+     "optional": false
+    },
+    {
+     "text": "Cannot use [Projectile] [Attack|Attacks]",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: 105-142",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.42",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 38",
+     "optional": false
+    },
+    {
+     "text": "[Strength|Str]: 23",
+     "optional": false
+    },
+    {
+     "text": "[Dexterity|Dex]: 54",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 69,
+   "itemId": "Daevata's Wind War Spear",
+   "detailsId": "daevatas-wind-war-spear",
+   "name": "Daevata's Wind",
+   "baseType": "War Spear",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9PbmVIYW5kV2VhcG9ucy9PbmVIYW5kU3BlYXJzL1VuaXF1ZXMvRGFldmF0YXNXaW5kIiwidyI6MSwiaCI6NCwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/a81d8d0cb9/DaevatasWind.png",
+   "flavourText": "\"You killed their Golden Sekhema. The Maraketh will think of nothing\r\nbut vengeance now.\" - Dimos, Advisor to General Titucius",
+   "levelRequired": 21,
+   "category": "[Spear]",
+   "primaryValue": 3.7,
+   "listingCount": 8,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "(25-35)% increased [Projectile|Projectile] Speed with this Weapon",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "Adds (11-15) to (23-26) [Physical|Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "+100 to [Evasion] Rating",
+     "optional": false
+    },
+    {
+     "text": "(10-18)% increased [Attack] Speed",
+     "optional": false
+    },
+    {
+     "text": "(33-52)% increased [Melee] Damage if you've dealt a [Projectile] [Attack] [Hit] in the past eight seconds",
+     "optional": false
+    },
+    {
+     "text": "(30-59)% increased [Projectile] Damage if you've dealt a [Melee] [Hit] in the past eight seconds",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: (27-31)-(50-53)",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: (1.76-1.89)",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 21",
+     "optional": false
+    },
+    {
+     "text": "[Strength|Str]: 14",
+     "optional": false
+    },
+    {
+     "text": "[Dexterity|Dex]: 31",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 435,
+   "itemId": "Mist Whisper Runeforged Makeshift Crossbow",
+   "detailsId": "mist-whisper-runeforged-makeshift-crossbow",
+   "name": "Mist Whisper",
+   "baseType": "Runeforged Makeshift Crossbow",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9Dcm9zc2Jvd3MvVW5pcXVlcy9NaXN0V2hpc3BlciIsInciOjIsImgiOjQsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/bc16946b14/MistWhisper.png",
+   "flavourText": "Sibilant promises surrounded them in the night.\r\nAll the travelers had to give him was their devotion...",
+   "levelRequired": 38,
+   "category": "[Crossbow]",
+   "primaryValue": 3.1,
+   "listingCount": 2,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds 9 to (13-14) [Cold|Cold] Damage",
+     "optional": false
+    },
+    {
+     "text": "Gain 5 Mana per enemy killed",
+     "optional": false
+    },
+    {
+     "text": "(35-39)% increased [Freeze|Freeze] Buildup",
+     "optional": false
+    },
+    {
+     "text": "30% increased [Chill|Chill] Duration on Enemies",
+     "optional": false
+    },
+    {
+     "text": "[Attack|Attacks] [Chain] 2 additional times",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: 41-77",
+     "optional": false
+    },
+    {
+     "text": "[Cold|Cold] Damage: 42-(76-77)",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.6",
+     "optional": false
+    },
+    {
+     "text": "Reload Time: 0.8",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 38",
+     "optional": false
+    },
+    {
+     "text": "[Strength|Str]: 39",
+     "optional": false
+    },
+    {
+     "text": "[Dexterity|Dex]: 39",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 67,
+   "itemId": "Enezun's Charge Volatile Wand",
+   "detailsId": "enezuns-charge-volatile-wand",
+   "name": "Enezun's Charge",
+   "baseType": "Volatile Wand",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9PbmVIYW5kV2VhcG9ucy9XYW5kcy9VbmlxdWVzL0VuZXp1bnNDaGFyZ2UiLCJ3IjoxLCJoIjozLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/0c8063f72c/EnezunsCharge.png",
+   "flavourText": "He alone was welcome in the sacred spaces of the Titans.",
+   "levelRequired": 78,
+   "category": "[Wand]",
+   "primaryValue": 2,
+   "listingCount": 6,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(82-99)% increased [Spell] Damage",
+     "optional": false
+    },
+    {
+     "text": "(30-50)% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
+     "optional": false
+    },
+    {
+     "text": "Gain (10-15) Mana per enemy killed",
+     "optional": false
+    },
+    {
+     "text": "25% chance to not destroy [Corpse|Corpses] when Consuming [Corpse|Corpses]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 16",
+     "optional": false
+    },
+    {
+     "text": "[Intelligence|Int]: 31",
+     "optional": false
+    }
+   ],
+   "grantedSkillModifiers": [
+    {
+     "text": "Level (7-12) Volatile Dead",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 61,
+   "itemId": "Brain Rattler Studded Greatclub",
+   "detailsId": "brain-rattler-studded-greatclub",
+   "name": "Brain Rattler",
+   "baseType": "Studded Greatclub",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9Ud29IYW5kTWFjZXMvVW5pcXVlcy9CcmFpbnJhdHRsZXIiLCJ3IjoyLCJoIjo0LCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/68b834f0c5/Brainrattler.png",
+   "flavourText": "The mind may have no limits, but the skull sure does.",
+   "levelRequired": 16,
+   "category": "Ezomyte [Mace|Two Hand Mace]",
+   "primaryValue": 1,
+   "listingCount": 1,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds 1 to 113 [Lightning|Lightning] Damage",
+     "optional": false
+    },
+    {
+     "text": "12% increased [Attack] Speed",
+     "optional": false
+    },
+    {
+     "text": "All damage with this Weapon causes [Electrocute|Electrocution] buildup",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: 32-48",
+     "optional": false
+    },
+    {
+     "text": "[Lightning|Lightning] Damage: 1-113",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.23",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 16",
+     "optional": false
+    },
+    {
+     "text": "[Strength|Str]: 31",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 71,
+   "itemId": "The Wicked Quill Withered Wand",
+   "detailsId": "the-wicked-quill-withered-wand",
+   "name": "The Wicked Quill",
+   "baseType": "Withered Wand",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9PbmVIYW5kV2VhcG9ucy9XYW5kcy9VbmlxdWVzL1RoZVdpY2tlZFF1aWxsIiwidyI6MSwiaCI6Mywic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/199e988221/TheWickedQuill.png",
+   "flavourText": "With a flick of the finger, their fates are written,\r\nthe pages torn to a million pieces.",
+   "levelRequired": 78,
+   "category": "[Wand]",
+   "primaryValue": 1,
+   "listingCount": 2,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(66-82)% increased [Spell] Damage",
+     "optional": false
+    },
+    {
+     "text": "+(87-93) to maximum Mana",
+     "optional": false
+    },
+    {
+     "text": "+7% to [Resistances|Chaos Resistance]",
+     "optional": false
+    },
+    {
+     "text": "[Spell|Spells] have a 25% chance to inflict [Withered] for 4 seconds on [Hit]",
+     "optional": false
+    }
+   ],
+   "grantedSkillModifiers": [
+    {
+     "text": "Level (4-11) Chaos Bolt",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 72,
+   "itemId": "Brynhand's Mark Wooden Club",
+   "detailsId": "brynhands-mark-wooden-club",
+   "name": "Brynhand's Mark",
+   "baseType": "Wooden Club",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9PbmVIYW5kV2VhcG9ucy9PbmVIYW5kTWFjZXMvVW5pcXVlcy9CcnluaGFuZHNNYXJrIiwidyI6MiwiaCI6Mywic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/d781b9c623/BrynhandsMark.png",
+   "flavourText": "The mark of the smith was widely known.",
+   "levelRequired": 0,
+   "category": "Ezomyte [Mace|One Hand Mace]",
+   "primaryValue": 1,
+   "listingCount": 5,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds (10-14) to (16-20) [Physical|Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "+(32-43) to [Accuracy|Accuracy] Rating",
+     "optional": false
+    },
+    {
+     "text": "20% reduced [Attack] Speed",
+     "optional": false
+    },
+    {
+     "text": "+(10-20) to [Strength|Strength]",
+     "optional": false
+    },
+    {
+     "text": "Causes Double [Stun|Stun] Buildup",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: (16-20)-(26-30)",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.16",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 73,
+   "itemId": "The Blood Thorn Wrapped Quarterstaff",
+   "detailsId": "the-blood-thorn-wrapped-quarterstaff",
+   "name": "The Blood Thorn",
+   "baseType": "Wrapped Quarterstaff",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9XYXJTdGF2ZXMvVW5pcXVlcy9UaGVCbG9vZFRob3JuIiwidyI6MiwiaCI6NCwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/f36189922c/TheBloodThorn.png",
+   "flavourText": "Touch not the thorn, for only blood and pain await.",
+   "levelRequired": 0,
+   "category": "Ezomyte [Quarterstaff]",
+   "primaryValue": 1,
+   "listingCount": 6,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds (8-12) to (16-18) [Physical|Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "+(10-15) to [Strength|Strength]",
+     "optional": false
+    },
+    {
+     "text": "Causes [Bleeding|Bleeding] on [Hit]",
+     "optional": false
+    },
+    {
+     "text": "(4-5) to (8-10) [Physical|Physical] [Thorns|Thorns] damage",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: (15-19)-(28-30)",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 10%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.4",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 450,
+   "itemId": "Ironbound Warden Bow",
+   "detailsId": "ironbound-warden-bow",
+   "name": "Ironbound",
+   "baseType": "Warden Bow",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9Ud29IYW5kV2VhcG9ucy9Cb3dzL1VuaXF1ZXMvSXJvbmJvdW5kIiwidyI6MiwiaCI6NCwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/09f0e9dce9/Ironbound.png",
+   "flavourText": "Each crest was a Thane's word, bolted to Ivor's bow.\r\nThey would join the Count's side, or die by his hands.",
+   "levelRequired": 11,
+   "category": "Ezomyte [Bow]",
+   "primaryValue": 1,
+   "listingCount": 1,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "25% chance to [Chain] an additional time",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+131 to [Armour]",
+     "optional": false
+    },
+    {
+     "text": "9% increased [Attack] Speed",
+     "optional": false
+    },
+    {
+     "text": "+12% to [Block] chance",
+     "optional": false
+    },
+    {
+     "text": "3% increased [Block] chance per 100 total [ItemArmour|Item Armour] on [EquipArmour|Equipped Armour Items]",
+     "optional": false
+    },
+    {
+     "text": "Hits with this weapon have 1 to 5 Added [Physical|Physical] Damage per 1% [ChanceToBlock|Block Chance]",
+     "optional": false
+    },
+    {
+     "text": "Arrows [Return] if they have [Pierce|Pierced] a target which had [ArmourBreak|Fully Broken Armour]",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: 12-20",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.25",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 11",
+     "optional": false
+    },
+    {
+     "text": "[Dexterity|Dex]: 23",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 678,
+   "itemId": "Splinter of Lorrata Runeforged Hardwood Spear",
+   "detailsId": "splinter-of-lorrata-runeforged-hardwood-spear",
+   "name": "Splinter of Lorrata",
+   "baseType": "Runeforged Hardwood Spear",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvV2VhcG9ucy9PbmVIYW5kV2VhcG9ucy9PbmVIYW5kU3BlYXJzL1VuaXF1ZXMvU3BsaW50ZXJPZkxvcnJhdGEiLCJ3IjoxLCJoIjo0LCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/a7d5da386c/SplinterOfLorrata.png",
+   "flavourText": "The Baleful Gem's corruption lingers still...",
+   "levelRequired": 40,
+   "category": "[Spear]",
+   "primaryValue": 1,
+   "listingCount": 1,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds 2 to 7 [Physical|Physical] Damage",
+     "optional": false
+    },
+    {
+     "text": "Deal no Elemental Damage",
+     "optional": false
+    },
+    {
+     "text": "20% increased [Melee] [Strike] Range with this weapon",
+     "optional": false
+    },
+    {
+     "text": "Any number of [Poison|Poisons] from this Weapon can affect a target at the same time",
+     "optional": false
+    },
+    {
+     "text": "Always [Poison] on [Hit] with this weapon",
+     "optional": false
+    }
+   ],
+   "propertyModifiers": [
+    {
+     "text": "[Physical] Damage: 26-52",
+     "optional": false
+    },
+    {
+     "text": "[Critical|Critical Hit] Chance: 5%",
+     "optional": false
+    },
+    {
+     "text": "Attacks per Second: 1.6",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 40",
+     "optional": false
+    },
+    {
+     "text": "[Strength|Str]: 23",
+     "optional": false
+    },
+    {
+     "text": "[Dexterity|Dex]: 56",
+     "optional": false
+    }
+   ]
+  }
+ ]
 }
