@@ -1,6 +1,41 @@
 {
  "articles": [
   {
+   "id": "2026-09-05-mtp1oh2w",
+   "createdAt": "2026-09-05T23:59:33.752Z",
+   "league": "Forbidden Rites",
+   "type": "market",
+   "validated": true,
+   "title": "Fracturing Orbが293%高騰、通貨全面高の1週間",
+   "summary": "Forbidden Ritesリーグの最新集計では、上位通貨10種すべてが直近7日間でプラス変動という全面高の展開になりました。特にFracturing Orbが293%、Divine Orbが50.3%と大きく伸び、Exalted Orb(ex)基準のレートが押し上げられています。一方でユニークアイテム側は変動率0の横ばいが並び、通貨市場との温度差が目立ちます。",
+   "sections": [
+    {
+     "heading": "通貨は全面高、Fracturing Orbが突出",
+     "body": "今週のtopCurrenciesは10種すべてが7日間でプラス。伸び率トップはFracturing Orbの293%で、レートは268.63ex(exはExalted Orb、PoE2の基軸通貨的な扱い)です。次いでDivine Orb(div)が50.3%上昇して68.35ex、Architect's Orbが44.9%上昇して15.91ex、Hinekora's Lockが39.1%上昇して4,539.99exと続きます。\n\n価格の絶対値ではHinekora's Lockが4,539.99exと群を抜いており、次点のFracturing Orb(268.63ex)とは大きな開きがあります。高額帯の通貨がそろって上昇しているため、ex建てで資産を持っているプレイヤーほど相対的な購買力が落ちている状態と言えます。"
+    },
+    {
+     "heading": "Perfect系とVaal系も堅調",
+     "body": "クラフト用途の通貨も揃って上昇しています。Perfect Jeweller's Orbが19.3%上昇の105.95ex、Perfect Chaos Orbが16.2%上昇の86.12ex、Perfect Exalted Orbが15.7%上昇の68.3ex。Vaal Catalysing Infuserは6.7%上昇の77.92ex、Vaal Cultivation Orbは25.9%上昇の56.27ex、Orb of Extractionは11.5%上昇の26.75exでした。\n\n注目したいのはDivine Orb(68.35ex)とPerfect Exalted Orb(68.3ex)がほぼ同水準に並んでいる点です。ただしDivine Orbの上昇率が50.3%、Perfect Exalted Orbが15.7%と差があるため、勢いの面ではDivine Orb側が強い週だったと読み取れます。上昇率が一桁台にとどまるVaal Catalysing Infuser(6.7%)は、今週の中では相対的に出遅れた部類です。"
+    },
+    {
+     "heading": "ユニークは全銘柄が変動なし、出品数は薄い",
+     "body": "uniqueGainersとuniqueLosersは同じ8点が並び、いずれもchange7dが0、つまり7日間の変動が記録されていません。内訳はQueen of the Forest(Smuggler Coat)が88で最高値、Rampart Raptor(Tense Crossbow)が10.9、Earthbound(Voltaic Staff)が6.2、Slivertongue(Zealot Bow)が5、Daevata's Wind(War Spear)が3.7、Enezun's Charge(Volatile Wand)が2、Brynhand's MarkとThe Blood Thornがそれぞれ1です。\n\n出品数(listingCount)はSlivertongueの18が最多で、以下Queen of the Forestが14、Rampart Raptorが12、Daevata's Windが8、EarthboundとEnezun's ChargeとThe Blood Thornが6、Brynhand's Markが5と、いずれも二桁前後の薄い板です。sparkの履歴も直近1点しか値が入っておらず、価格推移を追うにはサンプルが不足しています。取引が成立しにくい状況で価格が動いていない可能性があり、実際の相場は提示値から乖離しているかもしれない点に注意が必要です。"
+    },
+    {
+     "heading": "今週の立ち回りメモ",
+     "body": "通貨が全面高で、ユニーク側が横ばい——という構図がそのまま今週の特徴です。ex建てで高額通貨を買い増すタイミングとしては不利な週で、特にFracturing Orb(293%)やDivine Orb(50.3%)のように短期で大きく動いた銘柄は、飛びつき買いのリスクが相対的に高い局面と言えます。\n\n逆に、手持ちの高額通貨を売却してexを確保する側にとっては追い風です。ユニーク装備については出品数が少なく価格変動も記録されていないため、購入時はtradeで実際の出品状況を確認してから判断するのが無難でしょう。なお今回のデータにパッチノート(newPatchNotes)は含まれておらず、今週の価格変動がパッチ由来かどうかはこのデータからは判断できません。"
+    }
+   ],
+   "tags": [
+    "PoE2",
+    "Forbidden Rites",
+    "通貨相場",
+    "Fracturing Orb",
+    "Divine Orb",
+    "マーケット分析"
+   ]
+  },
+  {
    "id": "2026-09-05-mtnmn5jc",
    "createdAt": "2026-09-05T00:10:51.720Z",
    "league": "Forbidden Rites",
@@ -1010,41 +1045,6 @@
     "通貨レート",
     "ユニークアイテム",
     "週間市場"
-   ]
-  },
-  {
-   "id": "2026-08-23-mt5abmdp",
-   "createdAt": "2026-08-23T04:06:07.117Z",
-   "league": "Runes of Aldur",
-   "type": "market",
-   "validated": true,
-   "title": "Runes of Aldur週間市場:Crystallised Corruptionが46.9%上昇",
-   "summary": "Runes of Aldurリーグの最新集計では、高額通貨帯でCrystallised CorruptionやCore Destabiliserが大きく伸び、一方でCryptic Keyが急落しました。ユニーク品ではRunemastered系やTalisman系の一部が3桁%の上昇、逆に低単価帯のシールド・クイーバー類が軒並み下落しています。今週の値動きをデータのまま整理します。",
-   "sections": [
-    {
-     "heading": "通貨:クラフト系オーブが強く、Cryptic Keyは急落",
-     "body": "レートはExalted Orb(ex=基軸通貨)基準です。最上位はMirror of Kalandraで1,729,552.89 ex、7日変動は0.5%とほぼ横ばい。次点のHinekora's Lockは468,556.89 exで10.9%上昇しました。\n\n上昇率で目立つのはCrystallised Corruptionの46.9%(1,777.54 ex)、Core Destabiliserの36.9%(1,145.04 ex)、Vaal Cultivation Orbの26.4%(839.69 ex)、Perfect Chaos Orbの17.8%(2,093.78 ex)です。いずれもアイテム加工に関わる消費系で、装備の作り込みが進む時期に需要が集まりやすい局面とみられます。Architect's Orbも9.1%上昇の1,723.01 exでした。\n\n下落側はCryptic Keyが-34.2%(1,021.45 ex)と大きく、Fracturing Orbは-3.8%(3,093.42 ex)、Vaal Catalysing Infuserは-1.3%(1,264.99 ex)と小幅な調整に留まっています。Cryptic Keyの下げ幅だけが突出しており、供給側の事情か需要の一巡が背景にある可能性があります。"
-    },
-    {
-     "heading": "ユニーク上昇組:Amor Mandragoraが417%、Runemastered系も伸びる",
-     "body": "上昇率トップはAmor Mandragora(Changeling Talisman)の417%。ただし価格そのものは0.00274 exで、出品数は5,652件と非常に多く、率の大きさと実額は切り離して見る必要があります。\n\n実額を伴う動きとしてはWindscream(Runemastered Feathered Sandals)が0.4406 ex・285.4%、Matsya(Runeforged Crescent Quarterstaff)が0.2743 ex・280%、Myris Uxor(Runemastered Covert Hood)が2 ex・228.1%。いずれも出品数が64件、106件、57件と少なく、薄い在庫のなかで値が動いた形です。\n\nこのほかBloodbarrier(Iron Buckler)0.01097 ex・259.7%、Seed of Cataclysm(Lazuli Ring)0.04937 ex・224%、Kaltenhalt(Ridged Buckler)0.00274 ex・222.4%、The Sunken Vessel(Knight Armour)0.00251 ex・195.3%が並びます。KaltenhaltとThe Sunken Vesselはsparkの推移が-69.41→-42.35→218.8とほぼ同型で、同じベース帯がまとめて評価を変えた可能性があります。"
-    },
-    {
-     "heading": "ユニーク下落組:最低単価帯の-85.6%が並ぶ",
-     "body": "下落トップはWulfsbane(Painted Tower Shield)、Oaksworn(Sigil Crest Shield)、Birthright Buckle(Wide Belt)の3点で、いずれも0.00044 ex・-85.6%と数値が完全に一致しています。事実上の底値付近まで落ちた状態で、Birthright Buckleの出品数は10,000件、Oakswornは6,261件と供給過多が続いています。\n\n注目したいのはMyris Uxorで、Runemastered Covert Hoodの方は228.1%上昇の2 exなのに対し、通常のCovert Hoodは0.00987 ex・-75.1%と真逆の動き。同名ユニークでもベースの違いで市場評価が完全に分かれた例です。\n\nそのほかRearguard(Blunt Quiver)0.00079 ex・-74.1%、Thrillsteel(Runemastered Spired Greathelm)0.161 ex・-72.9%、Nocturne(Runemastered Wooden Buckler)0.00274 ex・-70%、Facebreaker(Runemastered Stocky Mitts)0.08778 ex・-69.4%。ThrillsteelやNocturneは出品数が35件、45件と少なく、値付けが安定しにくい点は留意しておきたいところです。なお今回の集計にパッチノートの更新は含まれていません。"
-    },
-    {
-     "heading": "今週の見方",
-     "body": "通貨側はクラフト用の消費系が上げ、鍵系のCryptic Keyが下げるという構図。装備を仕上げるフェーズに入ったプレイヤー層の動きが反映されているとみられますが、データからは需要の内訳までは読み取れません。\n\nユニークは、出品数が数千件〜10,000件の低単価帯では変動率が極端に振れやすく、逆に出品数が数十件のRunemastered系は少数の取引で価格が跳ねます。売買を検討する際は変動率だけでなくvalueとlistingCountを併せて確認するのが無難です。"
-    }
-   ],
-   "tags": [
-    "PoE2",
-    "Runes of Aldur",
-    "市場動向",
-    "通貨レート",
-    "ユニークアイテム",
-    "Exalted Orb"
    ]
   }
  ]
