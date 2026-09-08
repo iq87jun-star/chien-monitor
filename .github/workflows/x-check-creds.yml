@@ -3,6 +3,11 @@
 name: x-check-creds
 on:
   workflow_dispatch:
+  push:
+    branches: [chore/x-check-creds]
+    paths:
+      - .github/workflows/x-check-creds.yml
+      - tools/x-check-creds.mjs
 jobs:
   check:
     runs-on: ubuntu-latest
