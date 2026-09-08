@@ -2,31 +2,82 @@
  "core": {
   "items": [
    {
+    "id": "divine",
+    "name": "Divine Orb",
+    "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lNb2RWYWx1ZXMiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/2986e220b3/CurrencyModValues.png",
+    "category": "Currency",
+    "detailsId": "divine-orb"
+   },
+   {
     "id": "exalted",
     "name": "Exalted Orb",
     "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lBZGRNb2RUb1JhcmUiLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/ad7c366789/CurrencyAddModToRare.png",
     "category": "Currency",
     "detailsId": "exalted-orb"
+   },
+   {
+    "id": "chaos",
+    "name": "Chaos Orb",
+    "image": "/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQ3VycmVuY3kvQ3VycmVuY3lSZXJvbGxSYXJlIiwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/c0ca392a78/CurrencyRerollRare.png",
+    "category": "Currency",
+    "detailsId": "chaos-orb"
    }
   ],
-  "rates": {},
-  "primary": "exalted",
-  "secondary": "divine"
+  "rates": {
+   "exalted": 129.5,
+   "chaos": 17.34
+  },
+  "primary": "divine",
+  "secondary": "chaos"
  },
  "lines": [
   {
-   "id": 378,
-   "itemId": "Heart of the Well Diamond",
-   "detailsId": "heart-of-the-well-diamond",
-   "name": "Heart of the Well",
-   "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvQXBvc3RhdGVzSGVhcnQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/cc73484d32/ApostatesHeart.png",
-   "flavourText": "Countless souls scream in agonising harmony,\r\nforever sinking under the weight of the newly dead.",
+   "id": 699,
+   "itemId": "Voices Sapphire",
+   "detailsId": "voices-sapphire",
+   "name": "Voices",
+   "baseType": "Sapphire",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVm9pY2VzIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/f989334af4/Voices.png",
+   "flavourText": "Only a madman would ignore a god's instructions.",
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 65,
-   "listingCount": 16,
+   "primaryValue": 138.6,
+   "listingCount": 12,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Allocates (2-3) [SinisterJewelSockets|Sinister] [Jewel] sockets",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 377,
+   "itemId": "Controlled Metamorphosis Diamond",
+   "detailsId": "controlled-metamorphosis-diamond",
+   "name": "Controlled Metamorphosis",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0JyZWFjaEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/9c17747ff2/BreachJewel.png",
+   "flavourText": "Our world was dying, but we chose to survive.\r\nWe broke free from the chains within.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "radius": "Variable",
+   "primaryValue": 13,
+   "listingCount": 122,
    "corrupted": false,
    "sparkLine": {
     "totalChange": 0,
@@ -38,6 +89,417 @@
      null,
      null,
      0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Only affects Passives in Massive Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Medium Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Medium-Small Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Small Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Very Large Ring",
+     "optional": true
+    },
+    {
+     "text": "Only affects Passives in Very Small Ring",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius can be Allocated without being connected to your tree",
+     "optional": false
+    },
+    {
+     "text": "-(16-5)% to all [ElementalDamage|Elemental] [Resistances]",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 381,
+   "itemId": "Grand Spectrum Sapphire",
+   "detailsId": "grand-spectrum-sapphire",
+   "name": "Grand Spectrum",
+   "baseType": "Sapphire",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
+   "flavourText": "Skin like steel tempered by bright flames.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 11,
+   "listingCount": 18,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 380,
+   "itemId": "Grand Spectrum Ruby",
+   "detailsId": "grand-spectrum-ruby",
+   "name": "Grand Spectrum",
+   "baseType": "Ruby",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9SdWJ5IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/8d964b3e88/GrandSpectrum_Ruby.png",
+   "flavourText": "A wellspring of vitality bubbling from within.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 8.5,
+   "listingCount": 6,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "2% increased Maximum Life per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 379,
+   "itemId": "Grand Spectrum Emerald",
+   "detailsId": "grand-spectrum-emerald",
+   "name": "Grand Spectrum",
+   "baseType": "Emerald",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9FbWVyYWxkIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/687a109210/GrandSpectrum_Emerald.png",
+   "flavourText": "An indomitable force of control.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 7,
+   "listingCount": 37,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "2% increased [Spirit|Spirit] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 382,
+   "itemId": "Against the Darkness Time-Lost Diamond",
+   "detailsId": "against-the-darkness-time-lost-diamond",
+   "name": "Against the Darkness",
+   "baseType": "Time-Lost Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NhbmN0dW1KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/95cd807e91/SanctumJewel.png",
+   "flavourText": "After the fires, in the depths of the Winter of the World, all life in the Vastiri banded together. Whether serpent, hyena, human, or golem, hated enemies clasped hand to claw, built refuge, and fought side by side against the Abyssals. Thus, the Third Pact was born.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "radius": "Small",
+   "primaryValue": 4,
+   "listingCount": 337,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +8 to maximum Mana",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +3% to [Resistances|Chaos Resistance]",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Cold Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Dexterity]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Intelligence]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Strength]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Fire Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Lightning Resistance]",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-5)% reduced [Freeze|Freeze] Duration on you",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (5-6)% reduced [Ignite|Ignite] Duration on you",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant 4% reduced [Shock|Shock] duration on you",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Fire Resistance]",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Lightning Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Chaos Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Cold Resistance]",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 383,
+   "itemId": "Heroic Tragedy Timeless Jewel",
+   "detailsId": "heroic-tragedy-timeless-jewel",
+   "name": "Heroic Tragedy",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V4cGVkaXRpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8356e82d27/ExpeditionJewel.png",
+   "flavourText": "They believed themselves courageous and selfless,\r\nbut that bravery became the doom at their door.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "radius": "Very Large",
+   "primaryValue": 1.38,
+   "listingCount": 348,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Remembrancing (105-7950) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "Remembrancing (207-6512) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 402,
+   "itemId": "Megalomaniac Diamond",
+   "detailsId": "megalomaniac-diamond",
+   "name": "Megalomaniac",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
+   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 1,
+   "listingCount": 2054,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   }
+  },
+  {
+   "id": 404,
+   "itemId": "The Adorned Diamond",
+   "detailsId": "the-adorned-diamond",
+   "name": "The Adorned",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RyaWFsbWFzdGVySmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/fa6b8d5683/TrialmasterJewel.png",
+   "flavourText": "At their height, the Vaal glittered under the sun.\r\nA decade, a century, an aeon of prosperity...\r\nnow nothing more than a passing wonder.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 1,
+   "listingCount": 379,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(15-17)% increased [Evasion|Evasion Rating]",
+     "optional": true
+    },
+    {
+     "text": "(10-12)% increased [Fire] Damage",
+     "optional": true
+    },
+    {
+     "text": "(4-64)% increased Effect of [Jewel] Socket Passive Skills\ncontaining [Corrupted] [ItemRarity|Magic] [Jewel|Jewels]",
+     "optional": true
+    },
+    {
+     "text": "11% reduced [Chaos] Damage",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] deal 7% increased Damage",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] deal (9-10)% reduced Damage",
+     "optional": true
+    },
+    {
+     "text": "+(7-28) to maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "(19-27)% increased [Armour]",
+     "optional": true
+    },
+    {
+     "text": "14% increased [Chaos] Damage",
+     "optional": true
+    },
+    {
+     "text": "(8-13)% increased [Cold] Damage",
+     "optional": true
+    },
+    {
+     "text": "3% increased Global [Physical] Damage",
+     "optional": true
+    },
+    {
+     "text": "(2-23)% reduced [Cold] Damage",
+     "optional": true
+    },
+    {
+     "text": "13% reduced [Evasion|Evasion Rating]",
+     "optional": true
+    },
+    {
+     "text": "(1-28)% reduced [Lightning] Damage",
+     "optional": true
+    },
+    {
+     "text": "(9-19)% reduced Global [Physical] Damage",
+     "optional": true
+    },
+    {
+     "text": "28% reduced [Armour]",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 378,
+   "itemId": "Heart of the Well Diamond",
+   "detailsId": "heart-of-the-well-diamond",
+   "name": "Heart of the Well",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvQXBvc3RhdGVzSGVhcnQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/cc73484d32/ApostatesHeart.png",
+   "flavourText": "Countless souls scream in agonising harmony,\r\nforever sinking under the weight of the newly dead.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.8075,
+   "listingCount": 8620,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -98.76,
+    "data": [
+     null,
+     null,
+     null,
+     0,
+     null,
+     null,
+     -98.76
     ]
    },
    "explicitModifiers": [
@@ -54,14 +516,6 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] gain 13% of their maximum Life as Extra maximum [EnergyShield|Energy Shield]",
-     "optional": true
-    },
-    {
-     "text": "2% increased [Attack] Speed",
-     "optional": true
-    },
-    {
      "text": "(6-12)% increased [CriticalDamageBonus|Critical Damage Bonus]",
      "optional": true
     },
@@ -70,19 +524,31 @@
      "optional": true
     },
     {
+     "text": "[Minion|Minions] gain (11-13)% of their maximum Life as Extra maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "(2-3)% increased [Attack] Speed",
+     "optional": true
+    },
+    {
+     "text": "(4-7)% increased [SkillSpeed|Skill Speed]",
+     "optional": true
+    },
+    {
+     "text": "9% increased Life Regeneration rate",
+     "optional": true
+    },
+    {
+     "text": "+1% to [MaximumResistances|Maximum Lightning Resistance]",
+     "optional": true
+    },
+    {
+     "text": "+1% to all [MaximumResistances|Maximum Elemental Resistances]",
+     "optional": true
+    },
+    {
      "text": "[Gain] (7-11)% of Damage as Extra [Chaos] Damage",
-     "optional": true
-    },
-    {
-     "text": "Recover 1% of maximum Mana on Kill",
-     "optional": true
-    },
-    {
-     "text": "4% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
-     "optional": true
-    },
-    {
-     "text": "(9-10)% increased [CriticalDamageBonus|Critical Spell Damage Bonus]",
      "optional": true
     },
     {
@@ -90,11 +556,43 @@
      "optional": true
     },
     {
-     "text": "7% increased [Stun] Buildup",
+     "text": "2% increased Cast Speed",
      "optional": true
     },
     {
-     "text": "2% increased Cast Speed",
+     "text": "Recover (1-2)% of maximum Mana on Kill",
+     "optional": true
+    },
+    {
+     "text": "(4-6)% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
+     "optional": true
+    },
+    {
+     "text": "(7-10)% increased [CriticalDamageBonus|Critical Spell Damage Bonus]",
+     "optional": true
+    },
+    {
+     "text": "(6-10)% increased [Stun] Buildup",
+     "optional": true
+    },
+    {
+     "text": "Gain 1 [Rage] when [Hit] by an Enemy",
+     "optional": true
+    },
+    {
+     "text": "Recover 1% of maximum Life on Kill",
+     "optional": true
+    },
+    {
+     "text": "8% chance to inflict [Bleeding|Bleeding] on [Hit]",
+     "optional": true
+    },
+    {
+     "text": "(6-8)% increased Mana Regeneration Rate",
+     "optional": true
+    },
+    {
+     "text": "+1% to [MaximumResistances|Maximum Cold Resistance]",
      "optional": true
     },
     {
@@ -102,23 +600,7 @@
      "optional": true
     },
     {
-     "text": "7% chance to [Aggravate] [Bleeding] on targets you [Hit] with [Attack|Attacks]",
-     "optional": true
-    },
-    {
      "text": "3% increased [CooldownRecovery|Cooldown Recovery Rate]",
-     "optional": true
-    },
-    {
-     "text": "(4-6)% increased [Critical|Critical Hit] Chance",
-     "optional": true
-    },
-    {
-     "text": "(8-10)% increased [StunThreshold|Stun Threshold]",
-     "optional": true
-    },
-    {
-     "text": "8% increased chance to inflict [Ailments]",
      "optional": true
     },
     {
@@ -126,19 +608,51 @@
      "optional": true
     },
     {
-     "text": "Gain additional [AilmentThreshold|Ailment Threshold] equal to 9% of maximum [EnergyShield|Energy Shield]",
+     "text": "(7-8)% chance to [Aggravate] [Bleeding] on targets you [Hit] with [Attack|Attacks]",
      "optional": true
     },
     {
-     "text": "16% chance for [Lightning] Damage with [Hit|Hits] to be [Lucky]",
+     "text": "(4-7)% increased [Critical|Critical Hit] Chance",
      "optional": true
     },
     {
-     "text": "12% chance for [Trigger] skills to refund half of [Energy] Spent",
+     "text": "(5-10)% increased [StunThreshold|Stun Threshold]",
      "optional": true
     },
     {
-     "text": "19% increased [CullingStrike|Culling Strike] Threshold",
+     "text": "(7-8)% increased chance to inflict [Ailments]",
+     "optional": true
+    },
+    {
+     "text": "[Charm|Charms] applied to you have 25% increased Effect",
+     "optional": true
+    },
+    {
+     "text": "Gain additional [StunThreshold|Stun Threshold] equal to 7% of maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "Gain 1 [Rage|Rage] on [Melee] [Hit]",
+     "optional": true
+    },
+    {
+     "text": "Regenerate (1-1.1)% of maximum Life per Second if you've used a Life [Flask] in the past 10 seconds",
+     "optional": true
+    },
+    {
+     "text": "42% chance to [Pierce|Pierce] an Enemy",
+     "optional": true
+    },
+    {
+     "text": "(6-11)% increased [AilmentThreshold|Elemental Ailment Threshold]",
+     "optional": true
+    },
+    {
+     "text": "9% increased speed of [Recoup] Effects",
+     "optional": true
+    },
+    {
+     "text": "+3.53% to Thorns [Critical|Critical Hit] Chance",
      "optional": true
     },
     {
@@ -150,15 +664,251 @@
      "optional": true
     },
     {
-     "text": "16% increased Damage while your [Companion] is in your [Presence]",
+     "text": "Gain additional [AilmentThreshold|Ailment Threshold] equal to (9-10)% of maximum [EnergyShield|Energy Shield]",
      "optional": true
     },
     {
-     "text": "8% increased Mana Cost [Efficiency]",
+     "text": "(16-22)% chance for [Lightning] Damage with [Hit|Hits] to be [Lucky]",
      "optional": true
     },
     {
-     "text": "3% of Skill Mana Costs [StatConversion|Converted] to Life Costs",
+     "text": "(9-12)% chance for [Trigger] skills to refund half of [Energy] Spent",
+     "optional": true
+    },
+    {
+     "text": "(15-19)% increased [CullingStrike|Culling Strike] Threshold",
+     "optional": true
+    },
+    {
+     "text": "(16-18)% increased Damage while your [Companion] is in your [Presence]",
+     "optional": true
+    },
+    {
+     "text": "(8-10)% increased Mana Cost [Efficiency]",
+     "optional": true
+    },
+    {
+     "text": "(2-3)% of Skill Mana Costs [StatConversion|Converted] to Life Costs",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] have 8% increased [Critical|Critical Hit Chance]",
+     "optional": true
+    },
+    {
+     "text": "Recover 3% of maximum Life on Killing a [Poison|Poisoned] Enemy",
+     "optional": true
+    },
+    {
+     "text": "Recover (7-10)% of maximum Mana when a [Charm|Charm] is used",
+     "optional": true
+    },
+    {
+     "text": "5% increased [Attack] Speed while a [Rarity|Rare or Unique] Enemy is in your [Presence]",
+     "optional": true
+    },
+    {
+     "text": "(16-19)% increased [Exposure] Effect",
+     "optional": true
+    },
+    {
+     "text": "(22-27)% increased Mana Regeneration Rate while moving",
+     "optional": true
+    },
+    {
+     "text": "(6-10)% of Physical Damage prevented [Recoup|Recouped] as Life",
+     "optional": true
+    },
+    {
+     "text": "(5-9)% reduced [Slow|Slowing] Potency of [Debuff|Debuffs] on You",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 384,
+   "itemId": "Undying Hate Timeless Jewel",
+   "detailsId": "undying-hate-timeless-jewel",
+   "name": "Undying Hate",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVW5keWluZ0hhdHJlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/077ca94281/UndyingHatred.png",
+   "flavourText": "They believed themselves driven by necessity,\r\nbut that desperation made them monstrous.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "radius": "Very Large",
+   "primaryValue": 0.5768,
+   "listingCount": 606,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Glorifying the defilement of (2837-30419) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (21668-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of 12536 souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (4620-29165) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    },
+    {
+     "text": "Conquered Attribute Passive Skills also grant +2 to Tribute",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 400,
+   "itemId": "Flesh Crucible Diamond",
+   "detailsId": "flesh-crucible-diamond",
+   "name": "Flesh Crucible",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVml2aXNlY3Rpb24iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/a97d64a80f/Vivisection.png",
+   "flavourText": "\"Never mind the pain, it's only... making room. Unrelated fact,\r\na person can live a normal life with just one kidney. Or just one\r\nlung. You never know what Vaal technology will cost you...\"",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.5174,
+   "listingCount": 543,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "[EternalYouth|Eternal Youth]",
+     "optional": true
+    },
+    {
+     "text": "[KeystoneWildsurgeIncantation|Wildsurge Incantation]",
+     "optional": true
+    },
+    {
+     "text": "[ResoluteTechnique|Resolute Technique]",
+     "optional": true
+    },
+    {
+     "text": "(10-20)% less [Armour], [Evasion] and [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "(14-19)% less [Spirit]",
+     "optional": true
+    },
+    {
+     "text": "14% less maximum Life",
+     "optional": true
+    },
+    {
+     "text": "(14-20)% less maximum Mana",
+     "optional": true
+    },
+    {
+     "text": "(14-16)% less Movement Speed",
+     "optional": true
+    },
+    {
+     "text": "[AvatarOfFire|Avatar of Fire]",
+     "optional": true
+    },
+    {
+     "text": "[Heartstopper]",
+     "optional": true
+    },
+    {
+     "text": "[HollowPalmTechnique|Hollow Palm Technique]",
+     "optional": true
+    },
+    {
+     "text": "[NecromanticTalisman|Necromantic Talisman]",
+     "optional": true
+    },
+    {
+     "text": "[ScarredFaith|Scarred Faith]",
+     "optional": true
+    },
+    {
+     "text": "(11-19)% less Damage",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 401,
+   "itemId": "From Nothing Diamond",
+   "detailsId": "from-nothing-diamond",
+   "name": "From Nothing",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JpdHVhbEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/192c7799d7/RitualJewel.png",
+   "flavourText": "They clawed their way up from the agonising depths of nonexistence,\r\nbreathing deep with joy the exquisite light of meaning.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "radius": "Small",
+   "primaryValue": 0.1154,
+   "listingCount": 977,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passives in Radius of [passive_keystone_avatar_of_fire|Avatar of Fire] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_mind_over_matter|Mind Over Matter] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_wildsurge_incantation|Wildsurge Incantation] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_giants_blood|Giant's Blood] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_heartstopper|Heartstopper] can be Allocated\nwithout being connected to your tree",
      "optional": true
     }
    ]
@@ -174,19 +924,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 5,
-   "listingCount": 84,
+   "primaryValue": 0.00772,
+   "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": -99.85,
     "data": [
      null,
      null,
      null,
+     0,
      null,
      null,
-     null,
-     0
+     -99.85
     ]
    },
    "explicitModifiers": [
@@ -244,10 +994,6 @@
     },
     {
      "text": "+1 to Level of all Frostbolt Skills",
-     "optional": true
-    },
-    {
-     "text": "+1 to Level of all Herald of Blood Skills",
      "optional": true
     },
     {
@@ -363,11 +1109,67 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Wind Serpent's Fury Skills",
+     "text": "+(1-2) to Level of all Herald of Blood Skills",
      "optional": true
     },
     {
-     "text": "+2 to Level of all Withering Presence Skills",
+     "text": "+(1-2) to Level of all Wind Serpent's Fury Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Withering Presence Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Barrier Invocation Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Bone Cage Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Eternal Rage Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Frost Bomb Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Gas Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Incinerate Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Killing Palm Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Lightning Spear Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Mana Tempest Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Rain of Arrows Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Rapid Assault Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Savage Fury Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Vine Arrow Skills",
      "optional": true
     }
    ]
