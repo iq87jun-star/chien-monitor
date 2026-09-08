@@ -1,0 +1,49 @@
+# X API 認証情報の診断(値はログに出ません)
+# Actions タブから手動実行し、各ステップの結果を見る。
+name: x-check-creds
+on:
+  workflow_dispatch:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: poe2 (共有アプリ X_*)
+        continue-on-error: true
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+        run: node tools/x-check-creds.mjs "poe2 / 共有アプリ (X_API_KEY + X_ACCESS_TOKEN)"
+
+      - name: ff14 (共有アプリ + FF14 トークン)
+        continue-on-error: true
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.FF14_X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.FF14_X_ACCESS_TOKEN_SECRET }}
+        run: node tools/x-check-creds.mjs "ff14 (X_API_KEY + FF14_X_ACCESS_TOKEN)"
+
+      - name: tarkov (共有アプリ + TARKOV トークン)
+        continue-on-error: true
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.TARKOV_X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.TARKOV_X_ACCESS_TOKEN_SECRET }}
+        run: node tools/x-check-creds.mjs "tarkov (X_API_KEY + TARKOV_X_ACCESS_TOKEN)"
+
+      - name: toreca (専用アプリ TORECA_*)
+        continue-on-error: true
+        env:
+          X_API_KEY: ${{ secrets.TORECA_X_API_KEY }}
+          X_API_SECRET: ${{ secrets.TORECA_X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.TORECA_X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.TORECA_X_ACCESS_TOKEN_SECRET }}
+        run: node tools/x-check-creds.mjs "toreca (TORECA_X_API_KEY + TORECA_X_ACCESS_TOKEN)"
