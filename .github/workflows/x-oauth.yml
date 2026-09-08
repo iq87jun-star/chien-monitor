@@ -22,12 +22,12 @@ jobs:
 
       - name: PAT で Secrets を操作できるか確認
         env:
-          GH_TOKEN: ${{ secrets.TORECA_DEPLOY_TOKEN }}
+          GH_TOKEN: ${{ secrets.SECRETS_ADMIN_TOKEN }}
         run: |
           if gh secret list --repo "${{ github.repository }}" > /dev/null 2>&1; then
-            echo "✅ TORECA_DEPLOY_TOKEN で Secrets を操作できます"
+            echo "✅ SECRETS_ADMIN_TOKEN で Secrets を操作できます"
           else
-            echo "❌ TORECA_DEPLOY_TOKEN では Secrets を操作できません(repo スコープの PAT が必要)"
+            echo "❌ SECRETS_ADMIN_TOKEN では Secrets を操作できません(repo スコープの PAT が必要)"
             exit 1
           fi
 
@@ -35,6 +35,6 @@ jobs:
         env:
           X_API_KEY: ${{ secrets.X_API_KEY }}
           X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          GH_PAT: ${{ secrets.TORECA_DEPLOY_TOKEN }}
+          GH_PAT: ${{ secrets.SECRETS_ADMIN_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node tools/x-oauth-actions.mjs
