@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 129.5,
-   "chaos": 17.34
+   "exalted": 176.7,
+   "chaos": 13.88
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,8 +42,8 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 138.6,
-   "listingCount": 12,
+   "primaryValue": 226.2,
+   "listingCount": 9,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 0,
@@ -76,8 +76,8 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 13,
-   "listingCount": 122,
+   "primaryValue": 13.9,
+   "listingCount": 182,
    "corrupted": false,
    "sparkLine": {
     "totalChange": 0,
@@ -117,44 +117,15 @@
      "optional": true
     },
     {
+     "text": "Only affects Passives in Large Ring",
+     "optional": true
+    },
+    {
      "text": "Passives in Radius can be Allocated without being connected to your tree",
      "optional": false
     },
     {
-     "text": "-(16-5)% to all [ElementalDamage|Elemental] [Resistances]",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 381,
-   "itemId": "Grand Spectrum Sapphire",
-   "detailsId": "grand-spectrum-sapphire",
-   "name": "Grand Spectrum",
-   "baseType": "Sapphire",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
-   "flavourText": "Skin like steel tempered by bright flames.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 3,
-   "primaryValue": 11,
-   "listingCount": 18,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
-     0
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
+     "text": "-(20-5)% to all [ElementalDamage|Elemental] [Resistances]",
      "optional": false
     }
    ]
@@ -170,8 +141,8 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 8.5,
-   "listingCount": 6,
+   "primaryValue": 9,
+   "listingCount": 37,
    "corrupted": false,
    "sparkLine": {
     "totalChange": 0,
@@ -193,6 +164,39 @@
    ]
   },
   {
+   "id": 381,
+   "itemId": "Grand Spectrum Sapphire",
+   "detailsId": "grand-spectrum-sapphire",
+   "name": "Grand Spectrum",
+   "baseType": "Sapphire",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
+   "flavourText": "Skin like steel tempered by bright flames.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 6.4,
+   "listingCount": 25,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 379,
    "itemId": "Grand Spectrum Emerald",
    "detailsId": "grand-spectrum-emerald",
@@ -203,8 +207,8 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 7,
-   "listingCount": 37,
+   "primaryValue": 4.96,
+   "listingCount": 74,
    "corrupted": false,
    "sparkLine": {
     "totalChange": 0,
@@ -237,8 +241,8 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 4,
-   "listingCount": 337,
+   "primaryValue": 3.09,
+   "listingCount": 805,
    "corrupted": false,
    "sparkLine": {
     "totalChange": 0,
@@ -286,15 +290,19 @@
      "optional": true
     },
     {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-5)% reduced [Freeze|Freeze] Duration on you",
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +8 to maximum Life",
      "optional": true
     },
     {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (5-6)% reduced [Ignite|Ignite] Duration on you",
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Freeze|Freeze] Duration on you",
      "optional": true
     },
     {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant 4% reduced [Shock|Shock] duration on you",
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Ignite|Ignite] Duration on you",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Shock|Shock] duration on you",
      "optional": true
     },
     {
@@ -326,8 +334,8 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 1.38,
-   "listingCount": 348,
+   "primaryValue": 1.15,
+   "listingCount": 711,
    "corrupted": false,
    "sparkLine": {
     "totalChange": 0,
@@ -347,7 +355,7 @@
      "optional": true
     },
     {
-     "text": "Remembrancing (207-6512) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
+     "text": "Remembrancing (207-7739) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
      "optional": true
     },
     {
@@ -368,7 +376,7 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "primaryValue": 1,
-   "listingCount": 2054,
+   "listingCount": 4002,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 0,
@@ -395,7 +403,7 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "primaryValue": 1,
-   "listingCount": 379,
+   "listingCount": 385,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 0,
@@ -411,19 +419,23 @@
    },
    "explicitModifiers": [
     {
-     "text": "(15-17)% increased [Evasion|Evasion Rating]",
+     "text": "(9-19)% increased [Evasion|Evasion Rating]",
      "optional": true
     },
     {
-     "text": "(10-12)% increased [Fire] Damage",
+     "text": "(10-19)% increased [Fire] Damage",
      "optional": true
     },
     {
-     "text": "(4-64)% increased Effect of [Jewel] Socket Passive Skills\ncontaining [Corrupted] [ItemRarity|Magic] [Jewel|Jewels]",
+     "text": "(3-64)% increased Effect of [Jewel] Socket Passive Skills\ncontaining [Corrupted] [ItemRarity|Magic] [Jewel|Jewels]",
      "optional": true
     },
     {
-     "text": "11% reduced [Chaos] Damage",
+     "text": "(10-21)% reduced [Chaos] Damage",
+     "optional": true
+    },
+    {
+     "text": "10% reduced [Fire] Damage",
      "optional": true
     },
     {
@@ -431,11 +443,11 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] deal (9-10)% reduced Damage",
+     "text": "[Minion|Minions] deal (9-11)% reduced Damage",
      "optional": true
     },
     {
-     "text": "+(7-28) to maximum [EnergyShield|Energy Shield]",
+     "text": "+(-7-28) to maximum [EnergyShield|Energy Shield]",
      "optional": true
     },
     {
@@ -443,11 +455,11 @@
      "optional": true
     },
     {
-     "text": "14% increased [Chaos] Damage",
+     "text": "(5-14)% increased [Chaos] Damage",
      "optional": true
     },
     {
-     "text": "(8-13)% increased [Cold] Damage",
+     "text": "(6-25)% increased [Cold] Damage",
      "optional": true
     },
     {
@@ -455,11 +467,11 @@
      "optional": true
     },
     {
-     "text": "(2-23)% reduced [Cold] Damage",
+     "text": "(2-27)% reduced [Cold] Damage",
      "optional": true
     },
     {
-     "text": "13% reduced [Evasion|Evasion Rating]",
+     "text": "(13-18)% reduced [Evasion|Evasion Rating]",
      "optional": true
     },
     {
@@ -487,11 +499,11 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.8075,
-   "listingCount": 8620,
+   "primaryValue": 0.7206,
+   "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -98.76,
+    "totalChange": -98.89,
     "data": [
      null,
      null,
@@ -499,7 +511,7 @@
      0,
      null,
      null,
-     -98.76
+     -98.89
     ]
    },
    "explicitModifiers": [
@@ -532,10 +544,6 @@
      "optional": true
     },
     {
-     "text": "(4-7)% increased [SkillSpeed|Skill Speed]",
-     "optional": true
-    },
-    {
      "text": "9% increased Life Regeneration rate",
      "optional": true
     },
@@ -548,6 +556,10 @@
      "optional": true
     },
     {
+     "text": "(4-8)% increased [SkillSpeed|Skill Speed]",
+     "optional": true
+    },
+    {
      "text": "[Gain] (7-11)% of Damage as Extra [Chaos] Damage",
      "optional": true
     },
@@ -556,7 +568,7 @@
      "optional": true
     },
     {
-     "text": "2% increased Cast Speed",
+     "text": "(2-3)% increased Cast Speed",
      "optional": true
     },
     {
@@ -580,15 +592,7 @@
      "optional": true
     },
     {
-     "text": "Recover 1% of maximum Life on Kill",
-     "optional": true
-    },
-    {
      "text": "8% chance to inflict [Bleeding|Bleeding] on [Hit]",
-     "optional": true
-    },
-    {
-     "text": "(6-8)% increased Mana Regeneration Rate",
      "optional": true
     },
     {
@@ -596,11 +600,31 @@
      "optional": true
     },
     {
+     "text": "Recover (1-2)% of maximum Life on Kill",
+     "optional": true
+    },
+    {
+     "text": "(4-8)% increased Mana Regeneration Rate",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] have +(3-4)% to all Elemental [Resistances]",
+     "optional": true
+    },
+    {
+     "text": "3% of Damage is taken from Mana before Life",
+     "optional": true
+    },
+    {
+     "text": "(2-3)% of Damage taken [Recoup|Recouped] as Life",
+     "optional": true
+    },
+    {
      "text": "[DamagingAilments|Damaging Ailments] deal damage (2-3)% faster",
      "optional": true
     },
     {
-     "text": "3% increased [CooldownRecovery|Cooldown Recovery Rate]",
+     "text": "(2-14)% increased [CooldownRecovery|Cooldown Recovery Rate]",
      "optional": true
     },
     {
@@ -612,10 +636,6 @@
      "optional": true
     },
     {
-     "text": "(4-7)% increased [Critical|Critical Hit] Chance",
-     "optional": true
-    },
-    {
      "text": "(5-10)% increased [StunThreshold|Stun Threshold]",
      "optional": true
     },
@@ -624,23 +644,7 @@
      "optional": true
     },
     {
-     "text": "[Charm|Charms] applied to you have 25% increased Effect",
-     "optional": true
-    },
-    {
-     "text": "Gain additional [StunThreshold|Stun Threshold] equal to 7% of maximum [EnergyShield|Energy Shield]",
-     "optional": true
-    },
-    {
      "text": "Gain 1 [Rage|Rage] on [Melee] [Hit]",
-     "optional": true
-    },
-    {
-     "text": "Regenerate (1-1.1)% of maximum Life per Second if you've used a Life [Flask] in the past 10 seconds",
-     "optional": true
-    },
-    {
-     "text": "42% chance to [Pierce|Pierce] an Enemy",
      "optional": true
     },
     {
@@ -652,7 +656,31 @@
      "optional": true
     },
     {
-     "text": "+3.53% to Thorns [Critical|Critical Hit] Chance",
+     "text": "[Charm|Charms] applied to you have (15-25)% increased Effect",
+     "optional": true
+    },
+    {
+     "text": "Gain additional [StunThreshold|Stun Threshold] equal to (7-10)% of maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "Regenerate (1-1.2)% of maximum Life per Second if you've used a Life [Flask] in the past 10 seconds",
+     "optional": true
+    },
+    {
+     "text": "(36-42)% chance to [Pierce|Pierce] an Enemy",
+     "optional": true
+    },
+    {
+     "text": "(4-8)% increased [Critical|Critical Hit] Chance",
+     "optional": true
+    },
+    {
+     "text": "+(3.53-3.55)% to Thorns [Critical|Critical Hit] Chance",
+     "optional": true
+    },
+    {
+     "text": "40% increased [Armour] from Equipped Body Armour",
      "optional": true
     },
     {
@@ -664,15 +692,7 @@
      "optional": true
     },
     {
-     "text": "Gain additional [AilmentThreshold|Ailment Threshold] equal to (9-10)% of maximum [EnergyShield|Energy Shield]",
-     "optional": true
-    },
-    {
      "text": "(16-22)% chance for [Lightning] Damage with [Hit|Hits] to be [Lucky]",
-     "optional": true
-    },
-    {
-     "text": "(9-12)% chance for [Trigger] skills to refund half of [Energy] Spent",
      "optional": true
     },
     {
@@ -680,39 +700,11 @@
      "optional": true
     },
     {
-     "text": "(16-18)% increased Damage while your [Companion] is in your [Presence]",
-     "optional": true
-    },
-    {
-     "text": "(8-10)% increased Mana Cost [Efficiency]",
-     "optional": true
-    },
-    {
      "text": "(2-3)% of Skill Mana Costs [StatConversion|Converted] to Life Costs",
      "optional": true
     },
     {
-     "text": "[Minion|Minions] have 8% increased [Critical|Critical Hit Chance]",
-     "optional": true
-    },
-    {
-     "text": "Recover 3% of maximum Life on Killing a [Poison|Poisoned] Enemy",
-     "optional": true
-    },
-    {
-     "text": "Recover (7-10)% of maximum Mana when a [Charm|Charm] is used",
-     "optional": true
-    },
-    {
-     "text": "5% increased [Attack] Speed while a [Rarity|Rare or Unique] Enemy is in your [Presence]",
-     "optional": true
-    },
-    {
      "text": "(16-19)% increased [Exposure] Effect",
-     "optional": true
-    },
-    {
-     "text": "(22-27)% increased Mana Regeneration Rate while moving",
      "optional": true
     },
     {
@@ -721,6 +713,50 @@
     },
     {
      "text": "(5-9)% reduced [Slow|Slowing] Potency of [Debuff|Debuffs] on You",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] have (6-8)% increased [Critical|Critical Hit Chance]",
+     "optional": true
+    },
+    {
+     "text": "Gain additional [AilmentThreshold|Ailment Threshold] equal to (7-10)% of maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "Recover (2-3)% of maximum Life on Killing a [Poison|Poisoned] Enemy",
+     "optional": true
+    },
+    {
+     "text": "Recover (6-10)% of maximum Mana when a [Charm|Charm] is used",
+     "optional": true
+    },
+    {
+     "text": "(6-12)% chance for [Trigger] skills to refund half of [Energy] Spent",
+     "optional": true
+    },
+    {
+     "text": "(5-6)% increased [Attack] Speed while a [Rarity|Rare or Unique] Enemy is in your [Presence]",
+     "optional": true
+    },
+    {
+     "text": "(16-21)% increased Damage while your [Companion] is in your [Presence]",
+     "optional": true
+    },
+    {
+     "text": "(8-14)% increased Mana Cost [Efficiency]",
+     "optional": true
+    },
+    {
+     "text": "(21-30)% increased Mana Regeneration Rate while moving",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] [Reviving|Revive] (6-7)% faster",
+     "optional": true
+    },
+    {
+     "text": "(40-48)% increased [Evasion] Rating from Equipped Body Armour",
      "optional": true
     }
    ]
@@ -736,8 +772,8 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.5768,
-   "listingCount": 606,
+   "primaryValue": 0.5765,
+   "listingCount": 892,
    "corrupted": false,
    "sparkLine": {
     "totalChange": 0,
@@ -757,15 +793,15 @@
      "optional": true
     },
     {
-     "text": "Glorifying the defilement of (21668-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of 12536 souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
      "text": "Glorifying the defilement of (4620-29165) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (912-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (4206-18468) souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
      "optional": true
     },
     {
@@ -789,8 +825,8 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.5174,
-   "listingCount": 543,
+   "primaryValue": 0.3531,
+   "listingCount": 820,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 0,
@@ -822,19 +858,23 @@
      "optional": true
     },
     {
-     "text": "(14-19)% less [Spirit]",
+     "text": "(11-20)% less [Spirit]",
      "optional": true
     },
     {
-     "text": "14% less maximum Life",
+     "text": "(11-18)% less maximum Life",
      "optional": true
     },
     {
-     "text": "(14-20)% less maximum Mana",
+     "text": "(11-20)% less maximum Mana",
      "optional": true
     },
     {
-     "text": "(14-16)% less Movement Speed",
+     "text": "(13-18)% less Movement Speed",
+     "optional": true
+    },
+    {
+     "text": "[AncestralBond|Ancestral Bond]",
      "optional": true
     },
     {
@@ -860,6 +900,10 @@
     {
      "text": "(11-19)% less Damage",
      "optional": true
+    },
+    {
+     "text": "[KeystoneAutoInvocation|Ritual Cadence]",
+     "optional": true
     }
    ]
   },
@@ -875,8 +919,8 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 0.1154,
-   "listingCount": 977,
+   "primaryValue": 0.2162,
+   "listingCount": 992,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 0,
@@ -910,6 +954,10 @@
     {
      "text": "Passives in Radius of [passive_keystone_heartstopper|Heartstopper] can be Allocated\nwithout being connected to your tree",
      "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_two_companions|Trusted Kinship] can be Allocated\nwithout being connected to your tree",
+     "optional": true
     }
    ]
   },
@@ -924,11 +972,11 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00772,
+   "primaryValue": 0.00566,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -99.85,
+    "totalChange": -99.89,
     "data": [
      null,
      null,
@@ -936,7 +984,7 @@
      0,
      null,
      null,
-     -99.85
+     -99.89
     ]
    },
    "explicitModifiers": [
@@ -989,7 +1037,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Frost Wall Skills",
+     "text": "+(1-2) to Level of all Frost Wall Skills",
      "optional": true
     },
     {
@@ -1017,7 +1065,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Magma Barrier Skills",
+     "text": "+(1-2) to Level of all Magma Barrier Skills",
      "optional": true
     },
     {
@@ -1170,6 +1218,46 @@
     },
     {
      "text": "+1 to Level of all Vine Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Boneshatter Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Detonate Dead Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Explosive Shot Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Fangs of Frost Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Flame Wall Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Glacial Lance Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Hand of Chayula Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Lingering Illusion Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Magnetic Salvo Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Wolf Pack Skills",
      "optional": true
     }
    ]
