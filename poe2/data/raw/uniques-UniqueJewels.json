@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 176.7,
-   "chaos": 13.88
+   "exalted": 223.1,
+   "chaos": 11.82
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,24 +42,24 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 226.2,
-   "listingCount": 9,
+   "primaryValue": 214.5,
+   "listingCount": 16,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": -5.17,
     "data": [
      null,
      null,
      null,
      null,
      null,
-     null,
-     0
+     0,
+     -5.17
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Allocates (2-3) [SinisterJewelSockets|Sinister] [Jewel] sockets",
+     "text": "Allocates (2-4) [SinisterJewelSockets|Sinister] [Jewel] sockets",
      "optional": false
     }
    ]
@@ -76,19 +76,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 13.9,
-   "listingCount": 182,
+   "primaryValue": 15,
+   "listingCount": 232,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": 7.91,
     "data": [
      null,
      null,
      null,
      null,
      null,
-     null,
-     0
+     0,
+     7.91
     ]
    },
    "explicitModifiers": [
@@ -141,19 +141,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 9,
-   "listingCount": 37,
+   "primaryValue": 9.37,
+   "listingCount": 22,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": 4.14,
     "data": [
      null,
      null,
      null,
      null,
      null,
-     null,
-     0
+     0,
+     4.14
     ]
    },
    "explicitModifiers": [
@@ -174,19 +174,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 6.4,
-   "listingCount": 25,
+   "primaryValue": 8,
+   "listingCount": 15,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": 25,
     "data": [
      null,
      null,
      null,
      null,
      null,
-     null,
-     0
+     0,
+     25
     ]
    },
    "explicitModifiers": [
@@ -207,19 +207,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 4.96,
-   "listingCount": 74,
+   "primaryValue": 3.97,
+   "listingCount": 70,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": -20.11,
     "data": [
      null,
      null,
      null,
      null,
      null,
-     null,
-     0
+     0,
+     -20.11
     ]
    },
    "explicitModifiers": [
@@ -241,19 +241,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 3.09,
-   "listingCount": 805,
+   "primaryValue": 3.38,
+   "listingCount": 706,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": 9.43,
     "data": [
      null,
      null,
      null,
      null,
      null,
-     null,
-     0
+     0,
+     9.43
     ]
    },
    "explicitModifiers": [
@@ -262,7 +262,7 @@
      "optional": true
     },
     {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +3% to [Resistances|Chaos Resistance]",
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-3)% to [Resistances|Chaos Resistance]",
      "optional": true
     },
     {
@@ -324,74 +324,6 @@
    ]
   },
   {
-   "id": 383,
-   "itemId": "Heroic Tragedy Timeless Jewel",
-   "detailsId": "heroic-tragedy-timeless-jewel",
-   "name": "Heroic Tragedy",
-   "baseType": "Timeless Jewel",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V4cGVkaXRpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8356e82d27/ExpeditionJewel.png",
-   "flavourText": "They believed themselves courageous and selfless,\r\nbut that bravery became the doom at their door.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "radius": "Very Large",
-   "primaryValue": 1.15,
-   "listingCount": 711,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
-     0
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Remembrancing (105-7950) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
-     "optional": true
-    },
-    {
-     "text": "Remembrancing (207-7739) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
-     "optional": true
-    },
-    {
-     "text": "[Historic]",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 402,
-   "itemId": "Megalomaniac Diamond",
-   "detailsId": "megalomaniac-diamond",
-   "name": "Megalomaniac",
-   "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
-   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 1,
-   "primaryValue": 1,
-   "listingCount": 4002,
-   "corrupted": true,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
-     0
-    ]
-   }
-  },
-  {
    "id": 404,
    "itemId": "The Adorned Diamond",
    "detailsId": "the-adorned-diamond",
@@ -403,7 +335,7 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "primaryValue": 1,
-   "listingCount": 385,
+   "listingCount": 439,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 0,
@@ -413,7 +345,7 @@
      null,
      null,
      null,
-     null,
+     0,
      0
     ]
    },
@@ -423,7 +355,7 @@
      "optional": true
     },
     {
-     "text": "(10-19)% increased [Fire] Damage",
+     "text": "(5-19)% increased [Fire] Damage",
      "optional": true
     },
     {
@@ -431,7 +363,7 @@
      "optional": true
     },
     {
-     "text": "(10-21)% reduced [Chaos] Damage",
+     "text": "(10-28)% reduced [Chaos] Damage",
      "optional": true
     },
     {
@@ -439,7 +371,11 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] deal 7% increased Damage",
+     "text": "(5-22)% increased [Lightning] Damage",
+     "optional": true
+    },
+    {
+     "text": "[Minion|Minions] deal (1-7)% increased Damage",
      "optional": true
     },
     {
@@ -463,7 +399,7 @@
      "optional": true
     },
     {
-     "text": "3% increased Global [Physical] Damage",
+     "text": "(3-14)% increased Global [Physical] Damage",
      "optional": true
     },
     {
@@ -479,11 +415,64 @@
      "optional": true
     },
     {
-     "text": "(9-19)% reduced Global [Physical] Damage",
+     "text": "(9-30)% reduced Global [Physical] Damage",
      "optional": true
     },
     {
      "text": "28% reduced [Armour]",
+     "optional": true
+    }
+   ]
+  },
+  {
+   "id": 384,
+   "itemId": "Undying Hate Timeless Jewel",
+   "detailsId": "undying-hate-timeless-jewel",
+   "name": "Undying Hate",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVW5keWluZ0hhdHJlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/077ca94281/UndyingHatred.png",
+   "flavourText": "They believed themselves driven by necessity,\r\nbut that desperation made them monstrous.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "radius": "Very Large",
+   "primaryValue": 0.7611,
+   "listingCount": 1032,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 32.03,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     0,
+     32.03
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Glorifying the defilement of (2837-30686) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (2063-29165) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (912-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (4206-27009) souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    },
+    {
+     "text": "Conquered Attribute Passive Skills also grant +2 to Tribute",
      "optional": true
     }
    ]
@@ -499,19 +488,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.7206,
+   "primaryValue": 0.6766,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -98.89,
+    "totalChange": -98.96,
     "data": [
-     null,
      null,
      null,
      0,
      null,
      null,
-     -98.89
+     -98.89,
+     -98.96
     ]
    },
    "explicitModifiers": [
@@ -533,6 +522,10 @@
     },
     {
      "text": "(1-2)% increased Movement Speed",
+     "optional": true
+    },
+    {
+     "text": "9% chance to [Poison|Poison] on [Hit]",
      "optional": true
     },
     {
@@ -576,11 +569,11 @@
      "optional": true
     },
     {
-     "text": "(4-6)% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
+     "text": "(4-7)% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
      "optional": true
     },
     {
-     "text": "(7-10)% increased [CriticalDamageBonus|Critical Spell Damage Bonus]",
+     "text": "(7-12)% increased [CriticalDamageBonus|Critical Spell Damage Bonus]",
      "optional": true
     },
     {
@@ -588,7 +581,7 @@
      "optional": true
     },
     {
-     "text": "Gain 1 [Rage] when [Hit] by an Enemy",
+     "text": "Gain (1-2) [Rage] when [Hit] by an Enemy",
      "optional": true
     },
     {
@@ -632,7 +625,27 @@
      "optional": true
     },
     {
-     "text": "(7-8)% chance to [Aggravate] [Bleeding] on targets you [Hit] with [Attack|Attacks]",
+     "text": "Gain additional [StunThreshold|Stun Threshold] equal to (5-10)% of maximum [EnergyShield|Energy Shield]",
+     "optional": true
+    },
+    {
+     "text": "Regenerate (1-1.4)% of maximum Life per Second if you've used a Life [Flask] in the past 10 seconds",
+     "optional": true
+    },
+    {
+     "text": "(36-49)% chance to [Pierce|Pierce] an Enemy",
+     "optional": true
+    },
+    {
+     "text": "(40-48)% increased [Armour] from Equipped Body Armour",
+     "optional": true
+    },
+    {
+     "text": "+(3.53-3.91)% to Thorns [Critical|Critical Hit] Chance",
+     "optional": true
+    },
+    {
+     "text": "(7-10)% chance to [Aggravate] [Bleeding] on targets you [Hit] with [Attack|Attacks]",
      "optional": true
     },
     {
@@ -660,31 +673,11 @@
      "optional": true
     },
     {
-     "text": "Gain additional [StunThreshold|Stun Threshold] equal to (7-10)% of maximum [EnergyShield|Energy Shield]",
-     "optional": true
-    },
-    {
-     "text": "Regenerate (1-1.2)% of maximum Life per Second if you've used a Life [Flask] in the past 10 seconds",
-     "optional": true
-    },
-    {
-     "text": "(36-42)% chance to [Pierce|Pierce] an Enemy",
-     "optional": true
-    },
-    {
      "text": "(4-8)% increased [Critical|Critical Hit] Chance",
      "optional": true
     },
     {
-     "text": "+(3.53-3.55)% to Thorns [Critical|Critical Hit] Chance",
-     "optional": true
-    },
-    {
-     "text": "40% increased [Armour] from Equipped Body Armour",
-     "optional": true
-    },
-    {
-     "text": "(49-58)% increased [EnergyShield|Energy Shield] from Equipped Body Armour",
+     "text": "(47-58)% increased [EnergyShield|Energy Shield] from Equipped Body Armour",
      "optional": true
     },
     {
@@ -692,7 +685,19 @@
      "optional": true
     },
     {
-     "text": "(16-22)% chance for [Lightning] Damage with [Hit|Hits] to be [Lucky]",
+     "text": "(5-8)% increased [Attack] Speed while a [Rarity|Rare or Unique] Enemy is in your [Presence]",
+     "optional": true
+    },
+    {
+     "text": "(40-60)% increased [Evasion] Rating from Equipped Body Armour",
+     "optional": true
+    },
+    {
+     "text": "(15-24)% increased Damage while your [Companion] is in your [Presence]",
+     "optional": true
+    },
+    {
+     "text": "(16-24)% chance for [Lightning] Damage with [Hit|Hits] to be [Lucky]",
      "optional": true
     },
     {
@@ -736,14 +741,6 @@
      "optional": true
     },
     {
-     "text": "(5-6)% increased [Attack] Speed while a [Rarity|Rare or Unique] Enemy is in your [Presence]",
-     "optional": true
-    },
-    {
-     "text": "(16-21)% increased Damage while your [Companion] is in your [Presence]",
-     "optional": true
-    },
-    {
      "text": "(8-14)% increased Mana Cost [Efficiency]",
      "optional": true
     },
@@ -752,67 +749,78 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] [Reviving|Revive] (6-7)% faster",
-     "optional": true
-    },
-    {
-     "text": "(40-48)% increased [Evasion] Rating from Equipped Body Armour",
+     "text": "[Minion|Minions] [Reviving|Revive] (6-9)% faster",
      "optional": true
     }
    ]
   },
   {
-   "id": 384,
-   "itemId": "Undying Hate Timeless Jewel",
-   "detailsId": "undying-hate-timeless-jewel",
-   "name": "Undying Hate",
+   "id": 383,
+   "itemId": "Heroic Tragedy Timeless Jewel",
+   "detailsId": "heroic-tragedy-timeless-jewel",
+   "name": "Heroic Tragedy",
    "baseType": "Timeless Jewel",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVW5keWluZ0hhdHJlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/077ca94281/UndyingHatred.png",
-   "flavourText": "They believed themselves driven by necessity,\r\nbut that desperation made them monstrous.",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V4cGVkaXRpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8356e82d27/ExpeditionJewel.png",
+   "flavourText": "They believed themselves courageous and selfless,\r\nbut that bravery became the doom at their door.",
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.5765,
-   "listingCount": 892,
+   "primaryValue": 0.592,
+   "listingCount": 999,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": -48.65,
     "data": [
      null,
      null,
      null,
      null,
      null,
-     null,
-     0
+     0,
+     -48.65
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Glorifying the defilement of (2837-30419) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "text": "Remembrancing (105-7950) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
      "optional": true
     },
     {
-     "text": "Glorifying the defilement of (4620-29165) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (912-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (4206-18468) souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "text": "Remembrancing (207-7739) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
      "optional": true
     },
     {
      "text": "[Historic]",
      "optional": false
-    },
-    {
-     "text": "Conquered Attribute Passive Skills also grant +2 to Tribute",
-     "optional": true
     }
    ]
+  },
+  {
+   "id": 402,
+   "itemId": "Megalomaniac Diamond",
+   "detailsId": "megalomaniac-diamond",
+   "name": "Megalomaniac",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
+   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.4457,
+   "listingCount": 6296,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": -55.43,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     null,
+     0,
+     -55.43
+    ]
+   }
   },
   {
    "id": 400,
@@ -825,19 +833,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.3531,
-   "listingCount": 820,
+   "primaryValue": 0.4228,
+   "listingCount": 1036,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": 19.76,
     "data": [
      null,
      null,
      null,
      null,
      null,
-     null,
-     0
+     0,
+     19.76
     ]
    },
    "explicitModifiers": [
@@ -866,15 +874,27 @@
      "optional": true
     },
     {
-     "text": "(11-20)% less maximum Mana",
+     "text": "(10-20)% less maximum Mana",
      "optional": true
     },
     {
-     "text": "(13-18)% less Movement Speed",
+     "text": "(12-20)% less Movement Speed",
      "optional": true
     },
     {
      "text": "[AncestralBond|Ancestral Bond]",
+     "optional": true
+    },
+    {
+     "text": "[Bulwark]",
+     "optional": true
+    },
+    {
+     "text": "[CrimsonAssault|Crimson Assault]",
+     "optional": true
+    },
+    {
+     "text": "[DanceWithDeath|Dance With Death]",
      "optional": true
     },
     {
@@ -919,19 +939,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 0.2162,
-   "listingCount": 992,
+   "primaryValue": 0.1691,
+   "listingCount": 1457,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": -21.76,
     "data": [
      null,
      null,
      null,
      null,
      null,
-     null,
-     0
+     0,
+     -21.76
     ]
    },
    "explicitModifiers": [
@@ -972,19 +992,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00566,
+   "primaryValue": 0.00448,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -99.89,
+    "totalChange": -99.91,
     "data": [
-     null,
      null,
      null,
      0,
      null,
      null,
-     -99.89
+     -99.89,
+     -99.91
     ]
    },
    "explicitModifiers": [
@@ -1002,10 +1022,6 @@
     },
     {
      "text": "+1 to Level of all Bloodhound's Mark Skills",
-     "optional": true
-    },
-    {
-     "text": "+2 to Level of all Bone Offering Skills",
      "optional": true
     },
     {
@@ -1137,10 +1153,6 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Time of Need Skills",
-     "optional": true
-    },
-    {
      "text": "+2 to Level of all Voltaic Mark Skills",
      "optional": true
     },
@@ -1154,6 +1166,62 @@
     },
     {
      "text": "+2 to Level of all Wind Dancer Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Bone Offering Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Time of Need Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Armour Piercing Rounds Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Ball Lightning Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Grim Feast Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Living Bomb Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Mana Remnants Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Poisonburst Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Shockchain Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Skeletal Storm Mage Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Snipe Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Storm Lance Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Temporal Chains Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Trail of Caltrops Skills",
      "optional": true
     },
     {
@@ -1237,7 +1305,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Flame Wall Skills",
+     "text": "+(1-2) to Level of all Flame Wall Skills",
      "optional": true
     },
     {
