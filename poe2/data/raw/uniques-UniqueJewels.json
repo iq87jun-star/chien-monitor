@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 223.1,
-   "chaos": 11.82
+   "exalted": 247.7,
+   "chaos": 11.24
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,19 +42,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 214.5,
-   "listingCount": 16,
+   "primaryValue": 202.8,
+   "listingCount": 43,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -5.17,
+    "totalChange": -10.34,
     "data": [
      null,
      null,
      null,
      null,
-     null,
      0,
-     -5.17
+     -5.17,
+     -10.34
     ]
    },
    "explicitModifiers": [
@@ -76,22 +76,26 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 15,
-   "listingCount": 232,
+   "primaryValue": 17,
+   "listingCount": 167,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 7.91,
+    "totalChange": 22.3,
     "data": [
      null,
      null,
      null,
      null,
-     null,
      0,
-     7.91
+     7.91,
+     22.3
     ]
    },
    "explicitModifiers": [
+    {
+     "text": "Only affects Passives in Medium-Large Ring",
+     "optional": true
+    },
     {
      "text": "Only affects Passives in Massive Ring",
      "optional": true
@@ -141,19 +145,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 9.37,
-   "listingCount": 22,
+   "primaryValue": 10,
+   "listingCount": 13,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 4.14,
+    "totalChange": 11.11,
     "data": [
      null,
      null,
      null,
      null,
-     null,
      0,
-     4.14
+     4.14,
+     11.11
     ]
    },
    "explicitModifiers": [
@@ -174,19 +178,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 8,
-   "listingCount": 15,
+   "primaryValue": 9,
+   "listingCount": 13,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 25,
+    "totalChange": 40.62,
     "data": [
      null,
      null,
      null,
      null,
-     null,
      0,
-     25
+     25,
+     40.62
     ]
    },
    "explicitModifiers": [
@@ -207,19 +211,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 3.97,
-   "listingCount": 70,
+   "primaryValue": 3.56,
+   "listingCount": 51,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -20.11,
+    "totalChange": -28.35,
     "data": [
      null,
      null,
      null,
      null,
-     null,
      0,
-     -20.11
+     -20.11,
+     -28.35
     ]
    },
    "explicitModifiers": [
@@ -241,19 +245,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 3.38,
-   "listingCount": 706,
+   "primaryValue": 3.56,
+   "listingCount": 892,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 9.43,
+    "totalChange": 15.08,
     "data": [
      null,
      null,
      null,
      null,
-     null,
      0,
-     9.43
+     9.43,
+     15.08
     ]
    },
    "explicitModifiers": [
@@ -324,6 +328,59 @@
    ]
   },
   {
+   "id": 384,
+   "itemId": "Undying Hate Timeless Jewel",
+   "detailsId": "undying-hate-timeless-jewel",
+   "name": "Undying Hate",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVW5keWluZ0hhdHJlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/077ca94281/UndyingHatred.png",
+   "flavourText": "They believed themselves driven by necessity,\r\nbut that desperation made them monstrous.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "radius": "Very Large",
+   "primaryValue": 1.06,
+   "listingCount": 1269,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 83.97,
+    "data": [
+     null,
+     null,
+     null,
+     null,
+     0,
+     32.03,
+     83.97
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Glorifying the defilement of (466-30686) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (935-29708) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (912-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (833-27009) souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    },
+    {
+     "text": "Conquered Attribute Passive Skills also grant +2 to Tribute",
+     "optional": true
+    }
+   ]
+  },
+  {
    "id": 404,
    "itemId": "The Adorned Diamond",
    "detailsId": "the-adorned-diamond",
@@ -335,7 +392,7 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "primaryValue": 1,
-   "listingCount": 439,
+   "listingCount": 523,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 0,
@@ -344,7 +401,7 @@
      null,
      null,
      null,
-     null,
+     0,
      0,
      0
     ]
@@ -359,7 +416,7 @@
      "optional": true
     },
     {
-     "text": "(3-64)% increased Effect of [Jewel] Socket Passive Skills\ncontaining [Corrupted] [ItemRarity|Magic] [Jewel|Jewels]",
+     "text": "(1-64)% increased Effect of [Jewel] Socket Passive Skills\ncontaining [Corrupted] [ItemRarity|Magic] [Jewel|Jewels]",
      "optional": true
     },
     {
@@ -367,7 +424,7 @@
      "optional": true
     },
     {
-     "text": "10% reduced [Fire] Damage",
+     "text": "(10-25)% reduced [Fire] Damage",
      "optional": true
     },
     {
@@ -379,15 +436,15 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] deal (9-11)% reduced Damage",
+     "text": "[Minion|Minions] deal (9-14)% reduced Damage",
      "optional": true
     },
     {
-     "text": "+(-7-28) to maximum [EnergyShield|Energy Shield]",
+     "text": "+(-26-28) to maximum [EnergyShield|Energy Shield]",
      "optional": true
     },
     {
-     "text": "(19-27)% increased [Armour]",
+     "text": "(5-27)% increased [Armour]",
      "optional": true
     },
     {
@@ -407,7 +464,7 @@
      "optional": true
     },
     {
-     "text": "(13-18)% reduced [Evasion|Evasion Rating]",
+     "text": "(13-26)% reduced [Evasion|Evasion Rating]",
      "optional": true
     },
     {
@@ -425,59 +482,6 @@
    ]
   },
   {
-   "id": 384,
-   "itemId": "Undying Hate Timeless Jewel",
-   "detailsId": "undying-hate-timeless-jewel",
-   "name": "Undying Hate",
-   "baseType": "Timeless Jewel",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVW5keWluZ0hhdHJlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/077ca94281/UndyingHatred.png",
-   "flavourText": "They believed themselves driven by necessity,\r\nbut that desperation made them monstrous.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "radius": "Very Large",
-   "primaryValue": 0.7611,
-   "listingCount": 1032,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": 32.03,
-    "data": [
-     null,
-     null,
-     null,
-     null,
-     null,
-     0,
-     32.03
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Glorifying the defilement of (2837-30686) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (2063-29165) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (912-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (4206-27009) souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "[Historic]",
-     "optional": false
-    },
-    {
-     "text": "Conquered Attribute Passive Skills also grant +2 to Tribute",
-     "optional": true
-    }
-   ]
-  },
-  {
    "id": 378,
    "itemId": "Heart of the Well Diamond",
    "detailsId": "heart-of-the-well-diamond",
@@ -488,19 +492,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.6766,
+   "primaryValue": 0.7252,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -98.96,
+    "totalChange": -98.88,
     "data": [
-     null,
      null,
      0,
      null,
      null,
      -98.89,
-     -98.96
+     -98.96,
+     -98.88
     ]
    },
    "explicitModifiers": [
@@ -529,6 +533,10 @@
      "optional": true
     },
     {
+     "text": "[Minion|Minions] Regenerate 1.4% of maximum Life per second",
+     "optional": true
+    },
+    {
      "text": "[Minion|Minions] gain (11-13)% of their maximum Life as Extra maximum [EnergyShield|Energy Shield]",
      "optional": true
     },
@@ -537,7 +545,7 @@
      "optional": true
     },
     {
-     "text": "9% increased Life Regeneration rate",
+     "text": "(9-11)% increased Life Regeneration rate",
      "optional": true
     },
     {
@@ -557,7 +565,7 @@
      "optional": true
     },
     {
-     "text": "4% increased [Flask|Flask] Effect Duration",
+     "text": "(4-7)% increased [Flask|Flask] Effect Duration",
      "optional": true
     },
     {
@@ -573,7 +581,7 @@
      "optional": true
     },
     {
-     "text": "(7-12)% increased [CriticalDamageBonus|Critical Spell Damage Bonus]",
+     "text": "(6-12)% increased [CriticalDamageBonus|Critical Spell Damage Bonus]",
      "optional": true
     },
     {
@@ -617,11 +625,11 @@
      "optional": true
     },
     {
-     "text": "(2-14)% increased [CooldownRecovery|Cooldown Recovery Rate]",
+     "text": "(2-16)% increased [CooldownRecovery|Cooldown Recovery Rate]",
      "optional": true
     },
     {
-     "text": "(8-15)% increased Skill Effect Duration",
+     "text": "(4-15)% increased Skill Effect Duration",
      "optional": true
     },
     {
@@ -661,11 +669,11 @@
      "optional": true
     },
     {
-     "text": "(6-11)% increased [AilmentThreshold|Elemental Ailment Threshold]",
+     "text": "(6-12)% increased [AilmentThreshold|Elemental Ailment Threshold]",
      "optional": true
     },
     {
-     "text": "9% increased speed of [Recoup] Effects",
+     "text": "(9-13)% increased speed of [Recoup] Effects",
      "optional": true
     },
     {
@@ -697,11 +705,19 @@
      "optional": true
     },
     {
-     "text": "(16-24)% chance for [Lightning] Damage with [Hit|Hits] to be [Lucky]",
+     "text": "[Debuff|Debuffs] on you expire 5% faster",
      "optional": true
     },
     {
-     "text": "(15-19)% increased [CullingStrike|Culling Strike] Threshold",
+     "text": "13% chance when a [Charm|Charm] is used to use another Charm without consuming Charges",
+     "optional": true
+    },
+    {
+     "text": "(15-24)% chance for [Lightning] Damage with [Hit|Hits] to be [Lucky]",
+     "optional": true
+    },
+    {
+     "text": "(15-23)% increased [CullingStrike|Culling Strike] Threshold",
      "optional": true
     },
     {
@@ -721,11 +737,11 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] have (6-8)% increased [Critical|Critical Hit Chance]",
+     "text": "[Minion|Minions] have (6-11)% increased [Critical|Critical Hit Chance]",
      "optional": true
     },
     {
-     "text": "Gain additional [AilmentThreshold|Ailment Threshold] equal to (7-10)% of maximum [EnergyShield|Energy Shield]",
+     "text": "Gain additional [AilmentThreshold|Ailment Threshold] equal to (4-10)% of maximum [EnergyShield|Energy Shield]",
      "optional": true
     },
     {
@@ -741,7 +757,7 @@
      "optional": true
     },
     {
-     "text": "(8-14)% increased Mana Cost [Efficiency]",
+     "text": "(8-15)% increased Mana Cost [Efficiency]",
      "optional": true
     },
     {
@@ -749,7 +765,7 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] [Reviving|Revive] (6-9)% faster",
+     "text": "[Minion|Minions] [Reviving|Revive] (6-10)% faster",
      "optional": true
     }
    ]
@@ -765,19 +781,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.592,
-   "listingCount": 999,
+   "primaryValue": 0.6226,
+   "listingCount": 1339,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -48.65,
+    "totalChange": -46,
     "data": [
      null,
      null,
      null,
      null,
-     null,
      0,
-     -48.65
+     -48.65,
+     -46
     ]
    },
    "explicitModifiers": [
@@ -806,19 +822,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.4457,
-   "listingCount": 6296,
+   "primaryValue": 0.4447,
+   "listingCount": 8906,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -55.43,
+    "totalChange": -55.53,
     "data": [
      null,
      null,
      null,
      null,
-     null,
      0,
-     -55.43
+     -55.43,
+     -55.53
     ]
    }
   },
@@ -833,19 +849,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.4228,
-   "listingCount": 1036,
+   "primaryValue": 0.1779,
+   "listingCount": 1248,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 19.76,
+    "totalChange": -49.62,
     "data": [
      null,
      null,
      null,
      null,
-     null,
      0,
-     19.76
+     19.76,
+     -49.62
     ]
    },
    "explicitModifiers": [
@@ -878,7 +894,7 @@
      "optional": true
     },
     {
-     "text": "(12-20)% less Movement Speed",
+     "text": "(11-20)% less Movement Speed",
      "optional": true
     },
     {
@@ -895,6 +911,14 @@
     },
     {
      "text": "[DanceWithDeath|Dance With Death]",
+     "optional": true
+    },
+    {
+     "text": "[ElementalEquilibrium|Elemental Equilibrium]",
+     "optional": true
+    },
+    {
+     "text": "[VaalPact|Vaal Pact]",
      "optional": true
     },
     {
@@ -939,19 +963,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 0.1691,
-   "listingCount": 1457,
+   "primaryValue": 0.1155,
+   "listingCount": 1838,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -21.76,
+    "totalChange": -46.59,
     "data": [
      null,
      null,
      null,
      null,
-     null,
      0,
-     -21.76
+     -21.76,
+     -46.59
     ]
    },
    "explicitModifiers": [
@@ -965,6 +989,10 @@
     },
     {
      "text": "Passives in Radius of [passive_keystone_wildsurge_incantation|Wildsurge Incantation] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_acrobatics|Primal Hunger] can be Allocated\nwithout being connected to your tree",
      "optional": true
     },
     {
@@ -992,18 +1020,18 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00448,
+   "primaryValue": 0.00472,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
     "totalChange": -99.91,
     "data": [
      null,
-     null,
      0,
      null,
      null,
      -99.89,
+     -99.91,
      -99.91
     ]
    },
@@ -1121,7 +1149,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Siphoning Strike Skills",
+     "text": "+(1-2) to Level of all Siphoning Strike Skills",
      "optional": true
     },
     {
@@ -1153,7 +1181,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Voltaic Mark Skills",
+     "text": "+(1-2) to Level of all Voltaic Mark Skills",
      "optional": true
     },
     {
@@ -1222,6 +1250,46 @@
     },
     {
      "text": "+1 to Level of all Trail of Caltrops Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Charge Regulation Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Dread Banner Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Furious Slam Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Ice-Tipped Arrows Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Rapid Shot Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Ravenous Swarm Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Reaper's Invocation Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Rolling Slam Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Volcanic Fissure Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Wind Blast Skills",
      "optional": true
     },
     {
