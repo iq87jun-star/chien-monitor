@@ -121,3 +121,63 @@ RecentFit 系 6 口座(Instant / パール / C案 / 速攻プロ / D案 / 非FX)
 → **記録用プリセットではキャップを極端に緩く(実質無制限)し、エントリー時のスプレッドをログに書く**ようにすれば、
 任意のキャップを後処理で当てられる。EA 側は現在スキップ時しかスプレッドを出力しないので、
 エントリー行に `spread=` を 1 項目足す小改修が要る(ロジック不変)。
+
+---
+
+# 9.【実装 2026-09-11】記録専用 EA・プリセット 3 枚・レグ別合成スクリプト
+
+§8.3 の改善案を実装した。実口座の EA には一切触れていない。
+
+## 9.1 記録専用 EA — `mql5/Chien_ForwardRecorder_RecentFit.mq5` v1.10
+
+521100397 版 v1.03 からの派生。**売買ロジックは完全に同一**で、差分は 4 点のみ。
+
+| # | 差分 | 理由 |
+|---|---|---|
+| 1 | `MAXLEG` 8 → **16** | Mon 14 + v4 10 + Hold 7 を 1 インスタンスに収める。配列サイズのみ変更(`g_lastShotMon[MAXLEG*8]` の添字は最大 127 で範囲内) |
+| 2 | **エントリーと見送りを CSV に記録** | `MQL5/Files/<InpRecordTag>_entries.csv`。列は `utc,event,family,symbol,hour,side,lots,notional,spread_pips,cap_pips,ask,bid,sl,tp,note`。`event` は `ENTRY` / `SKIP_SPREAD` |
+| 3 | 入力 `InpRecordCsv` / `InpRecordTag` を追加 | チャートごとに別ファイルへ書く |
+| 4 | **`PipOf()` を非FX対応に**(docs/182 §5 の既存修正を移植) | 一律 0.0001 のままだと GER40・ETHUSD の Mon スプレッド判定が恒久超過になり、そのレグが永久に建たない |
+
+Mon の `SKIP_SPREAD` は**同一ショット枠につき 1 回だけ**記録する(30 秒ごとの再試行でログが溢れないよう抑止)。
+
+## 9.2 プリセット 3 枚(`mql5/presets/`)
+
+| ファイル | チャート | 担当 |
+|---|---|---|
+| `forward_recorder_chart1_recentfit.set` | USDJPY H1 | Mon 14 + v4 10 + Hold 7 = **31 レグ** |
+| `forward_recorder_chart2_recentfit5.set` | GBPUSD H1 | Mon 00UTC×12h / Mon 08UTC×12h / MonThuS / RSI2a / RSI2b = **5** |
+| `forward_recorder_chart3_seasonal.set` | US500 | v4(指数)/ E5 / EMon / EMonX / v7x / SJul / v7 / G3 ×2 = **8** |
+
+チャート 1 の要点:
+
+- `InpInitialBalance=1000000` 固定・全レグ重み 0.10・`InpMult=1.0` → **1 レグの名目 = $100,000**(Mon は 4 ショットで 25,000×4)。
+  ピーク総名目 ≈ $3.1M。1:30 でも必要証拠金 ≈ $103k なので $1M 口座なら余裕。
+- **スプレッドキャップは実質無制限**(`InpMaxSpreadPips=999` / `InpMonSpreadCaps=` 空 / `InpHoldMaxSpreadPts=999999`)。
+  建ったときのスプレッドが CSV に残るので、**任意のキャップを後処理で当てられる**。これが §8.3 の本体。
+- ガードは全無効(期限 2030 / 日次 0 / balance 0 / ロック off / フロアは実質到達不能)。プロップ規則は記録後に解析的に当てる。
+- `InpMagicBase=950000` — 実口座の 943400 / 940700 と衝突しない。
+
+## 9.3 レグ別合成スクリプト — `research/forward/leg_forward.py`
+
+```
+python3 research/forward/leg_forward.py <history.xlsx> --entries rec1_entries.csv \
+    --notional 100000 --cap GBPJPY=2.9,AUDJPY=2.9 \
+    --weights Mon/GBPJPY=0.374,Mon/AUDJPY=0.322,v4/USDJPY=0.304 --mult 4.0
+```
+
+- 取引履歴のコメント(`RFMon_USDJPY_h4` 等)からレグを復元 → レグ別の日次系列(名目に対する %)。
+- 記録 CSV の `ENTRY` 行を時刻で突き合わせ、建玉にスプレッドを付ける(許容 180 秒)。
+- `--cap` で**後からキャップを当てて建玉を落とす**。スプレッド記録の無い建玉は残す(保守側)。
+- `--weights` と `--mult` で**任意のポートフォリオを合成**して累積・maxDD・最悪日を出す。
+  → Instant/パール・C案/速攻プロ・D案・非FX・案1・BROAD_IV・CALMAR のどれでも、同じ記録から比較できる。
+
+自己テスト(合成データ)で、コメント解析(手動建玉の除外)・スプレッド紐付け・キャップ適用・レグ別集計の 4 つが動くことを確認した。
+
+## 9.4 残存リスク(正直に)
+
+- **MT5 未所持のため本セッションではコンパイルしていない。** 変更は配列サイズ・入力 2 個・CSV 関数 1 個・ログ行の追加で、
+  売買判定のコードには触れていない。エラーが出たら行番号を送ってもらえれば直す。
+- レポートのコメント列が空の業者だとレグ復元ができない。初月は数件で突き合わせて確認すること。
+- `--cap` の後処理は「建たなかったことにする」だけで、**その分の資金が他のレグに回る効果は再現しない**。
+  キャップ比較は同一名目の前提で読む。

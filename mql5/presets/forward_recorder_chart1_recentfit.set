@@ -1,0 +1,60 @@
+; ==============================================================
+; Chien_ForwardRecorder_RecentFit v1.10 — チャート1(docs/218 §3 / §8)
+; 担当: Mon 14 + v4 10 + Hold 7 = 31 レグ(配備中の非FX銘柄も含む)
+; 口座: ヘッジング・デモ・残高 $1,000,000。USDJPY H1 チャートに1枚。
+;
+; 設計(docs/218 §2):
+;  - InpInitialBalance=1000000 を固定 → 各レグのロットが口座残高から独立
+;  - 全レグ 重み0.10・InpMult=1.0 → 1レグの名目 = $100,000(Mon は4ショットで25,000×4)
+;    ピーク総名目 ≈ $3.1M(1:30 で必要証拠金 ≈ $103k。1M 口座なら余裕)
+;  - ガードは全無効化(期限2030 / 日次0 / balance0 / ロックoff / フロアは実質到達不能)
+;    → プロップ規則は記録後に解析的に当てる
+;  - スプレッドキャップは実質無制限(999)。建ったときのスプレッドを CSV に記録するので、
+;    任意のキャップを後処理で当てられる(docs/218 §8.3)
+;  - Magic 基底 950000(実口座の 943400/940700 と衝突しない)
+; ==============================================================
+InpAcknowledgeBet=true
+InpMonLegs=EURJPY:0.10,GBPJPY:0.10,USDJPY:0.10,AUDJPY:0.10,NZDJPY:0.10,CADJPY:0.10,CHFJPY:0.10,NAS100:0.10,US500:0.10,GER40:0.10,JP225:0.10,UK100:0.10,FR40:0.10,ETHUSD:0.10
+InpV4Legs=EURUSD:0.10,GBPUSD:0.10,USDJPY:0.10,AUDUSD:0.10,USDCHF:0.10,USDCAD:0.10,NZDUSD:0.10,EURJPY:0.10,GBPJPY:0.10,BTCUSD:0.10
+InpHoldLegs=US500:0.10,NAS100:0.10,GER40:0.10,JP225:0.10,XAUUSD:0.10,BTCUSD:0.10,WTI:0.10
+InpMult=1.0
+InpExpiry=2030.12.31 23:59
+InpInitialBalance=1000000.0
+InpBaselineReset=false
+InpMaxLossLimitPct=99.0
+InpAccountFloorDDPct=99.0
+InpDailyStopPct=0.0
+InpBalGuardPct=0.0
+InpProfitLockEnable=false
+InpNotifyEnable=false
+InpNotifyEntries=false
+InpMonHoursUTC=4,6,8,10
+InpMonHoldHours=24
+InpAtrPeriodH1=24
+InpCatastropheATR=2.5
+InpMinStopPips=10.0
+InpMaxSpreadPips=999.0
+InpMonSpreadCaps=
+InpV4_RSI=14
+InpV4_RSIlo=35.0
+InpV4_RSIhi=65.0
+InpV4_BBwin=20
+InpV4_BBz=1.5
+InpV4_streak=3
+InpV4_dayMovePct=0.5
+InpV4_ATR=14
+InpV4_SLatr=1.5
+InpV4_RR=1.2
+InpV4_MaxHoldDays=8
+InpV4AllowShort=true
+InpHoldEnable=true
+InpHoldCatSLPct=15.0
+InpHoldMaxSpreadPts=999999.0
+InpHolidayFilterEnable=true
+InpMinLot=0.01
+InpMaxLot=50.0
+InpMagicBase=950000
+InpSlippagePoints=30
+InpVerboseLog=true
+InpRecordCsv=true
+InpRecordTag=rec1

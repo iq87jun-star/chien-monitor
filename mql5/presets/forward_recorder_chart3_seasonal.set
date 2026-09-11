@@ -1,0 +1,25 @@
+; ==============================================================
+; 季節RG3 EA v1.45 — チャート3(docs/218 §8.1)
+; 担当: v4(指数系)/ E5 / EMon / EMonX / v7x / SJul / v7 / G3(US500+EURUSD) = 8 スリーブ
+; 口座: チャート1・2と同じデモ口座。US500 チャートに1枚。
+; RG3 リスクオフゲートは ON のまま(ゲート自体も検証対象)。その他のガードは無効化。
+; R4 の月別リスク調整は EA 内蔵のまま(時間変動倍率も記録対象・docs/218 §8.2 #4)。
+; ==============================================================
+InpMultOverride=1.0
+InpInitialBalance=1000000.0
+InpBaselineReset=false
+InpDailyStopPct=0.0
+InpBalGuardPct=0.0
+InpProfitLockEnable=false
+InpNotifyEnable=false
+InpNotifyEntries=false
+InpEMonRegimeGate=true
+InpG3Enable=true
+InpG3Symbol=US500
+InpG3Symbol2=EURUSD
+InpG3RiskPct=1.0
+InpG3RiskPct2=1.0
+InpG3Dates=2026.01.28,2026.03.18,2026.04.29,2026.06.17,2026.07.29,2026.09.16,2026.10.28,2026.12.09
+InpG3EntryHourET=14
+InpG3ExitMinBefore=5
+InpVerboseLog=true
