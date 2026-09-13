@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 246,
-   "chaos": 10.93
+   "exalted": 305.8,
+   "chaos": 9.49
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -41,38 +41,42 @@
    "flavourText": "\"Ghorr knows only hunger, only ravenous feasting.\r\nIt will consume all that lives, and more!\"\r\n- Rantings of a Templar prisoner, page fourteen",
    "levelRequired": 60,
    "category": "Belt",
-   "primaryValue": 2240,
-   "listingCount": 1,
+   "primaryValue": 1881,
+   "listingCount": 3,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": -16.03,
     "data": [
      null,
      null,
      null,
      null,
      null,
-     null,
-     0
+     0,
+     -16.03
     ]
    },
    "implicitModifiers": [
     {
-     "text": "Has 1 [Charm] Slot",
-     "optional": false
+     "text": "Has (2-3) [Charm] Slots",
+     "optional": true
     },
     {
-     "text": "21% increased [Flask|Flask] Charges gained",
+     "text": "Has 1 [Charm] Slot",
+     "optional": true
+    },
+    {
+     "text": "(21-30)% increased [Flask|Flask] Charges gained",
      "optional": false
     }
    ],
    "explicitModifiers": [
     {
-     "text": "25% increased [Flask] Life Recovery rate",
+     "text": "(25-32)% increased [Flask] Life Recovery rate",
      "optional": false
     },
     {
-     "text": "+18% to [Resistances|Chaos Resistance]",
+     "text": "+(17-18)% to [Resistances|Chaos Resistance]",
      "optional": false
     },
     {
@@ -101,19 +105,19 @@
    "flavourText": "Rivers of power coursed through their veins.\r\nNow, that power is yours, for good or ill.",
    "levelRequired": 55,
    "category": "Belt",
-   "primaryValue": 529.9,
-   "listingCount": 743,
+   "primaryValue": 572.9,
+   "listingCount": 1288,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 32.48,
+    "totalChange": 43.22,
     "data": [
-     null,
      null,
      null,
      0,
      9.98,
      7,
-     32.48
+     32.48,
+     43.22
     ]
    },
    "implicitModifiers": [
@@ -209,19 +213,19 @@
    "flavourText": "\"A man's soul rules from a cavern of bone, learns and\r\njudges through flesh-born windows. The heart is meat.\r\nThe head is where the Man is.\"\r\n- Lavianga, Advisor to Kaom",
    "levelRequired": 50,
    "category": "Belt",
-   "primaryValue": 291.9,
-   "listingCount": 74,
+   "primaryValue": 275,
+   "listingCount": 201,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 12.66,
+    "totalChange": 6.14,
     "data": [
-     null,
      null,
      null,
      0,
      0.35,
      1.89,
-     12.66
+     12.66,
+     6.14
     ]
    },
    "implicitModifiers": [
@@ -273,19 +277,19 @@
    "flavourText": "Power is a matter of perspective.",
    "levelRequired": 0,
    "category": "Ring",
-   "primaryValue": 36,
-   "listingCount": 63,
+   "primaryValue": 40,
+   "listingCount": 92,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 20,
+    "totalChange": 33.33,
     "data": [
-     null,
      null,
      null,
      0,
      0,
      16.67,
-     20
+     20,
+     33.33
     ]
    },
    "explicitModifiers": [
@@ -305,19 +309,19 @@
    "flavourText": "During the Winter of the World, her akhara began\r\nshepherding jingakh across the harsh Vastiri. Sekhema\r\nEshtera planted the seeds of Maraketh diplomacy.",
    "levelRequired": 40,
    "category": "Ring",
-   "primaryValue": 34.3,
-   "listingCount": 14,
+   "primaryValue": 34.7,
+   "listingCount": 20,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 101.8,
+    "totalChange": 104.1,
     "data": [
-     null,
      null,
      null,
      0,
      47.06,
      -5.88,
-     101.8
+     101.8,
+     104.1
     ]
    },
    "explicitModifiers": [
@@ -355,19 +359,19 @@
    "flavourText": "\"All Beidat desires is a foothold, a grip on your flesh,\r\non the world... he will offer you anything to get it...\"\r\n- Rantings of a Templar prisoner, page thirty",
    "levelRequired": 60,
    "category": "Ring",
-   "primaryValue": 15.5,
-   "listingCount": 26,
+   "primaryValue": 11.8,
+   "listingCount": 39,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -20.51,
+    "totalChange": -39.49,
     "data": [
-     null,
      null,
      null,
      0,
      -7.69,
      1.03,
-     -20.51
+     -20.51,
+     -39.49
     ]
    },
    "implicitModifiers": [
@@ -411,19 +415,19 @@
    "flavourText": "The Vaal protected those who integrated into their \r\nculture. Many neighbours became one. Sekhema Safrin \r\nvowed the Maraketh identity would remain resolute.",
    "levelRequired": 40,
    "category": "Ring",
-   "primaryValue": 9,
-   "listingCount": 47,
+   "primaryValue": 6.99,
+   "listingCount": 40,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -19.64,
+    "totalChange": -37.63,
     "data": [
-     null,
      null,
      null,
      0,
      -37.5,
      125.9,
-     -19.64
+     -19.64,
+     -37.63
     ]
    },
    "explicitModifiers": [
@@ -461,19 +465,19 @@
    "flavourText": "\"Moon after moon did Berek make fools\r\nOf the great and Untamed Three\r\nUntil malice for a Brother\r\nSlew the hatred of the Other\r\nAnd Berek did hunt\r\nAlone and free.\"\r\n- Berek and the Untamed",
    "levelRequired": 42,
    "category": "Ring",
-   "primaryValue": 8.12,
-   "listingCount": 512,
+   "primaryValue": 6.11,
+   "listingCount": 636,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -64.61,
+    "totalChange": -73.36,
     "data": [
-     null,
      null,
      null,
      0,
      -37.75,
      -50.66,
-     -64.61
+     -64.61,
+     -73.36
     ]
    },
    "implicitModifiers": [
@@ -508,169 +512,51 @@
    ]
   },
   {
-   "id": 523,
-   "itemId": "Berek's Grip Two-Stone Ring",
-   "detailsId": "bereks-grip-two-stone-ring",
-   "name": "Berek's Grip",
-   "baseType": "Two-Stone Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9CZXJla3NHcmlwIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/696e998ff9/BereksGrip.png",
-   "flavourText": "\"Berek hid from Storm's lightning wrath\r\nIn the embrace of oblivious Frost\r\nRepelled by ice, blinded by blizzards\r\nStorm raged in vain\r\nWhile Berek slept.\"\r\n- Berek and the Untamed",
-   "levelRequired": 42,
+   "id": 548,
+   "itemId": "Zaida's Longevity Ring",
+   "detailsId": "zaidas-longevity-ring",
+   "name": "Zaida's Longevity",
+   "baseType": "Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9TdG9ybWZvcmdlZFNlYWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/6141e5df38/StormforgedSeal.png",
+   "flavourText": "The relative peace under the fledgling Empire saw\r\nthe first Sekhema to choose, in her resplendent age and\r\nwisdom, to step down. The role of Zaitema was born.",
+   "levelRequired": 40,
    "category": "Ring",
-   "primaryValue": 1.19,
-   "listingCount": 2032,
+   "primaryValue": 0.9738,
+   "listingCount": 68,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.5,
+    "totalChange": 214.3,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -97.48,
-     -98.39,
-     -99.09,
-     -99.5
+     8.49,
+     -15.67,
+     -40.97,
+     214.3
     ]
    },
-   "implicitModifiers": [
-    {
-     "text": "+(12-16)% to Cold and Lightning Resistances",
-     "optional": false
-    }
-   ],
    "explicitModifiers": [
     {
-     "text": "+(10-20) to [Dexterity|Dexterity] and [Intelligence|Intelligence]",
+     "text": "You can only Socket Emerald Jewels in this item",
      "optional": false
     },
     {
-     "text": "+(10-20)% to Cold and Lightning Resistances",
+     "text": "(10-20)% increased [ItemRarity|Rarity of Items] found",
      "optional": false
     },
     {
-     "text": "[Hit|Hits] against you have (35-50)% reduced [Critical|Critical Hit Chance] while you are [Chill|Chilled]",
+     "text": "+(10-20) to all [Attributes|Attributes]",
      "optional": false
     },
     {
-     "text": "[Wind|Wind Skills] which can be boosted by [ElementalGround|Elemental Ground Surfaces] count\nas being boosted by [ShockedGround|Shocked Ground]",
+     "text": "+(5-10)% to [Fire] and [Lightning] [Resistances] per [Equipment|Equipped Item] with a [Cold] [Resistances|Resistance] Modifier",
      "optional": false
     }
    ],
    "requirementModifiers": [
     {
-     "text": "Level: 42",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 524,
-   "itemId": "Berek's Pass Two-Stone Ring",
-   "detailsId": "bereks-pass-two-stone-ring",
-   "name": "Berek's Pass",
-   "baseType": "Two-Stone Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9CZXJla3NQYXNzIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/a1ff602207/BereksPass.png",
-   "flavourText": "\"From Frost's ice-bound pass\r\nBerek taunted and jeered\r\nUntil furious Flame scaled the mountain\r\nBerek escaped through the thaw\r\nAnd Frost's tortured moans.\"\r\n- Berek and the Untamed",
-   "levelRequired": 42,
-   "category": "Ring",
-   "primaryValue": 1.1,
-   "listingCount": 2007,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -78.85,
-    "data": [
-     null,
-     null,
-     null,
-     0,
-     -35.37,
-     -68.1,
-     -78.85
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(12-16)% to Fire and Cold Resistances",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(10-20) to [Strength|Strength] and [Intelligence|Intelligence]",
-     "optional": false
-    },
-    {
-     "text": "+(10-20)% to Fire and Cold Resistances",
-     "optional": false
-    },
-    {
-     "text": "Regenerate (1-2)% of maximum Life per second while [Ignite|Ignited]",
-     "optional": false
-    },
-    {
-     "text": "[Wind|Wind Skills] which can be boosted by [ElementalGround|Elemental Ground Surfaces] count\nas being boosted by [ChilledGround|Chilled Ground]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 42",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 525,
-   "itemId": "Berek's Respite Two-Stone Ring",
-   "detailsId": "bereks-respite-two-stone-ring",
-   "name": "Berek's Respite",
-   "baseType": "Two-Stone Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9CZXJla3NSZXNwaXRlIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/5a88600dfb/BereksRespite.png",
-   "flavourText": "\"With Flame licking at his heels\r\nBerek berated the clouds\r\nUntil vengeful Storm spewed forth his rains\r\nAnd Berek held on tight\r\nAs Fire screamed and steamed\r\nAnd fled.\"\r\n- Berek and the Untamed",
-   "levelRequired": 42,
-   "category": "Ring",
-   "primaryValue": 1.1,
-   "listingCount": 1961,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -82.06,
-    "data": [
-     null,
-     null,
-     null,
-     0,
-     -39.56,
-     -68.82,
-     -82.06
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(12-16)% to Fire and Lightning Resistances",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(10-20) to [Strength|Strength] and [Dexterity|Dexterity]",
-     "optional": false
-    },
-    {
-     "text": "+(10-20)% to Fire and Lightning Resistances",
-     "optional": false
-    },
-    {
-     "text": "(15-25)% increased [CriticalDamageBonus|Critical Damage Bonus] while [Shock|Shocked]",
-     "optional": false
-    },
-    {
-     "text": "[Wind|Wind Skills] which can be boosted by [ElementalGround|Elemental Ground Surfaces] count\nas being boosted by [IgnitedGround|Ignited Ground]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 42",
+     "text": "Level: 40",
      "optional": false
     }
    ]
@@ -685,24 +571,24 @@
    "flavourText": "Clever artifice is not always complex.",
    "levelRequired": 50,
    "category": "Belt",
-   "primaryValue": 0.6947,
-   "listingCount": 24,
+   "primaryValue": 0.6324,
+   "listingCount": 31,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 208.4,
+    "totalChange": 180.8,
     "data": [
-     null,
      null,
      null,
      0,
      153.7,
      174.6,
-     208.4
+     208.4,
+     180.8
     ]
    },
    "implicitModifiers": [
     {
-     "text": "(21-30)% increased [StunThreshold|Stun Threshold]",
+     "text": "(20-30)% increased [StunThreshold|Stun Threshold]",
      "optional": false
     },
     {
@@ -760,6 +646,174 @@
    ]
   },
   {
+   "id": 523,
+   "itemId": "Berek's Grip Two-Stone Ring",
+   "detailsId": "bereks-grip-two-stone-ring",
+   "name": "Berek's Grip",
+   "baseType": "Two-Stone Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9CZXJla3NHcmlwIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/696e998ff9/BereksGrip.png",
+   "flavourText": "\"Berek hid from Storm's lightning wrath\r\nIn the embrace of oblivious Frost\r\nRepelled by ice, blinded by blizzards\r\nStorm raged in vain\r\nWhile Berek slept.\"\r\n- Berek and the Untamed",
+   "levelRequired": 42,
+   "category": "Ring",
+   "primaryValue": 0.527,
+   "listingCount": 3066,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -91.29,
+    "data": [
+     null,
+     null,
+     0,
+     -36.13,
+     -64.03,
+     -80.36,
+     -91.29
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(12-16)% to Cold and Lightning Resistances",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(10-20) to [Dexterity|Dexterity] and [Intelligence|Intelligence]",
+     "optional": false
+    },
+    {
+     "text": "+(10-20)% to Cold and Lightning Resistances",
+     "optional": false
+    },
+    {
+     "text": "[Hit|Hits] against you have (35-50)% reduced [Critical|Critical Hit Chance] while you are [Chill|Chilled]",
+     "optional": false
+    },
+    {
+     "text": "[Wind|Wind Skills] which can be boosted by [ElementalGround|Elemental Ground Surfaces] count\nas being boosted by [ShockedGround|Shocked Ground]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 42",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 524,
+   "itemId": "Berek's Pass Two-Stone Ring",
+   "detailsId": "bereks-pass-two-stone-ring",
+   "name": "Berek's Pass",
+   "baseType": "Two-Stone Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9CZXJla3NQYXNzIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/a1ff602207/BereksPass.png",
+   "flavourText": "\"From Frost's ice-bound pass\r\nBerek taunted and jeered\r\nUntil furious Flame scaled the mountain\r\nBerek escaped through the thaw\r\nAnd Frost's tortured moans.\"\r\n- Berek and the Untamed",
+   "levelRequired": 42,
+   "category": "Ring",
+   "primaryValue": 0.527,
+   "listingCount": 3083,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -89.84,
+    "data": [
+     null,
+     null,
+     0,
+     -35.37,
+     -68.1,
+     -78.85,
+     -89.84
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(12-16)% to Fire and Cold Resistances",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(10-20) to [Strength|Strength] and [Intelligence|Intelligence]",
+     "optional": false
+    },
+    {
+     "text": "+(10-20)% to Fire and Cold Resistances",
+     "optional": false
+    },
+    {
+     "text": "Regenerate (1-2)% of maximum Life per second while [Ignite|Ignited]",
+     "optional": false
+    },
+    {
+     "text": "[Wind|Wind Skills] which can be boosted by [ElementalGround|Elemental Ground Surfaces] count\nas being boosted by [ChilledGround|Chilled Ground]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 42",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 525,
+   "itemId": "Berek's Respite Two-Stone Ring",
+   "detailsId": "bereks-respite-two-stone-ring",
+   "name": "Berek's Respite",
+   "baseType": "Two-Stone Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9CZXJla3NSZXNwaXRlIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/5a88600dfb/BereksRespite.png",
+   "flavourText": "\"With Flame licking at his heels\r\nBerek berated the clouds\r\nUntil vengeful Storm spewed forth his rains\r\nAnd Berek held on tight\r\nAs Fire screamed and steamed\r\nAnd fled.\"\r\n- Berek and the Untamed",
+   "levelRequired": 42,
+   "category": "Ring",
+   "primaryValue": 0.527,
+   "listingCount": 3125,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -91.39,
+    "data": [
+     null,
+     null,
+     0,
+     -39.56,
+     -68.82,
+     -82.06,
+     -91.39
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(12-16)% to Fire and Lightning Resistances",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(10-20) to [Strength|Strength] and [Dexterity|Dexterity]",
+     "optional": false
+    },
+    {
+     "text": "+(10-20)% to Fire and Lightning Resistances",
+     "optional": false
+    },
+    {
+     "text": "(15-25)% increased [CriticalDamageBonus|Critical Damage Bonus] while [Shock|Shocked]",
+     "optional": false
+    },
+    {
+     "text": "[Wind|Wind Skills] which can be boosted by [ElementalGround|Elemental Ground Surfaces] count\nas being boosted by [IgnitedGround|Ignited Ground]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 42",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 344,
    "itemId": "Dream Fragments Sapphire Ring",
    "detailsId": "dream-fragments-sapphire-ring",
@@ -769,19 +823,19 @@
    "flavourText": "Doryani stumbled into a realm of madness\r\nAnd awoke its Master.",
    "levelRequired": 12,
    "category": "Ring",
-   "primaryValue": 0.3658,
-   "listingCount": 1918,
+   "primaryValue": 0.4111,
+   "listingCount": 1756,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -96.34,
+    "totalChange": 42.61,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -97.12,
-     -98.32,
-     -97.39,
-     -96.34
+     -41.69,
+     -9.35,
+     26.92,
+     42.61
     ]
    },
    "implicitModifiers": [
@@ -812,6 +866,62 @@
    ]
   },
   {
+   "id": 297,
+   "itemId": "Yoke of Suffering Bloodstone Amulet",
+   "detailsId": "yoke-of-suffering-bloodstone-amulet",
+   "name": "Yoke of Suffering",
+   "baseType": "Bloodstone Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL1lva2VPZlN1ZmZlcmluZyIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/89e7948e7c/YokeOfSuffering.png",
+   "flavourText": "Let the unrepentant be dragged ever downwards by the weight of their sins.",
+   "levelRequired": 18,
+   "category": "Amulet",
+   "primaryValue": 0.2108,
+   "listingCount": 4739,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -26.87,
+    "data": [
+     null,
+     null,
+     0,
+     -12.53,
+     -31.43,
+     -36.54,
+     -26.87
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(30-40) to maximum Life",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(10-15)% to all [ElementalDamage|Elemental] [Resistances]",
+     "optional": false
+    },
+    {
+     "text": "(15-30)% increased [ElementalDamage|Elemental Damage]",
+     "optional": false
+    },
+    {
+     "text": "Enemies take (15-20)% increased Damage for each [ElementalAilments|Elemental Ailment] type among\nyour Ailments on them",
+     "optional": false
+    },
+    {
+     "text": "(30-40)% reduced Duration of [Ignite], [Shock] and [Chill] on Enemies",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 18",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 291,
    "itemId": "Blackflame Amethyst Ring",
    "detailsId": "blackflame-amethyst-ring",
@@ -821,19 +931,19 @@
    "flavourText": "Beyond the veil of death, there burns a fire\r\nby whose light night is borne.",
    "levelRequired": 20,
    "category": "Ring",
-   "primaryValue": 0.1829,
-   "listingCount": 2997,
+   "primaryValue": 0.1054,
+   "listingCount": 3759,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.68,
+    "totalChange": -26.87,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.75,
-     -99.71,
-     -99.85,
-     -99.68
+     16.63,
+     -40.12,
+     26.92,
+     -26.87
     ]
    },
    "implicitModifiers": [
@@ -876,234 +986,6 @@
    ]
   },
   {
-   "id": 297,
-   "itemId": "Yoke of Suffering Bloodstone Amulet",
-   "detailsId": "yoke-of-suffering-bloodstone-amulet",
-   "name": "Yoke of Suffering",
-   "baseType": "Bloodstone Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL1lva2VPZlN1ZmZlcmluZyIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/89e7948e7c/YokeOfSuffering.png",
-   "flavourText": "Let the unrepentant be dragged ever downwards by the weight of their sins.",
-   "levelRequired": 18,
-   "category": "Amulet",
-   "primaryValue": 0.1829,
-   "listingCount": 3779,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.85,
-    "data": [
-     0,
-     null,
-     null,
-     -99.76,
-     -99.79,
-     -99.84,
-     -99.85
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(30-40) to maximum Life",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(10-15)% to all [ElementalDamage|Elemental] [Resistances]",
-     "optional": false
-    },
-    {
-     "text": "(15-30)% increased [ElementalDamage|Elemental Damage]",
-     "optional": false
-    },
-    {
-     "text": "Enemies take (15-20)% increased Damage for each [ElementalAilments|Elemental Ailment] type among\nyour Ailments on them",
-     "optional": false
-    },
-    {
-     "text": "(30-40)% reduced Duration of [Ignite], [Shock] and [Chill] on Enemies",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 18",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 548,
-   "itemId": "Zaida's Longevity Ring",
-   "detailsId": "zaidas-longevity-ring",
-   "name": "Zaida's Longevity",
-   "baseType": "Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9TdG9ybWZvcmdlZFNlYWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/6141e5df38/StormforgedSeal.png",
-   "flavourText": "The relative peace under the fledgling Empire saw\r\nthe first Sekhema to choose, in her resplendent age and\r\nwisdom, to step down. The role of Zaitema was born.",
-   "levelRequired": 40,
-   "category": "Ring",
-   "primaryValue": 0.1829,
-   "listingCount": 89,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -40.97,
-    "data": [
-     null,
-     null,
-     null,
-     0,
-     8.49,
-     -15.67,
-     -40.97
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "You can only Socket Emerald Jewels in this item",
-     "optional": false
-    },
-    {
-     "text": "(10-20)% increased [ItemRarity|Rarity of Items] found",
-     "optional": false
-    },
-    {
-     "text": "+(10-20) to all [Attributes|Attributes]",
-     "optional": false
-    },
-    {
-     "text": "+(5-10)% to [Fire] and [Lightning] [Resistances] per [Equipment|Equipped Item] with a [Cold] [Resistances|Resistance] Modifier",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 40",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 293,
-   "itemId": "Original Sin Amethyst Ring",
-   "detailsId": "original-sin-amethyst-ring",
-   "name": "Original Sin",
-   "baseType": "Amethyst Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9PcmlnaW5hbFNpbiIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/b911400c32/OriginalSin.png",
-   "flavourText": "Innocence rose to godhood not on inspired faith,\r\nbut on the vilification and hatred of another.",
-   "levelRequired": 20,
-   "category": "Ring",
-   "primaryValue": 0.09146,
-   "listingCount": 385,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -97.71,
-    "data": [
-     0,
-     null,
-     null,
-     -98.2,
-     -97.9,
-     -99.51,
-     -97.71
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(7-13)% to [Resistances|Chaos Resistance]",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(17-23)% to [Resistances|Chaos Resistance]",
-     "optional": false
-    },
-    {
-     "text": "100% of [ElementalDamage|Elemental Damage] [Conversion|Converted] to [Chaos] Damage",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 20",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 698,
-   "itemId": "Eventide Petals Runemastered Veridical Chain",
-   "detailsId": "eventide-petals-runemastered-veridical-chain",
-   "name": "Eventide Petals",
-   "baseType": "Runemastered Veridical Chain",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL05hdHRibG9tIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/e20be52a4b/Nattblom.png",
-   "flavourText": "Dannig sculpted the Verisium to evoke the\r\nnight-blooming lotus of Middengard's stygian peaks,\r\nwhich grow only where ash meets the snow and stars.",
-   "levelRequired": 58,
-   "category": "Amulet",
-   "primaryValue": 0.09146,
-   "listingCount": 594,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": 26.92,
-    "data": [
-     null,
-     null,
-     null,
-     0,
-     16.63,
-     20.87,
-     26.92
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "(15-20)% increased maximum [Ward|Runic Ward]",
-     "optional": true
-    },
-    {
-     "text": "+(30-40) to maximum [Ward|Runic Ward]",
-     "optional": true
-    },
-    {
-     "text": "+(2-3)% to [MaximumResistances|Maximum Cold Resistance]",
-     "optional": true
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "(30-49)% increased [Critical|Critical Hit] Chance",
-     "optional": false
-    },
-    {
-     "text": "+(25-35) to [Intelligence|Intelligence]",
-     "optional": false
-    },
-    {
-     "text": "(30-49)% increased [LightRadius|Light Radius]",
-     "optional": false
-    },
-    {
-     "text": "[IceCrystals|Ice Crystals] have (1-3)% increased maximum Life per 5% [Resistances|Cold Resistance] you have",
-     "optional": true
-    },
-    {
-     "text": "[IceCrystals|Ice Crystals] have (1-3)% reduced maximum Life per 5% [Resistances|Cold Resistance] you have",
-     "optional": true
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 55",
-     "optional": false
-    }
-   ],
-   "grantedSkillModifiers": [
-    {
-     "text": "Level (18-20) Midnight Zenith",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 335,
    "itemId": "Snakepit Pearl Ring",
    "detailsId": "snakepit-pearl-ring",
@@ -1113,19 +995,19 @@
    "flavourText": "They wrap around you until your blood turns as cold as theirs.",
    "levelRequired": 32,
    "category": "Ring",
-   "primaryValue": 0.0813,
-   "listingCount": 1687,
+   "primaryValue": 0.1054,
+   "listingCount": 1710,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -98.64,
+    "totalChange": -26.87,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -97.6,
-     -98.6,
-     -98.55,
-     -98.64
+     -41.69,
+     -39.56,
+     -43.59,
+     -26.87
     ]
    },
    "implicitModifiers": [
@@ -1181,19 +1063,19 @@
    "flavourText": "Mindless rage will shake the world,\r\nCunning lies will bend it.\r\nReckless haste will break the world,\r\nAnd into darkness send it.",
    "levelRequired": 24,
    "category": "Amulet",
-   "primaryValue": 0.0813,
-   "listingCount": 1556,
+   "primaryValue": 0.1054,
+   "listingCount": 1452,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.57,
+    "totalChange": -26.87,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.24,
-     -99.12,
-     -99.58,
-     -99.57
+     16.63,
+     -45.14,
+     -43.59,
+     -26.87
     ]
    },
    "implicitModifiers": [
@@ -1220,6 +1102,256 @@
    ]
   },
   {
+   "id": 698,
+   "itemId": "Eventide Petals Runemastered Veridical Chain",
+   "detailsId": "eventide-petals-runemastered-veridical-chain",
+   "name": "Eventide Petals",
+   "baseType": "Runemastered Veridical Chain",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL05hdHRibG9tIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/e20be52a4b/Nattblom.png",
+   "flavourText": "Dannig sculpted the Verisium to evoke the\r\nnight-blooming lotus of Middengard's stygian peaks,\r\nwhich grow only where ash meets the snow and stars.",
+   "levelRequired": 58,
+   "category": "Amulet",
+   "primaryValue": 0.1054,
+   "listingCount": 858,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 46.27,
+    "data": [
+     null,
+     null,
+     0,
+     16.63,
+     20.87,
+     26.92,
+     46.27
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "(15-20)% increased maximum [Ward|Runic Ward]",
+     "optional": true
+    },
+    {
+     "text": "+(30-40) to maximum [Ward|Runic Ward]",
+     "optional": true
+    },
+    {
+     "text": "+(2-3)% to [MaximumResistances|Maximum Cold Resistance]",
+     "optional": true
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "(30-49)% increased [Critical|Critical Hit] Chance",
+     "optional": false
+    },
+    {
+     "text": "+(25-35) to [Intelligence|Intelligence]",
+     "optional": false
+    },
+    {
+     "text": "(30-49)% increased [LightRadius|Light Radius]",
+     "optional": false
+    },
+    {
+     "text": "[IceCrystals|Ice Crystals] have (1-3)% increased maximum Life per 5% [Resistances|Cold Resistance] you have",
+     "optional": true
+    },
+    {
+     "text": "[IceCrystals|Ice Crystals] have (1-3)% reduced maximum Life per 5% [Resistances|Cold Resistance] you have",
+     "optional": true
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 55",
+     "optional": false
+    }
+   ],
+   "grantedSkillModifiers": [
+    {
+     "text": "Level (18-20) Midnight Zenith",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 319,
+   "itemId": "Defiance of Destiny Jade Amulet",
+   "detailsId": "defiance-of-destiny-jade-amulet",
+   "name": "Defiance of Destiny",
+   "baseType": "Jade Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0RlZmlhbmNlT2ZEZXN0aW55IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/713775c874/DefianceOfDestiny.png",
+   "flavourText": "The respect of Karui warriors is hard to earn,\r\nbut lasts a lifetime... and beyond.",
+   "levelRequired": 56,
+   "category": "Amulet",
+   "primaryValue": 0.08178,
+   "listingCount": 2149,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 13.49,
+    "data": [
+     null,
+     null,
+     0,
+     16.63,
+     9.71,
+     -15.38,
+     13.49
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(10-15) to [Dexterity|Dexterity]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "(6-10)% increased maximum Life",
+     "optional": false
+    },
+    {
+     "text": "+(10-20) to [Strength|Strength]",
+     "optional": false
+    },
+    {
+     "text": "(25-40)% increased Mana Regeneration Rate",
+     "optional": false
+    },
+    {
+     "text": "Recover (20-30)% of Missing Life before being [Hit] by an Enemy",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 56",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 310,
+   "itemId": "Ventor's Gamble Gold Ring",
+   "detailsId": "ventors-gamble-gold-ring",
+   "name": "Ventor's Gamble",
+   "baseType": "Gold Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9WZW50b3JzR2FtYmxlIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/bc113c96d9/VentorsGamble.png",
+   "flavourText": "In a blaze of glory,\r\nAn anomaly defying all odds\r\nThe \"unkillable\" beast met the divine\r\nAnd Ventor met his latest trophy.",
+   "levelRequired": 64,
+   "category": "Ring",
+   "primaryValue": 0.03565,
+   "listingCount": 10000,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -50.53,
+    "data": [
+     null,
+     null,
+     0,
+     16.63,
+     -12.78,
+     -15.38,
+     -50.53
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "(6-15)% increased [ItemRarity|Rarity of Items] found",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(1-80) to maximum Life",
+     "optional": true
+    },
+    {
+     "text": "+(1-20) to [Spirit|Spirit]",
+     "optional": true
+    },
+    {
+     "text": "(1-25)% increased [ItemRarity|Rarity of Items] found",
+     "optional": true
+    },
+    {
+     "text": "(1-25)% reduced [ItemRarity|Rarity of Items] found",
+     "optional": true
+    },
+    {
+     "text": "(-40-39)% to [Resistances|Fire Resistance]",
+     "optional": true
+    },
+    {
+     "text": "(-40-39)% to [Resistances|Cold Resistance]",
+     "optional": true
+    },
+    {
+     "text": "+(-34-40)% to [Resistances|Lightning Resistance]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 64",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 308,
+   "itemId": "Andvarius Gold Ring",
+   "detailsId": "andvarius-gold-ring",
+   "name": "Andvarius",
+   "baseType": "Gold Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9BbmR2YXJpdXMiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/62ed73e3a0/Andvarius.png",
+   "flavourText": "Danger is the price of wealth.",
+   "levelRequired": 40,
+   "category": "Ring",
+   "primaryValue": 0.03271,
+   "listingCount": 1467,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -54.61,
+    "data": [
+     null,
+     null,
+     0,
+     16.63,
+     20.87,
+     -9.74,
+     -54.61
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "(6-15)% increased [ItemRarity|Rarity of Items] found",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "(50-69)% increased [ItemRarity|Rarity of Items] found",
+     "optional": false
+    },
+    {
+     "text": "+10 to [Dexterity|Dexterity]",
+     "optional": false
+    },
+    {
+     "text": "-20% to all [ElementalDamage|Elemental] [Resistances]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 40",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 318,
    "itemId": "Choir of the Storm Jade Amulet",
    "detailsId": "choir-of-the-storm-jade-amulet",
@@ -1229,19 +1361,19 @@
    "flavourText": "But the fool did not bow.\r\nThe fool stood and questioned.\r\nAnd the fool was unwritten.",
    "levelRequired": 78,
    "category": "Amulet",
-   "primaryValue": 0.0691,
-   "listingCount": 1592,
+   "primaryValue": 0.03271,
+   "listingCount": 1752,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -4.11,
+    "totalChange": -54.61,
     "data": [
-     null,
      null,
      null,
      0,
      16.63,
      -17.71,
-     -4.11
+     -4.11,
+     -54.61
     ]
    },
    "implicitModifiers": [
@@ -1278,177 +1410,119 @@
    ]
   },
   {
-   "id": 308,
-   "itemId": "Andvarius Gold Ring",
-   "detailsId": "andvarius-gold-ring",
-   "name": "Andvarius",
-   "baseType": "Gold Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9BbmR2YXJpdXMiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/62ed73e3a0/Andvarius.png",
-   "flavourText": "Danger is the price of wealth.",
-   "levelRequired": 40,
+   "id": 324,
+   "itemId": "Doedre's Damning Lazuli Ring",
+   "detailsId": "doedres-damning-lazuli-ring",
+   "name": "Doedre's Damning",
+   "baseType": "Lazuli Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9Eb2VkcmVzRGFtbmluZyIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8b682589c5/DoedresDamning.png",
+   "flavourText": "Where her mouth should have been there was only a whirling, black void.",
+   "levelRequired": 0,
    "category": "Ring",
-   "primaryValue": 0.06504,
-   "listingCount": 1028,
+   "primaryValue": 0.03271,
+   "listingCount": 1512,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -98.88,
+    "totalChange": -54.61,
     "data": [
-     0,
-     null,
-     null,
-     -98.76,
-     -98.55,
-     -98.5,
-     -98.88
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "(6-15)% increased [ItemRarity|Rarity of Items] found",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "(50-69)% increased [ItemRarity|Rarity of Items] found",
-     "optional": false
-    },
-    {
-     "text": "+10 to [Dexterity|Dexterity]",
-     "optional": false
-    },
-    {
-     "text": "-20% to all [ElementalDamage|Elemental] [Resistances]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 40",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 310,
-   "itemId": "Ventor's Gamble Gold Ring",
-   "detailsId": "ventors-gamble-gold-ring",
-   "name": "Ventor's Gamble",
-   "baseType": "Gold Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9WZW50b3JzR2FtYmxlIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/bc113c96d9/VentorsGamble.png",
-   "flavourText": "In a blaze of glory,\r\nAn anomaly defying all odds\r\nThe \"unkillable\" beast met the divine\r\nAnd Ventor met his latest trophy.",
-   "levelRequired": 64,
-   "category": "Ring",
-   "primaryValue": 0.06098,
-   "listingCount": 10000,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -98.03,
-    "data": [
-     0,
-     null,
-     null,
-     -97.68,
-     -97.29,
-     -97.97,
-     -98.03
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "(6-15)% increased [ItemRarity|Rarity of Items] found",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(1-80) to maximum Life",
-     "optional": true
-    },
-    {
-     "text": "+(1-20) to [Spirit|Spirit]",
-     "optional": true
-    },
-    {
-     "text": "(1-25)% increased [ItemRarity|Rarity of Items] found",
-     "optional": true
-    },
-    {
-     "text": "(1-25)% reduced [ItemRarity|Rarity of Items] found",
-     "optional": true
-    },
-    {
-     "text": "(-40-39)% to [Resistances|Fire Resistance]",
-     "optional": true
-    },
-    {
-     "text": "(-40-39)% to [Resistances|Cold Resistance]",
-     "optional": false
-    },
-    {
-     "text": "+(-34-40)% to [Resistances|Lightning Resistance]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 64",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 319,
-   "itemId": "Defiance of Destiny Jade Amulet",
-   "detailsId": "defiance-of-destiny-jade-amulet",
-   "name": "Defiance of Destiny",
-   "baseType": "Jade Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0RlZmlhbmNlT2ZEZXN0aW55IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/713775c874/DefianceOfDestiny.png",
-   "flavourText": "The respect of Karui warriors is hard to earn,\r\nbut lasts a lifetime... and beyond.",
-   "levelRequired": 56,
-   "category": "Amulet",
-   "primaryValue": 0.06098,
-   "listingCount": 1751,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -15.38,
-    "data": [
-     null,
      null,
      null,
      0,
      16.63,
-     9.71,
-     -15.38
+     -23.2,
+     -43.59,
+     -54.61
     ]
    },
    "implicitModifiers": [
     {
-     "text": "+(10-15) to [Dexterity|Dexterity]",
+     "text": "+(20-30) to maximum Mana",
      "optional": false
     }
    ],
    "explicitModifiers": [
     {
-     "text": "(6-10)% increased maximum Life",
+     "text": "+(5-15)% to all [ElementalDamage|Elemental] [Resistances]",
      "optional": false
     },
     {
-     "text": "+(10-20) to [Strength|Strength]",
+     "text": "Gain (1-10) Mana per enemy killed",
      "optional": false
     },
     {
-     "text": "(25-40)% increased Mana Regeneration Rate",
+     "text": "You can apply an additional [Curse]",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 357,
+   "itemId": "Ingenuity Utility Belt",
+   "detailsId": "ingenuity-utility-belt",
+   "name": "Ingenuity",
+   "baseType": "Utility Belt",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9XaWRvd21ha2VyIiwidyI6MiwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/394f71de07/Widowmaker.png",
+   "flavourText": "Experiments with geomancy taught\r\nthe Maji more than they ever expected.",
+   "levelRequired": 55,
+   "category": "Belt",
+   "primaryValue": 0.03271,
+   "listingCount": 8390,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -54.61,
+    "data": [
+     null,
+     null,
+     0,
+     16.63,
+     -45.14,
+     -43.59,
+     -54.61
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "Has 1 [Charm] Slot",
+     "optional": true
+    },
+    {
+     "text": "Has (2-3) [Charm] Slots",
+     "optional": true
+    },
+    {
+     "text": "20% of [Flask|Flask] Recovery applied Instantly",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "(1-20)% increased [Charm] Charges gained",
+     "optional": true
+    },
+    {
+     "text": "(1-18)% reduced [Charm] Charges gained",
+     "optional": true
+    },
+    {
+     "text": "(1-10)% increased [Charm] Charges used",
+     "optional": true
+    },
+    {
+     "text": "(1-10)% reduced [Charm] Charges used",
+     "optional": true
+    },
+    {
+     "text": "(20-30)% increased bonuses gained from left Equipped Ring",
      "optional": false
     },
     {
-     "text": "Recover (20-30)% of Missing Life before being [Hit] by an Enemy",
+     "text": "(20-30)% increased bonuses gained from right Equipped Ring",
      "optional": false
     }
    ],
    "requirementModifiers": [
     {
-     "text": "Level: 56",
+     "text": "Level: 55",
      "optional": false
     }
    ]
@@ -1463,19 +1537,19 @@
    "flavourText": "Dannig sculpted the Verisium to evoke the\r\nnight-blooming lotus of Middengard's stygian peaks,\r\nwhich grow only where ash meets the snow and stars.",
    "levelRequired": 58,
    "category": "Amulet",
-   "primaryValue": 0.05203,
-   "listingCount": 1958,
+   "primaryValue": 0.03271,
+   "listingCount": 2108,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -27.8,
+    "totalChange": -54.61,
     "data": [
-     null,
      null,
      null,
      0,
      16.63,
      -45.14,
-     -27.8
+     -27.8,
+     -54.61
     ]
    },
    "implicitModifiers": [
@@ -1520,183 +1594,49 @@
    ]
   },
   {
-   "id": 324,
-   "itemId": "Doedre's Damning Lazuli Ring",
-   "detailsId": "doedres-damning-lazuli-ring",
-   "name": "Doedre's Damning",
-   "baseType": "Lazuli Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9Eb2VkcmVzRGFtbmluZyIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8b682589c5/DoedresDamning.png",
-   "flavourText": "Where her mouth should have been there was only a whirling, black void.",
-   "levelRequired": 0,
+   "id": 293,
+   "itemId": "Original Sin Amethyst Ring",
+   "detailsId": "original-sin-amethyst-ring",
+   "name": "Original Sin",
+   "baseType": "Amethyst Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9PcmlnaW5hbFNpbiIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/b911400c32/OriginalSin.png",
+   "flavourText": "Innocence rose to godhood not on inspired faith,\r\nbut on the vilification and hatred of another.",
+   "levelRequired": 20,
    "category": "Ring",
-   "primaryValue": 0.04065,
-   "listingCount": 1334,
+   "primaryValue": 0.02911,
+   "listingCount": 491,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -95.94,
+    "totalChange": -59.6,
     "data": [
-     0,
-     null,
-     null,
-     -92.79,
-     -91.6,
-     -94.47,
-     -95.94
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(20-30) to maximum Mana",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(5-15)% to all [ElementalDamage|Elemental] [Resistances]",
-     "optional": false
-    },
-    {
-     "text": "Gain (1-10) Mana per enemy killed",
-     "optional": false
-    },
-    {
-     "text": "You can apply an additional [Curse]",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 357,
-   "itemId": "Ingenuity Utility Belt",
-   "detailsId": "ingenuity-utility-belt",
-   "name": "Ingenuity",
-   "baseType": "Utility Belt",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9XaWRvd21ha2VyIiwidyI6MiwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/394f71de07/Widowmaker.png",
-   "flavourText": "Experiments with geomancy taught\r\nthe Maji more than they ever expected.",
-   "levelRequired": 55,
-   "category": "Belt",
-   "primaryValue": 0.04065,
-   "listingCount": 7080,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -43.59,
-    "data": [
-     null,
      null,
      null,
      0,
      16.63,
-     -45.14,
-     -43.59
+     -72.58,
+     26.92,
+     -59.6
     ]
    },
    "implicitModifiers": [
     {
-     "text": "Has 1 [Charm] Slot",
-     "optional": true
-    },
-    {
-     "text": "Has (2-3) [Charm] Slots",
-     "optional": true
-    },
-    {
-     "text": "20% of [Flask|Flask] Recovery applied Instantly",
+     "text": "+(7-13)% to [Resistances|Chaos Resistance]",
      "optional": false
     }
    ],
    "explicitModifiers": [
     {
-     "text": "(1-20)% increased [Charm] Charges gained",
-     "optional": true
-    },
-    {
-     "text": "(1-17)% reduced [Charm] Charges gained",
-     "optional": true
-    },
-    {
-     "text": "(1-10)% increased [Charm] Charges used",
-     "optional": true
-    },
-    {
-     "text": "(1-10)% reduced [Charm] Charges used",
-     "optional": true
-    },
-    {
-     "text": "(20-30)% increased bonuses gained from left Equipped Ring",
+     "text": "+(17-23)% to [Resistances|Chaos Resistance]",
      "optional": false
     },
     {
-     "text": "(20-30)% increased bonuses gained from right Equipped Ring",
+     "text": "100% of [ElementalDamage|Elemental Damage] [Conversion|Converted] to [Chaos] Damage",
      "optional": false
     }
    ],
    "requirementModifiers": [
     {
-     "text": "Level: 55",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 305,
-   "itemId": "Shavronne's Satchel Fine Belt",
-   "detailsId": "shavronnes-satchel-fine-belt",
-   "name": "Shavronne's Satchel",
-   "baseType": "Fine Belt",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9TaGF2cm9ubmVzU2F0Y2hlbCIsInciOjIsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/03b20ba6b9/ShavronnesSatchel.png",
-   "flavourText": "Bring mystery to life. Again and again.",
-   "levelRequired": 62,
-   "category": "Belt",
-   "primaryValue": 0.03252,
-   "listingCount": 3281,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.95,
-    "data": [
-     0,
-     null,
-     null,
-     -99.9,
-     -99.88,
-     -99.96,
-     -99.95
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "Has 1 [Charm] Slot",
-     "optional": true
-    },
-    {
-     "text": "Has (2-3) [Charm] Slots",
-     "optional": true
-    },
-    {
-     "text": "[Flask|Flasks] gain 0.17 charges per Second",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "(21-30)% reduced [Flask] Life Recovery rate",
-     "optional": false
-    },
-    {
-     "text": "+(20-30) to [Intelligence|Intelligence]",
-     "optional": false
-    },
-    {
-     "text": "(20-30)% increased [Flask|Flask] Charges gained",
-     "optional": false
-    },
-    {
-     "text": "Life Recovery from [Flask|Flasks] also applies to [EnergyShield|Energy Shield]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 62",
+     "text": "Level: 20",
      "optional": false
     }
    ]
@@ -1711,19 +1651,19 @@
    "flavourText": "Kulemak sat triumphant, raising the crown.\r\nDarkness coiled the world in eternal night.\r\nVictory, a mere moment, came crashing down.\r\nNo conqueror, no conquered, only searing Light.",
    "levelRequired": 62,
    "category": "Belt",
-   "primaryValue": 0.02398,
-   "listingCount": 5895,
+   "primaryValue": 0.02617,
+   "listingCount": 7285,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -66.72,
+    "totalChange": -63.68,
     "data": [
-     null,
      null,
      null,
      0,
      16.63,
      -39.66,
-     -66.72
+     -66.72,
+     -63.68
     ]
    },
    "implicitModifiers": [
@@ -1770,53 +1710,65 @@
    ]
   },
   {
-   "id": 290,
-   "itemId": "Xoph's Blood Amber Amulet",
-   "detailsId": "xophs-blood-amber-amulet",
-   "name": "Xoph's Blood",
-   "baseType": "Amber Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL1hvcGhzQmxvb2QiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/2e10b554f9/XophsBlood.png",
-   "flavourText": "We are his blood.\r\nThrough us he carries his burning message.",
-   "levelRequired": 52,
-   "category": "Amulet",
-   "primaryValue": 0.02032,
-   "listingCount": 1686,
+   "id": 305,
+   "itemId": "Shavronne's Satchel Fine Belt",
+   "detailsId": "shavronnes-satchel-fine-belt",
+   "name": "Shavronne's Satchel",
+   "baseType": "Fine Belt",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9TaGF2cm9ubmVzU2F0Y2hlbCIsInciOjIsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/03b20ba6b9/ShavronnesSatchel.png",
+   "flavourText": "Bring mystery to life. Again and again.",
+   "levelRequired": 62,
+   "category": "Belt",
+   "primaryValue": 0.02617,
+   "listingCount": 3880,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -71.8,
+    "totalChange": -63.68,
     "data": [
-     null,
      null,
      null,
      0,
      16.63,
-     -56.12,
-     -71.8
+     -61.6,
+     -54.87,
+     -63.68
     ]
    },
    "implicitModifiers": [
     {
-     "text": "+(10-15) to [Strength|Strength]",
+     "text": "Has 1 [Charm] Slot",
+     "optional": true
+    },
+    {
+     "text": "Has (2-3) [Charm] Slots",
+     "optional": true
+    },
+    {
+     "text": "[Flask|Flasks] gain 0.17 charges per Second",
      "optional": false
     }
    ],
    "explicitModifiers": [
     {
-     "text": "(10-18)% increased maximum Life",
+     "text": "(21-30)% reduced [Flask] Life Recovery rate",
      "optional": false
     },
     {
-     "text": "+(50-99)% to [Resistances|Fire Resistance]",
+     "text": "+(20-30) to [Intelligence|Intelligence]",
      "optional": false
     },
     {
-     "text": "Enemies in your [Presence] have -25% to Fire Resistance",
+     "text": "(20-30)% increased [Flask|Flask] Charges gained",
+     "optional": false
+    },
+    {
+     "text": "Life Recovery from [Flask|Flasks] also applies to [EnergyShield|Energy Shield]",
      "optional": false
     }
    ],
    "requirementModifiers": [
     {
-     "text": "Level: 52",
+     "text": "Level: 62",
      "optional": false
     }
    ]
@@ -1831,19 +1783,19 @@
    "flavourText": "To truly appreciate life you must be there when it ends",
    "levelRequired": 26,
    "category": "Ring",
-   "primaryValue": 0.01992,
-   "listingCount": 5435,
+   "primaryValue": 0.01636,
+   "listingCount": 4656,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -72.36,
+    "totalChange": -77.3,
     "data": [
-     null,
      null,
      null,
      0,
      16.63,
      -72.58,
-     -72.36
+     -72.36,
+     -77.3
     ]
    },
    "implicitModifiers": [
@@ -1878,6 +1830,50 @@
    ]
   },
   {
+   "id": 352,
+   "itemId": "Strugglescream Stellar Amulet",
+   "detailsId": "strugglescream-stellar-amulet",
+   "name": "Strugglescream",
+   "baseType": "Stellar Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0RlbGlyaXVtQW11bGV0IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/9e8a23019a/DeliriumAmulet.png",
+   "flavourText": "There is no light at the end of this inner strife,\r\nbut the shadows eventually become home.",
+   "levelRequired": 52,
+   "category": "Amulet",
+   "primaryValue": 0.01636,
+   "listingCount": 178,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -3.65,
+    "data": [
+     null,
+     null,
+     0,
+     -45.94,
+     -53.42,
+     -52.12,
+     -3.65
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(5-7) to all [Attributes|Attributes]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "Can have 3 additional [DistilledEmotion|Instilled] Modifiers",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 52",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 307,
    "itemId": "Serpent's Egg Gold Amulet",
    "detailsId": "serpents-egg-gold-amulet",
@@ -1887,19 +1883,19 @@
    "flavourText": "When Kabala the Serpent Queen was banished from Keth,\r\nthe Sekhemas took a single hostage as punishment.",
    "levelRequired": 35,
    "category": "Amulet",
-   "primaryValue": 0.01626,
-   "listingCount": 1645,
+   "primaryValue": 0.01308,
+   "listingCount": 1707,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.84,
+    "totalChange": -81.85,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.28,
-     -99.16,
-     -99.84,
-     -99.84
+     16.63,
+     -78.06,
+     -77.44,
+     -81.85
     ]
    },
    "implicitModifiers": [
@@ -1934,61 +1930,55 @@
    ]
   },
   {
-   "id": 288,
-   "itemId": "Carnage Heart Amber Amulet",
-   "detailsId": "carnage-heart-amber-amulet",
-   "name": "Carnage Heart",
-   "baseType": "Amber Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0Nhcm5hZ2VIZWFydCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/fa1b9d80b8/CarnageHeart.png",
-   "flavourText": "Forged from the blood of countless wars, \r\nits thirst has only begun.",
-   "levelRequired": 8,
-   "category": "Amulet",
-   "primaryValue": 0.0122,
-   "listingCount": 1790,
+   "id": 326,
+   "itemId": "Seed of Cataclysm Lazuli Ring",
+   "detailsId": "seed-of-cataclysm-lazuli-ring",
+   "name": "Seed of Cataclysm",
+   "baseType": "Lazuli Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9TZWVkT2ZDYXRhY2x5c20iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/4ae8a2cc6d/SeedOfCataclysm.png",
+   "flavourText": "The dawn of a new era is set into motion",
+   "levelRequired": 0,
+   "category": "Ring",
+   "primaryValue": 0.01308,
+   "listingCount": 1278,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.76,
+    "totalChange": 15.55,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.77,
-     -99.82,
-     -99.84,
-     -99.76
+     -18.9,
+     4.77,
+     -28.18,
+     15.55
     ]
    },
    "implicitModifiers": [
     {
-     "text": "+(10-15) to [Strength|Strength]",
+     "text": "+(20-30) to maximum Mana",
      "optional": false
     }
    ],
    "explicitModifiers": [
     {
-     "text": "20% reduced maximum Life",
+     "text": "(30-50)% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
      "optional": false
     },
     {
-     "text": "+(10-20) to all [Attributes|Attributes]",
+     "text": "5% reduced [CriticalDamageBonus|Critical Spell Damage Bonus] per [Critical] [Hit] you've dealt with [Spell|Spells] [Recently]",
      "optional": false
     },
     {
-     "text": "+(10-20)% to all [ElementalDamage|Elemental] [Resistances]",
+     "text": "+(13-17)% to [Resistances|Chaos Resistance]",
      "optional": false
     },
     {
-     "text": "(100-198)% increased amount of Life [LifeLeech|Leeched]",
+     "text": "10% increased Mana Cost of Skills",
      "optional": false
     },
     {
-     "text": "(25-49)% increased Damage while [Leech|Leeching]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 8",
+     "text": "(15-30)% chance for [Spell] Damage with [Critical] [Hit|Hits] to be [Lucky]",
      "optional": false
     }
    ]
@@ -2003,19 +1993,19 @@
    "flavourText": "Worship of house gods was tolerated\r\nin Oriath, so long as it remained private.",
    "levelRequired": 24,
    "category": "Amulet",
-   "primaryValue": 0.0122,
-   "listingCount": 2941,
+   "primaryValue": 0.00981,
+   "listingCount": 3236,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.92,
+    "totalChange": -40.22,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.89,
-     -99.42,
-     -99.92,
-     -99.92
+     412.1,
+     -27.73,
+     -25.66,
+     -40.22
     ]
    },
    "implicitModifiers": [
@@ -2054,31 +2044,91 @@
    ]
   },
   {
-   "id": 332,
-   "itemId": "Ryslatha's Coil Ornate Belt",
-   "detailsId": "ryslathas-coil-ornate-belt",
-   "name": "Ryslatha's Coil",
-   "baseType": "Ornate Belt",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9SeXNsYXRoYXNDb2lsIiwidyI6MiwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/09d92223e5/RyslathasCoil.png",
-   "flavourText": "All creatures have the potential for greatness or unequivocal failure.",
-   "levelRequired": 31,
-   "category": "Belt",
-   "primaryValue": 0.0122,
-   "listingCount": 3700,
+   "id": 320,
+   "itemId": "Surefooted Sigil Jade Amulet",
+   "detailsId": "surefooted-sigil-jade-amulet",
+   "name": "Surefooted Sigil",
+   "baseType": "Jade Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL1N1cmVmb290ZWRTaWdpbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/78449612a8/SurefootedSigil.png",
+   "flavourText": "Natural grace is born, not earned.",
+   "levelRequired": 8,
+   "category": "Amulet",
+   "primaryValue": 0.00981,
+   "listingCount": 3176,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.78,
+    "totalChange": -13.34,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.7,
-     -99.67,
-     -99.72,
-     -99.78
+     -18.9,
+     -30.12,
+     -28.18,
+     -13.34
     ]
    },
    "implicitModifiers": [
+    {
+     "text": "+(10-15) to [Dexterity|Dexterity]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(40-60) to maximum Life",
+     "optional": false
+    },
+    {
+     "text": "+(5-14) to [Dexterity|Dexterity]",
+     "optional": false
+    },
+    {
+     "text": "+1 metre to Dodge Roll distance",
+     "optional": false
+    },
+    {
+     "text": "50% increased [Evasion|Evasion Rating] if you've Dodge Rolled [Recently]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 8",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 338,
+   "itemId": "Meginord's Girdle Rawhide Belt",
+   "detailsId": "meginords-girdle-rawhide-belt",
+   "name": "Meginord's Girdle",
+   "baseType": "Rawhide Belt",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9NZWdpbm9yZHNHaXJkbGUiLCJ3IjoyLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/2feba3dafb/MeginordsGirdle.png",
+   "flavourText": "Kaom's strength was rivaled only by\r\nthe great Meginord of the north.",
+   "levelRequired": 0,
+   "category": "Belt",
+   "primaryValue": 0.00981,
+   "listingCount": 2448,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -13.34,
+    "data": [
+     null,
+     null,
+     0,
+     21.64,
+     -30.12,
+     4.15,
+     -13.34
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "(20-30)% increased Life Recovery from [Flask|Flasks]",
+     "optional": false
+    },
     {
      "text": "Has 1 [Charm] Slot",
      "optional": true
@@ -2086,153 +2136,135 @@
     {
      "text": "Has (2-3) [Charm] Slots",
      "optional": true
-    },
-    {
-     "text": "(10-15)% reduced [Charm] Charges used",
-     "optional": false
     }
    ],
    "explicitModifiers": [
     {
-     "text": "+(80-100) to maximum Life",
+     "text": "+(40-50) to [Strength|Strength]",
      "optional": false
     },
     {
-     "text": "(30-50)% increased [Flask] Life Recovery rate",
+     "text": "+(10-15)% to [Resistances|Cold Resistance]",
      "optional": false
     },
     {
-     "text": "(30-40)% more maximum [Physical] [Attack] Damage",
+     "text": "50% increased [Flask|Flask] Charges used",
      "optional": false
     },
     {
-     "text": "(30-40)% less minimum [Physical] [Attack] Damage",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 31",
+     "text": "100% increased [Flask|Flask] Charges gained",
      "optional": false
     }
    ]
   },
   {
-   "id": 354,
-   "itemId": "Levinstone Topaz Ring",
-   "detailsId": "levinstone-topaz-ring",
-   "name": "Levinstone",
-   "baseType": "Topaz Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9TdG9uZU9mT25kYXIiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/c79d385052/StoneOfOndar.png",
-   "flavourText": "Highgate held other secrets.",
-   "levelRequired": 16,
+   "id": 343,
+   "itemId": "Cracklecreep Ruby Ring",
+   "detailsId": "cracklecreep-ruby-ring",
+   "name": "Cracklecreep",
+   "baseType": "Ruby Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9DcmFja2xlY3JlZXAiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/8d67f6a770/Cracklecreep.png",
+   "flavourText": "Fear the fire that spreads like a plague.",
+   "levelRequired": 8,
    "category": "Ring",
-   "primaryValue": 0.0122,
-   "listingCount": 1137,
+   "primaryValue": 0.00981,
+   "listingCount": 2727,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -98.78,
+    "totalChange": -13.34,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -92.79,
-     -91.6,
-     -98.42,
-     -98.78
+     -18.9,
+     4.77,
+     -28.18,
+     -13.34
     ]
    },
    "implicitModifiers": [
     {
-     "text": "+(20-30)% to [Resistances|Lightning Resistance]",
+     "text": "+(20-30)% to [Resistances|Fire Resistance]",
      "optional": false
     }
    ],
    "explicitModifiers": [
     {
-     "text": "+(40-60) to maximum Mana",
+     "text": "(20-30)% increased [Fire] Damage",
      "optional": false
     },
     {
-     "text": "(10-20)% increased chance to [Shock]",
+     "text": "(3.1-6) Life Regeneration per second",
      "optional": false
     },
     {
-     "text": "Lightning Skills [Chain] +1 times",
+     "text": "(20-30)% increased Mana Regeneration Rate",
      "optional": false
     },
     {
-     "text": "(10-20)% increased [BuffMagnitude|Magnitude] of [Shock|Shock] you inflict",
+     "text": "[Ignite|Ignites] you inflict [AilmentSpread|spread] to other Enemies that stay within 1.5 metres for 1 second",
      "optional": false
     }
    ],
    "requirementModifiers": [
     {
-     "text": "Level: 16",
+     "text": "Level: 8",
      "optional": false
     }
    ]
   },
   {
-   "id": 522,
-   "itemId": "Veilpiercer Amethyst Ring",
-   "detailsId": "veilpiercer-amethyst-ring",
-   "name": "Veilpiercer",
-   "baseType": "Amethyst Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9WZWlscGllcmNlciIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/7d9940f2db/Veilpiercer.png",
-   "flavourText": "The tribe revelled wildly, unaware that each fruit \r\nthey ate further bound their continuity to the fog's. \r\nIn time, the merest touch could break their reality.",
-   "levelRequired": 20,
+   "id": 345,
+   "itemId": "Polcirkeln Sapphire Ring",
+   "detailsId": "polcirkeln-sapphire-ring",
+   "name": "Polcirkeln",
+   "baseType": "Sapphire Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9Qb2xjaXJrZWxuIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/dc74bcffd7/Polcirkeln.png",
+   "flavourText": "I rule the north\r\nA legacy earned\r\nTime and time again\r\nSing Meginord's song!",
+   "levelRequired": 12,
    "category": "Ring",
-   "primaryValue": 0.0122,
-   "listingCount": 1164,
+   "primaryValue": 0.00981,
+   "listingCount": 4032,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 7.77,
+    "totalChange": -13.34,
     "data": [
-     null,
      null,
      null,
      0,
      -18.9,
      -30.12,
-     7.77
+     -64.13,
+     -13.34
     ]
    },
    "implicitModifiers": [
     {
-     "text": "+(7-13)% to [Resistances|Chaos Resistance]",
+     "text": "+(20-30)% to [Resistances|Cold Resistance]",
      "optional": false
     }
    ],
    "explicitModifiers": [
     {
-     "text": "+(60-100) to maximum Mana",
+     "text": "(20-30)% increased [Cold] Damage",
      "optional": false
     },
     {
-     "text": "+(15-25) to [Intelligence|Intelligence]",
+     "text": "+(40-60) to maximum Mana",
      "optional": false
     },
     {
-     "text": "[Curse|Curses] you inflict can affect [Hexproof] Enemies",
+     "text": "+(10-15) to [Strength|Strength]",
      "optional": false
     },
     {
-     "text": "[Curse|Curses] you inflict spread to enemies within 3 metres when [Curse|Cursed] enemy dies",
-     "optional": false
-    },
-    {
-     "text": "Gain 1 [DarkWhispers|Dark Whisper] every second there is a [Curse|Cursed] Enemy in your [Presence]",
-     "optional": false
-    },
-    {
-     "text": "(20-38)% increased Damage with [Hit|Hits] against targets in your [Presence]",
+     "text": "Enemies [Chill|Chilled] by your [Hit|Hits] can be [Shatter|Shattered] as though [Frozen]",
      "optional": false
     }
    ],
    "requirementModifiers": [
     {
-     "text": "Level: 20",
+     "text": "Level: 12",
      "optional": false
     }
    ]
@@ -2247,19 +2279,19 @@
    "flavourText": "To stray is to condemn this world to sin.",
    "levelRequired": 30,
    "category": "Amulet",
-   "primaryValue": 0.0122,
-   "listingCount": 458,
+   "primaryValue": 0.00981,
+   "listingCount": 478,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -28.15,
+    "totalChange": -42.23,
     "data": [
-     null,
      null,
      null,
      0,
      -18.9,
      -30.15,
-     -28.15
+     -28.15,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -2302,97 +2334,145 @@
    ]
   },
   {
-   "id": 302,
-   "itemId": "Thief's Torment Emerald Ring",
-   "detailsId": "thiefs-torment-emerald-ring",
-   "name": "Thief's Torment",
-   "baseType": "Emerald Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9UaGllZnNUb3JtZW50IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/77112d5a83/ThiefsTorment.png",
-   "flavourText": "The ring I stole,\r\nMy finger they took,\r\nA shrouded mind,\r\nCut their curses short,\r\nAs I drained their spirit\r\nAnd stole their soul.\r\nA blessing is often a curse.",
-   "levelRequired": 26,
-   "category": "Ring",
-   "primaryValue": 0.01179,
-   "listingCount": 793,
+   "id": 288,
+   "itemId": "Carnage Heart Amber Amulet",
+   "detailsId": "carnage-heart-amber-amulet",
+   "name": "Carnage Heart",
+   "baseType": "Amber Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0Nhcm5hZ2VIZWFydCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/fa1b9d80b8/CarnageHeart.png",
+   "flavourText": "Forged from the blood of countless wars, \r\nits thirst has only begun.",
+   "levelRequired": 8,
+   "category": "Amulet",
+   "primaryValue": 0.00949,
+   "listingCount": 2161,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -16.17,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.41,
-     -99.68,
-     -99.59,
-     -99.59
+     -18.9,
+     -30.12,
+     7.77,
+     -16.17
     ]
    },
    "implicitModifiers": [
     {
-     "text": "+(120-159) to [Accuracy|Accuracy] Rating",
+     "text": "+(10-15) to [Strength|Strength]",
      "optional": false
     }
    ],
    "explicitModifiers": [
     {
-     "text": "(30-40)% increased [ItemRarity|Rarity of Items] found",
+     "text": "20% reduced maximum Life",
      "optional": false
     },
     {
-     "text": "+(10-15)% to all [ElementalDamage|Elemental] [Resistances]",
+     "text": "+(10-20) to all [Attributes|Attributes]",
      "optional": false
     },
     {
-     "text": "Gain 25 Life per Enemy Hit with [Attack|Attacks]",
+     "text": "+(10-20)% to all [ElementalDamage|Elemental] [Resistances]",
      "optional": false
     },
     {
-     "text": "Can't use other Rings",
+     "text": "(100-198)% increased amount of Life [LifeLeech|Leeched]",
      "optional": false
     },
     {
-     "text": "Gain 15 Mana per Enemy Hit with [Attack|Attacks]",
-     "optional": false
-    },
-    {
-     "text": "50% reduced Duration of [Curse|Curses] on you",
+     "text": "(25-49)% increased Damage while [Leech|Leeching]",
      "optional": false
     }
    ],
    "requirementModifiers": [
     {
-     "text": "Level: 26",
+     "text": "Level: 8",
      "optional": false
     }
    ]
   },
   {
-   "id": 338,
-   "itemId": "Meginord's Girdle Rawhide Belt",
-   "detailsId": "meginords-girdle-rawhide-belt",
-   "name": "Meginord's Girdle",
-   "baseType": "Rawhide Belt",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9NZWdpbm9yZHNHaXJkbGUiLCJ3IjoyLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/2feba3dafb/MeginordsGirdle.png",
-   "flavourText": "Kaom's strength was rivaled only by\r\nthe great Meginord of the north.",
-   "levelRequired": 0,
-   "category": "Belt",
-   "primaryValue": 0.01179,
-   "listingCount": 2403,
+   "id": 290,
+   "itemId": "Xoph's Blood Amber Amulet",
+   "detailsId": "xophs-blood-amber-amulet",
+   "name": "Xoph's Blood",
+   "baseType": "Amber Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL1hvcGhzQmxvb2QiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/2e10b554f9/XophsBlood.png",
+   "flavourText": "We are his blood.\r\nThrough us he carries his burning message.",
+   "levelRequired": 52,
+   "category": "Amulet",
+   "primaryValue": 0.00949,
+   "listingCount": 1881,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -98.82,
+    "totalChange": -86.83,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -98.87,
-     -98.62,
-     -99.21,
-     -98.82
+     16.63,
+     -56.12,
+     -71.8,
+     -86.83
     ]
    },
    "implicitModifiers": [
     {
-     "text": "(20-30)% increased Life Recovery from [Flask|Flasks]",
+     "text": "+(10-15) to [Strength|Strength]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "(10-18)% increased maximum Life",
+     "optional": false
+    },
+    {
+     "text": "+(50-99)% to [Resistances|Fire Resistance]",
+     "optional": false
+    },
+    {
+     "text": "Enemies in your [Presence] have -25% to Fire Resistance",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 52",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 336,
+   "itemId": "Goregirdle Plate Belt",
+   "detailsId": "goregirdle-plate-belt",
+   "name": "Goregirdle",
+   "baseType": "Plate Belt",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9Hb3JlZ2lyZGxlIiwidyI6MiwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/fbe737d02a/Goregirdle.png",
+   "flavourText": "Bleeding just means you're still alive.",
+   "levelRequired": 24,
+   "category": "Belt",
+   "primaryValue": 0.00949,
+   "listingCount": 980,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -16.17,
+    "data": [
+     null,
+     null,
+     0,
+     -18.9,
+     -30.12,
+     -64.13,
+     -16.17
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(140-180) to [Armour]",
      "optional": false
     },
     {
@@ -2406,19 +2486,251 @@
    ],
    "explicitModifiers": [
     {
-     "text": "+(40-50) to [Strength|Strength]",
+     "text": "+(20-30) to [Strength|Strength]",
      "optional": false
     },
     {
-     "text": "+(10-15)% to [Resistances|Cold Resistance]",
+     "text": "(10.2-19.8) Life Regeneration per second",
      "optional": false
     },
     {
-     "text": "50% increased [Flask|Flask] Charges used",
+     "text": "Defend with 200% of [Armour|Armour]",
      "optional": false
     },
     {
-     "text": "100% increased [Flask|Flask] Charges gained",
+     "text": "Maximum [Physical|Physical Damage] Reduction is 50%",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 24",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 354,
+   "itemId": "Levinstone Topaz Ring",
+   "detailsId": "levinstone-topaz-ring",
+   "name": "Levinstone",
+   "baseType": "Topaz Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9TdG9uZU9mT25kYXIiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/c79d385052/StoneOfOndar.png",
+   "flavourText": "Highgate held other secrets.",
+   "levelRequired": 16,
+   "category": "Ring",
+   "primaryValue": 0.00949,
+   "listingCount": 1208,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -86.83,
+    "data": [
+     null,
+     null,
+     0,
+     16.63,
+     -78.06,
+     -83.07,
+     -86.83
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(20-30)% to [Resistances|Lightning Resistance]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(40-60) to maximum Mana",
+     "optional": false
+    },
+    {
+     "text": "(10-20)% increased chance to [Shock]",
+     "optional": false
+    },
+    {
+     "text": "Lightning Skills [Chain] +1 times",
+     "optional": false
+    },
+    {
+     "text": "(10-20)% increased [BuffMagnitude|Magnitude] of [Shock|Shock] you inflict",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 16",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 330,
+   "itemId": "Rondel of Fragility Lunar Amulet",
+   "detailsId": "rondel-of-fragility-lunar-amulet",
+   "name": "Rondel of Fragility",
+   "baseType": "Lunar Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL1JvbmRlbE9mRnJhZ2lsaXR5IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/156889f601/RondelOfFragility.png",
+   "flavourText": "Fanatics are the most dangerous enemy,\r\nfor they care not for their own survival.",
+   "levelRequired": 14,
+   "category": "Amulet",
+   "primaryValue": 0.00719,
+   "listingCount": 4660,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 10.79,
+    "data": [
+     null,
+     null,
+     0,
+     -16.95,
+     -32.05,
+     -22.5,
+     10.79
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(20-30) to maximum [EnergyShield|Energy Shield]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "(15-30)% increased [SkillSpeed|Skill Speed]",
+     "optional": false
+    },
+    {
+     "text": "(20-30)% increased [Critical|Critical Hit] Chance",
+     "optional": false
+    },
+    {
+     "text": "-30% to all [ElementalDamage|Elemental] [Resistances]",
+     "optional": false
+    },
+    {
+     "text": "(30-50)% increased Damage",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 14",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 351,
+   "itemId": "Hinekora's Sight Stellar Amulet",
+   "detailsId": "hinekoras-sight-stellar-amulet",
+   "name": "Hinekora's Sight",
+   "baseType": "Stellar Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0hpbmVrb3Jhc1NpZ2h0IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/6fc968aceb/HinekorasSight.png",
+   "flavourText": "Remember the past, anticipate the future.",
+   "levelRequired": 78,
+   "category": "Amulet",
+   "primaryValue": 0.00719,
+   "listingCount": 989,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 10.79,
+    "data": [
+     null,
+     null,
+     0,
+     -16.95,
+     -39.14,
+     -37.44,
+     10.79
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(5-7) to all [Attributes|Attributes]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(301-600) to [Accuracy|Accuracy] Rating",
+     "optional": false
+    },
+    {
+     "text": "+(303-593) to [Evasion] Rating",
+     "optional": false
+    },
+    {
+     "text": "Cannot be [Blind|Blinded]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 44",
+     "optional": false
+    }
+   ],
+   "grantedSkillModifiers": [
+    {
+     "text": "Level (11-19) Future-Past",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 321,
+   "itemId": "Ligurium Talisman Lapis Amulet",
+   "detailsId": "ligurium-talisman-lapis-amulet",
+   "name": "Ligurium Talisman",
+   "baseType": "Lapis Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0xpZ3VyaXVtVGFsaXNtYW4iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/ad4bae46d9/LiguriumTalisman.png",
+   "flavourText": "Healing the soul requires sacrifice.",
+   "levelRequired": 35,
+   "category": "Amulet",
+   "primaryValue": 0.00695,
+   "listingCount": 3411,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 7.09,
+    "data": [
+     null,
+     null,
+     0,
+     -16.95,
+     -32.05,
+     -22.5,
+     7.09
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(10-15) to [Intelligence|Intelligence]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(30-40) to maximum [EnergyShield|Energy Shield]",
+     "optional": false
+    },
+    {
+     "text": "+(25-35) to [Spirit|Spirit]",
+     "optional": false
+    },
+    {
+     "text": "+(20-30) to [Intelligence|Intelligence]",
+     "optional": false
+    },
+    {
+     "text": "Life Regeneration is applied to [EnergyShield|Energy Shield] instead",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 35",
      "optional": false
     }
    ]
@@ -2433,19 +2745,19 @@
    "flavourText": "Drink deeply of the Well.\r\nLet the Abyss coil within.",
    "levelRequired": 0,
    "category": "Ring",
-   "primaryValue": 0.00813,
+   "primaryValue": 0.00654,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -28.18,
+    "totalChange": -42.23,
     "data": [
-     null,
      null,
      null,
      0,
      -21.64,
      -30.12,
-     -28.18
+     -28.18,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -2468,7 +2780,7 @@
      "optional": true
     },
     {
-     "text": "37% increased [Evasion|Evasion Rating]",
+     "text": "(37-39)% increased [Evasion|Evasion Rating]",
      "optional": true
     },
     {
@@ -2489,6 +2801,10 @@
     },
     {
      "text": "+(20-22)% of [Armour|Armour] also applies to [ElementalDamage|Elemental Damage]",
+     "optional": true
+    },
+    {
+     "text": "39% increased maximum [EnergyShield|Energy Shield]",
      "optional": true
     },
     {
@@ -2560,11 +2876,11 @@
      "optional": true
     },
     {
-     "text": "[Debuff|Debuffs] you inflict have (13-17)% increased [SlowMagnitudeModifier|Slow Magnitude]",
+     "text": "[Debuff|Debuffs] you inflict have (13-19)% increased [SlowMagnitudeModifier|Slow Magnitude]",
      "optional": true
     },
     {
-     "text": "(10-11)% chance to gain Onslaught for 3 seconds when you kill an\n enemy affected by [AbyssalWasting|Abyssal Wasting]",
+     "text": "(10-20)% chance to gain Onslaught for 3 seconds when you kill an\n enemy affected by [AbyssalWasting|Abyssal Wasting]",
      "optional": true
     },
     {
@@ -2572,7 +2888,11 @@
      "optional": true
     },
     {
-     "text": "[Spell|Spell] Skills have (13-15)% increased Area of Effect",
+     "text": "(17-21)% [FasterESRechargeStart|faster start of Energy Shield Recharge]",
+     "optional": true
+    },
+    {
+     "text": "[Spell|Spell] Skills have (13-18)% increased Area of Effect",
      "optional": true
     },
     {
@@ -2620,7 +2940,7 @@
      "optional": true
     },
     {
-     "text": "(12-20)% reduced [Slow|Slowing] Potency of [Debuff|Debuffs] on You",
+     "text": "(10-20)% reduced [Slow|Slowing] Potency of [Debuff|Debuffs] on You",
      "optional": true
     },
     {
@@ -2675,19 +2995,19 @@
    "flavourText": "Ming slew Tranquillity\r\nTook Chaos for his wife\r\nAnd on Her immortal finger\r\nHe placed his Heart",
    "levelRequired": 20,
    "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 2578,
+   "primaryValue": 0.00654,
+   "listingCount": 2950,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 139.8,
+    "totalChange": 92.92,
     "data": [
-     null,
      null,
      null,
      0,
      170.8,
      249.8,
-     139.8
+     139.8,
+     92.92
     ]
    },
    "implicitModifiers": [
@@ -2718,6 +3038,70 @@
    ]
   },
   {
+   "id": 302,
+   "itemId": "Thief's Torment Emerald Ring",
+   "detailsId": "thiefs-torment-emerald-ring",
+   "name": "Thief's Torment",
+   "baseType": "Emerald Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9UaGllZnNUb3JtZW50IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/77112d5a83/ThiefsTorment.png",
+   "flavourText": "The ring I stole,\r\nMy finger they took,\r\nA shrouded mind,\r\nCut their curses short,\r\nAs I drained their spirit\r\nAnd stole their soul.\r\nA blessing is often a curse.",
+   "levelRequired": 26,
+   "category": "Ring",
+   "primaryValue": 0.00654,
+   "listingCount": 841,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -61.48,
+    "data": [
+     null,
+     null,
+     0,
+     -45.94,
+     -30.15,
+     -30.57,
+     -61.48
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(120-159) to [Accuracy|Accuracy] Rating",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "(30-40)% increased [ItemRarity|Rarity of Items] found",
+     "optional": false
+    },
+    {
+     "text": "+(10-15)% to all [ElementalDamage|Elemental] [Resistances]",
+     "optional": false
+    },
+    {
+     "text": "Gain 25 Life per Enemy Hit with [Attack|Attacks]",
+     "optional": false
+    },
+    {
+     "text": "Can't use other Rings",
+     "optional": false
+    },
+    {
+     "text": "Gain 15 Mana per Enemy Hit with [Attack|Attacks]",
+     "optional": false
+    },
+    {
+     "text": "50% reduced Duration of [Curse|Curses] on you",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 26",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 303,
    "itemId": "Vigilant View Emerald Ring",
    "detailsId": "vigilant-view-emerald-ring",
@@ -2727,19 +3111,19 @@
    "flavourText": "The warriors of the Unblinking Eye moved\r\ntogether as one, shoulder to shoulder.",
    "levelRequired": 26,
    "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 686,
+   "primaryValue": 0.00654,
+   "listingCount": 813,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.19,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -98.87,
-     -99.08,
-     -99.21,
-     -99.19
+     -18.9,
+     -30.12,
+     -28.18,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -2791,19 +3175,19 @@
    "flavourText": "A pact with Prospero always comes at a price.",
    "levelRequired": 40,
    "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 771,
+   "primaryValue": 0.00654,
+   "listingCount": 945,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.19,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -98.87,
-     -99.08,
-     -99.21,
-     -99.19
+     -18.9,
+     -30.12,
+     -28.18,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -2834,74 +3218,6 @@
    ]
   },
   {
-   "id": 312,
-   "itemId": "Waistgate Heavy Belt",
-   "detailsId": "waistgate-heavy-belt",
-   "name": "Waistgate",
-   "baseType": "Heavy Belt",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9XYWlzdGdhdGUiLCJ3IjoyLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/02bb2a2fb4/Waistgate.png",
-   "flavourText": "Clever artifice is not always complex.",
-   "levelRequired": 50,
-   "category": "Belt",
-   "primaryValue": 0.00813,
-   "listingCount": 736,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.19,
-    "data": [
-     0,
-     null,
-     null,
-     -99.43,
-     -99.54,
-     -99.6,
-     -99.19
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "(20-30)% increased [StunThreshold|Stun Threshold]",
-     "optional": false
-    },
-    {
-     "text": "Has 1 [Charm] Slot",
-     "optional": true
-    },
-    {
-     "text": "Has (2-3) [Charm] Slots",
-     "optional": true
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(50-80) to maximum Life",
-     "optional": false
-    },
-    {
-     "text": "+(50-79) to maximum Mana",
-     "optional": false
-    },
-    {
-     "text": "(20-30)% increased [Flask] Life Recovery rate",
-     "optional": false
-    },
-    {
-     "text": "(20-30)% increased [Flask] Mana Recovery rate",
-     "optional": false
-    },
-    {
-     "text": "Life and Mana [Flask|Flasks] can be equipped in either slot",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 50",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 314,
    "itemId": "Blackheart Iron Ring",
    "detailsId": "blackheart-iron-ring",
@@ -2911,19 +3227,19 @@
    "flavourText": "Fear is highly infectious.",
    "levelRequired": 0,
    "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 4251,
+   "primaryValue": 0.00654,
+   "listingCount": 4505,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -28.18,
+    "totalChange": -42.23,
     "data": [
-     null,
      null,
      null,
      0,
      -18.9,
      4.77,
-     -28.18
+     -28.18,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -2961,19 +3277,19 @@
    "flavourText": "Agony brings clarity to those of pure mind.",
    "levelRequired": 48,
    "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 973,
+   "primaryValue": 0.00654,
+   "listingCount": 1039,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.89,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.84,
-     -99.87,
-     -99.89,
-     -99.89
+     -18.9,
+     -30.12,
+     -28.18,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -3008,166 +3324,6 @@
    ]
   },
   {
-   "id": 320,
-   "itemId": "Surefooted Sigil Jade Amulet",
-   "detailsId": "surefooted-sigil-jade-amulet",
-   "name": "Surefooted Sigil",
-   "baseType": "Jade Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL1N1cmVmb290ZWRTaWdpbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/78449612a8/SurefootedSigil.png",
-   "flavourText": "Natural grace is born, not earned.",
-   "levelRequired": 8,
-   "category": "Amulet",
-   "primaryValue": 0.00813,
-   "listingCount": 3209,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -28.18,
-    "data": [
-     null,
-     null,
-     null,
-     0,
-     -18.9,
-     -30.12,
-     -28.18
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(10-15) to [Dexterity|Dexterity]",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(40-60) to maximum Life",
-     "optional": false
-    },
-    {
-     "text": "+(5-14) to [Dexterity|Dexterity]",
-     "optional": false
-    },
-    {
-     "text": "+1 metre to Dodge Roll distance",
-     "optional": false
-    },
-    {
-     "text": "50% increased [Evasion|Evasion Rating] if you've Dodge Rolled [Recently]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 8",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 325,
-   "itemId": "Glowswarm Lazuli Ring",
-   "detailsId": "glowswarm-lazuli-ring",
-   "name": "Glowswarm",
-   "baseType": "Lazuli Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9HbG93c3dhcm0iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/a6ab61abaf/Glowswarm.png",
-   "flavourText": "As their eyes adjusted, they became aware of a strange\r\nblue light. Countless glowing worms crawled above,\r\nblissfully unaware of their flight from the sirens.",
-   "levelRequired": 0,
-   "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 1534,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.19,
-    "data": [
-     0,
-     null,
-     null,
-     -99.66,
-     -99.08,
-     -99.25,
-     -99.19
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(20-30) to maximum Mana",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(40-60) to maximum Mana",
-     "optional": false
-    },
-    {
-     "text": "(20-30)% increased [Flask] Mana Recovery rate",
-     "optional": false
-    },
-    {
-     "text": "Mana [Flask|Flasks] gain (0.17-0.25) charges per Second",
-     "optional": false
-    },
-    {
-     "text": "Using a Mana [Flask] grants [Guard] equal to 100% of Flask's recovery amount for 4 seconds",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 326,
-   "itemId": "Seed of Cataclysm Lazuli Ring",
-   "detailsId": "seed-of-cataclysm-lazuli-ring",
-   "name": "Seed of Cataclysm",
-   "baseType": "Lazuli Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9TZWVkT2ZDYXRhY2x5c20iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/4ae8a2cc6d/SeedOfCataclysm.png",
-   "flavourText": "The dawn of a new era is set into motion",
-   "levelRequired": 0,
-   "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 1190,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.19,
-    "data": [
-     0,
-     null,
-     null,
-     -98.87,
-     -99.08,
-     -98.81,
-     -99.19
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(20-30) to maximum Mana",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "(30-50)% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
-     "optional": false
-    },
-    {
-     "text": "5% reduced [CriticalDamageBonus|Critical Spell Damage Bonus] per [Critical] [Hit] you've dealt with [Spell|Spells] [Recently]",
-     "optional": false
-    },
-    {
-     "text": "+(13-17)% to [Resistances|Chaos Resistance]",
-     "optional": false
-    },
-    {
-     "text": "10% increased Mana Cost of Skills",
-     "optional": false
-    },
-    {
-     "text": "(15-30)% chance for [Spell] Damage with [Critical] [Hit|Hits] to be [Lucky]",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 333,
    "itemId": "Evergrasping Ring Pearl Ring",
    "detailsId": "evergrasping-ring-pearl-ring",
@@ -3177,19 +3333,19 @@
    "flavourText": "Power comes to those who seek\r\nDeath comes to those who reach",
    "levelRequired": 32,
    "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 7573,
+   "primaryValue": 0.00654,
+   "listingCount": 8078,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.43,
-     -99.54,
-     -99.6,
-     -99.59
+     -18.9,
+     -30.12,
+     -28.18,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -3229,19 +3385,19 @@
    "flavourText": "God blesses those who bless themselves.",
    "levelRequired": 35,
    "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 3043,
+   "primaryValue": 0.00654,
+   "listingCount": 3478,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.19,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -98.87,
-     -99.08,
-     -99.25,
-     -99.19
+     -18.9,
+     -33.66,
+     -28.18,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -3276,28 +3432,28 @@
    ]
   },
   {
-   "id": 343,
-   "itemId": "Cracklecreep Ruby Ring",
-   "detailsId": "cracklecreep-ruby-ring",
-   "name": "Cracklecreep",
+   "id": 342,
+   "itemId": "Blistering Bond Ruby Ring",
+   "detailsId": "blistering-bond-ruby-ring",
+   "name": "Blistering Bond",
    "baseType": "Ruby Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9DcmFja2xlY3JlZXAiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/8d67f6a770/Cracklecreep.png",
-   "flavourText": "Fear the fire that spreads like a plague.",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9CbGlzdGVyaW5nQm9uZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/624abc8043/BlisteringBond.png",
+   "flavourText": "\"The Brotherhood of Silence does not set out to torture our targets.\r\nExcruciating pain is simply a byproduct of certain... necessary methods.\"",
    "levelRequired": 8,
    "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 2464,
+   "primaryValue": 0.00654,
+   "listingCount": 1492,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -28.18,
+    "totalChange": -42.23,
     "data": [
-     null,
      null,
      null,
      0,
      -18.9,
-     4.77,
-     -28.18
+     -30.12,
+     -64.13,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -3308,125 +3464,33 @@
    ],
    "explicitModifiers": [
     {
-     "text": "(20-30)% increased [Fire] Damage",
+     "text": "+(40-60) to maximum Life",
      "optional": false
     },
     {
-     "text": "(3.2-6) Life Regeneration per second",
+     "text": "+(20-30)% to [Resistances|Fire Resistance]",
      "optional": false
     },
     {
-     "text": "(20-30)% increased Mana Regeneration Rate",
+     "text": "-(15-10)% to [Resistances|Cold Resistance]",
      "optional": false
     },
     {
-     "text": "[Ignite|Ignites] you inflict [AilmentSpread|spread] to other Enemies that stay within 1.5 metres for 1 second",
+     "text": "You take [Fire] Damage instead of [Physical] Damage from [Bleeding]",
+     "optional": false
+    },
+    {
+     "text": "[Fire|Fire Damage] also [Contributes] to [Bleeding|Bleeding] [BuffMagnitude|Magnitude]",
+     "optional": false
+    },
+    {
+     "text": "[Bleeding] you inflict deals [Fire|Fire Damage] instead of [Physical|Physical Damage]",
      "optional": false
     }
    ],
    "requirementModifiers": [
     {
      "text": "Level: 8",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 348,
-   "itemId": "Fireflower Solar Amulet",
-   "detailsId": "fireflower-solar-amulet",
-   "name": "Fireflower",
-   "baseType": "Solar Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0ZpcmVmbG93ZXIiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/9430446301/Fireflower.png",
-   "flavourText": "Tale-women in training drink of a painful desert fruit.\r\nFire, they learn, springs from agony.",
-   "levelRequired": 52,
-   "category": "Amulet",
-   "primaryValue": 0.00813,
-   "listingCount": 2312,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.92,
-    "data": [
-     0,
-     null,
-     null,
-     -99.94,
-     -99.95,
-     -99.96,
-     -99.92
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(10-15) to [Spirit|Spirit]",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "(10-15)% increased [ItemRarity|Rarity of Items] found",
-     "optional": false
-    },
-    {
-     "text": "+(1-4) to Level of all [Fire] Skills",
-     "optional": false
-    },
-    {
-     "text": "(30-40)% increased Mana Regeneration Rate",
-     "optional": false
-    },
-    {
-     "text": "Take 100 [Fire] Damage when you [Ignite] an Enemy",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 52",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 352,
-   "itemId": "Strugglescream Stellar Amulet",
-   "detailsId": "strugglescream-stellar-amulet",
-   "name": "Strugglescream",
-   "baseType": "Stellar Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0RlbGlyaXVtQW11bGV0IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/9e8a23019a/DeliriumAmulet.png",
-   "flavourText": "There is no light at the end of this inner strife,\r\nbut the shadows eventually become home.",
-   "levelRequired": 52,
-   "category": "Amulet",
-   "primaryValue": 0.00813,
-   "listingCount": 155,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -52.12,
-    "data": [
-     null,
-     null,
-     null,
-     0,
-     -45.94,
-     -53.42,
-     -52.12
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(5-7) to all [Attributes|Attributes]",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "Can have 3 additional [DistilledEmotion|Instilled] Modifiers",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 52",
      "optional": false
     }
    ]
@@ -3441,19 +3505,19 @@
    "flavourText": "Forged by three brothers\r\nso that they may recognize each other\r\nacross any distance of time or travel.",
    "levelRequired": 32,
    "category": "Ring",
-   "primaryValue": 0.00813,
-   "listingCount": 5073,
+   "primaryValue": 0.00654,
+   "listingCount": 5256,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.26,
+    "totalChange": -61.48,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -98.46,
-     -98.75,
-     -99.28,
-     -99.26
+     -18.9,
+     -53.42,
+     -52.12,
+     -61.48
     ]
    },
    "implicitModifiers": [
@@ -3488,6 +3552,126 @@
    ]
   },
   {
+   "id": 355,
+   "itemId": "The Burrower Topaz Ring",
+   "detailsId": "the-burrower-topaz-ring",
+   "name": "The Burrower",
+   "baseType": "Topaz Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9UaGVCdXJyb3dlciIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/27fc2ce96e/TheBurrower.png",
+   "flavourText": "It coils deeper and deeper\r\nIt slithers between thoughts\r\nIt lies beneath the valley\r\nIt lies in our minds",
+   "levelRequired": 16,
+   "category": "Ring",
+   "primaryValue": 0.00654,
+   "listingCount": 1346,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 92.92,
+    "data": [
+     null,
+     null,
+     0,
+     170.8,
+     133.3,
+     19.76,
+     92.92
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(20-30)% to [Resistances|Lightning Resistance]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "-10% to [Resistances|Cold Resistance]",
+     "optional": false
+    },
+    {
+     "text": "+(20-30)% to [Resistances|Lightning Resistance]",
+     "optional": false
+    },
+    {
+     "text": "(30-50)% increased Mana Regeneration Rate",
+     "optional": false
+    },
+    {
+     "text": "[Lightning] Damage of Enemies [Hit|Hitting] you is [Unlucky]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 16",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 522,
+   "itemId": "Veilpiercer Amethyst Ring",
+   "detailsId": "veilpiercer-amethyst-ring",
+   "name": "Veilpiercer",
+   "baseType": "Amethyst Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9WZWlscGllcmNlciIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/7d9940f2db/Veilpiercer.png",
+   "flavourText": "The tribe revelled wildly, unaware that each fruit \r\nthey ate further bound their continuity to the fog's. \r\nIn time, the merest touch could break their reality.",
+   "levelRequired": 20,
+   "category": "Ring",
+   "primaryValue": 0.00654,
+   "listingCount": 1416,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -42.23,
+    "data": [
+     null,
+     null,
+     0,
+     -18.9,
+     -30.12,
+     7.77,
+     -42.23
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(7-13)% to [Resistances|Chaos Resistance]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(60-100) to maximum Mana",
+     "optional": false
+    },
+    {
+     "text": "+(15-25) to [Intelligence|Intelligence]",
+     "optional": false
+    },
+    {
+     "text": "[Curse|Curses] you inflict can affect [Hexproof] Enemies",
+     "optional": false
+    },
+    {
+     "text": "[Curse|Curses] you inflict spread to enemies within 3 metres when [Curse|Cursed] enemy dies",
+     "optional": false
+    },
+    {
+     "text": "Gain 1 [DarkWhispers|Dark Whisper] every second there is a [Curse|Cursed] Enemy in your [Presence]",
+     "optional": false
+    },
+    {
+     "text": "(20-40)% increased Damage with [Hit|Hits] against targets in your [Presence]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 20",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 289,
    "itemId": "Revered Resin Amber Amulet",
    "detailsId": "revered-resin-amber-amulet",
@@ -3497,19 +3681,19 @@
    "flavourText": "The sacred sap flows slowly, but surely.",
    "levelRequired": 8,
    "category": "Amulet",
-   "primaryValue": 0.00503,
-   "listingCount": 2218,
+   "primaryValue": 0.00478,
+   "listingCount": 2428,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.5,
+    "totalChange": -26.35,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.35,
-     -99.46,
-     -99.56,
-     -99.5
+     -16.95,
+     -32.05,
+     -22.5,
+     -26.35
     ]
    },
    "implicitModifiers": [
@@ -3540,118 +3724,6 @@
    ]
   },
   {
-   "id": 321,
-   "itemId": "Ligurium Talisman Lapis Amulet",
-   "detailsId": "ligurium-talisman-lapis-amulet",
-   "name": "Ligurium Talisman",
-   "baseType": "Lapis Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0xpZ3VyaXVtVGFsaXNtYW4iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/ad4bae46d9/LiguriumTalisman.png",
-   "flavourText": "Healing the soul requires sacrifice.",
-   "levelRequired": 35,
-   "category": "Amulet",
-   "primaryValue": 0.00503,
-   "listingCount": 3299,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.5,
-    "data": [
-     0,
-     null,
-     null,
-     -99.35,
-     -99.46,
-     -99.56,
-     -99.5
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(10-15) to [Intelligence|Intelligence]",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(30-40) to maximum [EnergyShield|Energy Shield]",
-     "optional": false
-    },
-    {
-     "text": "+(25-35) to [Spirit|Spirit]",
-     "optional": false
-    },
-    {
-     "text": "+(20-30) to [Intelligence|Intelligence]",
-     "optional": false
-    },
-    {
-     "text": "Life Regeneration is applied to [EnergyShield|Energy Shield] instead",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 35",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 330,
-   "itemId": "Rondel of Fragility Lunar Amulet",
-   "detailsId": "rondel-of-fragility-lunar-amulet",
-   "name": "Rondel of Fragility",
-   "baseType": "Lunar Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL1JvbmRlbE9mRnJhZ2lsaXR5IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/156889f601/RondelOfFragility.png",
-   "flavourText": "Fanatics are the most dangerous enemy,\r\nfor they care not for their own survival.",
-   "levelRequired": 14,
-   "category": "Amulet",
-   "primaryValue": 0.00503,
-   "listingCount": 4582,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.5,
-    "data": [
-     0,
-     null,
-     null,
-     -99.35,
-     -99.46,
-     -99.56,
-     -99.5
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(20-30) to maximum [EnergyShield|Energy Shield]",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "(15-30)% increased [SkillSpeed|Skill Speed]",
-     "optional": false
-    },
-    {
-     "text": "(20-30)% increased [Critical|Critical Hit] Chance",
-     "optional": false
-    },
-    {
-     "text": "-30% to all [ElementalDamage|Elemental] [Resistances]",
-     "optional": false
-    },
-    {
-     "text": "(30-50)% increased Damage",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 14",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 295,
    "itemId": "Ungil's Harmony Azure Amulet",
    "detailsId": "ungils-harmony-azure-amulet",
@@ -3661,19 +3733,19 @@
    "flavourText": "Gentle anger, raging calm.",
    "levelRequired": 25,
    "category": "Amulet",
-   "primaryValue": 0.00424,
-   "listingCount": 2177,
+   "primaryValue": 0.00478,
+   "listingCount": 2526,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.58,
+    "totalChange": 88.19,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.75,
-     -99.79,
-     -99.56,
-     -99.58
+     -16.93,
+     73.62,
+     66.93,
+     88.19
     ]
    },
    "implicitModifiers": [
@@ -3721,19 +3793,19 @@
    "flavourText": "A hearth unyielding, ever warm,\r\nA light unbroken, endlessly reborn.",
    "levelRequired": 0,
    "category": "Amulet",
-   "primaryValue": 0.00424,
-   "listingCount": 2740,
+   "primaryValue": 0.00478,
+   "listingCount": 2904,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.58,
+    "totalChange": 88.19,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.75,
-     -99.46,
-     -99.62,
-     -99.58
+     112.2,
+     49.61,
+     66.93,
+     88.19
     ]
    },
    "implicitModifiers": [
@@ -3766,6 +3838,58 @@
    ]
   },
   {
+   "id": 306,
+   "itemId": "Eye of Chayula Gold Amulet",
+   "detailsId": "eye-of-chayula-gold-amulet",
+   "name": "Eye of Chayula",
+   "baseType": "Gold Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0V5ZU9mQ2hheXVsYSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/b46b4e3204/EyeOfChayula.png",
+   "flavourText": "Never blinking, always watching.",
+   "levelRequired": 35,
+   "category": "Amulet",
+   "primaryValue": 0.00478,
+   "listingCount": 493,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -15.55,
+    "data": [
+     null,
+     null,
+     0,
+     -6.18,
+     -30.21,
+     -25.27,
+     -15.55
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "(12-20)% increased [ItemRarity|Rarity of Items] found",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "(20-30)% reduced maximum Life",
+     "optional": false
+    },
+    {
+     "text": "+(10-15) to all [Attributes|Attributes]",
+     "optional": false
+    },
+    {
+     "text": "Cannot be [LightStun|Light Stunned]",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 35",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 322,
    "itemId": "Stone of Lazhwar Lapis Amulet",
    "detailsId": "stone-of-lazhwar-lapis-amulet",
@@ -3775,19 +3899,19 @@
    "flavourText": "You are slow, foolish and ignorant.\r\nI am not.",
    "levelRequired": 8,
    "category": "Amulet",
-   "primaryValue": 0.00424,
-   "listingCount": 1923,
+   "primaryValue": 0.00478,
+   "listingCount": 2003,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.58,
+    "totalChange": -26.35,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.35,
-     -99.46,
-     -99.56,
-     -99.58
+     -16.95,
+     -32.05,
+     -34.67,
+     -26.35
     ]
    },
    "implicitModifiers": [
@@ -3798,7 +3922,7 @@
    ],
    "explicitModifiers": [
     {
-     "text": "+(51-99) to maximum Mana",
+     "text": "+(50-99) to maximum Mana",
      "optional": false
     },
     {
@@ -3827,19 +3951,19 @@
    "flavourText": "Below all living things,\r\nthere exists a flow...",
    "levelRequired": 0,
    "category": "Belt",
-   "primaryValue": 0.00424,
-   "listingCount": 1433,
+   "primaryValue": 0.00478,
+   "listingCount": 1557,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.58,
+    "totalChange": 88.19,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.75,
-     -99.46,
-     -99.62,
-     -99.58
+     112.2,
+     49.61,
+     66.93,
+     88.19
     ]
    },
    "implicitModifiers": [
@@ -3893,19 +4017,19 @@
    "flavourText": "\"The power of rebirth rivals that of immortality.\"\r\n- Icius Perandus, Antiquities Collection, Item 3",
    "levelRequired": 24,
    "category": "Belt",
-   "primaryValue": 0.00424,
-   "listingCount": 2736,
+   "primaryValue": 0.00478,
+   "listingCount": 3008,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.58,
+    "totalChange": -26.35,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.35,
-     -99.46,
-     -99.56,
-     -99.58
+     -16.95,
+     -32.05,
+     -34.67,
+     -26.35
     ]
    },
    "implicitModifiers": [
@@ -3965,19 +4089,19 @@
    "flavourText": "Some families have peculiar gifts...",
    "levelRequired": 14,
    "category": "Belt",
-   "primaryValue": 0.00424,
-   "listingCount": 3152,
+   "primaryValue": 0.00478,
+   "listingCount": 3650,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.58,
+    "totalChange": 88.19,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.75,
-     -99.49,
-     -99.62,
-     -99.58
+     99.21,
+     49.61,
+     66.93,
+     88.19
     ]
    },
    "implicitModifiers": [
@@ -4024,58 +4148,6 @@
    ]
   },
   {
-   "id": 306,
-   "itemId": "Eye of Chayula Gold Amulet",
-   "detailsId": "eye-of-chayula-gold-amulet",
-   "name": "Eye of Chayula",
-   "baseType": "Gold Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0V5ZU9mQ2hheXVsYSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/b46b4e3204/EyeOfChayula.png",
-   "flavourText": "Never blinking, always watching.",
-   "levelRequired": 35,
-   "category": "Amulet",
-   "primaryValue": 0.00423,
-   "listingCount": 465,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.58,
-    "data": [
-     0,
-     null,
-     null,
-     -99.43,
-     -99.47,
-     -99.6,
-     -99.58
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "(12-20)% increased [ItemRarity|Rarity of Items] found",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "(20-30)% reduced maximum Life",
-     "optional": false
-    },
-    {
-     "text": "+(10-15) to all [Attributes|Attributes]",
-     "optional": false
-    },
-    {
-     "text": "Cannot be [LightStun|Light Stunned]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 35",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 294,
    "itemId": "The Everlasting Gaze Azure Amulet",
    "detailsId": "the-everlasting-gaze-azure-amulet",
@@ -4085,19 +4157,19 @@
    "flavourText": "What they saw was what they believed, and\r\nthey believed Lunaris had not abandoned them.",
    "levelRequired": 0,
    "category": "Amulet",
-   "primaryValue": 0.00406,
-   "listingCount": 4061,
+   "primaryValue": 0.00327,
+   "listingCount": 4249,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -37.44,
+    "totalChange": -49.61,
     "data": [
-     null,
      null,
      null,
      0,
      -16.95,
      -32.05,
-     -37.44
+     -37.44,
+     -49.61
     ]
    },
    "implicitModifiers": [
@@ -4131,19 +4203,19 @@
    "flavourText": "Forge your Perseverance on the Anvil of Faith.",
    "levelRequired": 18,
    "category": "Amulet",
-   "primaryValue": 0.00406,
-   "listingCount": 720,
+   "primaryValue": 0.00327,
+   "listingCount": 794,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.43,
-     -99.47,
-     -99.6,
-     -99.59
+     -6.18,
+     -30.21,
+     -28.27,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -4191,19 +4263,19 @@
    "flavourText": "Trifle not with the trinket mage.",
    "levelRequired": 78,
    "category": "Belt",
-   "primaryValue": 0.00406,
-   "listingCount": 1669,
+   "primaryValue": 0.00327,
+   "listingCount": 2029,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.43,
-     -99.54,
-     -99.6,
-     -99.59
+     -18.9,
+     -30.21,
+     -28.27,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -4238,7 +4310,7 @@
      "optional": false
     },
     {
-     "text": "(20-29)% increased [Charm] Charges gained",
+     "text": "(20-30)% increased [Charm] Charges gained",
      "optional": false
     }
    ],
@@ -4256,6 +4328,74 @@
    ]
   },
   {
+   "id": 312,
+   "itemId": "Waistgate Heavy Belt",
+   "detailsId": "waistgate-heavy-belt",
+   "name": "Waistgate",
+   "baseType": "Heavy Belt",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9XYWlzdGdhdGUiLCJ3IjoyLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/02bb2a2fb4/Waistgate.png",
+   "flavourText": "Clever artifice is not always complex.",
+   "levelRequired": 50,
+   "category": "Belt",
+   "primaryValue": 0.00327,
+   "listingCount": 1089,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -42.23,
+    "data": [
+     null,
+     null,
+     0,
+     -18.9,
+     -30.21,
+     43.64,
+     -42.23
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "(20-30)% increased [StunThreshold|Stun Threshold]",
+     "optional": false
+    },
+    {
+     "text": "Has 1 [Charm] Slot",
+     "optional": true
+    },
+    {
+     "text": "Has (2-3) [Charm] Slots",
+     "optional": true
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(50-80) to maximum Life",
+     "optional": false
+    },
+    {
+     "text": "+(50-79) to maximum Mana",
+     "optional": false
+    },
+    {
+     "text": "(20-30)% increased [Flask] Life Recovery rate",
+     "optional": false
+    },
+    {
+     "text": "(20-30)% increased [Flask] Mana Recovery rate",
+     "optional": false
+    },
+    {
+     "text": "Life and Mana [Flask|Flasks] can be equipped in either slot",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 50",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 313,
    "itemId": "Zerphi's Genesis Heavy Belt",
    "detailsId": "zerphis-genesis-heavy-belt",
@@ -4265,19 +4405,19 @@
    "flavourText": "The most horrifying ideas often begin with a simple innovation.",
    "levelRequired": 56,
    "category": "Belt",
-   "primaryValue": 0.00406,
-   "listingCount": 1159,
+   "primaryValue": 0.00327,
+   "listingCount": 1345,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -28.27,
+    "totalChange": -42.23,
     "data": [
-     null,
      null,
      null,
      0,
      -18.9,
      -30.21,
-     -28.27
+     -28.27,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -4308,7 +4448,7 @@
      "optional": false
     },
     {
-     "text": "+(10-29) to [Strength|Strength]",
+     "text": "+(10-30) to [Strength|Strength]",
      "optional": false
     },
     {
@@ -4337,19 +4477,19 @@
    "flavourText": "Those members of the Brotherhood who employ the venom of \r\nTrarthan ice snakes must take great care with the volatile substance.",
    "levelRequired": 36,
    "category": "Ring",
-   "primaryValue": 0.00406,
-   "listingCount": 1646,
+   "primaryValue": 0.00327,
+   "listingCount": 1887,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -3.54,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.66,
-     -99.08,
-     -99.21,
-     -99.59
+     170.8,
+     133.3,
+     19.76,
+     -3.54
     ]
    },
    "implicitModifiers": [
@@ -4401,19 +4541,19 @@
    "flavourText": "There is a way to survive the bite of an ice snake,\r\nbut few have the resolve to attempt it.",
    "levelRequired": 36,
    "category": "Ring",
-   "primaryValue": 0.00406,
-   "listingCount": 1962,
+   "primaryValue": 0.00327,
+   "listingCount": 2148,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -3.54,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.66,
-     -99.08,
-     -99.21,
-     -99.59
+     170.8,
+     133.3,
+     19.76,
+     -3.54
     ]
    },
    "implicitModifiers": [
@@ -4465,19 +4605,19 @@
    "flavourText": "A single moment sets in motion an eternal fall,\r\nbeneath which all are buried.",
    "levelRequired": 52,
    "category": "Amulet",
-   "primaryValue": 0.00406,
-   "listingCount": 491,
+   "primaryValue": 0.00327,
+   "listingCount": 513,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -28.27,
+    "totalChange": -42.23,
     "data": [
-     null,
      null,
      null,
      0,
      62.19,
      32.69,
-     -28.27
+     -28.27,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -4508,6 +4648,56 @@
    ]
   },
   {
+   "id": 325,
+   "itemId": "Glowswarm Lazuli Ring",
+   "detailsId": "glowswarm-lazuli-ring",
+   "name": "Glowswarm",
+   "baseType": "Lazuli Ring",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9HbG93c3dhcm0iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/a6ab61abaf/Glowswarm.png",
+   "flavourText": "As their eyes adjusted, they became aware of a strange\r\nblue light. Countless glowing worms crawled above,\r\nblissfully unaware of their flight from the sirens.",
+   "levelRequired": 0,
+   "category": "Ring",
+   "primaryValue": 0.00327,
+   "listingCount": 1851,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -3.54,
+    "data": [
+     null,
+     null,
+     0,
+     170.8,
+     121.5,
+     139.8,
+     -3.54
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(20-30) to maximum Mana",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(40-60) to maximum Mana",
+     "optional": false
+    },
+    {
+     "text": "(20-30)% increased [Flask] Mana Recovery rate",
+     "optional": false
+    },
+    {
+     "text": "Mana [Flask|Flasks] gain (0.17-0.25) charges per Second",
+     "optional": false
+    },
+    {
+     "text": "Using a Mana [Flask] grants [Guard] equal to 100% of Flask's recovery amount for 4 seconds",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 329,
    "itemId": "Soul Tether Long Belt",
    "detailsId": "soul-tether-long-belt",
@@ -4517,19 +4707,19 @@
    "flavourText": "Vaal bloodpriests were among the earliest intellectuals on record.\r\nIt was they who found that a newly freed soul would\r\ndesperately cling to any other source of life.",
    "levelRequired": 20,
    "category": "Belt",
-   "primaryValue": 0.00406,
-   "listingCount": 2298,
+   "primaryValue": 0.00327,
+   "listingCount": 2532,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -28.27,
+    "totalChange": -42.23,
     "data": [
-     null,
      null,
      null,
      0,
      -18.9,
      -30.21,
-     -28.27
+     -28.27,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -4581,19 +4771,19 @@
    "flavourText": "Death is your most important duty.\r\nFace it, or curse your bloodline for all eternity.",
    "levelRequired": 40,
    "category": "Belt",
-   "primaryValue": 0.00406,
-   "listingCount": 2655,
+   "primaryValue": 0.00327,
+   "listingCount": 2889,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.43,
-     -99.54,
-     -99.6,
-     -99.59
+     -18.9,
+     -30.21,
+     -28.27,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -4636,6 +4826,70 @@
    ]
   },
   {
+   "id": 332,
+   "itemId": "Ryslatha's Coil Ornate Belt",
+   "detailsId": "ryslathas-coil-ornate-belt",
+   "name": "Ryslatha's Coil",
+   "baseType": "Ornate Belt",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9SeXNsYXRoYXNDb2lsIiwidyI6MiwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/09d92223e5/RyslathasCoil.png",
+   "flavourText": "All creatures have the potential for greatness or unequivocal failure.",
+   "levelRequired": 31,
+   "category": "Belt",
+   "primaryValue": 0.00327,
+   "listingCount": 4092,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -80.74,
+    "data": [
+     null,
+     null,
+     0,
+     8.13,
+     -9.19,
+     -28.15,
+     -80.74
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "Has 1 [Charm] Slot",
+     "optional": true
+    },
+    {
+     "text": "Has (2-3) [Charm] Slots",
+     "optional": true
+    },
+    {
+     "text": "(10-15)% reduced [Charm] Charges used",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "+(80-100) to maximum Life",
+     "optional": false
+    },
+    {
+     "text": "(30-50)% increased [Flask] Life Recovery rate",
+     "optional": false
+    },
+    {
+     "text": "(30-40)% more maximum [Physical] [Attack] Damage",
+     "optional": false
+    },
+    {
+     "text": "(30-40)% less minimum [Physical] [Attack] Damage",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 31",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 334,
    "itemId": "Heartbound Loop Pearl Ring",
    "detailsId": "heartbound-loop-pearl-ring",
@@ -4645,19 +4899,19 @@
    "flavourText": "When the axe finally fell, Seryl shared his pain,\r\nand the last thought that flickered through his\r\nfading mind was her broken, shattered scream.",
    "levelRequired": 32,
    "category": "Ring",
-   "primaryValue": 0.00406,
-   "listingCount": 1911,
+   "primaryValue": 0.00327,
+   "listingCount": 2249,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -3.54,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.66,
-     -99.08,
-     -99.21,
-     -99.59
+     170.8,
+     133.3,
+     19.76,
+     -3.54
     ]
    },
    "implicitModifiers": [
@@ -4696,70 +4950,6 @@
    ]
   },
   {
-   "id": 336,
-   "itemId": "Goregirdle Plate Belt",
-   "detailsId": "goregirdle-plate-belt",
-   "name": "Goregirdle",
-   "baseType": "Plate Belt",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQmVsdHMvVW5pcXVlcy9Hb3JlZ2lyZGxlIiwidyI6MiwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/fbe737d02a/Goregirdle.png",
-   "flavourText": "Bleeding just means you're still alive.",
-   "levelRequired": 24,
-   "category": "Belt",
-   "primaryValue": 0.00406,
-   "listingCount": 833,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.59,
-    "data": [
-     0,
-     null,
-     null,
-     -98.87,
-     -99.08,
-     -99.21,
-     -99.59
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(140-180) to [Armour]",
-     "optional": false
-    },
-    {
-     "text": "Has 1 [Charm] Slot",
-     "optional": true
-    },
-    {
-     "text": "Has (2-3) [Charm] Slots",
-     "optional": true
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(20-29) to [Strength|Strength]",
-     "optional": false
-    },
-    {
-     "text": "(10.2-19.3) Life Regeneration per second",
-     "optional": false
-    },
-    {
-     "text": "Defend with 200% of [Armour|Armour]",
-     "optional": false
-    },
-    {
-     "text": "Maximum [Physical|Physical Damage] Reduction is 50%",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 24",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 339,
    "itemId": "Midnight Braid Rawhide Belt",
    "detailsId": "midnight-braid-rawhide-belt",
@@ -4769,19 +4959,19 @@
    "flavourText": "Adversity is the soil in\r\nwhich persistence grows.",
    "levelRequired": 0,
    "category": "Belt",
-   "primaryValue": 0.00406,
-   "listingCount": 4473,
+   "primaryValue": 0.00327,
+   "listingCount": 4939,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -28.27,
+    "totalChange": -42.23,
     "data": [
-     null,
      null,
      null,
      0,
      -18.9,
      -30.21,
-     -28.27
+     -28.27,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -4814,126 +5004,6 @@
    ]
   },
   {
-   "id": 342,
-   "itemId": "Blistering Bond Ruby Ring",
-   "detailsId": "blistering-bond-ruby-ring",
-   "name": "Blistering Bond",
-   "baseType": "Ruby Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9CbGlzdGVyaW5nQm9uZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/624abc8043/BlisteringBond.png",
-   "flavourText": "\"The Brotherhood of Silence does not set out to torture our targets.\r\nExcruciating pain is simply a byproduct of certain... necessary methods.\"",
-   "levelRequired": 8,
-   "category": "Ring",
-   "primaryValue": 0.00406,
-   "listingCount": 1411,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.59,
-    "data": [
-     0,
-     null,
-     null,
-     -98.87,
-     -99.08,
-     -99.21,
-     -99.59
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(20-30)% to [Resistances|Fire Resistance]",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(40-60) to maximum Life",
-     "optional": false
-    },
-    {
-     "text": "+(20-30)% to [Resistances|Fire Resistance]",
-     "optional": false
-    },
-    {
-     "text": "-(15-10)% to [Resistances|Cold Resistance]",
-     "optional": false
-    },
-    {
-     "text": "You take [Fire] Damage instead of [Physical] Damage from [Bleeding]",
-     "optional": false
-    },
-    {
-     "text": "[Fire|Fire Damage] also [Contributes] to [Bleeding|Bleeding] [BuffMagnitude|Magnitude]",
-     "optional": false
-    },
-    {
-     "text": "[Bleeding] you inflict deals [Fire|Fire Damage] instead of [Physical|Physical Damage]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 8",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 345,
-   "itemId": "Polcirkeln Sapphire Ring",
-   "detailsId": "polcirkeln-sapphire-ring",
-   "name": "Polcirkeln",
-   "baseType": "Sapphire Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9Qb2xjaXJrZWxuIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/dc74bcffd7/Polcirkeln.png",
-   "flavourText": "I rule the north\r\nA legacy earned\r\nTime and time again\r\nSing Meginord's song!",
-   "levelRequired": 12,
-   "category": "Ring",
-   "primaryValue": 0.00406,
-   "listingCount": 3665,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -64.13,
-    "data": [
-     null,
-     null,
-     null,
-     0,
-     -18.9,
-     -30.12,
-     -64.13
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(20-30)% to [Resistances|Cold Resistance]",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "(20-30)% increased [Cold] Damage",
-     "optional": false
-    },
-    {
-     "text": "+(40-60) to maximum Mana",
-     "optional": false
-    },
-    {
-     "text": "+(10-15) to [Strength|Strength]",
-     "optional": false
-    },
-    {
-     "text": "Enemies [Chill|Chilled] by your [Hit|Hits] can be [Shatter|Shattered] as though [Frozen]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 12",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 346,
    "itemId": "Whisper of the Brotherhood Sapphire Ring",
    "detailsId": "whisper-of-the-brotherhood-sapphire-ring",
@@ -4943,19 +5013,19 @@
    "flavourText": "Forged by the last remaining brother\r\nto return all that was once given.",
    "levelRequired": 32,
    "category": "Ring",
-   "primaryValue": 0.00406,
-   "listingCount": 1961,
+   "primaryValue": 0.00327,
+   "listingCount": 2151,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 19.76,
+    "totalChange": -3.54,
     "data": [
-     null,
      null,
      null,
      0,
      170.8,
      133.3,
-     19.76
+     19.76,
+     -3.54
     ]
    },
    "implicitModifiers": [
@@ -4999,19 +5069,19 @@
    "flavourText": "The homeguard signalled for aid against a surprise attack,\r\nbut it was not their dekharas that responded.\r\nIt was Solerai herself.",
    "levelRequired": 30,
    "category": "Amulet",
-   "primaryValue": 0.00406,
-   "listingCount": 5360,
+   "primaryValue": 0.00327,
+   "listingCount": 5496,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.43,
-     -99.54,
-     -99.6,
-     -99.59
+     -18.9,
+     -30.21,
+     -28.27,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -5046,6 +5116,62 @@
    ]
   },
   {
+   "id": 348,
+   "itemId": "Fireflower Solar Amulet",
+   "detailsId": "fireflower-solar-amulet",
+   "name": "Fireflower",
+   "baseType": "Solar Amulet",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0ZpcmVmbG93ZXIiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/9430446301/Fireflower.png",
+   "flavourText": "Tale-women in training drink of a painful desert fruit.\r\nFire, they learn, springs from agony.",
+   "levelRequired": 52,
+   "category": "Amulet",
+   "primaryValue": 0.00327,
+   "listingCount": 2605,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -42.23,
+    "data": [
+     null,
+     null,
+     0,
+     -18.9,
+     -30.21,
+     43.64,
+     -42.23
+    ]
+   },
+   "implicitModifiers": [
+    {
+     "text": "+(10-15) to [Spirit|Spirit]",
+     "optional": false
+    }
+   ],
+   "explicitModifiers": [
+    {
+     "text": "(10-15)% increased [ItemRarity|Rarity of Items] found",
+     "optional": false
+    },
+    {
+     "text": "+(1-4) to Level of all [Fire] Skills",
+     "optional": false
+    },
+    {
+     "text": "(30-40)% increased Mana Regeneration Rate",
+     "optional": false
+    },
+    {
+     "text": "Take 100 [Fire] Damage when you [Ignite] an Enemy",
+     "optional": false
+    }
+   ],
+   "requirementModifiers": [
+    {
+     "text": "Level: 52",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 350,
    "itemId": "Fixation of Yix Stellar Amulet",
    "detailsId": "fixation-of-yix-stellar-amulet",
@@ -5055,19 +5181,19 @@
    "flavourText": "He knew not why he was changing, only\r\nthat he wanted to hold his family close...",
    "levelRequired": 24,
    "category": "Amulet",
-   "primaryValue": 0.00406,
-   "listingCount": 6631,
+   "primaryValue": 0.00327,
+   "listingCount": 7526,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.92,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.89,
-     -99.82,
-     -99.84,
-     -99.92
+     62.19,
+     39.75,
+     -28.27,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -5110,120 +5236,6 @@
    ]
   },
   {
-   "id": 351,
-   "itemId": "Hinekora's Sight Stellar Amulet",
-   "detailsId": "hinekoras-sight-stellar-amulet",
-   "name": "Hinekora's Sight",
-   "baseType": "Stellar Amulet",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvQW11bGV0cy9VbmlxdWVzL0hpbmVrb3Jhc1NpZ2h0IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/6fc968aceb/HinekorasSight.png",
-   "flavourText": "Remember the past, anticipate the future.",
-   "levelRequired": 78,
-   "category": "Amulet",
-   "primaryValue": 0.00406,
-   "listingCount": 863,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.59,
-    "data": [
-     0,
-     null,
-     null,
-     -99.35,
-     -99.46,
-     -99.6,
-     -99.59
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(5-7) to all [Attributes|Attributes]",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "+(301-600) to [Accuracy|Accuracy] Rating",
-     "optional": false
-    },
-    {
-     "text": "+(303-593) to [Evasion] Rating",
-     "optional": false
-    },
-    {
-     "text": "Cannot be [Blind|Blinded]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 44",
-     "optional": false
-    }
-   ],
-   "grantedSkillModifiers": [
-    {
-     "text": "Level (11-19) Future-Past",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 355,
-   "itemId": "The Burrower Topaz Ring",
-   "detailsId": "the-burrower-topaz-ring",
-   "name": "The Burrower",
-   "baseType": "Topaz Ring",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvUmluZ3MvVW5pcXVlcy9UaGVCdXJyb3dlciIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/27fc2ce96e/TheBurrower.png",
-   "flavourText": "It coils deeper and deeper\r\nIt slithers between thoughts\r\nIt lies beneath the valley\r\nIt lies in our minds",
-   "levelRequired": 16,
-   "category": "Ring",
-   "primaryValue": 0.00406,
-   "listingCount": 1267,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -99.59,
-    "data": [
-     0,
-     null,
-     null,
-     -99.66,
-     -99.08,
-     -99.21,
-     -99.59
-    ]
-   },
-   "implicitModifiers": [
-    {
-     "text": "+(20-30)% to [Resistances|Lightning Resistance]",
-     "optional": false
-    }
-   ],
-   "explicitModifiers": [
-    {
-     "text": "-10% to [Resistances|Cold Resistance]",
-     "optional": false
-    },
-    {
-     "text": "+(20-30)% to [Resistances|Lightning Resistance]",
-     "optional": false
-    },
-    {
-     "text": "(30-50)% increased Mana Regeneration Rate",
-     "optional": false
-    },
-    {
-     "text": "[Lightning] Damage of Enemies [Hit|Hitting] you is [Unlucky]",
-     "optional": false
-    }
-   ],
-   "requirementModifiers": [
-    {
-     "text": "Level: 16",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 359,
    "itemId": "Byrnabas Wide Belt",
    "detailsId": "byrnabas-wide-belt",
@@ -5233,19 +5245,19 @@
    "flavourText": "The Brinerot sail without fear of storms.",
    "levelRequired": 14,
    "category": "Belt",
-   "primaryValue": 0.00406,
-   "listingCount": 611,
+   "primaryValue": 0.00327,
+   "listingCount": 636,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -42.23,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.43,
-     -99.54,
-     -99.6,
-     -99.59
+     -18.9,
+     -30.21,
+     -28.27,
+     -42.23
     ]
    },
    "implicitModifiers": [
@@ -5297,19 +5309,19 @@
    "flavourText": "A Templar thinks he's righteous for flogging\r\nhimself once for every ten lashings he gives.",
    "levelRequired": 55,
    "category": "Belt",
-   "primaryValue": 0.00406,
-   "listingCount": 1082,
+   "primaryValue": 0.00327,
+   "listingCount": 1261,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -99.59,
+    "totalChange": -49.61,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.35,
-     -99.46,
-     -99.56,
-     -99.59
+     -16.95,
+     -32.05,
+     -37.44,
+     -49.61
     ]
    },
    "implicitModifiers": [

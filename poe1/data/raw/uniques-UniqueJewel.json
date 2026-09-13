@@ -8,7 +8,7 @@
    "variant": "No Notables, Grant Notables",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -36.78,
+    "totalChange": -37.15,
     "data": [
      0,
      -10.83,
@@ -16,7 +16,7 @@
      -25.29,
      -27.15,
      -32.56,
-     -36.78
+     -37.15
     ]
    },
    "mutatedModifiers": [
@@ -31,9 +31,9 @@
    ],
    "flavourText": "\"I don't know how I know, \nI just know that I know.\"",
    "itemType": "Jewel",
-   "chaosValue": 1272745,
-   "exaltedValue": 606069,
-   "divineValue": 3631,
+   "chaosValue": 1265138,
+   "exaltedValue": 585712,
+   "divineValue": 3589,
    "count": 5,
    "detailsId": "foulborn-unnatural-instinct-no-notables-grant-notables-viridian-jewel",
    "tradeInfo": [
@@ -58,7 +58,7 @@
    "variant": "Grant Notables",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -4.68,
+    "totalChange": -6.14,
     "data": [
      0,
      -31.77,
@@ -66,7 +66,7 @@
      -44.34,
      -24.5,
      -20.01,
-     -4.68
+     -6.14
     ]
    },
    "explicitModifiers": [
@@ -83,10 +83,10 @@
    ],
    "flavourText": "\"I don't know how I know, \nI just know that I know.\"",
    "itemType": "Jewel",
-   "chaosValue": 634405,
-   "exaltedValue": 302098,
-   "divineValue": 1810,
-   "count": 22,
+   "chaosValue": 624630,
+   "exaltedValue": 289181,
+   "divineValue": 1772,
+   "count": 23,
    "detailsId": "foulborn-unnatural-instinct-grant-notables-viridian-jewel",
    "tradeInfo": [
     {
@@ -95,7 +95,7 @@
      "max": 0
     }
    ],
-   "listingCount": 23
+   "listingCount": 24
   },
   {
    "id": 40773,
@@ -104,7 +104,7 @@
    "baseType": "Large Cluster Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -16.77,
+    "totalChange": -12.87,
     "data": [
      0,
      -8.8,
@@ -112,17 +112,62 @@
      3.93,
      -13.4,
      -16.99,
-     -16.77
+     -12.87
     ]
    },
    "flavourText": "Only a madman would ignore a god's instructions.",
    "itemType": "Cluster Jewel",
-   "chaosValue": 437704,
-   "exaltedValue": 208431,
-   "divineValue": 1249,
+   "chaosValue": 458250,
+   "exaltedValue": 212153,
+   "divineValue": 1300,
    "count": 109,
    "detailsId": "voices-large-cluster-jewel",
-   "listingCount": 148
+   "listingCount": 147
+  },
+  {
+   "id": 140950,
+   "name": "Foulborn The Red Dream",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ad9a659d67/TheRedDream.png",
+   "baseType": "Crimson Jewel",
+   "variant": "Endurance Chaos, Fire Life",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -8.96,
+    "data": [
+     0,
+     3.86,
+     -16.09,
+     -22.02,
+     -26.95,
+     -8.96,
+     null
+    ]
+   },
+   "mutatedModifiers": [
+    {
+     "text": "+4% to Chaos Resistance per Endurance Charge",
+     "optional": false
+    },
+    {
+     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant increased Maximum Life at 50% of its value",
+     "optional": false
+    }
+   ],
+   "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
+   "itemType": "Jewel",
+   "chaosValue": 158625,
+   "exaltedValue": 73438,
+   "divineValue": 450,
+   "count": 1,
+   "detailsId": "foulborn-the-red-dream-endurance-chaos-fire-life-crimson-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_4210011075",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 3
   },
   {
    "id": 140941,
@@ -155,10 +200,10 @@
    ],
    "flavourText": "We swell and flood\nand drown the undeserving beneath our might.",
    "itemType": "Jewel",
-   "chaosValue": 143705,
-   "exaltedValue": 68431,
-   "divineValue": 410,
-   "count": 1,
+   "chaosValue": 141352,
+   "exaltedValue": 65441,
+   "divineValue": 401,
+   "count": 2,
    "detailsId": "foulborn-the-blue-nightmare-lightning-lucky-lightning-to-chaos-cobalt-jewel",
    "tradeInfo": [
     {
@@ -167,7 +212,80 @@
      "max": 0
     }
    ],
+   "listingCount": 2
+  },
+  {
+   "id": 140947,
+   "name": "Foulborn The Blue Nightmare",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbVVwZ3JhZGUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwibXV0YXRlZCI6dHJ1ZX1d/e01a4e6527/TheBlueDreamUpgrade.png",
+   "baseType": "Cobalt Jewel",
+   "variant": "Crit Multi, Lightning to Chaos",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -1.4,
+    "data": [
+     0,
+     -7.04,
+     -1.4,
+     null,
+     null,
+     null,
+     null
+    ]
+   },
+   "mutatedModifiers": [
+    {
+     "text": "+3% to Critical Strike Multiplier per Power Charge",
+     "optional": false
+    },
+    {
+     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant Lightning Damage Converted to Chaos Damage at 100% of its value",
+     "optional": false
+    }
+   ],
+   "flavourText": "We swell and flood\nand drown the undeserving beneath our might.",
+   "itemType": "Jewel",
+   "chaosValue": 123375,
+   "exaltedValue": 57118,
+   "divineValue": 350,
+   "count": 1,
+   "detailsId": "foulborn-the-blue-nightmare-crit-multi-lightning-to-chaos-cobalt-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_4164870816",
+     "min": 0,
+     "max": 0
+    }
+   ],
    "listingCount": 1
+  },
+  {
+   "id": 50063,
+   "name": "Voices",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZUpld2VsQmFzZTMiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/314c9905c8/UniqueJewelBase3.png",
+   "baseType": "Large Cluster Jewel",
+   "variant": "3 passives",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -12.97,
+    "data": [
+     0,
+     -1.55,
+     4.11,
+     -3.57,
+     -11.97,
+     -21.38,
+     -12.97
+    ]
+   },
+   "flavourText": "Only a madman would ignore a god's instructions.",
+   "itemType": "Cluster Jewel",
+   "chaosValue": 68456,
+   "exaltedValue": 31692,
+   "divineValue": 194.2,
+   "count": 23,
+   "detailsId": "voices-3-passives-large-cluster-jewel",
+   "listingCount": 25
   },
   {
    "id": 140949,
@@ -177,7 +295,7 @@
    "variant": "Crit Multi, Lightning to Shield",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 4.32,
+    "totalChange": 416.5,
     "data": [
      0,
      12.75,
@@ -185,7 +303,7 @@
      -14.51,
      -19.77,
      4.32,
-     null
+     416.5
     ]
    },
    "mutatedModifiers": [
@@ -200,10 +318,10 @@
    ],
    "flavourText": "We crash against Chayula's body,\nand fall like rain into the place we cannot go.",
    "itemType": "Jewel",
-   "chaosValue": 80966,
-   "exaltedValue": 38555,
-   "divineValue": 231,
-   "count": 2,
+   "chaosValue": 66129,
+   "exaltedValue": 30615,
+   "divineValue": 187.6,
+   "count": 5,
    "detailsId": "foulborn-the-blue-dream-crit-multi-lightning-to-shield-cobalt-jewel",
    "tradeInfo": [
     {
@@ -212,7 +330,7 @@
      "max": 0
     }
    ],
-   "listingCount": 2
+   "listingCount": 5
   },
   {
    "id": 135163,
@@ -222,7 +340,7 @@
    "variant": "No Notables",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -51.8,
+    "totalChange": -53.79,
     "data": [
      0,
      -25.18,
@@ -230,7 +348,7 @@
      -47.59,
      -49.4,
      -49.39,
-     -51.8
+     -53.79
     ]
    },
    "explicitModifiers": [
@@ -247,10 +365,10 @@
    ],
    "flavourText": "\"I don't know how I know, \nI just know that I know.\"",
    "itemType": "Jewel",
-   "chaosValue": 63966,
-   "exaltedValue": 30460,
-   "divineValue": 182.5,
-   "count": 17,
+   "chaosValue": 61335,
+   "exaltedValue": 28396,
+   "divineValue": 174,
+   "count": 19,
    "detailsId": "foulborn-unnatural-instinct-no-notables-viridian-jewel",
    "tradeInfo": [
     {
@@ -259,170 +377,7 @@
      "max": 0
     }
    ],
-   "listingCount": 21
-  },
-  {
-   "id": 50063,
-   "name": "Voices",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZUpld2VsQmFzZTMiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/314c9905c8/UniqueJewelBase3.png",
-   "baseType": "Large Cluster Jewel",
-   "variant": "3 passives",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -19.39,
-    "data": [
-     0,
-     -1.55,
-     4.11,
-     -3.57,
-     -11.97,
-     -21.38,
-     -19.39
-    ]
-   },
-   "flavourText": "Only a madman would ignore a god's instructions.",
-   "itemType": "Cluster Jewel",
-   "chaosValue": 63405,
-   "exaltedValue": 30193,
-   "divineValue": 180.9,
-   "count": 34,
-   "detailsId": "voices-3-passives-large-cluster-jewel",
-   "listingCount": 36
-  },
-  {
-   "id": 140950,
-   "name": "Foulborn The Red Dream",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ad9a659d67/TheRedDream.png",
-   "baseType": "Crimson Jewel",
-   "variant": "Endurance Chaos, Fire Life",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -20.83,
-    "data": [
-     0,
-     3.86,
-     -16.09,
-     -22.02,
-     -26.95,
-     -8.96,
-     -20.83
-    ]
-   },
-   "mutatedModifiers": [
-    {
-     "text": "+4% to Chaos Resistance per Endurance Charge",
-     "optional": false
-    },
-    {
-     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant increased Maximum Life at 50% of its value",
-     "optional": false
-    }
-   ],
-   "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
-   "itemType": "Jewel",
-   "chaosValue": 55169,
-   "exaltedValue": 26271,
-   "divineValue": 157.4,
-   "count": 7,
-   "detailsId": "foulborn-the-red-dream-endurance-chaos-fire-life-crimson-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_4210011075",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 9
-  },
-  {
-   "id": 140948,
-   "name": "Foulborn The Red Dream",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ad9a659d67/TheRedDream.png",
-   "baseType": "Crimson Jewel",
-   "variant": "Fire Lucky, Fire Life",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -23.21,
-    "data": [
-     0,
-     -18.44,
-     -18.97,
-     -19.95,
-     -23.79,
-     -23.21,
-     null
-    ]
-   },
-   "mutatedModifiers": [
-    {
-     "text": "Fire Damage with Hits is Lucky if you've Blocked an Attack Recently",
-     "optional": false
-    },
-    {
-     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant increased Maximum Life at 50% of its value",
-     "optional": false
-    }
-   ],
-   "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
-   "itemType": "Jewel",
-   "chaosValue": 50122,
-   "exaltedValue": 23867,
-   "divineValue": 143,
-   "count": 4,
-   "detailsId": "foulborn-the-red-dream-fire-lucky-fire-life-crimson-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_3601177816",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 8
-  },
-  {
-   "id": 140954,
-   "name": "Foulborn The Red Nightmare",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtVXBncmFkZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/3f2739d6e3/TheRedDreamUpgrade.png",
-   "baseType": "Crimson Jewel",
-   "variant": "Endurance Chaos, Fire to Chaos",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -23.37,
-    "data": [
-     0,
-     -13.63,
-     null,
-     null,
-     null,
-     -23.37,
-     null
-    ]
-   },
-   "mutatedModifiers": [
-    {
-     "text": "+4% to Chaos Resistance per Endurance Charge",
-     "optional": false
-    },
-    {
-     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant Fire Damage Converted to Chaos Damage at 100% of its value",
-     "optional": false
-    }
-   ],
-   "flavourText": "We coagulate; a crimson shell\nthat suffocates the unworthy.",
-   "itemType": "Jewel",
-   "chaosValue": 50122,
-   "exaltedValue": 23867,
-   "divineValue": 143,
-   "count": 4,
-   "detailsId": "foulborn-the-red-nightmare-endurance-chaos-fire-to-chaos-crimson-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_4210011075",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 5
+   "listingCount": 23
   },
   {
    "id": 140965,
@@ -432,7 +387,7 @@
    "variant": "Fire Lucky, Fire to Chaos",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -34.77,
+    "totalChange": -34.39,
     "data": [
      0,
      -11.77,
@@ -440,7 +395,7 @@
      -31.66,
      -33.91,
      -33.23,
-     -34.77
+     -34.39
     ]
    },
    "mutatedModifiers": [
@@ -455,8 +410,8 @@
    ],
    "flavourText": "We coagulate; a crimson shell\nthat suffocates the unworthy.",
    "itemType": "Jewel",
-   "chaosValue": 48649,
-   "exaltedValue": 23166,
+   "chaosValue": 48927,
+   "exaltedValue": 22651,
    "divineValue": 138.8,
    "count": 10,
    "detailsId": "foulborn-the-red-nightmare-fire-lucky-fire-to-chaos-crimson-jewel",
@@ -470,6 +425,96 @@
    "listingCount": 12
   },
   {
+   "id": 140954,
+   "name": "Foulborn The Red Nightmare",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtVXBncmFkZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/3f2739d6e3/TheRedDreamUpgrade.png",
+   "baseType": "Crimson Jewel",
+   "variant": "Endurance Chaos, Fire to Chaos",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -25.3,
+    "data": [
+     0,
+     -13.63,
+     null,
+     null,
+     null,
+     -23.37,
+     -25.3
+    ]
+   },
+   "mutatedModifiers": [
+    {
+     "text": "+4% to Chaos Resistance per Endurance Charge",
+     "optional": false
+    },
+    {
+     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant Fire Damage Converted to Chaos Damage at 100% of its value",
+     "optional": false
+    }
+   ],
+   "flavourText": "We coagulate; a crimson shell\nthat suffocates the unworthy.",
+   "itemType": "Jewel",
+   "chaosValue": 48292,
+   "exaltedValue": 22358,
+   "divineValue": 137,
+   "count": 5,
+   "detailsId": "foulborn-the-red-nightmare-endurance-chaos-fire-to-chaos-crimson-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_4210011075",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 6
+  },
+  {
+   "id": 140948,
+   "name": "Foulborn The Red Dream",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ad9a659d67/TheRedDream.png",
+   "baseType": "Crimson Jewel",
+   "variant": "Fire Lucky, Fire Life",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -26.01,
+    "data": [
+     0,
+     -18.44,
+     -18.97,
+     -19.95,
+     -23.79,
+     -23.21,
+     -26.01
+    ]
+   },
+   "mutatedModifiers": [
+    {
+     "text": "Fire Damage with Hits is Lucky if you've Blocked an Attack Recently",
+     "optional": false
+    },
+    {
+     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant increased Maximum Life at 50% of its value",
+     "optional": false
+    }
+   ],
+   "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
+   "itemType": "Jewel",
+   "chaosValue": 47588,
+   "exaltedValue": 22031,
+   "divineValue": 135,
+   "count": 6,
+   "detailsId": "foulborn-the-red-dream-fire-lucky-fire-life-crimson-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_3601177816",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 10
+  },
+  {
    "id": 140953,
    "name": "Foulborn Inspired Learning",
    "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL3VuaXF1ZTciLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwibXV0YXRlZCI6dHJ1ZX1d/da18cffeb2/unique7.png",
@@ -477,7 +522,7 @@
    "variant": "Large",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -24.75,
+    "totalChange": -24.32,
     "data": [
      0,
      -13.16,
@@ -485,7 +530,7 @@
      -18.93,
      -19.56,
      -19.03,
-     -24.75
+     -24.32
     ]
    },
    "mutatedModifiers": [
@@ -496,10 +541,10 @@
    ],
    "flavourText": "If you do not learn from a won battle\nthen you have already lost the war.",
    "itemType": "Jewel",
-   "chaosValue": 35050,
-   "exaltedValue": 16690,
+   "chaosValue": 35250,
+   "exaltedValue": 16319,
    "divineValue": 100,
-   "count": 16,
+   "count": 15,
    "detailsId": "foulborn-inspired-learning-large-crimson-jewel",
    "tradeInfo": [
     {
@@ -508,7 +553,7 @@
      "max": 0
     }
    ],
-   "listingCount": 18
+   "listingCount": 17
   },
   {
    "id": 167861,
@@ -517,7 +562,7 @@
    "baseType": "Assembled Eye Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -18.42,
+    "totalChange": -18.15,
     "data": [
      0,
      -7.44,
@@ -525,7 +570,7 @@
      -18.26,
      -22.48,
      -20.07,
-     -18.42
+     -18.15
     ]
    },
    "explicitModifiers": [
@@ -540,57 +585,53 @@
    ],
    "flavourText": "He who was made has but one desire: inflict his\nmalady upon the Boundless Cavern above.",
    "itemType": "Jewel",
-   "chaosValue": 29792,
-   "exaltedValue": 14187,
-   "divineValue": 85,
-   "count": 230,
+   "chaosValue": 29892,
+   "exaltedValue": 13839,
+   "divineValue": 84.8,
+   "count": 228,
    "detailsId": "reclaimed-malevolence-assembled-eye-jewel",
    "listingCount": 294
   },
   {
-   "id": 140958,
-   "name": "Foulborn The Blue Dream",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/c68d9ad41b/TheBlueDream.png",
-   "baseType": "Cobalt Jewel",
-   "variant": "Lightning Lucky, Lightning to Shield",
-   "itemClass": 3,
+   "id": 484,
+   "name": "Emperor's Might",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL01pZ2h0IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlbGljIjoxMH1d/2010039ca2/Might.png",
+   "baseType": "Crimson Jewel",
+   "itemClass": 10,
    "sparkLine": {
-    "totalChange": 38.9,
+    "totalChange": 366.3,
     "data": [
      0,
-     20.04,
-     17.32,
-     20.26,
-     -18.25,
-     -27.42,
-     38.9
+     -3.85,
+     -3.13,
+     -6.47,
+     17.15,
+     30.41,
+     366.3
     ]
    },
-   "mutatedModifiers": [
+   "explicitModifiers": [
     {
-     "text": "Lightning Damage with Hits is Lucky if you've Blocked Spell Damage Recently",
+     "text": "(4-6)% increased Strength",
      "optional": false
     },
     {
-     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant increased Maximum Energy Shield at 75% of its value",
+     "text": "10% increased Damage",
+     "optional": false
+    },
+    {
+     "text": "3% increased Character Size",
      "optional": false
     }
    ],
-   "flavourText": "We crash against Chayula's body,\nand fall like rain into the place we cannot go.",
+   "flavourText": "Even an iron fist can be handled with grace.",
    "itemType": "Jewel",
-   "chaosValue": 20014,
-   "exaltedValue": 9530,
-   "divineValue": 57.1,
-   "count": 13,
-   "detailsId": "foulborn-the-blue-dream-lightning-lucky-lightning-to-shield-cobalt-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_1327356547",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 16
+   "chaosValue": 21150,
+   "exaltedValue": 9792,
+   "divineValue": 60,
+   "count": 12,
+   "detailsId": "emperors-might-crimson-jewel",
+   "listingCount": 12
   },
   {
    "id": 135453,
@@ -600,7 +641,7 @@
    "variant": "Fire Multi, Ignite Duration",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -47.74,
+    "totalChange": -34.01,
     "data": [
      null,
      0,
@@ -608,7 +649,7 @@
      -54.55,
      -57.45,
      -57.79,
-     -47.74
+     -34.01
     ]
    },
    "mutatedModifiers": [
@@ -623,10 +664,10 @@
    ],
    "flavourText": "Within a firestorm, the Thane commands the flames\nEmblazoned by glory and the song of the First Ones\nFor the master of fire fears nothing.",
    "itemType": "Jewel",
-   "chaosValue": 15632,
-   "exaltedValue": 7444,
-   "divineValue": 44.6,
-   "count": 9,
+   "chaosValue": 19740,
+   "exaltedValue": 9139,
+   "divineValue": 56,
+   "count": 8,
    "detailsId": "foulborn-firesong-fire-multi-ignite-duration-crimson-jewel",
    "tradeInfo": [
     {
@@ -640,7 +681,52 @@
      "max": 0
     }
    ],
-   "listingCount": 9
+   "listingCount": 8
+  },
+  {
+   "id": 140958,
+   "name": "Foulborn The Blue Dream",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/c68d9ad41b/TheBlueDream.png",
+   "baseType": "Cobalt Jewel",
+   "variant": "Lightning Lucky, Lightning to Shield",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 22.32,
+    "data": [
+     0,
+     20.04,
+     17.32,
+     20.26,
+     -18.25,
+     -27.42,
+     22.32
+    ]
+   },
+   "mutatedModifiers": [
+    {
+     "text": "Lightning Damage with Hits is Lucky if you've Blocked Spell Damage Recently",
+     "optional": false
+    },
+    {
+     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant increased Maximum Energy Shield at 75% of its value",
+     "optional": false
+    }
+   ],
+   "flavourText": "We crash against Chayula's body,\nand fall like rain into the place we cannot go.",
+   "itemType": "Jewel",
+   "chaosValue": 17625,
+   "exaltedValue": 8160,
+   "divineValue": 50,
+   "count": 12,
+   "detailsId": "foulborn-the-blue-dream-lightning-lucky-lightning-to-shield-cobalt-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_1327356547",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 15
   },
   {
    "id": 483,
@@ -649,7 +735,7 @@
    "baseType": "Prismatic Jewel",
    "itemClass": 10,
    "sparkLine": {
-    "totalChange": 13.39,
+    "totalChange": 7.27,
     "data": [
      0,
      -1.09,
@@ -657,7 +743,7 @@
      -1.17,
      -3.79,
      5.08,
-     13.39
+     7.27
     ]
    },
    "explicitModifiers": [
@@ -680,12 +766,12 @@
    ],
    "flavourText": "Learn as much as you can, \nand surround yourself with people who know the rest.",
    "itemType": "Jewel",
-   "chaosValue": 14160,
-   "exaltedValue": 6743,
-   "divineValue": 40.4,
-   "count": 37,
+   "chaosValue": 13395,
+   "exaltedValue": 6201,
+   "divineValue": 38,
+   "count": 42,
    "detailsId": "emperors-mastery-prismatic-jewel",
-   "listingCount": 42
+   "listingCount": 48
   },
   {
    "id": 167553,
@@ -694,7 +780,7 @@
    "baseType": "Murderous Eye Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -27.65,
+    "totalChange": -26.77,
     "data": [
      0,
      1.2,
@@ -702,7 +788,7 @@
      -17.02,
      -20.89,
      -21.29,
-     -27.65
+     -26.77
     ]
    },
    "explicitModifiers": [
@@ -717,59 +803,12 @@
    ],
    "flavourText": "He lusts for retribution, but his\ncaptors are long since dust.",
    "itemType": "Jewel",
-   "chaosValue": 11076,
-   "exaltedValue": 5274,
-   "divineValue": 31.6,
-   "count": 62,
+   "chaosValue": 11210,
+   "exaltedValue": 5190,
+   "divineValue": 31.8,
+   "count": 61,
    "detailsId": "festering-vengeance-murderous-eye-jewel",
-   "listingCount": 100
-  },
-  {
-   "id": 135520,
-   "name": "Foulborn The Red Nightmare",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtVXBncmFkZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/3f2739d6e3/TheRedDreamUpgrade.png",
-   "baseType": "Crimson Jewel",
-   "variant": "Fire Lucky",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 7.14,
-    "data": [
-     0,
-     -4.32,
-     -6.08,
-     -7.55,
-     -7.12,
-     8.73,
-     7.14
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant Chance to Block Attack Damage at 50% of its value",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "Fire Damage with Hits is Lucky if you've Blocked an Attack Recently",
-     "optional": false
-    }
-   ],
-   "flavourText": "We coagulate; a crimson shell\nthat suffocates the unworthy.",
-   "itemType": "Jewel",
-   "chaosValue": 8202,
-   "exaltedValue": 3906,
-   "divineValue": 23.4,
-   "count": 17,
-   "detailsId": "foulborn-the-red-nightmare-fire-lucky-crimson-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_3601177816",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 26
+   "listingCount": 98
   },
   {
    "id": 140937,
@@ -779,7 +818,7 @@
    "variant": "Fire Life",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -10.83,
+    "totalChange": -10.32,
     "data": [
      0,
      -13.04,
@@ -787,7 +826,7 @@
      -14.71,
      -20.26,
      -17.2,
-     -10.83
+     -10.32
     ]
    },
    "explicitModifiers": [
@@ -804,12 +843,59 @@
    ],
    "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
    "itemType": "Jewel",
-   "chaosValue": 7711,
-   "exaltedValue": 3672,
+   "chaosValue": 7755,
+   "exaltedValue": 3590,
    "divineValue": 22,
    "count": 92,
    "detailsId": "foulborn-the-red-dream-fire-life-crimson-jewel",
-   "listingCount": 111
+   "listingCount": 115
+  },
+  {
+   "id": 135520,
+   "name": "Foulborn The Red Nightmare",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtVXBncmFkZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/3f2739d6e3/TheRedDreamUpgrade.png",
+   "baseType": "Crimson Jewel",
+   "variant": "Fire Lucky",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -2.84,
+    "data": [
+     0,
+     -4.32,
+     -6.08,
+     -7.55,
+     -7.12,
+     8.73,
+     -2.84
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant Chance to Block Attack Damage at 50% of its value",
+     "optional": false
+    }
+   ],
+   "mutatedModifiers": [
+    {
+     "text": "Fire Damage with Hits is Lucky if you've Blocked an Attack Recently",
+     "optional": false
+    }
+   ],
+   "flavourText": "We coagulate; a crimson shell\nthat suffocates the unworthy.",
+   "itemType": "Jewel",
+   "chaosValue": 7438,
+   "exaltedValue": 3443,
+   "divineValue": 21.1,
+   "count": 30,
+   "detailsId": "foulborn-the-red-nightmare-fire-lucky-crimson-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_3601177816",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 39
   },
   {
    "id": 135521,
@@ -819,7 +905,7 @@
    "variant": "Endurance Chaos",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -5.03,
+    "totalChange": -7.14,
     "data": [
      0,
      -3.73,
@@ -827,7 +913,7 @@
      -11.54,
      -8.43,
      -2.25,
-     -5.03
+     -7.14
     ]
    },
    "explicitModifiers": [
@@ -844,10 +930,10 @@
    ],
    "flavourText": "We coagulate; a crimson shell\nthat suffocates the unworthy.",
    "itemType": "Jewel",
-   "chaosValue": 7571,
-   "exaltedValue": 3605,
-   "divineValue": 21.6,
-   "count": 18,
+   "chaosValue": 7402,
+   "exaltedValue": 3427,
+   "divineValue": 21,
+   "count": 21,
    "detailsId": "foulborn-the-red-nightmare-endurance-chaos-crimson-jewel",
    "tradeInfo": [
     {
@@ -856,48 +942,141 @@
      "max": 0
     }
    ],
-   "listingCount": 27
+   "listingCount": 30
   },
   {
-   "id": 484,
-   "name": "Emperor's Might",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL01pZ2h0IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlbGljIjoxMH1d/2010039ca2/Might.png",
+   "id": 135101,
+   "name": "Foulborn The Red Dream",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ad9a659d67/TheRedDream.png",
    "baseType": "Crimson Jewel",
-   "itemClass": 10,
+   "variant": "Endurance Chaos",
+   "itemClass": 3,
    "sparkLine": {
-    "totalChange": 49.93,
+    "totalChange": -5.55,
     "data": [
      0,
-     -3.85,
-     -3.13,
-     -6.47,
-     17.15,
-     30.41,
-     49.93
+     -10.93,
+     -13.64,
+     -15.8,
+     -17.77,
+     -10.59,
+     -5.55
     ]
    },
    "explicitModifiers": [
     {
-     "text": "(4-6)% increased Strength",
-     "optional": false
-    },
-    {
-     "text": "10% increased Damage",
-     "optional": false
-    },
-    {
-     "text": "3% increased Character Size",
+     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain an Endurance Charge on Kill",
      "optional": false
     }
    ],
-   "flavourText": "Even an iron fist can be handled with grace.",
+   "mutatedModifiers": [
+    {
+     "text": "+4% to Chaos Resistance per Endurance Charge",
+     "optional": false
+    }
+   ],
+   "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
    "itemType": "Jewel",
-   "chaosValue": 6800,
-   "exaltedValue": 3238,
-   "divineValue": 19.4,
-   "count": 8,
-   "detailsId": "emperors-might-crimson-jewel",
-   "listingCount": 8
+   "chaosValue": 6698,
+   "exaltedValue": 3101,
+   "divineValue": 19,
+   "count": 34,
+   "detailsId": "foulborn-the-red-dream-endurance-chaos-crimson-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_4210011075",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 53
+  },
+  {
+   "id": 135269,
+   "name": "Foulborn The Red Dream",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ad9a659d67/TheRedDream.png",
+   "baseType": "Crimson Jewel",
+   "variant": "Fire Lucky",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -5.55,
+    "data": [
+     0,
+     -11.6,
+     -13.73,
+     -15.8,
+     -17.77,
+     -10.59,
+     -5.55
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain an Endurance Charge on Kill",
+     "optional": false
+    }
+   ],
+   "mutatedModifiers": [
+    {
+     "text": "Fire Damage with Hits is Lucky if you've Blocked an Attack Recently",
+     "optional": false
+    }
+   ],
+   "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
+   "itemType": "Jewel",
+   "chaosValue": 6698,
+   "exaltedValue": 3101,
+   "divineValue": 19,
+   "count": 31,
+   "detailsId": "foulborn-the-red-dream-fire-lucky-crimson-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_3601177816",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 44
+  },
+  {
+   "id": 140940,
+   "name": "Foulborn The Red Nightmare",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtVXBncmFkZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/3f2739d6e3/TheRedDreamUpgrade.png",
+   "baseType": "Crimson Jewel",
+   "variant": "Fire to Chaos",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -5.55,
+    "data": [
+     0,
+     -11.25,
+     -13.64,
+     -13.54,
+     -14.56,
+     -10.59,
+     -5.55
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Gain (6-10)% of Fire Damage as Extra Chaos Damage",
+     "optional": false
+    }
+   ],
+   "mutatedModifiers": [
+    {
+     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant Fire Damage Converted to Chaos Damage at 100% of its value",
+     "optional": false
+    }
+   ],
+   "flavourText": "We coagulate; a crimson shell\nthat suffocates the unworthy.",
+   "itemType": "Jewel",
+   "chaosValue": 6698,
+   "exaltedValue": 3101,
+   "divineValue": 19,
+   "count": 30,
+   "detailsId": "foulborn-the-red-nightmare-fire-to-chaos-crimson-jewel",
+   "listingCount": 48
   },
   {
    "id": 481,
@@ -906,7 +1085,7 @@
    "baseType": "Viridian Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -59.07,
+    "totalChange": -59.73,
     "data": [
      0,
      -4.22,
@@ -914,7 +1093,7 @@
      -22.19,
      -46.32,
      -46.05,
-     -59.07
+     -59.73
     ]
    },
    "explicitModifiers": [
@@ -933,146 +1112,12 @@
    ],
    "flavourText": "The greatest victories happen\nbefore the battle has begun.",
    "itemType": "Jewel",
-   "chaosValue": 6484,
-   "exaltedValue": 3088,
-   "divineValue": 18.5,
-   "count": 17,
+   "chaosValue": 6380,
+   "exaltedValue": 2954,
+   "divineValue": 18.1,
+   "count": 19,
    "detailsId": "emperors-cunning-viridian-jewel",
-   "listingCount": 17
-  },
-  {
-   "id": 135101,
-   "name": "Foulborn The Red Dream",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ad9a659d67/TheRedDream.png",
-   "baseType": "Crimson Jewel",
-   "variant": "Endurance Chaos",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -11.02,
-    "data": [
-     0,
-     -10.93,
-     -13.64,
-     -15.8,
-     -17.77,
-     -10.59,
-     -11.02
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain an Endurance Charge on Kill",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "+4% to Chaos Resistance per Endurance Charge",
-     "optional": false
-    }
-   ],
-   "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
-   "itemType": "Jewel",
-   "chaosValue": 6309,
-   "exaltedValue": 3004,
-   "divineValue": 18,
-   "count": 39,
-   "detailsId": "foulborn-the-red-dream-endurance-chaos-crimson-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_4210011075",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 55
-  },
-  {
-   "id": 135269,
-   "name": "Foulborn The Red Dream",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ad9a659d67/TheRedDream.png",
-   "baseType": "Crimson Jewel",
-   "variant": "Fire Lucky",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -11.02,
-    "data": [
-     0,
-     -11.6,
-     -13.73,
-     -15.8,
-     -17.77,
-     -10.59,
-     -11.02
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain an Endurance Charge on Kill",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "Fire Damage with Hits is Lucky if you've Blocked an Attack Recently",
-     "optional": false
-    }
-   ],
-   "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
-   "itemType": "Jewel",
-   "chaosValue": 6309,
-   "exaltedValue": 3004,
-   "divineValue": 18,
-   "count": 34,
-   "detailsId": "foulborn-the-red-dream-fire-lucky-crimson-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_3601177816",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 45
-  },
-  {
-   "id": 140940,
-   "name": "Foulborn The Red Nightmare",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtVXBncmFkZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/3f2739d6e3/TheRedDreamUpgrade.png",
-   "baseType": "Crimson Jewel",
-   "variant": "Fire to Chaos",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -11.02,
-    "data": [
-     0,
-     -11.25,
-     -13.64,
-     -13.54,
-     -14.56,
-     -10.59,
-     -11.02
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Gain (6-10)% of Fire Damage as Extra Chaos Damage",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant Fire Damage Converted to Chaos Damage at 100% of its value",
-     "optional": false
-    }
-   ],
-   "flavourText": "We coagulate; a crimson shell\nthat suffocates the unworthy.",
-   "itemType": "Jewel",
-   "chaosValue": 6309,
-   "exaltedValue": 3004,
-   "divineValue": 18,
-   "count": 37,
-   "detailsId": "foulborn-the-red-nightmare-fire-to-chaos-crimson-jewel",
-   "listingCount": 54
+   "listingCount": 19
   },
   {
    "id": 135880,
@@ -1082,7 +1127,7 @@
    "variant": "Prevent Suppressed, Suppress",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -27.48,
+    "totalChange": -27.07,
     "data": [
      0,
      -13.06,
@@ -1090,7 +1135,7 @@
      -24.8,
      -21.77,
      -22.96,
-     -27.48
+     -27.07
     ]
    },
    "mutatedModifiers": [
@@ -1105,8 +1150,8 @@
    ],
    "flavourText": "The spirits of our ancestors guided us from the Archipelago to the continent.\nInextricably, the purity of our souls is linked to the ones who came before us.",
    "itemType": "Jewel",
-   "chaosValue": 5958,
-   "exaltedValue": 2837,
+   "chaosValue": 5992,
+   "exaltedValue": 2774,
    "divineValue": 17,
    "count": 9,
    "detailsId": "foulborn-ancestral-vision-prevent-suppressed-suppress-viridian-jewel",
@@ -1122,7 +1167,7 @@
      "max": 0
     }
    ],
-   "listingCount": 18
+   "listingCount": 19
   },
   {
    "id": 167606,
@@ -1131,7 +1176,7 @@
    "baseType": "Searching Eye Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -28.57,
+    "totalChange": -28.16,
     "data": [
      0,
      -9.85,
@@ -1139,7 +1184,7 @@
      -20.01,
      -22.69,
      -25.02,
-     -28.57
+     -28.16
     ]
    },
    "explicitModifiers": [
@@ -1154,12 +1199,12 @@
    ],
    "flavourText": "He lusts for the Fall of Night,\nbut it will cost him everything.",
    "itemType": "Jewel",
-   "chaosValue": 5958,
-   "exaltedValue": 2837,
+   "chaosValue": 5992,
+   "exaltedValue": 2774,
    "divineValue": 17,
-   "count": 87,
+   "count": 86,
    "detailsId": "extinguishing-grasp-searching-eye-jewel",
-   "listingCount": 154
+   "listingCount": 155
   },
   {
    "id": 100723,
@@ -1168,7 +1213,7 @@
    "baseType": "Cobalt Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -15.97,
+    "totalChange": -15.49,
     "data": [
      0,
      -9.85,
@@ -1176,7 +1221,7 @@
      -10.19,
      -17.77,
      -15.56,
-     -15.97
+     -15.49
     ]
    },
    "implicitModifiers": [
@@ -1545,12 +1590,12 @@
    ],
    "flavourText": "Logic wanes in shining faith, and in rationalism, ardour dims\nThus, the cynic and the zealot are divided\nBut can they not be one and the same?",
    "itemType": "Jewel",
-   "chaosValue": 5258,
-   "exaltedValue": 2504,
+   "chaosValue": 5288,
+   "exaltedValue": 2448,
    "divineValue": 15,
    "count": 399,
    "detailsId": "rational-doctrine-cobalt-jewel",
-   "listingCount": 1074
+   "listingCount": 1082
   },
   {
    "id": 2029,
@@ -1559,7 +1604,7 @@
    "baseType": "Crimson Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -7.56,
+    "totalChange": -7.04,
     "data": [
      0,
      -8.01,
@@ -1567,7 +1612,7 @@
      -7.38,
      -9.54,
      -7.12,
-     -7.56
+     -7.04
     ]
    },
    "explicitModifiers": [
@@ -1582,12 +1627,49 @@
    ],
    "flavourText": "We coagulate; a crimson shell\nthat suffocates the unworthy.",
    "itemType": "Jewel",
-   "chaosValue": 3856,
-   "exaltedValue": 1836,
+   "chaosValue": 3878,
+   "exaltedValue": 1795,
    "divineValue": 11,
-   "count": 90,
+   "count": 85,
    "detailsId": "the-red-nightmare-crimson-jewel",
-   "listingCount": 160
+   "listingCount": 156
+  },
+  {
+   "id": 167560,
+   "name": "Baleful Dominion",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0dsaW50aW5nRGVzcGFpclJpdmV0ZWQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/7a233ac972/GlintingDespairRiveted.png",
+   "baseType": "Hypnotic Eye Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -16.16,
+    "data": [
+     0,
+     5.69,
+     -4.31,
+     -8.88,
+     -11,
+     -8.72,
+     -16.16
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Subjugating (111-7997) souls in the thrall of Kurgal\nPassives affected are Conquered by the Abyssal",
+     "optional": false
+    },
+    {
+     "text": "Historic",
+     "optional": false
+    }
+   ],
+   "flavourText": "He lusts for power over his former\nslavers, but he will never be free.",
+   "itemType": "Jewel",
+   "chaosValue": 3878,
+   "exaltedValue": 1795,
+   "divineValue": 11,
+   "count": 86,
+   "detailsId": "baleful-dominion-hypnotic-eye-jewel",
+   "listingCount": 187
   },
   {
    "id": 93039,
@@ -1596,7 +1678,7 @@
    "baseType": "Cobalt Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 53.14,
+    "totalChange": 40.01,
     "data": [
      0,
      2.15,
@@ -1604,7 +1686,7 @@
      11.6,
      36.24,
      39.9,
-     53.14
+     40.01
     ]
    },
    "explicitModifiers": [
@@ -1623,49 +1705,12 @@
    ],
    "flavourText": "\"We awoke to a sudden jungle rupturing the valleys of our home.\nGrasping limbs coiled around us, into us. We sank into each other,\nthen rose into the living sky. My family screams alongside me still.\"",
    "itemType": "Jewel",
-   "chaosValue": 3856,
-   "exaltedValue": 1836,
-   "divineValue": 11,
-   "count": 282,
+   "chaosValue": 3525,
+   "exaltedValue": 1632,
+   "divineValue": 10,
+   "count": 315,
    "detailsId": "melding-of-the-flesh-cobalt-jewel",
-   "listingCount": 342
-  },
-  {
-   "id": 167560,
-   "name": "Baleful Dominion",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0dsaW50aW5nRGVzcGFpclJpdmV0ZWQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/7a233ac972/GlintingDespairRiveted.png",
-   "baseType": "Hypnotic Eye Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -16.64,
-    "data": [
-     0,
-     5.69,
-     -4.31,
-     -8.88,
-     -11,
-     -8.72,
-     -16.64
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Subjugating (111-7997) souls in the thrall of Kurgal\nPassives affected are Conquered by the Abyssal",
-     "optional": false
-    },
-    {
-     "text": "Historic",
-     "optional": false
-    }
-   ],
-   "flavourText": "He lusts for power over his former\nslavers, but he will never be free.",
-   "itemType": "Jewel",
-   "chaosValue": 3856,
-   "exaltedValue": 1836,
-   "divineValue": 11,
-   "count": 86,
-   "detailsId": "baleful-dominion-hypnotic-eye-jewel",
-   "listingCount": 184
+   "listingCount": 376
   },
   {
    "id": 115269,
@@ -1674,7 +1719,7 @@
    "baseType": "Vaal Aspect",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -14.26,
+    "totalChange": -13.77,
     "data": [
      0,
      -8.02,
@@ -1682,16 +1727,98 @@
      -22.99,
      -24.49,
      -21.34,
-     -14.26
+     -13.77
     ]
    },
    "flavourText": "They collaborated with each other and with nearby peoples,\nat first sharing, teaching... and then, dominating.",
-   "chaosValue": 3505,
-   "exaltedValue": 1669,
+   "chaosValue": 3525,
+   "exaltedValue": 1632,
    "divineValue": 10,
-   "count": 52,
+   "count": 95,
    "detailsId": "cooperation-vaal-aspect",
-   "listingCount": 58
+   "listingCount": 101
+  },
+  {
+   "id": 140959,
+   "name": "Foulborn Might of the Meek",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1BvdGVuY3lPZlRoZVVucmVtYXJrYWJsZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/57c60a8de9/PotencyOfTheUnremarkable.png",
+   "baseType": "Crimson Jewel",
+   "variant": "Medium Effect",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -15.49,
+    "data": [
+     0,
+     -10.26,
+     -13.89,
+     -32.64,
+     -43.03,
+     -49.41,
+     -15.49
+    ]
+   },
+   "mutatedModifiers": [
+    {
+     "text": "(75-100)% increased Effect of non-Keystone Passive Skills in Radius",
+     "optional": false
+    },
+    {
+     "text": "Notable Passive Skills in Radius grant nothing",
+     "optional": false
+    }
+   ],
+   "flavourText": "Enough mice can kill a wolf.",
+   "itemType": "Jewel",
+   "chaosValue": 3525,
+   "exaltedValue": 1632,
+   "divineValue": 10,
+   "count": 32,
+   "detailsId": "foulborn-might-of-the-meek-medium-effect-crimson-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_607548408",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 75
+  },
+  {
+   "id": 167601,
+   "name": "Destructive Aspiration",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0dsaW50aW5nRGVzcGFpckdoYXN0bHkiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/6955255dd7/GlintingDespairGhastly.png",
+   "baseType": "Ghastly Eye Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -15.49,
+    "data": [
+     0,
+     -9.85,
+     -13.64,
+     -15.8,
+     -17.77,
+     -15.56,
+     -15.49
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Subjugating (108-7992) souls in the thrall of Amanamu\nPassives affected are Conquered by the Abyssal",
+     "optional": false
+    },
+    {
+     "text": "Historic",
+     "optional": false
+    }
+   ],
+   "flavourText": "He lusts for a crown and a scepter,\nbut he destroys all he touches.",
+   "itemType": "Jewel",
+   "chaosValue": 3525,
+   "exaltedValue": 1632,
+   "divineValue": 10,
+   "count": 104,
+   "detailsId": "destructive-aspiration-ghastly-eye-jewel",
+   "listingCount": 250
   },
   {
    "id": 134987,
@@ -1701,7 +1828,7 @@
    "variant": "Shock Duration",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -6.11,
+    "totalChange": -15.02,
     "data": [
      0,
      -6.24,
@@ -1709,7 +1836,7 @@
      -5.92,
      -8.44,
      -5.76,
-     -6.11
+     -15.02
     ]
    },
    "explicitModifiers": [
@@ -1726,10 +1853,10 @@
    ],
    "flavourText": "The true secret of the elements\nis that all are one and the same.",
    "itemType": "Jewel",
-   "chaosValue": 3505,
-   "exaltedValue": 1669,
-   "divineValue": 10,
-   "count": 22,
+   "chaosValue": 3172,
+   "exaltedValue": 1469,
+   "divineValue": 9,
+   "count": 23,
    "detailsId": "foulborn-stormshroud-shock-duration-viridian-jewel",
    "tradeInfo": [
     {
@@ -1738,89 +1865,7 @@
      "max": 0
     }
    ],
-   "listingCount": 25
-  },
-  {
-   "id": 140959,
-   "name": "Foulborn Might of the Meek",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1BvdGVuY3lPZlRoZVVucmVtYXJrYWJsZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/57c60a8de9/PotencyOfTheUnremarkable.png",
-   "baseType": "Crimson Jewel",
-   "variant": "Medium Effect",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -15.97,
-    "data": [
-     0,
-     -10.26,
-     -13.89,
-     -32.64,
-     -43.03,
-     -49.41,
-     -15.97
-    ]
-   },
-   "mutatedModifiers": [
-    {
-     "text": "(75-100)% increased Effect of non-Keystone Passive Skills in Radius",
-     "optional": false
-    },
-    {
-     "text": "Notable Passive Skills in Radius grant nothing",
-     "optional": false
-    }
-   ],
-   "flavourText": "Enough mice can kill a wolf.",
-   "itemType": "Jewel",
-   "chaosValue": 3505,
-   "exaltedValue": 1669,
-   "divineValue": 10,
-   "count": 29,
-   "detailsId": "foulborn-might-of-the-meek-medium-effect-crimson-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_607548408",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 72
-  },
-  {
-   "id": 167601,
-   "name": "Destructive Aspiration",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0dsaW50aW5nRGVzcGFpckdoYXN0bHkiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/6955255dd7/GlintingDespairGhastly.png",
-   "baseType": "Ghastly Eye Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -15.97,
-    "data": [
-     0,
-     -9.85,
-     -13.64,
-     -15.8,
-     -17.77,
-     -15.56,
-     -15.97
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Subjugating (108-7992) souls in the thrall of Amanamu\nPassives affected are Conquered by the Abyssal",
-     "optional": false
-    },
-    {
-     "text": "Historic",
-     "optional": false
-    }
-   ],
-   "flavourText": "He lusts for a crown and a scepter,\nbut he destroys all he touches.",
-   "itemType": "Jewel",
-   "chaosValue": 3505,
-   "exaltedValue": 1669,
-   "divineValue": 10,
-   "count": 97,
-   "detailsId": "destructive-aspiration-ghastly-eye-jewel",
-   "listingCount": 242
+   "listingCount": 28
   },
   {
    "id": 135502,
@@ -1830,7 +1875,7 @@
    "variant": "Suppress",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -15.16,
+    "totalChange": -14.68,
     "data": [
      0,
      -19.88,
@@ -1838,7 +1883,7 @@
      6.26,
      2.7,
      5.28,
-     -15.16
+     -14.68
     ]
    },
    "explicitModifiers": [
@@ -1855,10 +1900,10 @@
    ],
    "flavourText": "The spirits of our ancestors guided us from the Archipelago to the continent.\nInextricably, the purity of our souls is linked to the ones who came before us.",
    "itemType": "Jewel",
-   "chaosValue": 2804,
-   "exaltedValue": 1335,
+   "chaosValue": 2820,
+   "exaltedValue": 1306,
    "divineValue": 8,
-   "count": 28,
+   "count": 25,
    "detailsId": "foulborn-ancestral-vision-suppress-viridian-jewel",
    "tradeInfo": [
     {
@@ -1867,7 +1912,7 @@
      "max": 0
     }
    ],
-   "listingCount": 38
+   "listingCount": 35
   },
   {
    "id": 135017,
@@ -1877,7 +1922,7 @@
    "variant": "Curse Explosion",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 0.84,
+    "totalChange": 1.41,
     "data": [
      0,
      -8.01,
@@ -1885,7 +1930,7 @@
      -16.33,
      -3.16,
      -4.78,
-     0.84
+     1.41
     ]
    },
    "explicitModifiers": [
@@ -1902,8 +1947,8 @@
    ],
    "flavourText": "In darkest night, 'neath waxen moon\nA witch snatches a boy from his room.\nHe wards off her hexes\nThe witch he perplexes\nAnd so becomes part of her stew.",
    "itemType": "Jewel",
-   "chaosValue": 2103,
-   "exaltedValue": 1001,
+   "chaosValue": 2115,
+   "exaltedValue": 979.2,
    "divineValue": 6,
    "count": 29,
    "detailsId": "foulborn-witchbane-curse-explosion-cobalt-jewel",
@@ -1914,7 +1959,7 @@
      "max": 0
     }
    ],
-   "listingCount": 71
+   "listingCount": 72
   },
   {
    "id": 135348,
@@ -1924,7 +1969,7 @@
    "variant": "Curse Explosion, Curse Duration",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -15.97,
+    "totalChange": -22.53,
     "data": [
      0,
      -9.85,
@@ -1932,7 +1977,7 @@
      -15.8,
      -20.51,
      -17.17,
-     -15.97
+     -22.53
     ]
    },
    "mutatedModifiers": [
@@ -1947,10 +1992,10 @@
    ],
    "flavourText": "In darkest night, 'neath waxen moon\nA witch snatches a boy from his room.\nHe wards off her hexes\nThe witch he perplexes\nAnd so becomes part of her stew.",
    "itemType": "Jewel",
-   "chaosValue": 2103,
-   "exaltedValue": 1001,
-   "divineValue": 6,
-   "count": 15,
+   "chaosValue": 1939,
+   "exaltedValue": 897.6,
+   "divineValue": 5.5,
+   "count": 16,
    "detailsId": "foulborn-witchbane-curse-explosion-curse-duration-cobalt-jewel",
    "tradeInfo": [
     {
@@ -1964,7 +2009,7 @@
      "max": 0
     }
    ],
-   "listingCount": 32
+   "listingCount": 34
   },
   {
    "id": 115275,
@@ -1973,7 +2018,7 @@
    "baseType": "Vaal Aspect",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -33.55,
+    "totalChange": -33.18,
     "data": [
      0,
      5.64,
@@ -1981,16 +2026,16 @@
      -3.83,
      -4.2,
      -16.66,
-     -33.55
+     -33.18
     ]
    },
    "flavourText": "They took pride in all that they built, considering each new\ntemple a testament to the gods... and then, to themselves.",
-   "chaosValue": 1402,
-   "exaltedValue": 667.6,
+   "chaosValue": 1410,
+   "exaltedValue": 652.8,
    "divineValue": 4,
-   "count": 130,
+   "count": 134,
    "detailsId": "beauty-vaal-aspect",
-   "listingCount": 142
+   "listingCount": 146
   },
   {
    "id": 135522,
@@ -2000,7 +2045,7 @@
    "variant": "Suppress, Suppress Armour",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -37.94,
+    "totalChange": -35.8,
     "data": [
      0,
      -3,
@@ -2008,7 +2053,7 @@
      -11.16,
      -21,
      -53.25,
-     -37.94
+     -35.8
     ]
    },
    "mutatedModifiers": [
@@ -2023,10 +2068,10 @@
    ],
    "flavourText": "The spirits of our ancestors guided us from the Archipelago to the continent.\nInextricably, the purity of our souls is linked to the ones who came before us.",
    "itemType": "Jewel",
-   "chaosValue": 1227,
-   "exaltedValue": 584.2,
-   "divineValue": 3.5,
-   "count": 6,
+   "chaosValue": 1269,
+   "exaltedValue": 587.5,
+   "divineValue": 3.6,
+   "count": 7,
    "detailsId": "foulborn-ancestral-vision-suppress-suppress-armour-viridian-jewel",
    "tradeInfo": [
     {
@@ -2049,7 +2094,7 @@
    "baseType": "Viridian Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 26.05,
+    "totalChange": 26.77,
     "data": [
      0,
      -9.3,
@@ -2057,7 +2102,7 @@
      26.3,
      23.35,
      26.66,
-     26.05
+     26.77
     ]
    },
    "explicitModifiers": [
@@ -2072,12 +2117,12 @@
    ],
    "flavourText": "\"I don't know how I know, \nI just know that I know.\"",
    "itemType": "Jewel",
-   "chaosValue": 1052,
-   "exaltedValue": 500.7,
+   "chaosValue": 1058,
+   "exaltedValue": 489.6,
    "divineValue": 3,
    "count": 399,
    "detailsId": "unnatural-instinct-viridian-jewel",
-   "listingCount": 967
+   "listingCount": 980
   },
   {
    "id": 100432,
@@ -2086,7 +2131,7 @@
    "baseType": "Viridian Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 26.05,
+    "totalChange": 26.77,
     "data": [
      0,
      -9.85,
@@ -2094,7 +2139,7 @@
      -15.8,
      -14.58,
      26.66,
-     26.05
+     26.77
     ]
    },
    "explicitModifiers": [
@@ -2109,98 +2154,12 @@
    ],
    "flavourText": "The true secret of the elements\nis that all are one and the same.",
    "itemType": "Jewel",
-   "chaosValue": 1052,
-   "exaltedValue": 500.7,
+   "chaosValue": 1058,
+   "exaltedValue": 489.6,
    "divineValue": 3,
    "count": 399,
    "detailsId": "stormshroud-viridian-jewel",
-   "listingCount": 527
-  },
-  {
-   "id": 485,
-   "name": "Emperor's Wit",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1dpdCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWxpYyI6OX1d/92d3fdd291/Wit.png",
-   "baseType": "Cobalt Jewel",
-   "itemClass": 10,
-   "sparkLine": {
-    "totalChange": -15.97,
-    "data": [
-     0,
-     -9.85,
-     -13.64,
-     -15.8,
-     -17.77,
-     -15.56,
-     -15.97
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "(4-6)% increased Intelligence",
-     "optional": false
-    },
-    {
-     "text": "30% increased Global Critical Strike Chance",
-     "optional": false
-    },
-    {
-     "text": "3% increased Character Size",
-     "optional": false
-    }
-   ],
-   "flavourText": "Language is a tool that can be used to build walls \nor tear them down.",
-   "itemType": "Jewel",
-   "chaosValue": 701,
-   "exaltedValue": 333.8,
-   "divineValue": 2,
-   "count": 74,
-   "detailsId": "emperors-wit-cobalt-jewel",
-   "listingCount": 87
-  },
-  {
-   "id": 6957,
-   "name": "Transcendent Mind",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RyYW5zY2VuZGVudEJsdWUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/d02c69b7dc/TranscendentBlue.png",
-   "baseType": "Cobalt Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 117.7,
-    "data": [
-     0,
-     -0.16,
-     7.98,
-     94.73,
-     113,
-     118.8,
-     117.7
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "-1 Intelligence per 1 Intelligence on Allocated Passives in Radius",
-     "optional": false
-    },
-    {
-     "text": "+3% to Damage over Time Multiplier per 10 Intelligence on Unallocated Passives in Radius",
-     "optional": false
-    },
-    {
-     "text": "3% increased Mana Recovery Rate per 10 Intelligence on Allocated Passives in Radius",
-     "optional": false
-    },
-    {
-     "text": "2% reduced Mana Recovery Rate per 10 Intelligence on Unallocated Passives in Radius",
-     "optional": false
-    }
-   ],
-   "flavourText": "A keen mind sees what others do not,\nmakes connections where others do not, \nand is dangerous in a way that others are not.",
-   "itemType": "Jewel",
-   "chaosValue": 701,
-   "exaltedValue": 333.8,
-   "divineValue": 2,
-   "count": 58,
-   "detailsId": "transcendent-mind-cobalt-jewel",
-   "listingCount": 107
+   "listingCount": 514
   },
   {
    "id": 115271,
@@ -2209,7 +2168,7 @@
    "baseType": "Vaal Aspect",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -43.98,
+    "totalChange": -43.66,
     "data": [
      0,
      -9.85,
@@ -2217,16 +2176,63 @@
      -43.87,
      -45.74,
      -66.81,
-     -43.98
+     -43.66
     ]
    },
    "flavourText": "Not content to live in harmony with the world, they strove\nto understand it, to improve it... and then, to master it.",
-   "chaosValue": 701,
-   "exaltedValue": 333.8,
+   "chaosValue": 705,
+   "exaltedValue": 326.4,
    "divineValue": 2,
    "count": 399,
    "detailsId": "ambition-vaal-aspect",
-   "listingCount": 1032
+   "listingCount": 1038
+  },
+  {
+   "id": 135161,
+   "name": "Foulborn The Blue Nightmare",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbVVwZ3JhZGUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwibXV0YXRlZCI6dHJ1ZX1d/e01a4e6527/TheBlueDreamUpgrade.png",
+   "baseType": "Cobalt Jewel",
+   "variant": "Crit Multi",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -17.95,
+    "data": [
+     0,
+     -51.79,
+     -8.74,
+     -9.95,
+     -12.21,
+     -12.56,
+     -17.95
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant Chance to Block Spell Damage at 50% of its value",
+     "optional": false
+    }
+   ],
+   "mutatedModifiers": [
+    {
+     "text": "+3% to Critical Strike Multiplier per Power Charge",
+     "optional": false
+    }
+   ],
+   "flavourText": "We swell and flood\nand drown the undeserving beneath our might.",
+   "itemType": "Jewel",
+   "chaosValue": 640,
+   "exaltedValue": 296.3,
+   "divineValue": 1.82,
+   "count": 62,
+   "detailsId": "foulborn-the-blue-nightmare-crit-multi-cobalt-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_4164870816",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 91
   },
   {
    "id": 6959,
@@ -2235,7 +2241,7 @@
    "baseType": "Viridian Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -20.88,
+    "totalChange": -25.2,
     "data": [
      0,
      -10.26,
@@ -2243,7 +2249,7 @@
      -28.07,
      -28.13,
      -40.06,
-     -20.88
+     -25.2
     ]
    },
    "explicitModifiers": [
@@ -2266,59 +2272,98 @@
    ],
    "flavourText": "Take comfort knowing that, even in death,\nwe may serve our Queen and fuel her empire.",
    "itemType": "Jewel",
-   "chaosValue": 660,
-   "exaltedValue": 314.3,
-   "divineValue": 1.88,
-   "count": 99,
+   "chaosValue": 624,
+   "exaltedValue": 288.9,
+   "divineValue": 1.77,
+   "count": 96,
    "detailsId": "transcendent-spirit-viridian-jewel",
-   "listingCount": 116
+   "listingCount": 113
   },
   {
-   "id": 135161,
-   "name": "Foulborn The Blue Nightmare",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbVVwZ3JhZGUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwibXV0YXRlZCI6dHJ1ZX1d/e01a4e6527/TheBlueDreamUpgrade.png",
+   "id": 6957,
+   "name": "Transcendent Mind",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RyYW5zY2VuZGVudEJsdWUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/d02c69b7dc/TranscendentBlue.png",
    "baseType": "Cobalt Jewel",
-   "variant": "Crit Multi",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -15.64,
+    "totalChange": 77.8,
     "data": [
      0,
-     -51.79,
-     -8.74,
-     -9.95,
-     -12.21,
-     -12.56,
-     -15.64
+     -0.16,
+     7.98,
+     94.73,
+     113,
+     118.8,
+     77.8
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant Chance to Block Spell Damage at 50% of its value",
+     "text": "-1 Intelligence per 1 Intelligence on Allocated Passives in Radius",
      "optional": false
-    }
-   ],
-   "mutatedModifiers": [
+    },
     {
-     "text": "+3% to Critical Strike Multiplier per Power Charge",
+     "text": "+3% to Damage over Time Multiplier per 10 Intelligence on Unallocated Passives in Radius",
+     "optional": false
+    },
+    {
+     "text": "3% increased Mana Recovery Rate per 10 Intelligence on Allocated Passives in Radius",
+     "optional": false
+    },
+    {
+     "text": "2% reduced Mana Recovery Rate per 10 Intelligence on Unallocated Passives in Radius",
      "optional": false
     }
    ],
-   "flavourText": "We swell and flood\nand drown the undeserving beneath our might.",
+   "flavourText": "A keen mind sees what others do not,\nmakes connections where others do not, \nand is dangerous in a way that others are not.",
    "itemType": "Jewel",
-   "chaosValue": 658,
-   "exaltedValue": 313.3,
-   "divineValue": 1.88,
+   "chaosValue": 572.5,
+   "exaltedValue": 265,
+   "divineValue": 1.62,
    "count": 63,
-   "detailsId": "foulborn-the-blue-nightmare-crit-multi-cobalt-jewel",
-   "tradeInfo": [
+   "detailsId": "transcendent-mind-cobalt-jewel",
+   "listingCount": 112
+  },
+  {
+   "id": 485,
+   "name": "Emperor's Wit",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1dpdCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWxpYyI6OX1d/92d3fdd291/Wit.png",
+   "baseType": "Cobalt Jewel",
+   "itemClass": 10,
+   "sparkLine": {
+    "totalChange": -32.39,
+    "data": [
+     0,
+     -9.85,
+     -13.64,
+     -15.8,
+     -17.77,
+     -15.56,
+     -32.39
+    ]
+   },
+   "explicitModifiers": [
     {
-     "mod": "explicit.stat_4164870816",
-     "min": 0,
-     "max": 0
+     "text": "(4-6)% increased Intelligence",
+     "optional": false
+    },
+    {
+     "text": "30% increased Global Critical Strike Chance",
+     "optional": false
+    },
+    {
+     "text": "3% increased Character Size",
+     "optional": false
     }
    ],
-   "listingCount": 93
+   "flavourText": "Language is a tool that can be used to build walls \nor tear them down.",
+   "itemType": "Jewel",
+   "chaosValue": 564,
+   "exaltedValue": 261.1,
+   "divineValue": 1.6,
+   "count": 67,
+   "detailsId": "emperors-wit-cobalt-jewel",
+   "listingCount": 82
   },
   {
    "id": 6961,
@@ -2327,7 +2372,7 @@
    "baseType": "Crimson Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -5.81,
+    "totalChange": -9.19,
     "data": [
      0,
      -0.73,
@@ -2335,7 +2380,7 @@
      -10.65,
      -19.35,
      -7.6,
-     -5.81
+     -9.19
     ]
    },
    "explicitModifiers": [
@@ -2358,12 +2403,12 @@
    ],
    "flavourText": "We are as much shaped by what we do\nas what is done to us.",
    "itemType": "Jewel",
-   "chaosValue": 584,
-   "exaltedValue": 278.1,
-   "divineValue": 1.67,
+   "chaosValue": 563,
+   "exaltedValue": 260.6,
+   "divineValue": 1.6,
    "count": 176,
    "detailsId": "transcendent-flesh-crimson-jewel",
-   "listingCount": 212
+   "listingCount": 213
   },
   {
    "id": 22431,
@@ -2372,7 +2417,7 @@
    "baseType": "Cobalt Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 63.33,
+    "totalChange": 33.33,
     "data": [
      0,
      17.61,
@@ -2380,17 +2425,17 @@
      33.33,
      33.03,
      33.33,
-     63.33
+     33.33
     ]
    },
    "flavourText": "Forsake what you might have had. Command power beyond your potential.",
    "itemType": "Jewel",
-   "chaosValue": 490,
-   "exaltedValue": 233.3,
-   "divineValue": 1.4,
-   "count": 95,
+   "chaosValue": 400,
+   "exaltedValue": 185.2,
+   "divineValue": 1.13,
+   "count": 99,
    "detailsId": "fortress-covenant-cobalt-jewel",
-   "listingCount": 401
+   "listingCount": 405
   },
   {
    "id": 585,
@@ -2399,7 +2444,7 @@
    "baseType": "Cobalt Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 87.43,
+    "totalChange": 88.5,
     "data": [
      0,
      -12.83,
@@ -2407,7 +2452,7 @@
      77.4,
      37.14,
      76.95,
-     87.43
+     88.5
     ]
    },
    "explicitModifiers": [
@@ -2426,12 +2471,12 @@
    ],
    "flavourText": "Thoughts that shimmer like light across the rain.",
    "itemType": "Jewel",
-   "chaosValue": 350.5,
-   "exaltedValue": 166.9,
+   "chaosValue": 352.5,
+   "exaltedValue": 163.2,
    "divineValue": 1,
-   "count": 162,
+   "count": 163,
    "detailsId": "grand-spectrum-cobalt-jewel",
-   "listingCount": 575
+   "listingCount": 584
   },
   {
    "id": 2032,
@@ -2440,7 +2485,7 @@
    "baseType": "Cobalt Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -15.97,
+    "totalChange": -15.49,
     "data": [
      0,
      -9.85,
@@ -2448,7 +2493,7 @@
      -15.8,
      -17.77,
      -15.68,
-     -15.97
+     -15.49
     ]
    },
    "explicitModifiers": [
@@ -2463,12 +2508,12 @@
    ],
    "flavourText": "We swell and flood\nand drown the undeserving beneath our might.",
    "itemType": "Jewel",
-   "chaosValue": 350.5,
-   "exaltedValue": 166.9,
+   "chaosValue": 352.5,
+   "exaltedValue": 163.2,
    "divineValue": 1,
-   "count": 142,
+   "count": 144,
    "detailsId": "the-blue-nightmare-cobalt-jewel",
-   "listingCount": 196
+   "listingCount": 198
   },
   {
    "id": 95758,
@@ -2477,7 +2522,7 @@
    "baseType": "Prismatic Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -16.22,
+    "totalChange": -15.74,
     "data": [
      0,
      -10.12,
@@ -2485,7 +2530,7 @@
      -16.05,
      -18.01,
      -15.81,
-     -16.22
+     -15.74
     ]
    },
    "explicitModifiers": [
@@ -2636,12 +2681,12 @@
    ],
    "flavourText": "This world is not good enough for her,\nso I will make a better one. Nothing\nmatters but the pursuit of perfection.",
    "itemType": "Jewel",
-   "chaosValue": 350.5,
-   "exaltedValue": 166.9,
+   "chaosValue": 352.5,
+   "exaltedValue": 163.2,
    "divineValue": 1,
    "count": 398,
    "detailsId": "sublime-vision-prismatic-jewel",
-   "listingCount": 1785
+   "listingCount": 1741
   },
   {
    "id": 135202,
@@ -2651,7 +2696,7 @@
    "variant": "Lightning Lucky",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 75.25,
+    "totalChange": 76.25,
     "data": [
      0,
      36.25,
@@ -2659,7 +2704,7 @@
      75.6,
      71.5,
      76.1,
-     75.25
+     76.25
     ]
    },
    "explicitModifiers": [
@@ -2676,10 +2721,10 @@
    ],
    "flavourText": "We swell and flood\nand drown the undeserving beneath our might.",
    "itemType": "Jewel",
-   "chaosValue": 350.5,
-   "exaltedValue": 166.9,
+   "chaosValue": 352.5,
+   "exaltedValue": 163.2,
    "divineValue": 1,
-   "count": 68,
+   "count": 72,
    "detailsId": "foulborn-the-blue-nightmare-lightning-lucky-cobalt-jewel",
    "tradeInfo": [
     {
@@ -2688,7 +2733,7 @@
      "max": 0
     }
    ],
-   "listingCount": 155
+   "listingCount": 159
   },
   {
    "id": 135349,
@@ -2698,7 +2743,7 @@
    "variant": "Small",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 133.7,
+    "totalChange": 135,
     "data": [
      0,
      48.94,
@@ -2706,7 +2751,7 @@
      99.89,
      47.05,
      134.5,
-     133.7
+     135
     ]
    },
    "mutatedModifiers": [
@@ -2717,10 +2762,10 @@
    ],
    "flavourText": "If you do not learn from a won battle\nthen you have already lost the war.",
    "itemType": "Jewel",
-   "chaosValue": 350.5,
-   "exaltedValue": 166.9,
+   "chaosValue": 352.5,
+   "exaltedValue": 163.2,
    "divineValue": 1,
-   "count": 25,
+   "count": 27,
    "detailsId": "foulborn-inspired-learning-small-crimson-jewel",
    "tradeInfo": [
     {
@@ -2729,7 +2774,47 @@
      "max": 0
     }
    ],
-   "listingCount": 48
+   "listingCount": 50
+  },
+  {
+   "id": 140945,
+   "name": "Foulborn The Blue Nightmare",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbVVwZ3JhZGUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwibXV0YXRlZCI6dHJ1ZX1d/e01a4e6527/TheBlueDreamUpgrade.png",
+   "baseType": "Cobalt Jewel",
+   "variant": "Lightning to Chaos",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 252.5,
+    "data": [
+     0,
+     0,
+     0,
+     32,
+     26,
+     98,
+     252.5
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Gain (6-10)% of Lightning Damage as Extra Chaos Damage",
+     "optional": false
+    }
+   ],
+   "mutatedModifiers": [
+    {
+     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant Lightning Damage Converted to Chaos Damage at 100% of its value",
+     "optional": false
+    }
+   ],
+   "flavourText": "We swell and flood\nand drown the undeserving beneath our might.",
+   "itemType": "Jewel",
+   "chaosValue": 352.5,
+   "exaltedValue": 163.2,
+   "divineValue": 1,
+   "count": 161,
+   "detailsId": "foulborn-the-blue-nightmare-lightning-to-chaos-cobalt-jewel",
+   "listingCount": 318
   },
   {
    "id": 140946,
@@ -2762,8 +2847,8 @@
    ],
    "flavourText": "We climb like vines up Chayula's arms,\nreaching into the world that should be ours.",
    "itemType": "Jewel",
-   "chaosValue": 350.5,
-   "exaltedValue": 166.9,
+   "chaosValue": 352.5,
+   "exaltedValue": 163.2,
    "divineValue": 1,
    "count": 1,
    "detailsId": "foulborn-the-green-dream-cold-lucky-cold-to-mana-viridian-jewel",
@@ -2774,56 +2859,56 @@
      "max": 0
     }
    ],
-   "listingCount": 40
+   "listingCount": 39
   },
   {
-   "id": 140945,
-   "name": "Foulborn The Blue Nightmare",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbVVwZ3JhZGUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwibXV0YXRlZCI6dHJ1ZX1d/e01a4e6527/TheBlueDreamUpgrade.png",
-   "baseType": "Cobalt Jewel",
-   "variant": "Lightning to Chaos",
+   "id": 140936,
+   "name": "Foulborn The Green Nightmare",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUdyZWVuRHJlYW1VcGdyYWRlIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ba2782b3eb/TheGreenDreamUpgrade.png",
+   "baseType": "Viridian Jewel",
+   "variant": "Cold to Chaos",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 70,
+    "totalChange": 625,
     "data": [
      0,
      0,
-     0,
-     32,
-     26,
-     98,
-     70
+     -1,
+     90,
+     165,
+     122.5,
+     625
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Gain (6-10)% of Lightning Damage as Extra Chaos Damage",
+     "text": "Gain (6-10)% of Cold Damage as Extra Chaos Damage",
      "optional": false
     }
    ],
    "mutatedModifiers": [
     {
-     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant Lightning Damage Converted to Chaos Damage at 100% of its value",
+     "text": "Passives granting Cold Resistance or all Elemental Resistances in Radius\nalso grant Cold Damage Converted to Chaos Damage at 100% of its value",
      "optional": false
     }
    ],
-   "flavourText": "We swell and flood\nand drown the undeserving beneath our might.",
+   "flavourText": "We take root in the dirt\nand strangle those who tread upon it.",
    "itemType": "Jewel",
-   "chaosValue": 170,
-   "exaltedValue": 80.95,
-   "divineValue": 0.49,
-   "count": 183,
-   "detailsId": "foulborn-the-blue-nightmare-lightning-to-chaos-cobalt-jewel",
-   "listingCount": 334
+   "chaosValue": 145,
+   "exaltedValue": 67.13,
+   "divineValue": 0.41,
+   "count": 29,
+   "detailsId": "foulborn-the-green-nightmare-cold-to-chaos-viridian-jewel",
+   "listingCount": 68
   },
   {
    "id": 586,
    "name": "Grand Spectrum",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0dyYW5kU3BlY3RydW0zX1JlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWxpYyI6MTF9XQ/e3a36ae744/GrandSpectrum3_Red.png",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JlZEdyYW5kU3BlY3RydW0iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/3e6789a065/RedGrandSpectrum.png",
    "baseType": "Crimson Jewel",
-   "itemClass": 10,
+   "itemClass": 3,
    "sparkLine": {
-    "totalChange": 119.8,
+    "totalChange": 100,
     "data": [
      0,
      0,
@@ -2831,7 +2916,7 @@
      55,
      60,
      603.4,
-     119.8
+     100
     ]
    },
    "explicitModifiers": [
@@ -2848,14 +2933,14 @@
      "optional": true
     }
    ],
-   "flavourText": "A body that never falters.",
+   "flavourText": "Skin like steel tempered by bright flames.",
    "itemType": "Jewel",
-   "chaosValue": 109.9,
-   "exaltedValue": 52.33,
-   "divineValue": 0.31,
-   "count": 110,
+   "chaosValue": 100,
+   "exaltedValue": 46.3,
+   "divineValue": 0.28,
+   "count": 115,
    "detailsId": "grand-spectrum-crimson-jewel",
-   "listingCount": 378
+   "listingCount": 382
   },
   {
    "id": 115270,
@@ -2877,51 +2962,56 @@
    },
    "flavourText": "Delving into the mysteries of existence, they deciphered\nthe secret laws of nature... and then, harnessed them.",
    "chaosValue": 100,
-   "exaltedValue": 47.62,
-   "divineValue": 0.29,
+   "exaltedValue": 46.3,
+   "divineValue": 0.28,
    "count": 399,
    "detailsId": "curiosity-vaal-aspect",
-   "listingCount": 623
+   "listingCount": 626
   },
   {
-   "id": 140936,
-   "name": "Foulborn The Green Nightmare",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUdyZWVuRHJlYW1VcGdyYWRlIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ba2782b3eb/TheGreenDreamUpgrade.png",
-   "baseType": "Viridian Jewel",
-   "variant": "Cold to Chaos",
+   "id": 21701,
+   "name": "Elegant Hubris",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V0ZXJuYWxFbXBpcmVDaXZpbGl6YXRpb24iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/8d1d098584/EternalEmpireCivilization.png",
+   "baseType": "Timeless Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 325,
+    "totalChange": 32.86,
     "data": [
      0,
-     0,
-     -1,
-     90,
-     165,
-     122.5,
-     325
+     7.14,
+     41.43,
+     15.71,
+     22.86,
+     5.71,
+     32.86
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Gain (6-10)% of Cold Damage as Extra Chaos Damage",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
+     "text": "Commissioned (2000-159980) coins to commemorate Caspiro\nPassives in radius are Conquered by the Eternal Empire",
+     "optional": true
+    },
     {
-     "text": "Passives granting Cold Resistance or all Elemental Resistances in Radius\nalso grant Cold Damage Converted to Chaos Damage at 100% of its value",
+     "text": "Commissioned (2000-159960) coins to commemorate Cadiro\nPassives in radius are Conquered by the Eternal Empire",
+     "optional": true
+    },
+    {
+     "text": "Commissioned (2000-160000) coins to commemorate Victario\nPassives in radius are Conquered by the Eternal Empire",
+     "optional": true
+    },
+    {
+     "text": "Historic",
      "optional": false
     }
    ],
-   "flavourText": "We take root in the dirt\nand strangle those who tread upon it.",
+   "flavourText": "They believed themselves better than the past, but that confidence brought about nightmare.",
    "itemType": "Jewel",
-   "chaosValue": 85,
-   "exaltedValue": 40.48,
-   "divineValue": 0.24,
-   "count": 22,
-   "detailsId": "foulborn-the-green-nightmare-cold-to-chaos-viridian-jewel",
-   "listingCount": 61
+   "chaosValue": 93,
+   "exaltedValue": 43.06,
+   "divineValue": 0.26,
+   "count": 399,
+   "detailsId": "elegant-hubris-timeless-jewel",
+   "listingCount": 162364
   },
   {
    "id": 60160,
@@ -2959,11 +3049,38 @@
    "flavourText": "The Hated Slave seeks dominion over his own kind.",
    "itemType": "Jewel",
    "chaosValue": 80,
-   "exaltedValue": 38.1,
+   "exaltedValue": 37.04,
    "divineValue": 0.23,
    "count": 399,
    "detailsId": "tecrods-gaze-murderous-eye-jewel",
-   "listingCount": 1523
+   "listingCount": 1524
+  },
+  {
+   "id": 1007,
+   "name": "Rain of Splinters",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JlZEthcnVpIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlbGljIjo1fV0/fd297ad1ac/RedKarui.png",
+   "baseType": "Crimson Jewel",
+   "itemClass": 10,
+   "sparkLine": {
+    "totalChange": 645,
+    "data": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     14,
+     645
+    ]
+   },
+   "flavourText": "\"If one is an annoyance\nthen a hundred is a threat.\"\n- Ancient Karui Proverb",
+   "itemType": "Jewel",
+   "chaosValue": 74.5,
+   "exaltedValue": 34.49,
+   "divineValue": 0.21,
+   "count": 35,
+   "detailsId": "rain-of-splinters-crimson-jewel",
+   "listingCount": 269
   },
   {
    "id": 93024,
@@ -3000,11 +3117,11 @@
    "flavourText": "\"We awoke to a sudden dawn cresting through the mountains.\nEach peak rose into searing fire, a massive roiling tide.\nA great eye gazed upon us, and we became known—utterly.\"",
    "itemType": "Jewel",
    "chaosValue": 70,
-   "exaltedValue": 33.33,
+   "exaltedValue": 32.41,
    "divineValue": 0.2,
-   "count": 310,
+   "count": 316,
    "detailsId": "dissolution-of-the-flesh-crimson-jewel",
-   "listingCount": 658
+   "listingCount": 672
   },
   {
    "id": 140935,
@@ -3014,7 +3131,7 @@
    "variant": "Keystone Allocate",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -12.5,
+    "totalChange": -18.75,
     "data": [
      0,
      0,
@@ -3022,7 +3139,7 @@
      0,
      0,
      -12.5,
-     -12.5
+     -18.75
     ]
    },
    "mutatedModifiers": [
@@ -3033,94 +3150,12 @@
    ],
    "flavourText": "The carpenter who picks up a blade is not mad.\nHe's ambitious.",
    "itemType": "Jewel",
-   "chaosValue": 70,
-   "exaltedValue": 33.33,
-   "divineValue": 0.2,
-   "count": 99,
+   "chaosValue": 65,
+   "exaltedValue": 30.09,
+   "divineValue": 0.18,
+   "count": 98,
    "detailsId": "foulborn-intuitive-leap-keystone-allocate-viridian-jewel",
    "listingCount": 195
-  },
-  {
-   "id": 21701,
-   "name": "Elegant Hubris",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V0ZXJuYWxFbXBpcmVDaXZpbGl6YXRpb24iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/8d1d098584/EternalEmpireCivilization.png",
-   "baseType": "Timeless Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -1.43,
-    "data": [
-     0,
-     7.14,
-     41.43,
-     15.71,
-     22.86,
-     5.71,
-     -1.43
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Commissioned (2000-159980) coins to commemorate Caspiro\nPassives in radius are Conquered by the Eternal Empire",
-     "optional": true
-    },
-    {
-     "text": "Commissioned (2000-159960) coins to commemorate Cadiro\nPassives in radius are Conquered by the Eternal Empire",
-     "optional": true
-    },
-    {
-     "text": "Commissioned (2000-160000) coins to commemorate Victario\nPassives in radius are Conquered by the Eternal Empire",
-     "optional": true
-    },
-    {
-     "text": "Historic",
-     "optional": false
-    }
-   ],
-   "flavourText": "They believed themselves better than the past, but that confidence brought about nightmare.",
-   "itemType": "Jewel",
-   "chaosValue": 69,
-   "exaltedValue": 32.86,
-   "divineValue": 0.2,
-   "count": 399,
-   "detailsId": "elegant-hubris-timeless-jewel",
-   "listingCount": 162236
-  },
-  {
-   "id": 2004,
-   "name": "The Red Dream",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/5fc736ec75/TheRedDream.png",
-   "baseType": "Crimson Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -2.86,
-    "data": [
-     0,
-     0,
-     0,
-     -1.43,
-     0,
-     -10,
-     -2.86
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Gain (6-10)% of Fire Damage as Extra Chaos Damage",
-     "optional": false
-    },
-    {
-     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain an Endurance Charge on Kill",
-     "optional": false
-    }
-   ],
-   "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
-   "itemType": "Jewel",
-   "chaosValue": 68,
-   "exaltedValue": 32.38,
-   "divineValue": 0.19,
-   "count": 143,
-   "detailsId": "the-red-dream-crimson-jewel",
-   "listingCount": 579
   },
   {
    "id": 587,
@@ -3129,7 +3164,7 @@
    "baseType": "Viridian Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": 6.67,
     "data": [
      0,
      0,
@@ -3137,7 +3172,7 @@
      0,
      0,
      3.33,
-     0
+     6.67
     ]
    },
    "explicitModifiers": [
@@ -3156,12 +3191,49 @@
    ],
    "flavourText": "Fists that strike like a falling tree.",
    "itemType": "Jewel",
-   "chaosValue": 60,
-   "exaltedValue": 28.57,
-   "divineValue": 0.17,
+   "chaosValue": 64,
+   "exaltedValue": 29.63,
+   "divineValue": 0.18,
    "count": 182,
    "detailsId": "grand-spectrum-viridian-jewel",
-   "listingCount": 769
+   "listingCount": 773
+  },
+  {
+   "id": 2004,
+   "name": "The Red Dream",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZVJlZERyZWFtIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/5fc736ec75/TheRedDream.png",
+   "baseType": "Crimson Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -14.29,
+    "data": [
+     0,
+     0,
+     0,
+     -1.43,
+     0,
+     -10,
+     -14.29
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Gain (6-10)% of Fire Damage as Extra Chaos Damage",
+     "optional": false
+    },
+    {
+     "text": "Passives granting Fire Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain an Endurance Charge on Kill",
+     "optional": false
+    }
+   ],
+   "flavourText": "We flow like blood into Chayula's open mouth,\nand spill into the land we have watched forever.",
+   "itemType": "Jewel",
+   "chaosValue": 60,
+   "exaltedValue": 27.78,
+   "divineValue": 0.17,
+   "count": 150,
+   "detailsId": "the-red-dream-crimson-jewel",
+   "listingCount": 598
   },
   {
    "id": 21663,
@@ -3202,11 +3274,52 @@
    "flavourText": "They believed themselves the greatest warriors, but that savagery turned upon their own.",
    "itemType": "Jewel",
    "chaosValue": 50,
-   "exaltedValue": 23.81,
+   "exaltedValue": 23.15,
    "divineValue": 0.14,
    "count": 399,
    "detailsId": "lethal-pride-timeless-jewel",
-   "listingCount": 154264
+   "listingCount": 154296
+  },
+  {
+   "id": 45429,
+   "name": "Apex Mode",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0ludGVuc2l0eUpld2VsMSIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/2b116c20d2/IntensityJewel1.png",
+   "baseType": "Cobalt Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 25,
+    "data": [
+     0,
+     125,
+     87.5,
+     89.5,
+     37.5,
+     -25,
+     25
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(20-25)% increased Spell Damage",
+     "optional": false
+    },
+    {
+     "text": "Spells have 10% reduced Critical Strike Chance per Intensity",
+     "optional": false
+    },
+    {
+     "text": "Spells which have gained Intensity Recently gain 1 Intensity every 0.5 Seconds",
+     "optional": false
+    }
+   ],
+   "flavourText": "Maximum power fueled by science gone mad.",
+   "itemType": "Jewel",
+   "chaosValue": 50,
+   "exaltedValue": 23.15,
+   "divineValue": 0.14,
+   "count": 399,
+   "detailsId": "apex-mode-cobalt-jewel",
+   "listingCount": 1383
   },
   {
    "id": 2030,
@@ -3215,7 +3328,7 @@
    "baseType": "Viridian Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 35.14,
+    "totalChange": 38.29,
     "data": [
      0,
      14.29,
@@ -3223,7 +3336,7 @@
      14.29,
      14.29,
      38.29,
-     35.14
+     38.29
     ]
    },
    "explicitModifiers": [
@@ -3238,12 +3351,12 @@
    ],
    "flavourText": "We take root in the dirt\nand strangle those who tread upon it.",
    "itemType": "Jewel",
-   "chaosValue": 47.3,
-   "exaltedValue": 22.52,
-   "divineValue": 0.13,
-   "count": 60,
+   "chaosValue": 48.4,
+   "exaltedValue": 22.41,
+   "divineValue": 0.14,
+   "count": 61,
    "detailsId": "the-green-nightmare-viridian-jewel",
-   "listingCount": 211
+   "listingCount": 212
   },
   {
    "id": 677,
@@ -3272,127 +3385,112 @@
    "flavourText": "The carpenter who picks up a blade is not mad.\nHe's ambitious.",
    "itemType": "Jewel",
    "chaosValue": 45,
-   "exaltedValue": 21.43,
+   "exaltedValue": 20.83,
    "divineValue": 0.13,
-   "count": 276,
+   "count": 277,
    "detailsId": "intuitive-leap-viridian-jewel",
-   "listingCount": 719
+   "listingCount": 722
   },
   {
-   "id": 50060,
-   "name": "Voices",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZUpld2VsQmFzZTMiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/314c9905c8/UniqueJewelBase3.png",
-   "baseType": "Large Cluster Jewel",
-   "variant": "5 passives",
+   "id": 21665,
+   "name": "Militant Faith",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RlbXBsYXJDaXZpbGl6YXRpb24iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/09ecf8ac86/TemplarCivilization.png",
+   "baseType": "Timeless Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 18.42,
+    "totalChange": 100,
     "data": [
      0,
-     -12.37,
-     5.26,
-     1.58,
-     -7.89,
-     18.42,
-     18.42
-    ]
-   },
-   "flavourText": "Only a madman would ignore a god's instructions.",
-   "itemType": "Cluster Jewel",
-   "chaosValue": 45,
-   "exaltedValue": 21.43,
-   "divineValue": 0.13,
-   "count": 172,
-   "detailsId": "voices-5-passives-large-cluster-jewel",
-   "listingCount": 1342
-  },
-  {
-   "id": 135005,
-   "name": "Foulborn The Green Nightmare",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUdyZWVuRHJlYW1VcGdyYWRlIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ba2782b3eb/TheGreenDreamUpgrade.png",
-   "baseType": "Viridian Jewel",
-   "variant": "Cold Lucky",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 110,
-    "data": [
+     10.75,
+     50,
+     17.5,
+     29,
      0,
-     0,
-     0,
-     0,
-     0,
-     -4.5,
-     110
+     100
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Passives granting Cold Resistance or all Elemental Resistances in Radius\nalso grant Chance to Suppress Spell Damage at 70% of its value",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "Cold Damage with Hits is Lucky if you've Suppressed Spell Damage Recently",
-     "optional": false
-    }
-   ],
-   "flavourText": "We take root in the dirt\nand strangle those who tread upon it.",
-   "itemType": "Jewel",
-   "chaosValue": 42,
-   "exaltedValue": 20,
-   "divineValue": 0.12,
-   "count": 15,
-   "detailsId": "foulborn-the-green-nightmare-cold-lucky-viridian-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_3810337989",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 61
-  },
-  {
-   "id": 45461,
-   "name": "Nadir Mode",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0ludGVuc2l0eUpld2VsMiIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/dd6952365a/IntensityJewel2.png",
-   "baseType": "Cobalt Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 33.33,
-    "data": [
-     0,
-     -3.33,
-     -24.67,
-     -16.67,
-     -3.33,
-     0,
-     33.33
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "(20-25)% increased Spell Damage",
-     "optional": false
+     "text": "Carved to glorify (2001-9998) new faithful converted by High Templar Avarius\nPassives in radius are Conquered by the Templars",
+     "optional": true
     },
     {
-     "text": "Spells have (30-50)% increased Critical Strike Chance per Intensity",
-     "optional": false
+     "text": "Carved to glorify (2003-9997) new faithful converted by High Templar Dominus\nPassives in radius are Conquered by the Templars",
+     "optional": true
     },
     {
-     "text": "Spells which have gained Intensity Recently lose 1 Intensity every 0.5 Seconds",
+     "text": "Carved to glorify (2001-10000) new faithful converted by High Templar Maxarius\nPassives in radius are Conquered by the Templars",
+     "optional": true
+    },
+    {
+     "text": "4% increased Area Damage per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "Regenerate 0.6 Mana per Second per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "4% increased Totem Damage per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "3% increased Mana Cost Efficiency per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "Channelling Skills deal 4% increased Damage per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "4% increased Elemental Damage per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "4% reduced Elemental Ailment Duration on you per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "1% increased effect of Non-Curse Auras per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "3% increased Effect of non-Damaging Ailments on Enemies per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "4% increased Brand Damage per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "1% increased Minion Attack and Cast Speed per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "4% reduced Duration of Curses on you per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "+2% to all Elemental Resistances per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "3% increased Defences from Equipped Shield per 10 Devotion",
+     "optional": true
+    },
+    {
+     "text": "Historic",
      "optional": false
     }
    ],
-   "flavourText": "Indiscriminate destruction fueled by science gone mad.",
+   "flavourText": "They believed themselves the utmost faithful, but that conviction became oppression.",
    "itemType": "Jewel",
    "chaosValue": 40,
-   "exaltedValue": 19.05,
+   "exaltedValue": 18.52,
    "divineValue": 0.11,
    "count": 399,
-   "detailsId": "nadir-mode-cobalt-jewel",
-   "listingCount": 2092
+   "detailsId": "militant-faith-timeless-jewel",
+   "listingCount": 140281
   },
   {
    "id": 101151,
@@ -3493,133 +3591,58 @@
    "flavourText": "Fellshrine stood as a holy bastion opposite the\nChamber of Sins, and all that it represented.\nFor one to rise, the other must fall.",
    "itemType": "Jewel",
    "chaosValue": 40,
-   "exaltedValue": 19.05,
+   "exaltedValue": 18.52,
    "divineValue": 0.11,
    "count": 399,
    "detailsId": "the-balance-of-terror-cobalt-jewel",
-   "listingCount": 5761
+   "listingCount": 5740
   },
   {
-   "id": 45429,
-   "name": "Apex Mode",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0ludGVuc2l0eUpld2VsMSIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/2b116c20d2/IntensityJewel1.png",
-   "baseType": "Cobalt Jewel",
+   "id": 135005,
+   "name": "Foulborn The Green Nightmare",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUdyZWVuRHJlYW1VcGdyYWRlIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ba2782b3eb/TheGreenDreamUpgrade.png",
+   "baseType": "Viridian Jewel",
+   "variant": "Cold Lucky",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -10.5,
+    "totalChange": 100,
     "data": [
      0,
-     125,
-     87.5,
-     89.5,
-     37.5,
-     -25,
-     -10.5
+     0,
+     0,
+     0,
+     0,
+     -4.5,
+     100
     ]
    },
    "explicitModifiers": [
     {
-     "text": "(20-25)% increased Spell Damage",
-     "optional": false
-    },
-    {
-     "text": "Spells have 10% reduced Critical Strike Chance per Intensity",
-     "optional": false
-    },
-    {
-     "text": "Spells which have gained Intensity Recently gain 1 Intensity every 0.5 Seconds",
+     "text": "Passives granting Cold Resistance or all Elemental Resistances in Radius\nalso grant Chance to Suppress Spell Damage at 70% of its value",
      "optional": false
     }
    ],
-   "flavourText": "Maximum power fueled by science gone mad.",
-   "itemType": "Jewel",
-   "chaosValue": 35.8,
-   "exaltedValue": 17.05,
-   "divineValue": 0.1,
-   "count": 399,
-   "detailsId": "apex-mode-cobalt-jewel",
-   "listingCount": 1424
-  },
-  {
-   "id": 118579,
-   "name": "The Light of Meaning",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0FmZmxpY3Rpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/0794886e1c/AfflictionJewel.png",
-   "baseType": "Prismatic Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 5.11,
-    "data": [
-     0,
-     -14.41,
-     186.8,
-     56.16,
-     50.15,
-     20.12,
-     5.11
-    ]
-   },
-   "explicitModifiers": [
+   "mutatedModifiers": [
     {
-     "text": "Passive Skills in Radius also grant +5 to maximum Mana",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant 3% increased Energy Shield",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant +5 to maximum Life",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant +4% to Chaos Resistance",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant 6% increased Fire Damage",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant +2 to all Attributes",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant 6% increased Cold Damage",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant 6% increased Physical Damage",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant 7% increased Armour",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant 6% increased Chaos Damage",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant 6% increased Lightning Damage",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant 5% increased Global Critical Strike Chance",
-     "optional": true
-    },
-    {
-     "text": "Passive Skills in Radius also grant 7% increased Evasion Rating",
-     "optional": true
+     "text": "Cold Damage with Hits is Lucky if you've Suppressed Spell Damage Recently",
+     "optional": false
     }
    ],
-   "flavourText": "To name a thing is to give it power.",
+   "flavourText": "We take root in the dirt\nand strangle those who tread upon it.",
    "itemType": "Jewel",
-   "chaosValue": 35,
-   "exaltedValue": 16.67,
-   "divineValue": 0.1,
-   "count": 399,
-   "detailsId": "the-light-of-meaning-prismatic-jewel",
-   "listingCount": 6865
+   "chaosValue": 40,
+   "exaltedValue": 18.52,
+   "divineValue": 0.11,
+   "count": 19,
+   "detailsId": "foulborn-the-green-nightmare-cold-lucky-viridian-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_3810337989",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 66
   },
   {
    "id": 135016,
@@ -3629,7 +3652,7 @@
    "variant": "Shock Effect",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 111,
+    "totalChange": 143.9,
     "data": [
      0,
      -8.54,
@@ -3637,7 +3660,7 @@
      -6.1,
      -8.54,
      -6.1,
-     111
+     143.9
     ]
    },
    "explicitModifiers": [
@@ -3654,10 +3677,10 @@
    ],
    "flavourText": "The true secret of the elements\nis that all are one and the same.",
    "itemType": "Jewel",
-   "chaosValue": 34.6,
-   "exaltedValue": 16.48,
-   "divineValue": 0.1,
-   "count": 24,
+   "chaosValue": 40,
+   "exaltedValue": 18.52,
+   "divineValue": 0.11,
+   "count": 26,
    "detailsId": "foulborn-stormshroud-shock-effect-viridian-jewel",
    "tradeInfo": [
     {
@@ -3666,43 +3689,16 @@
      "max": 0
     }
    ],
-   "listingCount": 153
-  },
-  {
-   "id": 93067,
-   "name": "Forbidden Flesh",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1B1enpsZVBpZWNlSmV3ZWxfR3JlYXRUYW5nbGUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/9035b9ffd4/PuzzlePieceJewel_GreatTangle.png",
-   "baseType": "Cobalt Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 44.07,
-    "data": [
-     0,
-     -7.2,
-     25.85,
-     27.12,
-     27.12,
-     45.34,
-     44.07
-    ]
-   },
-   "flavourText": "The bodies of those wholly subsumed by the Tangle\ncontinue to merge and mutate and cry out for release...",
-   "itemType": "Jewel",
-   "chaosValue": 34,
-   "exaltedValue": 16.19,
-   "divineValue": 0.1,
-   "count": 399,
-   "detailsId": "forbidden-flesh-cobalt-jewel",
-   "listingCount": 5621
+   "listingCount": 156
   },
   {
    "id": 2302,
    "name": "Watcher's Eye",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0VsZGVySmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/278c673716/ElderJewel.png",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0VsZGVySmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVsaWMiOjl9XQ/d5327a4f1d/ElderJewel.png",
    "baseType": "Prismatic Jewel",
-   "itemClass": 3,
+   "itemClass": 10,
    "sparkLine": {
-    "totalChange": -23.75,
+    "totalChange": -2,
     "data": [
      0,
      10.38,
@@ -3710,7 +3706,7 @@
      -3.75,
      0,
      25,
-     -23.75
+     -2
     ]
    },
    "explicitModifiers": [
@@ -4077,12 +4073,290 @@
    ],
    "flavourText": "One by one, they stood their ground against a creature \nthey had no hope of understanding, let alone defeating,\nand one by one, they became a part of it.",
    "itemType": "Jewel",
-   "chaosValue": 30.5,
-   "exaltedValue": 14.52,
-   "divineValue": 0.09,
+   "chaosValue": 39.2,
+   "exaltedValue": 18.15,
+   "divineValue": 0.11,
    "count": 399,
    "detailsId": "watchers-eye-prismatic-jewel",
-   "listingCount": 199498
+   "listingCount": 199590
+  },
+  {
+   "id": 50060,
+   "name": "Voices",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZUpld2VsQmFzZTMiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/314c9905c8/UniqueJewelBase3.png",
+   "baseType": "Large Cluster Jewel",
+   "variant": "5 passives",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 2.63,
+    "data": [
+     0,
+     -12.37,
+     5.26,
+     1.58,
+     -7.89,
+     18.42,
+     2.63
+    ]
+   },
+   "flavourText": "Only a madman would ignore a god's instructions.",
+   "itemType": "Cluster Jewel",
+   "chaosValue": 39,
+   "exaltedValue": 18.06,
+   "divineValue": 0.11,
+   "count": 220,
+   "detailsId": "voices-5-passives-large-cluster-jewel",
+   "listingCount": 1372
+  },
+  {
+   "id": 45461,
+   "name": "Nadir Mode",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0ludGVuc2l0eUpld2VsMiIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/dd6952365a/IntensityJewel2.png",
+   "baseType": "Cobalt Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     0,
+     -3.33,
+     -24.67,
+     -16.67,
+     -3.33,
+     0,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(20-25)% increased Spell Damage",
+     "optional": false
+    },
+    {
+     "text": "Spells have (30-50)% increased Critical Strike Chance per Intensity",
+     "optional": false
+    },
+    {
+     "text": "Spells which have gained Intensity Recently lose 1 Intensity every 0.5 Seconds",
+     "optional": false
+    }
+   ],
+   "flavourText": "Indiscriminate destruction fueled by science gone mad.",
+   "itemType": "Jewel",
+   "chaosValue": 30,
+   "exaltedValue": 13.89,
+   "divineValue": 0.09,
+   "count": 399,
+   "detailsId": "nadir-mode-cobalt-jewel",
+   "listingCount": 2086
+  },
+  {
+   "id": 93025,
+   "name": "Forbidden Flame",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1B1enpsZVBpZWNlSmV3ZWxfQ2xlYW5zaW5nRmlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/ddfe57ac90/PuzzlePieceJewel_CleansingFire.png",
+   "baseType": "Crimson Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     0,
+     -7.67,
+     0,
+     16.67,
+     0,
+     0,
+     0
+    ]
+   },
+   "flavourText": "The minds of those studied utterly by the Cleansing Fire\ncontinue to think and dream and beg for silence...",
+   "itemType": "Jewel",
+   "chaosValue": 30,
+   "exaltedValue": 13.89,
+   "divineValue": 0.09,
+   "count": 399,
+   "detailsId": "forbidden-flame-crimson-jewel",
+   "listingCount": 5735
+  },
+  {
+   "id": 93067,
+   "name": "Forbidden Flesh",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1B1enpsZVBpZWNlSmV3ZWxfR3JlYXRUYW5nbGUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/9035b9ffd4/PuzzlePieceJewel_GreatTangle.png",
+   "baseType": "Cobalt Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 27.12,
+    "data": [
+     0,
+     -7.2,
+     25.85,
+     27.12,
+     27.12,
+     45.34,
+     27.12
+    ]
+   },
+   "flavourText": "The bodies of those wholly subsumed by the Tangle\ncontinue to merge and mutate and cry out for release...",
+   "itemType": "Jewel",
+   "chaosValue": 30,
+   "exaltedValue": 13.89,
+   "divineValue": 0.09,
+   "count": 399,
+   "detailsId": "forbidden-flesh-cobalt-jewel",
+   "listingCount": 5582
+  },
+  {
+   "id": 118579,
+   "name": "The Light of Meaning",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0FmZmxpY3Rpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/0794886e1c/AfflictionJewel.png",
+   "baseType": "Prismatic Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -12.91,
+    "data": [
+     0,
+     -14.41,
+     186.8,
+     56.16,
+     50.15,
+     20.12,
+     -12.91
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passive Skills in Radius also grant +5 to maximum Mana",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant 3% increased Energy Shield",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant +5 to maximum Life",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant +4% to Chaos Resistance",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant 6% increased Fire Damage",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant +2 to all Attributes",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant 6% increased Cold Damage",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant 6% increased Physical Damage",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant 7% increased Armour",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant 6% increased Chaos Damage",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant 6% increased Lightning Damage",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant 5% increased Global Critical Strike Chance",
+     "optional": true
+    },
+    {
+     "text": "Passive Skills in Radius also grant 7% increased Evasion Rating",
+     "optional": true
+    }
+   ],
+   "flavourText": "To name a thing is to give it power.",
+   "itemType": "Jewel",
+   "chaosValue": 29,
+   "exaltedValue": 13.43,
+   "divineValue": 0.08,
+   "count": 397,
+   "detailsId": "the-light-of-meaning-prismatic-jewel",
+   "listingCount": 6976
+  },
+  {
+   "id": 135188,
+   "name": "Foulborn The Green Nightmare",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUdyZWVuRHJlYW1VcGdyYWRlIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ba2782b3eb/TheGreenDreamUpgrade.png",
+   "baseType": "Viridian Jewel",
+   "variant": "Frenzy Speed",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -1.41,
+    "data": [
+     0,
+     -8.45,
+     2.11,
+     -1.06,
+     1.06,
+     2.11,
+     -1.41
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passives granting Cold Resistance or all Elemental Resistances in Radius\nalso grant Chance to Suppress Spell Damage at 70% of its value",
+     "optional": false
+    }
+   ],
+   "mutatedModifiers": [
+    {
+     "text": "1% increased Movement Speed per Frenzy Charge",
+     "optional": false
+    }
+   ],
+   "flavourText": "We take root in the dirt\nand strangle those who tread upon it.",
+   "itemType": "Jewel",
+   "chaosValue": 28,
+   "exaltedValue": 12.96,
+   "divineValue": 0.08,
+   "count": 28,
+   "detailsId": "foulborn-the-green-nightmare-frenzy-speed-viridian-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_1541516339",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 93
+  },
+  {
+   "id": 108967,
+   "name": "The Adorned",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RyaWFsbWFzdGVySmV3IiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/f04386d454/TrialmasterJew.png",
+   "baseType": "Crimson Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 79.43,
+    "data": [
+     0,
+     7.14,
+     7.14,
+     14.29,
+     7.14,
+     30.71,
+     79.43
+    ]
+   },
+   "flavourText": "At their height, the Vaal glittered under the sun.\nA decade, a century, an aeon of prosperity...\nnow nothing more than a passing wonder.",
+   "itemType": "Jewel",
+   "chaosValue": 25.12,
+   "exaltedValue": 11.63,
+   "divineValue": 0.07,
+   "count": 316,
+   "detailsId": "the-adorned-crimson-jewel",
+   "listingCount": 1931
   },
   {
    "id": 1952,
@@ -4091,7 +4365,7 @@
    "baseType": "Cobalt Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 100,
+    "totalChange": 66.67,
     "data": [
      0,
      0,
@@ -4099,7 +4373,7 @@
      0,
      0,
      100,
-     100
+     66.67
     ]
    },
    "explicitModifiers": [
@@ -4126,86 +4400,12 @@
    ],
    "flavourText": "\"A stone is not a stone.\nIt is but one part of a fortress.\"\n- Ezomyte proverb",
    "itemType": "Jewel",
-   "chaosValue": 30,
-   "exaltedValue": 14.29,
-   "divineValue": 0.09,
+   "chaosValue": 25,
+   "exaltedValue": 11.57,
+   "divineValue": 0.07,
    "count": 399,
    "detailsId": "primordial-harmony-cobalt-jewel",
-   "listingCount": 2877
-  },
-  {
-   "id": 93025,
-   "name": "Forbidden Flame",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1B1enpsZVBpZWNlSmV3ZWxfQ2xlYW5zaW5nRmlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/ddfe57ac90/PuzzlePieceJewel_CleansingFire.png",
-   "baseType": "Crimson Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     0,
-     -7.67,
-     0,
-     16.67,
-     0,
-     0,
-     0
-    ]
-   },
-   "flavourText": "The minds of those studied utterly by the Cleansing Fire\ncontinue to think and dream and beg for silence...",
-   "itemType": "Jewel",
-   "chaosValue": 30,
-   "exaltedValue": 14.29,
-   "divineValue": 0.09,
-   "count": 399,
-   "detailsId": "forbidden-flame-crimson-jewel",
-   "listingCount": 5893
-  },
-  {
-   "id": 135188,
-   "name": "Foulborn The Green Nightmare",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUdyZWVuRHJlYW1VcGdyYWRlIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/ba2782b3eb/TheGreenDreamUpgrade.png",
-   "baseType": "Viridian Jewel",
-   "variant": "Frenzy Speed",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -5.63,
-    "data": [
-     0,
-     -8.45,
-     2.11,
-     -1.06,
-     1.06,
-     2.11,
-     -5.63
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Passives granting Cold Resistance or all Elemental Resistances in Radius\nalso grant Chance to Suppress Spell Damage at 70% of its value",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "1% increased Movement Speed per Frenzy Charge",
-     "optional": false
-    }
-   ],
-   "flavourText": "We take root in the dirt\nand strangle those who tread upon it.",
-   "itemType": "Jewel",
-   "chaosValue": 26.8,
-   "exaltedValue": 12.76,
-   "divineValue": 0.08,
-   "count": 29,
-   "detailsId": "foulborn-the-green-nightmare-frenzy-speed-viridian-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_1541516339",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 94
+   "listingCount": 2891
   },
   {
    "id": 1964,
@@ -4250,11 +4450,11 @@
    "flavourText": "\"Do not cause the land to stir,\nIt holds secrets better unknown.\"\n- Azmerian proverb",
    "itemType": "Jewel",
    "chaosValue": 25,
-   "exaltedValue": 11.9,
+   "exaltedValue": 11.57,
    "divineValue": 0.07,
-   "count": 215,
+   "count": 210,
    "detailsId": "primordial-might-crimson-jewel",
-   "listingCount": 1280
+   "listingCount": 1277
   },
   {
    "id": 4858,
@@ -4287,11 +4487,52 @@
    "flavourText": "Enough mice can kill a wolf.",
    "itemType": "Jewel",
    "chaosValue": 25,
-   "exaltedValue": 11.9,
+   "exaltedValue": 11.57,
    "divineValue": 0.07,
-   "count": 277,
+   "count": 295,
    "detailsId": "might-of-the-meek-crimson-jewel",
-   "listingCount": 962
+   "listingCount": 978
+  },
+  {
+   "id": 44261,
+   "name": "Replica Reckless Defence",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JlY2tsZXNzRGVmZW5zZSIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/923e6cb6b5/RecklessDefense.png",
+   "baseType": "Cobalt Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 25,
+    "data": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     25
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+(2-6)% Chance to Block Attack Damage",
+     "optional": false
+    },
+    {
+     "text": "+(2-6)% Chance to Block Spell Damage",
+     "optional": false
+    },
+    {
+     "text": "+10% chance to be Frozen, Shocked and Ignited",
+     "optional": false
+    }
+   ],
+   "flavourText": "\"Prototype #298 must be contained in a non-conductive glass box at all times.\"",
+   "itemType": "Jewel",
+   "chaosValue": 25,
+   "exaltedValue": 11.57,
+   "divineValue": 0.07,
+   "count": 399,
+   "detailsId": "replica-reckless-defence-cobalt-jewel",
+   "listingCount": 1190
   },
   {
    "id": 140956,
@@ -4325,7 +4566,7 @@
    "flavourText": "We take root in the dirt\nand strangle those who tread upon it.",
    "itemType": "Jewel",
    "chaosValue": 25,
-   "exaltedValue": 11.9,
+   "exaltedValue": 11.57,
    "divineValue": 0.07,
    "count": 1,
    "detailsId": "foulborn-the-green-nightmare-frenzy-speed-cold-to-chaos-viridian-jewel",
@@ -4370,7 +4611,7 @@
    "flavourText": "The true secret of the elements\nis that all are one and the same.",
    "itemType": "Jewel",
    "chaosValue": 23,
-   "exaltedValue": 10.95,
+   "exaltedValue": 10.65,
    "divineValue": 0.07,
    "count": 9,
    "detailsId": "foulborn-stormshroud-shock-duration-shock-effect-viridian-jewel",
@@ -4389,10 +4630,55 @@
    "listingCount": 45
   },
   {
-   "id": 1007,
-   "name": "Rain of Splinters",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JlZEthcnVpIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/283aad3d25/RedKarui.png",
-   "baseType": "Crimson Jewel",
+   "id": 21780,
+   "name": "Brutal Restraint",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL01hcmFrZXRoQ2l2aWxpemF0aW9uIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/8e18d378b4/MarakethCivilization.png",
+   "baseType": "Timeless Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 10,
+    "data": [
+     0,
+     10,
+     3.75,
+     25,
+     38.75,
+     2,
+     10
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Denoted service of (502-8000) dekhara in the akhara of Balbala\nPassives in radius are Conquered by the Maraketh",
+     "optional": true
+    },
+    {
+     "text": "Denoted service of (500-7999) dekhara in the akhara of Nasima\nPassives in radius are Conquered by the Maraketh",
+     "optional": true
+    },
+    {
+     "text": "Denoted service of (500-7999) dekhara in the akhara of Asenath\nPassives in radius are Conquered by the Maraketh",
+     "optional": true
+    },
+    {
+     "text": "Historic",
+     "optional": false
+    }
+   ],
+   "flavourText": "They believed themselves the most ordered, but that tradition turned their forests to salt.",
+   "itemType": "Jewel",
+   "chaosValue": 22,
+   "exaltedValue": 10.19,
+   "divineValue": 0.06,
+   "count": 399,
+   "detailsId": "brutal-restraint-timeless-jewel",
+   "listingCount": 138460
+  },
+  {
+   "id": 1745,
+   "name": "Unending Hunger",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NwZWN0cmVKZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/4e2d72df55/SpectreJewel.png",
+   "baseType": "Cobalt Jewel",
    "itemClass": 3,
    "sparkLine": {
     "totalChange": 100,
@@ -4400,20 +4686,30 @@
      0,
      0,
      0,
-     0,
-     0,
-     14,
+     10,
+     46,
+     55,
      100
     ]
    },
-   "flavourText": "\"If one is an annoyance\nthen a hundred is a threat.\"\n- Ancient Karui Proverb",
+   "explicitModifiers": [
+    {
+     "text": "Minions have (6-8)% increased Area of Effect",
+     "optional": false
+    },
+    {
+     "text": "With at least 40 Intelligence in Radius, Raised Spectres have a 50% chance to gain Soul Eater for 20 seconds on Kill",
+     "optional": false
+    }
+   ],
+   "flavourText": "They roamed, they fed, they grew,\nKilling as they went,\nConquer though they may,\nTheir hearts will never be content.",
    "itemType": "Jewel",
    "chaosValue": 20,
-   "exaltedValue": 9.52,
+   "exaltedValue": 9.26,
    "divineValue": 0.06,
-   "count": 37,
-   "detailsId": "rain-of-splinters-crimson-jewel",
-   "listingCount": 273
+   "count": 329,
+   "detailsId": "unending-hunger-cobalt-jewel",
+   "listingCount": 1047
   },
   {
    "id": 21720,
@@ -4454,56 +4750,11 @@
    "flavourText": "They believed themselves the pinnacle of civilisation, but that height toppled their empire.",
    "itemType": "Jewel",
    "chaosValue": 20,
-   "exaltedValue": 9.52,
+   "exaltedValue": 9.26,
    "divineValue": 0.06,
    "count": 399,
    "detailsId": "glorious-vanity-timeless-jewel",
-   "listingCount": 162430
-  },
-  {
-   "id": 21780,
-   "name": "Brutal Restraint",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL01hcmFrZXRoQ2l2aWxpemF0aW9uIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/8e18d378b4/MarakethCivilization.png",
-   "baseType": "Timeless Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     0,
-     10,
-     3.75,
-     25,
-     38.75,
-     2,
-     0
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Denoted service of (502-8000) dekhara in the akhara of Balbala\nPassives in radius are Conquered by the Maraketh",
-     "optional": true
-    },
-    {
-     "text": "Denoted service of (500-7999) dekhara in the akhara of Nasima\nPassives in radius are Conquered by the Maraketh",
-     "optional": true
-    },
-    {
-     "text": "Denoted service of (500-7999) dekhara in the akhara of Asenath\nPassives in radius are Conquered by the Maraketh",
-     "optional": true
-    },
-    {
-     "text": "Historic",
-     "optional": false
-    }
-   ],
-   "flavourText": "They believed themselves the most ordered, but that tradition turned their forests to salt.",
-   "itemType": "Jewel",
-   "chaosValue": 20,
-   "exaltedValue": 9.52,
-   "divineValue": 0.06,
-   "count": 399,
-   "detailsId": "brutal-restraint-timeless-jewel",
-   "listingCount": 138471
+   "listingCount": 162532
   },
   {
    "id": 22378,
@@ -4526,11 +4777,11 @@
    "flavourText": "Lose that which you never had. Gain power you could not have grasped.",
    "itemType": "Jewel",
    "chaosValue": 20,
-   "exaltedValue": 9.52,
+   "exaltedValue": 9.26,
    "divineValue": 0.06,
-   "count": 129,
+   "count": 124,
    "detailsId": "quickening-covenant-viridian-jewel",
-   "listingCount": 507
+   "listingCount": 509
   },
   {
    "id": 25056,
@@ -4539,7 +4790,7 @@
    "baseType": "Crimson Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 76.21,
+    "totalChange": 63.88,
     "data": [
      0,
      9.69,
@@ -4547,7 +4798,7 @@
      -3.08,
      -11.89,
      76.21,
-     76.21
+     63.88
     ]
    },
    "explicitModifiers": [
@@ -4578,131 +4829,12 @@
    ],
    "flavourText": "Though we cannot touch; one thought, one wish, through centuries alone in darkness.",
    "itemType": "Jewel",
-   "chaosValue": 20,
-   "exaltedValue": 9.52,
-   "divineValue": 0.06,
+   "chaosValue": 18.6,
+   "exaltedValue": 8.61,
+   "divineValue": 0.05,
    "count": 399,
    "detailsId": "thread-of-hope-crimson-jewel",
-   "listingCount": 7177
-  },
-  {
-   "id": 44261,
-   "name": "Replica Reckless Defence",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JlY2tsZXNzRGVmZW5zZSIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/923e6cb6b5/RecklessDefense.png",
-   "baseType": "Cobalt Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "+(2-6)% Chance to Block Attack Damage",
-     "optional": false
-    },
-    {
-     "text": "+(2-6)% Chance to Block Spell Damage",
-     "optional": false
-    },
-    {
-     "text": "+10% chance to be Frozen, Shocked and Ignited",
-     "optional": false
-    }
-   ],
-   "flavourText": "\"Prototype #298 must be contained in a non-conductive glass box at all times.\"",
-   "itemType": "Jewel",
-   "chaosValue": 20,
-   "exaltedValue": 9.52,
-   "divineValue": 0.06,
-   "count": 399,
-   "detailsId": "replica-reckless-defence-cobalt-jewel",
-   "listingCount": 1215
-  },
-  {
-   "id": 1745,
-   "name": "Unending Hunger",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NwZWN0cmVKZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/4e2d72df55/SpectreJewel.png",
-   "baseType": "Cobalt Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 97,
-    "data": [
-     0,
-     0,
-     0,
-     10,
-     46,
-     55,
-     97
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Minions have (6-8)% increased Area of Effect",
-     "optional": false
-    },
-    {
-     "text": "With at least 40 Intelligence in Radius, Raised Spectres have a 50% chance to gain Soul Eater for 20 seconds on Kill",
-     "optional": false
-    }
-   ],
-   "flavourText": "They roamed, they fed, they grew,\nKilling as they went,\nConquer though they may,\nTheir hearts will never be content.",
-   "itemType": "Jewel",
-   "chaosValue": 19.7,
-   "exaltedValue": 9.38,
-   "divineValue": 0.06,
-   "count": 295,
-   "detailsId": "unending-hunger-cobalt-jewel",
-   "listingCount": 1010
-  },
-  {
-   "id": 6893,
-   "name": "Combat Focus",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0VsZW1lbnRhbEhpdENvbGQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/2d08fbc4ec/ElementalHitCold.png",
-   "baseType": "Crimson Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -5,
-    "data": [
-     0,
-     -2,
-     0,
-     0,
-     0,
-     0,
-     -5
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "(10-15)% increased Elemental Damage",
-     "optional": false
-    },
-    {
-     "text": "With 40 total Strength and Intelligence in Radius, Prismatic Skills deal 50% less Cold Damage",
-     "optional": false
-    },
-    {
-     "text": "With 40 total Strength and Intelligence in Radius, Prismatic Skills cannot choose Cold",
-     "optional": false
-    }
-   ],
-   "flavourText": "Kaom watched the torches patrol the top of the Watch. \nHe observed the lay of the beach, its barricades and rocks, \nand his men in their canoes, ready to lay their lives down for him.\nBut when his foot hit the sand, he thought only of the fight.",
-   "itemType": "Jewel",
-   "chaosValue": 19,
-   "exaltedValue": 9.05,
-   "divineValue": 0.05,
-   "count": 39,
-   "detailsId": "combat-focus-crimson-jewel",
-   "listingCount": 76
+   "listingCount": 7180
   },
   {
    "id": 7302,
@@ -4711,7 +4843,7 @@
    "baseType": "Viridian Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -5,
+    "totalChange": -8.5,
     "data": [
      0,
      0,
@@ -4719,7 +4851,7 @@
      0,
      0,
      0,
-     -5
+     -8.5
     ]
    },
    "explicitModifiers": [
@@ -4738,168 +4870,12 @@
    ],
    "flavourText": "Standing behind iron bars,\nDaresso thought of his adoring fans cheering his name, \nhis wife's warm embrace waiting for him, \nand of the celebrations that would soon be thrown in his name.\nBut when the arena gate lifted, he thought only of the fight.",
    "itemType": "Jewel",
-   "chaosValue": 19,
-   "exaltedValue": 9.05,
+   "chaosValue": 18.3,
+   "exaltedValue": 8.47,
    "divineValue": 0.05,
-   "count": 38,
+   "count": 40,
    "detailsId": "combat-focus-viridian-jewel",
-   "listingCount": 95
-  },
-  {
-   "id": 108967,
-   "name": "The Adorned",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RyaWFsbWFzdGVySmV3IiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/f04386d454/TrialmasterJew.png",
-   "baseType": "Crimson Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 31.43,
-    "data": [
-     0,
-     7.14,
-     7.14,
-     14.29,
-     7.14,
-     30.71,
-     31.43
-    ]
-   },
-   "flavourText": "At their height, the Vaal glittered under the sun.\nA decade, a century, an aeon of prosperity...\nnow nothing more than a passing wonder.",
-   "itemType": "Jewel",
-   "chaosValue": 18.4,
-   "exaltedValue": 8.76,
-   "divineValue": 0.05,
-   "count": 363,
-   "detailsId": "the-adorned-crimson-jewel",
-   "listingCount": 1980
-  },
-  {
-   "id": 21665,
-   "name": "Militant Faith",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RlbXBsYXJDaXZpbGl6YXRpb24iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/09ecf8ac86/TemplarCivilization.png",
-   "baseType": "Timeless Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -25,
-    "data": [
-     0,
-     10.75,
-     50,
-     17.5,
-     29,
-     0,
-     -25
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Carved to glorify (2001-9998) new faithful converted by High Templar Avarius\nPassives in radius are Conquered by the Templars",
-     "optional": true
-    },
-    {
-     "text": "Carved to glorify (2003-9997) new faithful converted by High Templar Dominus\nPassives in radius are Conquered by the Templars",
-     "optional": true
-    },
-    {
-     "text": "Carved to glorify (2001-10000) new faithful converted by High Templar Maxarius\nPassives in radius are Conquered by the Templars",
-     "optional": true
-    },
-    {
-     "text": "4% increased Area Damage per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "Regenerate 0.6 Mana per Second per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "4% increased Totem Damage per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "3% increased Mana Cost Efficiency per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "Channelling Skills deal 4% increased Damage per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "4% increased Elemental Damage per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "4% reduced Elemental Ailment Duration on you per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "1% increased effect of Non-Curse Auras per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "3% increased Effect of non-Damaging Ailments on Enemies per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "4% increased Brand Damage per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "1% increased Minion Attack and Cast Speed per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "4% reduced Duration of Curses on you per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "+2% to all Elemental Resistances per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "3% increased Defences from Equipped Shield per 10 Devotion",
-     "optional": true
-    },
-    {
-     "text": "Historic",
-     "optional": false
-    }
-   ],
-   "flavourText": "They believed themselves the utmost faithful, but that conviction became oppression.",
-   "itemType": "Jewel",
-   "chaosValue": 15,
-   "exaltedValue": 7.14,
-   "divineValue": 0.04,
-   "count": 399,
-   "detailsId": "militant-faith-timeless-jewel",
-   "listingCount": 140256
-  },
-  {
-   "id": 40116,
-   "name": "Megalomaniac",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZUpld2VsQmFzZTIiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/659b3e6b90/UniqueJewelBase2.png",
-   "levelRequired": 54,
-   "baseType": "Medium Cluster Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 50,
-    "data": [
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     50
-    ]
-   },
-   "flavourText": "If you're going to act like you're better than everyone else, make sure you are.",
-   "itemType": "Cluster Jewel",
-   "chaosValue": 15,
-   "exaltedValue": 7.14,
-   "divineValue": 0.04,
-   "count": 399,
-   "detailsId": "megalomaniac-medium-cluster-jewel",
-   "listingCount": 482713
+   "listingCount": 98
   },
   {
    "id": 60117,
@@ -4909,7 +4885,7 @@
    "baseType": "Ghastly Eye Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 29.31,
+    "totalChange": 48.28,
     "data": [
      0,
      20.69,
@@ -4917,7 +4893,7 @@
      23.28,
      29.31,
      29.31,
-     29.31
+     48.28
     ]
    },
    "explicitModifiers": [
@@ -4932,12 +4908,12 @@
    ],
    "flavourText": "The Liege of the Lightless seeks dominion over the surface dwellers.",
    "itemType": "Jewel",
-   "chaosValue": 15,
-   "exaltedValue": 7.14,
-   "divineValue": 0.04,
-   "count": 315,
+   "chaosValue": 17.2,
+   "exaltedValue": 7.96,
+   "divineValue": 0.05,
+   "count": 313,
    "detailsId": "amanamus-gaze-ghastly-eye-jewel",
-   "listingCount": 1691
+   "listingCount": 1689
   },
   {
    "id": 140943,
@@ -4947,7 +4923,7 @@
    "variant": "Lightning to Shield",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -28,
+    "totalChange": -32,
     "data": [
      0,
      -5,
@@ -4955,7 +4931,7 @@
      0,
      0,
      -2,
-     -28
+     -32
     ]
    },
    "explicitModifiers": [
@@ -4972,12 +4948,53 @@
    ],
    "flavourText": "We crash against Chayula's body,\nand fall like rain into the place we cannot go.",
    "itemType": "Jewel",
-   "chaosValue": 14.4,
-   "exaltedValue": 6.86,
+   "chaosValue": 13.6,
+   "exaltedValue": 6.3,
    "divineValue": 0.04,
-   "count": 110,
+   "count": 114,
    "detailsId": "foulborn-the-blue-dream-lightning-to-shield-cobalt-jewel",
-   "listingCount": 347
+   "listingCount": 350
+  },
+  {
+   "id": 6893,
+   "name": "Combat Focus",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0VsZW1lbnRhbEhpdENvbGQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/2d08fbc4ec/ElementalHitCold.png",
+   "baseType": "Crimson Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -43.5,
+    "data": [
+     0,
+     -2,
+     0,
+     0,
+     0,
+     0,
+     -43.5
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(10-15)% increased Elemental Damage",
+     "optional": false
+    },
+    {
+     "text": "With 40 total Strength and Intelligence in Radius, Prismatic Skills deal 50% less Cold Damage",
+     "optional": false
+    },
+    {
+     "text": "With 40 total Strength and Intelligence in Radius, Prismatic Skills cannot choose Cold",
+     "optional": false
+    }
+   ],
+   "flavourText": "Kaom watched the torches patrol the top of the Watch. \nHe observed the lay of the beach, its barricades and rocks, \nand his men in their canoes, ready to lay their lives down for him.\nBut when his foot hit the sand, he thought only of the fight.",
+   "itemType": "Jewel",
+   "chaosValue": 11.3,
+   "exaltedValue": 5.23,
+   "divineValue": 0.03,
+   "count": 41,
+   "detailsId": "combat-focus-crimson-jewel",
+   "listingCount": 79
   },
   {
    "id": 7301,
@@ -4986,7 +5003,7 @@
    "baseType": "Cobalt Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -63.67,
+    "totalChange": -63.33,
     "data": [
      0,
      -33.33,
@@ -4994,7 +5011,7 @@
      -33.33,
      -33.67,
      -34.67,
-     -63.67
+     -63.33
     ]
    },
    "explicitModifiers": [
@@ -5013,39 +5030,12 @@
    ],
    "flavourText": "Voll stood at the gates of Sarn, and a nation stood behind him. \nHe thought of the righteousness of his cause, \nand of the glory he would bring to the empire he would soon lead. \nBut as Chitus and his gemlings advanced, he thought only of the fight.",
    "itemType": "Jewel",
-   "chaosValue": 10.9,
-   "exaltedValue": 5.19,
+   "chaosValue": 11,
+   "exaltedValue": 5.09,
    "divineValue": 0.03,
-   "count": 50,
+   "count": 48,
    "detailsId": "combat-focus-cobalt-jewel",
    "listingCount": 118
-  },
-  {
-   "id": 608,
-   "name": "Healthy Mind",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0JsdWVKZXdlbDciLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/73584bc29e/BlueJewel7.png",
-   "baseType": "Cobalt Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0
-    ]
-   },
-   "flavourText": "For the ambitious, flesh is a limitation.",
-   "itemType": "Jewel",
-   "chaosValue": 10,
-   "exaltedValue": 4.76,
-   "divineValue": 0.03,
-   "count": 81,
-   "detailsId": "healthy-mind-cobalt-jewel",
-   "listingCount": 291
   },
   {
    "id": 1953,
@@ -5086,11 +5076,11 @@
    "flavourText": "\"Kings fall, empires crumble, mortals perish.\nAll turn to earth and sand.\"\n- Maraketh proverb",
    "itemType": "Jewel",
    "chaosValue": 10,
-   "exaltedValue": 4.76,
+   "exaltedValue": 4.63,
    "divineValue": 0.03,
    "count": 399,
    "detailsId": "primordial-eminence-viridian-jewel",
-   "listingCount": 3954
+   "listingCount": 3998
   },
   {
    "id": 1998,
@@ -5123,11 +5113,76 @@
    "flavourText": "We climb like vines up Chayula's arms,\nreaching into the world that should be ours.",
    "itemType": "Jewel",
    "chaosValue": 10,
-   "exaltedValue": 4.76,
+   "exaltedValue": 4.63,
    "divineValue": 0.03,
-   "count": 84,
+   "count": 82,
    "detailsId": "the-green-dream-viridian-jewel",
    "listingCount": 271
+  },
+  {
+   "id": 60136,
+   "name": "Ulaman's Gaze",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NlYXJjaGluZ0V5ZVVuaXF1ZSIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/fd2beeb2ad/SearchingEyeUnique.png",
+   "levelRequired": 40,
+   "baseType": "Searching Eye Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     0,
+     0,
+     50,
+     80,
+     0,
+     0,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+(10-20) to Dexterity",
+     "optional": false
+    },
+    {
+     "text": "Projectiles have 4% chance to be able to Chain when colliding with terrain per\nSearching Eye Jewel affecting you, up to a maximum of 20%",
+     "optional": false
+    }
+   ],
+   "flavourText": "The Sovereign of the Well seeks dominion over the light.",
+   "itemType": "Jewel",
+   "chaosValue": 10,
+   "exaltedValue": 4.63,
+   "divineValue": 0.03,
+   "count": 261,
+   "detailsId": "ulamans-gaze-searching-eye-jewel",
+   "listingCount": 561
+  },
+  {
+   "id": 95710,
+   "name": "Impossible Escape",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL01pbmRib3JlUGVhcmwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/367683a1bb/MindborePearl.png",
+   "baseType": "Viridian Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -31.51,
+    "data": [
+     0,
+     -10.96,
+     23.29,
+     17.81,
+     -17.81,
+     2.74,
+     -31.51
+    ]
+   },
+   "flavourText": "She was the last of countless progeny bred to test the limits of limitless power.\nIn the cosmic prison of her birth, her siblings fought each other to the death\nfor supremacy. She alone reached her limit... and broke through.",
+   "itemType": "Jewel",
+   "chaosValue": 10,
+   "exaltedValue": 4.63,
+   "divineValue": 0.03,
+   "count": 399,
+   "detailsId": "impossible-escape-viridian-jewel",
+   "listingCount": 5471
   },
   {
    "id": 103486,
@@ -5160,11 +5215,596 @@
    "flavourText": "The spirits of our ancestors guided us from the Archipelago to the continent.\nInextricably, the purity of our souls is linked to the ones who came before us.",
    "itemType": "Jewel",
    "chaosValue": 10,
-   "exaltedValue": 4.76,
+   "exaltedValue": 4.63,
    "divineValue": 0.03,
-   "count": 303,
+   "count": 293,
    "detailsId": "ancestral-vision-viridian-jewel",
-   "listingCount": 1644
+   "listingCount": 1631
+  },
+  {
+   "id": 135015,
+   "name": "Foulborn The Blue Dream",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/c68d9ad41b/TheBlueDream.png",
+   "baseType": "Cobalt Jewel",
+   "variant": "Crit Multi",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -50,
+    "data": [
+     0,
+     0,
+     -5,
+     -25,
+     -25,
+     -30,
+     -50
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain a Power Charge on Kill",
+     "optional": false
+    }
+   ],
+   "mutatedModifiers": [
+    {
+     "text": "+3% to Critical Strike Multiplier per Power Charge",
+     "optional": false
+    }
+   ],
+   "flavourText": "We crash against Chayula's body,\nand fall like rain into the place we cannot go.",
+   "itemType": "Jewel",
+   "chaosValue": 10,
+   "exaltedValue": 4.63,
+   "divineValue": 0.03,
+   "count": 66,
+   "detailsId": "foulborn-the-blue-dream-crit-multi-cobalt-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_4164870816",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 180
+  },
+  {
+   "id": 135298,
+   "name": "Foulborn The Blue Dream",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/c68d9ad41b/TheBlueDream.png",
+   "baseType": "Cobalt Jewel",
+   "variant": "Lightning Lucky",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -33.33,
+    "data": [
+     0,
+     0,
+     0,
+     -13.33,
+     -33.33,
+     -33.33,
+     -33.33
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain a Power Charge on Kill",
+     "optional": false
+    }
+   ],
+   "mutatedModifiers": [
+    {
+     "text": "Lightning Damage with Hits is Lucky if you've Blocked Spell Damage Recently",
+     "optional": false
+    }
+   ],
+   "flavourText": "We crash against Chayula's body,\nand fall like rain into the place we cannot go.",
+   "itemType": "Jewel",
+   "chaosValue": 10,
+   "exaltedValue": 4.63,
+   "divineValue": 0.03,
+   "count": 65,
+   "detailsId": "foulborn-the-blue-dream-lightning-lucky-cobalt-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_1327356547",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 213
+  },
+  {
+   "id": 135626,
+   "name": "Foulborn Ancestral Vision",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1ByaXN0aW5lQ29uZGl0aW9uaW5nIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/38fcdc252d/PristineConditioning.png",
+   "baseType": "Viridian Jewel",
+   "variant": "Suppress Armour",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 29.87,
+    "data": [
+     0,
+     -9.09,
+     -9.09,
+     27.27,
+     27.27,
+     8.44,
+     29.87
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+(5-10) to Dexterity",
+     "optional": false
+    }
+   ],
+   "mutatedModifiers": [
+    {
+     "text": "Modifiers to Chance to Suppress Spell Damage also apply to Chance to Defend with 200% of Armour at 50% of their Value",
+     "optional": false
+    }
+   ],
+   "flavourText": "The spirits of our ancestors guided us from the Archipelago to the continent.\nInextricably, the purity of our souls is linked to the ones who came before us.",
+   "itemType": "Jewel",
+   "chaosValue": 10,
+   "exaltedValue": 4.63,
+   "divineValue": 0.03,
+   "count": 7,
+   "detailsId": "foulborn-ancestral-vision-suppress-armour-viridian-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_860891010",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 52
+  },
+  {
+   "id": 608,
+   "name": "Healthy Mind",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0JsdWVKZXdlbDciLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/73584bc29e/BlueJewel7.png",
+   "baseType": "Cobalt Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -10,
+    "data": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     -10
+    ]
+   },
+   "flavourText": "For the ambitious, flesh is a limitation.",
+   "itemType": "Jewel",
+   "chaosValue": 9,
+   "exaltedValue": 4.17,
+   "divineValue": 0.03,
+   "count": 83,
+   "detailsId": "healthy-mind-cobalt-jewel",
+   "listingCount": 294
+  },
+  {
+   "id": 2007,
+   "name": "The Blue Dream",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbSIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/1cb1c74958/TheBlueDream.png",
+   "baseType": "Cobalt Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -10,
+    "data": [
+     0,
+     0,
+     -2.5,
+     -10,
+     -10,
+     -10,
+     -10
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Gain (6-10)% of Lightning Damage as Extra Chaos Damage",
+     "optional": false
+    },
+    {
+     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain a Power Charge on Kill",
+     "optional": false
+    }
+   ],
+   "flavourText": "We crash against Chayula's body,\nand fall like rain into the place we cannot go.",
+   "itemType": "Jewel",
+   "chaosValue": 9,
+   "exaltedValue": 4.17,
+   "divineValue": 0.03,
+   "count": 81,
+   "detailsId": "the-blue-dream-cobalt-jewel",
+   "listingCount": 410
+  },
+  {
+   "id": 109200,
+   "name": "Replica Powerlessness",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0JsdWVDb3JydXB0NiIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/281293a0c5/BlueCorrupt6.png",
+   "baseType": "Cobalt Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 760,
+    "data": [
+     0,
+     0,
+     950,
+     950,
+     950,
+     0,
+     760
+    ]
+   },
+   "flavourText": "\"The suppression troops have stopped responding to my orders.\nI'm no longer in charge, and I likely never truly was... I suspect\nthey're already coming for us.\"\n- Lead Researcher Ksaret, one hour post-Incident",
+   "itemType": "Jewel",
+   "chaosValue": 8.6,
+   "exaltedValue": 3.98,
+   "divineValue": 0.02,
+   "count": 5,
+   "detailsId": "replica-powerlessness-cobalt-jewel",
+   "listingCount": 38
+  },
+  {
+   "id": 40065,
+   "name": "One With Nothing",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RyYWdvblN0eWxlSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/fa9a94b12e/DragonStyleJewel.png",
+   "levelRequired": 26,
+   "baseType": "Small Cluster Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 14.29,
+    "data": [
+     0,
+     14.29,
+     14.29,
+     14.29,
+     14.29,
+     14.29,
+     14.29
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds Hollow Palm Technique",
+     "optional": false
+    }
+   ],
+   "flavourText": "Once you begin to rely on your weapons, \nYou ensure you can't live without them.",
+   "itemType": "Jewel",
+   "chaosValue": 8,
+   "exaltedValue": 3.7,
+   "divineValue": 0.02,
+   "count": 187,
+   "detailsId": "one-with-nothing-small-cluster-jewel",
+   "listingCount": 1073
+  },
+  {
+   "id": 100351,
+   "name": "Immutable Force",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JlZEpld2VsMiIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/87ba4f5e53/RedJewel2.png",
+   "baseType": "Crimson Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -11.11,
+    "data": [
+     0,
+     11.11,
+     0,
+     11.11,
+     11.11,
+     6.67,
+     -11.11
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(500-1000)% increased Stun and Block Recovery",
+     "optional": false
+    }
+   ],
+   "flavourText": "How simple a power, on which empires turn,\nwhen one man stands firm and says, \"I refuse.\"",
+   "itemType": "Jewel",
+   "chaosValue": 8,
+   "exaltedValue": 3.7,
+   "divineValue": 0.02,
+   "count": 399,
+   "detailsId": "immutable-force-crimson-jewel",
+   "listingCount": 2324
+  },
+  {
+   "id": 135636,
+   "name": "Foulborn Firesong",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JlZEpld2VsNyIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/c463a7d656/RedJewel7.png",
+   "baseType": "Crimson Jewel",
+   "variant": "Ignite Duration",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 19.7,
+    "data": [
+     0,
+     6.06,
+     6.06,
+     6.06,
+     6.06,
+     16.67,
+     19.7
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+(10-15)% to Fire Resistance",
+     "optional": false
+    }
+   ],
+   "mutatedModifiers": [
+    {
+     "text": "(25-50)% increased Ignite Duration on Enemies",
+     "optional": false
+    }
+   ],
+   "flavourText": "Within a firestorm, the Thane commands the flames\nEmblazoned by glory and the song of the First Ones\nFor the master of fire fears nothing.",
+   "itemType": "Jewel",
+   "chaosValue": 7.9,
+   "exaltedValue": 3.66,
+   "divineValue": 0.02,
+   "count": 41,
+   "detailsId": "foulborn-firesong-ignite-duration-crimson-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_1086147743",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 281
+  },
+  {
+   "id": 676,
+   "name": "Inspired Learning",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL3VuaXF1ZTciLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/05e61f124f/unique7.png",
+   "baseType": "Crimson Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "With 4 Notables Allocated in Radius, When you Kill a Rare monster, you gain 1 of its Modifiers for 20 seconds",
+     "optional": false
+    }
+   ],
+   "flavourText": "If you do not learn from a won battle\nthen you have already lost the war.",
+   "itemType": "Jewel",
+   "chaosValue": 5,
+   "exaltedValue": 2.31,
+   "divineValue": 0.01,
+   "count": 130,
+   "detailsId": "inspired-learning-crimson-jewel",
+   "listingCount": 1981
+  },
+  {
+   "id": 6892,
+   "name": "Tempered Flesh",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RlbXBlcmVkUmVkIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/66e750a720/TemperedRed.png",
+   "baseType": "Crimson Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -28.57,
+    "data": [
+     0,
+     0,
+     0,
+     14.29,
+     42.86,
+     28.57,
+     -28.57
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "-1 Strength per 1 Strength on Allocated Passives in Radius",
+     "optional": false
+    },
+    {
+     "text": "2% increased Life Recovery Rate per 10 Strength on Allocated Passives in Radius",
+     "optional": false
+    }
+   ],
+   "flavourText": "We are born raw and untested, and we are shaped by life.\n\n<default>{This item can be transformed on the Altar of Sacrifice along with Vial of Transcendence}",
+   "itemType": "Jewel",
+   "chaosValue": 5,
+   "exaltedValue": 2.31,
+   "divineValue": 0.01,
+   "count": 118,
+   "detailsId": "tempered-flesh-crimson-jewel",
+   "listingCount": 271
+  },
+  {
+   "id": 6897,
+   "name": "Tempered Spirit",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RlbXBlcmVkR3JlZW4iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/29ecf43831/TemperedGreen.png",
+   "baseType": "Viridian Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 66.67,
+    "data": [
+     0,
+     0,
+     66.67,
+     66.67,
+     66.67,
+     33.33,
+     66.67
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "-1 Dexterity per 1 Dexterity on Allocated Passives in Radius",
+     "optional": false
+    },
+    {
+     "text": "2% increased Movement Speed per 10 Dexterity on Allocated Passives in Radius",
+     "optional": false
+    }
+   ],
+   "flavourText": "Though the body rots, the spirit lives on.\n\n<default>{This item can be transformed on the Altar of Sacrifice along with Vial of Transcendence}",
+   "itemType": "Jewel",
+   "chaosValue": 5,
+   "exaltedValue": 2.31,
+   "divineValue": 0.01,
+   "count": 62,
+   "detailsId": "tempered-spirit-viridian-jewel",
+   "listingCount": 416
+  },
+  {
+   "id": 40069,
+   "name": "Natural Affinity",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL05hdHVyZXNQYXRpZW5jZUpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/1f4e80dd70/NaturesPatienceJewel.png",
+   "baseType": "Small Cluster Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 66.67,
+    "data": [
+     0,
+     33.33,
+     33.33,
+     33.33,
+     66.67,
+     66.67,
+     66.67
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Adds Nature's Patience",
+     "optional": false
+    }
+   ],
+   "flavourText": "You can take the girl out of the woods, \nbut you can't take the woods out of the girl.",
+   "itemType": "Jewel",
+   "chaosValue": 5,
+   "exaltedValue": 2.31,
+   "divineValue": 0.01,
+   "count": 300,
+   "detailsId": "natural-affinity-small-cluster-jewel",
+   "listingCount": 1313
+  },
+  {
+   "id": 40116,
+   "name": "Megalomaniac",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZUpld2VsQmFzZTIiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/659b3e6b90/UniqueJewelBase2.png",
+   "levelRequired": 60,
+   "baseType": "Medium Cluster Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -50,
+    "data": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     -50
+    ]
+   },
+   "flavourText": "If you're going to act like you're better than everyone else, make sure you are.",
+   "itemType": "Cluster Jewel",
+   "chaosValue": 5,
+   "exaltedValue": 2.31,
+   "divineValue": 0.01,
+   "count": 399,
+   "detailsId": "megalomaniac-medium-cluster-jewel",
+   "listingCount": 483285
+  },
+  {
+   "id": 60064,
+   "name": "Kurgal's Gaze",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0h5cG5vdGljRXllVW5pcXVlIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/f909ca8b69/HypnoticEyeUnique.png",
+   "levelRequired": 40,
+   "baseType": "Hypnotic Eye Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 66.67,
+    "data": [
+     0,
+     0,
+     0,
+     66.67,
+     66.67,
+     66.67,
+     66.67
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+(10-20) to Intelligence",
+     "optional": false
+    },
+    {
+     "text": "8% increased Effect of Arcane Surge on you per\nHypnotic Eye Jewel affecting you, up to a maximum of 40%",
+     "optional": false
+    }
+   ],
+   "flavourText": "The Blackblooded seeks dominion over darkness itself.",
+   "itemType": "Jewel",
+   "chaosValue": 5,
+   "exaltedValue": 2.31,
+   "divineValue": 0.01,
+   "count": 169,
+   "detailsId": "kurgals-gaze-hypnotic-eye-jewel",
+   "listingCount": 1073
+  },
+  {
+   "id": 103434,
+   "name": "Bloodnotch",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0lnbm9yZVBhaW4iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/191f378925/IgnorePain.png",
+   "baseType": "Crimson Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": 0,
+    "data": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "(20-30)% of Damage taken from Stunning Hits is Recovered as Life",
+     "optional": false
+    }
+   ],
+   "flavourText": "At the core of the warrior's spirit,\na fierce determination burns,\nigniting their capacity to endure.",
+   "itemType": "Jewel",
+   "chaosValue": 5,
+   "exaltedValue": 2.31,
+   "divineValue": 0.01,
+   "count": 301,
+   "detailsId": "bloodnotch-crimson-jewel",
+   "listingCount": 2006
   },
   {
    "id": 125008,
@@ -5173,7 +5813,7 @@
    "baseType": "Prismatic Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": 33.33,
+    "totalChange": -33.33,
     "data": [
      0,
      -29.33,
@@ -5181,7 +5821,7 @@
      0,
      -33.33,
      33.33,
-     33.33
+     -33.33
     ]
    },
    "explicitModifiers": [
@@ -5404,570 +6044,12 @@
    ],
    "flavourText": "The future weaves ever forward, twisting into itself forever,\ndriven by the passions and tragedies of those who seek.",
    "itemType": "Jewel",
-   "chaosValue": 10,
-   "exaltedValue": 4.76,
-   "divineValue": 0.03,
+   "chaosValue": 5,
+   "exaltedValue": 2.31,
+   "divineValue": 0.01,
    "count": 399,
    "detailsId": "bound-by-destiny-prismatic-jewel",
-   "listingCount": 43783
-  },
-  {
-   "id": 135015,
-   "name": "Foulborn The Blue Dream",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/c68d9ad41b/TheBlueDream.png",
-   "baseType": "Cobalt Jewel",
-   "variant": "Crit Multi",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -50,
-    "data": [
-     0,
-     0,
-     -5,
-     -25,
-     -25,
-     -30,
-     -50
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain a Power Charge on Kill",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "+3% to Critical Strike Multiplier per Power Charge",
-     "optional": false
-    }
-   ],
-   "flavourText": "We crash against Chayula's body,\nand fall like rain into the place we cannot go.",
-   "itemType": "Jewel",
-   "chaosValue": 10,
-   "exaltedValue": 4.76,
-   "divineValue": 0.03,
-   "count": 69,
-   "detailsId": "foulborn-the-blue-dream-crit-multi-cobalt-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_4164870816",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 180
-  },
-  {
-   "id": 135298,
-   "name": "Foulborn The Blue Dream",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/c68d9ad41b/TheBlueDream.png",
-   "baseType": "Cobalt Jewel",
-   "variant": "Lightning Lucky",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -33.33,
-    "data": [
-     0,
-     0,
-     0,
-     -13.33,
-     -33.33,
-     -33.33,
-     -33.33
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain a Power Charge on Kill",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "Lightning Damage with Hits is Lucky if you've Blocked Spell Damage Recently",
-     "optional": false
-    }
-   ],
-   "flavourText": "We crash against Chayula's body,\nand fall like rain into the place we cannot go.",
-   "itemType": "Jewel",
-   "chaosValue": 10,
-   "exaltedValue": 4.76,
-   "divineValue": 0.03,
-   "count": 59,
-   "detailsId": "foulborn-the-blue-dream-lightning-lucky-cobalt-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_1327356547",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 210
-  },
-  {
-   "id": 2007,
-   "name": "The Blue Dream",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUJsdWVEcmVhbSIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/1cb1c74958/TheBlueDream.png",
-   "baseType": "Cobalt Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -10,
-    "data": [
-     0,
-     0,
-     -2.5,
-     -10,
-     -10,
-     -10,
-     -10
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Gain (6-10)% of Lightning Damage as Extra Chaos Damage",
-     "optional": false
-    },
-    {
-     "text": "Passives granting Lightning Resistance or all Elemental Resistances in Radius\nalso grant an equal chance to gain a Power Charge on Kill",
-     "optional": false
-    }
-   ],
-   "flavourText": "We crash against Chayula's body,\nand fall like rain into the place we cannot go.",
-   "itemType": "Jewel",
-   "chaosValue": 9,
-   "exaltedValue": 4.29,
-   "divineValue": 0.03,
-   "count": 88,
-   "detailsId": "the-blue-dream-cobalt-jewel",
-   "listingCount": 411
-  },
-  {
-   "id": 60136,
-   "name": "Ulaman's Gaze",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NlYXJjaGluZ0V5ZVVuaXF1ZSIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/fd2beeb2ad/SearchingEyeUnique.png",
-   "levelRequired": 40,
-   "baseType": "Searching Eye Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -10,
-    "data": [
-     0,
-     0,
-     50,
-     80,
-     0,
-     0,
-     -10
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "+(10-20) to Dexterity",
-     "optional": false
-    },
-    {
-     "text": "Projectiles have 4% chance to be able to Chain when colliding with terrain per\nSearching Eye Jewel affecting you, up to a maximum of 20%",
-     "optional": false
-    }
-   ],
-   "flavourText": "The Sovereign of the Well seeks dominion over the light.",
-   "itemType": "Jewel",
-   "chaosValue": 9,
-   "exaltedValue": 4.29,
-   "divineValue": 0.03,
-   "count": 288,
-   "detailsId": "ulamans-gaze-searching-eye-jewel",
-   "listingCount": 587
-  },
-  {
-   "id": 100351,
-   "name": "Immutable Force",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JlZEpld2VsMiIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/87ba4f5e53/RedJewel2.png",
-   "baseType": "Crimson Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     0,
-     11.11,
-     0,
-     11.11,
-     11.11,
-     6.67,
-     0
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "(500-1000)% increased Stun and Block Recovery",
-     "optional": false
-    }
-   ],
-   "flavourText": "How simple a power, on which empires turn,\nwhen one man stands firm and says, \"I refuse.\"",
-   "itemType": "Jewel",
-   "chaosValue": 9,
-   "exaltedValue": 4.29,
-   "divineValue": 0.03,
-   "count": 399,
-   "detailsId": "immutable-force-crimson-jewel",
-   "listingCount": 2326
-  },
-  {
-   "id": 135636,
-   "name": "Foulborn Firesong",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JlZEpld2VsNyIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/c463a7d656/RedJewel7.png",
-   "baseType": "Crimson Jewel",
-   "variant": "Ignite Duration",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 27.27,
-    "data": [
-     0,
-     6.06,
-     6.06,
-     6.06,
-     6.06,
-     16.67,
-     27.27
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "+(10-15)% to Fire Resistance",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "(25-50)% increased Ignite Duration on Enemies",
-     "optional": false
-    }
-   ],
-   "flavourText": "Within a firestorm, the Thane commands the flames\nEmblazoned by glory and the song of the First Ones\nFor the master of fire fears nothing.",
-   "itemType": "Jewel",
-   "chaosValue": 8.4,
-   "exaltedValue": 4,
-   "divineValue": 0.02,
-   "count": 44,
-   "detailsId": "foulborn-firesong-ignite-duration-crimson-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_1086147743",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 283
-  },
-  {
-   "id": 135626,
-   "name": "Foulborn Ancestral Vision",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1ByaXN0aW5lQ29uZGl0aW9uaW5nIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/38fcdc252d/PristineConditioning.png",
-   "baseType": "Viridian Jewel",
-   "variant": "Suppress Armour",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 7.27,
-    "data": [
-     0,
-     -9.09,
-     -9.09,
-     27.27,
-     27.27,
-     8.44,
-     7.27
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "+(5-10) to Dexterity",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "Modifiers to Chance to Suppress Spell Damage also apply to Chance to Defend with 200% of Armour at 50% of their Value",
-     "optional": false
-    }
-   ],
-   "flavourText": "The spirits of our ancestors guided us from the Archipelago to the continent.\nInextricably, the purity of our souls is linked to the ones who came before us.",
-   "itemType": "Jewel",
-   "chaosValue": 8.26,
-   "exaltedValue": 3.94,
-   "divineValue": 0.02,
-   "count": 9,
-   "detailsId": "foulborn-ancestral-vision-suppress-armour-viridian-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_860891010",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 53
-  },
-  {
-   "id": 40065,
-   "name": "One With Nothing",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RyYWdvblN0eWxlSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/fa9a94b12e/DragonStyleJewel.png",
-   "baseType": "Small Cluster Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 14.29,
-    "data": [
-     0,
-     14.29,
-     14.29,
-     14.29,
-     14.29,
-     14.29,
-     14.29
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Adds Hollow Palm Technique",
-     "optional": false
-    }
-   ],
-   "flavourText": "Once you begin to rely on your weapons, \nYou ensure you can't live without them.",
-   "itemType": "Jewel",
-   "chaosValue": 8,
-   "exaltedValue": 3.81,
-   "divineValue": 0.02,
-   "count": 181,
-   "detailsId": "one-with-nothing-small-cluster-jewel",
-   "listingCount": 1065
-  },
-  {
-   "id": 95710,
-   "name": "Impossible Escape",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL01pbmRib3JlUGVhcmwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVsaWMiOjEyfV0/33e7bdfdfe/MindborePearl.png",
-   "baseType": "Viridian Jewel",
-   "itemClass": 10,
-   "sparkLine": {
-    "totalChange": -45.21,
-    "data": [
-     0,
-     -10.96,
-     23.29,
-     17.81,
-     -17.81,
-     2.74,
-     -45.21
-    ]
-   },
-   "flavourText": "She was the last of countless progeny bred to test the limits of limitless power.\nIn the cosmic prison of her birth, her siblings fought each other to the death\nfor supremacy. She alone reached her limit... and broke through.",
-   "itemType": "Jewel",
-   "chaosValue": 8,
-   "exaltedValue": 3.81,
-   "divineValue": 0.02,
-   "count": 399,
-   "detailsId": "impossible-escape-viridian-jewel",
-   "listingCount": 5606
-  },
-  {
-   "id": 6892,
-   "name": "Tempered Flesh",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RlbXBlcmVkUmVkIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/66e750a720/TemperedRed.png",
-   "baseType": "Crimson Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 1.43,
-    "data": [
-     0,
-     0,
-     0,
-     14.29,
-     42.86,
-     28.57,
-     1.43
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "-1 Strength per 1 Strength on Allocated Passives in Radius",
-     "optional": false
-    },
-    {
-     "text": "2% increased Life Recovery Rate per 10 Strength on Allocated Passives in Radius",
-     "optional": false
-    }
-   ],
-   "flavourText": "We are born raw and untested, and we are shaped by life.\n\n<default>{This item can be transformed on the Altar of Sacrifice along with Vial of Transcendence}",
-   "itemType": "Jewel",
-   "chaosValue": 7.1,
-   "exaltedValue": 3.38,
-   "divineValue": 0.02,
-   "count": 110,
-   "detailsId": "tempered-flesh-crimson-jewel",
-   "listingCount": 262
-  },
-  {
-   "id": 109200,
-   "name": "Replica Powerlessness",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0JsdWVDb3JydXB0NiIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/281293a0c5/BlueCorrupt6.png",
-   "baseType": "Cobalt Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     0,
-     0,
-     950,
-     950,
-     950,
-     0,
-     null
-    ]
-   },
-   "flavourText": "\"The suppression troops have stopped responding to my orders.\nI'm no longer in charge, and I likely never truly was... I suspect\nthey're already coming for us.\"\n- Lead Researcher Ksaret, one hour post-Incident",
-   "itemType": "Jewel",
-   "chaosValue": 6.7,
-   "exaltedValue": 3.19,
-   "divineValue": 0.02,
-   "count": 4,
-   "detailsId": "replica-powerlessness-cobalt-jewel",
-   "listingCount": 37
-  },
-  {
-   "id": 676,
-   "name": "Inspired Learning",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL3VuaXF1ZTciLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/05e61f124f/unique7.png",
-   "baseType": "Crimson Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "With 4 Notables Allocated in Radius, When you Kill a Rare monster, you gain 1 of its Modifiers for 20 seconds",
-     "optional": false
-    }
-   ],
-   "flavourText": "If you do not learn from a won battle\nthen you have already lost the war.",
-   "itemType": "Jewel",
-   "chaosValue": 5,
-   "exaltedValue": 2.38,
-   "divineValue": 0.01,
-   "count": 147,
-   "detailsId": "inspired-learning-crimson-jewel",
-   "listingCount": 1996
-  },
-  {
-   "id": 40069,
-   "name": "Natural Affinity",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL05hdHVyZXNQYXRpZW5jZUpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/1f4e80dd70/NaturesPatienceJewel.png",
-   "levelRequired": 32,
-   "baseType": "Small Cluster Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 66.67,
-    "data": [
-     0,
-     33.33,
-     33.33,
-     33.33,
-     66.67,
-     66.67,
-     66.67
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Adds Nature's Patience",
-     "optional": false
-    }
-   ],
-   "flavourText": "You can take the girl out of the woods, \nbut you can't take the woods out of the girl.",
-   "itemType": "Jewel",
-   "chaosValue": 5,
-   "exaltedValue": 2.38,
-   "divineValue": 0.01,
-   "count": 301,
-   "detailsId": "natural-affinity-small-cluster-jewel",
-   "listingCount": 1305
-  },
-  {
-   "id": 60064,
-   "name": "Kurgal's Gaze",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0h5cG5vdGljRXllVW5pcXVlIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/f909ca8b69/HypnoticEyeUnique.png",
-   "levelRequired": 40,
-   "baseType": "Hypnotic Eye Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 66.67,
-    "data": [
-     0,
-     0,
-     0,
-     66.67,
-     66.67,
-     66.67,
-     66.67
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "+(10-20) to Intelligence",
-     "optional": false
-    },
-    {
-     "text": "8% increased Effect of Arcane Surge on you per\nHypnotic Eye Jewel affecting you, up to a maximum of 40%",
-     "optional": false
-    }
-   ],
-   "flavourText": "The Blackblooded seeks dominion over darkness itself.",
-   "itemType": "Jewel",
-   "chaosValue": 5,
-   "exaltedValue": 2.38,
-   "divineValue": 0.01,
-   "count": 157,
-   "detailsId": "kurgals-gaze-hypnotic-eye-jewel",
-   "listingCount": 1057
-  },
-  {
-   "id": 103434,
-   "name": "Bloodnotch",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0lnbm9yZVBhaW4iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/191f378925/IgnorePain.png",
-   "baseType": "Crimson Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "(20-30)% of Damage taken from Stunning Hits is Recovered as Life",
-     "optional": false
-    }
-   ],
-   "flavourText": "At the core of the warrior's spirit,\na fierce determination burns,\nigniting their capacity to endure.",
-   "itemType": "Jewel",
-   "chaosValue": 5,
-   "exaltedValue": 2.38,
-   "divineValue": 0.01,
-   "count": 307,
-   "detailsId": "bloodnotch-crimson-jewel",
-   "listingCount": 2006
+   "listingCount": 43831
   },
   {
    "id": 135635,
@@ -6003,9 +6085,9 @@
    "flavourText": "Within a firestorm, the Thane commands the flames\nEmblazoned by glory and the song of the First Ones\nFor the master of fire fears nothing.",
    "itemType": "Jewel",
    "chaosValue": 5,
-   "exaltedValue": 2.38,
+   "exaltedValue": 2.31,
    "divineValue": 0.01,
-   "count": 13,
+   "count": 11,
    "detailsId": "foulborn-firesong-fire-multi-crimson-jewel",
    "tradeInfo": [
     {
@@ -6014,7 +6096,7 @@
      "max": 0
     }
    ],
-   "listingCount": 115
+   "listingCount": 113
   },
   {
    "id": 135503,
@@ -6050,7 +6132,7 @@
    "flavourText": "The spirits of our ancestors guided us from the Archipelago to the continent.\nInextricably, the purity of our souls is linked to the ones who came before us.",
    "itemType": "Jewel",
    "chaosValue": 4.8,
-   "exaltedValue": 2.29,
+   "exaltedValue": 2.22,
    "divineValue": 0.01,
    "count": 19,
    "detailsId": "foulborn-ancestral-vision-prevent-suppressed-viridian-jewel",
@@ -6064,68 +6146,37 @@
    "listingCount": 73
   },
   {
-   "id": 67169,
-   "name": "Seething Fury",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NwZWN0cmFsVGhyb3dUaHJlc2hvbGQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/6de1cd92c9/SpectralThrowThreshold.png",
+   "id": 2284,
+   "name": "Pure Talent",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1B1cmVUYWxlbnQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/64b53e536e/PureTalent.png",
    "baseType": "Viridian Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -4.44,
-    "data": [
-     0,
-     11.11,
-     2.22,
-     -11.11,
-     -11.11,
-     -11.11,
-     -4.44
-    ]
-   },
-   "flavourText": "The enslaved Ezomyte clans were not permitted to own weapons.\nFor years, they trained in secret, watching and waiting for the\nperfect moment to reveal the true depth of the Empire's folly.",
-   "itemType": "Jewel",
-   "chaosValue": 4.3,
-   "exaltedValue": 2.05,
-   "divineValue": 0.01,
-   "count": 96,
-   "detailsId": "seething-fury-viridian-jewel",
-   "listingCount": 354
-  },
-  {
-   "id": 6897,
-   "name": "Tempered Spirit",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RlbXBlcmVkR3JlZW4iLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/29ecf43831/TemperedGreen.png",
-   "baseType": "Viridian Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 33.33,
+    "totalChange": 0,
     "data": [
      0,
      0,
-     66.67,
-     66.67,
-     66.67,
-     33.33,
-     33.33
+     0,
+     0,
+     0,
+     0,
+     0
     ]
    },
    "explicitModifiers": [
     {
-     "text": "-1 Dexterity per 1 Dexterity on Allocated Passives in Radius",
-     "optional": false
-    },
-    {
-     "text": "2% increased Movement Speed per 10 Dexterity on Allocated Passives in Radius",
+     "text": "While your Passive Skill Tree connects to a class' starting location, you gain:\nMarauder: Melee Skills have 25% increased Area of Effect\nDuelist: 1% of Attack Damage Leeched as Life\nRanger: 7% increased Movement Speed\nShadow: +0.5% to Critical Strike Chance\nWitch: 0.5% of Mana Regenerated per second\nTemplar: Damage Penetrates 5% Elemental Resistances\nScion: +25 to All Attributes",
      "optional": false
     }
    ],
-   "flavourText": "Though the body rots, the spirit lives on.\n\n<default>{This item can be transformed on the Altar of Sacrifice along with Vial of Transcendence}",
+   "flavourText": "The skilled know how to learn.\nThe talented know who to learn from.",
    "itemType": "Jewel",
    "chaosValue": 4,
-   "exaltedValue": 1.9,
+   "exaltedValue": 1.85,
    "divineValue": 0.01,
-   "count": 71,
-   "detailsId": "tempered-spirit-viridian-jewel",
-   "listingCount": 422
+   "count": 207,
+   "detailsId": "pure-talent-viridian-jewel",
+   "listingCount": 1282
   },
   {
    "id": 40067,
@@ -6154,11 +6205,38 @@
    "flavourText": "\"Try as I might, I could not escape it.\nWhen I closed my eyes, I saw only death.\nEach breath tainted with the scent of seared and smouldering flesh,\nAnd each sound tangled with pleas for mercy.\"",
    "itemType": "Jewel",
    "chaosValue": 4,
-   "exaltedValue": 1.9,
+   "exaltedValue": 1.85,
    "divineValue": 0.01,
-   "count": 264,
+   "count": 247,
    "detailsId": "calamitous-visions-small-cluster-jewel",
-   "listingCount": 911
+   "listingCount": 898
+  },
+  {
+   "id": 67169,
+   "name": "Seething Fury",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NwZWN0cmFsVGhyb3dUaHJlc2hvbGQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/6de1cd92c9/SpectralThrowThreshold.png",
+   "baseType": "Viridian Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -11.11,
+    "data": [
+     0,
+     11.11,
+     2.22,
+     -11.11,
+     -11.11,
+     -11.11,
+     -11.11
+    ]
+   },
+   "flavourText": "The enslaved Ezomyte clans were not permitted to own weapons.\nFor years, they trained in secret, watching and waiting for the\nperfect moment to reveal the true depth of the Empire's folly.",
+   "itemType": "Jewel",
+   "chaosValue": 4,
+   "exaltedValue": 1.85,
+   "divineValue": 0.01,
+   "count": 89,
+   "detailsId": "seething-fury-viridian-jewel",
+   "listingCount": 348
   },
   {
    "id": 1977,
@@ -6187,20 +6265,39 @@
    "flavourText": "All revere the earth they walk,\nFor it wields strength beyond compare,\nHolds knowledge more than thought,\nStands long after all else falls.",
    "itemType": "Jewel",
    "chaosValue": 3,
-   "exaltedValue": 1.43,
+   "exaltedValue": 1.39,
    "divineValue": 0.01,
-   "count": 280,
+   "count": 277,
    "detailsId": "the-anima-stone-prismatic-jewel",
-   "listingCount": 3195
+   "listingCount": 3190
   },
   {
-   "id": 2284,
-   "name": "Pure Talent",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1B1cmVUYWxlbnQiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/64b53e536e/PureTalent.png",
-   "baseType": "Viridian Jewel",
+   "id": 109084,
+   "name": "Replica Fragility",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JlZENvcnJ1cHQ2IiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/161d0c411c/RedCorrupt6.png",
+   "baseType": "Crimson Jewel",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -25,
+    "totalChange": 0,
+    "data": []
+   },
+   "flavourText": "\"Our defenses are failing at Outpost One. We can't hold out much\nlonger. All outposts, abandon your stations! Escape while you can!\"\n- Lead Researcher Ksaret, three hours post-Incident",
+   "itemType": "Jewel",
+   "chaosValue": 3,
+   "exaltedValue": 1.39,
+   "divineValue": 0.01,
+   "count": 1,
+   "detailsId": "replica-fragility-crimson-jewel",
+   "listingCount": 34
+  },
+  {
+   "id": 489,
+   "name": "Energy From Within",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0JsdWVKZXdlbDYiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/43c313a2c4/BlueJewel6.png",
+   "baseType": "Cobalt Jewel",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -16.67,
     "data": [
      0,
      0,
@@ -6208,23 +6305,64 @@
      0,
      0,
      0,
-     -25
+     -16.67
+    ]
+   },
+   "flavourText": "The Azmeri ascetics learnt the power\nof going without the body's ordinary cravings.",
+   "itemType": "Jewel",
+   "chaosValue": 2.5,
+   "exaltedValue": 1.16,
+   "divineValue": 0.01,
+   "count": 18,
+   "detailsId": "energy-from-within-cobalt-jewel",
+   "listingCount": 121
+  },
+  {
+   "id": 135158,
+   "name": "Foulborn Witchbane",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL3VuaXF1ZTEzIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/8aa6bd87ec/unique13.png",
+   "baseType": "Cobalt Jewel",
+   "variant": "Curse Duration",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -54.17,
+    "data": [
+     0,
+     -4.17,
+     -8.33,
+     35.42,
+     35.42,
+     20.83,
+     -54.17
     ]
    },
    "explicitModifiers": [
     {
-     "text": "While your Passive Skill Tree connects to a class' starting location, you gain:\nMarauder: Melee Skills have 25% increased Area of Effect\nDuelist: 1% of Attack Damage Leeched as Life\nRanger: 7% increased Movement Speed\nShadow: +0.5% to Critical Strike Chance\nWitch: 0.5% of Mana Regenerated per second\nTemplar: Damage Penetrates 5% Elemental Resistances\nScion: +25 to All Attributes",
+     "text": "When you Kill an Enemy Cursed with a Non-Aura Hex, become Immune to\nCurses for remaining Hex Duration",
      "optional": false
     }
    ],
-   "flavourText": "The skilled know how to learn.\nThe talented know who to learn from.",
+   "mutatedModifiers": [
+    {
+     "text": "Curse Skills have (10-15)% increased Skill Effect Duration",
+     "optional": false
+    }
+   ],
+   "flavourText": "In darkest night, 'neath waxen moon\nA witch snatches a boy from his room.\nHe wards off her hexes\nThe witch he perplexes\nAnd so becomes part of her stew.",
    "itemType": "Jewel",
-   "chaosValue": 3,
-   "exaltedValue": 1.43,
+   "chaosValue": 2.2,
+   "exaltedValue": 1.02,
    "divineValue": 0.01,
-   "count": 219,
-   "detailsId": "pure-talent-viridian-jewel",
-   "listingCount": 1288
+   "count": 10,
+   "detailsId": "foulborn-witchbane-curse-duration-cobalt-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_1435748744",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 49
   },
   {
    "id": 140952,
@@ -6258,7 +6396,7 @@
    "flavourText": "We climb like vines up Chayula's arms,\nreaching into the world that should be ours.",
    "itemType": "Jewel",
    "chaosValue": 2.2,
-   "exaltedValue": 1.05,
+   "exaltedValue": 1.02,
    "divineValue": 0.01,
    "count": 5,
    "detailsId": "foulborn-the-green-dream-frenzy-speed-cold-to-mana-viridian-jewel",
@@ -6270,33 +6408,6 @@
     }
    ],
    "listingCount": 29
-  },
-  {
-   "id": 489,
-   "name": "Energy From Within",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0JsdWVKZXdlbDYiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/43c313a2c4/BlueJewel6.png",
-   "baseType": "Cobalt Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -33.33,
-    "data": [
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     -33.33
-    ]
-   },
-   "flavourText": "The Azmeri ascetics learnt the power\nof going without the body's ordinary cravings.",
-   "itemType": "Jewel",
-   "chaosValue": 2,
-   "exaltedValue": 0.95,
-   "divineValue": 0.01,
-   "count": 20,
-   "detailsId": "energy-from-within-cobalt-jewel",
-   "listingCount": 122
   },
   {
    "id": 754,
@@ -6325,38 +6436,11 @@
    "flavourText": "The shield crab does not leave his shell unless it is forced to, \nand even then, it knows to keep its distance.",
    "itemType": "Jewel",
    "chaosValue": 2,
-   "exaltedValue": 0.95,
+   "exaltedValue": 0.93,
    "divineValue": 0.01,
    "count": 85,
    "detailsId": "lioneyes-fall-viridian-jewel",
-   "listingCount": 619
-  },
-  {
-   "id": 2276,
-   "name": "The Golden Rule",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUdvbGRlblJ1bGUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/3c5f6382fc/TheGoldenRule.png",
-   "baseType": "Viridian Jewel",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": 0,
-    "data": [
-     0,
-     0,
-     0,
-     0,
-     0,
-     0,
-     0
-    ]
-   },
-   "flavourText": "Hurt as you would be hurt.",
-   "itemType": "Jewel",
-   "chaosValue": 2,
-   "exaltedValue": 0.95,
-   "divineValue": 0.01,
-   "count": 110,
-   "detailsId": "the-golden-rule-viridian-jewel",
-   "listingCount": 503
+   "listingCount": 621
   },
   {
    "id": 40072,
@@ -6385,11 +6469,11 @@
    "flavourText": "Pain is a fine motivator,\nBut if you seek the truth,\nFear of pain unknown has no parallel.",
    "itemType": "Jewel",
    "chaosValue": 2,
-   "exaltedValue": 0.95,
+   "exaltedValue": 0.93,
    "divineValue": 0.01,
-   "count": 169,
+   "count": 161,
    "detailsId": "the-interrogation-small-cluster-jewel",
-   "listingCount": 820
+   "listingCount": 812
   },
   {
    "id": 44229,
@@ -6438,98 +6522,38 @@
    "flavourText": "\"The summoned golems immediately battered through the chamber wall\nand killed several guards, but their fury only lasted a short time.\"",
    "itemType": "Jewel",
    "chaosValue": 2,
-   "exaltedValue": 0.95,
+   "exaltedValue": 0.93,
    "divineValue": 0.01,
-   "count": 57,
+   "count": 54,
    "detailsId": "replica-primordial-might-crimson-jewel",
-   "listingCount": 258
+   "listingCount": 257
   },
   {
-   "id": 135158,
-   "name": "Foulborn Witchbane",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL3VuaXF1ZTEzIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsIm11dGF0ZWQiOnRydWV9XQ/8aa6bd87ec/unique13.png",
-   "baseType": "Cobalt Jewel",
-   "variant": "Curse Duration",
-   "itemClass": 3,
-   "sparkLine": {
-    "totalChange": -58.33,
-    "data": [
-     0,
-     -4.17,
-     -8.33,
-     35.42,
-     35.42,
-     20.83,
-     -58.33
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "When you Kill an Enemy Cursed with a Non-Aura Hex, become Immune to\nCurses for remaining Hex Duration",
-     "optional": false
-    }
-   ],
-   "mutatedModifiers": [
-    {
-     "text": "Curse Skills have (10-15)% increased Skill Effect Duration",
-     "optional": false
-    }
-   ],
-   "flavourText": "In darkest night, 'neath waxen moon\nA witch snatches a boy from his room.\nHe wards off her hexes\nThe witch he perplexes\nAnd so becomes part of her stew.",
-   "itemType": "Jewel",
-   "chaosValue": 2,
-   "exaltedValue": 0.95,
-   "divineValue": 0.01,
-   "count": 9,
-   "detailsId": "foulborn-witchbane-curse-duration-cobalt-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_1435748744",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 48
-  },
-  {
-   "id": 135208,
-   "name": "Foulborn Lioneye's Fall",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0xpb25leWVzRmFsbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/044edb8a8e/LioneyesFall.png",
+   "id": 2276,
+   "name": "The Golden Rule",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1RoZUdvbGRlblJ1bGUiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MX1d/3c5f6382fc/TheGoldenRule.png",
    "baseType": "Viridian Jewel",
-   "variant": "Evasion to Armour",
    "itemClass": 3,
    "sparkLine": {
-    "totalChange": -20,
+    "totalChange": -10,
     "data": [
      0,
-     -15,
      0,
      0,
      0,
      0,
-     -20
+     0,
+     -10
     ]
    },
-   "mutatedModifiers": [
-    {
-     "text": "Increases and Reductions to Evasion Rating in Radius are Transformed to apply to Armour",
-     "optional": false
-    }
-   ],
-   "flavourText": "The shield crab does not leave his shell unless it is forced to, \nand even then, it knows to keep its distance.",
+   "flavourText": "Hurt as you would be hurt.",
    "itemType": "Jewel",
-   "chaosValue": 1.6,
-   "exaltedValue": 0.76,
-   "count": 7,
-   "detailsId": "foulborn-lioneyes-fall-evasion-to-armour-viridian-jewel",
-   "tradeInfo": [
-    {
-     "mod": "explicit.stat_2548156334",
-     "min": 0,
-     "max": 0
-    }
-   ],
-   "listingCount": 57
+   "chaosValue": 1.8,
+   "exaltedValue": 0.83,
+   "divineValue": 0.01,
+   "count": 101,
+   "detailsId": "the-golden-rule-viridian-jewel",
+   "listingCount": 502
   },
   {
    "id": 126,
@@ -6552,10 +6576,10 @@
    "flavourText": "Atziri went to great lengths to ensure her immortality,\nbut nothing is eternal.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
+   "exaltedValue": 0.46,
    "count": 58,
    "detailsId": "atziris-reign-crimson-jewel",
-   "listingCount": 477
+   "listingCount": 482
   },
   {
    "id": 211,
@@ -6578,10 +6602,10 @@
    "flavourText": "Picking a lock takes an immense amount of skill and practice.\nBreaking it with a hammer takes about three seconds.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 154,
+   "exaltedValue": 0.46,
+   "count": 151,
    "detailsId": "brute-force-solution-cobalt-jewel",
-   "listingCount": 1319
+   "listingCount": 1316
   },
   {
    "id": 226,
@@ -6604,10 +6628,10 @@
    "flavourText": "\"Greatly outnumbered, Deshret dressed her personal guard \nin identical garb. When the Empire rode north, Deshret and \nher guard took turns revealing themselves, creating the illusion \nof speed beyond the capabilities of even the Virtue Gems.\"\n- History of the Maraketh",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 162,
+   "exaltedValue": 0.46,
+   "count": 161,
    "detailsId": "careful-planning-viridian-jewel",
-   "listingCount": 1353
+   "listingCount": 1362
   },
   {
    "id": 266,
@@ -6630,10 +6654,10 @@
    "flavourText": "Even a millennium later, Atziri's presence\ncasts a shroud over Wraeclast.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
+   "exaltedValue": 0.46,
    "count": 45,
    "detailsId": "chill-of-corruption-viridian-jewel",
-   "listingCount": 298
+   "listingCount": 299
   },
   {
    "id": 362,
@@ -6662,10 +6686,10 @@
    "flavourText": "A mage from the coast rode up on a broken nag, legs burnt to his bones.\nBefore he collapsed, he uttered:\n\"I watched the world we know end yesterday.\"",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 112,
+   "exaltedValue": 0.46,
+   "count": 114,
    "detailsId": "dead-reckoning-cobalt-jewel",
-   "listingCount": 793
+   "listingCount": 799
   },
   {
    "id": 477,
@@ -6688,10 +6712,10 @@
    "flavourText": "Working smart and working hard aren't mutually exclusive.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 264,
+   "exaltedValue": 0.46,
+   "count": 261,
    "detailsId": "efficient-training-crimson-jewel",
-   "listingCount": 2622
+   "listingCount": 2634
   },
   {
    "id": 488,
@@ -6714,10 +6738,10 @@
    "flavourText": "\"I've yet to see prayer stop an arrow.\"",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 54,
+   "exaltedValue": 0.46,
+   "count": 51,
    "detailsId": "energised-armour-crimson-jewel",
-   "listingCount": 493
+   "listingCount": 492
   },
   {
    "id": 525,
@@ -6740,10 +6764,10 @@
    "flavourText": "\"The swallow flew fast and took many turns,\nspilling a seed where no plant had grown before. \nThis seed grew and grew until the desert became fertile and abundant. \nYour mind is like this seed.\" \n- Maraketh Proverb",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 180,
+   "exaltedValue": 0.46,
+   "count": 179,
    "detailsId": "fertile-mind-cobalt-jewel",
-   "listingCount": 1664
+   "listingCount": 1674
   },
   {
    "id": 526,
@@ -6766,10 +6790,10 @@
    "flavourText": "In sickness, the insane becomes sane.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 32,
+   "exaltedValue": 0.46,
+   "count": 31,
    "detailsId": "fevered-mind-cobalt-jewel",
-   "listingCount": 225
+   "listingCount": 226
   },
   {
    "id": 536,
@@ -6792,10 +6816,10 @@
    "flavourText": "Even the strongest of steel can be made to bend.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 176,
+   "exaltedValue": 0.46,
+   "count": 182,
    "detailsId": "fluid-motion-viridian-jewel",
-   "listingCount": 929
+   "listingCount": 942
   },
   {
    "id": 546,
@@ -6818,10 +6842,10 @@
    "flavourText": "\"Your flesh will fail you.\"",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
+   "exaltedValue": 0.46,
    "count": 159,
    "detailsId": "fragility-crimson-jewel",
-   "listingCount": 1328
+   "listingCount": 1333
   },
   {
    "id": 624,
@@ -6844,10 +6868,10 @@
    "flavourText": "The difference between the master and his apprentice\nis what they see when they look at the same block of wood.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 36,
+   "exaltedValue": 0.46,
+   "count": 33,
    "detailsId": "hidden-potential-viridian-jewel",
-   "listingCount": 311
+   "listingCount": 312
   },
   {
    "id": 665,
@@ -6870,10 +6894,10 @@
    "flavourText": "There is no force without movement.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 246,
+   "exaltedValue": 0.46,
+   "count": 235,
    "detailsId": "inertia-crimson-jewel",
-   "listingCount": 2206
+   "listingCount": 2210
   },
   {
    "id": 912,
@@ -6896,10 +6920,10 @@
    "flavourText": "\"Your fear will overcome you.\"",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 165,
+   "exaltedValue": 0.46,
+   "count": 166,
    "detailsId": "pacifism-viridian-jewel",
-   "listingCount": 951
+   "listingCount": 957
   },
   {
    "id": 964,
@@ -6922,10 +6946,10 @@
    "flavourText": "\"Your desires will mislead you.\"",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
+   "exaltedValue": 0.46,
    "count": 93,
    "detailsId": "powerlessness-cobalt-jewel",
-   "listingCount": 844
+   "listingCount": 850
   },
   {
    "id": 1033,
@@ -6948,10 +6972,10 @@
    "flavourText": "There's no motivation for genius\nquite like desperation.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 244,
+   "exaltedValue": 0.46,
+   "count": 242,
    "detailsId": "reckless-defence-cobalt-jewel",
-   "listingCount": 2025
+   "listingCount": 2034
   },
   {
    "id": 1109,
@@ -6974,10 +6998,10 @@
    "flavourText": "Beg for forgiveness.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 123,
+   "exaltedValue": 0.46,
+   "count": 130,
    "detailsId": "self-flagellation-viridian-jewel",
-   "listingCount": 1151
+   "listingCount": 1159
   },
   {
    "id": 2184,
@@ -7000,10 +7024,10 @@
    "flavourText": "In the end, time comes for all of us.\nFor some, it comes much sooner.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 208,
+   "exaltedValue": 0.46,
+   "count": 191,
    "detailsId": "to-dust-cobalt-jewel",
-   "listingCount": 1361
+   "listingCount": 1353
   },
   {
    "id": 6895,
@@ -7036,16 +7060,16 @@
    "flavourText": "Any thought, no matter how fleeting, changes the thinker.\n\n<default>{This item can be transformed on the Altar of Sacrifice along with Vial of Transcendence}",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 125,
+   "exaltedValue": 0.46,
+   "count": 111,
    "detailsId": "tempered-mind-cobalt-jewel",
-   "listingCount": 450
+   "listingCount": 448
   },
   {
    "id": 40068,
    "name": "The Front Line",
    "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1ZldGVyYW4nc0F3YXJlbmVzc0pld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjF9XQ/7912a0c702/Veteran%27sAwarenessJewel.png",
-   "levelRequired": 26,
+   "levelRequired": 32,
    "baseType": "Small Cluster Jewel",
    "itemClass": 3,
    "sparkLine": {
@@ -7069,15 +7093,16 @@
    "flavourText": "It was a great honour to fight at the front. \nThe few that survived the initial charge were guaranteed fame and fortune.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 180,
+   "exaltedValue": 0.46,
+   "count": 151,
    "detailsId": "the-front-line-small-cluster-jewel",
-   "listingCount": 857
+   "listingCount": 832
   },
   {
    "id": 40070,
    "name": "The Siege",
    "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0tpbmV0aWNpc21KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/d748a39b2e/KineticismJewel.png",
+   "levelRequired": 48,
    "baseType": "Small Cluster Jewel",
    "itemClass": 3,
    "sparkLine": {
@@ -7101,16 +7126,15 @@
    "flavourText": "As the dead battered Highgate's barricades,\nThe Black Sekhema accepted her fate,\nAnd stood her ground.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 195,
+   "exaltedValue": 0.46,
+   "count": 185,
    "detailsId": "the-siege-small-cluster-jewel",
-   "listingCount": 1054
+   "listingCount": 1050
   },
   {
    "id": 40071,
    "name": "Kitava's Teachings",
    "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0Rpc2NpcGxlT2ZLaXRhdmFKZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxfV0/43d818445c/DiscipleOfKitavaJewel.png",
-   "levelRequired": 26,
    "baseType": "Small Cluster Jewel",
    "itemClass": 3,
    "sparkLine": {
@@ -7134,10 +7158,10 @@
    "flavourText": "Savour the bitter, cherish the sweet,\nFor there may never be another chance to eat.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 165,
+   "exaltedValue": 0.46,
+   "count": 154,
    "detailsId": "kitavas-teachings-small-cluster-jewel",
-   "listingCount": 997
+   "listingCount": 1004
   },
   {
    "id": 40117,
@@ -7160,10 +7184,10 @@
    "flavourText": "You need not go looking for a second opinion.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
+   "exaltedValue": 0.46,
    "count": 399,
    "detailsId": "split-personality-crimson-jewel",
-   "listingCount": 14135
+   "listingCount": 14137
   },
   {
    "id": 50059,
@@ -7187,10 +7211,10 @@
    "flavourText": "Only a madman would ignore a god's instructions.",
    "itemType": "Cluster Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
+   "exaltedValue": 0.46,
    "count": 399,
    "detailsId": "voices-7-passives-large-cluster-jewel",
-   "listingCount": 5224
+   "listingCount": 5223
   },
   {
    "id": 100353,
@@ -7223,8 +7247,8 @@
    "flavourText": "Within a firestorm, the Thane commands the flames\nEmblazoned by glory and the song of the First Ones\nFor the master of fire fears nothing.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 134,
+   "exaltedValue": 0.46,
+   "count": 123,
    "detailsId": "firesong-crimson-jewel",
    "listingCount": 920
   },
@@ -7259,10 +7283,10 @@
    "flavourText": "In darkest night, 'neath waxen moon\nA witch snatches a boy from his room.\nHe wards off her hexes\nThe witch he perplexes\nAnd so becomes part of her stew.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 146,
+   "exaltedValue": 0.46,
+   "count": 135,
    "detailsId": "witchbane-cobalt-jewel",
-   "listingCount": 844
+   "listingCount": 847
   },
   {
    "id": 109024,
@@ -7285,7 +7309,7 @@
    "flavourText": "\"Release the type Delta test subjects. Unseal all prototype lockers.\nArm yourself! I know that, as researchers, you've never had to fight\nbefore, but they're coming to kill us all. It's resist or die!\"\n- Lead Researcher Ksaret, two hours post-Incident",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
+   "exaltedValue": 0.46,
    "count": 5,
    "detailsId": "replica-pacifism-viridian-jewel",
    "listingCount": 30
@@ -7324,8 +7348,8 @@
    "flavourText": "We climb like vines up Chayula's arms,\nreaching into the world that should be ours.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 26,
+   "exaltedValue": 0.46,
+   "count": 24,
    "detailsId": "foulborn-the-green-dream-cold-lucky-viridian-jewel",
    "tradeInfo": [
     {
@@ -7334,7 +7358,7 @@
      "max": 0
     }
    ],
-   "listingCount": 181
+   "listingCount": 182
   },
   {
    "id": 135185,
@@ -7370,8 +7394,8 @@
    "flavourText": "We climb like vines up Chayula's arms,\nreaching into the world that should be ours.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
-   "count": 38,
+   "exaltedValue": 0.46,
+   "count": 36,
    "detailsId": "foulborn-the-green-dream-frenzy-speed-viridian-jewel",
    "tradeInfo": [
     {
@@ -7380,7 +7404,47 @@
      "max": 0
     }
    ],
-   "listingCount": 173
+   "listingCount": 172
+  },
+  {
+   "id": 135208,
+   "name": "Foulborn Lioneye's Fall",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0xpb25leWVzRmFsbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJtdXRhdGVkIjp0cnVlfV0/044edb8a8e/LioneyesFall.png",
+   "baseType": "Viridian Jewel",
+   "variant": "Evasion to Armour",
+   "itemClass": 3,
+   "sparkLine": {
+    "totalChange": -50,
+    "data": [
+     0,
+     -15,
+     0,
+     0,
+     0,
+     0,
+     -50
+    ]
+   },
+   "mutatedModifiers": [
+    {
+     "text": "Increases and Reductions to Evasion Rating in Radius are Transformed to apply to Armour",
+     "optional": false
+    }
+   ],
+   "flavourText": "The shield crab does not leave his shell unless it is forced to, \nand even then, it knows to keep its distance.",
+   "itemType": "Jewel",
+   "chaosValue": 1,
+   "exaltedValue": 0.46,
+   "count": 7,
+   "detailsId": "foulborn-lioneyes-fall-evasion-to-armour-viridian-jewel",
+   "tradeInfo": [
+    {
+     "mod": "explicit.stat_2548156334",
+     "min": 0,
+     "max": 0
+    }
+   ],
+   "listingCount": 58
   },
   {
    "id": 140942,
@@ -7416,10 +7480,10 @@
    "flavourText": "We climb like vines up Chayula's arms,\nreaching into the world that should be ours.",
    "itemType": "Jewel",
    "chaosValue": 1,
-   "exaltedValue": 0.48,
+   "exaltedValue": 0.46,
    "count": 81,
    "detailsId": "foulborn-the-green-dream-cold-to-mana-viridian-jewel",
-   "listingCount": 328
+   "listingCount": 329
   }
  ]
 }

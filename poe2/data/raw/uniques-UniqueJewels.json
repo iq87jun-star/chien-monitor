@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 248.4,
-   "chaos": 10.67
+   "exalted": 319.5,
+   "chaos": 9.7
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,24 +42,90 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 400,
-   "listingCount": 31,
+   "primaryValue": 370,
+   "listingCount": 20,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 76.83,
+    "totalChange": 63.57,
     "data": [
-     null,
      null,
      null,
      0,
      -5.17,
      -10.34,
-     76.83
+     76.83,
+     63.57
     ]
    },
    "explicitModifiers": [
     {
      "text": "Allocates (2-4) [SinisterJewelSockets|Sinister] [Jewel] sockets",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 381,
+   "itemId": "Grand Spectrum Sapphire",
+   "detailsId": "grand-spectrum-sapphire",
+   "name": "Grand Spectrum",
+   "baseType": "Sapphire",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
+   "flavourText": "Skin like steel tempered by bright flames.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 19,
+   "listingCount": 37,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 196.9,
+    "data": [
+     null,
+     null,
+     0,
+     25,
+     40.62,
+     26.56,
+     196.9
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 380,
+   "itemId": "Grand Spectrum Ruby",
+   "detailsId": "grand-spectrum-ruby",
+   "name": "Grand Spectrum",
+   "baseType": "Ruby",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9SdWJ5IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/8d964b3e88/GrandSpectrum_Ruby.png",
+   "flavourText": "A wellspring of vitality bubbling from within.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 18.9,
+   "listingCount": 30,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 110,
+    "data": [
+     null,
+     null,
+     0,
+     4.14,
+     11.11,
+     33.33,
+     110
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "2% increased Maximum Life per socketed Grand Spectrum",
      "optional": false
     }
    ]
@@ -76,19 +142,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 17.9,
-   "listingCount": 271,
+   "primaryValue": 13,
+   "listingCount": 341,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 28.78,
+    "totalChange": -6.47,
     "data": [
-     null,
      null,
      null,
      0,
      7.91,
      22.3,
-     28.78
+     28.78,
+     -6.47
     ]
    },
    "explicitModifiers": [
@@ -135,72 +201,6 @@
    ]
   },
   {
-   "id": 380,
-   "itemId": "Grand Spectrum Ruby",
-   "detailsId": "grand-spectrum-ruby",
-   "name": "Grand Spectrum",
-   "baseType": "Ruby",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9SdWJ5IiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/8d964b3e88/GrandSpectrum_Ruby.png",
-   "flavourText": "A wellspring of vitality bubbling from within.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 3,
-   "primaryValue": 12,
-   "listingCount": 11,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": 33.33,
-    "data": [
-     null,
-     null,
-     null,
-     0,
-     4.14,
-     11.11,
-     33.33
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "2% increased Maximum Life per socketed Grand Spectrum",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 381,
-   "itemId": "Grand Spectrum Sapphire",
-   "detailsId": "grand-spectrum-sapphire",
-   "name": "Grand Spectrum",
-   "baseType": "Sapphire",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
-   "flavourText": "Skin like steel tempered by bright flames.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 3,
-   "primaryValue": 8.1,
-   "listingCount": 12,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": 26.56,
-    "data": [
-     null,
-     null,
-     null,
-     0,
-     25,
-     40.62,
-     26.56
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 379,
    "itemId": "Grand Spectrum Emerald",
    "detailsId": "grand-spectrum-emerald",
@@ -211,19 +211,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 4,
-   "listingCount": 51,
+   "primaryValue": 6,
+   "listingCount": 37,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -19.43,
+    "totalChange": 20.85,
     "data": [
-     null,
      null,
      null,
      0,
      -20.11,
      -28.35,
-     -19.43
+     -19.43,
+     20.85
     ]
    },
    "explicitModifiers": [
@@ -245,24 +245,24 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 3.66,
-   "listingCount": 1046,
+   "primaryValue": 6,
+   "listingCount": 656,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 18.25,
+    "totalChange": 94.02,
     "data": [
-     null,
      null,
      null,
      0,
      9.43,
      15.08,
-     18.25
+     18.25,
+     94.02
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Notable Passive Skills in Radius also grant [Gain] 2% of Damage as Extra [Fire] Damage",
+     "text": "Notable Passive Skills in Radius also grant [Gain] (2-3)% of Damage as Extra [Fire] Damage",
      "optional": true
     },
     {
@@ -302,7 +302,7 @@
      "optional": true
     },
     {
-     "text": "Notable Passive Skills in Radius also grant [Gain] 2% of Damage as Extra [Chaos] Damage",
+     "text": "Notable Passive Skills in Radius also grant [Gain] (2-3)% of Damage as Extra [Chaos] Damage",
      "optional": true
     },
     {
@@ -347,14 +347,14 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "primaryValue": 1,
-   "listingCount": 685,
+   "listingCount": 756,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 0,
     "data": [
      null,
      null,
-     null,
+     0,
      0,
      0,
      0,
@@ -407,7 +407,7 @@
      "optional": true
     },
     {
-     "text": "(6-25)% increased [Cold] Damage",
+     "text": "(5-25)% increased [Cold] Damage",
      "optional": true
     },
     {
@@ -419,7 +419,7 @@
      "optional": true
     },
     {
-     "text": "(7-26)% reduced [Evasion|Evasion Rating]",
+     "text": "(6-29)% reduced [Evasion|Evasion Rating]",
      "optional": true
     },
     {
@@ -437,59 +437,6 @@
    ]
   },
   {
-   "id": 384,
-   "itemId": "Undying Hate Timeless Jewel",
-   "detailsId": "undying-hate-timeless-jewel",
-   "name": "Undying Hate",
-   "baseType": "Timeless Jewel",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVW5keWluZ0hhdHJlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/077ca94281/UndyingHatred.png",
-   "flavourText": "They believed themselves driven by necessity,\r\nbut that desperation made them monstrous.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "radius": "Very Large",
-   "primaryValue": 0.9373,
-   "listingCount": 1461,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": 62.59,
-    "data": [
-     null,
-     null,
-     null,
-     0,
-     32.03,
-     83.97,
-     62.59
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Glorifying the defilement of (466-30686) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (935-29708) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (912-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (458-27009) souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "[Historic]",
-     "optional": false
-    },
-    {
-     "text": "Conquered Attribute Passive Skills also grant +2 to Tribute",
-     "optional": true
-    }
-   ]
-  },
-  {
    "id": 378,
    "itemId": "Heart of the Well Diamond",
    "detailsId": "heart-of-the-well-diamond",
@@ -500,26 +447,22 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.7498,
+   "primaryValue": 0.8248,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -98.85,
+    "totalChange": 14.46,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -98.89,
-     -98.96,
-     -98.88,
-     -98.85
+     -6.11,
+     0.63,
+     4.06,
+     14.46
     ]
    },
    "explicitModifiers": [
-    {
-     "text": "[Minion|Minions] have 12% additional [Physical] Damage Reduction",
-     "optional": true
-    },
     {
      "text": "[Gain] (9-14)% of Damage as Extra [Cold] Damage",
      "optional": true
@@ -541,7 +484,11 @@
      "optional": true
     },
     {
-     "text": "9% chance to [Poison|Poison] on [Hit]",
+     "text": "[Minion|Minions] have (3-12)% additional [Physical] Damage Reduction",
+     "optional": true
+    },
+    {
+     "text": "(5-9)% chance to [Poison|Poison] on [Hit]",
      "optional": true
     },
     {
@@ -577,7 +524,7 @@
      "optional": true
     },
     {
-     "text": "[Gain] (7-11)% of Damage as Extra [Chaos] Damage",
+     "text": "[Gain] (7-12)% of Damage as Extra [Chaos] Damage",
      "optional": true
     },
     {
@@ -593,7 +540,7 @@
      "optional": true
     },
     {
-     "text": "(4-7)% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
+     "text": "(4-8)% increased [Critical|Critical Hit Chance] for [Spell|Spells]",
      "optional": true
     },
     {
@@ -629,7 +576,7 @@
      "optional": true
     },
     {
-     "text": "3% of Damage is taken from Mana before Life",
+     "text": "(2-3)% of Damage is taken from Mana before Life",
      "optional": true
     },
     {
@@ -641,7 +588,7 @@
      "optional": true
     },
     {
-     "text": "[DamagingAilments|Damaging Ailments] deal damage (2-3)% faster",
+     "text": "[DamagingAilments|Damaging Ailments] deal damage (2-4)% faster",
      "optional": true
     },
     {
@@ -705,7 +652,7 @@
      "optional": true
     },
     {
-     "text": "7% increased [Flask|Flask] Charges gained",
+     "text": "(6-7)% increased [Flask|Flask] Charges gained",
      "optional": true
     },
     {
@@ -721,11 +668,11 @@
      "optional": true
     },
     {
-     "text": "[Debuff|Debuffs] on you expire (5-8)% faster",
+     "text": "[Debuff|Debuffs] on you expire (4-8)% faster",
      "optional": true
     },
     {
-     "text": "13% chance when a [Charm|Charm] is used to use another Charm without consuming Charges",
+     "text": "(11-13)% chance when a [Charm|Charm] is used to use another Charm without consuming Charges",
      "optional": true
     },
     {
@@ -797,19 +744,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.4686,
-   "listingCount": 1749,
+   "primaryValue": 0.5155,
+   "listingCount": 2277,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -59.35,
+    "totalChange": -55.29,
     "data": [
-     null,
      null,
      null,
      0,
      -48.65,
      -46,
-     -59.35
+     -59.35,
+     -55.29
     ]
    },
    "explicitModifiers": [
@@ -828,6 +775,59 @@
    ]
   },
   {
+   "id": 384,
+   "itemId": "Undying Hate Timeless Jewel",
+   "detailsId": "undying-hate-timeless-jewel",
+   "name": "Undying Hate",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVW5keWluZ0hhdHJlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/077ca94281/UndyingHatred.png",
+   "flavourText": "They believed themselves driven by necessity,\r\nbut that desperation made them monstrous.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "radius": "Very Large",
+   "primaryValue": 0.5155,
+   "listingCount": 1895,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -10.58,
+    "data": [
+     null,
+     null,
+     0,
+     32.03,
+     83.97,
+     62.59,
+     -10.58
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Glorifying the defilement of (449-30686) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (911-29708) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (912-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (458-27009) souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    },
+    {
+     "text": "Conquered Attribute Passive Skills also grant +2 to Tribute",
+     "optional": true
+    }
+   ]
+  },
+  {
    "id": 402,
    "itemId": "Megalomaniac Diamond",
    "detailsId": "megalomaniac-diamond",
@@ -838,19 +838,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.2812,
+   "primaryValue": 0.4124,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -71.88,
+    "totalChange": -58.76,
     "data": [
-     null,
      null,
      null,
      0,
      -55.43,
      -55.53,
-     -71.88
+     -71.88,
+     -58.76
     ]
    }
   },
@@ -865,19 +865,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.2013,
-   "listingCount": 1518,
+   "primaryValue": 0.3126,
+   "listingCount": 1874,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -42.99,
+    "totalChange": -11.46,
     "data": [
-     null,
      null,
      null,
      0,
      19.76,
      -49.62,
-     -42.99
+     -42.99,
+     -11.46
     ]
    },
    "explicitModifiers": [
@@ -898,7 +898,7 @@
      "optional": true
     },
     {
-     "text": "(11-20)% less [Spirit]",
+     "text": "(10-20)% less [Spirit]",
      "optional": true
     },
     {
@@ -987,19 +987,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 0.1409,
-   "listingCount": 2096,
+   "primaryValue": 0.1183,
+   "listingCount": 2836,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -34.82,
+    "totalChange": -45.27,
     "data": [
-     null,
      null,
      null,
      0,
      -21.76,
      -46.59,
-     -34.82
+     -34.82,
+     -45.27
     ]
    },
    "explicitModifiers": [
@@ -1013,6 +1013,14 @@
     },
     {
      "text": "Passives in Radius of [passive_keystone_wildsurge_incantation|Wildsurge Incantation] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_eternal_youth|Eternal Youth] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_lord_of_the_wilds|Lord of the Wilds] can be Allocated\nwithout being connected to your tree",
      "optional": true
     },
     {
@@ -1048,19 +1056,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00539,
+   "primaryValue": 0.00313,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -99.89,
+    "totalChange": -44.7,
     "data": [
+     null,
+     null,
      0,
-     null,
-     null,
-     -99.89,
-     -99.91,
-     -99.91,
-     -99.89
+     -20.85,
+     -16.61,
+     -4.77,
+     -44.7
     ]
    },
    "explicitModifiers": [
@@ -1157,7 +1165,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Primal Strikes Skills",
+     "text": "+(1-2) to Level of all Primal Strikes Skills",
      "optional": true
     },
     {
@@ -1221,7 +1229,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Wind Dancer Skills",
+     "text": "+(1-2) to Level of all Wind Dancer Skills",
      "optional": true
     },
     {
@@ -1281,6 +1289,34 @@
      "optional": true
     },
     {
+     "text": "+2 to Level of all Cull The Weak Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Defiance Banner Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Electrocuting Arrow Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Hexblast Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Oil Barrage Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Skeletal Cleric Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Toxic Domain Skills",
+     "optional": true
+    },
+    {
      "text": "+1 to Level of all Charge Regulation Skills",
      "optional": true
     },
@@ -1305,7 +1341,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Reaper's Invocation Skills",
+     "text": "+(1-2) to Level of all Reaper's Invocation Skills",
      "optional": true
     },
     {
@@ -1381,7 +1417,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Vine Arrow Skills",
+     "text": "+(1-2) to Level of all Vine Arrow Skills",
      "optional": true
     },
     {
