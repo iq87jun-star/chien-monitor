@@ -1,4 +1,4 @@
-# 226.【紙上フォワード】2026 年 月次一覧(1〜9 月・全 43 セル)
+# 226.【紙上フォワード】2026 年 月次一覧(1〜9 月・全 42 セル)
 
 > 出所: `research/forward/paper_forward.py 2026-01 … 2026-09`(2026-09-14 実行)。docs/225 と同じ生成式・同じコスト定数。
 > 結果: `research/results/paper_forward_2026_monthly.csv`(列多め)/ `paper_forward_2026_wide.csv`(本表)。
