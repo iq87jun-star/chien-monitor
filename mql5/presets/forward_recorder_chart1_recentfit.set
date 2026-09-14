@@ -1,6 +1,6 @@
 ; ==============================================================
 ; Chien_ForwardRecorder_RecentFit v1.10 — チャート1(docs/218 §3 / §8 → docs/223 §5.6 / docs/224 §6 で改訂)
-; 担当: Mon 14 + v4 10 = 24 レグ(Hold 7 は FNmarkets に Swap-Free が無いため除外・docs/224 §3)
+; 担当: Mon 7(円クロス)+ v4 10 = 17 レグ(Hold 7 は Swap-Free 無しで除外・指数/ETH Mon 7 は入金額の制約で除外・docs/224 §3・§6b)
 ; 口座: FNmarkets RAW #511030(ヘッジング・実弾小額)。USDJPY H1 チャートに1枚。
 ; 銘柄名は FNmarkets 実名(docs/224 §1): US500→SPX500 / NAS100→NDX100 / FR40→FRA40
 ;
@@ -8,7 +8,7 @@
 ;  - InpInitialBalance=60000 を固定 → 各レグのロットが口座残高から独立
 ;  - 重み0.10・InpMult=1.0 → 1レグの名目 = $6,000(Mon は4ショットで1,500×4 → FX 0.01 lot)
 ;    NDX100/GER40 は 0.1 lot 最小 = $2,900 のため重み 0.20(ショット $3,000)
-;    ピーク総名目 ≈ $156k(1:500 で必要証拠金 ≈ $312。制約は損益のみ)
+;    ピーク総名目 ≈ $102k(1:500 で必要証拠金 ≈ $204。制約は損益のみ)
 ;  - ガードは全無効化(期限2030 / 日次0 / balance0 / ロックoff / フロアは実質到達不能)
 ;    → プロップ規則は記録後に解析的に当てる
 ;  - スプレッドキャップは実質無制限(999)。建ったときのスプレッドを CSV に記録するので、
@@ -16,7 +16,9 @@
 ;  - Magic 基底 950000(実口座の 943400/940700 と衝突しない)
 ; ==============================================================
 InpAcknowledgeBet=true
-InpMonLegs=EURJPY:0.10,GBPJPY:0.10,USDJPY:0.10,AUDJPY:0.10,NZDJPY:0.10,CADJPY:0.10,CHFJPY:0.10,NDX100:0.20,SPX500:0.10,GER40:0.20,JP225:0.10,UK100:0.10,FRA40:0.10,ETHUSD:0.10
+InpMonLegs=EURJPY:0.10,GBPJPY:0.10,USDJPY:0.10,AUDJPY:0.10,NZDJPY:0.10,CADJPY:0.10,CHFJPY:0.10
+; docs/224 §6b: 指数・ETH の Mon 7 レグは外した(入金 USD 2k 運用。FN スワップで記録の代表性も低い)。戻す場合は
+; ,NDX100:0.20,SPX500:0.10,GER40:0.20,JP225:0.10,UK100:0.10,FRA40:0.10,ETHUSD:0.10 を末尾に追加(入金 USD 5k が前提)
 InpV4Legs=EURUSD:0.10,GBPUSD:0.10,USDJPY:0.10,AUDUSD:0.10,USDCHF:0.10,USDCAD:0.10,NZDUSD:0.10,EURJPY:0.10,GBPJPY:0.10,BTCUSD:0.10
 InpHoldLegs=
 InpMult=1.0
