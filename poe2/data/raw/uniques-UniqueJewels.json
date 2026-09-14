@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 319.5,
-   "chaos": 9.7
+   "exalted": 352.7,
+   "chaos": 9.45
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,19 +42,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 370,
-   "listingCount": 20,
+   "primaryValue": 460,
+   "listingCount": 33,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 63.57,
+    "totalChange": 103.4,
     "data": [
-     null,
-     null,
      0,
      -5.17,
      -10.34,
      76.83,
-     63.57
+     63.57,
+     null,
+     103.4
     ]
    },
    "explicitModifiers": [
@@ -75,19 +75,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 19,
-   "listingCount": 37,
+   "primaryValue": 18.1,
+   "listingCount": 22,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 196.9,
+    "totalChange": 182.8,
     "data": [
-     null,
-     null,
      0,
      25,
      40.62,
      26.56,
-     196.9
+     196.9,
+     null,
+     182.8
     ]
    },
    "explicitModifiers": [
@@ -108,19 +108,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 18.9,
-   "listingCount": 30,
+   "primaryValue": 18,
+   "listingCount": 26,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 110,
+    "totalChange": 100,
     "data": [
-     null,
-     null,
      0,
      4.14,
      11.11,
      33.33,
-     110
+     110,
+     null,
+     100
     ]
    },
    "explicitModifiers": [
@@ -142,19 +142,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 13,
-   "listingCount": 341,
+   "primaryValue": 14.9,
+   "listingCount": 513,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -6.47,
+    "totalChange": 7.19,
     "data": [
-     null,
-     null,
      0,
      7.91,
      22.3,
      28.78,
-     -6.47
+     -6.47,
+     null,
+     7.19
     ]
    },
    "explicitModifiers": [
@@ -201,39 +201,6 @@
    ]
   },
   {
-   "id": 379,
-   "itemId": "Grand Spectrum Emerald",
-   "detailsId": "grand-spectrum-emerald",
-   "name": "Grand Spectrum",
-   "baseType": "Emerald",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9FbWVyYWxkIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/687a109210/GrandSpectrum_Emerald.png",
-   "flavourText": "An indomitable force of control.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 3,
-   "primaryValue": 6,
-   "listingCount": 37,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": 20.85,
-    "data": [
-     null,
-     null,
-     0,
-     -20.11,
-     -28.35,
-     -19.43,
-     20.85
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "2% increased [Spirit|Spirit] per socketed Grand Spectrum",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 382,
    "itemId": "Against the Darkness Time-Lost Diamond",
    "detailsId": "against-the-darkness-time-lost-diamond",
@@ -245,19 +212,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 6,
-   "listingCount": 656,
+   "primaryValue": 6.65,
+   "listingCount": 1004,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 94.02,
+    "totalChange": 115.3,
     "data": [
-     null,
-     null,
      0,
      9.43,
      15.08,
      18.25,
-     94.02
+     94.02,
+     null,
+     115.3
     ]
    },
    "explicitModifiers": [
@@ -336,6 +303,39 @@
    ]
   },
   {
+   "id": 379,
+   "itemId": "Grand Spectrum Emerald",
+   "detailsId": "grand-spectrum-emerald",
+   "name": "Grand Spectrum",
+   "baseType": "Emerald",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9FbWVyYWxkIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/687a109210/GrandSpectrum_Emerald.png",
+   "flavourText": "An indomitable force of control.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 4.75,
+   "listingCount": 81,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -4.32,
+    "data": [
+     0,
+     -20.11,
+     -28.35,
+     -19.43,
+     20.85,
+     null,
+     -4.32
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "2% increased [Spirit|Spirit] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 404,
    "itemId": "The Adorned Diamond",
    "detailsId": "the-adorned-diamond",
@@ -347,17 +347,17 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "primaryValue": 1,
-   "listingCount": 756,
+   "listingCount": 690,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 0,
     "data": [
+     0,
+     0,
+     0,
+     0,
+     0,
      null,
-     null,
-     0,
-     0,
-     0,
-     0,
      0
     ]
    },
@@ -379,7 +379,7 @@
      "optional": true
     },
     {
-     "text": "(10-25)% reduced [Fire] Damage",
+     "text": "(3-25)% reduced [Fire] Damage",
      "optional": true
     },
     {
@@ -415,7 +415,7 @@
      "optional": true
     },
     {
-     "text": "(2-27)% reduced [Cold] Damage",
+     "text": "(2-28)% reduced [Cold] Damage",
      "optional": true
     },
     {
@@ -447,19 +447,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.8248,
+   "primaryValue": 0.73,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 14.46,
+    "totalChange": 1.31,
     "data": [
-     null,
-     null,
      0,
      -6.11,
      0.63,
      4.06,
-     14.46
+     14.46,
+     null,
+     1.31
     ]
    },
    "explicitModifiers": [
@@ -492,7 +492,7 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] Regenerate (1-1.4)% of maximum Life per second",
+     "text": "[Minion|Minions] Regenerate (1-2.2)% of maximum Life per second",
      "optional": true
     },
     {
@@ -504,7 +504,7 @@
      "optional": true
     },
     {
-     "text": "(9-11)% increased Life Regeneration rate",
+     "text": "(8-11)% increased Life Regeneration rate",
      "optional": true
     },
     {
@@ -596,7 +596,7 @@
      "optional": true
     },
     {
-     "text": "(4-15)% increased Skill Effect Duration",
+     "text": "(3-15)% increased Skill Effect Duration",
      "optional": true
     },
     {
@@ -616,6 +616,10 @@
      "optional": true
     },
     {
+     "text": "[Minion|Minions] have 3% increased [Attack] and Cast Speed",
+     "optional": true
+    },
+    {
      "text": "(7-10)% chance to [Aggravate] [Bleeding] on targets you [Hit] with [Attack|Attacks]",
      "optional": true
     },
@@ -624,7 +628,7 @@
      "optional": true
     },
     {
-     "text": "(7-8)% increased chance to inflict [Ailments]",
+     "text": "(4-8)% increased chance to inflict [Ailments]",
      "optional": true
     },
     {
@@ -636,7 +640,7 @@
      "optional": true
     },
     {
-     "text": "(9-13)% increased speed of [Recoup] Effects",
+     "text": "(8-13)% increased speed of [Recoup] Effects",
      "optional": true
     },
     {
@@ -648,7 +652,7 @@
      "optional": true
     },
     {
-     "text": "(47-58)% increased [EnergyShield|Energy Shield] from Equipped Body Armour",
+     "text": "(43-58)% increased [EnergyShield|Energy Shield] from Equipped Body Armour",
      "optional": true
     },
     {
@@ -688,7 +692,7 @@
      "optional": true
     },
     {
-     "text": "(16-19)% increased [Exposure] Effect",
+     "text": "(16-21)% increased [Exposure] Effect",
      "optional": true
     },
     {
@@ -700,7 +704,7 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] have (6-11)% increased [Critical|Critical Hit Chance]",
+     "text": "[Minion|Minions] have (6-12)% increased [Critical|Critical Hit Chance]",
      "optional": true
     },
     {
@@ -734,47 +738,6 @@
    ]
   },
   {
-   "id": 383,
-   "itemId": "Heroic Tragedy Timeless Jewel",
-   "detailsId": "heroic-tragedy-timeless-jewel",
-   "name": "Heroic Tragedy",
-   "baseType": "Timeless Jewel",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V4cGVkaXRpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8356e82d27/ExpeditionJewel.png",
-   "flavourText": "They believed themselves courageous and selfless,\r\nbut that bravery became the doom at their door.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "radius": "Very Large",
-   "primaryValue": 0.5155,
-   "listingCount": 2277,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -55.29,
-    "data": [
-     null,
-     null,
-     0,
-     -48.65,
-     -46,
-     -59.35,
-     -55.29
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Remembrancing (105-7950) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
-     "optional": true
-    },
-    {
-     "text": "Remembrancing (207-7739) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
-     "optional": true
-    },
-    {
-     "text": "[Historic]",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 384,
    "itemId": "Undying Hate Timeless Jewel",
    "detailsId": "undying-hate-timeless-jewel",
@@ -785,19 +748,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.5155,
-   "listingCount": 1895,
+   "primaryValue": 0.529,
+   "listingCount": 2262,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -10.58,
+    "totalChange": -8.24,
     "data": [
-     null,
-     null,
      0,
      32.03,
      83.97,
      62.59,
-     -10.58
+     -10.58,
+     null,
+     -8.24
     ]
    },
    "explicitModifiers": [
@@ -828,31 +791,45 @@
    ]
   },
   {
-   "id": 402,
-   "itemId": "Megalomaniac Diamond",
-   "detailsId": "megalomaniac-diamond",
-   "name": "Megalomaniac",
-   "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
-   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
+   "id": 383,
+   "itemId": "Heroic Tragedy Timeless Jewel",
+   "detailsId": "heroic-tragedy-timeless-jewel",
+   "name": "Heroic Tragedy",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V4cGVkaXRpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8356e82d27/ExpeditionJewel.png",
+   "flavourText": "They believed themselves courageous and selfless,\r\nbut that bravery became the doom at their door.",
    "levelRequired": 0,
    "category": "[Jewel]",
-   "limitedTo": 1,
-   "primaryValue": 0.4124,
-   "listingCount": 10000,
-   "corrupted": true,
+   "radius": "Very Large",
+   "primaryValue": 0.4232,
+   "listingCount": 2876,
+   "corrupted": false,
    "sparkLine": {
-    "totalChange": -58.76,
+    "totalChange": -63.29,
     "data": [
-     null,
-     null,
      0,
-     -55.43,
-     -55.53,
-     -71.88,
-     -58.76
+     -48.65,
+     -46,
+     -59.35,
+     -55.29,
+     null,
+     -63.29
     ]
-   }
+   },
+   "explicitModifiers": [
+    {
+     "text": "Remembrancing (105-7950) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "Remembrancing (207-7739) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    }
+   ]
   },
   {
    "id": 400,
@@ -865,19 +842,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.3126,
-   "listingCount": 1874,
+   "primaryValue": 0.3174,
+   "listingCount": 2164,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -11.46,
+    "totalChange": -10.11,
     "data": [
-     null,
-     null,
      0,
      19.76,
      -49.62,
      -42.99,
-     -11.46
+     -11.46,
+     null,
+     -10.11
     ]
    },
    "explicitModifiers": [
@@ -910,7 +887,7 @@
      "optional": true
     },
     {
-     "text": "(11-20)% less Movement Speed",
+     "text": "(10-20)% less Movement Speed",
      "optional": true
     },
     {
@@ -962,7 +939,7 @@
      "optional": true
     },
     {
-     "text": "(11-19)% less Damage",
+     "text": "(10-19)% less Damage",
      "optional": true
     },
     {
@@ -976,6 +953,33 @@
    ]
   },
   {
+   "id": 402,
+   "itemId": "Megalomaniac Diamond",
+   "detailsId": "megalomaniac-diamond",
+   "name": "Megalomaniac",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
+   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.3174,
+   "listingCount": 10000,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": -68.26,
+    "data": [
+     0,
+     -55.43,
+     -55.53,
+     -71.88,
+     -58.76,
+     null,
+     -68.26
+    ]
+   }
+  },
+  {
    "id": 401,
    "itemId": "From Nothing Diamond",
    "detailsId": "from-nothing-diamond",
@@ -987,19 +991,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 0.1183,
-   "listingCount": 2836,
+   "primaryValue": 0.2116,
+   "listingCount": 3392,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -45.27,
+    "totalChange": -2.12,
     "data": [
-     null,
-     null,
      0,
      -21.76,
      -46.59,
      -34.82,
-     -45.27
+     -45.27,
+     null,
+     -2.12
     ]
    },
    "explicitModifiers": [
@@ -1056,19 +1060,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00313,
+   "primaryValue": 0.00284,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -44.7,
+    "totalChange": -49.82,
     "data": [
-     null,
-     null,
      0,
      -20.85,
      -16.61,
      -4.77,
-     -44.7
+     -44.7,
+     null,
+     -49.82
     ]
    },
    "explicitModifiers": [
@@ -1102,10 +1106,6 @@
     },
     {
      "text": "+1 to Level of all Enfeeble Skills",
-     "optional": true
-    },
-    {
-     "text": "+2 to Level of all Escape Shot Skills",
      "optional": true
     },
     {
@@ -1257,7 +1257,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Mana Remnants Skills",
+     "text": "+(1-2) to Level of all Mana Remnants Skills",
      "optional": true
     },
     {
@@ -1286,6 +1286,54 @@
     },
     {
      "text": "+1 to Level of all Trail of Caltrops Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Escape Shot Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Blasphemy Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Contagion Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Flash Grenade Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Ice Shards Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Ice Strike Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Sacrifice Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Shockwave Totem Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Siphon Elements Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Sniper's Mark Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Soul Offering Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Tempest Bell Skills",
      "optional": true
     },
     {
@@ -1469,7 +1517,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Elemental Conflux Skills",
+     "text": "+(1-2) to Level of all Elemental Conflux Skills",
      "optional": true
     },
     {
