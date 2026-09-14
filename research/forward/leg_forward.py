@@ -18,7 +18,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import mt5_report as mr
 
-LEG_RE = re.compile(r"^RF(v4|Hold|(?:Mon|Tue|Wed|Thu|Fri)S?)_([A-Za-z0-9._]+?)(?:_h(\d+))?$")   # v1.20: 曜日×方向セル(RFMonS_EURGBP_h4 等)
+LEG_RE = re.compile(r"^RF(v4|Hold|Sess|(?:Mon|Tue|Wed|Thu|Fri)S?)_([A-Za-z0-9._]+?)(?:_h(\d+))?$")   # v1.20: 曜日×方向セル(RFMonS_EURGBP_h4 等)
 
 
 def parse_legs(pos):
