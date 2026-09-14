@@ -12,6 +12,11 @@
 //|        → キャップを緩く記録し、任意のキャップを後処理で当てる     |
 //|     3) 記録用の入力(InpRecordCsv / InpRecordTag)を追加            |
 //|     4) PipOf() を非FX対応に(docs/182 §5 の既存修正を移植)        |
+//|     5) v1.20: 曜日×方向セル(InpDowLegs)を追加。docs/229/230 の  |
+//|        候補(MonS EURGBP / FriS NZDUSD / WedS・TueS CADCHF /       |
+//|        Thu XAUUSD)を Mon と同じ 4 ショット×24h で記録する。       |
+//|        書式 "MonS:EURGBP:0.10,FriS:NZDUSD:0.10"(末尾 S=SHORT)。  |
+//|        Magic=+4・コメント RF<tag>_<sym>_h<h>(例 RFMonS_EURGBP_h4)|
 //|   ★ガード類はプリセット側で無効化する(期限・日次・フロア・ロック)。|
 //|     プロップ規則は記録後に解析的に当てる(docs/218 §2-3)。         |
 //|   ★InpInitialBalance は必ず固定値を入れる(0=自動は使わない)。     |
@@ -23,7 +28,7 @@
 //|     event = ENTRY / SKIP_SPREAD                                   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.10"   // 記録専用版(docs/218)
+#property version   "1.20"   // 記録専用版(docs/218)+ 曜日×方向セル(docs/229)
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
@@ -36,6 +41,7 @@ input group "=== 構成(銘柄:重み CSV。既定=2026-07-30スクリーニン�
 input string InpMonLegs  = "USDJPY:0.321,EURJPY:0.277"; // Mon: 月曜o2o LONG(2026-09規則適合版)
 input string InpV4Legs   = "GBPJPY:0.303";              // v4: 日足k≥4合議
 input string InpHoldLegs = "GER40:0.099";               // Hold: 連続LONG
+input string InpDowLegs  = "";                           // v1.20: 曜日×方向 "MonS:EURGBP:0.10,FriS:NZDUSD:0.10"(Mon..Fri, 末尾S=SHORT。時刻/保有はMonと共通)
 input double InpMult     = 5.24;   // リスク倍率(2026-09規則適合版の校正値・docs/196)
 
 input group "=== 有効期限(直近特化=賞味期限つき。docs/174停止規則) ==="
@@ -113,6 +119,8 @@ CPositionInfo posinfo;
 string  g_monSym[MAXLEG];  double g_monW[MAXLEG];  int g_nMon=0;
 string  g_v4Sym[MAXLEG];   double g_v4W[MAXLEG];   int g_nV4=0;
 string  g_holdSym[MAXLEG]; double g_holdW[MAXLEG]; int g_nHold=0;
+string  g_dowSym[MAXLEG];  double g_dowW[MAXLEG];  int g_dowDay[MAXLEG]; bool g_dowShort[MAXLEG]; string g_dowTag[MAXLEG]; int g_nDow=0;   // v1.20
+int      g_atrH1Dow[MAXLEG]; datetime g_lastShotDow[MAXLEG*8]; datetime g_dowSkipBar[MAXLEG*8];
 int     g_monHours[]; int g_atrH1[MAXLEG]; int g_atrD1[MAXLEG]; int g_rsiD1[MAXLEG];
 datetime g_lastShotMon[MAXLEG*8];
 datetime g_monSkipBar[MAXLEG*8];   // 記録版: スプレッド見送りの重複ログ抑止
@@ -126,7 +134,7 @@ bool     g_balMonthHalt=false;
 bool     g_halted=false, g_dayBlocked=false, g_passLocked=false, g_expired=false;
 string   g_ntfBuf=""; bool g_ntfArm=false; datetime g_ntfWarnDay=0;
 string   g_gvName="";
-long     g_mMon=0, g_mV4=0, g_mHold=0;
+long     g_mMon=0, g_mV4=0, g_mHold=0, g_mDow=0;
 string   g_sizeWarned="";
 
 //==================================================================
@@ -173,6 +181,27 @@ string ResolveSymbol(string want)
 }
 
 // "SYM:w,SYM:w" をパースし銘柄解決
+// v1.20: "Tag:SYM:W" 形式。Tag = Mon/Tue/Wed/Thu/Fri (+S=SHORT)
+int ParseDowLegs(string csv)
+{
+   string parts[]; int n=StringSplit(csv,',',parts); int k=0;
+   string names[]={"Mon","Tue","Wed","Thu","Fri"};
+   for(int i=0;i<n && k<MAXLEG;i++){
+      string kv[]; if(StringSplit(parts[i],':',kv)!=3) continue;
+      string tag=kv[0]; StringTrimLeft(tag); StringTrimRight(tag);
+      string sym=kv[1]; StringTrimLeft(sym); StringTrimRight(sym);
+      double w=StringToDouble(kv[2]); if(StringLen(tag)<3 || StringLen(sym)==0 || w<=0) continue;
+      bool sh=(StringSubstr(tag,StringLen(tag)-1,1)=="S" && StringLen(tag)==4);
+      string dn=StringSubstr(tag,0,3); int day=-1;
+      for(int d=0;d<5;d++) if(dn==names[d]){ day=d+1; break; }      // MQL: Sun=0..Sat=6
+      if(day<0){ PrintFormat("⚠ Dow: 曜日タグ不正 '%s'",tag); continue; }
+      string r=ResolveSymbol(sym);
+      if(r==""){ PrintFormat("⚠ Dow: 銘柄'%s'を解決できず→スキップ",sym); continue; }
+      if(r!=sym) PrintFormat("[銘柄解決] Dow %s → %s",sym,r);
+      g_dowSym[k]=r; g_dowW[k]=w; g_dowDay[k]=day; g_dowShort[k]=sh; g_dowTag[k]=tag; k++;
+   }
+   return k;
+}
 int ParseLegs(string csv, string &syms[], double &ws[], string label)
 {
    string parts[]; int n=StringSplit(csv,',',parts); int k=0;
@@ -267,7 +296,7 @@ int CountPos(string sym, long magic){
       if(posinfo.Symbol()==sym && posinfo.Magic()==magic) n++; }
    return n;
 }
-bool IsMine(long m){ return (m==g_mMon||m==g_mV4||m==g_mHold); }
+bool IsMine(long m){ return (m==g_mMon||m==g_mV4||m==g_mHold||m==g_mDow); }
 void CloseAllMine(string why){
    for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
       if(!posinfo.SelectByTicket(tk)) continue;
@@ -308,12 +337,13 @@ int OnInit()
    g_nMon =ParseLegs(InpMonLegs, g_monSym, g_monW, "Mon");
    g_nV4  =ParseLegs(InpV4Legs,  g_v4Sym,  g_v4W,  "v4");
    g_nHold=(InpHoldEnable? ParseLegs(InpHoldLegs,g_holdSym,g_holdW,"Hold") : 0);
+   g_nDow =ParseDowLegs(InpDowLegs);
    int nh=SplitHours(InpMonHoursUTC,g_monHours);
    if(nh>8){ ArrayResize(g_monHours,8); nh=8;                       // v1.02: g_lastShotMon[MAXLEG*8]の範囲保護
       Print("⚠ Mon時刻は最大8個まで→先頭8個のみ使用"); }
-   if(g_nMon==0 && g_nV4==0 && g_nHold==0){ Print("レッグが1つも解決できず"); return INIT_FAILED; }
-   if(g_nMon>0 && nh==0){ Print("Mon時刻のパース失敗"); return INIT_FAILED; }
-   g_mMon=InpMagicBase+1; g_mV4=InpMagicBase+2; g_mHold=InpMagicBase+3;
+   if(g_nMon==0 && g_nV4==0 && g_nHold==0 && g_nDow==0){ Print("レッグが1つも解決できず"); return INIT_FAILED; }
+   if((g_nMon>0 || g_nDow>0) && nh==0){ Print("Mon時刻のパース失敗"); return INIT_FAILED; }
+   g_mMon=InpMagicBase+1; g_mV4=InpMagicBase+2; g_mHold=InpMagicBase+3; g_mDow=InpMagicBase+4;
 
    g_gvName=StringFormat("ChienRF_base_%I64d_%I64d",
                          (long)AccountInfoInteger(ACCOUNT_LOGIN),(long)InpMagicBase);
@@ -330,6 +360,8 @@ int OnInit()
    }
 
    for(int i=0;i<g_nMon;i++) g_atrH1[i]=iATR(g_monSym[i],PERIOD_H1,InpAtrPeriodH1);
+   for(int i=0;i<g_nDow;i++) g_atrH1Dow[i]=iATR(g_dowSym[i],PERIOD_H1,InpAtrPeriodH1);
+   ArrayInitialize(g_lastShotDow,0); ArrayInitialize(g_dowSkipBar,0);
    for(int i=0;i<g_nV4;i++){
       g_atrD1[i]=iATR(g_v4Sym[i],PERIOD_D1,InpV4_ATR);
       g_rsiD1[i]=iRSI(g_v4Sym[i],PERIOD_D1,InpV4_RSI,PRICE_CLOSE); }
@@ -339,8 +371,9 @@ int OnInit()
    double wsum=0; for(int i=0;i<g_nMon;i++) wsum+=g_monW[i];
    for(int i=0;i<g_nV4;i++) wsum+=g_v4W[i];
    for(int i=0;i<g_nHold;i++) wsum+=g_holdW[i];
-   PrintFormat("[INIT RecentFit] initBal=%.0f mult=%.1f Σw=%.3f (グロス想定≈%.1fx) expiry=%s Magic=%I64d/%I64d/%I64d",
-      g_initBal,InpMult,wsum,wsum*InpMult,TimeToString(InpExpiry,TIME_DATE),g_mMon,g_mV4,g_mHold);
+   for(int i=0;i<g_nDow;i++) wsum+=g_dowW[i];
+   PrintFormat("[INIT RecentFit] initBal=%.0f mult=%.1f Σw=%.3f (グロス想定≈%.1fx) expiry=%s Magic=%I64d/%I64d/%I64d/%I64d Dow=%d",
+      g_initBal,InpMult,wsum,wsum*InpMult,TimeToString(InpExpiry,TIME_DATE),g_mMon,g_mV4,g_mHold,g_mDow,g_nDow);
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
    EventSetTimer(30);
    return INIT_SUCCEEDED;
@@ -348,6 +381,7 @@ int OnInit()
 void OnDeinit(const int reason){
    EventKillTimer();
    for(int i=0;i<g_nMon;i++) if(g_atrH1[i]!=INVALID_HANDLE) IndicatorRelease(g_atrH1[i]);
+   for(int i=0;i<g_nDow;i++) if(g_atrH1Dow[i]!=INVALID_HANDLE) IndicatorRelease(g_atrH1Dow[i]);
    for(int i=0;i<g_nV4;i++){ if(g_atrD1[i]!=INVALID_HANDLE) IndicatorRelease(g_atrD1[i]);
       if(g_rsiD1[i]!=INVALID_HANDLE) IndicatorRelease(g_rsiD1[i]); }
 }
@@ -473,6 +507,7 @@ void OnTimer()
    }
 
    ManageMonExit();
+   ManageDowExit();
    ManageV4Exit();
 
    bool blockNew = (InpProfitStopPct>0 && equity>=g_initBal*(1.0+InpProfitStopPct/100.0))
@@ -482,6 +517,7 @@ void OnTimer()
    if(blockNew) return;
 
    EntriesMon(utc);
+   EntriesDow(utc);
    EntriesV4();
    EntriesHold();
 }
@@ -538,6 +574,61 @@ void EntriesMon(datetime utc)
            if(InpVerboseLog) PrintFormat("[Mon ENTRY] LONG %s h%dUTC lots=%.2f notional=%.0f spread=%.2fpip SL=%.3f",sym,g_monHours[slot],lots,notional,spr,sl);
            if(InpNotifyEntries) Notify(StringFormat("IN Mon %s %.2f",sym,lots)); }
       else PrintFormat("[Mon RETRY] %s h%d 発注失敗ret=%d(同時間帯内で再試行)",sym,g_monHours[slot],(int)trade.ResultRetcode());
+   }
+}
+
+//===== Dow (v1.20: 曜日×方向マルチショット。Mon と同じ時刻・保有・災害SL) =====
+void ManageDowExit()
+{
+   for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      if(posinfo.Magic()!=g_mDow) continue;
+      int held=(int)(TimeCurrent()-(datetime)posinfo.Time());
+      if(held>=InpMonHoldHours*3600){ if(trade.PositionClose(tk)&&InpVerboseLog)
+         PrintFormat("[Dow TIME EXIT] %s",posinfo.Symbol()); }
+   }
+}
+void EntriesDow(datetime utc)
+{
+   if(g_nDow==0) return;
+   MqlDateTime u; TimeToStruct(utc,u);
+   if(HolidayBlocked(utc)) return;
+   int slot=-1; for(int h=0;h<ArraySize(g_monHours);h++) if(u.hour==g_monHours[h]){ slot=h; break; }
+   if(slot<0) return;
+   datetime hourBar=utc-(utc%3600); int nh=ArraySize(g_monHours);
+   trade.SetExpertMagicNumber(g_mDow);
+   for(int s=0;s<g_nDow;s++){
+      if(u.day_of_week!=g_dowDay[s]) continue;
+      if(g_atrH1Dow[s]==INVALID_HANDLE) continue;
+      int key=s*nh+slot;
+      if(g_lastShotDow[key]==hourBar) continue;
+      string sym=g_dowSym[s]; double pip=PipOf(sym); bool sh=g_dowShort[s]; string side=(sh?"SHORT":"LONG");
+      double atr=AtrAt(g_atrH1Dow[s]); if(atr<=0) continue;
+      double sd=InpCatastropheATR*atr; double sp=sd/pip;
+      if(sp<InpMinStopPips){ sp=InpMinStopPips; sd=sp*pip; }
+      double ask=SymbolInfoDouble(sym,SYMBOL_ASK), bid=SymbolInfoDouble(sym,SYMBOL_BID);
+      if(ask<=0||bid<=0) continue;
+      double spr=(ask-bid)/pip, cap=SpreadCapFor(sym);
+      if(spr>cap){
+         if(g_dowSkipBar[key]!=hourBar){
+            g_dowSkipBar[key]=hourBar;
+            Rec("SKIP_SPREAD",g_dowTag[s],sym,g_monHours[slot],side,0,0,spr,cap,ask,bid,0,0,"");
+            if(InpVerboseLog) PrintFormat("[Dow SKIP spread] %s %s h%dUTC spread=%.2fpip > cap=%.2f",g_dowTag[s],sym,g_monHours[slot],spr,cap);
+         }
+         continue;
+      }
+      double notional=g_initBal*g_dowW[s]*InpMult/nh;
+      double lots=LotsForNotional(sym,notional); if(lots<InpMinLot){ g_lastShotDow[key]=hourBar; continue; }
+      int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
+      string cmt=StringFormat("RF%s_%s_h%d",g_dowTag[s],sym,g_monHours[slot]);
+      bool ok; double sl;
+      if(sh){ sl=NormalizeDouble(bid+sd,dg); ok=trade.Sell(lots,sym,0.0,sl,0.0,cmt); }
+      else  { sl=NormalizeDouble(ask-sd,dg); ok=trade.Buy (lots,sym,0.0,sl,0.0,cmt); }
+      if(ok){ g_lastShotDow[key]=hourBar;
+              Rec("ENTRY",g_dowTag[s],sym,g_monHours[slot],side,lots,notional,spr,cap,ask,bid,sl,0,"");
+              if(InpVerboseLog) PrintFormat("[Dow ENTRY] %s %s %s h%dUTC lots=%.2f notional=%.0f spread=%.2fpip SL=%.3f",g_dowTag[s],side,sym,g_monHours[slot],lots,notional,spr,sl);
+              if(InpNotifyEntries) Notify(StringFormat("IN %s %s %.2f",g_dowTag[s],sym,lots)); }
+      else PrintFormat("[Dow RETRY] %s %s h%d 発注失敗ret=%d",g_dowTag[s],sym,g_monHours[slot],(int)trade.ResultRetcode());
    }
 }
 
