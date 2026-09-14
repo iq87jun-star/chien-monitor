@@ -24,14 +24,24 @@ def universe():
     return cells
 
 
+# docs/229 §4 事前登録の候補セル(2026-10〜2027-03 の 6 ヶ月判定)。universe() には含めない(既知セル集合を変えないため)
+CANDIDATES = [("MonS", "EURGBP", 0, True), ("FriS", "NZDUSD", 4, True)]
+
+
+def candidate_series(fam, sym, dow, short):
+    df = base.load_daily(sym); c = base.IDX_COST.get(sym) or (2 * base.pip_size(sym) / df["open"])
+    s = (df[df["weekday"] == dow]["o2o"] - c).dropna(); return base.clip(-s if short else s)
+
+
 def main():
     months = sys.argv[1:] or ["2026-08", pd.Timestamp.today().strftime("%Y-%m")]
     refresh_live(); today = pd.Timestamp.today().normalize(); rows = []
-    for fam, sym in universe():
-        try: s = db.leg_series(fam, sym)
+    base.YAHOO.setdefault("EURGBP", "EURGBP=X")
+    for fam, sym, *cand in list(universe()) + [(f, s, d, sh) for f, s, d, sh in CANDIDATES]:
+        try: s = candidate_series(fam, sym, *cand) if cand else db.leg_series(fam, sym)
         except Exception as e: rows.append(dict(family=fam, symbol=sym, error=str(e)[:80])); continue
         s = s[s.index < today]
-        r = dict(family=fam, symbol=sym, data_end=str(s.index.max().date()), n_post_freeze=int((s.index > FREEZE).sum()))
+        r = dict(family=fam + ("(候補)" if cand else ""), symbol=sym, data_end=str(s.index.max().date()), n_post_freeze=int((s.index > FREEZE).sum()))
         for m in months:
             q = s[s.index.to_period("M") == pd.Period(m)]
             r[f"{m}_pct"] = round(float((1 + q).prod() - 1) * 100, 3) if len(q) else np.nan; r[f"{m}_n"] = len(q)
