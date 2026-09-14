@@ -1,15 +1,15 @@
 //+------------------------------------------------------------------+
-//| ★Fintokei速攻プロ(SwiftTrader2.0) 2,000万 口座6078225 EA5: Sess 8本 ×12倍  |
+//| ★Fintokei速攻プロ(SwiftTrader2.0) 2,000万 口座6078225 EA5: Sess 8本 ×20倍  |
 //|   docs/240。残り≈21営業日(〜2026-10-13)で +6% 到達確率を最大化する構成。               |
 //|   Sess 8 = 上位5 + USDCHF16-20 / NZDUSD16-20 / CHFJPY20-00(逆ボラ加重)   |
 //|   月〜木・4h・SHORT・建てスプレッド上限1.5pip・SL≥15pip・FOMC日スキップ                 |
 //|   MC(21日・+0.93%起点): 合格 23〜32%(3pip)/ 68〜71%(2pip)・床失格≈1%・残りは時間切れ  |
-//|   ×12 の根拠: 20-00UTC 窓の同時SLリスク ≈1.3% ≤ balanceガード1.5%・日次−2%規則の内側   |
-//|   既存 C6m EA(Magic 943700・2.5倍)と同居前提。Magic 944400。Mon/v4 は空        |
+//|   ×20(ユーザー指示)。20-00UTC 窓の同時SLリスクは ≈2.1% で日次−2%/3%規則を超え得るため、   |
+//|   SLリスク上限(Sess 1.9% / 全建玉 2.8%)を入れ、超える分の建玉は自動で見送る。Magic 944400        |
 //|   速攻プロ固有: 日次ガード UTC0 アンカー・1日利益+2.5%で当日新規停止(既存改修を継承)               |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.20"   // EA5: Sess 8本(docs/240)。速攻プロ改修(UTC0/利益上限)+ Sess スリーブ
+#property version   "1.21"   // EA5: Sess 8本 ×20(docs/240 §6)+ SLリスク上限で規則内に自動収束
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
@@ -81,7 +81,9 @@ input double InpHoldMaxSpreadPts = 3000.0;
 input group "=== 時間帯セル Sess(docs/233-235/240・EA5) ==="
 input bool   InpSessEnable        = true;
 input string InpSessLegs          = "EURGBP:S:20:4:0.253,NZDUSD:S:20:4:0.104,AUDUSD:S:20:4:0.124,EURGBP:S:16:4:0.125,USDCHF:S:0:4:0.118,USDCHF:S:16:4:0.080,NZDUSD:S:16:4:0.063,CHFJPY:S:20:4:0.134"; // SYM:方向:建てUTC時:保有h:重み
-input double InpSessMult          = 12.0;  // Sess 倍率(docs/240 §3: 20-00 窓の同時SLリスク ≤ 1.5%)
+input double InpSessMult          = 20.0;  // Sess 倍率(ユーザー指示・docs/240 §6)
+input double InpSessMaxOpenRiskPct  = 1.9;   // Sess 建玉の SL 合計リスク上限(基準残高比%)。日次−2% の内側。超える建玉は見送り
+input double InpTotalMaxOpenRiskPct = 2.8;   // 全建玉(他EA含む)の SL 合計リスク上限。速攻プロ「オープンポジション最大リスク3%」の内側
 input double InpSessMaxSpreadPips = 1.5;   // 建て時スプレッド上限(pip)。超過は見送り
 input double InpSessMinStopPips   = 15.0;  // 災害SL最小幅
 input string InpSessSkipDates     = "2026.09.16,2026.10.28"; // Sess を建てない日(FOMC 決定日・UTC)
@@ -522,6 +524,26 @@ void EntriesMon(datetime utc)
    }
 }
 
+// EA5: 建玉の SL リスク(口座通貨)。SL 未設定は 0 扱い(既存 EA の Hold 等)
+double PosSlRisk(ulong tk)
+{
+   if(!posinfo.SelectByTicket(tk)) return 0.0;
+   double sl=posinfo.StopLoss(); if(sl<=0) return 0.0;
+   string sym=posinfo.Symbol(); double dist=MathAbs(posinfo.PriceOpen()-sl);
+   double ts=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_SIZE), tv=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_VALUE);
+   if(ts<=0||tv<=0) return 0.0;
+   return posinfo.Volume()*dist/ts*tv;
+}
+double OpenSlRisk(bool sessOnly)
+{
+   double r=0;
+   for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      if(sessOnly && posinfo.Magic()!=g_mSes) continue;
+      r+=PosSlRisk(tk); }
+   return r;
+}
+
 //===== Sess (EA5: 時間帯セル。月〜木・建てUTC時に1本・保有h後に決済。docs/233-240) =====
 void ManageSessExit()
 {
@@ -564,6 +586,14 @@ void EntriesSess(datetime utc)
       }
       double notional=g_initBal*g_sesW[s]*InpSessMult;
       double lots=LotsForNotional(sym,notional); if(lots<InpMinLot){ g_lastSes[s]=hourBar; continue; }
+      // v1.21: SL リスク上限(この建玉を足した合計が上限を超えるなら見送り。同時間帯内で再試行はしない)
+      { double ts=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_SIZE), tv=SymbolInfoDouble(sym,SYMBOL_TRADE_TICK_VALUE);
+        double newRisk=(ts>0&&tv>0)? lots*sd/ts*tv : 0.0;
+        double sessRisk=OpenSlRisk(true)+newRisk, allRisk=OpenSlRisk(false)+newRisk;
+        if(InpSessMaxOpenRiskPct>0 && sessRisk>g_initBal*InpSessMaxOpenRiskPct/100.0){
+           g_lastSes[s]=hourBar; PrintFormat("[Sess SKIP risk] %s h%d Sess合計 %.2f%% > 上限 %.2f%%",sym,g_sesH0[s],sessRisk/g_initBal*100,InpSessMaxOpenRiskPct); continue; }
+        if(InpTotalMaxOpenRiskPct>0 && allRisk>g_initBal*InpTotalMaxOpenRiskPct/100.0){
+           g_lastSes[s]=hourBar; PrintFormat("[Sess SKIP risk] %s h%d 全建玉合計 %.2f%% > 上限 %.2f%%",sym,g_sesH0[s],allRisk/g_initBal*100,InpTotalMaxOpenRiskPct); continue; } }
       int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
       string cmt=StringFormat("RFSess_%s_h%d",sym,g_sesH0[s]);
       bool ok; double sl;
