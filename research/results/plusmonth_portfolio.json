@@ -1,0 +1,302 @@
+{
+ "5y": {
+  "in_sample": {
+   "picks": [
+    {
+     "cell": "Mon GBPJPY",
+     "plus": 43,
+     "act": 60,
+     "weight": 0.222
+    },
+    {
+     "cell": "Mon EURJPY",
+     "plus": 40,
+     "act": 60,
+     "weight": 0.231
+    },
+    {
+     "cell": "Mon AUDJPY",
+     "plus": 39,
+     "act": 60,
+     "weight": 0.186
+    },
+    {
+     "cell": "Mon USDJPY",
+     "plus": 39,
+     "act": 60,
+     "weight": 0.223
+    },
+    {
+     "cell": "Hold UK100",
+     "plus": 37,
+     "act": 60,
+     "weight": 0.138
+    }
+   ],
+   "mult": 2.36,
+   "m_star_window": 2.36,
+   "m_star_12m": 2.6,
+   "perf": {
+    "total_pct": 77.6,
+    "by_year_pct": {
+     "2021": 6.6,
+     "2022": 16.3,
+     "2023": 15.2,
+     "2024": 5.6,
+     "2025": 10.7,
+     "2026": 6.5
+    },
+    "max_dd_pct": -5.64,
+    "worst_day_pct": -3.19,
+    "worst_month_pct": -3.36,
+    "best_month_pct": 5.5,
+    "plus_months": "39/60",
+    "sharpe_act": 1.51
+   },
+   "perf_x1": {
+    "total_pct": 28.0,
+    "by_year_pct": {
+     "2021": 2.7,
+     "2022": 6.7,
+     "2023": 6.3,
+     "2024": 2.4,
+     "2025": 4.5,
+     "2026": 2.7
+    },
+    "max_dd_pct": -2.41,
+    "worst_day_pct": -1.35,
+    "worst_month_pct": -1.43,
+    "best_month_pct": 2.31,
+    "plus_months": "39/60",
+    "sharpe_act": 1.51
+   },
+   "mc_fn_stellar": {
+    "p1_pass": 72.3,
+    "funded": 68.0,
+    "fail": 0.9,
+    "p1_days_med": 137,
+    "p1_days_p90": 220,
+    "funded_days_med": 247,
+    "funded_days_p90": 382
+   }
+  },
+  "walk_forward": {
+   "picks": [
+    {
+     "cell": "Mon GBPJPY",
+     "plus": 33,
+     "act": 48,
+     "weight": 0.27
+    },
+    {
+     "cell": "Mon EURJPY",
+     "plus": 32,
+     "act": 48,
+     "weight": 0.273
+    },
+    {
+     "cell": "Mon USDJPY",
+     "plus": 32,
+     "act": 48,
+     "weight": 0.266
+    },
+    {
+     "cell": "Mon NAS100",
+     "plus": 31,
+     "act": 48,
+     "weight": 0.1
+    },
+    {
+     "cell": "Hold NAS100",
+     "plus": 30,
+     "act": 48,
+     "weight": 0.091
+    }
+   ],
+   "mult": 2.36,
+   "perf_oos": {
+    "total_pct": 7.1,
+    "by_year_pct": {
+     "2025": 1.2,
+     "2026": 5.8
+    },
+    "max_dd_pct": -3.79,
+    "worst_day_pct": -2.69,
+    "worst_month_pct": -2.73,
+    "best_month_pct": 4.32,
+    "plus_months": "7/12",
+    "sharpe_act": 1.07
+   },
+   "perf_oos_x1": {
+    "total_pct": 3.0,
+    "by_year_pct": {
+     "2025": 0.5,
+     "2026": 2.4
+    },
+    "max_dd_pct": -1.62,
+    "worst_day_pct": -1.14,
+    "worst_month_pct": -1.16,
+    "best_month_pct": 1.81,
+    "plus_months": "7/12",
+    "sharpe_act": 1.07
+   },
+   "mc_fn_stellar_oos": {
+    "p1_pass": 58.7,
+    "funded": 50.4,
+    "fail": 5.7,
+    "p1_days_med": 137,
+    "p1_days_p90": 220,
+    "funded_days_med": 253,
+    "funded_days_p90": 402
+   }
+  }
+ },
+ "3y": {
+  "in_sample": {
+   "picks": [
+    {
+     "cell": "Hold XAUUSD",
+     "plus": 25,
+     "act": 36,
+     "weight": 0.101
+    },
+    {
+     "cell": "Mon GBPJPY",
+     "plus": 25,
+     "act": 36,
+     "weight": 0.316
+    },
+    {
+     "cell": "Hold GER40",
+     "plus": 24,
+     "act": 36,
+     "weight": 0.141
+    },
+    {
+     "cell": "Mon GBPUSD",
+     "plus": 24,
+     "act": 36,
+     "weight": 0.338
+    },
+    {
+     "cell": "Hold NAS100",
+     "plus": 23,
+     "act": 36,
+     "weight": 0.105
+    }
+   ],
+   "mult": 1.64,
+   "m_star_window": 1.64,
+   "m_star_12m": 2.08,
+   "perf": {
+    "total_pct": 68.2,
+    "by_year_pct": {
+     "2023": 6.9,
+     "2024": 15.1,
+     "2025": 25.4,
+     "2026": 9.0
+    },
+    "max_dd_pct": -7.24,
+    "worst_day_pct": -2.6,
+    "worst_month_pct": -3.96,
+    "best_month_pct": 5.64,
+    "plus_months": "30/36",
+    "sharpe_act": 2.21
+   },
+   "perf_x1": {
+    "total_pct": 37.6,
+    "by_year_pct": {
+     "2023": 4.2,
+     "2024": 9.0,
+     "2025": 14.9,
+     "2026": 5.5
+    },
+    "max_dd_pct": -4.45,
+    "worst_day_pct": -1.59,
+    "worst_month_pct": -2.41,
+    "best_month_pct": 3.41,
+    "plus_months": "30/36",
+    "sharpe_act": 2.21
+   },
+   "mc_fn_stellar": {
+    "p1_pass": 88.1,
+    "funded": 86.1,
+    "fail": 2.8,
+    "p1_days_med": 94,
+    "p1_days_p90": 192,
+    "funded_days_med": 171,
+    "funded_days_p90": 302
+   }
+  },
+  "walk_forward": {
+   "picks": [
+    {
+     "cell": "Hold XAUUSD",
+     "plus": 18,
+     "act": 24,
+     "weight": 0.25
+    },
+    {
+     "cell": "Hold NAS100",
+     "plus": 18,
+     "act": 24,
+     "weight": 0.192
+    },
+    {
+     "cell": "Hold BTCUSD",
+     "plus": 17,
+     "act": 24,
+     "weight": 0.102
+    },
+    {
+     "cell": "Hold US500",
+     "plus": 17,
+     "act": 24,
+     "weight": 0.256
+    },
+    {
+     "cell": "Mon NAS100",
+     "plus": 17,
+     "act": 24,
+     "weight": 0.201
+    }
+   ],
+   "mult": 0.96,
+   "perf_oos": {
+    "total_pct": 6.6,
+    "by_year_pct": {
+     "2025": 1.2,
+     "2026": 5.4
+    },
+    "max_dd_pct": -9.8,
+    "worst_day_pct": -3.05,
+    "worst_month_pct": -5.96,
+    "best_month_pct": 6.49,
+    "plus_months": "6/12",
+    "sharpe_act": 0.47
+   },
+   "perf_oos_x1": {
+    "total_pct": 6.9,
+    "by_year_pct": {
+     "2025": 1.2,
+     "2026": 5.6
+    },
+    "max_dd_pct": -10.19,
+    "worst_day_pct": -3.18,
+    "worst_month_pct": -6.21,
+    "best_month_pct": 6.77,
+    "plus_months": "6/12",
+    "sharpe_act": 0.47
+   },
+   "mc_fn_stellar_oos": {
+    "p1_pass": 58.5,
+    "funded": 44.4,
+    "fail": 38.8,
+    "p1_days_med": 91,
+    "p1_days_p90": 200,
+    "funded_days_med": 176,
+    "funded_days_p90": 322
+   }
+  }
+ }
+}
