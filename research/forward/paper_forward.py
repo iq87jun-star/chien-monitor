@@ -25,7 +25,8 @@ def universe():
 
 
 # docs/229 §4 事前登録の候補セル(2026-10〜2027-03 の 6 ヶ月判定)。universe() には含めない(既知セル集合を変えないため)
-CANDIDATES = [("MonS", "EURGBP", 0, True), ("FriS", "NZDUSD", 4, True)]
+CANDIDATES = [("MonS", "EURGBP", 0, True), ("FriS", "NZDUSD", 4, True),
+              ("WedS", "CADCHF", 2, True), ("TueS", "CADCHF", 1, True), ("Thu", "XAUUSD", 3, False)]   # 後半 3 本は docs/230 の第 2 層
 
 
 def candidate_series(fam, sym, dow, short):
@@ -36,7 +37,7 @@ def candidate_series(fam, sym, dow, short):
 def main():
     months = sys.argv[1:] or ["2026-08", pd.Timestamp.today().strftime("%Y-%m")]
     refresh_live(); today = pd.Timestamp.today().normalize(); rows = []
-    base.YAHOO.setdefault("EURGBP", "EURGBP=X")
+    base.YAHOO.setdefault("EURGBP", "EURGBP=X"); base.YAHOO.setdefault("CADCHF", "CADCHF=X")
     for fam, sym, *cand in list(universe()) + [(f, s, d, sh) for f, s, d, sh in CANDIDATES]:
         try: s = candidate_series(fam, sym, *cand) if cand else db.leg_series(fam, sym)
         except Exception as e: rows.append(dict(family=fam, symbol=sym, error=str(e)[:80])); continue
