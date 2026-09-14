@@ -23,6 +23,8 @@ python3 research/tools/dukascopy_fetch.py --probe   # 疎通確認: "probe: ... 
 | B | docs/208 日中フェーズ2(Mon FX ペアの 4/6/8/10 UTC 窓・v9 12h) | `python3 research/tools/dukascopy_fetch.py --tf hour --syms GBPJPY,AUDJPY,USDJPY,EURJPY,GBPUSD,USDCHF,NZDUSD,AUDUSD --from 2016-01-01` | 約 1,020 |
 | C | B-2 の代替: 時間帯別スプレッド実測(2026 年 8 月・1 ヶ月) | `python3 research/tools/dukascopy_fetch.py --tf tick --syms GBPJPY,USDJPY,AUDJPY,EURJPY,GBPUSD --from 2026-08-01 --to 2026-08-31` | 約 2,500(週末は即 404) |
 
+| **D** | **第 4 弾(docs/233 §7)**: 時間帯セル探索を H1 の無い銘柄へ拡張 | `python3 research/tools/dukascopy_fetch.py --tf hour --syms NZDJPY,CADJPY,CHFJPY,CADCHF,EURGBP,AUDNZD,EURCHF,EURAUD,GBPAUD,GBPCHF,JP225,UK100,NAS100,XAUUSD --from 2016-01-01` | 約 1,800 月ファイル・40 分 |
+
 - 途中で止まっても再実行すれば未取得分から再開する。`!! FetchError` が出た銘柄は再実行。
 - 2026 年分: 日足の年ファイルは 2025-12 で止まっているが(docs/209)、H1 の月ファイルとティックの日ファイルは 2026 年も存在するはず。
   A/B の出力末尾が 2026-08 まで届いているか `tail -1 research/data_dukascopy/EURUSD_hour.csv` で確認する。
