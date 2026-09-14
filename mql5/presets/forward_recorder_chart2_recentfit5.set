@@ -18,7 +18,10 @@ InpSymUSDCHF=USDCHF
 InpServerToUtcHours=-999
 InpSlAtrMult=3.0
 InpMinHoldSeconds=150
-InpInitialBalance=1000000.0
+InpInitialBalance=60000.0
+InpSizeFromInitial=true
+InpRiskPerTradePct=0.2
+; ↑ docs/224 §6: RF5 EA v1.03 はロットを InpInitialBalance×0.2%÷(3×ATR) で出す → GBPUSD/GBPJPY ≈ 0.04 lot ≈ 名目 $6,000。口座残高に依存しない
 InpBaselineReset=false
 InpProfitLockEnable=false
 InpNotifyEnable=false

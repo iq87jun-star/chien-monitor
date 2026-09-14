@@ -27,7 +27,7 @@
 //|  規則失格0%。2.0%は速度優先オプションだが剥落時guard_stop25%)。    |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor recent-fit track"
-#property version   "1.02"
+#property version   "1.03"
 #property strict
 #include <Trade/Trade.mqh>
 
@@ -42,6 +42,7 @@ input double InpBalGuardPct       = 4.0;    // 日次: equity<=日開始balance-
 input int    InpBalGuardMaxMonth  = 2;      // 月内この回数を超えたら月末まで停止(3回目で停止)
 input double InpAccountFloorDDPct = 8.0;    // 初期残高からこの%でEA恒久停止
 input double InpInitialBalance    = 0.0;    // 0=自動(初回アタッチ時残高を端末に永続保存)
+input bool   InpSizeFromInitial   = false;  // true=ロット計算の基準を InpInitialBalance に固定(記録用・docs/224 §6。既定 false=従来どおり口座残高)
 input bool   InpBaselineReset     = false;  // 新フェーズ開始時のみtrue=基準残高を取り直す
 
 input group "=== 利益ロック(フェーズ通過の確定) ==="
@@ -140,7 +141,8 @@ double AtrD1(int idx)
 double LotsForRisk(string s, double slDist)
 {
    if(slDist<=0) return 0.0;
-   double riskMoney=AccountInfoDouble(ACCOUNT_BALANCE)*InpRiskPerTradePct/100.0*InpMultOverride;
+   double sizeBase=(InpSizeFromInitial && InpInitialBalance>0) ? InpInitialBalance : AccountInfoDouble(ACCOUNT_BALANCE);
+   double riskMoney=sizeBase*InpRiskPerTradePct/100.0*InpMultOverride;
    double tickSize=SymbolInfoDouble(s,SYMBOL_TRADE_TICK_SIZE);
    double tickVal =SymbolInfoDouble(s,SYMBOL_TRADE_TICK_VALUE);
    if(tickSize<=0||tickVal<=0) return 0.0;
