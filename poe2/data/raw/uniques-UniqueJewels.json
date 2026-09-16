@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 352.7,
-   "chaos": 9.45
+   "exalted": 442.4,
+   "chaos": 9.49
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,57 +42,24 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 460,
-   "listingCount": 33,
+   "primaryValue": 500,
+   "listingCount": 57,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 103.4,
+    "totalChange": 133.1,
     "data": [
      0,
-     -5.17,
-     -10.34,
-     76.83,
-     63.57,
+     -5.45,
+     86.48,
+     72.49,
      null,
-     103.4
+     114.4,
+     133.1
     ]
    },
    "explicitModifiers": [
     {
      "text": "Allocates (2-4) [SinisterJewelSockets|Sinister] [Jewel] sockets",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 381,
-   "itemId": "Grand Spectrum Sapphire",
-   "detailsId": "grand-spectrum-sapphire",
-   "name": "Grand Spectrum",
-   "baseType": "Sapphire",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
-   "flavourText": "Skin like steel tempered by bright flames.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 3,
-   "primaryValue": 18.1,
-   "listingCount": 22,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": 182.8,
-    "data": [
-     0,
-     25,
-     40.62,
-     26.56,
-     196.9,
-     null,
-     182.8
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
      "optional": false
     }
    ]
@@ -108,24 +75,57 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 18,
-   "listingCount": 26,
+   "primaryValue": 26.8,
+   "listingCount": 19,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 100,
+    "totalChange": 186,
     "data": [
      0,
-     4.14,
-     11.11,
-     33.33,
-     110,
+     6.7,
+     28.04,
+     101.7,
      null,
-     100
+     92.05,
+     186
     ]
    },
    "explicitModifiers": [
     {
      "text": "2% increased Maximum Life per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 381,
+   "itemId": "Grand Spectrum Sapphire",
+   "detailsId": "grand-spectrum-sapphire",
+   "name": "Grand Spectrum",
+   "baseType": "Sapphire",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
+   "flavourText": "Skin like steel tempered by bright flames.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 16,
+   "listingCount": 28,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 100,
+    "data": [
+     0,
+     12.5,
+     1.25,
+     137.5,
+     null,
+     126.2,
+     100
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
      "optional": false
     }
    ]
@@ -142,19 +142,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 14.9,
-   "listingCount": 513,
+   "primaryValue": 12,
+   "listingCount": 602,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 7.19,
+    "totalChange": -20,
     "data": [
      0,
-     7.91,
-     22.3,
-     28.78,
-     -6.47,
+     13.33,
+     19.33,
+     -13.33,
      null,
-     7.19
+     -0.67,
+     -20
     ]
    },
    "explicitModifiers": [
@@ -212,19 +212,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 6.65,
-   "listingCount": 1004,
+   "primaryValue": 7.68,
+   "listingCount": 1250,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 115.3,
+    "totalChange": 127.1,
     "data": [
      0,
-     9.43,
-     15.08,
-     18.25,
-     94.02,
+     5.17,
+     8.06,
+     77.31,
      null,
-     115.3
+     96.73,
+     127.1
     ]
    },
    "explicitModifiers": [
@@ -299,6 +299,10 @@
     {
      "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Cold Resistance]",
      "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant [Gain] 3% of Damage as Extra [Lightning] Damage",
+     "optional": true
     }
    ]
   },
@@ -313,19 +317,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 4.75,
-   "listingCount": 81,
+   "primaryValue": 3.58,
+   "listingCount": 74,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -4.32,
+    "totalChange": -9.65,
     "data": [
      0,
-     -20.11,
-     -28.35,
-     -19.43,
-     20.85,
+     -10.3,
+     0.85,
+     51.27,
      null,
-     -4.32
+     19.77,
+     -9.65
     ]
    },
    "explicitModifiers": [
@@ -346,19 +350,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 1,
-   "listingCount": 690,
+   "primaryValue": 2,
+   "listingCount": 647,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 0,
+    "totalChange": 100,
     "data": [
      0,
      0,
      0,
      0,
-     0,
      null,
-     0
+     0,
+     100
     ]
    },
    "explicitModifiers": [
@@ -367,7 +371,7 @@
      "optional": true
     },
     {
-     "text": "(5-19)% increased [Fire] Damage",
+     "text": "(1-19)% increased [Fire] Damage",
      "optional": true
     },
     {
@@ -383,15 +387,15 @@
      "optional": true
     },
     {
-     "text": "(4-22)% increased [Lightning] Damage",
+     "text": "(1-22)% increased [Lightning] Damage",
      "optional": true
     },
     {
-     "text": "[Minion|Minions] deal (1-7)% increased Damage",
+     "text": "[Minion|Minions] deal (1-10)% increased Damage",
      "optional": true
     },
     {
-     "text": "[Minion|Minions] deal (7-14)% reduced Damage",
+     "text": "[Minion|Minions] deal (7-25)% reduced Damage",
      "optional": true
     },
     {
@@ -431,7 +435,7 @@
      "optional": true
     },
     {
-     "text": "(14-28)% reduced [Armour]",
+     "text": "(14-30)% reduced [Armour]",
      "optional": true
     }
    ]
@@ -447,19 +451,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.73,
+   "primaryValue": 0.527,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 1.31,
+    "totalChange": -22.11,
     "data": [
      0,
-     -6.11,
-     0.63,
-     4.06,
-     14.46,
+     7.18,
+     10.83,
+     21.91,
      null,
-     1.31
+     7.9,
+     -22.11
     ]
    },
    "explicitModifiers": [
@@ -504,7 +508,7 @@
      "optional": true
     },
     {
-     "text": "(8-11)% increased Life Regeneration rate",
+     "text": "(6-11)% increased Life Regeneration rate",
      "optional": true
     },
     {
@@ -640,7 +644,11 @@
      "optional": true
     },
     {
-     "text": "(8-13)% increased speed of [Recoup] Effects",
+     "text": "(8-14)% increased speed of [Recoup] Effects",
+     "optional": true
+    },
+    {
+     "text": "54% increased [IceCrystals|Ice Crystal] Life",
      "optional": true
     },
     {
@@ -652,7 +660,7 @@
      "optional": true
     },
     {
-     "text": "(43-58)% increased [EnergyShield|Energy Shield] from Equipped Body Armour",
+     "text": "(40-58)% increased [EnergyShield|Energy Shield] from Equipped Body Armour",
      "optional": true
     },
     {
@@ -668,7 +676,7 @@
      "optional": true
     },
     {
-     "text": "(15-24)% increased Damage while your [Companion] is in your [Presence]",
+     "text": "(15-25)% increased Damage while your [Companion] is in your [Presence]",
      "optional": true
     },
     {
@@ -676,7 +684,7 @@
      "optional": true
     },
     {
-     "text": "(11-13)% chance when a [Charm|Charm] is used to use another Charm without consuming Charges",
+     "text": "(10-13)% chance when a [Charm|Charm] is used to use another Charm without consuming Charges",
      "optional": true
     },
     {
@@ -692,7 +700,7 @@
      "optional": true
     },
     {
-     "text": "(16-21)% increased [Exposure] Effect",
+     "text": "(15-21)% increased [Exposure] Effect",
      "optional": true
     },
     {
@@ -701,6 +709,10 @@
     },
     {
      "text": "(5-9)% reduced [Slow|Slowing] Potency of [Debuff|Debuffs] on You",
+     "optional": true
+    },
+    {
+     "text": "Gain [Physical|Physical] [Thorns|Thorns] damage equal to 5.49% of [ItemArmour|Item Armour] on [Equipped] Body Armour",
      "optional": true
     },
     {
@@ -738,6 +750,47 @@
    ]
   },
   {
+   "id": 383,
+   "itemId": "Heroic Tragedy Timeless Jewel",
+   "detailsId": "heroic-tragedy-timeless-jewel",
+   "name": "Heroic Tragedy",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V4cGVkaXRpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8356e82d27/ExpeditionJewel.png",
+   "flavourText": "They believed themselves courageous and selfless,\r\nbut that bravery became the doom at their door.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "radius": "Very Large",
+   "primaryValue": 0.527,
+   "listingCount": 3433,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -10.98,
+    "data": [
+     0,
+     5.17,
+     -20.83,
+     -12.92,
+     null,
+     -28.51,
+     -10.98
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Remembrancing (105-7950) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "Remembrancing (207-7739) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 384,
    "itemId": "Undying Hate Timeless Jewel",
    "detailsId": "undying-hate-timeless-jewel",
@@ -748,19 +801,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.529,
-   "listingCount": 2262,
+   "primaryValue": 0.527,
+   "listingCount": 2520,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -8.24,
+    "totalChange": -30.76,
     "data": [
      0,
-     32.03,
-     83.97,
-     62.59,
-     -10.58,
+     39.34,
+     23.15,
+     -32.27,
      null,
-     -8.24
+     -30.5,
+     -30.76
     ]
    },
    "explicitModifiers": [
@@ -791,47 +844,6 @@
    ]
   },
   {
-   "id": 383,
-   "itemId": "Heroic Tragedy Timeless Jewel",
-   "detailsId": "heroic-tragedy-timeless-jewel",
-   "name": "Heroic Tragedy",
-   "baseType": "Timeless Jewel",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V4cGVkaXRpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8356e82d27/ExpeditionJewel.png",
-   "flavourText": "They believed themselves courageous and selfless,\r\nbut that bravery became the doom at their door.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "radius": "Very Large",
-   "primaryValue": 0.4232,
-   "listingCount": 2876,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -63.29,
-    "data": [
-     0,
-     -48.65,
-     -46,
-     -59.35,
-     -55.29,
-     null,
-     -63.29
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Remembrancing (105-7950) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
-     "optional": true
-    },
-    {
-     "text": "Remembrancing (207-7739) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
-     "optional": true
-    },
-    {
-     "text": "[Historic]",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 400,
    "itemId": "Flesh Crucible Diamond",
    "detailsId": "flesh-crucible-diamond",
@@ -842,19 +854,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.3174,
-   "listingCount": 2164,
+   "primaryValue": 0.4216,
+   "listingCount": 2626,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -10.11,
+    "totalChange": -0.3,
     "data": [
      0,
-     19.76,
-     -49.62,
-     -42.99,
-     -11.46,
+     -57.93,
+     -52.39,
+     -26.07,
      null,
-     -10.11
+     -24.94,
+     -0.3
     ]
    },
    "explicitModifiers": [
@@ -888,6 +900,10 @@
     },
     {
      "text": "(10-20)% less Movement Speed",
+     "optional": true
+    },
+    {
+     "text": "[LordOfTheWilds|Lord of the Wilds]",
      "optional": true
     },
     {
@@ -939,7 +955,7 @@
      "optional": true
     },
     {
-     "text": "(10-19)% less Damage",
+     "text": "(10-20)% less Damage",
      "optional": true
     },
     {
@@ -963,19 +979,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.3174,
+   "primaryValue": 0.3162,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -68.26,
+    "totalChange": -29.05,
     "data": [
      0,
-     -55.43,
-     -55.53,
-     -71.88,
-     -58.76,
+     -0.22,
+     -36.9,
+     -7.46,
      null,
-     -68.26
+     -28.78,
+     -29.05
     ]
    }
   },
@@ -991,19 +1007,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 0.2116,
-   "listingCount": 3392,
+   "primaryValue": 0.2108,
+   "listingCount": 4156,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -2.12,
+    "totalChange": 24.63,
     "data": [
      0,
-     -21.76,
-     -46.59,
-     -34.82,
-     -45.27,
+     -31.74,
+     -16.69,
+     -30.05,
      null,
-     -2.12
+     25.1,
+     24.63
     ]
    },
    "explicitModifiers": [
@@ -1060,19 +1076,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00284,
+   "primaryValue": 0.00226,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -49.82,
+    "totalChange": -49.55,
     "data": [
      0,
-     -20.85,
-     -16.61,
-     -4.77,
-     -44.7,
+     5.36,
+     20.31,
+     -30.13,
      null,
-     -49.82
+     -36.61,
+     -49.55
     ]
    },
    "explicitModifiers": [
@@ -1085,7 +1101,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Arctic Howl Skills",
+     "text": "+(1-2) to Level of all Arctic Howl Skills",
      "optional": true
     },
     {
@@ -1102,10 +1118,6 @@
     },
     {
      "text": "+2 to Level of all Elemental Invocation Skills",
-     "optional": true
-    },
-    {
-     "text": "+1 to Level of all Enfeeble Skills",
      "optional": true
     },
     {
@@ -1194,10 +1206,6 @@
     },
     {
      "text": "+1 to Level of all Skeletal Frost Mage Skills",
-     "optional": true
-    },
-    {
-     "text": "+2 to Level of all Spearfield Skills",
      "optional": true
     },
     {
@@ -1357,7 +1365,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Skeletal Cleric Skills",
+     "text": "+(1-2) to Level of all Skeletal Cleric Skills",
      "optional": true
     },
     {
@@ -1469,6 +1477,34 @@
      "optional": true
     },
     {
+     "text": "+(1-2) to Level of all Enfeeble Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Spearfield Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Berserk Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Cast on Minion Death Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Explosive Spear Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Hammer of the Gods Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Trinity Skills",
+     "optional": true
+    },
+    {
      "text": "+2 to Level of all Boneshatter Skills",
      "optional": true
     },
@@ -1509,7 +1545,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Attrition Skills",
+     "text": "+(1-2) to Level of all Attrition Skills",
      "optional": true
     },
     {
