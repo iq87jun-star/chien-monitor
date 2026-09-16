@@ -1,5 +1,5 @@
 {
- "fetchedAt": "2026-09-16T08:43:52.896Z",
+ "fetchedAt": "2026-09-16T14:16:18.726Z",
  "region": "Japan",
  "results": [
   {
@@ -7,25 +7,65 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 35,
+      "price": 36,
+      "worldId": 45
+     }
+    },
+    "recentPurchase": {
+     "region": {
+      "price": 31,
+      "timestamp": 1789566285000,
+      "worldId": 60
+     }
+    },
+    "averageSalePrice": {
+     "region": {
+      "price": 42.9466226827485
+     }
+    },
+    "dailySaleVelocity": {
+     "region": {
+      "quantity": 1062656.860419172
+     }
+    }
+   },
+   "hq": {
+    "minListing": {},
+    "recentPurchase": {},
+    "averageSalePrice": {},
+    "dailySaleVelocity": {}
+   },
+   "worldUploadTimes": [
+    {
+     "worldId": 45,
+     "timestamp": 1789491793507
+    }
+   ]
+  },
+  {
+   "itemId": 3,
+   "nq": {
+    "minListing": {
+     "region": {
+      "price": 38,
       "worldId": 60
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 42,
-      "timestamp": 1789545772000,
-      "worldId": 29
+      "price": 46,
+      "timestamp": 1789566084000,
+      "worldId": 61
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 42.954293113518524
+      "price": 44.47721077045964
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1062754.3532450842
+      "quantity": 605650.6441092652
      }
     }
    },
@@ -38,47 +78,7 @@
    "worldUploadTimes": [
     {
      "worldId": 60,
-     "timestamp": 1789542933070
-    }
-   ]
-  },
-  {
-   "itemId": 3,
-   "nq": {
-    "minListing": {
-     "region": {
-      "price": 38,
-      "worldId": 94
-     }
-    },
-    "recentPurchase": {
-     "region": {
-      "price": 40,
-      "timestamp": 1789545781000,
-      "worldId": 29
-     }
-    },
-    "averageSalePrice": {
-     "region": {
-      "price": 44.43863937800469
-     }
-    },
-    "dailySaleVelocity": {
-     "region": {
-      "quantity": 615715.5237469734
-     }
-    }
-   },
-   "hq": {
-    "minListing": {},
-    "recentPurchase": {},
-    "averageSalePrice": {},
-    "dailySaleVelocity": {}
-   },
-   "worldUploadTimes": [
-    {
-     "worldId": 94,
-     "timestamp": 1789544263212
+     "timestamp": 1789560569596
     }
    ]
   },
@@ -93,19 +93,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 47,
-      "timestamp": 1789538107000,
-      "worldId": 96
+      "price": 46,
+      "timestamp": 1789553597000,
+      "worldId": 70
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 46.77264911003794
+      "price": 47.38763407626737
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 176857.66372039952
+      "quantity": 199369.25221173983
      }
     }
    },
@@ -134,18 +134,18 @@
     "recentPurchase": {
      "region": {
       "price": 40,
-      "timestamp": 1789538379000,
-      "worldId": 96
+      "timestamp": 1789558181000,
+      "worldId": 44
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 41.79920087177624
+      "price": 41.79174072138003
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 36828.93298984219
+      "quantity": 34591.6687563874
      }
     }
    },
@@ -167,25 +167,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 30,
-      "worldId": 44
+      "price": 31,
+      "worldId": 50
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 40,
-      "timestamp": 1789538391000,
-      "worldId": 96
+      "price": 59,
+      "timestamp": 1789548914000,
+      "worldId": 44
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 41.32024794399245
+      "price": 41.847912585270976
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 60764.9873342859
+      "quantity": 59498.670434070096
      }
     }
    },
@@ -197,8 +197,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 44,
-     "timestamp": 1789462848980
+     "worldId": 50,
+     "timestamp": 1789511002628
     }
    ]
   },
@@ -213,19 +213,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 42,
-      "timestamp": 1789546310000,
-      "worldId": 44
+      "price": 45,
+      "timestamp": 1789555578000,
+      "worldId": 72
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 46.0396610544903
+      "price": 46.229497499308565
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 193273.92341692382
+      "quantity": 193122.4587230552
      }
     }
    },
@@ -247,65 +247,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 34,
-      "worldId": 31
-     }
-    },
-    "recentPurchase": {
-     "region": {
-      "price": 40,
-      "timestamp": 1789546154000,
-      "worldId": 48
-     }
-    },
-    "averageSalePrice": {
-     "region": {
-      "price": 38.567648340521174
-     }
-    },
-    "dailySaleVelocity": {
-     "region": {
-      "quantity": 7407910.06142203
-     }
-    }
-   },
-   "hq": {
-    "minListing": {},
-    "recentPurchase": {},
-    "averageSalePrice": {},
-    "dailySaleVelocity": {}
-   },
-   "worldUploadTimes": [
-    {
-     "worldId": 31,
-     "timestamp": 1789535405455
-    }
-   ]
-  },
-  {
-   "itemId": 9,
-   "nq": {
-    "minListing": {
-     "region": {
-      "price": 40,
+      "price": 31,
       "worldId": 60
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 49,
-      "timestamp": 1789540508000,
-      "worldId": 61
+      "price": 50,
+      "timestamp": 1789567849000,
+      "worldId": 69
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 48.21253510056253
+      "price": 38.60027570721482
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 964460.9969029176
+      "quantity": 7372223.135994407
      }
     }
    },
@@ -318,34 +278,34 @@
    "worldUploadTimes": [
     {
      "worldId": 60,
-     "timestamp": 1789470996942
+     "timestamp": 1789567861475
     }
    ]
   },
   {
-   "itemId": 10,
+   "itemId": 9,
    "nq": {
     "minListing": {
      "region": {
-      "price": 33,
-      "worldId": 44
+      "price": 34,
+      "worldId": 76
      }
     },
     "recentPurchase": {
      "region": {
       "price": 47,
-      "timestamp": 1789546734000,
-      "worldId": 76
+      "timestamp": 1789566065000,
+      "worldId": 45
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 44.05701010927899
+      "price": 47.66441061411269
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1757654.0907985861
+      "quantity": 1049398.662962366
      }
     }
    },
@@ -357,8 +317,48 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 44,
-     "timestamp": 1789547989495
+     "worldId": 76,
+     "timestamp": 1789568055573
+    }
+   ]
+  },
+  {
+   "itemId": 10,
+   "nq": {
+    "minListing": {
+     "region": {
+      "price": 29,
+      "worldId": 76
+     }
+    },
+    "recentPurchase": {
+     "region": {
+      "price": 50,
+      "timestamp": 1789567979000,
+      "worldId": 43
+     }
+    },
+    "averageSalePrice": {
+     "region": {
+      "price": 43.52693489721689
+     }
+    },
+    "dailySaleVelocity": {
+     "region": {
+      "quantity": 2042116.9612434665
+     }
+    }
+   },
+   "hq": {
+    "minListing": {},
+    "recentPurchase": {},
+    "averageSalePrice": {},
+    "dailySaleVelocity": {}
+   },
+   "worldUploadTimes": [
+    {
+     "worldId": 76,
+     "timestamp": 1789563059972
     }
    ]
   },
@@ -373,19 +373,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 29,
-      "timestamp": 1789505639000,
-      "worldId": 76
+      "price": 48,
+      "timestamp": 1789567434000,
+      "worldId": 50
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 43.0590419899686
+      "price": 43.20559229760057
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1178060.6568815461
+      "quantity": 1196585.5959843763
      }
     }
    },
@@ -407,25 +407,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 33,
-      "worldId": 59
+      "price": 30,
+      "worldId": 76
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 33,
-      "timestamp": 1789546688000,
-      "worldId": 59
+      "price": 37,
+      "timestamp": 1789567015000,
+      "worldId": 58
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 40.32072810266316
+      "price": 40.126562188270206
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1220485.5998531047
+      "quantity": 1277262.918085008
      }
     }
    },
@@ -437,8 +437,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 59,
-     "timestamp": 1789548126453
+     "worldId": 76,
+     "timestamp": 1789566144183
     }
    ]
   },
@@ -448,24 +448,24 @@
     "minListing": {
      "region": {
       "price": 36,
-      "worldId": 60
+      "worldId": 44
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 38,
-      "timestamp": 1789546633000,
-      "worldId": 28
+      "price": 45,
+      "timestamp": 1789568004000,
+      "worldId": 43
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 42.89872876134743
+      "price": 42.87311533664217
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 20403522.563349977
+      "quantity": 19413544.650197636
      }
     }
    },
@@ -477,8 +477,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 60,
-     "timestamp": 1789495869519
+     "worldId": 44,
+     "timestamp": 1789567696865
     }
    ]
   },
@@ -487,25 +487,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 6,
-      "worldId": 51
+      "price": 3,
+      "worldId": 96
      }
     },
     "recentPurchase": {
      "region": {
       "price": 7,
-      "timestamp": 1789545802000,
+      "timestamp": 1789562536000,
       "worldId": 59
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 13.642745127684659
+      "price": 13.581265842007824
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 554486.8601990296
+      "quantity": 527578.4111633283
      }
     }
    },
@@ -517,8 +517,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 51,
-     "timestamp": 1789487263670
+     "worldId": 96,
+     "timestamp": 1789559351116
     }
    ]
   },
@@ -527,25 +527,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 18,
+      "price": 17,
       "worldId": 72
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 19,
-      "timestamp": 1789545385000,
-      "worldId": 72
+      "price": 40,
+      "timestamp": 1789554891000,
+      "worldId": 70
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 35.62615561917634
+      "price": 35.753760258635396
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 106019.19015261254
+      "quantity": 102742.33807266128
      }
     }
    },
@@ -558,7 +558,7 @@
    "worldUploadTimes": [
     {
      "worldId": 72,
-     "timestamp": 1789545997478
+     "timestamp": 1789567073716
     }
    ]
   },
@@ -567,25 +567,145 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 13,
+      "price": 7,
+      "worldId": 96
+     }
+    },
+    "recentPurchase": {
+     "region": {
+      "price": 19,
+      "timestamp": 1789563246000,
+      "worldId": 59
+     }
+    },
+    "averageSalePrice": {
+     "region": {
+      "price": 22.332334855605037
+     }
+    },
+    "dailySaleVelocity": {
+     "region": {
+      "quantity": 638214.3955442759
+     }
+    }
+   },
+   "hq": {
+    "minListing": {},
+    "recentPurchase": {},
+    "averageSalePrice": {},
+    "dailySaleVelocity": {}
+   },
+   "worldUploadTimes": [
+    {
+     "worldId": 96,
+     "timestamp": 1789559344459
+    }
+   ]
+  },
+  {
+   "itemId": 17,
+   "nq": {
+    "minListing": {
+     "region": {
+      "price": 10,
+      "worldId": 96
+     }
+    },
+    "recentPurchase": {
+     "region": {
+      "price": 24,
+      "timestamp": 1789549471000,
+      "worldId": 29
+     }
+    },
+    "averageSalePrice": {
+     "region": {
+      "price": 22.063103697102253
+     }
+    },
+    "dailySaleVelocity": {
+     "region": {
+      "quantity": 173870.20853643274
+     }
+    }
+   },
+   "hq": {
+    "minListing": {},
+    "recentPurchase": {},
+    "averageSalePrice": {},
+    "dailySaleVelocity": {}
+   },
+   "worldUploadTimes": [
+    {
+     "worldId": 96,
+     "timestamp": 1789549610433
+    }
+   ]
+  },
+  {
+   "itemId": 18,
+   "nq": {
+    "minListing": {
+     "region": {
+      "price": 5,
+      "worldId": 29
+     }
+    },
+    "recentPurchase": {
+     "region": {
+      "price": 2,
+      "timestamp": 1789567041000,
+      "worldId": 76
+     }
+    },
+    "averageSalePrice": {
+     "region": {
+      "price": 11.880073777289176
+     }
+    },
+    "dailySaleVelocity": {
+     "region": {
+      "quantity": 350221.31799759896
+     }
+    }
+   },
+   "hq": {
+    "minListing": {},
+    "recentPurchase": {},
+    "averageSalePrice": {},
+    "dailySaleVelocity": {}
+   },
+   "worldUploadTimes": [
+    {
+     "worldId": 29,
+     "timestamp": 1789554568908
+    }
+   ]
+  },
+  {
+   "itemId": 19,
+   "nq": {
+    "minListing": {
+     "region": {
+      "price": 16,
       "worldId": 68
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 17,
-      "timestamp": 1789545986000,
-      "worldId": 44
+      "price": 94,
+      "timestamp": 1789564299000,
+      "worldId": 48
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 22.2951497884309
+      "price": 48.147948421763246
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 668422.6592079349
+      "quantity": 1138173.3593752082
      }
     }
    },
@@ -598,127 +718,7 @@
    "worldUploadTimes": [
     {
      "worldId": 68,
-     "timestamp": 1789523179976
-    }
-   ]
-  },
-  {
-   "itemId": 17,
-   "nq": {
-    "minListing": {
-     "region": {
-      "price": 15,
-      "worldId": 60
-     }
-    },
-    "recentPurchase": {
-     "region": {
-      "price": 27,
-      "timestamp": 1789539069000,
-      "worldId": 72
-     }
-    },
-    "averageSalePrice": {
-     "region": {
-      "price": 22.36229093300263
-     }
-    },
-    "dailySaleVelocity": {
-     "region": {
-      "quantity": 170438.64882425478
-     }
-    }
-   },
-   "hq": {
-    "minListing": {},
-    "recentPurchase": {},
-    "averageSalePrice": {},
-    "dailySaleVelocity": {}
-   },
-   "worldUploadTimes": [
-    {
-     "worldId": 60,
-     "timestamp": 1789545023280
-    }
-   ]
-  },
-  {
-   "itemId": 18,
-   "nq": {
-    "minListing": {
-     "region": {
-      "price": 6,
-      "worldId": 59
-     }
-    },
-    "recentPurchase": {
-     "region": {
-      "price": 6,
-      "timestamp": 1789545787000,
-      "worldId": 59
-     }
-    },
-    "averageSalePrice": {
-     "region": {
-      "price": 11.8726868364735
-     }
-    },
-    "dailySaleVelocity": {
-     "region": {
-      "quantity": 361312.23015313846
-     }
-    }
-   },
-   "hq": {
-    "minListing": {},
-    "recentPurchase": {},
-    "averageSalePrice": {},
-    "dailySaleVelocity": {}
-   },
-   "worldUploadTimes": [
-    {
-     "worldId": 59,
-     "timestamp": 1789548137208
-    }
-   ]
-  },
-  {
-   "itemId": 19,
-   "nq": {
-    "minListing": {
-     "region": {
-      "price": 10,
-      "worldId": 90
-     }
-    },
-    "recentPurchase": {
-     "region": {
-      "price": 27,
-      "timestamp": 1789547033000,
-      "worldId": 76
-     }
-    },
-    "averageSalePrice": {
-     "region": {
-      "price": 47.780332000024465
-     }
-    },
-    "dailySaleVelocity": {
-     "region": {
-      "quantity": 1020665.8965717659
-     }
-    }
-   },
-   "hq": {
-    "minListing": {},
-    "recentPurchase": {},
-    "averageSalePrice": {},
-    "dailySaleVelocity": {}
-   },
-   "worldUploadTimes": [
-    {
-     "worldId": 90,
-     "timestamp": 1789545712852
+     "timestamp": 1789553972560
     }
    ]
   },
@@ -733,19 +733,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 25,
-      "timestamp": 1789507359000,
-      "worldId": 72
+      "price": 40,
+      "timestamp": 1789553766000,
+      "worldId": 61
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 48.75678601165695
+      "price": 48.05708603417796
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 3570.3698069507273
+      "quantity": 3776.7207555959535
      }
     }
    },
@@ -773,19 +773,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 31,
-      "timestamp": 1789545928000,
-      "worldId": 52
+      "price": 99,
+      "timestamp": 1789563715000,
+      "worldId": 59
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 63.757002061648315
+      "price": 66.18524820764135
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 11824.136909182354
+      "quantity": 12261.545330605019
      }
     }
    },
@@ -798,7 +798,7 @@
    "worldUploadTimes": [
     {
      "worldId": 70,
-     "timestamp": 1789532858994
+     "timestamp": 1789549221448
     }
    ]
   },
@@ -813,19 +813,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 170,
-      "timestamp": 1789533985000,
-      "worldId": 98
+      "price": 125,
+      "timestamp": 1789563456000,
+      "worldId": 30
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 168.904829374171
+      "price": 173.41871245756073
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 19722.947598689618
+      "quantity": 21303.86413257182
      }
     }
    },
@@ -847,25 +847,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 51,
-      "worldId": 28
+      "price": 50,
+      "worldId": 31
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 100,
-      "timestamp": 1789542769000,
-      "worldId": 52
+      "price": 155,
+      "timestamp": 1789566096000,
+      "worldId": 48
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 102.08891777918588
+      "price": 104.44034029496879
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 27211.50733751101
+      "quantity": 39893.974451958245
      }
     }
    },
@@ -877,8 +877,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 28,
-     "timestamp": 1789522459305
+     "worldId": 31,
+     "timestamp": 1789561112105
     }
    ]
   },
@@ -893,19 +893,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 398,
-      "timestamp": 1789542962000,
-      "worldId": 48
+      "price": 311,
+      "timestamp": 1789565174000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 361.7712566207998
+      "price": 362.7307989315509
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 42431.8040395574
+      "quantity": 43950.2757435331
      }
     }
    },
@@ -933,19 +933,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 287,
-      "timestamp": 1789542321000,
-      "worldId": 61
+      "price": 161,
+      "timestamp": 1789562642000,
+      "worldId": 49
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 279.1830395773557
+      "price": 273.6183183311292
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 6527.443702793433
+      "quantity": 6521.073931358577
      }
     }
    },
@@ -985,7 +985,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 97.21155130030706
+      "quantity": 90.96843670575197
      }
     }
    },
@@ -1013,19 +1013,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 200,
-      "timestamp": 1789490125000,
-      "worldId": 29
+      "price": 130,
+      "timestamp": 1789525904000,
+      "worldId": 59
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 166.60992907801418
+      "price": 161.54647482014389
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 796.4212171423283
+      "quantity": 966.7134854843255
      }
     }
    },
@@ -1047,25 +1047,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 10,
-      "worldId": 92
+      "price": 20,
+      "worldId": 76
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 1,
-      "timestamp": 1789531701000,
-      "worldId": 70
+      "price": 500,
+      "timestamp": 1789559225000,
+      "worldId": 59
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 127.94163424124514
+      "price": 127.85054719562244
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 458.41040892886616
+      "quantity": 813.4302636972499
      }
     }
    },
@@ -1077,8 +1077,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 92,
-     "timestamp": 1789412949040
+     "worldId": 76,
+     "timestamp": 1788668054850
     }
    ]
   },
@@ -1125,19 +1125,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 30,
-      "timestamp": 1789469299000,
-      "worldId": 43
+      "price": 301,
+      "timestamp": 1789548101000,
+      "worldId": 44
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 145.90312965722802
+      "price": 96.94523906824683
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 398.9537860444746
+      "quantity": 680.7331633477721
      }
     }
    },
@@ -1165,19 +1165,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 250,
-      "timestamp": 1789544375000,
-      "worldId": 45
+      "price": 300,
+      "timestamp": 1789560072000,
+      "worldId": 61
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 269.9766594811566
+      "price": 267.4250790305585
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 3999.3481030014846
+      "quantity": 3960.0475642702736
      }
     }
    },
@@ -1205,19 +1205,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 158,
-      "timestamp": 1789537460000,
-      "worldId": 44
+      "price": 200,
+      "timestamp": 1789550213000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 167.65376682054807
+      "price": 167.65154921317566
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 3026.6380580550135
+      "quantity": 2846.1711133374315
      }
     }
    },
@@ -1245,19 +1245,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 244,
-      "timestamp": 1789538696000,
-      "worldId": 29
+      "price": 190,
+      "timestamp": 1789564156000,
+      "worldId": 23
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 140.68036773881377
+      "price": 142.75339244493344
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 11673.410647751045
+      "quantity": 12894.982589065634
      }
     }
    },
@@ -1279,25 +1279,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 58,
+      "price": 49,
       "worldId": 44
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 93,
-      "timestamp": 1789536541000,
-      "worldId": 47
+      "price": 112,
+      "timestamp": 1789542992000,
+      "worldId": 51
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 155.32612299676325
+      "price": 150.2788380746609
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 3765.6833668364266
+      "quantity": 4635.2166028857755
      }
     }
    },
@@ -1310,7 +1310,7 @@
    "worldUploadTimes": [
     {
      "worldId": 44,
-     "timestamp": 1789477906948
+     "timestamp": 1789561511999
     }
    ]
   },
@@ -1325,19 +1325,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 100,
-      "timestamp": 1789539086000,
-      "worldId": 30
+      "price": 150,
+      "timestamp": 1789561950000,
+      "worldId": 31
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 124.53604499622745
+      "price": 126.79407397843909
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 4334.088295776779
+      "quantity": 4309.454976217984
      }
     }
    },
@@ -1365,19 +1365,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 40,
-      "timestamp": 1789539782000,
-      "worldId": 69
+      "price": 20,
+      "timestamp": 1789560876000,
+      "worldId": 43
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 55.967470760233915
+      "price": 56.39910690303519
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 8133.661618501181
+      "quantity": 8285.637049139408
      }
     }
    },
@@ -1399,61 +1399,61 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 107,
-      "worldId": 44
+      "price": 206,
+      "worldId": 90
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 590,
-      "timestamp": 1789540100000,
-      "worldId": 48
+      "price": 570,
+      "timestamp": 1789566001000,
+      "worldId": 23
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 522.0820553152445
+      "price": 531.1542449026609
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 2267.971596181251
+      "quantity": 2414.974885414573
      }
     }
    },
    "hq": {
     "minListing": {
      "region": {
-      "price": 508,
-      "worldId": 50
+      "price": 600,
+      "worldId": 94
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 3500,
-      "timestamp": 1789531822000,
-      "worldId": 60
+      "price": 900,
+      "timestamp": 1789564241000,
+      "worldId": 51
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 1908.8422988505747
+      "price": 1929.6010834236185
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1293.180815754154
+      "quantity": 1283.8508347181494
      }
     }
    },
    "worldUploadTimes": [
     {
-     "worldId": 44,
-     "timestamp": 1789521257634
+     "worldId": 90,
+     "timestamp": 1789531074362
     },
     {
-     "worldId": 50,
-     "timestamp": 1789488635268
+     "worldId": 94,
+     "timestamp": 1789481500783
     }
    ]
   },
@@ -1469,18 +1469,18 @@
     "recentPurchase": {
      "region": {
       "price": 79,
-      "timestamp": 1789526497000,
-      "worldId": 45
+      "timestamp": 1789559600000,
+      "worldId": 28
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 74.39503328213006
+      "price": 73.03886925795052
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1161.1871523174257
+      "quantity": 1259.6482023099795
      }
     }
    },
@@ -1508,19 +1508,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 72,
-      "timestamp": 1789544524000,
-      "worldId": 94
+      "price": 50,
+      "timestamp": 1789557873000,
+      "worldId": 47
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 104.48271507498026
+      "price": 103.35831082041803
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1883.287357543884
+      "quantity": 1956.5162547414395
      }
     }
    },
@@ -1548,19 +1548,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 215,
-      "timestamp": 1789544119000,
-      "worldId": 68
+      "price": 180,
+      "timestamp": 1789560275000,
+      "worldId": 60
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 163.8396984100967
+      "price": 163.29826446725056
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 5441.169310709461
+      "quantity": 5177.409793978688
      }
     }
    },
@@ -1600,7 +1600,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 40.1331932110258
+      "quantity": 37.555762972868536
      }
     }
    },
@@ -1628,44 +1628,44 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 79,
-      "timestamp": 1789540142000,
-      "worldId": 49
+      "price": 100,
+      "timestamp": 1789559728000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 133.0036343304445
+      "price": 131.96900170856725
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1063.380948163081
+      "quantity": 1139.747833115995
      }
     }
    },
    "hq": {
     "minListing": {
      "region": {
-      "price": 40,
+      "price": 30,
       "worldId": 29
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 199,
-      "timestamp": 1789538395000,
-      "worldId": 72
+      "price": 200,
+      "timestamp": 1789564117000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 209.36766467065868
+      "price": 207.58352668213456
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 248.2312249695758
+      "quantity": 239.80049600829574
      }
     }
    },
@@ -1676,7 +1676,7 @@
     },
     {
      "worldId": 29,
-     "timestamp": 1789476250725
+     "timestamp": 1789553282936
     }
    ]
   },
@@ -1685,61 +1685,61 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 100,
-      "worldId": 30
+      "price": 200,
+      "worldId": 92
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 400,
-      "timestamp": 1789544257000,
-      "worldId": 44
+      "price": 650,
+      "timestamp": 1789491477000,
+      "worldId": 72
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 489.37414777962044
+      "price": 486.10161317146185
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 3226.708538743557
+      "quantity": 3345.522810490566
      }
     }
    },
    "hq": {
     "minListing": {
      "region": {
-      "price": 300,
-      "worldId": 70
+      "price": 340,
+      "worldId": 58
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 400,
-      "timestamp": 1789544232000,
-      "worldId": 44
+      "price": 502,
+      "timestamp": 1789550810000,
+      "worldId": 49
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 570.6298381421534
+      "price": 570.693649373882
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1267.3169799763941
+      "quantity": 1244.0693504501755
      }
     }
    },
    "worldUploadTimes": [
     {
-     "worldId": 30,
-     "timestamp": 1789472459286
+     "worldId": 92,
+     "timestamp": 1789547283431
     },
     {
-     "worldId": 70,
-     "timestamp": 1789515541202
+     "worldId": 58,
+     "timestamp": 1789536388253
     }
    ]
   },
@@ -1748,25 +1748,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 20,
-      "worldId": 49
+      "price": 11,
+      "worldId": 69
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 100,
-      "timestamp": 1789541752000,
-      "worldId": 49
+      "price": 36,
+      "timestamp": 1789562467000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 90.5166346769034
+      "price": 90.04904109589042
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 929.3062978780156
+      "quantity": 1015.3964488155134
      }
     }
    },
@@ -1779,26 +1779,26 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 105,
-      "timestamp": 1789544497000,
-      "worldId": 48
+      "price": 85,
+      "timestamp": 1789564037000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 132.40744368266405
+      "price": 135.1380231522707
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 303.5258253785841
+      "quantity": 312.40827726570456
      }
     }
    },
    "worldUploadTimes": [
     {
-     "worldId": 49,
-     "timestamp": 1789545772415
+     "worldId": 69,
+     "timestamp": 1789562742682
     },
     {
      "worldId": 76,
@@ -1817,19 +1817,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 299,
-      "timestamp": 1789521622000,
-      "worldId": 58
+      "price": 100,
+      "timestamp": 1789564026000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 246.19519704433498
+      "price": 225.2644155844156
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 482.7873888136832
+      "quantity": 535.5172929746396
      }
     }
    },
@@ -1842,19 +1842,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 180,
-      "timestamp": 1789536692000,
-      "worldId": 49
+      "price": 800,
+      "timestamp": 1789564089000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 404.6862745098039
+      "price": 401.5207100591716
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 90.96855971489352
+      "quantity": 94.02849092230036
      }
     }
    },
@@ -1865,7 +1865,7 @@
     },
     {
      "worldId": 72,
-     "timestamp": 1789518601450
+     "timestamp": 1789562306572
     }
    ]
   },
@@ -1887,19 +1887,19 @@
     },
     "averageSalePrice": {
      "region": {
-      "price": 23.22222222222222
+      "price": 22.975138121546962
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 101.67073960251764
+      "quantity": 100.70506786680764
      }
     }
    },
    "hq": {
     "minListing": {
      "region": {
-      "price": 4,
+      "price": 5,
       "worldId": 94
      }
     },
@@ -1917,7 +1917,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 35.97122658451647
+      "quantity": 33.661086220673276
      }
     }
    },
@@ -1928,7 +1928,7 @@
     },
     {
      "worldId": 94,
-     "timestamp": 1789446518442
+     "timestamp": 1789551171487
     }
    ]
   },
@@ -1943,19 +1943,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 240,
-      "timestamp": 1789529249000,
-      "worldId": 47
+      "price": 399,
+      "timestamp": 1789564476000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 504.10122699386505
+      "price": 548.830985915493
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 96.91421034852708
+      "quantity": 98.75772999855896
      }
     }
    },
@@ -1968,19 +1968,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 300,
-      "timestamp": 1789529252000,
-      "worldId": 47
+      "price": 500,
+      "timestamp": 1789563218000,
+      "worldId": 28
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 595.768115942029
+      "price": 657.8852459016393
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 61.537550742776396
+      "quantity": 67.87855244971377
      }
     }
    },
@@ -2002,19 +2002,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 10,
-      "timestamp": 1789426300000,
-      "worldId": 32
+      "price": 9,
+      "timestamp": 1789558446000,
+      "worldId": 46
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 11.238805970149254
+      "price": 10.967678746327131
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 258.9333567245363
+      "quantity": 284.03278786748376
      }
     }
    },
@@ -2027,19 +2027,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 10,
-      "timestamp": 1789464698000,
-      "worldId": 32
+      "price": 200,
+      "timestamp": 1789565499000,
+      "worldId": 44
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 17.046413502109704
+      "price": 15.77659574468085
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 281.82413567722205
+      "quantity": 339.94913494031846
      }
     }
    },
@@ -2059,25 +2059,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 1,
-      "worldId": 44
+      "price": 9,
+      "worldId": 30
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 100,
-      "timestamp": 1789426877000,
-      "worldId": 46
+      "price": 140,
+      "timestamp": 1789437056000,
+      "worldId": 76
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 89.72972972972973
+      "price": 97.32584269662921
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 21.99892963310998
+      "quantity": 24.758978260344215
      }
     }
    },
@@ -2089,8 +2089,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 44,
-     "timestamp": 1788271762813
+     "worldId": 30,
+     "timestamp": 1788245285715
     }
    ]
   },
@@ -2105,19 +2105,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 200,
-      "timestamp": 1789478865000,
-      "worldId": 46
+      "price": 450,
+      "timestamp": 1789516090000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 175.06443298969072
+      "price": 186.10744680851064
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 230.691470487933
+      "quantity": 261.49930745407073
      }
     }
    },
@@ -2157,7 +2157,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 165.88380939003875
+      "quantity": 155.23043534492197
      }
     }
    },
@@ -2185,19 +2185,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 5,
-      "timestamp": 1789522669000,
-      "worldId": 47
+      "price": 3,
+      "timestamp": 1789546250000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 166.67457627118645
+      "price": 162.52557755775578
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 350.7937087092531
+      "quantity": 337.1671748215491
      }
     }
    },
@@ -2225,19 +2225,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 149,
-      "timestamp": 1789450958000,
-      "worldId": 70
+      "price": 500,
+      "timestamp": 1789565282000,
+      "worldId": 44
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 102.97336065573771
+      "price": 125.96718146718146
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 145.07400326908302
+      "quantity": 144.10279907404203
      }
     }
    },
@@ -2277,7 +2277,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 79.9690690446614
+      "quantity": 74.83330507022828
      }
     }
    },
@@ -2302,7 +2302,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 24.377188333316855
+      "quantity": 22.811639463787056
      }
     }
    },
@@ -2340,7 +2340,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 116.23756491087343
+      "quantity": 108.7725710153316
      }
     }
    },
@@ -2365,7 +2365,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 18.134249257195087
+      "quantity": 16.969633841266564
      }
     }
    },
@@ -2385,25 +2385,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 120,
+      "price": 119,
       "worldId": 58
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 128,
-      "timestamp": 1789545031000,
-      "worldId": 72
+      "price": 122,
+      "timestamp": 1789567512000,
+      "worldId": 61
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 357.18977534476056
+      "price": 339.0716871321896
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 49689.32770024703
+      "quantity": 51336.75767482618
      }
     }
    },
@@ -2416,7 +2416,7 @@
    "worldUploadTimes": [
     {
      "worldId": 58,
-     "timestamp": 1789531334347
+     "timestamp": 1789563765256
     }
    ]
   },
@@ -2431,19 +2431,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 262,
-      "timestamp": 1789529133000,
-      "worldId": 70
+      "price": 163,
+      "timestamp": 1789565197000,
+      "worldId": 59
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 190.15394159839548
+      "price": 190.1249839969274
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 17490.3333189212
+      "quantity": 17383.58088089852
      }
     }
    },
@@ -2465,61 +2465,61 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 98,
-      "worldId": 61
+      "price": 100,
+      "worldId": 28
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 185,
-      "timestamp": 1789540762000,
-      "worldId": 23
+      "price": 250,
+      "timestamp": 1789560508000,
+      "worldId": 46
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 261.10591567023283
+      "price": 257.13098323829274
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 4723.822782245442
+      "quantity": 4829.6687656863205
      }
     }
    },
    "hq": {
     "minListing": {
      "region": {
-      "price": 169,
-      "worldId": 44
+      "price": 199,
+      "worldId": 23
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 195,
-      "timestamp": 1789504123000,
-      "worldId": 98
+      "price": 243,
+      "timestamp": 1789565526000,
+      "worldId": 44
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 552.9644721906924
+      "price": 538.9673529411765
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 2619.060963598637
+      "quantity": 2837.5451535050092
      }
     }
    },
    "worldUploadTimes": [
     {
-     "worldId": 61,
-     "timestamp": 1789486320329
+     "worldId": 28,
+     "timestamp": 1789514856888
     },
     {
-     "worldId": 44,
-     "timestamp": 1789483570072
+     "worldId": 23,
+     "timestamp": 1789552367102
     }
    ]
   },
@@ -2546,7 +2546,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 13.675005752277151
+      "quantity": 12.79677196452321
      }
     }
    },
@@ -2571,7 +2571,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 993.2216134425644
+      "quantity": 929.4351115972183
      }
     }
    },
@@ -2609,7 +2609,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 22.296204443179466
+      "quantity": 20.864301626168526
      }
     }
    },
@@ -2634,7 +2634,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 2.9728272590905953
+      "quantity": 2.7819068834891367
      }
     }
    },
@@ -2672,7 +2672,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 38.05218787915386
+      "quantity": 35.60840731408863
      }
     }
    },
@@ -2692,12 +2692,12 @@
     },
     "averageSalePrice": {
      "region": {
-      "price": 1684.8082608695652
+      "price": 1681.51479783243
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 683.750250953546
+      "quantity": 667.3794464570205
      }
     }
    },
@@ -2752,7 +2752,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 199.47669770653548
+      "quantity": 186.66594365105718
      }
     }
    },
@@ -2802,12 +2802,12 @@
     },
     "averageSalePrice": {
      "region": {
-      "price": 1049.7442455242967
+      "price": 994.6351084812624
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 116.23753595567351
+      "quantity": 141.04266977734747
      }
     }
    },
@@ -2862,7 +2862,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 39.241315430805706
+      "quantity": 36.72116764692127
      }
     }
    },
@@ -2882,25 +2882,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 225,
-      "worldId": 43
+      "price": 195,
+      "worldId": 70
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 1000,
-      "timestamp": 1789530967000,
-      "worldId": 98
+      "price": 2950,
+      "timestamp": 1789560869000,
+      "worldId": 90
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 927.9247311827957
+      "price": 953.1378446115289
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 110.58915885881898
+      "quantity": 110.99807222389028
      }
     }
    },
@@ -2913,26 +2913,26 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 905,
-      "timestamp": 1789502564000,
-      "worldId": 46
+      "price": 2000,
+      "timestamp": 1789548355000,
+      "worldId": 29
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 3738.090322580645
+      "price": 3669.034055727554
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 92.15763238234915
+      "quantity": 89.85558227648261
      }
     }
    },
    "worldUploadTimes": [
     {
-     "worldId": 43,
-     "timestamp": 1789180806790
+     "worldId": 70,
+     "timestamp": 1789564321370
     },
     {
      "worldId": 49,
@@ -2951,44 +2951,44 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 500,
-      "timestamp": 1789536702000,
-      "worldId": 44
+      "price": 959,
+      "timestamp": 1789563319000,
+      "worldId": 48
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 822.8399168399169
+      "price": 851.705574912892
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 142.9929675545682
+      "quantity": 159.68143325747886
      }
     }
    },
    "hq": {
     "minListing": {
      "region": {
-      "price": 250,
-      "worldId": 52
+      "price": 105,
+      "worldId": 72
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 210,
-      "timestamp": 1789479663000,
-      "worldId": 32
+      "price": 1399,
+      "timestamp": 1789552697000,
+      "worldId": 59
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 3235.097087378641
+      "price": 2343.409937888199
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 30.620115713348284
+      "quantity": 44.78869469417089
      }
     }
    },
@@ -2998,8 +2998,8 @@
      "timestamp": 1789511985206
     },
     {
-     "worldId": 52,
-     "timestamp": 1789473143731
+     "worldId": 72,
+     "timestamp": 1789556439993
     }
    ]
   },
@@ -3008,25 +3008,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 100,
-      "worldId": 92
+      "price": 95,
+      "worldId": 51
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 485,
-      "timestamp": 1789529660000,
-      "worldId": 60
+      "price": 800,
+      "timestamp": 1789556233000,
+      "worldId": 45
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 945.841095890411
+      "price": 927.5011337868481
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 108.5081741580807
+      "quantity": 122.68207371506128
      }
     }
    },
@@ -3039,23 +3039,27 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 1000,
-      "timestamp": 1789529662000,
-      "worldId": 60
+      "price": 1105,
+      "timestamp": 1789552585000,
+      "worldId": 51
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 3435.828920570265
+      "price": 3418.94
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 145.965790442788
+      "quantity": 153.0048538396456
      }
     }
    },
    "worldUploadTimes": [
+    {
+     "worldId": 51,
+     "timestamp": 1789563889418
+    },
     {
      "worldId": 92,
      "timestamp": 1789229349949
@@ -3073,19 +3077,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 1995,
-      "timestamp": 1789519104000,
-      "worldId": 29
+      "price": 995,
+      "timestamp": 1789563814000,
+      "worldId": 61
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 1219.3451612903225
+      "price": 1144.7250673854448
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 92.15762397198695
+      "quantity": 103.20872618413637
      }
     }
    },
@@ -3098,19 +3102,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 1000,
-      "timestamp": 1789514836000,
-      "worldId": 49
+      "price": 199,
+      "timestamp": 1789533570000,
+      "worldId": 61
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 2882.861678004535
+      "price": 2891.221748400853
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 131.1016521666008
+      "quantity": 130.4714085723988
      }
     }
    },
@@ -3136,44 +3140,44 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 950,
-      "timestamp": 1789315487000,
-      "worldId": 72
+      "price": 1700,
+      "timestamp": 1789554650000,
+      "worldId": 90
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 1060.5155131264917
+      "price": 1042.420523138833
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 124.56142963878972
+      "quantity": 138.26074341892755
      }
     }
    },
    "hq": {
     "minListing": {
      "region": {
-      "price": 1005,
-      "worldId": 45
+      "price": 905,
+      "worldId": 68
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 999,
-      "timestamp": 1789510838000,
-      "worldId": 90
+      "price": 5000,
+      "timestamp": 1789556088000,
+      "worldId": 44
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 3547.483660130719
+      "price": 3682.642642642643
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 90.96849038059582
+      "quantity": 92.63747999698766
      }
     }
    },
@@ -3183,8 +3187,8 @@
      "timestamp": 1789543471034
     },
     {
-     "worldId": 45,
-     "timestamp": 1789477340353
+     "worldId": 68,
+     "timestamp": 1789560052795
     }
    ]
   },
@@ -3216,19 +3220,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 2000,
-      "timestamp": 1789389879000,
-      "worldId": 94
+      "price": 3000,
+      "timestamp": 1789477032000,
+      "worldId": 23
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 1736.7109756097561
+      "price": 1821.5051194539249
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 243.7717630748943
+      "quantity": 244.52955874321484
      }
     }
    },
@@ -3283,7 +3287,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 104.04892022650897
+      "quantity": 97.36671603895597
      }
     }
    },
@@ -3294,7 +3298,7 @@
     },
     {
      "worldId": 50,
-     "timestamp": 1789525781270
+     "timestamp": 1789553669645
     }
    ]
   },
@@ -3338,7 +3342,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 172.4239195029293
+      "quantity": 161.35055423712697
      }
     }
    },
@@ -3393,7 +3397,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 225.3402191119907
+      "quantity": 210.86847782931818
      }
     }
    },
@@ -3483,19 +3487,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 2105,
-      "timestamp": 1789481656000,
-      "worldId": 98
+      "price": 3000,
+      "timestamp": 1789560382000,
+      "worldId": 44
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 2430.2772435897436
+      "price": 2398.7537053182214
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 556.513004711025
+      "quantity": 638.1692147692515
      }
     }
    },
@@ -3538,19 +3542,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 3300,
-      "timestamp": 1789462180000,
-      "worldId": 44
+      "price": 505,
+      "timestamp": 1789558367000,
+      "worldId": 47
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 1838.1566820276498
+      "price": 1551.458932238193
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 193.53095817482856
+      "quantity": 270.95762874639274
      }
     }
    },
@@ -3587,25 +3591,25 @@
    "hq": {
     "minListing": {
      "region": {
-      "price": 900,
-      "worldId": 45
+      "price": 1000,
+      "worldId": 90
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 1600,
-      "timestamp": 1789479038000,
-      "worldId": 59
+      "price": 2000,
+      "timestamp": 1789561083000,
+      "worldId": 70
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 2425.5583203732504
+      "price": 2039.1951566951566
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 191.15269010764536
+      "quantity": 390.5795714089461
      }
     }
    },
@@ -3615,8 +3619,8 @@
      "timestamp": 1788966500755
     },
     {
-     "worldId": 45,
-     "timestamp": 1789390656898
+     "worldId": 90,
+     "timestamp": 1788701514743
     }
    ]
   },
@@ -3648,19 +3652,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 2797,
-      "timestamp": 1789478563000,
-      "worldId": 72
+      "price": 4900,
+      "timestamp": 1789519374000,
+      "worldId": 23
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 2433.737083811711
+      "price": 1815.3092926490986
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 258.9331068749187
+      "quantity": 1002.8770093462789
      }
     }
    },
@@ -3697,15 +3701,15 @@
    "hq": {
     "minListing": {
      "region": {
-      "price": 490,
+      "price": 400,
       "worldId": 94
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 1600,
-      "timestamp": 1787379857000,
-      "worldId": 28
+      "price": 400,
+      "timestamp": 1788585322000,
+      "worldId": 94
      }
     },
     "averageSalePrice": {},
@@ -3718,7 +3722,7 @@
     },
     {
      "worldId": 94,
-     "timestamp": 1776817366699
+     "timestamp": 1789555844643
     }
    ]
   },
@@ -3733,19 +3737,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 417,
-      "timestamp": 1789490585000,
-      "worldId": 31
+      "price": 399,
+      "timestamp": 1789559534000,
+      "worldId": 70
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 518.7419599898709
+      "price": 552.5927145051569
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1173.9687376610343
+      "quantity": 1267.71437031947
      }
     }
    },
@@ -3773,19 +3777,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 300,
-      "timestamp": 1789542843000,
-      "worldId": 70
+      "price": 190,
+      "timestamp": 1789566747000,
+      "worldId": 47
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 305.7572760666855
+      "price": 306.872329505357
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 4208.331482411821
+      "quantity": 4336.156117377144
      }
     }
    },
@@ -3807,25 +3811,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 216,
-      "worldId": 30
+      "price": 217,
+      "worldId": 59
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 680,
-      "timestamp": 1789547779000,
-      "worldId": 44
+      "price": 640,
+      "timestamp": 1789567401000,
+      "worldId": 47
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 699.4051050130308
+      "price": 701.9445228969134
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 3878.3477292437346
+      "quantity": 4136.971590313037
      }
     }
    },
@@ -3837,8 +3841,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 30,
-     "timestamp": 1789224656893
+     "worldId": 59,
+     "timestamp": 1789491385675
     }
    ]
   },
@@ -3853,19 +3857,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 999,
-      "timestamp": 1789528752000,
-      "worldId": 28
+      "price": 1000,
+      "timestamp": 1789563940000,
+      "worldId": 90
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 430.9628721541156
+      "price": 465.0568035943517
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 848.7415649760964
+      "quantity": 866.8417184538281
      }
     }
    },
@@ -3887,25 +3891,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 99,
-      "worldId": 94
+      "price": 200,
+      "worldId": 49
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 300,
-      "timestamp": 1789544180000,
-      "worldId": 32
+      "price": 500,
+      "timestamp": 1789559897000,
+      "worldId": 52
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 364.9671045826006
+      "price": 451.773106130765
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 2873.8299337965727
+      "quantity": 3003.9013475146803
      }
     }
    },
@@ -3917,8 +3921,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 94,
-     "timestamp": 1789390760690
+     "worldId": 49,
+     "timestamp": 1789563450786
     }
    ]
   },
@@ -3927,25 +3931,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 327,
-      "worldId": 24
+      "price": 217,
+      "worldId": 68
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 2999,
-      "timestamp": 1789545760000,
-      "worldId": 44
+      "price": 900,
+      "timestamp": 1789565340000,
+      "worldId": 45
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 774.7082439085974
+      "price": 773.0808628201041
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 2354.774622979162
+      "quantity": 2618.0510263090246
      }
     }
    },
@@ -3957,8 +3961,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 24,
-     "timestamp": 1789531557122
+     "worldId": 68,
+     "timestamp": 1789559610202
     }
    ]
   },
@@ -3973,19 +3977,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 480,
-      "timestamp": 1789486378000,
-      "worldId": 72
+      "price": 817,
+      "timestamp": 1789557404000,
+      "worldId": 96
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 698.4182217343579
+      "price": 669.0371479928101
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 270.82433875816974
+      "quantity": 464.2999759557303
      }
     }
    },
@@ -4007,25 +4011,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 100,
-      "worldId": 30
+      "price": 107,
+      "worldId": 61
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 227,
-      "timestamp": 1789539709000,
-      "worldId": 72
+      "price": 900,
+      "timestamp": 1789563965000,
+      "worldId": 30
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 362.18148714260025
+      "price": 361.4113472317432
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 6612.751303223855
+      "quantity": 6898.846531231467
      }
     }
    },
@@ -4037,8 +4041,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 30,
-     "timestamp": 1789481626223
+     "worldId": 61,
+     "timestamp": 1789566319894
     }
    ]
   },
@@ -4053,19 +4057,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 1992,
-      "timestamp": 1789545237000,
-      "worldId": 72
+      "price": 500,
+      "timestamp": 1789568127000,
+      "worldId": 47
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 824.4305606115763
+      "price": 824.8904743540301
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 3266.5397152705136
+      "quantity": 3606.7399291129545
      }
     }
    },
@@ -4093,19 +4097,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 1500,
-      "timestamp": 1789528883000,
-      "worldId": 43
+      "price": 207,
+      "timestamp": 1789564085000,
+      "worldId": 44
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 406.8463065925338
+      "price": 397.853567805208
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 748.557225959047
+      "quantity": 822.6093129618899
      }
     }
    },
@@ -4127,25 +4131,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 105,
-      "worldId": 50
+      "price": 217,
+      "worldId": 29
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 314,
-      "timestamp": 1789518384000,
-      "worldId": 72
+      "price": 515,
+      "timestamp": 1789562892000,
+      "worldId": 69
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 483.18665949435183
+      "price": 498.03405088062624
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 552.6480710077182
+      "quantity": 710.7767163224574
      }
     }
    },
@@ -4157,8 +4161,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 50,
-     "timestamp": 1789316081285
+     "worldId": 29,
+     "timestamp": 1789371856358
     }
    ]
   },
@@ -4173,19 +4177,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 300,
-      "timestamp": 1789518395000,
-      "worldId": 72
+      "price": 1417,
+      "timestamp": 1789563203000,
+      "worldId": 45
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 410.9449485783424
+      "price": 408.128337236534
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 491.40786841418645
+      "quantity": 593.9366931790399
      }
     }
    },
@@ -4220,12 +4224,12 @@
     },
     "averageSalePrice": {
      "region": {
-      "price": 337.4024784482759
+      "price": 364.55998304366256
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 551.7561869482485
+      "quantity": 656.2513494857632
      }
     }
    },
@@ -4247,25 +4251,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 5000,
-      "worldId": 58
+      "price": 5999,
+      "worldId": 23
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 8180,
-      "timestamp": 1789543701000,
-      "worldId": 96
+      "price": 6200,
+      "timestamp": 1789566419000,
+      "worldId": 44
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 8854.168448598131
+      "price": 8807.572997897878
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 3976.1523647021545
+      "quantity": 4102.474972114412
      }
     }
    },
@@ -4277,8 +4281,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 58,
-     "timestamp": 1789540342211
+     "worldId": 23,
+     "timestamp": 1789564684640
     }
    ]
   },
@@ -4287,25 +4291,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 3000,
-      "worldId": 96
+      "price": 3217,
+      "worldId": 52
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 8000,
-      "timestamp": 1789546228000,
-      "worldId": 82
+      "price": 3000,
+      "timestamp": 1789560952000,
+      "worldId": 23
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 5983.124086565486
+      "price": 6111.799752321981
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 2115.4616369582736
+      "quantity": 2246.3880506922055
      }
     }
    },
@@ -4317,8 +4321,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 96,
-     "timestamp": 1789537537990
+     "worldId": 52,
+     "timestamp": 1789510191302
     }
    ]
   },
@@ -4327,25 +4331,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 394,
-      "worldId": 72
+      "price": 699,
+      "worldId": 50
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 2217,
-      "timestamp": 1789539323000,
-      "worldId": 48
+      "price": 2800,
+      "timestamp": 1789559936000,
+      "worldId": 61
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 2422.8716863443974
+      "price": 2191.5780068728523
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1334.5007000514886
+      "quantity": 1619.0685053707357
      }
     }
    },
@@ -4357,8 +4361,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 72,
-     "timestamp": 1789533119356
+     "worldId": 50,
+     "timestamp": 1789561743135
     }
    ]
   },
@@ -4373,19 +4377,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 850,
-      "timestamp": 1789542537000,
-      "worldId": 48
+      "price": 1297,
+      "timestamp": 1789562117000,
+      "worldId": 46
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 1033.3159020679818
+      "price": 1044.23825460975
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 3752.00108522691
+      "quantity": 4405.42409619745
      }
     }
    },
@@ -4413,19 +4417,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 817,
-      "timestamp": 1789486703000,
-      "worldId": 72
+      "price": 1178,
+      "timestamp": 1789562218000,
+      "worldId": 46
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 1241.4541295849622
+      "price": 1204.4206909963052
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 3574.226108267025
+      "quantity": 4291.644112138665
      }
     }
    },
@@ -4447,25 +4451,25 @@
    "nq": {
     "minListing": {
      "region": {
-      "price": 347,
-      "worldId": 72
+      "price": 500,
+      "worldId": 76
      }
     },
     "recentPurchase": {
      "region": {
-      "price": 990,
-      "timestamp": 1789536567000,
-      "worldId": 23
+      "price": 1300,
+      "timestamp": 1789562658000,
+      "worldId": 46
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 986.8078132759476
+      "price": 950.5946636027065
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1795.882835251207
+      "quantity": 2179.065764576075
      }
     }
    },
@@ -4477,8 +4481,8 @@
    },
    "worldUploadTimes": [
     {
-     "worldId": 72,
-     "timestamp": 1789538510532
+     "worldId": 76,
+     "timestamp": 1789561465593
     }
    ]
   },
@@ -4493,19 +4497,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 32010,
-      "timestamp": 1789469389000,
-      "worldId": 49
+      "price": 17000,
+      "timestamp": 1789519452000,
+      "worldId": 48
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 24518.55
+      "price": 23852.772727272728
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 11.891294697891604
+      "quantity": 12.24037933719066
      }
     }
    },
@@ -4533,19 +4537,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 9000,
-      "timestamp": 1789469246000,
-      "worldId": 23
+      "price": 5800,
+      "timestamp": 1789564666000,
+      "worldId": 48
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 12339.677419354839
+      "price": 15474.441860465116
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 9.215753123141457
+      "quantity": 11.962188648881476
      }
     }
    },
@@ -4570,7 +4574,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 0.2972823588110148
+      "quantity": 0.278190433694918
      }
     }
    },
@@ -4608,7 +4612,7 @@
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 1.1891293958337352
+      "quantity": 1.1127616423263167
      }
     }
    },
@@ -4621,19 +4625,19 @@
     },
     "recentPurchase": {
      "region": {
-      "price": 30000,
-      "timestamp": 1789390874000,
-      "worldId": 30
+      "price": 179999,
+      "timestamp": 1789553880000,
+      "worldId": 70
      }
     },
     "averageSalePrice": {
      "region": {
-      "price": 24500
+      "price": 76333
      }
     },
     "dailySaleVelocity": {
      "region": {
-      "quantity": 0.5945646979168676
+      "quantity": 0.8345712317447375
      }
     }
    },
