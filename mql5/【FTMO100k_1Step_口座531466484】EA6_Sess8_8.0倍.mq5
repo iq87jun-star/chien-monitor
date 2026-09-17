@@ -1,17 +1,18 @@
 //+------------------------------------------------------------------+
-//| ★FTMO 100k 1-Step 口座531466484 EA6: Sess 8本(S1〜S8)単独・6.0倍               |
+//| ★FTMO 100k 1-Step 口座531466484 EA6: Sess 8本(S1〜S8)単独・8.0倍(ユーザー指定・上限)|
 //|   docs/245-246。1-Step 規則: 目標+10%・最大損失10% EOD トレーリング・日次3%・Best Day 50%|
 //|   Sess: EA4 と同じ 8 本(逆ボラ加重)・月〜木 4h SHORT・スプレッド上限1.5pip・SL≥15pip   |
-//|   紙上(Sess 3pip・×6.0): 年率+15.8%・最大DD−2.4%・最悪日−1.2%・MC 資金化100%(中央118日)|
+//|   紙上(Sess 3pip・×8.0): 年率+21.6%・最大DD−3.3%・最悪日−1.6%・MC 資金化100%(中央88日) |
+//|   3.5pip ストレス: 資金化98.6%・失格0.3%・DD−6.1%。20-00窓4本のSL合計≈1.9%(上限2.0%)      |
 //|   ガード: 日次−2.4%(規約3%手前)・EOD最高equity−9%で全停止(トレーリング床の手前)      |
 //|   ロック 9.9/10.05(+10% 通過確定で全決済)。SL合計リスク上限 Sess 2.0%/全体 2.4%      |
 //|   Magic 944500(FTMO 既存 943xxx/944100/944200 と別)。期限 2027-03-31             |
 //|   Mon/v4/Hold は空(無効)。FOMC 決定日は Sess を建てない(InpSessSkipDates)           |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.13"   // docs/246: FTMO 1-Step 版(EOD トレーリング床・SL 合計リスク上限・Sess 単独)
+#property version   "1.14"   // docs/246 §5: 倍率 8.0(ユーザー指定・上限値)。v1.13 = 1-Step 版(EOD トレーリング床・SL 合計リスク上限)
 #property strict
-#property description "[RecentFit 2026H2] EA6 FTMO 1-Step: Sess 8 x6.0 only. Daily guard -2.4 (rule 3), EOD-trailing floor -9 (rule 10), lock 10.05, SL-risk caps 2.0/2.4. Expiry-enforced re-screen."
+#property description "[RecentFit 2026H2] EA6 FTMO 1-Step: Sess 8 x8.0 only. Daily guard -2.4 (rule 3), EOD-trailing floor -9 (rule 10), lock 10.05, SL-risk caps 2.0/2.4. Expiry-enforced re-screen."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -81,7 +82,7 @@ input double InpHoldMaxSpreadPts = 3000.0;
 input group "=== 時間帯セル Sess(docs/233-235・v1.10) ==="
 input bool   InpSessEnable        = true;
 input string InpSessLegs          = "EURGBP:S:20:4:0.253,NZDUSD:S:20:4:0.104,AUDUSD:S:20:4:0.124,EURGBP:S:16:4:0.125,USDCHF:S:0:4:0.118,USDCHF:S:16:4:0.080,NZDUSD:S:16:4:0.063,CHFJPY:S:20:4:0.134"; // SYM:方向:建てUTC時:保有h:重み(EA4 と同一・逆ボラ)
-input double InpSessMult          = 6.0;   // Sess 倍率(docs/246: 校正生値 6.0。9/21 の実測コスト≤3pip なら 8.0 まで。8 超は不可)
+input double InpSessMult          = 8.0;   // Sess 倍率(docs/246 §5: 上限値。10 は不可 = 20-00 窓 4 本の SL 合計が日次 3% に接近)
 input double InpSessMaxSpreadPips = 1.5;   // 建て時スプレッド上限(pip)。超過は見送り
 input double InpSessMinStopPips   = 15.0;  // 災害SL最小幅(21 UTC のスプレッド拡大を内側で受ける)
 input string InpSessSkipDates     = "2026.09.16,2026.10.28,2026.12.09"; // Sess を建てない日(FOMC 決定日・UTC)。2027 年分は要更新
