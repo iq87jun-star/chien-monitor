@@ -26,6 +26,15 @@ def universe():
 
 # docs/229 §4 事前登録の候補セル(2026-10〜2027-03 の 6 ヶ月判定)。universe() には含めない(既知セル集合を変えないため)
 CANDIDATES = [("Thu", "XAUUSD", 3, False)]   # 2026-09-18 docs/249: 曜日 SHORT 候補 4 本(MonS EURGBP / FriS NZDUSD / WedS CADCHF / TueS CADCHF)はコスト符号バグの産物のため削除
+
+
+def candidate_series(fam, sym, dow, short):
+    df = base.load_daily(sym); c = base.IDX_COST.get(sym) or (2 * base.pip_size(sym) / df["open"])
+    s = df[df["weekday"] == dow]["o2o"]; s = ((-s if short else s) - c).dropna(); return base.clip(s)   # 2026-09-18 修正(docs/249)
+
+
+def main():
+    months = sys.argv[1:] or ["2026-08", pd.Timestamp.today().strftime("%Y-%m")]
     refresh_live(); today = pd.Timestamp.today().normalize(); rows = []
     base.YAHOO.setdefault("EURGBP", "EURGBP=X"); base.YAHOO.setdefault("CADCHF", "CADCHF=X")
     for fam, sym, *cand in list(universe()) + [(f, s, d, sh) for f, s, d, sh in CANDIDATES]:

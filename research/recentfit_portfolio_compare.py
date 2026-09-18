@@ -30,8 +30,8 @@ def mon_cell_dow(nm, dow, short=False):
     """曜日o2oセル(dow: 0=月..4=金)。S3=木曜SHORT用"""
     df = base.load_daily(nm)
     c = 2 * base.pip_size(nm) / df["open"]
-    s = (df[df["weekday"] == dow]["o2o"] - c).dropna()
-    return base.clip(-s if short else s)
+    s = df[df["weekday"] == dow]["o2o"]; s = ((-s if short else s) - c).dropna()   # 2026-09-18 修正(docs/249): 方向を先に決めてからコストを引く
+    return base.clip(s)
 
 
 def rsi2_cell(nm, lo, hi, hold_days):
