@@ -10,7 +10,7 @@ import pandas as pd
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))); os.chdir(ROOT)
 os.environ.setdefault("SSL_CERT_FILE", "/root/.ccr/ca-bundle.crt")
 H = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36", "Referer": "https://www.dukascopy.com/"}
-GAP = 9.0
+GAP = 20.0
 def scale(code):
     fx = len(code) == 6 and code.isalpha() and not code.startswith(("XAU", "XAG"))
     return 1e3 if (not fx or code.endswith("JPY")) else 1e5
@@ -20,9 +20,9 @@ def fetch(url, tries=6):
             with urllib.request.urlopen(urllib.request.Request(url, headers=H), timeout=60) as r: return r.status, r.read()
         except urllib.error.HTTPError as e:
             if e.code == 404: return 404, b""
-            wait = 30 * (k + 1); print(f"  http {e.code} → {wait}s 待機", flush=True); time.sleep(wait)
+            wait = 90 * (k + 1); print(f"  http {e.code} → {wait}s 待機", flush=True); time.sleep(wait)
         except Exception as e:
-            wait = 30 * (k + 1); print(f"  {str(e)[:40]} → {wait}s 待機", flush=True); time.sleep(wait)
+            wait = 90 * (k + 1); print(f"  {str(e)[:40]} → {wait}s 待機", flush=True); time.sleep(wait)
     return 0, b""
 def decode(data, code, y, m):
     raw = lzma.decompress(data); n = len(raw) // 24; sc = scale(code); base = dt.datetime(y, m, 1); rows = []
