@@ -9,11 +9,12 @@
       "cells": 0,
       "status": "in_progress",
       "sessions_planned": 3,
-      "sessions_done": 1,
+      "sessions_done": 3,
       "docs": [
-        "docs/247_q1_tsmom_ea_design.md"
+        "docs/247_q1_tsmom_ea_design.md",
+        "docs/253_q1_tsmom_ea_implementation.md"
       ],
-      "result": null
+      "result": "v1.40 実装済み・パリティ用ツール作成済み。MT5 側の実行(コンパイル・符号ダンプ・テスター)待ち"
     },
     {
       "id": "Q2",
@@ -208,6 +209,13 @@
       "item": "Q11",
       "session": 1,
       "note": "566 セル・通過 0・累積 4500",
+      "manual": true
+    },
+    {
+      "date": "2026-09-18",
+      "item": "Q1",
+      "session": "2-3",
+      "note": "実装 + パリティツール(docs/253)。ユーザー側の MT5 作業待ち",
       "manual": true
     }
   ]

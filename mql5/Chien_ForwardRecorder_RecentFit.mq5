@@ -32,7 +32,7 @@
 //|     event = ENTRY / SKIP_SPREAD                                   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.30"   // 記録専用版(docs/218)+ 曜日×方向セル(docs/229)+ 時間帯セル(docs/233)
+#property version   "1.40"   // 記録専用版(docs/218)+ 曜日×方向(docs/229・無効 docs/249)+ 時間帯(docs/233・無効 docs/249)+ TSMOM レグ(docs/247/253)
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
@@ -46,7 +46,8 @@ input string InpMonLegs  = "USDJPY:0.321,EURJPY:0.277"; // Mon: 月曜o2o LONG(2
 input string InpV4Legs   = "GBPJPY:0.303";              // v4: 日足k≥4合議
 input string InpHoldLegs = "GER40:0.099";               // Hold: 連続LONG
 input string InpDowLegs  = "";                           // v1.20: 曜日×方向 "MonS:EURGBP:0.10,FriS:NZDUSD:0.10"(Mon..Fri, 末尾S=SHORT。時刻/保有はMonと共通)
-input string InpSessLegs = "";                           // v1.30: 時間帯 "USDCHF:S:16:4:0.10"(SYM:方向L/S:建てUTC時:保有h:重み。月〜木・1ショット)
+input string InpSessLegs = "";                           // v1.30: 時間帯(docs/249 により使用禁止・空のまま)
+input string InpTsmomLegs = "";                          // v1.40: TSMOM "XAUUSD:0.10,SPX500:0.10"(SYM:重み。月足 1/3/6/12 ヶ月リターンの符号和で月初に L/S、月替わりで保持/反転/決済。docs/247)
 input double InpMult     = 5.24;   // リスク倍率(2026-09規則適合版の校正値・docs/196)
 
 input group "=== 有効期限(直近特化=賞味期限つき。docs/174停止規則) ==="
@@ -102,6 +103,12 @@ input bool   InpHoldEnable    = true;   // false=Holdレッグ停止(手決済�
 input double InpHoldCatSLPct  = 15.0;   // 災害SL: 建値−この%(研究はSLなし・保険のみ)
 input double InpHoldMaxSpreadPts = 3000.0;
 
+input group "=== TSMOM レッグ設定(v1.40・docs/247。季節RG3 の E5 スリーブと同一シグナル) ==="
+input double InpTsmomMult         = 0.0;   // TSMOM 倍率(0 = InpMult を使う)
+input int    InpTsmomEntryHourUTC = 1;     // 月替わり後、この UTC 時以降の最初のタイマーでシグナル更新・建て替え(00 時直後のギャップ回避)
+input double InpTsmomMaxSpreadBps = 5.0;   // 建て時スプレッド上限(bps)。超過は 1 時間後に再試行
+input double InpTsmomCatSLPct     = 0.0;   // 災害SL: 建値±この%(0 = なし。研究セルは SL なし)
+
 input group "=== 防御フィルタ(docs/148) ==="
 input bool   InpHolidayFilterEnable = true; // 12/20〜1/3は新規停止
 
@@ -141,7 +148,8 @@ bool     g_balMonthHalt=false;
 bool     g_halted=false, g_dayBlocked=false, g_passLocked=false, g_expired=false;
 string   g_ntfBuf=""; bool g_ntfArm=false; datetime g_ntfWarnDay=0;
 string   g_gvName="";
-long     g_mMon=0, g_mV4=0, g_mHold=0, g_mDow=0, g_mSes=0;
+long     g_mMon=0, g_mV4=0, g_mHold=0, g_mDow=0, g_mSes=0, g_mTs=0;
+string   g_tsSym[MAXLEG]; double g_tsW[MAXLEG]; int g_tsSign[MAXLEG]; int g_nTs=0; int g_tsMonthKey=-1; datetime g_lastTsTry[MAXLEG];   // v1.40
 string   g_sizeWarned="";
 
 //==================================================================
@@ -320,7 +328,7 @@ int CountPos(string sym, long magic){
       if(posinfo.Symbol()==sym && posinfo.Magic()==magic) n++; }
    return n;
 }
-bool IsMine(long m){ return (m==g_mMon||m==g_mV4||m==g_mHold||m==g_mDow||m==g_mSes); }
+bool IsMine(long m){ return (m==g_mMon||m==g_mV4||m==g_mHold||m==g_mDow||m==g_mSes||m==g_mTs); }
 void CloseAllMine(string why){
    for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
       if(!posinfo.SelectByTicket(tk)) continue;
@@ -363,12 +371,13 @@ int OnInit()
    g_nHold=(InpHoldEnable? ParseLegs(InpHoldLegs,g_holdSym,g_holdW,"Hold") : 0);
    g_nDow =ParseDowLegs(InpDowLegs);
    g_nSes =ParseSessLegs(InpSessLegs);
+   g_nTs  =ParseLegs(InpTsmomLegs,g_tsSym,g_tsW,"TSMOM");
    int nh=SplitHours(InpMonHoursUTC,g_monHours);
    if(nh>8){ ArrayResize(g_monHours,8); nh=8;                       // v1.02: g_lastShotMon[MAXLEG*8]の範囲保護
       Print("⚠ Mon時刻は最大8個まで→先頭8個のみ使用"); }
-   if(g_nMon==0 && g_nV4==0 && g_nHold==0 && g_nDow==0 && g_nSes==0){ Print("レッグが1つも解決できず"); return INIT_FAILED; }
+   if(g_nMon==0 && g_nV4==0 && g_nHold==0 && g_nDow==0 && g_nSes==0 && g_nTs==0){ Print("レッグが1つも解決できず"); return INIT_FAILED; }
    if((g_nMon>0 || g_nDow>0) && nh==0){ Print("Mon時刻のパース失敗"); return INIT_FAILED; }
-   g_mMon=InpMagicBase+1; g_mV4=InpMagicBase+2; g_mHold=InpMagicBase+3; g_mDow=InpMagicBase+4; g_mSes=InpMagicBase+5;
+   g_mMon=InpMagicBase+1; g_mV4=InpMagicBase+2; g_mHold=InpMagicBase+3; g_mDow=InpMagicBase+4; g_mSes=InpMagicBase+5; g_mTs=InpMagicBase+6;
 
    g_gvName=StringFormat("ChienRF_base_%I64d_%I64d",
                          (long)AccountInfoInteger(ACCOUNT_LOGIN),(long)InpMagicBase);
@@ -388,7 +397,7 @@ int OnInit()
    for(int i=0;i<g_nDow;i++) g_atrH1Dow[i]=iATR(g_dowSym[i],PERIOD_H1,InpAtrPeriodH1);
    ArrayInitialize(g_lastShotDow,0); ArrayInitialize(g_dowSkipBar,0);
    for(int i=0;i<g_nSes;i++) g_atrH1Ses[i]=iATR(g_sesSym[i],PERIOD_H1,InpAtrPeriodH1);
-   ArrayInitialize(g_lastSes,0); ArrayInitialize(g_sesSkip,0);
+   ArrayInitialize(g_lastSes,0); ArrayInitialize(g_sesSkip,0); ArrayInitialize(g_lastTsTry,0); ArrayInitialize(g_tsSign,0);
    for(int i=0;i<g_nV4;i++){
       g_atrD1[i]=iATR(g_v4Sym[i],PERIOD_D1,InpV4_ATR);
       g_rsiD1[i]=iRSI(g_v4Sym[i],PERIOD_D1,InpV4_RSI,PRICE_CLOSE); }
@@ -400,8 +409,11 @@ int OnInit()
    for(int i=0;i<g_nHold;i++) wsum+=g_holdW[i];
    for(int i=0;i<g_nDow;i++) wsum+=g_dowW[i];
    for(int i=0;i<g_nSes;i++) wsum+=g_sesW[i];
+   for(int i=0;i<g_nTs;i++) wsum+=g_tsW[i];
    PrintFormat("[INIT RecentFit] initBal=%.0f mult=%.1f Σw=%.3f (グロス想定≈%.1fx) expiry=%s Magic=%I64d/%I64d/%I64d/%I64d/%I64d Dow=%d Sess=%d",
       g_initBal,InpMult,wsum,wsum*InpMult,TimeToString(InpExpiry,TIME_DATE),g_mMon,g_mV4,g_mHold,g_mDow,g_mSes,g_nDow,g_nSes);
+   { double wt=0; for(int i=0;i<g_nTs;i++) wt+=g_tsW[i];
+     if(g_nTs>0) PrintFormat("[INIT TSMOM v1.40] legs=%d Σw=%.3f mult=%.1f entryHour=%dUTC spreadCap=%.1fbps Magic=%I64d",g_nTs,wt,(InpTsmomMult>0?InpTsmomMult:InpMult),InpTsmomEntryHourUTC,InpTsmomMaxSpreadBps,g_mTs); }
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
    EventSetTimer(30);
    return INIT_SUCCEEDED;
@@ -539,6 +551,7 @@ void OnTimer()
    ManageDowExit();
    ManageSessExit();
    ManageV4Exit();
+   ManageTsmom(utc);            // v1.40: 月替わりのシグナル更新と反転/決済(新規停止中でも決済側は動く)
 
    bool blockNew = (InpProfitStopPct>0 && equity>=g_initBal*(1.0+InpProfitStopPct/100.0))
                    || g_dayBlocked || g_expired
@@ -551,6 +564,7 @@ void OnTimer()
    EntriesSess(utc);
    EntriesV4();
    EntriesHold();
+   EntriesTsmom();
 }
 
 //===== Mon (月曜o2oマルチショット・想定元本=重み×倍率×基準残高) =====
@@ -834,6 +848,75 @@ void EntriesHold()
          Rec("ENTRY","Hold",sym,-1,"LONG",lots,notional,(ask-bid)/pt,InpHoldMaxSpreadPts,ask,bid,sl,0,"unit=points");
          if(InpVerboseLog) PrintFormat("[Hold ENTRY] LONG %s lots=%.2f notional=%.0f spread=%.1fpt SL=%.1f",sym,lots,notional,(ask-bid)/pt,sl);
          if(InpNotifyEntries) Notify(StringFormat("IN Hold %s %.2f",sym,lots)); }
+   }
+}
+
+//===== TSMOM (v1.40・docs/247/253。季節RG3 SleeveE5 と同一シグナルの単銘柄・固定重み版) =====
+// 月足 close[14]=直近確定月。lb∈{1,3,6,12} の符号和 → +1/−1/0。研究 tsmom_cell と同一(月末終値・shift(1))。
+int TsmomSign(string sym)
+{
+   double c[]; if(CopyClose(sym,PERIOD_MN1,0,16,c)<16) return 0;   // [0]=最古..[15]=当月(形成中)
+   int i1=14, comp=0, lbs[4]={1,3,6,12};
+   for(int k=0;k<4;k++){ int j=i1-lbs[k]; if(j<0) continue; double r=c[i1]/c[j]-1.0; comp+=(r>0?1:(r<0?-1:0)); }
+   return (comp>0?1:(comp<0?-1:0));
+}
+int TsmomPosDir(string sym)   // 建玉方向 +1/−1/0(Magic=g_mTs)
+{
+   for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      if(posinfo.Symbol()==sym && posinfo.Magic()==g_mTs) return (posinfo.PositionType()==POSITION_TYPE_BUY? 1:-1); }
+   return 0;
+}
+void TsmomClose(string sym, string why)
+{
+   for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
+      if(!posinfo.SelectByTicket(tk)) continue;
+      if(posinfo.Symbol()==sym && posinfo.Magic()==g_mTs){
+         if(trade.PositionClose(tk)){ Rec(why,"TSMOM",sym,-1,(posinfo.PositionType()==POSITION_TYPE_BUY?"LONG":"SHORT"),posinfo.Volume(),0,SprPips(sym),-1,SymbolInfoDouble(sym,SYMBOL_ASK),SymbolInfoDouble(sym,SYMBOL_BID),0,0,"");
+            if(InpVerboseLog) PrintFormat("[TSMOM %s] %s",why,sym); } } }
+}
+// 月替わり後 InpTsmomEntryHourUTC 以降に 1 回: 全レグの符号を更新し、符号が変わった建玉を決済(反転は EntriesTsmom が同タイマー内で建てる)
+void ManageTsmom(datetime utc)
+{
+   if(g_nTs==0) return;
+   MqlDateTime u; TimeToStruct(utc,u); int mk=u.year*100+u.mon;
+   if(g_tsMonthKey==mk || u.hour<InpTsmomEntryHourUTC) return;
+   int nOk=0;
+   for(int i=0;i<g_nTs;i++){
+      string sym=g_tsSym[i]; int s=TsmomSign(sym);
+      double c[]; if(CopyClose(sym,PERIOD_MN1,0,16,c)<16){ PrintFormat("[TSMOM] %s 月足 16 本未取得→今回スキップ",sym); continue; }
+      nOk++; g_tsSign[i]=s; int d=TsmomPosDir(sym);
+      if(InpVerboseLog) PrintFormat("[TSMOM SIGNAL] %s %04d-%02d sign=%+d pos=%+d",sym,u.year,u.mon,s,d);
+      if(d!=0 && d!=s) TsmomClose(sym,(s==0?"EXIT_FLAT":"FLIP_CLOSE"));
+      g_lastTsTry[i]=0;
+   }
+   if(nOk==g_nTs) g_tsMonthKey=mk;
+}
+// フラットで符号≠0 なら建てる(月初の建て、反転後の逆建て、手決済後の再建て)。再試行 1 時間毎。
+void EntriesTsmom()
+{
+   if(g_nTs==0) return;
+   if(HolidayBlocked(TimeGMT())) return;
+   trade.SetExpertMagicNumber(g_mTs);
+   double mult=(InpTsmomMult>0? InpTsmomMult:InpMult);
+   for(int i=0;i<g_nTs;i++){
+      string sym=g_tsSym[i]; int s=g_tsSign[i];
+      if(s==0 || TsmomPosDir(sym)!=0) continue;
+      datetime now=TimeCurrent();
+      if(g_lastTsTry[i]!=0 && now-g_lastTsTry[i]<3600) continue;
+      double ask=SymbolInfoDouble(sym,SYMBOL_ASK), bid=SymbolInfoDouble(sym,SYMBOL_BID); if(ask<=0||bid<=0) continue;
+      double sprBps=(ask-bid)/((ask+bid)/2.0)*1e4;
+      if(sprBps>InpTsmomMaxSpreadBps){ g_lastTsTry[i]=now;
+         Rec("SKIP_SPREAD","TSMOM",sym,-1,(s>0?"LONG":"SHORT"),0,0,sprBps,InpTsmomMaxSpreadBps,ask,bid,0,0,"unit=bps"); continue; }
+      double notional=g_initBal*g_tsW[i]*mult; double lots=LotsForNotional(sym,notional); g_lastTsTry[i]=now;
+      if(lots<InpMinLot) continue;
+      int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS); double sl=0.0; bool ok;
+      if(s>0){ if(InpTsmomCatSLPct>0) sl=NormalizeDouble(ask*(1.0-InpTsmomCatSLPct/100.0),dg); ok=trade.Buy (lots,sym,0.0,sl,0.0,"RFTsmom_"+sym); }
+      else   { if(InpTsmomCatSLPct>0) sl=NormalizeDouble(bid*(1.0+InpTsmomCatSLPct/100.0),dg); ok=trade.Sell(lots,sym,0.0,sl,0.0,"RFTsmom_"+sym); }
+      if(ok){ Rec("ENTRY","TSMOM",sym,-1,(s>0?"LONG":"SHORT"),lots,notional,sprBps,InpTsmomMaxSpreadBps,ask,bid,sl,0,"unit=bps");
+              if(InpVerboseLog) PrintFormat("[TSMOM ENTRY] %s %s lots=%.2f notional=%.0f spread=%.1fbps",(s>0?"LONG":"SHORT"),sym,lots,notional,sprBps);
+              if(InpNotifyEntries) Notify(StringFormat("IN TSMOM %s %s %.2f",(s>0?"L":"S"),sym,lots)); }
+      else PrintFormat("[TSMOM RETRY] %s 発注失敗ret=%d",sym,(int)trade.ResultRetcode());
    }
 }
 //+------------------------------------------------------------------+

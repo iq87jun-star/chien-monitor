@@ -27,6 +27,11 @@ InpDowLegs=
 ; v1.30 / docs/233 の時間帯セル(夜間の安全通貨ドリフト)。月〜木・1ショット・重み 0.10 = 名目 $6,000(≈0.06 lot)
 ; 16-20 / 00-04 UTC はロール(21 UTC)を跨がない。20-00 は跨ぐので SHORT スワップ ≈ 0 の NZDUSD / AUDUSD のみ
 InpSessLegs=
+InpTsmomLegs=XAUUSD:0.10,SPX500:0.10,NDX100:0.10,GER40:0.10,BTCUSD:0.05,ETHUSD:0.05
+InpTsmomMult=0.0
+InpTsmomEntryHourUTC=1
+InpTsmomMaxSpreadBps=5.0
+InpTsmomCatSLPct=0.0
 InpMult=1.0
 InpExpiry=2030.12.31 23:59
 InpInitialBalance=60000.0
