@@ -2,16 +2,126 @@
   "cumulative_cells": 3400,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
-    {"id": "Q1", "slug": "tsmom_ea", "title": "TSMOM 族の EA 実装 + パリティ", "cells": 0, "status": "pending", "sessions_planned": 3, "sessions_done": 0, "docs": [], "result": null},
-    {"id": "Q2", "slug": "event_drift", "title": "イベント前後ドリフト(FOMC/BoJ/CPI/NFP)", "cells": 240, "status": "pending", "sessions_planned": 2, "sessions_done": 0, "docs": [], "result": null},
-    {"id": "Q3", "slug": "index_gold_windows", "title": "指数・金の時間帯窓", "cells": 360, "status": "pending", "sessions_planned": 1, "sessions_done": 0, "docs": [], "result": null},
-    {"id": "Q4", "slug": "sess_exit", "title": "Sess の出口改良", "cells": 96, "status": "pending", "sessions_planned": 1, "sessions_done": 0, "docs": [], "result": null},
-    {"id": "Q5", "slug": "usd_strength_sess", "title": "通貨強弱条件付き Sess", "cells": 48, "status": "pending", "sessions_planned": 1, "sessions_done": 0, "docs": [], "result": null},
-    {"id": "Q6", "slug": "vol_regime_gate", "title": "ボラ・レジーム門", "cells": 18, "status": "pending", "sessions_planned": 1, "sessions_done": 0, "docs": [], "result": null},
-    {"id": "Q7", "slug": "mon_shot_decomp", "title": "Mon 円クロスのショット分解", "cells": 84, "status": "pending", "sessions_planned": 1, "sessions_done": 0, "docs": [], "result": null},
-    {"id": "Q8", "slug": "holiday_sq", "title": "祝日・月末・SQ", "cells": 96, "status": "pending", "sessions_planned": 1, "sessions_done": 0, "docs": [], "result": null},
-    {"id": "Q9", "slug": "sess_dow", "title": "Sess の曜日分解", "cells": 40, "status": "pending", "sessions_planned": 1, "sessions_done": 0, "docs": [], "result": null},
-    {"id": "Q10", "slug": "xs_fx_momentum", "title": "クロスセクション FX モメンタム", "cells": 12, "status": "pending", "sessions_planned": 1, "sessions_done": 0, "docs": [], "result": null}
+    {
+      "id": "Q1",
+      "slug": "tsmom_ea",
+      "title": "TSMOM 族の EA 実装 + パリティ",
+      "cells": 0,
+      "status": "in_progress",
+      "sessions_planned": 3,
+      "sessions_done": 1,
+      "docs": [
+        "docs/247_q1_tsmom_ea_design.md"
+      ],
+      "result": null
+    },
+    {
+      "id": "Q2",
+      "slug": "event_drift",
+      "title": "イベント前後ドリフト(FOMC/BoJ/CPI/NFP)",
+      "cells": 240,
+      "status": "pending",
+      "sessions_planned": 2,
+      "sessions_done": 0,
+      "docs": [],
+      "result": null
+    },
+    {
+      "id": "Q3",
+      "slug": "index_gold_windows",
+      "title": "指数・金の時間帯窓",
+      "cells": 360,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [],
+      "result": null
+    },
+    {
+      "id": "Q4",
+      "slug": "sess_exit",
+      "title": "Sess の出口改良",
+      "cells": 96,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [],
+      "result": null
+    },
+    {
+      "id": "Q5",
+      "slug": "usd_strength_sess",
+      "title": "通貨強弱条件付き Sess",
+      "cells": 48,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [],
+      "result": null
+    },
+    {
+      "id": "Q6",
+      "slug": "vol_regime_gate",
+      "title": "ボラ・レジーム門",
+      "cells": 18,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [],
+      "result": null
+    },
+    {
+      "id": "Q7",
+      "slug": "mon_shot_decomp",
+      "title": "Mon 円クロスのショット分解",
+      "cells": 84,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [],
+      "result": null
+    },
+    {
+      "id": "Q8",
+      "slug": "holiday_sq",
+      "title": "祝日・月末・SQ",
+      "cells": 96,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [],
+      "result": null
+    },
+    {
+      "id": "Q9",
+      "slug": "sess_dow",
+      "title": "Sess の曜日分解",
+      "cells": 40,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [],
+      "result": null
+    },
+    {
+      "id": "Q10",
+      "slug": "xs_fx_momentum",
+      "title": "クロスセクション FX モメンタム",
+      "cells": 12,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [],
+      "result": null
+    }
   ],
-  "runs": []
+  "runs": [
+    {
+      "date": "2026-09-18",
+      "item": "Q1",
+      "session": 1,
+      "note": "設計完了(docs/247)。E5 スリーブの移植で新規設計はほぼ不要。セル 0・累積 3400",
+      "manual": true
+    }
+  ]
 }
