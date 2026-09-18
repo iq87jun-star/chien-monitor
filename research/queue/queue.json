@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 3400,
+  "cumulative_cells": 3640,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -20,11 +20,13 @@
       "slug": "event_drift",
       "title": "イベント前後ドリフト(FOMC/BoJ/CPI/NFP)",
       "cells": 240,
-      "status": "pending",
+      "status": "done",
       "sessions_planned": 2,
-      "sessions_done": 0,
-      "docs": [],
-      "result": null
+      "sessions_done": 1,
+      "docs": [
+        "docs/248_q2_event_drift.md"
+      ],
+      "result": "通過 0(最小 p 0.027)。CPI 前日 L 円クロスは前窓逆符号。雇用統計 当日/翌日 36 セルは構造的に空"
     },
     {
       "id": "Q3",
@@ -121,6 +123,13 @@
       "item": "Q1",
       "session": 1,
       "note": "設計完了(docs/247)。E5 スリーブの移植で新規設計はほぼ不要。セル 0・累積 3400",
+      "manual": true
+    },
+    {
+      "date": "2026-09-18",
+      "item": "Q2",
+      "session": 1,
+      "note": "240 セル・通過 0・累積 3640",
       "manual": true
     }
   ]
