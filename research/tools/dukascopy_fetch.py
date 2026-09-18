@@ -7,7 +7,7 @@
 """
 import os, sys, time, lzma, struct, gzip, io, subprocess, urllib.request, urllib.error, datetime as dt
 import pandas as pd
-ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))); os.chdir(ROOT)
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); REPO = os.path.dirname(ROOT); os.chdir(ROOT)   # ROOT = research/
 os.environ.setdefault("SSL_CERT_FILE", "/root/.ccr/ca-bundle.crt")
 H = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36", "Referer": "https://www.dukascopy.com/"}
 GAP = 20.0
@@ -55,8 +55,8 @@ def main():
         with gzip.open(out, "wt") as g: df.to_csv(g, index=False)
         print(f"[{sym}] {side} rows={len(df)} {df.timestamp.iloc[0]}〜{df.timestamp.iloc[-1]} 404={missing} → {out}", flush=True)
         try:
-            subprocess.run(["git", "add", out], check=True)
-            subprocess.run(["git", "commit", "-q", "-m", f"data: Dukascopy H1 {side} {sym}({code}) {start}〜{end}\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01P8mtG8UXER1rod1zfEpDhP"], check=True)
-            subprocess.run(["git", "push", "-q", "-u", "origin", "claude/prop-trading-new-methods-a8y3l1"], check=True)
+            subprocess.run(["git", "-C", REPO, "add", os.path.join("research", out)], check=True)
+            subprocess.run(["git", "-C", REPO, "commit", "-q", "-m", f"data: Dukascopy H1 {side} {sym}({code}) {start}〜{end}\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\nClaude-Session: https://claude.ai/code/session_01P8mtG8UXER1rod1zfEpDhP"], check=True)
+            subprocess.run(["git", "-C", REPO, "push", "-q", "-u", "origin", "claude/prop-trading-new-methods-a8y3l1"], check=True)
         except Exception as e: print(f"[{sym}] git 失敗: {e}", flush=True)
 if __name__ == "__main__": main()
