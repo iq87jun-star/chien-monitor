@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 3934,
+  "cumulative_cells": 4500,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -131,6 +131,19 @@
         "docs/251_q6_q8_q10_results.md"
       ],
       "result": "通過 0。対USD 2w ランクは OOS で強く逆符号"
+    },
+    {
+      "id": "Q11",
+      "slug": "stage5_conditional",
+      "title": "第 5 段 H1 条件付き(F1〜F4 + F1'/F4')",
+      "cells": 566,
+      "status": "done",
+      "sessions_planned": 1,
+      "sessions_done": 1,
+      "docs": [
+        "docs/252_stage5_conditional_search.md"
+      ],
+      "result": "566 セル・通過 0・p<0.05 が 1(期待 28)。H1 の新規探索は一巡"
     }
   ],
   "runs": [
@@ -188,6 +201,13 @@
       "item": "Q10",
       "session": 1,
       "note": "12 セル・通過 0・累積 3934",
+      "manual": true
+    },
+    {
+      "date": "2026-09-18",
+      "item": "Q11",
+      "session": 1,
+      "note": "566 セル・通過 0・累積 4500",
       "manual": true
     }
   ]
