@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 3736,
+  "cumulative_cells": 3820,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -81,11 +81,13 @@
       "slug": "mon_shot_decomp",
       "title": "Mon 円クロスのショット分解",
       "cells": 84,
-      "status": "pending",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
-      "docs": [],
-      "result": null
+      "sessions_done": 1,
+      "docs": [
+        "docs/250_q7_mon_shot_decomposition.md"
+      ],
+      "result": "4 UTC 最強・10 UTC 最弱・出口差なし。配備変更なし"
     },
     {
       "id": "Q8",
@@ -148,6 +150,13 @@
       "item": "Q4",
       "session": 1,
       "note": "符号バグ発見(docs/249)。Sess 族無効・全 Sess EA 停止指示。96 変種は累積に加算(3736)",
+      "manual": true
+    },
+    {
+      "date": "2026-09-18",
+      "item": "Q7",
+      "session": 1,
+      "note": "84 セル・診断・配備変更なし・累積 3820",
       "manual": true
     }
   ]
