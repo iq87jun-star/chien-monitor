@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 3640,
+  "cumulative_cells": 3736,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -33,22 +33,26 @@
       "slug": "index_gold_windows",
       "title": "指数・金の時間帯窓",
       "cells": 360,
-      "status": "pending",
+      "status": "done",
       "sessions_planned": 1,
       "sessions_done": 0,
-      "docs": [],
-      "result": null
+      "docs": [
+        "docs/249_sess_cost_sign_defect.md"
+      ],
+      "result": "重複: US500/GER40 は第3段、NAS100/XAUUSD は第4段で同一格子(9窓×L/S×5曜日)を検定済み。新規セル 0"
     },
     {
       "id": "Q4",
       "slug": "sess_exit",
       "title": "Sess の出口改良",
       "cells": 96,
-      "status": "pending",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
-      "docs": [],
-      "result": null
+      "sessions_done": 1,
+      "docs": [
+        "docs/249_sess_cost_sign_defect.md"
+      ],
+      "result": "再実装で基準 Sharpe が全て負 → SHORT コスト符号バグを発見(docs/249)。Sess 族は無効。出口改良は無意味"
     },
     {
       "id": "Q5",
@@ -130,6 +134,20 @@
       "item": "Q2",
       "session": 1,
       "note": "240 セル・通過 0・累積 3640",
+      "manual": true
+    },
+    {
+      "date": "2026-09-18",
+      "item": "Q3",
+      "session": 1,
+      "note": "重複・新規セル 0",
+      "manual": true
+    },
+    {
+      "date": "2026-09-18",
+      "item": "Q4",
+      "session": 1,
+      "note": "符号バグ発見(docs/249)。Sess 族無効・全 Sess EA 停止指示。96 変種は累積に加算(3736)",
       "manual": true
     }
   ]

@@ -17,7 +17,7 @@ DOW = ["Mon", "Tue", "Wed", "Thu", "Fri"]
 
 def dow_cell(nm, dow, short):
     df = base.load_daily(nm); c = base.IDX_COST.get(nm) or (2 * base.pip_size(nm) / df["open"])
-    s = (df[df["weekday"] == dow]["o2o"] - c).dropna(); return base.clip(-s if short else s)
+    s = df[df["weekday"] == dow]["o2o"]; s = ((-s if short else s) - c).dropna(); return base.clip(s)   # 2026-09-18 修正(docs/249)
 
 
 def monthly(s): m = s.groupby(pd.PeriodIndex(s.index, freq="M")).apply(lambda q: (1 + q).prod() - 1); return m[m != 0]

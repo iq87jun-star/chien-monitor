@@ -17,7 +17,7 @@ def cost_of(df, nm): return base.IDX_COST.get(nm) or (2 * base.pip_size(nm) / df
 
 def dow_hold(df, nm, dow, hold, short):
     o = df["open"]; fwd = o.shift(-hold) / o - 1                      # 当日始値 → hold 営業日後の始値
-    s = (fwd[df["weekday"] == dow] - cost_of(df, nm)).dropna(); return base.clip(-s if short else s)
+    s = fwd[df["weekday"] == dow]; s = ((-s if short else s) - cost_of(df, nm)).dropna(); return base.clip(s)   # 2026-09-18 修正(docs/249)
 
 
 def tom(df, nm, short):
@@ -26,7 +26,7 @@ def tom(df, nm, short):
     n_in = pd.Series(np.arange(len(idx)), index=idx).groupby(mk).transform("count")
     ent = (pos_in == n_in - 1)                                                                     # 月末 2 営業日目の始値で建て
     r = (o.shift(-5) / o - 1)[ent]                                                                  # 5 営業日後(月初 3 日目)の始値で決済
-    s = (r - cost_of(df, nm)).dropna(); return base.clip(-s if short else s)
+    s = ((-r if short else r) - cost_of(df, nm)).dropna(); return base.clip(s)   # 2026-09-18 修正(docs/249)
 
 
 def monthly(s): m = s.groupby(pd.PeriodIndex(s.index, freq="M")).apply(lambda q: (1 + q).prod() - 1); return m[m != 0]

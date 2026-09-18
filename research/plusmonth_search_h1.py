@@ -23,7 +23,13 @@ def cell(df, sym, dow, h0, span, short):
     o_end = o.reindex(t_end); ok = ~o_end.isna().values
     r = pd.Series(o_end.values[ok] / d["open"].values[ok] - 1, index=d.index[ok])
     c = IDX_COST.get(sym) or (2 * base.pip_size(sym) / d["open"].values[ok])
-    r = r - c; return base.clip(-r if short else r)
+    r = (-r if short else r) - c; return base.clip(r)   # 2026-09-18 修正(docs/249): 方向を先に決めてからコストを引く。旧: r-c の後に符号反転 → SHORT にコストが加算されていた
+
+
+def verify_cost_sign(df, sym):
+    """docs/249: 同一窓の LONG + SHORT = −2×コスト であることを検証(SHORT にコストが加算されていないか)。"""
+    l = cell(df, sym, 1, 20, 4, False); s = cell(df, sym, 1, 20, 4, True); z = (l + s).dropna()
+    if len(z) and float(z.max()) > 0: raise RuntimeError(f"[COST SIGN] {sym}: LONG+SHORT が正({float(z.max()):.2e})。SHORT のコスト符号を確認")
 
 
 def monthly(s): m = s.groupby(pd.PeriodIndex(s.index, freq="M")).apply(lambda q: (1 + q).prod() - 1); return m[m != 0]
@@ -34,6 +40,7 @@ def main():
     for sym in syms:
         df = load(sym)
         if len(df) < 1000: print("skip", sym); continue
+        verify_cost_sign(df, sym)
         for dow in range(5):
             for h0, span in WINS:
                 for sh in (False, True):

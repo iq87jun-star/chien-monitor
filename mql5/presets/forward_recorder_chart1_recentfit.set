@@ -23,10 +23,10 @@ InpV4Legs=EURUSD:0.10,GBPUSD:0.10,USDJPY:0.10,AUDUSD:0.10,USDCHF:0.10,USDCAD:0.1
 InpHoldLegs=
 ; v1.20 / docs/229-230 の候補 5 本(紙上判定と並行して執行差を記録。実運用ではない)
 ; Thu XAUUSD は 0.01 lot = $4,327 のため重み 0.30(ショット $4,500)。他は 0.10(ショット $1,500 = 0.01 lot)
-InpDowLegs=MonS:EURGBP:0.10,FriS:NZDUSD:0.10,WedS:CADCHF:0.10,TueS:CADCHF:0.10,Thu:XAUUSD:0.30
+InpDowLegs=
 ; v1.30 / docs/233 の時間帯セル(夜間の安全通貨ドリフト)。月〜木・1ショット・重み 0.10 = 名目 $6,000(≈0.06 lot)
 ; 16-20 / 00-04 UTC はロール(21 UTC)を跨がない。20-00 は跨ぐので SHORT スワップ ≈ 0 の NZDUSD / AUDUSD のみ
-InpSessLegs=USDCHF:S:16:4:0.10,USDCHF:S:0:4:0.10,NZDUSD:S:16:4:0.10,NZDUSD:S:20:4:0.10,AUDUSD:S:20:4:0.10,EURGBP:S:20:4:0.10,EURGBP:S:16:4:0.10,CHFJPY:S:20:4:0.10
+InpSessLegs=
 InpMult=1.0
 InpExpiry=2030.12.31 23:59
 InpInitialBalance=60000.0
