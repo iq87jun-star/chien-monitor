@@ -35,6 +35,15 @@
 
 非 FX のコスト表を `q12` に追加(BRENT/WTI/XAG 5 bps・指数 3〜4 bps・債券 2 bps)。
 
+## 第 4 回(2026-09-20)— WTI(商品・往復 5 bps)
+
+| 項目 | 値 |
+|---|---|
+| セル数 | 90(累積 4,950 → **5,040**・閾値 p < 9.9e-6) |
+| 通過 | **0** |
+| p < 0.05 | **0**(偶然期待 5) |
+| 最良 | MonS WTI 00-04UTC: IS 25/39・粗利 +14.1 bps・純 +9.1 bps・OOS 9/20(-5.3)・前窓 0.42 |
+
 ## 今後の追記
 
 取得完了ごとに `python3 queue/q12_newsyms_h1_grid.py <累積> <SYM>` を実行し、本書に回を追加する(累積セルは 90/銘柄ずつ加算)。残り 16 銘柄(AUDCAD / NZDCAD / CADCHF / USDCAD / XAGUSD / BRENT / WTI / UK100 / JP225 / EUSTX50 / US30 / AUS200 / HK50 / BUND / USTBOND / DXY)。指数・商品・債券は FX と挙動が違うため、そこまでは続ける価値がある。
