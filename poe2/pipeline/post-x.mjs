@@ -8,7 +8,11 @@ import crypto from "node:crypto";
 import { SITE_DIR, CONTENT_DIR } from "./config.mjs";
 
 const SITE_URL = "https://game-souba.com/poe2/";
-const MAX_POSTS_PER_RUN = 2;
+const MAX_POSTS_PER_RUN = 1;
+
+// JST の暦日を YYYY-MM-DD で返す(1日1回ガード用)
+const jstToday = () =>
+  new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
 
 // --- OAuth 1.0a 署名(依存ライブラリなし) ---
 const pctEncode = (s) =>
@@ -88,6 +92,14 @@ export async function postToX() {
   const statePath = path.join(SITE_DIR, "posted.json");
   const state = await readJson(statePath, { newsGids: [], articleIds: [] });
 
+  // 1日1回だけ投稿する(X API 従量課金対策)。
+  // ワークフロー自体は複数回動かしてデータ鮮度を保ちつつ、投稿だけ絞る。
+  const today = jstToday();
+  if (state.lastPostedDate === today) {
+    console.log("x-bot: already posted today (JST) — skip");
+    return;
+  }
+
   const queue = [];
 
   // 1. 未ポストのパッチ関連ニュース(新しい順に1件だけ)
@@ -133,6 +145,7 @@ export async function postToX() {
     try {
       const result = await postTweet(item.text, creds);
       console.log(`x-bot: posted ${item.kind} (tweet id: ${result.data?.id})`);
+      state.lastPostedDate = today;
       if (item.kind === "news") state.newsGids.push(item.key);
       else if (item.kind === "ranking") state.lastRankingDate = item.key;
       else state.articleIds.push(item.key);
