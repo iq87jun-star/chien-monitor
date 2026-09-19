@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 424.1,
-   "chaos": 9.24
+   "exalted": 444.1,
+   "chaos": 8.34
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,19 +42,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 569.9,
-   "listingCount": 50,
+   "primaryValue": 654.5,
+   "listingCount": 56,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 42.48,
+    "totalChange": 76.89,
     "data": [
      0,
-     -7.5,
      null,
-     15,
-     25,
+     24.32,
+     35.14,
      null,
-     42.48
+     54.03,
+     76.89
     ]
    },
    "explicitModifiers": [
@@ -75,19 +75,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 23,
-   "listingCount": 18,
+   "primaryValue": 30,
+   "listingCount": 14,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 91.67,
+    "totalChange": 58.73,
     "data": [
      0,
-     57.5,
      null,
-     50,
-     123.3,
+     -4.76,
+     41.8,
      null,
-     91.67
+     21.69,
+     58.73
     ]
    },
    "explicitModifiers": [
@@ -109,19 +109,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 14,
-   "listingCount": 558,
+   "primaryValue": 15,
+   "listingCount": 451,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -21.79,
+    "totalChange": 15.38,
     "data": [
      0,
-     -27.37,
      null,
-     -16.76,
-     -32.96,
+     14.62,
+     -7.69,
      null,
-     -21.79
+     7.69,
+     15.38
     ]
    },
    "explicitModifiers": [
@@ -168,39 +168,6 @@
    ]
   },
   {
-   "id": 381,
-   "itemId": "Grand Spectrum Sapphire",
-   "detailsId": "grand-spectrum-sapphire",
-   "name": "Grand Spectrum",
-   "baseType": "Sapphire",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
-   "flavourText": "Skin like steel tempered by bright flames.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 3,
-   "primaryValue": 14,
-   "listingCount": 54,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": 72.84,
-    "data": [
-     0,
-     134.6,
-     null,
-     123.5,
-     97.53,
-     null,
-     72.84
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 382,
    "itemId": "Against the Darkness Time-Lost Diamond",
    "detailsId": "against-the-darkness-time-lost-diamond",
@@ -212,19 +179,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 7.25,
-   "listingCount": 1370,
+   "primaryValue": 10.16,
+   "listingCount": 932,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 98.32,
+    "totalChange": 69.32,
     "data": [
      0,
-     64.08,
      null,
-     82.05,
-     110.2,
+     10.95,
+     28.1,
      null,
-     98.32
+     20.86,
+     69.32
     ]
    },
    "explicitModifiers": [
@@ -307,6 +274,39 @@
    ]
   },
   {
+   "id": 381,
+   "itemId": "Grand Spectrum Sapphire",
+   "detailsId": "grand-spectrum-sapphire",
+   "name": "Grand Spectrum",
+   "baseType": "Sapphire",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
+   "flavourText": "Skin like steel tempered by bright flames.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 8,
+   "listingCount": 67,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -57.89,
+    "data": [
+     0,
+     null,
+     -4.74,
+     -15.79,
+     null,
+     -26.32,
+     -57.89
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 379,
    "itemId": "Grand Spectrum Emerald",
    "detailsId": "grand-spectrum-emerald",
@@ -317,19 +317,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 4.53,
-   "listingCount": 53,
+   "primaryValue": 6,
+   "listingCount": 38,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 13.34,
+    "totalChange": -0.08,
     "data": [
      0,
-     50,
      null,
-     18.76,
-     -10.41,
+     -20.83,
+     -40.27,
      null,
-     13.34
+     -24.44,
+     -0.08
     ]
    },
    "explicitModifiers": [
@@ -351,17 +351,17 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "primaryValue": 3,
-   "listingCount": 660,
+   "listingCount": 747,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 200,
     "data": [
      0,
-     0,
      null,
      0,
      100,
      null,
+     200,
      200
     ]
    },
@@ -451,28 +451,24 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.541,
+   "primaryValue": 0.7194,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -27.85,
+    "totalChange": -12.78,
     "data": [
      0,
-     10,
      null,
-     -2.64,
-     -29.72,
+     -11.49,
+     -36.11,
      null,
-     -27.85
+     -34.41,
+     -12.78
     ]
    },
    "explicitModifiers": [
     {
      "text": "[Gain] (9-14)% of Damage as Extra [Cold] Damage",
-     "optional": true
-    },
-    {
-     "text": "[Gain] (9-14)% of Damage as Extra [Fire] Damage",
      "optional": true
     },
     {
@@ -485,6 +481,10 @@
     },
     {
      "text": "(1-2)% increased Movement Speed",
+     "optional": true
+    },
+    {
+     "text": "[Gain] (9-15)% of Damage as Extra [Fire] Damage",
      "optional": true
     },
     {
@@ -528,15 +528,15 @@
      "optional": true
     },
     {
-     "text": "[Gain] (7-12)% of Damage as Extra [Chaos] Damage",
-     "optional": true
-    },
-    {
-     "text": "(4-7)% increased [Flask|Flask] Effect Duration",
+     "text": "(4-8)% increased [Flask|Flask] Effect Duration",
      "optional": true
     },
     {
      "text": "(2-3)% increased Cast Speed",
+     "optional": true
+    },
+    {
+     "text": "[Gain] (7-13)% of Damage as Extra [Chaos] Damage",
      "optional": true
     },
     {
@@ -552,7 +552,7 @@
      "optional": true
     },
     {
-     "text": "(6-10)% increased [Stun] Buildup",
+     "text": "(6-12)% increased [Stun] Buildup",
      "optional": true
     },
     {
@@ -648,7 +648,7 @@
      "optional": true
     },
     {
-     "text": "54% increased [IceCrystals|Ice Crystal] Life",
+     "text": "(41-57)% increased [IceCrystals|Ice Crystal] Life",
      "optional": true
     },
     {
@@ -688,7 +688,7 @@
      "optional": true
     },
     {
-     "text": "(15-24)% chance for [Lightning] Damage with [Hit|Hits] to be [Lucky]",
+     "text": "(15-25)% chance for [Lightning] Damage with [Hit|Hits] to be [Lucky]",
      "optional": true
     },
     {
@@ -744,7 +744,7 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] [Reviving|Revive] (6-10)% faster",
+     "text": "[Minion|Minions] [Reviving|Revive] (5-10)% faster",
      "optional": true
     }
    ]
@@ -760,19 +760,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.541,
-   "listingCount": 3698,
+   "primaryValue": 0.5995,
+   "listingCount": 3919,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 15.44,
+    "totalChange": 16.29,
     "data": [
      0,
-     10,
      null,
-     -9.7,
-     12.45,
+     -17.9,
+     2.23,
      null,
-     15.44
+     4.95,
+     16.29
     ]
    },
    "explicitModifiers": [
@@ -801,19 +801,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.4328,
-   "listingCount": 2812,
+   "primaryValue": 0.5995,
+   "listingCount": 2963,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -53.82,
+    "totalChange": 16.29,
     "data": [
      0,
-     -45,
      null,
-     -43.56,
-     -43.77,
+     2.62,
+     2.23,
      null,
-     -53.82
+     -16.04,
+     16.29
     ]
    },
    "explicitModifiers": [
@@ -822,7 +822,7 @@
      "optional": true
     },
     {
-     "text": "Glorifying the defilement of (911-29708) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "text": "Glorifying the defilement of (911-30198) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
      "optional": true
     },
     {
@@ -854,19 +854,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.3246,
-   "listingCount": 2848,
+   "primaryValue": 0.2398,
+   "listingCount": 3088,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 61.25,
+    "totalChange": -23.3,
     "data": [
      0,
-     55.31,
      null,
-     57.68,
-     109.4,
+     1.53,
+     34.86,
      null,
-     61.25
+     3.83,
+     -23.3
     ]
    },
    "explicitModifiers": [
@@ -969,33 +969,6 @@
    ]
   },
   {
-   "id": 402,
-   "itemId": "Megalomaniac Diamond",
-   "detailsId": "megalomaniac-diamond",
-   "name": "Megalomaniac",
-   "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
-   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 1,
-   "primaryValue": 0.2164,
-   "listingCount": 10000,
-   "corrupted": true,
-   "sparkLine": {
-    "totalChange": -23.04,
-    "data": [
-     0,
-     46.66,
-     null,
-     12.88,
-     12.45,
-     null,
-     -23.04
-    ]
-   }
-  },
-  {
    "id": 401,
    "itemId": "From Nothing Diamond",
    "detailsId": "from-nothing-diamond",
@@ -1007,19 +980,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 0.1082,
-   "listingCount": 4286,
+   "primaryValue": 0.1199,
+   "listingCount": 4771,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -23.21,
+    "totalChange": 1.34,
     "data": [
      0,
-     -16.04,
      null,
-     50.17,
-     49.6,
+     78.85,
+     78.18,
      null,
-     -23.21
+     -8.55,
+     1.34
     ]
    },
    "explicitModifiers": [
@@ -1066,6 +1039,33 @@
    ]
   },
   {
+   "id": 402,
+   "itemId": "Megalomaniac Diamond",
+   "detailsId": "megalomaniac-diamond",
+   "name": "Megalomaniac",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0RlbGlyaXVtSmV3ZWwiLCJ3IjoxLCJoIjoxLCJzY2FsZSI6MSwicmVhbG0iOiJwb2UyIn1d/d1d171dc8b/DeliriumJewel.png",
+   "flavourText": "If you're going to act like you're better\r\nthan everyone else, make sure you are.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "primaryValue": 0.1199,
+   "listingCount": 10000,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": -70.93,
+    "data": [
+     0,
+     null,
+     -23.04,
+     -23.33,
+     null,
+     -47.53,
+     -70.93
+    ]
+   }
+  },
+  {
    "id": 403,
    "itemId": "Prism of Belief Diamond",
    "detailsId": "prism-of-belief-diamond",
@@ -1076,19 +1076,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00236,
+   "primaryValue": 0.00225,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -56.22,
+    "totalChange": -28.12,
     "data": [
      0,
-     -41.93,
      null,
-     -47.31,
-     -58.07,
+     -9.27,
+     -27.8,
      null,
-     -56.22
+     -24.6,
+     -28.12
     ]
    },
    "explicitModifiers": [
@@ -1130,10 +1130,6 @@
     },
     {
      "text": "+1 to Level of all Bloodhound's Mark Skills",
-     "optional": true
-    },
-    {
-     "text": "+2 to Level of all Charged Staff Skills",
      "optional": true
     },
     {
@@ -1245,10 +1241,6 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Thunderstorm Skills",
-     "optional": true
-    },
-    {
      "text": "+(1-2) to Level of all Voltaic Mark Skills",
      "optional": true
     },
@@ -1318,6 +1310,50 @@
     },
     {
      "text": "+1 to Level of all Trail of Caltrops Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Charged Staff Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Thunderstorm Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Cast on Dodge Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Combat Frenzy Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Freezing Mark Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Freezing Salvo Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Pounce Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Rampage Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Shattering Palm Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Thrashing Vines Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Thunderous Leap Skills",
      "optional": true
     },
     {
