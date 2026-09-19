@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 4770,
+  "cumulative_cells": 4860,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -150,14 +150,14 @@
       "id": "Q12",
       "slug": "newsyms_h1_grid",
       "title": "新銘柄への時間帯格子(逐次)",
-      "cells": 270,
+      "cells": 360,
       "status": "in_progress",
       "sessions_planned": 6,
-      "sessions_done": 1,
+      "sessions_done": 2,
       "docs": [
         "docs/255_newsyms_h1_grid_results.md"
       ],
-      "result": "第1回 EURCHF/GBPCHF/AUDNZD 270 セル通過 0(p<0.05 も 0)。残り 16 銘柄は取得完了ごとに追記"
+      "result": "第1回 EURCHF/GBPCHF/AUDNZD 270 セル通過 0(p<0.05 も 0)。残り 16 銘柄は取得完了ごとに追記。第2回 AUDCAD 90 セル通過 0"
     }
   ],
   "runs": [
@@ -236,6 +236,13 @@
       "item": "Q12",
       "session": 1,
       "note": "270 セル・通過 0・累積 4770",
+      "manual": true
+    },
+    {
+      "date": "2026-09-19",
+      "item": "Q12",
+      "session": 2,
+      "note": "AUDCAD 90 セル・通過 0・累積 4860",
       "manual": true
     }
   ]
