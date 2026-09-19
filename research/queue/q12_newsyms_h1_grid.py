@@ -16,7 +16,8 @@ N = len(syms) * 90; ALPHA = 0.05 / (cum + N)
 def load(sym):
     df = pd.read_csv(f"data_dukascopy/{sym}_hour.csv.gz"); df["t"] = pd.to_datetime(df["timestamp"]); df = df.set_index("t").sort_index()
     return df[((df.high > df.low) | (df.volume > 0)) & (df.index >= PRE0)]
-def cost(sym, px): return (5e-4 if sym in ("XAUUSD", "XAGUSD") else base.IDX_COST.get(sym, None)) or 3 * base.pip_size(sym) / px
+NONFX_COST = {"XAUUSD": 5e-4, "XAGUSD": 5e-4, "BRENT": 5e-4, "WTI": 5e-4, "UK100": 4e-4, "JP225": 4e-4, "EUSTX50": 4e-4, "US30": 3e-4, "AUS200": 4e-4, "HK50": 4e-4, "BUND": 2e-4, "USTBOND": 2e-4, "DXY": 3e-4}   # 往復(bps 換算)。docs/229 IDX_COST と同水準
+def cost(sym, px): return NONFX_COST.get(sym) or base.IDX_COST.get(sym) or 3 * base.pip_size(sym) / px
 def cell(df, sym, dow, h0, span, short):
     o = df["open"]; d = df[(df.index.dayofweek == dow) & (df.index.hour == h0)]
     oe = o.reindex(d.index + pd.Timedelta(hours=span)); ok = ~oe.isna().values; px = d["open"].values[ok]

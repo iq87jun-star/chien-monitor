@@ -24,6 +24,17 @@
 | p < 0.05 | **0**(偶然期待 5) |
 | 最良 | Thu AUDCAD 00-04UTC: IS 20/39・粗利 +3.5 bps・純 +0.2 bps・OOS -2.3 bps・前窓 0.38 |
 
+## 第 3 回(2026-09-20)— BRENT(商品・往復 5 bps)
+
+| 項目 | 値 |
+|---|---|
+| セル数 | 90(累積 4,860 → **4,950**・閾値 p < 1.01e-5) |
+| 通過 | **0** |
+| p < 0.05 | **1**(偶然期待 5) |
+| 最良 | Fri BRENT 00-08UTC: IS 20/29・粗利 +19.0 bps・純 +14.0 bps・OOS +1.6 bps・前窓 0.52 |
+
+非 FX のコスト表を `q12` に追加(BRENT/WTI/XAG 5 bps・指数 3〜4 bps・債券 2 bps)。
+
 ## 今後の追記
 
 取得完了ごとに `python3 queue/q12_newsyms_h1_grid.py <累積> <SYM>` を実行し、本書に回を追加する(累積セルは 90/銘柄ずつ加算)。残り 16 銘柄(AUDCAD / NZDCAD / CADCHF / USDCAD / XAGUSD / BRENT / WTI / UK100 / JP225 / EUSTX50 / US30 / AUS200 / HK50 / BUND / USTBOND / DXY)。指数・商品・債券は FX と挙動が違うため、そこまでは続ける価値がある。
