@@ -22,9 +22,9 @@ def fetch(url, tries=6):
             with urllib.request.urlopen(urllib.request.Request(url, headers=H), timeout=60) as r: return r.status, r.read()
         except urllib.error.HTTPError as e:
             if e.code == 404: return 404, b""
-            wait = 90 * (k + 1); print(f"  http {e.code} → {wait}s 待機", flush=True); time.sleep(wait)
+            wait = 40 * (k + 1); print(f"  http {e.code} → {wait}s 待機", flush=True); time.sleep(wait)
         except Exception as e:
-            wait = 90 * (k + 1); print(f"  {str(e)[:40]} → {wait}s 待機", flush=True); time.sleep(wait)
+            wait = 40 * (k + 1); print(f"  {str(e)[:40]} → {wait}s 待機", flush=True); time.sleep(wait)
     return 0, b""
 def decode(data, code, y, m):
     raw = lzma.decompress(data); n = len(raw) // 24; sc = scale(code); base = dt.datetime(y, m, 1); rows = []
