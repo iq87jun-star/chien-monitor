@@ -157,7 +157,7 @@
       "docs": [
         "docs/255_newsyms_h1_grid_results.md"
       ],
-      "result": "第1回 EURCHF/GBPCHF/AUDNZD 270 セル通過 0(p<0.05 も 0)。残り 16 銘柄は取得完了ごとに追記。第2回 AUDCAD 90 セル通過 0。第3回 BRENT 90 セル通過 0。第4回 WTI 90 セル通過 0。第5回 UK100 90 セル通過 0。第6回 JP225 90 セル通過 0。第7回 EUSTX50 90 セル通過 0。第8回 US30 90 セル通過 0"
+      "result": "第1〜15回(EURCHF/GBPCHF/AUDNZD/AUDCAD/BRENT/WTI/UK100/JP225/EUSTX50/US30/AUS200/HK50/BUND/USTBOND/DXY/XAGUSD/NZDCAD)1,530 セル通過 0。残り CADCHF/USDCAD は取得完了ごとに追記(docs/255)"
     }
   ],
   "runs": [
@@ -370,6 +370,11 @@
       "cum_after": 6030,
       "passed": 0,
       "doc": "docs/255"
+    },
+    {
+      "date": "2026-09-21",
+      "item": "morning",
+      "note": "Q1 は MT5 側待ち・Q12 は取得完了ごとに逐次実行中(第15回まで)。新規実行なし"
     }
   ]
 }
