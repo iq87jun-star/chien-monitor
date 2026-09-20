@@ -31,7 +31,7 @@ def st(r, a, b):
 rows = []
 for sym in syms:
     df = load(sym)
-    l, s = cell(df, sym, 1, 20, 4, False), cell(df, sym, 1, 20, 4, True); z = (l + s).dropna(); assert float(z.max()) <= 1e-12, f"[COST SIGN] {sym}"
+    l, s = cell(df, sym, 1, 8, 4, False), cell(df, sym, 1, 8, 4, True); z = (l + s).dropna(); assert len(z) > 0 and float(z.max()) <= 1e-12, f"[COST SIGN] {sym}"   # 08 時は全銘柄に存在
     for dow in range(5):
         for h0, span in WINS:
             for sh in (False, True):
