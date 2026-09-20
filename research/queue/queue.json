@@ -158,6 +158,76 @@
         "docs/255_newsyms_h1_grid_results.md"
       ],
       "result": "第1〜15回(EURCHF/GBPCHF/AUDNZD/AUDCAD/BRENT/WTI/UK100/JP225/EUSTX50/US30/AUS200/HK50/BUND/USTBOND/DXY/XAGUSD/NZDCAD)1,530 セル通過 0。残り CADCHF/USDCAD は取得完了ごとに追記(docs/255)"
+    },
+    {
+      "id": "Q13",
+      "slug": "prevday_hl_break",
+      "title": "前日高安ブレイク(H1・14 銘柄)",
+      "cells": 112,
+      "status": "proposed",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/256_marketplace_families_prereg.md"
+      ],
+      "result": "",
+      "source": "docs/256 §4(黄金の守人 / MoonDog / Ghost / Cepheus)"
+    },
+    {
+      "id": "Q14",
+      "slug": "tokyo_fix_early",
+      "title": "仲値・東京早朝(円クロス)",
+      "cells": 80,
+      "status": "proposed",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/256_marketplace_families_prereg.md"
+      ],
+      "result": "",
+      "source": "docs/256 §4(仲値トレード / White Bear Z)"
+    },
+    {
+      "id": "Q15",
+      "slug": "gold_pullback_long",
+      "title": "ゴールド押し目 LONG(トレンド門)",
+      "cells": 32,
+      "status": "proposed",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/256_marketplace_families_prereg.md"
+      ],
+      "result": "",
+      "source": "docs/256 §4(昇金竜 / 錬金術 Rising Tide)"
+    },
+    {
+      "id": "Q16",
+      "slug": "h1_donchian_trail",
+      "title": "H1 ドンチャン + ATR トレイル",
+      "cells": 64,
+      "status": "proposed",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/256_marketplace_families_prereg.md"
+      ],
+      "result": "",
+      "source": "docs/256 §4(LTAF / STAF / tagosaku / 一撃くん)"
+    },
+    {
+      "id": "Q17",
+      "slug": "h1_volume_spike",
+      "title": "出来高スパイク(H1)",
+      "cells": 56,
+      "status": "proposed",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/256_marketplace_families_prereg.md"
+      ],
+      "result": "",
+      "source": "docs/256 §4(Silent Exit / TORURIPI)"
     }
   ],
   "runs": [
@@ -387,6 +457,11 @@
       "cum_after": 6120,
       "passed": 0,
       "doc": "docs/255"
+    },
+    {
+      "date": "2026-09-21",
+      "item": "prereg",
+      "note": "docs/256 で Q13〜Q17(344 セル)を proposed 登録。ユーザー「登録」で pending へ"
     }
   ]
 }
