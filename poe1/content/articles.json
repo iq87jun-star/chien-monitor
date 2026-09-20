@@ -1,6 +1,41 @@
 {
  "articles": [
   {
+   "id": "2026-09-20-mu929xe6",
+   "createdAt": "2026-09-20T00:11:38.190Z",
+   "league": "Allflame",
+   "type": "market",
+   "validated": true,
+   "title": "Allflame週報:Foulborn系ユニークが乱高下",
+   "summary": "Allflameリーグの最新集計では、Mirror of Kalandraなど最高額帯の通貨が小幅な変動にとどまる一方、Tainted Divine TeardropやVolatile Vaal Orbといった中価格帯で二桁の動きが出ています。ユニーク側はFoulborn付きアイテムが急騰組・急落組の両方に並び、週内での値動きの荒さが目立ちました。今週のデータから読み取れるポイントを整理します。",
+   "sections": [
+    {
+     "heading": "最高額帯は横ばい、中価格帯の通貨が動いた週",
+     "body": "通貨レート(Chaos Orb=cを基準とした価格)では、Mirror of Kalandraが401,469c、変動率は7日間で0.8%。Hinekora's Lockが93,064cで0.9%、Mirror Shardが20,418cで0.8%と、上位3種はいずれも1%未満の小動きです。取引が成立しにくい超高額帯ほどレートが動きにくい、という典型的な形に見えます。\n\n対照的に動いたのが中価格帯です。Tainted Divine Teardropは2,202cで17.2%上昇、Awakener's Orbは1,015cで7%上昇、Orb of Dominanceは1,607cで3.7%上昇。一方でVolatile Vaal Orbは1,658cで-21.3%、Foulborn Exalted Orbは1,967cで-15.4%、Veiled Exalted Orbは4,733cで-0.7%と下げています。クラフト用途の通貨が上下に割れた形で、需要の偏りが週内で入れ替わった可能性がありそうです。"
+    },
+    {
+     "heading": "急騰ユニーク:Foulborn勢とThe Adorned",
+     "body": "上昇率トップはFoulborn Mind of the Council(Harlequin Mask)で、価格725.4c、出品数11、7日変動は7154%。推移データを見ると週の途中までほぼ動かず、後半に一気に跳ねた形です。出品数が11と薄いため、少数の高額出品で数値が振れやすい点には注意しておきたいところ。\n\n続いてFoulborn Meginord's Vise(35c、出品96、3400%)、Foulborn Goldwyrm(68.8c、出品124、2193%)、Foulborn Jorrhast's Blacksteel(20c、出品101、1900%)、Foulborn Tremor Rod(25.5c、出品109、1525%)と、Foulborn系が上位を占めました。Foulborn以外ではRigwald's Charge(46.4c、出品76、1365%)、The Adorned(Crimson Jewel、362.7c、出品1580、1109%)、Xoph's Nurture(10c、出品67、900%)が並びます。特にThe Adornedは出品数1580と厚みがあるなかでの上昇で、ビルド需要が乗った動きとみられます。"
+    },
+    {
+     "heading": "急落ユニーク:Ahkeli's系とBitterbind Pointが崩れる",
+     "body": "下落側もFoulborn付きが目立ちます。Foulborn Xoph's Inception(12.4c、出品49)は-91.1%で下落率トップ。続いてAhkeli's Mountain(Ruby Ring、20c、出品222)が-87.6%、Bitterbind Point(Titanium Spirit Shield、50c、出品1752)が-85.9%、Ahkeli's Meadow(Ruby Ring、50.3c、出品145)が-83.2%。Ahkeli's系2種は週を通してじりじりと下げ続ける推移で、供給増による値崩れが進んでいる形に見えます。\n\nBitterbind Pointは推移が-34.9→-67.87→208.2→83.55→85.4→-85.91と大きく振れており、出品数1752と多いにもかかわらず値が安定していません。そのほかFoulborn The Dancing Dervish(1.16c、-80%)、Foulborn The Formless Flame(1c、-80%)、Foulborn Reverberation Rod(2.4c、-73.3%)、The Grey Spire(2c、出品663、-73.3%)と、安価帯の下落が並びました。"
+    },
+    {
+     "heading": "今週の立ち回りメモ",
+     "body": "全体像としては、超高額通貨が動かないなかでFoulborn系ユニークだけが上下に大きく振れている週でした。同じFoulborn接頭辞でも、Mind of the Councilのように7154%上げるものとXoph's Inceptionのように-91.1%下げるものが同居しており、接頭辞そのものではなくベースとなるユニークの需要で明暗が分かれているようです。\n\n実務的には、出品数が二桁台のアイテム(Foulborn Mind of the Councilの11、Foulborn Xoph's Inceptionの49など)は数値の振れ幅が大きくなりやすいので、価格チェックは複数回に分けたいところ。逆にThe Adorned(出品1580)やBitterbind Point(出品1752)のように出品が厚い銘柄は、売り抜けやすい反面、値崩れも一気に進む点を見ておくと良さそうです。なお今回の集計にパッチノートの更新は含まれていないため、値動きの背景は取引需要側の要因とみられます。"
+    }
+   ],
+   "tags": [
+    "PoE1",
+    "Allflame",
+    "市場動向",
+    "通貨レート",
+    "ユニークアイテム",
+    "Foulborn"
+   ]
+  },
+  {
    "id": "2026-09-19-mu8esxcr",
    "createdAt": "2026-09-19T13:14:33.819Z",
    "league": "Allflame",
@@ -1032,42 +1067,6 @@
     "ユニークアイテム",
     "Foulborn",
     "Chaos Orb"
-   ]
-  },
-  {
-   "id": "2026-09-08-mtrxokq5",
-   "createdAt": "2026-09-08T00:30:58.541Z",
-   "league": "Allflame",
-   "type": "market",
-   "validated": true,
-   "title": "Allflameリーグ今週の市場動向:高額通貨が軒並み上昇、Foulborn装備は乱高下",
-   "summary": "Allflameリーグの直近7日間の集計データを見ると、Mirror of KalandraやHinekora's Lockといった高額通貨が揃って値を上げました。一方でユニーク装備側は上昇組と下落組の差が極端で、特にFoulborn系アイテムが両方の顔ぶれに並んでいます。今週の数字を通貨・上昇ユニーク・下落ユニークの3つに分けて整理します。",
-   "sections": [
-    {
-     "heading": "高額通貨は上昇基調、Reflecting Mistが+52%",
-     "body": "通貨レート(すべてChaos Orb=c基準)を見ると、上位は上昇が目立ちます。最高値のMirror of Kalandraは420,566cで+9.2%、Hinekora's Lockは94,269cで+14.1%、Mirror Shardは22,627cで+15.5%と、いわゆる最上位帯が揃ってプラスです。\n\n変動率で最も大きいのはReflecting Mistの+52%(2,129c)で、次いでFoulborn Exalted Orbの+39.7%(2,457c)、Orb of Dominanceの+21.1%(1,720c)。リーグ固有の要素に絡む通貨が強めに動いた形です。\n\n逆に下げたのはTainted Divine Teardropで、1,682cの-59.3%と今回のリストで最大の下落幅。Awakener's Orbも1,089cで-15.4%、Volatile Vaal Orbは2,066cで-1.3%とほぼ横ばいです。Veiled Exalted Orbは5,704cで+0.6%と、こちらも動きが小さい部類でした。"
-    },
-    {
-     "heading": "上昇ユニーク:低価格帯の急騰と、Emperor's Cunningの14,392c",
-     "body": "7日間の上昇率トップはThe Scales of Justice(Chiming Spirit Shield)で+2400%。ただし価格自体は25cで、出品数も25件と少なめです。スパークを見ると0→60→100→100→2000→1520→2400と途中で一段跳ねており、元値が安いアイテムの割合変化が大きく出ている点は割り引いて見たいところ。\n\n同様にXoph's Nurture(Citadel Bow)が50cで+1090%、Replica Powerlessness(Cobalt Jewel)が10.5cで+950%、Atziri's Rule(Judgement Staff)が37.6cで+652%と、いずれも二桁c前後の価格帯です。Replica PowerlessnessとAtziri's Ruleはスパークが直前まで0で最終日だけ跳ねており、直近の需要変化が要因とみられます。\n\n価格面でインパクトが大きいのはEmperor's Cunning(Viridian Jewel)の14,392cで+602.6%。出品数13件と薄く、値付けがブレやすい状況です。Zerphi's Heart(Paua Amulet)は1,050cで+789.8%、Foulborn Inspired Learning(Crimson Jewel)は289cで+564.3%と、こちらは中〜高価格帯での上昇となっています。"
-    },
-    {
-     "heading": "下落ユニーク:Foulborn系装備が総崩れ気味",
-     "body": "下落側はArmourカテゴリが8件すべてを占めました。最大の下げはFoulborn The Bringer of Rain(Nightmare Bascinet)の-90.2%で現在19.5c、出品数は82件。Foulborn The Brass Dome(Gladiator Plate)が65cで-87.8%、Foulborn Seven-League Step(Rawhide Boots)が1,085cで-85.5%、Foulborn Carcass Jack(Varnished Coat)が86cで-75.4%と、Foulborn系が下落リストの半数に並んでいます。\n\nFoulborn Exalted Orb自体は+39.7%と上げている一方で、Foulborn装備の相場は下がっているという対照的な構図です。供給が進んで在庫が増えたことが要因の一つとみられますが、データからは断定できません。\n\nFoulborn以外では、The Restless Wardが1cで-87.5%(出品88件)、Replica Restless Wardが8.9cで-82.2%(出品278件)と、出品数の多さが目を引きます。Craiceann's Chitinは5cで-78.7%、The Three Dragonsは1cで-75%(出品209件)。すでに1c前後まで落ちているものは、ここからの下値余地は限られる水準です。"
-    },
-    {
-     "heading": "今週の見方",
-     "body": "整理すると、(1)最上位通貨は総じて上昇、(2)Reflecting MistとFoulborn Exalted Orbなどリーグ由来の通貨が二桁〜五割近い上げ、(3)ユニーク装備は安価帯の急騰と、Foulborn系・量産系装備の大幅下落が同時進行、という構図です。\n\n注意したいのは、上昇率が四桁を超えるアイテムの多くが数十c以下の低価格・低出品数である点。Emperor's Cunningの13件、Foulborn Carcass Jackの14件のように出品が薄い銘柄は、少数の値付けで数字が大きく動きます。売買判断では変動率だけでなく、価格水準と出品数を合わせて確認するのが無難です。なお今回のデータにパッチノートの更新は含まれていないため、相場変化の直接的な原因はデータからは特定できません。"
-    }
-   ],
-   "tags": [
-    "Path of Exile",
-    "PoE1",
-    "Allflame",
-    "経済",
-    "相場分析",
-    "ユニークアイテム",
-    "通貨レート"
    ]
   }
  ]
