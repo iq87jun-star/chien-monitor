@@ -82,6 +82,17 @@
 | p < 0.05 | **0**(偶然期待 5) |
 | 最良 | Fri US30 12-16UTC: IS 25/39・粗利 +4.3 bps・純 +1.3 bps・OOS 9/20(-4.4)・前窓 0.47 |
 
+## 第 9 回(2026-09-20)— AUS200(指数・往復 4 bps)
+
+| 項目 | 値 |
+|---|---|
+| セル数 | 90(累積 5,400 → **5,490**・閾値 p < 9.1e-6) |
+| 通過 | **0** |
+| p < 0.05 | **0**(偶然期待 4) |
+| 最良 | TueS AUS200 04-08UTC: IS 21/39・粗利 +4.6 bps・純 +0.6 bps・OOS 9/20(-3.0)・前窓 0.33 |
+
+粗利が最大でも +7.9 bps(Mon 16-00UTC・IS 20/39 で偶然水準)。指数 5 本(UK100/JP225/EUSTX50/US30/AUS200)すべて時間帯格子は不成立。
+
 ## 今後の追記
 
-取得完了ごとに `python3 queue/q12_newsyms_h1_grid.py <累積> <SYM>` を実行し、本書に回を追加する(累積セルは 90/銘柄ずつ加算)。残り 16 銘柄(AUDCAD / NZDCAD / CADCHF / USDCAD / XAGUSD / BRENT / WTI / UK100 / JP225 / EUSTX50 / US30 / AUS200 / HK50 / BUND / USTBOND / DXY)。指数・商品・債券は FX と挙動が違うため、そこまでは続ける価値がある。
+取得完了ごとに `python3 queue/q12_newsyms_h1_grid.py <累積> <SYM>` を実行し、本書に回を追加する(累積セルは 90/銘柄ずつ加算)。残り 7 銘柄(HK50 / BUND / USTBOND / DXY / XAGUSD / NZDCAD / CADCHF / USDCAD)。指数・商品・債券は FX と挙動が違うため、そこまでは続ける価値がある。
