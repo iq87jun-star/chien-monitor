@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 6030,
+  "cumulative_cells": 6120,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -375,6 +375,18 @@
       "date": "2026-09-21",
       "item": "morning",
       "note": "Q1 は MT5 側待ち・Q12 は取得完了ごとに逐次実行中(第15回まで)。新規実行なし"
+    },
+    {
+      "date": "2026-09-21",
+      "item": "Q12",
+      "round": 16,
+      "syms": [
+        "CADCHF"
+      ],
+      "cells": 90,
+      "cum_after": 6120,
+      "passed": 0,
+      "doc": "docs/255"
     }
   ]
 }
