@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 5220,
+  "cumulative_cells": 5310,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -150,14 +150,14 @@
       "id": "Q12",
       "slug": "newsyms_h1_grid",
       "title": "新銘柄への時間帯格子(逐次)",
-      "cells": 720,
+      "cells": 810,
       "status": "in_progress",
       "sessions_planned": 6,
-      "sessions_done": 6,
+      "sessions_done": 7,
       "docs": [
         "docs/255_newsyms_h1_grid_results.md"
       ],
-      "result": "第1回 EURCHF/GBPCHF/AUDNZD 270 セル通過 0(p<0.05 も 0)。残り 16 銘柄は取得完了ごとに追記。第2回 AUDCAD 90 セル通過 0。第3回 BRENT 90 セル通過 0。第4回 WTI 90 セル通過 0。第5回 UK100 90 セル通過 0。第6回 JP225 90 セル通過 0"
+      "result": "第1回 EURCHF/GBPCHF/AUDNZD 270 セル通過 0(p<0.05 も 0)。残り 16 銘柄は取得完了ごとに追記。第2回 AUDCAD 90 セル通過 0。第3回 BRENT 90 セル通過 0。第4回 WTI 90 セル通過 0。第5回 UK100 90 セル通過 0。第6回 JP225 90 セル通過 0。第7回 EUSTX50 90 セル通過 0"
     }
   ],
   "runs": [
@@ -271,6 +271,13 @@
       "item": "Q12",
       "session": 6,
       "note": "JP225 90 セル・通過 0・累積 5220",
+      "manual": true
+    },
+    {
+      "date": "2026-09-20",
+      "item": "Q12",
+      "session": 7,
+      "note": "EUSTX50 90 セル・通過 0・累積 5310",
       "manual": true
     }
   ]
