@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 6210,
+  "cumulative_cells": 6538,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -164,13 +164,13 @@
       "slug": "prevday_hl_break",
       "title": "前日高安ブレイク(H1・14 銘柄)",
       "cells": 112,
-      "status": "proposed",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/256_marketplace_families_prereg.md"
+        "docs/257_q13_prevday_hl_break.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 1 本・期待 6)。p < 0.05 は 1 本(偶然期待 6)。USDJPY 上抜け追随 4h が IS 27/39(p=0.012)だが",
       "source": "docs/256 §4(黄金の守人 / MoonDog / Ghost / Cepheus)"
     },
     {
@@ -178,41 +178,42 @@
       "slug": "tokyo_fix_early",
       "title": "仲値・東京早朝(円クロス)",
       "cells": 80,
-      "status": "proposed",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/256_marketplace_families_prereg.md"
+        "docs/258_q14_tokyo_fix_early.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 0 本・期待 4)。p < 0.05 は 0 本(偶然期待 4)。仲値のゴトー日セルは最良でも USDJPY 01-05 S の IS 19",
       "source": "docs/256 §4(仲値トレード / White Bear Z)"
     },
     {
       "id": "Q15",
       "slug": "gold_pullback_long",
       "title": "ゴールド押し目 LONG(トレンド門)",
-      "cells": 32,
-      "status": "proposed",
+      "cells": 16,
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/256_marketplace_families_prereg.md"
+        "docs/259_q15_gold_pullback_long.md"
       ],
-      "result": "",
-      "source": "docs/256 §4(昇金竜 / 錬金術 Rising Tide)"
+      "result": "通過 0(p<0.05 0 本・期待 1)。16 セルすべて IS 平均が負(最良 XAGUSD 門なし k=1 24h の −0.04 bps)。IS で押し目は",
+      "source": "docs/256 §4(昇金竜 / 錬金術 Rising Tide)",
+      "note": "docs/256 初版の 32 は二重計上。実行前に 16 へ訂正"
     },
     {
       "id": "Q16",
       "slug": "h1_donchian_trail",
       "title": "H1 ドンチャン + ATR トレイル",
       "cells": 64,
-      "status": "proposed",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/256_marketplace_families_prereg.md"
+        "docs/260_q16_h1_donchian_trail.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 3 本・期待 3)。p < 0.05 は 3 本 = 偶然期待 3。最良は NAS100 N=120 LONG(固定 24h: IS 23/",
       "source": "docs/256 §4(LTAF / STAF / tagosaku / 一撃くん)"
     },
     {
@@ -220,13 +221,13 @@
       "slug": "h1_volume_spike",
       "title": "出来高スパイク(H1)",
       "cells": 56,
-      "status": "proposed",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/256_marketplace_families_prereg.md"
+        "docs/261_q17_h1_volume_spike.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 0 本・期待 3)。p < 0.05 は 0 本(偶然期待 3)。追随・逆行のどちら側も IS +月率が 5 割前後で、平均 bps は全セ",
       "source": "docs/256 §4(Silent Exit / TORURIPI)"
     }
   ],
@@ -475,6 +476,51 @@
       "passed": 0,
       "doc": "docs/255",
       "note": "Q12 完了"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "prereg",
+      "note": "ユーザー「定例で進めなくとも早く進めて」→ Q13〜Q17 を pending にし本セッションで連続実行"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q13",
+      "cells": 112,
+      "cum_after": 6322,
+      "passed": 0,
+      "doc": "docs/257"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q14",
+      "cells": 80,
+      "cum_after": 6402,
+      "passed": 0,
+      "doc": "docs/258"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q15",
+      "cells": 16,
+      "cum_after": 6418,
+      "passed": 0,
+      "doc": "docs/259"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q16",
+      "cells": 64,
+      "cum_after": 6482,
+      "passed": 0,
+      "doc": "docs/260"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q17",
+      "cells": 56,
+      "cum_after": 6538,
+      "passed": 0,
+      "doc": "docs/261"
     }
   ]
 }
