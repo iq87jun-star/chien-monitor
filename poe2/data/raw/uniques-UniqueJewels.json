@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 477,
-   "chaos": 8.25
+   "exalted": 451.3,
+   "chaos": 8.41
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,19 +42,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 678,
-   "listingCount": 31,
+   "primaryValue": 747,
+   "listingCount": 35,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 47.39,
+    "totalChange": 62.39,
     "data": [
-     null,
      0,
      8.7,
      null,
      23.89,
      42.28,
-     47.39
+     47.39,
+     62.39
     ]
    },
    "explicitModifiers": [
@@ -75,19 +75,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 26.4,
-   "listingCount": 25,
+   "primaryValue": 18.2,
+   "listingCount": 43,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 46.67,
+    "totalChange": 1.11,
     "data": [
-     null,
      0,
      48.89,
      null,
      27.78,
      66.67,
-     46.67
+     46.67,
+     1.11
     ]
    },
    "explicitModifiers": [
@@ -109,19 +109,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 12.11,
-   "listingCount": 598,
+   "primaryValue": 11.9,
+   "listingCount": 626,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -18.74,
+    "totalChange": -20.13,
     "data": [
-     null,
      0,
      -19.46,
      null,
      -6.04,
      0.67,
-     -18.74
+     -18.74,
+     -20.13
     ]
    },
    "explicitModifiers": [
@@ -179,19 +179,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 9.03,
-   "listingCount": 914,
+   "primaryValue": 7.94,
+   "listingCount": 2081,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 35.68,
+    "totalChange": 19.35,
     "data": [
-     null,
      0,
      15.46,
      null,
      8.93,
      52.6,
-     35.68
+     35.68,
+     19.35
     ]
    },
    "explicitModifiers": [
@@ -285,56 +285,23 @@
    "category": "[Jewel]",
    "limitedTo": 3,
    "primaryValue": 7,
-   "listingCount": 82,
+   "listingCount": 121,
    "corrupted": false,
    "sparkLine": {
     "totalChange": -61.33,
     "data": [
-     null,
      0,
      -11.6,
      null,
      -22.65,
      -55.8,
+     -61.33,
      -61.33
     ]
    },
    "explicitModifiers": [
     {
      "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
-     "optional": false
-    }
-   ]
-  },
-  {
-   "id": 379,
-   "itemId": "Grand Spectrum Emerald",
-   "detailsId": "grand-spectrum-emerald",
-   "name": "Grand Spectrum",
-   "baseType": "Emerald",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9FbWVyYWxkIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/687a109210/GrandSpectrum_Emerald.png",
-   "flavourText": "An indomitable force of control.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 3,
-   "primaryValue": 4.61,
-   "listingCount": 40,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -3.05,
-    "data": [
-     null,
-     0,
-     -24.56,
-     null,
-     -4.56,
-     26.2,
-     -3.05
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "2% increased [Spirit|Spirit] per socketed Grand Spectrum",
      "optional": false
     }
    ]
@@ -350,19 +317,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 3.9,
-   "listingCount": 936,
+   "primaryValue": 5,
+   "listingCount": 1320,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 290,
+    "totalChange": 400,
     "data": [
-     null,
      0,
      100,
      null,
      200,
      200,
-     290
+     290,
+     400
     ]
    },
    "explicitModifiers": [
@@ -441,55 +408,35 @@
    ]
   },
   {
-   "id": 384,
-   "itemId": "Undying Hate Timeless Jewel",
-   "detailsId": "undying-hate-timeless-jewel",
-   "name": "Undying Hate",
-   "baseType": "Timeless Jewel",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVW5keWluZ0hhdHJlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/077ca94281/UndyingHatred.png",
-   "flavourText": "They believed themselves driven by necessity,\r\nbut that desperation made them monstrous.",
+   "id": 379,
+   "itemId": "Grand Spectrum Emerald",
+   "detailsId": "grand-spectrum-emerald",
+   "name": "Grand Spectrum",
+   "baseType": "Emerald",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9FbWVyYWxkIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/687a109210/GrandSpectrum_Emerald.png",
+   "flavourText": "An indomitable force of control.",
    "levelRequired": 0,
    "category": "[Jewel]",
-   "radius": "Very Large",
-   "primaryValue": 0.606,
-   "listingCount": 3133,
+   "limitedTo": 3,
+   "primaryValue": 4.15,
+   "listingCount": 54,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 14.56,
+    "totalChange": -12.65,
     "data": [
-     null,
      0,
-     -0.38,
+     -24.56,
      null,
-     -18.19,
-     13.33,
-     14.56
+     -4.56,
+     26.2,
+     -3.05,
+     -12.65
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Glorifying the defilement of (312-30686) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (911-30198) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (912-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "Glorifying the defilement of (458-27009) souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
-     "optional": true
-    },
-    {
-     "text": "[Historic]",
+     "text": "2% increased [Spirit|Spirit] per socketed Grand Spectrum",
      "optional": false
-    },
-    {
-     "text": "Conquered Attribute Passive Skills also grant +2 to Tribute",
-     "optional": true
     }
    ]
   },
@@ -504,19 +451,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.4848,
+   "primaryValue": 0.8896,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -33.59,
+    "totalChange": 21.86,
     "data": [
-     null,
      0,
      -27.81,
      null,
      -25.89,
      -1.45,
-     -33.59
+     -33.59,
+     21.86
     ]
    },
    "explicitModifiers": [
@@ -803,6 +750,59 @@
    ]
   },
   {
+   "id": 384,
+   "itemId": "Undying Hate Timeless Jewel",
+   "detailsId": "undying-hate-timeless-jewel",
+   "name": "Undying Hate",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvVW5keWluZ0hhdHJlZCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/077ca94281/UndyingHatred.png",
+   "flavourText": "They believed themselves driven by necessity,\r\nbut that desperation made them monstrous.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "radius": "Very Large",
+   "primaryValue": 0.8204,
+   "listingCount": 3268,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 55.09,
+    "data": [
+     0,
+     -0.38,
+     null,
+     -18.19,
+     13.33,
+     14.56,
+     55.09
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Glorifying the defilement of (312-30686) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (911-30198) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (912-28233) souls in tribute to Kurgal\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "Glorifying the defilement of (458-27009) souls in tribute to Tecrod\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    },
+    {
+     "text": "Conquered Attribute Passive Skills also grant +2 to Tribute",
+     "optional": true
+    }
+   ]
+  },
+  {
    "id": 383,
    "itemId": "Heroic Tragedy Timeless Jewel",
    "detailsId": "heroic-tragedy-timeless-jewel",
@@ -813,19 +813,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.4848,
-   "listingCount": 4174,
+   "primaryValue": 0.5945,
+   "listingCount": 4492,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 14.56,
+    "totalChange": 40.48,
     "data": [
-     null,
      0,
      24.53,
      null,
      27.84,
      41.66,
-     14.56
+     14.56,
+     40.48
     ]
    },
    "explicitModifiers": [
@@ -834,7 +834,7 @@
      "optional": true
     },
     {
-     "text": "Remembrancing (207-7739) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
+     "text": "Remembrancing (117-7877) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
      "optional": true
     },
     {
@@ -854,19 +854,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.232,
-   "listingCount": 3351,
+   "primaryValue": 0.2378,
+   "listingCount": 3648,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -26.91,
+    "totalChange": -25.08,
     "data": [
-     null,
      0,
      32.83,
      null,
      2.27,
      -24.45,
-     -26.91
+     -26.91,
+     -25.08
     ]
    },
    "explicitModifiers": [
@@ -980,19 +980,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 0.1212,
-   "listingCount": 5305,
+   "primaryValue": 0.1189,
+   "listingCount": 5392,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -42.72,
+    "totalChange": -43.81,
     "data": [
-     null,
      0,
      -0.38,
      null,
      -48.87,
      -43.34,
-     -42.72
+     -42.72,
+     -43.81
     ]
    },
    "explicitModifiers": [
@@ -1033,6 +1033,10 @@
      "optional": true
     },
     {
+     "text": "Passives in Radius of [passive_keystone_glancing_blows_|Glancing Blows] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
      "text": "Passives in Radius of [passive_keystone_two_companions|Trusted Kinship] can be Allocated\nwithout being connected to your tree",
      "optional": true
     },
@@ -1053,19 +1057,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.1212,
+   "primaryValue": 0.1189,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -61.81,
+    "totalChange": -62.54,
     "data": [
-     null,
      0,
      -0.38,
      null,
      -31.82,
      -62.22,
-     -61.81
+     -61.81,
+     -62.54
     ]
    }
   },
@@ -1080,28 +1084,24 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.0021,
+   "primaryValue": 0.00222,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -26.06,
+    "totalChange": -21.83,
     "data": [
-     null,
      0,
      -20.42,
      null,
      -16.9,
      -20.77,
-     -26.06
+     -26.06,
+     -21.83
     ]
    },
    "explicitModifiers": [
     {
      "text": "+1 to Level of all Alchemist's Boon Skills",
-     "optional": true
-    },
-    {
-     "text": "+1 to Level of all Artillery Ballista Skills",
      "optional": true
     },
     {
@@ -1449,7 +1449,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Pain Offering Skills",
+     "text": "+(1-2) to Level of all Pain Offering Skills",
      "optional": true
     },
     {
@@ -1473,7 +1473,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Ice-Tipped Arrows Skills",
+     "text": "+(1-2) to Level of all Ice-Tipped Arrows Skills",
      "optional": true
     },
     {
@@ -1590,6 +1590,38 @@
     },
     {
      "text": "+1 to Level of all Trinity Skills",
+     "optional": true
+    },
+    {
+     "text": "+(1-2) to Level of all Artillery Ballista Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Cast on Critical Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Feral Invocation Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Flame Breath Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Profane Ritual Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Spear of Solaris Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Storm Wave Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Whirling Slash Skills",
      "optional": true
     },
     {
