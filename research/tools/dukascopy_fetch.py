@@ -13,7 +13,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))); REPO = os.pa
 os.environ.setdefault("SSL_CERT_FILE", "/root/.ccr/ca-bundle.crt")
 H = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36", "Referer": "https://www.dukascopy.com/"}
 GAP = 20.0
-CRYPTO_SCALE = {"BTCUSD": 1e1, "ETHUSD": 1e3}   # docs/264 Q26: 2024-01 の先頭値で確認(BTC 424476 → 42,447.6)。ETH は取得後に桁を検証
+CRYPTO_SCALE = {"BTCUSD": 1e1, "ETHUSD": 1e1}   # docs/264 Q26: raw 先頭値で確認(BTC 2024-01 424476 → 42,447.6・ETH 2018-01 7266 → 726.6・2020-01 1267 → 126.7)
 def scale(code):
     if code in CRYPTO_SCALE: return CRYPTO_SCALE[code]
     fx = len(code) == 6 and code.isalpha() and not code.startswith(("XAU", "XAG"))
