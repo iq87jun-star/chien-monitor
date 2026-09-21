@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 8259,
+  "cumulative_cells": 8510,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -262,13 +262,13 @@
       "slug": "wed_swap_carry",
       "title": "水曜トリプルスワップ前のキャリー逆流",
       "cells": 75,
-      "status": "pending",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/264_next_queue_mechanism_first.md"
+        "docs/265_q20_wed_swap_carry.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 8・期待 4)。**基準では棄却**(最小 p = 0.001・閾値 6.0e-6)。ただし p < 0.05 が 8 本(偶然期待 4)で、**すべて W",
       "source": "docs/264"
     },
     {
@@ -276,13 +276,13 @@
       "slug": "index_overnight",
       "title": "指数のオーバーナイト・プレミアム",
       "cells": 54,
-      "status": "pending",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/264_next_queue_mechanism_first.md"
+        "docs/266_q21_index_overnight.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 0・期待 3)。p < 0.05 は 0 本(偶然期待 3)。夜間 LONG の最良は NAS100 19/31(+4.6 bps・OOS −1.1)で、文",
       "source": "docs/264"
     },
     {
@@ -290,13 +290,13 @@
       "slug": "cash_open_orb",
       "title": "現物寄り付きの初動レンジ・ブレイク",
       "cells": 36,
-      "status": "pending",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/264_next_queue_mechanism_first.md"
+        "docs/267_q22_cash_open_orb.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 0・期待 2)。p < 0.05 は 0 本(偶然期待 2)。最良は GER40 追随・クローズまで 24/39(+3.9 bps・OOS 11/20・+2",
       "source": "docs/264"
     },
     {
@@ -304,13 +304,13 @@
       "slug": "rebalance_days",
       "title": "指数リバランス日の引け前フロー(診断)",
       "cells": 30,
-      "status": "pending",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/264_next_queue_mechanism_first.md"
+        "docs/268_q23_rebalance_days.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 0・期待 2)。判定可能セル 0/30(登録時に承知)。診断値: MSCI 引け前 SHORT は EU 3 指数で 9/13・9/13・8/13 と揃うが",
       "source": "docs/264"
     },
     {
@@ -318,13 +318,13 @@
       "slug": "monthend_fix",
       "title": "月末ロンドンフィックス前後",
       "cells": 48,
-      "status": "pending",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/264_next_queue_mechanism_first.md"
+        "docs/269_q24_monthend_fix.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 1・期待 2)。p < 0.05 は 1 本(偶然期待 2)。EURJPY フィックス前 SHORT 26/39(p=0.027)だが OOS 7/20・−",
       "source": "docs/264"
     },
     {
@@ -332,13 +332,13 @@
       "slug": "xs_momentum_12_1",
       "title": "クロスセクション 12-1 モメンタム",
       "cells": 8,
-      "status": "pending",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/264_next_queue_mechanism_first.md"
+        "docs/270_q25_xs_momentum_12_1.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 0・期待 0)。p < 0.05 は 0 本。FX7 の 12-1(S=1)が 23/39・+15 bps/月・OOS 11/20・+17 と唯一 IS・O",
       "source": "docs/264"
     },
     {
@@ -668,6 +668,54 @@
       "date": "2026-09-22",
       "item": "prereg",
       "note": "docs/264 で Q20〜Q26(503 セル)を登録(ユーザー「登録」)。Q26 は BTC/ETH 取得後"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q20",
+      "cells": 75,
+      "cum_after": 8334,
+      "passed": 0,
+      "doc": "docs/265"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q21",
+      "cells": 54,
+      "cum_after": 8388,
+      "passed": 0,
+      "doc": "docs/266"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q22",
+      "cells": 36,
+      "cum_after": 8424,
+      "passed": 0,
+      "doc": "docs/267"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q23",
+      "cells": 30,
+      "cum_after": 8454,
+      "passed": 0,
+      "doc": "docs/268"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q24",
+      "cells": 48,
+      "cum_after": 8502,
+      "passed": 0,
+      "doc": "docs/269"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q25",
+      "cells": 8,
+      "cum_after": 8510,
+      "passed": 0,
+      "doc": "docs/270"
     }
   ]
 }
