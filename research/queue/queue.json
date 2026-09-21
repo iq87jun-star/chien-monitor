@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 6120,
+  "cumulative_cells": 6210,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -151,13 +151,13 @@
       "slug": "newsyms_h1_grid",
       "title": "新銘柄への時間帯格子(逐次)",
       "cells": 900,
-      "status": "in_progress",
+      "status": "done",
       "sessions_planned": 6,
-      "sessions_done": 8,
+      "sessions_done": 9,
       "docs": [
         "docs/255_newsyms_h1_grid_results.md"
       ],
-      "result": "第1〜15回(EURCHF/GBPCHF/AUDNZD/AUDCAD/BRENT/WTI/UK100/JP225/EUSTX50/US30/AUS200/HK50/BUND/USTBOND/DXY/XAGUSD/NZDCAD)1,530 セル通過 0。残り CADCHF/USDCAD は取得完了ごとに追記(docs/255)"
+      "result": "第1〜17回・19 銘柄・1,710 セル通過 0(p<0.05 は 1 本・期待 84)。時間帯格子は 38 銘柄・累積 6,210 で閉じる(docs/255 総括)"
     },
     {
       "id": "Q13",
@@ -462,6 +462,19 @@
       "date": "2026-09-21",
       "item": "prereg",
       "note": "docs/256 で Q13〜Q17(344 セル)を proposed 登録。ユーザー「登録」で pending へ"
+    },
+    {
+      "date": "2026-09-21",
+      "item": "Q12",
+      "round": 17,
+      "syms": [
+        "USDCAD"
+      ],
+      "cells": 90,
+      "cum_after": 6210,
+      "passed": 0,
+      "doc": "docs/255",
+      "note": "Q12 完了"
     }
   ]
 }
