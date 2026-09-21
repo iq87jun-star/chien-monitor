@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 6538,
+  "cumulative_cells": 6549,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -229,6 +229,33 @@
       ],
       "result": "通過 0(p<0.05 0 本・期待 3)。p < 0.05 は 0 本(偶然期待 3)。追随・逆行のどちら側も IS +月率が 5 割前後で、平均 bps は全セ",
       "source": "docs/256 §4(Silent Exit / TORURIPI)"
+    },
+    {
+      "id": "Q18",
+      "slug": "measured_cost_sess_retest",
+      "title": "bid/ask 実測コストと Sess 8 + A 案 S3 の再検定(診断)",
+      "cells": 11,
+      "status": "done",
+      "sessions_planned": 1,
+      "sessions_done": 1,
+      "docs": [
+        "docs/262_q18_measured_cost_sess_retest.md"
+      ],
+      "result": "実測往復は仮定 3pip の 1/3〜1/10(主要通貨)。Sess 8 は実測後も 8/8 負。A 案 S3 は出口 22 UTC の拡大で実測後 −1.0 bps"
+    },
+    {
+      "id": "Q19",
+      "slug": "measured_cost_h1_grid",
+      "title": "実測コスト版 H1 格子(旧 19 銘柄・別トラック)",
+      "cells": 1710,
+      "status": "proposed",
+      "sessions_planned": 2,
+      "sessions_done": 0,
+      "docs": [
+        "docs/262_q18_measured_cost_sess_retest.md"
+      ],
+      "result": "",
+      "source": "docs/262 §C"
     }
   ],
   "runs": [
@@ -521,6 +548,15 @@
       "cum_after": 6538,
       "passed": 0,
       "doc": "docs/261"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q18",
+      "cells": 11,
+      "cum_after": 6549,
+      "passed": 0,
+      "doc": "docs/262",
+      "note": "診断。Q19 を proposed 登録"
     }
   ]
 }
