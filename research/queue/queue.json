@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 8518,
+  "cumulative_cells": 8762,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -346,13 +346,13 @@
       "slug": "crypto_h1_grid",
       "title": "暗号資産の曜日×時間帯格子(BTC/ETH)",
       "cells": 252,
-      "status": "pending_data",
+      "status": "done",
       "sessions_planned": 1,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/264_next_queue_mechanism_first.md"
+        "docs/271_q26_crypto_h1_grid.md"
       ],
-      "result": "",
+      "result": "通過 0(p<0.05 2・期待 13)。週末効果なし。最良 BTC Mon 20-00 L は OOS 負",
       "source": "docs/264"
     },
     {
@@ -738,6 +738,14 @@
       "passed": 0,
       "doc": "docs/272",
       "note": "監視開始(forward/q20_monitor.py)"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q26",
+      "cells": 252,
+      "cum_after": 8762,
+      "passed": 0,
+      "doc": "docs/271"
     }
   ]
 }
