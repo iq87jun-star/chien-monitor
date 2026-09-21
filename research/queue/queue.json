@@ -1,5 +1,5 @@
 {
-  "cumulative_cells": 6549,
+  "cumulative_cells": 8259,
   "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
   "items": [
     {
@@ -248,13 +248,13 @@
       "slug": "measured_cost_h1_grid",
       "title": "実測コスト版 H1 格子(旧 19 銘柄・別トラック)",
       "cells": 1710,
-      "status": "proposed",
+      "status": "done",
       "sessions_planned": 2,
-      "sessions_done": 0,
+      "sessions_done": 1,
       "docs": [
-        "docs/262_q18_measured_cost_sess_retest.md"
+        "docs/263_q19_measured_cost_h1_grid.md"
       ],
-      "result": "",
+      "result": "通過 0・p<0.05 は 15(期待 86)。実測コストでも H1 格子は閉じる。上位は既知の Mon 円クロス LONG",
       "source": "docs/262 §C"
     }
   ],
@@ -557,6 +557,14 @@
       "passed": 0,
       "doc": "docs/262",
       "note": "診断。Q19 を proposed 登録"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q19",
+      "cells": 1710,
+      "cum_after": 8259,
+      "passed": 0,
+      "doc": "docs/263"
     }
   ]
 }
