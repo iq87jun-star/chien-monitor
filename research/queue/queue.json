@@ -256,6 +256,104 @@
       ],
       "result": "通過 0・p<0.05 は 15(期待 86)。実測コストでも H1 格子は閉じる。上位は既知の Mon 円クロス LONG",
       "source": "docs/262 §C"
+    },
+    {
+      "id": "Q20",
+      "slug": "wed_swap_carry",
+      "title": "水曜トリプルスワップ前のキャリー逆流",
+      "cells": 75,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/264_next_queue_mechanism_first.md"
+      ],
+      "result": "",
+      "source": "docs/264"
+    },
+    {
+      "id": "Q21",
+      "slug": "index_overnight",
+      "title": "指数のオーバーナイト・プレミアム",
+      "cells": 54,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/264_next_queue_mechanism_first.md"
+      ],
+      "result": "",
+      "source": "docs/264"
+    },
+    {
+      "id": "Q22",
+      "slug": "cash_open_orb",
+      "title": "現物寄り付きの初動レンジ・ブレイク",
+      "cells": 36,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/264_next_queue_mechanism_first.md"
+      ],
+      "result": "",
+      "source": "docs/264"
+    },
+    {
+      "id": "Q23",
+      "slug": "rebalance_days",
+      "title": "指数リバランス日の引け前フロー(診断)",
+      "cells": 30,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/264_next_queue_mechanism_first.md"
+      ],
+      "result": "",
+      "source": "docs/264"
+    },
+    {
+      "id": "Q24",
+      "slug": "monthend_fix",
+      "title": "月末ロンドンフィックス前後",
+      "cells": 48,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/264_next_queue_mechanism_first.md"
+      ],
+      "result": "",
+      "source": "docs/264"
+    },
+    {
+      "id": "Q25",
+      "slug": "xs_momentum_12_1",
+      "title": "クロスセクション 12-1 モメンタム",
+      "cells": 8,
+      "status": "pending",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/264_next_queue_mechanism_first.md"
+      ],
+      "result": "",
+      "source": "docs/264"
+    },
+    {
+      "id": "Q26",
+      "slug": "crypto_h1_grid",
+      "title": "暗号資産の曜日×時間帯格子(BTC/ETH)",
+      "cells": 252,
+      "status": "pending_data",
+      "sessions_planned": 1,
+      "sessions_done": 0,
+      "docs": [
+        "docs/264_next_queue_mechanism_first.md"
+      ],
+      "result": "",
+      "source": "docs/264"
     }
   ],
   "runs": [
@@ -565,6 +663,11 @@
       "cum_after": 8259,
       "passed": 0,
       "doc": "docs/263"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "prereg",
+      "note": "docs/264 で Q20〜Q26(503 セル)を登録(ユーザー「登録」)。Q26 は BTC/ETH 取得後"
     }
   ]
 }
