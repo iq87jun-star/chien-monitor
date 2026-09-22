@@ -221,7 +221,9 @@
 | 3. ロール跨ぎの SHORT を継続 | "You can take short positions and hold them overnight. **This will not be counted as swap-free abuse.** Regardless of which pair you trade." | ✅ 明記 |
 | 4. 事後変更・資金化後 | "Once you purchase the swap-free feature, it cannot be undone. And yes, if you pass and move to FundedNext Account, the swap-free feature will remain since you paid for it." | ✅ |
 
-**帰結**: 3・4 は書面で条件クリア。**1 の手数料の有無だけが逆の文になっている**ため、"no extra charge" の確認を取ってから docs/273 §3d の判定(採用検討)へ進む。確認が取れれば FN #14166201 はロール捕捉の受け皿になる(FN は 1 口座 1 EA のため NonFX EA へ内蔵)。
+**帰結**: 3・4 は書面で条件クリア。**1 の手数料の有無だけが逆の文になっている**ため、"no extra charge" の確認を取ってから docs/273 §3d の判定(採用検討)へ進む。
+
+再確認送信(2026-09-22 05:32 UTC・同スレッド・to support@ / cc tradingethics@・ユーザー承認「自動送信可」の再確認型): 「item 1 の文が二通りに読めるので、Swap-Free 口座(14166201)で日次ロール(NY 17 時)・水曜トリプル・週末を跨いで保有した場合に swap / financing / administration / holding fee が**一切無い**ことを書面で確認してほしい。あるなら金額と計算法を」。回答待ち(2 時間毎の Routine が転記)。確認が取れれば FN #14166201 はロール捕捉の受け皿になる(FN は 1 口座 1 EA のため NonFX EA へ内蔵)。
 
 ## 11.【2026-09-12・統合後の改訂版】次に口座を増やすなら — 候補と順位
 
