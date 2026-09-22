@@ -28,7 +28,7 @@ def main():
                 elif st == 200 and data: open(f, "wb").write(data)
                 else: print(f"  [{sym}] {ds} 取得失敗(st={st})", flush=True); continue
             done.add(ds); n_new += 1; mf.setdefault(key, {})["days"] = sorted(done)
-            if n_new % 20 == 0: json.dump(mf, open(MF, "w"), indent=1); print(f"  [{sym}] {ds} 済 (+{n_new})", flush=True)
+            if n_new % 20 == 0: print(f"  [{sym}] {ds} 済 (+{n_new})", flush=True)   # manifest は終了時のみ書く(raw の有無で再開できるため)
     save(mf, side, syms)
 def save(mf, side, syms):
     json.dump(mf, open(MF, "w"), indent=1)
