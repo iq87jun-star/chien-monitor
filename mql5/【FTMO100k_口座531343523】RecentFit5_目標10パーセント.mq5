@@ -19,7 +19,7 @@
 //| スリーブ(research/results/recentfit_sweep.json 2026-07-30 焼込):  |
 //|  S1: GBPUSD 月曜00:00UTC LONG 12h   (FIT PF3.38 t3.04 / REF PF1.59)|
 //|  S2: GBPJPY 月曜08:00UTC LONG 12h   (FIT PF2.79 t2.46 / REF PF1.99)|
-//|  S3: USDCHF 木曜16:00UTC SHORT 6h   (FIT PF2.58 t2.20 / REF PF2.15)|
+//|  S3: USDCHF 木曜16:00UTC SHORT 4h   (1.03〜。1.02 までは 6h=22UTC 決済) |
 //|  S4: GBPUSD D1 RSI(2) 30/70 逆張り 5日 (FIT PF2.98 / REF PF0.71⚠) |
 //|  S5: GBPJPY D1 RSI(2) 20/80 逆張り 3日 (FIT PF2.66 / REF PF1.00⚠) |
 //|  S4/S5は前年マイナス〜フラット=純粋な直近レジームベット。          |
@@ -37,7 +37,7 @@
 //|  規則失格0%。2.0%は速度優先オプションだが剥落時guard_stop25%)。    |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor recent-fit track"
-#property version   "1.02"
+#property version   "1.03"   // 1.03: S3 の保有時間を入力化(既定 4h = 20 UTC 決済。docs/262: 22 UTC 決済はスプレッド拡大で実測後 −1.0 bps、20 UTC なら +1.2 bps)
 #property strict
 #include <Trade/Trade.mqh>
 
@@ -62,7 +62,8 @@ input double InpLockClosePct      = 10.5;    // equity+この%で全決済・恒
 input group "=== スリーブ有効化 ==="
 input bool   InpS1_GbpUsdMon      = true;   // S1: GBPUSD 月曜00UTC L12h
 input bool   InpS2_GbpJpyMon      = true;   // S2: GBPJPY 月曜08UTC L12h
-input bool   InpS3_UsdChfThu      = true;   // S3: USDCHF 木曜16UTC S6h
+input bool   InpS3_UsdChfThu      = true;   // S3: USDCHF 木曜16UTC SHORT
+input int    InpS3HoldHours       = 4;      // S3 保有時間 h(1.02 までは 6=22UTC 決済。4=20UTC 決済でスプレッド拡大前に出る)
 input bool   InpS4_GbpUsdRsi      = true;   // S4: GBPUSD RSI2 30/70 5日
 input bool   InpS5_GbpJpyRsi      = true;   // S5: GBPJPY RSI2 20/80 3日
 
@@ -389,7 +390,7 @@ int OnInit()
    SleeveDef d;
    d.family=0; d.dow=0; d.hourUtc=0;  d.holdHours=12; d.dir=+1; d.rsiPeriod=0; d.rsiLo=0; d.rsiHi=0; d.holdDays=0; g_def[0]=d; // S1
    d.family=0; d.dow=0; d.hourUtc=8;  d.holdHours=12; d.dir=+1;                                              g_def[1]=d; // S2
-   d.family=0; d.dow=3; d.hourUtc=16; d.holdHours=6;  d.dir=-1;                                              g_def[2]=d; // S3
+   d.family=0; d.dow=3; d.hourUtc=16; d.holdHours=MathMax(1,MathMin(6,InpS3HoldHours)); d.dir=-1;                 g_def[2]=d; // S3(1.03: 入力化・既定 4h)
    d.family=1; d.dow=0; d.hourUtc=0; d.holdHours=0; d.dir=0; d.rsiPeriod=2; d.rsiLo=30; d.rsiHi=70; d.holdDays=5; g_def[3]=d; // S4
    d.family=1; d.rsiPeriod=2; d.rsiLo=20; d.rsiHi=80; d.holdDays=3;                                          g_def[4]=d; // S5
 
