@@ -20,7 +20,7 @@ def month_df(sym, side, y, m):
     st, data = dk.fetch(f"https://datafeed.dukascopy.com/datafeed/{sym}/{y}/{m-1:02d}/{side.upper()}_candles_hour_1.bi5"); time.sleep(dk.GAP)
     if st != 200 or not data: return None
     rows = dk.decode(data, sym, y, m); df = pd.DataFrame(rows, columns=["t", "open", "high", "low", "close", "volume"]).set_index("t"); df.to_csv(f); return df
-months = [(a.year, a.month) for a in pd.period_range(sys.argv[1] if len(sys.argv) > 1 else "2026-09", dt.date.today().strftime("%Y-%m"), freq="M")]
+months = [(a.year, a.month) for a in pd.period_range(sys.argv[1] if len(sys.argv) > 1 else "2026-09", sys.argv[2] if len(sys.argv) > 2 else dt.date.today().strftime("%Y-%m"), freq="M")]   # 第 2 引数 = 終了月(テスト用)
 out = []
 for (y, m) in months:
     per = {}; ctrl = {}
