@@ -41,7 +41,19 @@
 
 方針: 手法の中身を隠さず、しかし「ロール狙い」と自ら悪用の枠に入れない。聞くのは事実(料金・制限・規約の適用範囲)と、**書面での可否**。返答は docs/185 の書面台帳に記録する。送信はユーザーが行う(私は代理で本人確認・送信をしない)。
 
-### 3a. FundedNext(英語・support@fundednext.com、規約判断は tradingethics@fundednext.com)
+### 3a. FundedNext(英語)
+
+問い合わせ先(fundednext.com/contact・2026-09-22 確認):
+
+| 経路 | 宛先 | 備考 |
+|---|---|---|
+| メール | **support@fundednext.com** | 9/12 の "Re: CFD / Forex" スレッド(Richard)と同じ宛先。**同じスレッドに返信すると口座と経緯が紐づく** |
+| 規約の判断 | **tradingethics@fundednext.com** | 「悪用に当たるか」の判断はこちら(docs/185 §10b の出所)。support に送っても転送されるが、直接 CC する |
+| ライブチャット | ダッシュボード / サイト右下(Intercom・24/7・初回応答 25〜60 秒) | 書面として残すには最後に「この回答をメールで送ってください」と依頼 |
+| Telegram | @askfundednextbot | 補助 |
+| ヘルプセンター | help.fundednext.com | 規約記事の URL を回答に添えてもらう |
+
+推奨: メールで support@ 宛て、tradingethics@ を CC。件名に口座番号。
 
 件名: Swap-free account — rollover holding rules and fees (Account 14166201)
 
