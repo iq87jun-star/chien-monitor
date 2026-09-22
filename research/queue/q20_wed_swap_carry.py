@@ -17,15 +17,16 @@ RATES = {  # 政策金利(%)の変更日 → 水準(概算。BoJ は当座預金
 def rate_series(ccy, idx):
     s = pd.Series({pd.Timestamp(d): r for d, r in RATES[ccy]}).sort_index(); return s.reindex(idx.union(s.index)).ffill().reindex(idx)
 PAIRS = ["USDJPY", "EURJPY", "GBPJPY", "AUDJPY", "NZDJPY", "CADJPY", "CHFJPY", "AUDUSD", "NZDUSD", "USDCHF", "EURUSD", "GBPUSD", "EURGBP", "EURAUD", "GBPAUD"]
-cum = int(sys.argv[1]); R = Runner("Q20", cum, 75, "results/q20_wed_swap_carry.csv")
-for pair in PAIRS:
-    df = load(pair); selfcheck(pair, df); o = df["open"]; days = pd.DatetimeIndex(sorted(set(df.index.normalize())))
-    carry = (rate_series(pair[:3], days) - rate_series(pair[3:], days))
-    for dow, dlab, wins, gates in ((2, "Wed", [(16, 4), (20, 4)], ["gate1", "all"]), (1, "Tue", [(20, 4)], ["gate1"])):
-        for h0, span in wins:
-            t = o.index[(o.index.dayofweek == dow) & (o.index.hour == h0)]; cy = carry.reindex(t.normalize()).values
-            for g in gates:
-                m = (np.abs(cy) >= 1.0) if g == "gate1" else (cy != 0); m &= ~np.isnan(cy)
-                tt = t[m]; d = -np.sign(cy[m]); px_in = o.reindex(tt).values; px_out = o.reindex(tt + pd.Timedelta(hours=span)).values
-                R.add("水曜スワップ", pair, f"{dlab} {h0:02d}-{(h0+span)%24:02d}UTC {g} sign=-carry", trades(pair, tt, px_in, d, px_out))
-R.finish()
+if __name__ == "__main__":
+    cum = int(sys.argv[1]); R = Runner("Q20", cum, 75, "results/q20_wed_swap_carry.csv")
+    for pair in PAIRS:
+        df = load(pair); selfcheck(pair, df); o = df["open"]; days = pd.DatetimeIndex(sorted(set(df.index.normalize())))
+        carry = (rate_series(pair[:3], days) - rate_series(pair[3:], days))
+        for dow, dlab, wins, gates in ((2, "Wed", [(16, 4), (20, 4)], ["gate1", "all"]), (1, "Tue", [(20, 4)], ["gate1"])):
+            for h0, span in wins:
+                t = o.index[(o.index.dayofweek == dow) & (o.index.hour == h0)]; cy = carry.reindex(t.normalize()).values
+                for g in gates:
+                    m = (np.abs(cy) >= 1.0) if g == "gate1" else (cy != 0); m &= ~np.isnan(cy)
+                    tt = t[m]; d = -np.sign(cy[m]); px_in = o.reindex(tt).values; px_out = o.reindex(tt + pd.Timedelta(hours=span)).values
+                    R.add("水曜スワップ", pair, f"{dlab} {h0:02d}-{(h0+span)%24:02d}UTC {g} sign=-carry", trades(pair, tt, px_in, d, px_out))
+    R.finish()
