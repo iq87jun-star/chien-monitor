@@ -4,7 +4,7 @@
 raw キャッシュ data_dukascopy_m1/raw/<SYM>/<YYYY-MM-DD>_<side>.bi5、manifest.json に日単位の完了を記録。週末はスキップ。404 は空日として完了扱い。"""
 import os, sys, time, lzma, struct, json, datetime as dt, pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import dukascopy_fetch as dk
-dk.GAP = float(os.environ.get("DK_GAP", "8"))   # M1 は件数が多いので間隔を短縮(503 が増えれば DK_GAP で戻す)
+dk.GAP = float(os.environ.get("DK_GAP", "20"))   # 8 秒では 503 連鎖が増えたため 20 秒に戻す(DK_GAP で変更可)
 D = "data_dukascopy_m1"; os.makedirs(D + "/raw", exist_ok=True); MF = D + "/manifest.json"
 def load_mf(): return json.load(open(MF)) if os.path.exists(MF) else {}
 def decode_day(data, sym, day):
