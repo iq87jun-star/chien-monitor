@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8827,
+ "cumulative_cells": 8845,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -463,6 +463,20 @@
     "docs/283_q34_cb_predrift_results.md"
    ],
    "result": "0/8。FOMC 前は IS 21/26 (+42 bps, p=0.001) だが OOS 5/13・前窓 47% で消失"
+  },
+  {
+   "id": "Q35",
+   "slug": "vix_term_overnight",
+   "title": "VIX/VIX3M 期間構造 × 指数オーバーナイト LONG",
+   "cells": 18,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/284_backlog_q35_q39_prereg.md",
+    "docs/285_q35_vix_term_results.md"
+   ],
+   "result": "0/9(+再実行 9)。バックワーデーション後 5 日 L は IS 10/11 +250 bps だが年 3〜4 回・閾値未達"
   }
  ],
  "runs": [
@@ -906,6 +920,14 @@
    "cum_after": 8827,
    "doc": "docs/283",
    "note": "0 pass; FOMC IS-only"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q35",
+   "cells": 18,
+   "cum_after": 8845,
+   "doc": "docs/285",
+   "note": "0 pass; 21UTC bar gap → 20UTC rerun counted"
   }
  ]
 }
