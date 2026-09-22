@@ -210,6 +210,19 @@
 2. **docs/218 の記録用構成(1口座3 EA)はプロップ口座では不可。** FNmarkets 実弾かデモで行う。
 3. FNmarkets への質問は `support@fnmarkets.com` へ**新規メール**で送り直す(7月スレッドへの返信では FundedNext に届く)。
 
+### 10b-3.【2026-09-22】FundedNext サポート回答 — Swap-Free 口座(#14166201)のロール跨ぎ保有
+
+> 出所: support@fundednext.com・2026-09-22 03:19 UTC・スレッド "Re: Swap-free account — rollover holding rules and fees (Account 14166201)"(送信 01:39 UTC・docs/273 §3a の文面)。本文転記。
+
+| 質問 | 回答(原文) | 当方判定 |
+|---|---|---|
+| 1. ロール・週末跨ぎの手数料 | "Since you have a swap-free account, there is extra charge or fees for holding a trade overnight." | ⚠ **文が矛盾**("swap-free なので追加手数料が**ある**")。"no" の脱字の可能性が高いが、書面としては逆の意味。**再確認が必要**(下記の返信文) |
+| 2. 保有時間の制限 | "There is no specific holding time but you cannot hold them even after your cycle ends." サイクル末に利益なら全決済・残高リセット・出金可、損失なら全決済しサイクル延長 | ✅ 4 時間保有には無関係。資金化後のサイクル末(出金日)を跨ぐ建玉は自動決済される点だけ留意 |
+| 3. ロール跨ぎの SHORT を継続 | "You can take short positions and hold them overnight. **This will not be counted as swap-free abuse.** Regardless of which pair you trade." | ✅ 明記 |
+| 4. 事後変更・資金化後 | "Once you purchase the swap-free feature, it cannot be undone. And yes, if you pass and move to FundedNext Account, the swap-free feature will remain since you paid for it." | ✅ |
+
+**帰結**: 3・4 は書面で条件クリア。**1 の手数料の有無だけが逆の文になっている**ため、"no extra charge" の確認を取ってから docs/273 §3d の判定(採用検討)へ進む。確認が取れれば FN #14166201 はロール捕捉の受け皿になる(FN は 1 口座 1 EA のため NonFX EA へ内蔵)。
+
 ## 11.【2026-09-12・統合後の改訂版】次に口座を増やすなら — 候補と順位
 
 > 初版(統合前)は §7〜§9 の4社目調査を参照せずに書かれていた。本節はそれを取り込んだ改訂版。
