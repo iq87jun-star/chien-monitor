@@ -120,4 +120,4 @@
 |---|---|---|---|
 | **Fintokei** | 9/21 23:49 UTC(jpsupport@fintokei.com) | 9/22 00:33 UTC・**書面で条件クリア**(スイングのみ swap-free・追加費用なし・保有制限なし・ロール跨ぎ継続は違反でない・事後変更なし・プロ口座も同条件)。docs/220 §8 | **採用検討へ(Q28)**。ただし既存口座は対象外で、スイングの新規購入が要る(パール 500 万 ¥49,800 / ルビー 1,000 万 ¥84,800) |
 | FundedNext | 9/22 01:39 UTC(support@) | 9/22 03:19 UTC 回答(docs/185 §10b-3)。③ロール跨ぎ SHORT は "not swap-free abuse"・④資金化後も継続、は明記。**①手数料は "there is extra charge" と逆の文**(脱字の疑い) | ①の再確認後に採用検討。FN は 1 口座 1 EA |
-| FTMO | 9/21 23:51 UTC(support@ftmo.com) | 未回答 | 待ち |
+| FTMO | 9/21 23:51 UTC(support@ftmo.com) | 9/22 08:07 UTC 回答(docs/185 §10c): **Swap-Free は Islamic faith の顧客専用**。手数料・制限の質問は回答なし | **不採用**(§3d「通常口座のみ」)。FTMO 4 口座は現行 EA のまま・ロールレグは入れない |

@@ -225,6 +225,18 @@
 
 再確認送信(2026-09-22 05:32 UTC・同スレッド・to support@ / cc tradingethics@・ユーザー承認「自動送信可」の再確認型): 「item 1 の文が二通りに読めるので、Swap-Free 口座(14166201)で日次ロール(NY 17 時)・水曜トリプル・週末を跨いで保有した場合に swap / financing / administration / holding fee が**一切無い**ことを書面で確認してほしい。あるなら金額と計算法を」。回答待ち(2 時間毎の Routine が転記)。確認が取れれば FN #14166201 はロール捕捉の受け皿になる(FN は 1 口座 1 EA のため NonFX EA へ内蔵)。
 
+### 10c.【2026-09-22】FTMO サポート回答 — Swap-Free 口座は対象外
+
+> 出所: support@ftmo.com(Support Team)・2026-09-22 08:07 UTC・件名 "Re: Swap-free accounts — availability, fees and rollover holding rules - [GJV-XVHXN-709]"(送信 9/21 23:51 UTC・docs/273 §3b の文面)。本文転記。
+
+> "Unfortunately, **Swap-free accounts** are reserved exclusively for clients of the **Islamic faith.** If you have any other concerns, feel free to contact us again."
+
+| 質問 | 回答 | 当方判定 |
+|---|---|---|
+| 対象プラン・既存口座の転換 | 宗教上の理由(Islamic faith)の顧客専用 | ✗ **当方は申込対象外**。手数料・保有制限・悪用条項の質問は回答されず(前提が不成立のため) |
+
+**帰結**: FTMO 4 口座(531343523 / 521100397 / 531407058 / 531466484)は通常口座のまま。ロール捕捉レグ(docs/273・docs/276)は FTMO には入れない(通常口座では swap が相殺して期待値ゼロ・docs/272 §5)。再確認の返信は不要(曖昧さなし)。docs/273 §3d の「通常口座のみ」に該当 → 不採用、監視のみ。
+
 ## 11.【2026-09-12・統合後の改訂版】次に口座を増やすなら — 候補と順位
 
 > 初版(統合前)は §7〜§9 の4社目調査を参照せずに書かれていた。本節はそれを取り込んだ改訂版。
