@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8792,
+ "cumulative_cells": 8801,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -386,13 +386,14 @@
    "slug": "roll_ext_gold_em",
    "title": "ロール拡張: ゴールド/銀 Wed LONG(実測)+ EM 3 ペア(USDMXN/USDZAR/USDTRY)Wed LONG",
    "cells": 11,
-   "status": "in_progress",
+   "status": "done",
    "sessions_planned": 2,
-   "sessions_done": 1,
+   "sessions_done": 2,
    "docs": [
-    "docs/277_q29_q30_roll_ext_cot_extremes.md"
+    "docs/277_q29_q30_roll_ext_cot_extremes.md",
+    "docs/278_q29b_em_roll_results.md"
    ],
-   "result": "Q29a 0/2(XAUUSD 実測 +4.7 bps だが Thu 対照も同等 → 上昇相場)。Q29b は EM H1 取得後(Routine)"
+   "result": "0/11。Q29a: XAUUSD 実測 +4.7 bps だが Thu 対照も同等(上昇相場)。Q29b: EM 3 ペアは粗利 0〜5 bps で理論ロール(5〜33 bps)が出ず、往復 3〜7 bps で純負。ロール機構の裏付けは弱まった → Q28 は 10/1 監視を厳守"
   },
   {
    "id": "Q30",
@@ -809,6 +810,14 @@
    "cum_after": 8792,
    "doc": "docs/277",
    "note": "0 pass, 0 judged"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q29b",
+   "cells": 9,
+   "cum_after": 8801,
+   "doc": "docs/278",
+   "note": "0 pass; EM roll not observed"
   }
  ]
 }
