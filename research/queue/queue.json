@@ -367,6 +367,19 @@
         "docs/272_q27_q20_measured_jpy.md"
       ],
       "result": "実測後 +3.3〜+6.7 bps/取引・合成 24/32(2024〜)。全期間合成は前窓 0.43 で基準未達 → 候補入りせず監視(q20_monitor.py・12 ヶ月で 8/12 なら Q28)"
+    },
+    {
+      "id": "Q28",
+      "slug": "roll_leg_fintokei_swing",
+      "title": "ロール捕捉レグ(swap-free)— Fintokei スイングで Mon 4 と併走・EA7",
+      "cells": 0,
+      "status": "in_progress",
+      "sessions_planned": 3,
+      "sessions_done": 1,
+      "docs": [
+        "docs/276_q28_roll_leg_fintokei_swing.md"
+      ],
+      "result": "MC: Mon4 ×2.0 + Roll ×3 → 資金化 86.6% / 失格 0.3% / 中央 216 日。EA7 作成中"
     }
   ],
   "runs": [
@@ -746,6 +759,14 @@
       "cum_after": 8762,
       "passed": 0,
       "doc": "docs/271"
+    },
+    {
+      "date": "2026-09-22",
+      "item": "Q28",
+      "cells": 0,
+      "cum_after": 8762,
+      "doc": "docs/276",
+      "note": "実装項目。MC 校正・EA7"
     }
   ]
 }
