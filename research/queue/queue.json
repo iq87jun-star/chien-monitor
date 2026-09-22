@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8801,
+ "cumulative_cells": 8819,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -407,6 +407,48 @@
     "docs/277_q29_q30_roll_ext_cot_extremes.md"
    ],
    "result": "0/28。判定可能セル 0(極端値が稀)。COT は門でも単独でも不採用"
+  },
+  {
+   "id": "Q31",
+   "slug": "gold_sessions",
+   "title": "金属のセッション偏り(アジア L / ロンドン S / AM→PM fix S)",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/280_q31_q33_prereg.md",
+    "docs/281_q31_q33_results.md"
+   ],
+   "result": "0/6"
+  },
+  {
+   "id": "Q32",
+   "slug": "index_opex_week",
+   "title": "指数の OPEX 週 LONG",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/280_q31_q33_prereg.md",
+    "docs/281_q31_q33_results.md"
+   ],
+   "result": "0/6"
+  },
+  {
+   "id": "Q33",
+   "slug": "index_intraday_mom",
+   "title": "指数の日中モメンタム(第1時間→最終時間)",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/280_q31_q33_prereg.md",
+    "docs/281_q31_q33_results.md"
+   ],
+   "result": "0/6"
   }
  ],
  "runs": [
@@ -818,6 +860,30 @@
    "cum_after": 8801,
    "doc": "docs/278",
    "note": "0 pass; EM roll not observed"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q31",
+   "cells": 6,
+   "cum_after": 8807,
+   "doc": "docs/281",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q32",
+   "cells": 6,
+   "cum_after": 8813,
+   "doc": "docs/281",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q33",
+   "cells": 6,
+   "cum_after": 8819,
+   "doc": "docs/281",
+   "note": "0 pass"
   }
  ]
 }
