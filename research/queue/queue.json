@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8819,
+ "cumulative_cells": 8827,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -449,6 +449,20 @@
     "docs/281_q31_q33_results.md"
    ],
    "result": "0/6"
+  },
+  {
+   "id": "Q34",
+   "slug": "cb_predrift",
+   "title": "中銀会合前 24h の指数 LONG(FOMC/ECB/BoE/BoJ/RBA)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/282_q34_cb_predrift_prereg.md",
+    "docs/283_q34_cb_predrift_results.md"
+   ],
+   "result": "0/8。FOMC 前は IS 21/26 (+42 bps, p=0.001) だが OOS 5/13・前窓 47% で消失"
   }
  ],
  "runs": [
@@ -884,6 +898,14 @@
    "cum_after": 8819,
    "doc": "docs/281",
    "note": "0 pass"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q34",
+   "cells": 8,
+   "cum_after": 8827,
+   "doc": "docs/283",
+   "note": "0 pass; FOMC IS-only"
   }
  ]
 }
