@@ -34,6 +34,7 @@ def save(mf, side, syms):
     json.dump(mf, open(MF, "w"), indent=1)
     for sym in syms:
         rows = []
+        if not os.path.isdir(f"{D}/raw/{sym}"): continue
         for f in sorted(os.listdir(f"{D}/raw/{sym}")):
             if not f.endswith(f"_{side}.bi5") or os.path.getsize(f"{D}/raw/{sym}/{f}") == 0: continue
             day = pd.Timestamp(f[:10]); rows += [r for r in decode_day(open(f"{D}/raw/{sym}/{f}", "rb").read(), sym, day) if 14 <= r[0].hour < 17 or (r[0].hour == 17 and r[0].minute < 30)]
