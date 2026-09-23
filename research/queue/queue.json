@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8860,
+ "cumulative_cells": 8863,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -519,6 +519,20 @@
     "docs/287_q37_q39_family4_results.md"
    ],
    "result": "0/6(逆張りは全ペア負 = 継続)"
+  },
+  {
+   "id": "Q36",
+   "slug": "fix_reversal_m1",
+   "title": "フィックス前後(WMR/NY カット・M1)",
+   "cells": 12,
+   "status": "in_progress",
+   "sessions_planned": 4,
+   "sessions_done": 1,
+   "docs": [
+    "docs/284_backlog_q35_q39_prereg.md",
+    "docs/286_q36_fix_reversal_results.md"
+   ],
+   "result": "EURUSD 0/3。GBPUSD/USDJPY/AUDUSD は M1 取得後"
   }
  ],
  "runs": [
@@ -993,6 +1007,14 @@
    "cells": 6,
    "cum_after": 8860,
    "doc": "docs/287",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-23",
+   "item": "Q36 (EURUSD)",
+   "cells": 3,
+   "cum_after": 8863,
+   "doc": "docs/286",
    "note": "0 pass"
   }
  ]
