@@ -1,0 +1,75 @@
+# ブラウザ拡張「求人 年収チェッカー」のテストとChromeウェブストア自動提出。
+#   - job-extension/ を変更するPR: 単体テスト+E2Eテストのみ
+#   - タグ job-v0.1.0 形式のpush: テスト → zip作成 → ストアへアップロード+公開申請
+#
+# 初回の出品だけはダッシュボードで手動(job-extension/README.md 参照)。2回目以降の提出に使う。
+# Secrets(未設定ならzipをArtifactに置くだけでストア提出はスキップ):
+#   JOB_CWS_EXTENSION_ID … ストアのアイテムID(初回出品後に発行される32文字)
+#   CWS_CLIENT_ID / CWS_CLIENT_SECRET / CWS_REFRESH_TOKEN … Chrome Web Store API のOAuth認証情報
+#     (トレカ拡張と同じデベロッパーアカウントなら共用できる)
+
+name: job-extension-publish
+
+on:
+  push:
+    tags: ["job-v*"]
+  pull_request:
+    paths: ["job-extension/**", ".github/workflows/job-extension-publish.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-publish:
+    runs-on: ubuntu-latest
+    env:
+      CWS_EXTENSION_ID: ${{ secrets.JOB_CWS_EXTENSION_ID }}
+    defaults:
+      run:
+        working-directory: job-extension
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: job-extension/package-lock.json
+
+      - name: Install
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Unit tests
+        run: npm test
+
+      - name: E2E test (拡張をChromiumに読み込んで表示を確認)
+        run: npm run test:e2e
+
+      - name: Check tag matches manifest version
+        if: startsWith(github.ref, 'refs/tags/job-v')
+        run: |
+          version=$(node -p "require('./manifest.json').version")
+          if [ "job-v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "tag ${GITHUB_REF_NAME} does not match manifest version ${version}" >&2
+            exit 1
+          fi
+
+      - name: Pack
+        run: npm run pack
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: job-extension-zip
+          path: job-extension/dist/*.zip
+
+      - name: Upload & publish to Chrome Web Store
+        if: startsWith(github.ref, 'refs/tags/job-v') && env.CWS_EXTENSION_ID != ''
+        env:
+          EXTENSION_ID: ${{ secrets.JOB_CWS_EXTENSION_ID }}
+          CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
+          CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
+          REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}
+        run: npx --yes chrome-webstore-upload-cli@3 upload --source dist/*.zip --auto-publish

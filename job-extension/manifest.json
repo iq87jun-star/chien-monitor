@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "求人 年収チェッカー",
+  "short_name": "年収チェッカー",
+  "version": "0.1.0",
+  "description": "求人ページの給与欄から、年収の目安・時給換算・固定残業代を自動で計算して表示します。",
+  "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png" }
+  },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://employment.en-japan.com/*",
+        "https://doda.jp/*",
+        "https://tenshoku.mynavi.jp/*",
+        "https://next.rikunabi.com/*",
+        "https://jp.indeed.com/*",
+        "https://www.hellowork.mhlw.go.jp/*"
+      ],
+      "js": ["src/parser.js", "src/offers.js", "src/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
