@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node pipeline/gen-pages.mjs && node pipeline/export-ext.mjs",
+    "build": "vite build && node pipeline/gen-pages.mjs && node pipeline/export-ext.mjs && node pipeline/export-onepiece.mjs",
     "preview": "vite preview",
     "fetch": "node pipeline/fetch-data.mjs",
     "aggregate": "node pipeline/aggregate.mjs",

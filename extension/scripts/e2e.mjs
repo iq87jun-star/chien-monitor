@@ -15,6 +15,10 @@ const SHOTS_DIR = path.join(ROOT, "store", "screenshots");
 const takeShots = process.argv.includes("--shots");
 const fixture = await fs.readFile(path.join(ROOT, "test", "fixtures", "cards.json"), "utf8");
 const yugiohFixture = await fs.readFile(path.join(ROOT, "test", "fixtures", "yugioh.json"), "utf8");
+const onepieceFixture = await fs.readFile(
+  path.join(ROOT, "test", "fixtures", "onepiece.json"),
+  "utf8",
+);
 
 // 実サイトの構造に依存しない最小のモック(商品名は h1 から取る実装のため h1 だけ再現)
 const mockPage = (title, price) => `<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
@@ -48,6 +52,10 @@ const PAGES = {
     "遊戯王 真エクゾディア QCCP-JP001 25thシークレット",
     32000,
   ),
+  "https://jp.mercari.com/item/m10000000005": mockPage(
+    "ワンピースカード OP05-119 モンキー・D・ルフィ SEC コミパラ",
+    550000,
+  ),
   "https://jp.mercari.com/item/m10000000003": mockPage(
     "イーブイ ぬいぐるみ ポケモンセンター",
     2800,
@@ -73,6 +81,9 @@ try {
   );
   await context.route("https://pocketduel.tokyo/api/cards.json", (route) =>
     route.fulfill({ contentType: "application/json", body: yugiohFixture }),
+  );
+  await context.route("https://pokeca-kaigai.com/api/onepiece.json", (route) =>
+    route.fulfill({ contentType: "application/json", body: onepieceFixture }),
   );
   await context.route("https://jp.mercari.com/**", (route) => {
     const body = PAGES[route.request().url()];
@@ -122,13 +133,26 @@ try {
   console.log("ok - 遊戯王の出品で英語版の相場を表示");
   if (takeShots) await page.screenshot({ path: path.join(SHOTS_DIR, "3-yugioh.png") });
 
-  // 4) ポケカ・遊戯王以外: 表示しない
+  // 4) ワンピース: カード番号と版(コミパラ)で照合し、USD建ての相場とリンクなしを確認
+  await page.goto("https://jp.mercari.com/item/m10000000005");
+  await badge.locator(".card").waitFor({ timeout: 10000 });
+  const text5 = await badge.locator(".card").innerText();
+  assert.match(text5, /TCGplayer・ワンピース・英語版/);
+  assert.match(text5, /OP05-119 Monkey\.D\.Luffy/);
+  assert.match(text5, /コミパラ/);
+  // コミパラは2種(通常・再録)あるので価格幅で出る
+  assert.match(text5, /約¥[\d,]+〜¥[\d,]+/);
+  assert.equal(await badge.locator("a").count(), 0, "ランキングサイトが無いのでリンクは出さない");
+  console.log("ok - ワンピースの出品でカード番号と版から英語版の相場を表示");
+  if (takeShots) await page.screenshot({ path: path.join(SHOTS_DIR, "4-onepiece.png") });
+
+  // 5) 対応ゲーム以外: 表示しない
   await page.goto("https://jp.mercari.com/item/m10000000003");
   await page.waitForTimeout(1500);
   assert.equal(await badge.count(), 0, "グッズの出品にはバッジを出さないこと");
-  console.log("ok - ポケカ・遊戯王以外の出品には表示しない");
+  console.log("ok - 対応ゲーム以外の出品には表示しない");
 
-  // 5) 閉じるボタン
+  // 6) 閉じるボタン
   await page.goto("https://jp.mercari.com/item/m10000000001");
   await badge.locator(".card").waitFor({ timeout: 10000 });
   await badge.locator("button").click();
