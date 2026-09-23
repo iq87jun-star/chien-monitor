@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>求人 年収チェッカー</title>
+<style>
+  body { margin: 0; width: 260px; background: #fff; color: #1f2937;
+    font: 13px/1.6 'Hiragino Sans','Noto Sans JP','Yu Gothic',system-ui,sans-serif; }
+  .wrap { padding: 14px 16px; }
+  h1 { font-size: 14px; color: #0f766e; margin: 0 0 10px; }
+  label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .meta { color: #6b7280; font-size: 12px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>💴 求人 年収チェッカー</h1>
+  <label><input type="checkbox" id="enabled"> 求人ページに年収目安を表示する</label>
+  <div class="meta">対応: en転職 / doda / マイナビ転職 / リクナビNEXT / Indeed / ハローワーク<br>
+    計算はすべてブラウザ内で行い、閲覧内容は送信しません。</div>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>
