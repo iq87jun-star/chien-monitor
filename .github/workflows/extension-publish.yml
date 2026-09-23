@@ -56,13 +56,18 @@ jobs:
             exit 1
           fi
 
-      - name: Pack
+      - name: Pack (Chrome・Edge 用と Firefox 用)
         run: npm run pack
+
+      - name: Lint Firefox build (Mozilla の web-ext で AMO の審査基準を確認)
+        run: npx --yes web-ext@8 lint --source-dir dist/firefox-src --warnings-as-errors
 
       - uses: actions/upload-artifact@v4
         with:
           name: extension-zip
-          path: extension/dist/*.zip
+          path: |
+            extension/dist/*.zip
+            extension/dist/firefox/*.zip
 
       - name: Upload & publish to Chrome Web Store
         if: startsWith(github.ref, 'refs/tags/ext-v') && env.CWS_EXTENSION_ID != ''

@@ -94,6 +94,11 @@ npm run icons                 # アイコンを再生成
    ```
    → テスト → zip作成 → アップロード → 公開申請 まで自動(審査はGoogle側)
 
+## Edge・Firefox への出品
+
+`npm run pack` で Chrome・Edge 用のzip(`dist/*.zip`)と Firefox 用のzip(`dist/firefox/*.zip`)が両方できる。
+手順は [edge-firefox.md](store/edge-firefox.md) を参照(3つの拡張で共通)。
+
 ## 今後の拡張案
 
 - 対応ジャンル追加: 同じ形式のJSON(`game`・`label`・`keywords` 等つき)を出して

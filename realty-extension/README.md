@@ -59,6 +59,11 @@ npm run icons                 # アイコンを再生成
   プライバシーポリシーは https://pokeca-kaigai.com/realty-extension-privacy.html(`toreca/public/` に同居)
 - 自動提出のタグは `realty-v0.1.1` 形式、Secrets のアイテムIDは `REALTY_CWS_EXTENSION_ID`
 
+## Edge・Firefox への出品
+
+`npm run pack` で Chrome・Edge 用のzip(`dist/*.zip`)と Firefox 用のzip(`dist/firefox/*.zip`)が両方できる。
+手順は [edge-firefox.md](../extension/store/edge-firefox.md) を参照(3つの拡張で共通)。
+
 ## 収益化(紹介リンク)
 
 A8.net 等で引越し一括見積もり(賃貸向け)・住宅ローン比較・火災保険(購入向け)の広告に提携申請し、
