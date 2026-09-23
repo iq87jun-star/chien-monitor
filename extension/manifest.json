@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "ポケカ海外相場チェッカー",
+  "short_name": "ポケカ海外相場",
+  "version": "0.1.0",
+  "description": "メルカリ・ヤフオク・ラクマ・駿河屋の商品ページに、そのポケカ(日本語版)の海外相場(Cardmarket・円換算)を表示します。",
+  "homepage_url": "https://pokeca-kaigai.com/",
+  "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png" }
+  },
+  "background": { "service_worker": "src/background.js" },
+  "permissions": ["storage"],
+  "host_permissions": ["https://pokeca-kaigai.com/*"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://jp.mercari.com/*",
+        "https://auctions.yahoo.co.jp/*",
+        "https://page.auctions.yahoo.co.jp/*",
+        "https://item.fril.jp/*",
+        "https://www.suruga-ya.jp/product/*"
+      ],
+      "js": ["src/matcher.js", "src/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
