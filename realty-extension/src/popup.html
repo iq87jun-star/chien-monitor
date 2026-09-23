@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>物件 単価・月額チェッカー</title>
+<style>
+  body { margin: 0; width: 270px; background: #fff; color: #1f2937;
+    font: 13px/1.6 'Hiragino Sans','Noto Sans JP','Yu Gothic',system-ui,sans-serif; }
+  .wrap { padding: 14px 16px; }
+  h1 { font-size: 14px; color: #1d4ed8; margin: 0 0 10px; }
+  label { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 6px; }
+  input[type=number] { width: 64px; font: inherit; }
+  .meta { color: #6b7280; font-size: 12px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🏠 物件 単価・月額チェッカー</h1>
+  <label><input type="checkbox" id="enabled"> 物件ページに計算結果を表示する</label>
+  <label>ローン金利(年) <input type="number" id="loanRate" min="0" max="15" step="0.05"> %</label>
+  <label>返済期間 <input type="number" id="loanYears" min="1" max="50" step="1"> 年</label>
+  <div class="meta">購入物件の「月々の支払いの目安」は、価格の全額をこの条件で借りた場合で計算します。
+    計算はすべてブラウザ内で行い、閲覧内容は送信しません。</div>
+</div>
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "物件 単価・月額チェッカー",
+  "short_name": "物件チェッカー",
+  "version": "0.1.0",
+  "description": "物件ページの記載から、㎡・坪単価、実質の月額、初期費用の目安、ローン返済額、利回りを計算して表示します。",
+  "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
+  "action": {
+    "default_popup": "src/popup.html",
+    "default_icon": { "16": "icons/icon16.png", "48": "icons/icon48.png" }
+  },
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://suumo.jp/*",
+        "https://www.homes.co.jp/*",
+        "https://www.athome.co.jp/*",
+        "https://www.kenbiya.com/*",
+        "https://www.rakumachi.jp/*",
+        "https://www.chintai.net/*",
+        "https://realestate.yahoo.co.jp/*"
+      ],
+      "js": ["src/parser.js", "src/offers.js", "src/content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
