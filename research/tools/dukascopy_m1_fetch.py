@@ -14,22 +14,22 @@ def decode_day(data, sym, day):
     return rows
 def main():
     side = sys.argv[1]; syms = sys.argv[2].split(","); d0 = pd.Timestamp(sys.argv[3]); d1 = pd.Timestamp(sys.argv[4]); budget = float(sys.argv[5]) * 60 if len(sys.argv) > 5 else 1e12; t0 = time.time()
-    mf = load_mf(); n_new = 0
+    mf = load_mf(); n_new = 0; touched = set()
     for sym in syms:
         key = f"{sym}|{side}"; done = set(mf.get(key, {}).get("days", [])); os.makedirs(f"{D}/raw/{sym}", exist_ok=True)
         for day in pd.bdate_range(d0, d1):
             ds = day.strftime("%Y-%m-%d")
             if ds in done: continue
-            if time.time() - t0 > budget: print(f"[予算] {sys.argv[5]} 分に到達 → 終了", flush=True); save(mf, side, syms); return
+            if time.time() - t0 > budget: print(f"[予算] {sys.argv[5]} 分に到達 → 終了", flush=True); save(mf, side, syms if budget == 0 else sorted(touched)); return
             f = f"{D}/raw/{sym}/{ds}_{side}.bi5"
             if not os.path.exists(f):
                 st, data = dk.fetch(f"https://datafeed.dukascopy.com/datafeed/{sym}/{day.year}/{day.month - 1:02d}/{day.day:02d}/{side.upper()}_candles_min_1.bi5"); time.sleep(dk.GAP)
                 if st == 404: open(f, "wb").write(b"")
                 elif st == 200 and data: open(f, "wb").write(data)
                 else: print(f"  [{sym}] {ds} 取得失敗(st={st})", flush=True); continue
-            done.add(ds); n_new += 1; mf.setdefault(key, {})["days"] = sorted(done)
+            done.add(ds); n_new += 1; touched.add(sym); mf.setdefault(key, {})["days"] = sorted(done)
             if n_new % 20 == 0: print(f"  [{sym}] {ds} 済 (+{n_new})", flush=True)   # manifest は終了時のみ書く(raw の有無で再開できるため)
-    save(mf, side, syms)
+    save(mf, side, sorted(touched) if touched else [])
 def save(mf, side, syms):
     json.dump(mf, open(MF, "w"), indent=1)
     for sym in syms:
