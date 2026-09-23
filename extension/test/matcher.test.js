@@ -20,7 +20,7 @@ test("型番つきタイトルは1枚に特定できる", () => {
   assert.equal(hits[0].exact, true);
   assert.deepEqual(ids(hits[0]), ["M4-120"]);
   const eur = data.cards.find(([set, no]) => set === "M4" && no === "120")[3];
-  assert.equal(M.toJpy(index, hits[0].cards[0].eur), Math.round(eur * data.eurJpy));
+  assert.equal(M.toJpy(index, hits[0].cards[0].price), Math.round(eur * data.eurJpy));
 });
 
 test("全角英数・ひらがな・空白の揺れを吸収する", () => {
@@ -101,6 +101,6 @@ test("データ形式が違う・欠如時はインデックスを作らない",
 });
 
 test("7日平均比", () => {
-  assert.equal(M.change7d({ eur: 110, avg7: 100 }), 10);
-  assert.equal(M.change7d({ eur: 1, avg7: null }), null);
+  assert.equal(M.change7d({ price: 110, avg7: 100 }), 10);
+  assert.equal(M.change7d({ price: 1, avg7: null }), null);
 });

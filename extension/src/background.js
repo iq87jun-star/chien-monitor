@@ -4,6 +4,8 @@
 const SOURCES = [
   { id: "pokeca", url: "https://pokeca-kaigai.com/api/cards.json" },
   { id: "yugioh", url: "https://pocketduel.tokyo/api/cards.json" },
+  // ワンピース用サイトが未公開のため、ポケカのサイトから配信している
+  { id: "onepiece", url: "https://pokeca-kaigai.com/api/onepiece.json" },
 ];
 const CACHE_TTL_MS = 6 * 3600e3; // サイト側の更新は1日2回なので6時間で十分
 

@@ -1,7 +1,8 @@
 // 商品タイトルとカード価格データの突き合わせ(純粋関数のみ・DOM非依存)。
 // content script(クラシックスクリプト)と node:test の両方から読み込むため、
 // export は使わず globalThis.PokecaMatcher に公開する。
-// データ形式は toreca/pipeline/export-ext.mjs と duel/pipeline/export-ext.mjs(v1)と対応。
+// データ形式は toreca/pipeline/export-ext.mjs・export-onepiece.mjs と duel/pipeline/export-ext.mjs
+// (v1)と対応。
 // 1つの価格データ(=1ゲーム)ごとにインデックスを作り、ゲームごとに照合する。
 (() => {
   const FORMAT_VERSION = 1;
@@ -44,8 +45,8 @@
   // データ側で指定できる表示・判定用の項目だけを取り出す
   const pick = (data) =>
     Object.fromEntries(
-      ["game", "label", "siteUrl", "keywords", "disclaimer"]
-        .filter((k) => data[k] != null)
+      ["game", "label", "source", "currency", "siteUrl", "keywords", "disclaimer"]
+        .filter((k) => data[k] !== undefined)
         .map((k) => [k, data[k]]),
     );
 
@@ -53,30 +54,43 @@
   const POKECA_DEFAULTS = {
     game: "pokeca",
     label: "日本語版",
+    source: "Cardmarket",
+    currency: "EUR",
     siteUrl: "https://pokeca-kaigai.com/",
     keywords: ["ポケカ", "ポケモンカード", "pokemoncard", "pokemontcg"],
     disclaimer: "欧州の取引平均を円換算した参考値です",
   };
 
   // 価格データから照合用インデックスを作る(取得のたびに1回だけ)。
-  // カード行: [setId, localId, 名前(文字列、または別名の配列で先頭が表示名), eur, avg7, avg30, 補足]
+  // カード行: [setId, localId, 名前(文字列、または別名の配列で先頭が表示名), 価格, avg7, avg30,
+  //            補足, 版]。価格の通貨はデータの currency(既定はEUR)
+  // matchBy: "code" のデータ(ワンピース)は名前ではなく localId(カード番号)で照合する
   function buildIndex(data) {
     if (!data || data.v !== FORMAT_VERSION || !data.available) return null;
     const meta = { ...POKECA_DEFAULTS, ...pick(data) };
+    const byCode = data.matchBy === "code" ? new Map() : null;
+    const variantLabels = data.variantLabels ?? {};
     const setNames = new Map(data.sets.map((s) => [s.id, s.name]));
     const byName = new Map();
-    for (const [setId, localId, nameOrNames, eur, avg7, avg30, note] of data.cards) {
+    for (const [setId, localId, nameOrNames, price, avg7, avg30, note, variant] of data.cards) {
       const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames];
       const card = {
         setId,
         setName: setNames.get(setId) ?? setId,
         localId,
         name: names[0],
-        eur,
+        price,
         avg7,
         avg30,
         note: note ?? null,
+        variant: variant ?? null,
+        variantLabel: variant ? (variantLabels[variant] ?? variant) : null,
       };
+      if (byCode) {
+        if (!byCode.has(localId)) byCode.set(localId, []);
+        byCode.get(localId).push(card);
+        continue;
+      }
       for (const key of new Set(names.map(normalize))) {
         if (key.length < MIN_NAME_LENGTH) continue;
         if (!byName.has(key)) byName.set(key, []);
@@ -89,7 +103,12 @@
       ...meta,
       keywords: meta.keywords.map(normalize),
       codeRe: data.codePattern ? new RegExp(data.codePattern, "i") : null,
-      eurJpy: data.eurJpy,
+      codeReAll: data.codePattern ? new RegExp(data.codePattern, "gi") : null,
+      byCode,
+      variantRules: (data.variantRules ?? []).map(([tag, re]) => [tag, new RegExp(re, "i")]),
+      defaultVariant: data.defaultVariant ?? null,
+      // 1通貨単位あたりの円(ポケカ・遊戯王はEUR建ての eurJpy、ワンピースはUSD建ての rateJpy)
+      rateJpy: data.rateJpy ?? data.eurJpy,
       fetchedAt: data.fetchedAt,
       byName,
       names,
@@ -145,12 +164,32 @@
     return index.sets.some((s) => s.nameKeys.some((k) => text.includes(k)));
   }
 
+  // カード番号で照合する(ワンピース)。タイトルの語(パラレル・コミパラ・SP等)で版を選び、
+  // 版の語が無ければ通常版とみなす。指定の版がデータに無ければ全版を候補にする
+  function matchByCode(index, title) {
+    const plain = String(title).normalize("NFKC");
+    const codes = [...new Set([...plain.matchAll(index.codeReAll)].map((m) => m[0].toUpperCase()))];
+    if (codes.length === 0 || codes.length > MAX_DISTINCT_NAMES) return null;
+    const lower = plain.toLowerCase();
+    const wanted = index.variantRules.find(([, re]) => re.test(lower))?.[0] ?? index.defaultVariant;
+    const results = [];
+    for (const code of codes) {
+      const all = index.byCode.get(code);
+      if (!all) continue;
+      const same = all.filter((c) => c.variant === wanted);
+      const cards = [...(same.length > 0 ? same : all)].sort((a, b) => b.price - a.price);
+      results.push({ name: `${code} ${cards[0].name}`, cards, exact: cards.length === 1 });
+    }
+    return results.length > 0 ? results : null;
+  }
+
   // タイトルから該当カード候補を探す。
   // 戻り値: null(該当なし・まとめ売り)または [{ name, cards, exact }]
   function match(index, title) {
     if (!index) return null;
     const text = normalize(title);
     if (!text || !isCardListing(index, title)) return null;
+    if (index.byCode) return matchByCode(index, title);
 
     // 長い名前から順に照合し、既に採用した範囲に含まれる短い名前は捨てる
     const taken = [];
@@ -188,7 +227,7 @@
       // 番号で絞り込む(番号が一致しない場合は表記揺れもあるので絞り込まずに残す)
       const byNo = cards.filter((c) => numbers.has(padNo(c.localId)));
       if (byNo.length > 0) cards = byNo;
-      cards = [...cards].sort((a, b) => b.eur - a.eur);
+      cards = [...cards].sort((a, b) => b.price - a.price);
       // 別名(漢字名と読み仮名)が両方タイトルにある場合の重複を除く
       if (results.some((r) => r.cards[0] === cards[0])) continue;
       results.push({ name: cards[0].name, cards, exact: cards.length === 1 });
@@ -196,11 +235,11 @@
     return results.length > 0 ? results : null;
   }
 
-  const toJpy = (index, eur) => (eur == null ? null : Math.round(eur * index.eurJpy));
+  const toJpy = (index, price) => (price == null ? null : Math.round(price * index.rateJpy));
 
   // 直近価格の7日平均比(%)。7日平均が無ければnull
   const change7d = (card) =>
-    card.avg7 ? Math.round(((card.eur - card.avg7) / card.avg7) * 1000) / 10 : null;
+    card.avg7 ? Math.round(((card.price - card.avg7) / card.avg7) * 1000) / 10 : null;
 
   globalThis.PokecaMatcher = {
     FORMAT_VERSION,

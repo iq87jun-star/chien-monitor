@@ -2,7 +2,7 @@
 const enabledBox = document.getElementById("enabled");
 const statusEl = document.getElementById("status");
 
-const GAME_NAMES = { pokeca: "ポケカ", yugioh: "遊戯王" };
+const GAME_NAMES = { pokeca: "ポケカ", yugioh: "遊戯王", onepiece: "ワンピース" };
 
 function showStatus(all) {
   if (!all?.length) {

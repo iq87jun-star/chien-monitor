@@ -12,7 +12,8 @@
   let dismissedUrl = "";
 
   const yen = (n) => (n == null ? "-" : `¥${n.toLocaleString("ja-JP")}`);
-  const eur = (n) => (n == null ? "-" : `€${n.toFixed(2)}`);
+  const SYMBOLS = { EUR: "€", USD: "$" };
+  const money = (index, n) => (n == null ? "-" : `${SYMBOLS[index.currency] ?? ""}${n.toFixed(2)}`);
 
   // 商品名を取る: h1 が最も確実(メルカリ・ヤフオク・駿河屋・ラクマ共通)。無ければ <title>
   function productTitle() {
@@ -39,9 +40,11 @@
     return el("span", { class: `chg ${cls}` }, `7日平均比 ${pct > 0 ? "+" : ""}${pct}%`);
   }
 
-  // カードの補足: ポケカはセット名と番号、遊戯王は英語名
+  // カードの補足: ポケカはセット名と番号、遊戯王は英語名、ワンピースは版(パラレル等)
   const cardMeta = (c) =>
-    c.setId ? `${c.setName} ${c.localId}` : c.note ? `英語名: ${c.note}` : "";
+    c.setId
+      ? `${c.setName} ${c.localId}`
+      : [c.note && `英語名: ${c.note}`, c.variantLabel].filter(Boolean).join("・");
 
   function hitNode(index, hit) {
     const top = hit.cards[0];
@@ -53,24 +56,30 @@
         el(
           "div",
           { class: "price" },
-          el("b", {}, `約${yen(M.toJpy(index, top.eur))}`),
-          el("span", { class: "sub" }, ` (${eur(top.eur)})`),
+          el("b", {}, `約${yen(M.toJpy(index, top.price))}`),
+          el("span", { class: "sub" }, ` (${money(index, top.price)})`),
           " ",
           changeNode(top),
         ),
       );
     } else {
       // 同名カードが複数ある場合は価格幅と上位候補を出す(型番を書かない出品が多いため)
-      const prices = hit.cards.map((c) => c.eur);
+      const prices = hit.cards.map((c) => c.price);
       const lo = M.toJpy(index, Math.min(...prices));
       const hi = M.toJpy(index, Math.max(...prices));
       box.append(
         el("div", { class: "price" }, el("b", {}, `約${yen(lo)}〜${yen(hi)}`)),
-        el("div", { class: "meta" }, `同名カード${hit.cards.length}種(型番で絞り込めます)`),
+        el(
+          "div",
+          { class: "meta" },
+          index.byCode
+            ? `候補${hit.cards.length}件(再録・加工違い等)`
+            : `同名カード${hit.cards.length}種(型番で絞り込めます)`,
+        ),
       );
       const list = el("ul");
       for (const c of hit.cards.slice(0, MAX_CANDIDATES)) {
-        list.append(el("li", {}, `${cardMeta(c)}: 約${yen(M.toJpy(index, c.eur))}`));
+        list.append(el("li", {}, `${cardMeta(c)}: 約${yen(M.toJpy(index, c.price))}`));
       }
       box.append(list);
     }
@@ -109,19 +118,22 @@
       removeBadge();
     });
     const updated = index.fetchedAt ? new Date(index.fetchedAt).toLocaleDateString("ja-JP") : "";
-    const link = el(
-      "a",
-      {
-        href: `${index.siteUrl}?utm_source=extension&utm_medium=badge`,
-        target: "_blank",
-        rel: "noopener",
-      },
-      "高騰・下落ランキングを見る →",
-    );
+    // ランキングサイトが無いゲーム(ワンピース)はリンクを出さない
+    const link = index.siteUrl
+      ? el(
+          "a",
+          {
+            href: `${index.siteUrl}?utm_source=extension&utm_medium=badge`,
+            target: "_blank",
+            rel: "noopener",
+          },
+          "高騰・下落ランキングを見る →",
+        )
+      : "";
     const card = el(
       "div",
-      { class: "card", role: "complementary", "aria-label": "ポケカ海外相場" },
-      el("div", { class: "head" }, `🌍 海外相場(Cardmarket・${index.label})`, close),
+      { class: "card", role: "complementary", "aria-label": "トレカ海外相場" },
+      el("div", { class: "head" }, `🌍 海外相場(${index.source}・${index.label})`, close),
       ...hits.map((hit) => hitNode(index, hit)),
       el("div", { class: "foot" }, link, el("div", {}, `${updated}更新・${index.disclaimer}`)),
     );
