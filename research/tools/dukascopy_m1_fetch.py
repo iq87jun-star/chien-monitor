@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Dukascopy の日次 M1 ローソク(BID/ASK_candles_min_1.bi5)を取得し、14:00〜17:30 UTC だけを残して data_dukascopy_m1/<SYM>_<side>_m1_1400_1730.csv.gz に保存(docs/284 家族 2: フィックス前後)。
+"""Dukascopy の日次 M1 ローソク(BID/ASK_candles_min_1.bi5)を取得し、13:30〜17:30 UTC だけを残して data_dukascopy_m1/<SYM>_<side>_m1_1400_1730.csv.gz に保存(docs/284 家族 2: フィックス前後)。
 使い方: python3 tools/dukascopy_m1_fetch.py bid EURUSD,GBPUSD,USDJPY,AUDUSD 2024-01-01 2026-08-31 <予算分>
 raw キャッシュ data_dukascopy_m1/raw/<SYM>/<YYYY-MM-DD>_<side>.bi5、manifest.json に日単位の完了を記録。週末はスキップ。404 は空日として完了扱い。"""
 import os, sys, time, lzma, struct, json, datetime as dt, pandas as pd
@@ -37,7 +37,7 @@ def save(mf, side, syms):
         if not os.path.isdir(f"{D}/raw/{sym}"): continue
         for f in sorted(os.listdir(f"{D}/raw/{sym}")):
             if not f.endswith(f"_{side}.bi5") or os.path.getsize(f"{D}/raw/{sym}/{f}") == 0: continue
-            day = pd.Timestamp(f[:10]); rows += [r for r in decode_day(open(f"{D}/raw/{sym}/{f}", "rb").read(), sym, day) if 14 <= r[0].hour < 17 or (r[0].hour == 17 and r[0].minute < 30)]
+            day = pd.Timestamp(f[:10]); rows += [r for r in decode_day(open(f"{D}/raw/{sym}/{f}", "rb").read(), sym, day) if (r[0].hour == 13 and r[0].minute >= 30) or 14 <= r[0].hour < 17 or (r[0].hour == 17 and r[0].minute < 30)]   # 13:30〜17:30(NY カット 14:00 の直前 30 分を含む)
         if rows:
             df = pd.DataFrame(rows, columns=["timestamp", "open", "high", "low", "close", "volume"]); df.to_csv(f"{D}/{sym}_{side}_m1_1400_1730.csv.gz", index=False)
             print(f"[{sym}] {side} M1 rows={len(df)} days={len(mf.get(f'{sym}|{side}', {}).get('days', []))} → {D}/{sym}_{side}_m1_1400_1730.csv.gz", flush=True)
