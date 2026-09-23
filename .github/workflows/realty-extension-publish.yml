@@ -1,20 +1,20 @@
-# ブラウザ拡張「求人 年収チェッカー」のテストとChromeウェブストア自動提出。
-#   - job-extension/ を変更するPR: 単体テスト+E2Eテストのみ
-#   - タグ job-v0.1.0 形式のpush: テスト → zip作成 → ストアへアップロード+公開申請
+# ブラウザ拡張「物件 単価・月額チェッカー」のテストとChromeウェブストア自動提出。
+#   - realty-extension/ を変更するPR: 単体テスト+E2Eテストのみ
+#   - タグ realty-v0.1.0 形式のpush: テスト → zip作成 → ストアへアップロード+公開申請
 #
-# 初回の出品だけはダッシュボードで手動(job-extension/README.md 参照)。2回目以降の提出に使う。
+# 初回の出品だけはダッシュボードで手動(realty-extension/README.md 参照)。2回目以降の提出に使う。
 # Secrets(未設定ならzipをArtifactに置くだけでストア提出はスキップ):
-#   JOB_CWS_EXTENSION_ID … ストアのアイテムID(初回出品後に発行される32文字)
+#   REALTY_CWS_EXTENSION_ID … ストアのアイテムID(初回出品後に発行される32文字)
 #   CWS_CLIENT_ID / CWS_CLIENT_SECRET / CWS_REFRESH_TOKEN … Chrome Web Store API のOAuth認証情報
 #     (トレカ拡張と同じデベロッパーアカウントなら共用できる)
 
-name: job-extension-publish
+name: realty-extension-publish
 
 on:
   push:
-    tags: ["job-v*"]
+    tags: ["realty-v*"]
   pull_request:
-    paths: ["job-extension/**", ".github/workflows/job-extension-publish.yml"]
+    paths: ["realty-extension/**", ".github/workflows/realty-extension-publish.yml"]
   workflow_dispatch:
 
 permissions:
@@ -24,10 +24,10 @@ jobs:
   test-and-publish:
     runs-on: ubuntu-latest
     env:
-      CWS_EXTENSION_ID: ${{ secrets.JOB_CWS_EXTENSION_ID }}
+      CWS_EXTENSION_ID: ${{ secrets.REALTY_CWS_EXTENSION_ID }}
     defaults:
       run:
-        working-directory: job-extension
+        working-directory: realty-extension
     steps:
       - uses: actions/checkout@v4
 
@@ -35,7 +35,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: job-extension/package-lock.json
+          cache-dependency-path: realty-extension/package-lock.json
 
       - name: Install
         run: |
@@ -49,10 +49,10 @@ jobs:
         run: npm run test:e2e
 
       - name: Check tag matches manifest version
-        if: startsWith(github.ref, 'refs/tags/job-v')
+        if: startsWith(github.ref, 'refs/tags/realty-v')
         run: |
           version=$(node -p "require('./manifest.json').version")
-          if [ "job-v${version}" != "${GITHUB_REF_NAME}" ]; then
+          if [ "realty-v${version}" != "${GITHUB_REF_NAME}" ]; then
             echo "tag ${GITHUB_REF_NAME} does not match manifest version ${version}" >&2
             exit 1
           fi
@@ -65,15 +65,15 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: job-extension-zip
+          name: realty-extension-zip
           path: |
-            job-extension/dist/*.zip
-            job-extension/dist/firefox/*.zip
+            realty-extension/dist/*.zip
+            realty-extension/dist/firefox/*.zip
 
       - name: Upload & publish to Chrome Web Store
-        if: startsWith(github.ref, 'refs/tags/job-v') && env.CWS_EXTENSION_ID != ''
+        if: startsWith(github.ref, 'refs/tags/realty-v') && env.CWS_EXTENSION_ID != ''
         env:
-          EXTENSION_ID: ${{ secrets.JOB_CWS_EXTENSION_ID }}
+          EXTENSION_ID: ${{ secrets.REALTY_CWS_EXTENSION_ID }}
           CLIENT_ID: ${{ secrets.CWS_CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CWS_CLIENT_SECRET }}
           REFRESH_TOKEN: ${{ secrets.CWS_REFRESH_TOKEN }}

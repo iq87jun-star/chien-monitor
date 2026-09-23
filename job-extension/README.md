@@ -61,6 +61,11 @@ npm run icons                 # アイコンを再生成
 - 自動提出のタグは `job-v0.1.1` 形式、Secrets のアイテムIDは `JOB_CWS_EXTENSION_ID`
   (OAuth の `CWS_CLIENT_ID` 等はトレカ拡張と共用できる)
 
+## Edge・Firefox への出品
+
+`npm run pack` で Chrome・Edge 用のzip(`dist/*.zip`)と Firefox 用のzip(`dist/firefox/*.zip`)が両方できる。
+手順は [edge-firefox.md](../extension/store/edge-firefox.md) を参照(3つの拡張で共通)。
+
 ## 収益化(紹介リンク)
 
 1. A8.net・afb 等のASPに登録し、転職エージェント・転職サイトの広告に提携申請する

@@ -1,6 +1,6 @@
 // ストア提出用zipを dist/ に作る(manifest・src・icons のみ。テストや開発用ファイルは含めない)
-//   dist/job-salary-checker-<version>.zip                 … Chrome ウェブストア・Edge アドオン用(同じzip)
-//   dist/firefox/job-salary-checker-<version>-firefox.zip … Firefox アドオン(AMO)用
+//   dist/realty-price-checker-<version>.zip                 … Chrome ウェブストア・Edge アドオン用(同じzip)
+//   dist/firefox/realty-price-checker-<version>-firefox.zip … Firefox アドオン(AMO)用
 // Firefox 用は manifest だけを変える: アドオンID・データ収集の申告(AMO で新規登録に必須)を加え、
 // Firefox が未対応の background.service_worker を background.scripts に置き換える。
 // 中身を確かめる時は dist/firefox-src を `npx web-ext lint -s dist/firefox-src` で検査する。
@@ -9,8 +9,8 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-const NAME = "job-salary-checker";
-const GECKO_ID = "job-salary-checker@pokeca-kaigai.com";
+const NAME = "realty-price-checker";
+const GECKO_ID = "realty-price-checker@pokeca-kaigai.com";
 const FILES = ["manifest.json", "src", "icons"];
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
