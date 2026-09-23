@@ -11,6 +11,8 @@ import {
   FX_URL,
   SET_CANDIDATES,
   MONITOR_SETS,
+  EXTRA_SETS,
+  SET_NAME_OVERRIDES,
   PROBE_CARDS,
   FETCH_CONCURRENCY,
 } from "./config.mjs";
@@ -126,19 +128,26 @@ export async function fetchAll() {
     return { ok: false };
   }
 
+  const today = new Date().toISOString().slice(0, 10);
+  const released = (d) => d?.releaseDate && d.releaseDate <= today && d.cards?.length > 0;
+  const fetchSet = async (id) => {
+    const detail = await fetchJson(`${TCGDEX_BASE}/sets/${encodeURIComponent(id)}`);
+    if (SET_NAME_OVERRIDES[detail.id]) detail.name = SET_NAME_OVERRIDES[detail.id];
+    return detail;
+  };
+
   // 候補セットの詳細を取り、「発売済み(releaseDate <= 今日)かつ価格が付いている」
   // 新しい順に MONITOR_SETS 件選ぶ。価格の有無はセット内から数枚を試し取りして判定する
   // (最新セットはCardmarket価格のマッピングが済んでいないことが多い)
-  const candidates = setList.slice(-SET_CANDIDATES).reverse();
-  const today = new Date().toISOString().slice(0, 10);
+  const candidates = (
+    await mapLimit(setList.slice(-SET_CANDIDATES), FETCH_CONCURRENCY, (s) => fetchSet(s.id))
+  )
+    .filter(released)
+    .sort((a, b) => (a.releaseDate < b.releaseDate ? 1 : -1));
   const monitored = [];
-  for (const s of candidates) {
+  for (const detail of candidates) {
     if (monitored.length >= MONITOR_SETS) break;
     try {
-      const detail = await fetchJson(`${TCGDEX_BASE}/sets/${encodeURIComponent(s.id)}`);
-      if (!detail.releaseDate || detail.releaseDate > today || !(detail.cards?.length > 0)) {
-        continue;
-      }
       const step = Math.max(1, Math.floor(detail.cards.length / PROBE_CARDS));
       const probes = detail.cards.filter((_, i) => i % step === 0).slice(0, PROBE_CARDS);
       const probed = await mapLimit(probes, FETCH_CONCURRENCY, (c) =>
@@ -146,12 +155,25 @@ export async function fetchAll() {
       );
       const hasPricing = probed.some((card) => card && extractPricing(card));
       if (!hasPricing) {
-        console.log(`fetch: ${detail.name} (${s.id}) — no pricing yet, skipping`);
+        console.log(`fetch: ${detail.name} (${detail.id}) — no pricing yet, skipping`);
         continue;
       }
       monitored.push(detail);
     } catch (err) {
-      console.warn(`fetch: set ${s.id} failed (${err.message})`);
+      console.warn(`fetch: set ${detail.id} failed (${err.message})`);
+    }
+  }
+
+  // 常に監視する人気セットを追加(直近セットと重複するものは除く)。
+  // 価格の試し取りはしない: 価格の無いカードは下の本取得で除外される
+  for (const id of EXTRA_SETS) {
+    if (monitored.some((m) => m.id === id)) continue;
+    try {
+      const detail = await fetchSet(id);
+      if (released(detail)) monitored.push(detail);
+      else console.log(`fetch: extra set ${id} — not released or no cards, skipping`);
+    } catch (err) {
+      console.warn(`fetch: extra set ${id} failed (${err.message})`);
     }
   }
   if (monitored.length === 0) {

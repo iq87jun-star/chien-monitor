@@ -325,7 +325,7 @@ export default function App() {
             </div>
             <Card
               title="📦 監視中セット"
-              sub="直近発売の日本語版セット(各セットの海外市場での最高額カード)"
+              sub="直近発売+人気の日本語版セット(各セットの海外市場での最高額カード)"
             >
               {economy.sets.map((s) => (
                 <SetSummary key={s.id} s={s} />

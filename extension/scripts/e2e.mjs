@@ -39,8 +39,14 @@ const PAGES = {
     "【美品】メガゲッコウガex SAR 120/080 ニンジャスピナー ポケモンカード",
     98000,
   ),
-  "https://jp.mercari.com/item/m10000000002": mockPage("ポケカ メガゲッコウガex まとめてお得", 45000),
-  "https://jp.mercari.com/item/m10000000003": mockPage("イーブイ ぬいぐるみ ポケモンセンター", 2800),
+  "https://jp.mercari.com/item/m10000000002": mockPage(
+    "ポケカ メガゲッコウガex まとめてお得",
+    45000,
+  ),
+  "https://jp.mercari.com/item/m10000000003": mockPage(
+    "イーブイ ぬいぐるみ ポケモンセンター",
+    2800,
+  ),
 };
 
 // 拡張の service worker の fetch を context.route でモックするのに必要(Playwright 1.56 時点で実験的機能)
@@ -77,7 +83,8 @@ try {
   await badge.locator(".card").waitFor({ timeout: 10000 });
   const text1 = await badge.locator(".card").innerText();
   const data = JSON.parse(fixture);
-  const expectedYen = `¥${Math.round(495 * data.eurJpy).toLocaleString("ja-JP")}`;
+  const eur = data.cards.find(([set, no]) => set === "M4" && no === "120")[3];
+  const expectedYen = `¥${Math.round(eur * data.eurJpy).toLocaleString("ja-JP")}`;
   assert.match(text1, /メガゲッコウガex/);
   assert.ok(text1.includes(expectedYen), `円換算価格 ${expectedYen} が表示されること:\n${text1}`);
   assert.match(text1, /ニンジャスピナー 120/);

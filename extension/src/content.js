@@ -104,9 +104,7 @@
       dismissedUrl = location.href;
       removeBadge();
     });
-    const updated = index.fetchedAt
-      ? new Date(index.fetchedAt).toLocaleDateString("ja-JP")
-      : "";
+    const updated = index.fetchedAt ? new Date(index.fetchedAt).toLocaleDateString("ja-JP") : "";
     const link = el(
       "a",
       {
