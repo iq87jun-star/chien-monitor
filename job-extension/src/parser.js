@@ -40,7 +40,7 @@
 
   // 賞与の月数「賞与（4.65ヶ月分）」「賞与年2回（昨年度実績：6.2ヶ月分）」
   function findBonusMonths(text) {
-    const m = text.match(/賞与[^。\n]{0,30}?(\d+(?:\.\d+)?)\s*[ヶかカケ箇]?\s*月分/);
+    const m = text.match(/賞与[^。\n]{0,30}?(\d+(?:\.\d+)?)\s*[ヶヵかカケ箇]?\s*月分/);
     return m ? Number(m[1]) : null;
   }
 

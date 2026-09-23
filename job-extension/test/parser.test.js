@@ -106,6 +106,11 @@ test("年俸の求人は年俸をそのまま年収目安にする", () => {
   assert.deepEqual([r.annual.min, r.annual.max], [6000000, 9000000]);
 });
 
+test("賞与の月数は「ヵ月」「カ月」の表記も読む", () => {
+  assert.equal(P.analyze("給与：月給25万円 賞与年2回（計4.5ヵ月分）").bonusMonths, 4.5);
+  assert.equal(P.analyze("給与：月給25万円 賞与年2回（計3カ月分）").bonusMonths, 3);
+});
+
 test("給与の記載が読めなければ found は false", () => {
   assert.equal(P.analyze("給与：経験・能力を考慮の上、当社規定により優遇").found, false);
   assert.equal(P.analyze("").found, false);
