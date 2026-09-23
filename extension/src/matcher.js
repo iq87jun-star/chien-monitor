@@ -23,8 +23,19 @@
 
   // セット略号(「M4」「M-P」等)は短く他の語に埋もれやすいので、英数字の境界つきで探す
   function setIdPattern(id) {
-    const body = id.replace(/[^a-z0-9]/gi, "").split("").join("[-\\s]?");
+    const body = id
+      .replace(/[^a-z0-9]/gi, "")
+      .split("")
+      .join("[-\\s]?");
     return new RegExp(`(?:^|[^a-z0-9])${body}(?:[^a-z0-9]|$)`, "i");
+  }
+
+  // セット名の照合キー。出品タイトルでは「ポケモンカード151」→「151」、
+  // 「テラスタルフェスex」→「テラスタルフェス」のように略されることが多いので略称も持つ
+  function setNameKeys(name) {
+    const full = normalize(name);
+    const short = full.replace(/^ポケモンカード/, "").replace(/ex$/, "");
+    return [...new Set([full, short])].filter((k) => k.length >= 3);
   }
 
   const padNo = (n) => String(Number(n)).padStart(3, "0");
@@ -37,7 +48,15 @@
     for (const [setId, localId, name, eur, avg7, avg30] of data.cards) {
       const key = normalize(name);
       if (key.length < MIN_NAME_LENGTH) continue;
-      const card = { setId, setName: setNames.get(setId) ?? setId, localId, name, eur, avg7, avg30 };
+      const card = {
+        setId,
+        setName: setNames.get(setId) ?? setId,
+        localId,
+        name,
+        eur,
+        avg7,
+        avg30,
+      };
       if (!byName.has(key)) byName.set(key, []);
       byName.get(key).push(card);
     }
@@ -48,7 +67,11 @@
       fetchedAt: data.fetchedAt,
       byName,
       names,
-      sets: data.sets.map((s) => ({ id: s.id, idRe: setIdPattern(s.id), nameKey: normalize(s.name) })),
+      sets: data.sets.map((s) => ({
+        id: s.id,
+        idRe: setIdPattern(s.id),
+        nameKeys: setNameKeys(s.name),
+      })),
     };
   }
 
@@ -62,13 +85,32 @@
   }
 
   // ポケカの出品らしいか(ぬいぐるみ等の同名グッズに相場を出さないため)。
-  // 「ポケカ」等の語、カード番号、監視セット名のいずれかがあれば対象とする
+  // 「ポケカ」等の語、カード番号、監視セット名のいずれかがあれば対象とする。
+  // サプライ・未開封BOX等は対象外
   const CARD_WORDS = ["ポケカ", "ポケモンカード", "pokemoncard", "pokemontcg"];
+  // シングルカードの相場を出すと誤解を招く出品(サプライ・未開封品・オリパ)
+  const NG_WORDS = [
+    "スリーブ",
+    "デッキシールド",
+    "プレイマット",
+    "ラバーマット",
+    "デッキケース",
+    "ローダー",
+    "ストレージ",
+    "バインダー",
+    "カードファイル",
+    "box",
+    "ボックス",
+    "パック",
+    "オリパ",
+    "未開封",
+  ];
   function isCardListing(index, title) {
     const text = normalize(title);
+    if (NG_WORDS.some((w) => text.includes(w))) return false;
     if (CARD_WORDS.some((w) => text.includes(w))) return true;
     if (extractNumbers(title).size > 0) return true;
-    return index.sets.some((s) => s.nameKey.length >= 3 && text.includes(s.nameKey));
+    return index.sets.some((s) => s.nameKeys.some((k) => text.includes(k)));
   }
 
   // タイトルから該当カード候補を探す。
@@ -98,18 +140,26 @@
 
     const numbers = extractNumbers(title);
     const plain = String(title).normalize("NFKC");
-    const setHits = index.sets.filter((s) => s.idRe.test(plain) || text.includes(s.nameKey));
+    const setHits = index.sets.filter(
+      (s) => s.idRe.test(plain) || s.nameKeys.some((k) => text.includes(k)),
+    );
 
-    return hits.map((key) => {
+    const results = [];
+    for (const key of hits) {
       let cards = index.byName.get(key);
-      // 番号→セットの順に絞り込み、絞り込みで0件になる条件は無視する
+      // セット指定があれば絞り込む。指定セットに無いカードは監視外のセットの同名カードなので、
+      // 別セットの価格を出さないよう候補から外す(例: 監視外セットの「ルチア SR」)
+      if (setHits.length > 0) {
+        cards = cards.filter((c) => setHits.some((s) => s.id === c.setId));
+        if (cards.length === 0) continue;
+      }
+      // 番号で絞り込む(番号が一致しない場合は表記揺れもあるので絞り込まずに残す)
       const byNo = cards.filter((c) => numbers.has(padNo(c.localId)));
       if (byNo.length > 0) cards = byNo;
-      const bySet = cards.filter((c) => setHits.some((s) => s.id === c.setId));
-      if (bySet.length > 0) cards = bySet;
       cards = [...cards].sort((a, b) => b.eur - a.eur);
-      return { name: cards[0].name, cards, exact: cards.length === 1 };
-    });
+      results.push({ name: cards[0].name, cards, exact: cards.length === 1 });
+    }
+    return results.length > 0 ? results : null;
   }
 
   const toJpy = (index, eur) => (eur == null ? null : Math.round(eur * index.eurJpy));

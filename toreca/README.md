@@ -11,7 +11,8 @@
   + [Frankfurter](https://frankfurter.dev)(ECB為替レート・円換算用)
 - 1日2回GitHub Actionsが自動更新(Cardmarket価格の更新は1日1回のため)
 - 生成記事は**数値照合ゲート**を通過したものだけ公開(データにない数値を含む記事は自動却下)
-- 監視対象: 直近発売の日本語版セット4つ(約600〜1,000枚)。`pipeline/config.mjs` で変更可
+- 監視対象: 直近発売の日本語版セット6つ+人気の旧セット(151・VSTARユニバース・テラスタルフェスex等)
+  の計22セット(約4,000枚)。`pipeline/config.mjs` の `MONITOR_SETS` / `EXTRA_SETS` で変更可
 
 ## 構成
 

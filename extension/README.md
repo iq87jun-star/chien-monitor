@@ -12,7 +12,7 @@
 
 ```
 toreca パイプライン(1日2回)
-  └ npm run build → dist/api/cards.json(約1,000枚・45KB)を pokeca-kaigai.com に配信
+  └ npm run build → dist/api/cards.json(22セット約4,000枚・200KB)を pokeca-kaigai.com に配信
                                    │ 6時間キャッシュで取得
 拡張 background.js(service worker)┘
   └ content.js: 商品ページの h1 を読み取り → matcher.js でカード名と照合 → バッジ表示
@@ -22,7 +22,10 @@ toreca パイプライン(1日2回)
   タイトルに型番(`120/080`)やセット略号・セット名があれば1枚に絞り込む。
   絞り込めない場合は同名カードの価格幅と上位候補を出す
 - **誤表示対策**: 「ポケカ」等の語・型番・セット名のいずれもないタイトル(ぬいぐるみ等の
-  同名グッズ)、4種以上のカード名を含むまとめ売り、3文字未満のカード名は表示しない
+  同名グッズ)、サプライ・未開封BOX・オリパ、4種以上のカード名を含むまとめ売り、
+  3文字未満のカード名は表示しない。タイトルのセットに該当カードが無い場合(監視外セットの
+  同名カード)も別セットの価格を出さない
+- **セット名の略称**: 「151」「テラスタルフェス」のように略された書き方でもセットを判定する
 - **プライバシー**: 商品名の照合はブラウザ内で完結し、外部に送るのは相場JSONの取得リクエストだけ
 - 形式を変える時は `toreca/pipeline/export-ext.mjs` と `src/matcher.js` の `FORMAT_VERSION` を揃える
 
@@ -40,8 +43,9 @@ npm run icons                 # アイコンを再生成
 
 手元のChromeで試す: `chrome://extensions` → デベロッパーモードON →
 「パッケージ化されていない拡張機能を読み込む」→ この `extension/` フォルダを選択。
-※ `pokeca-kaigai.com/api/cards.json` は、このブランチをmainにマージして toreca の
-自動更新ワークフローが一度走るまでは存在しない(それまではバッジが出ない)。
+※ 相場データ `pokeca-kaigai.com/api/cards.json` は toreca の自動更新(1日2回)で更新される。
+監視セットは `toreca/pipeline/config.mjs` の `MONITOR_SETS`(直近の自動選択数)と
+`EXTRA_SETS`(常に監視する人気セット)で変える。
 
 ## 公開手順
 
