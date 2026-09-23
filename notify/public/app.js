@@ -133,8 +133,8 @@ function renderWatches() {
             onclick: async () => {
               try {
                 await api("DELETE", `/api/watches/${w.id}`);
-                status(`「${w.label}」を削除しました`);
                 await refresh();
+                status(`「${w.label}」を削除しました`);
               } catch (err) {
                 status(err.message, true);
               }
@@ -179,10 +179,10 @@ function renderResults() {
               label: card.label,
               targetJpy: Number(input.value),
             });
+            await refresh();
             status(
               `「${card.label}」を ${yen(Number(input.value))} 以下で通知するよう登録しました`,
             );
-            await refresh();
           } catch (err) {
             status(err.message, true);
           }
@@ -213,8 +213,8 @@ $("signup-form").addEventListener("submit", async (e) => {
     const { key: k } = await api("POST", "/api/subscribe", { webhookUrl: $("webhook").value });
     key = k;
     store(k);
-    status("登録しました。Discord に設定用のリンクを送りました");
     await refresh();
+    status("登録しました。Discord に設定用のリンクを送りました");
   } catch (err) {
     status(err.message, true);
   } finally {
