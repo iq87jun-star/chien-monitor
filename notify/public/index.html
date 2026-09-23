@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>トレカ値下がり通知(Discord)</title>
+    <meta
+      name="description"
+      content="ポケカ・遊戯王・ワンピースカードの海外相場が、決めた金額以下になったら Discord に通知します。"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>🔔 トレカ値下がり通知</h1>
+      <p>
+        ポケカ・遊戯王・ワンピースカードの<strong>海外相場</strong>が、決めた金額以下になったら
+        Discord にお知らせします。相場は1日2回更新され、そのたびにチェックします。
+      </p>
+    </header>
+
+    <main>
+      <!-- 未登録: Discord のウェブフックを登録 -->
+      <section id="signup" hidden>
+        <h2>1. 通知先の Discord を登録</h2>
+        <details>
+          <summary>ウェブフックURLの作り方(1分)</summary>
+          <ol>
+            <li>通知を受け取りたい Discord のチャンネルの ⚙(チャンネルの編集)を開く</li>
+            <li>「連携サービス」→「ウェブフック」→「新しいウェブフック」</li>
+            <li>「ウェブフックURLをコピー」を押し、下の欄に貼り付ける</li>
+          </ol>
+          <p class="hint">自分だけのサーバーを作り、そのチャンネルで受け取るのがおすすめです。</p>
+        </details>
+        <form id="signup-form">
+          <label for="webhook">ウェブフックURL</label>
+          <input
+            id="webhook"
+            type="url"
+            required
+            placeholder="https://discord.com/api/webhooks/..."
+            autocomplete="off"
+          />
+          <button type="submit">登録する</button>
+        </form>
+        <p class="hint">
+          登録すると、そのチャンネルに設定用のリンクが届きます(別の端末から設定を開く時に使います)。
+        </p>
+      </section>
+
+      <!-- 登録済み: カードの追加・一覧 -->
+      <section id="manage" hidden>
+        <h2>通知するカード <span id="count" class="count"></span></h2>
+        <ul id="watches" class="list"></ul>
+        <p id="empty" class="hint" hidden>まだありません。下の検索から追加してください。</p>
+
+        <h2>カードを追加</h2>
+        <div class="tabs" role="radiogroup" aria-label="ゲーム">
+          <label><input type="radio" name="game" value="pokeca" checked /> ポケカ</label>
+          <label><input type="radio" name="game" value="yugioh" /> 遊戯王</label>
+          <label><input type="radio" name="game" value="onepiece" /> ワンピース</label>
+        </div>
+        <input
+          id="query"
+          type="search"
+          placeholder="カード名・型番(例: リザードンex 201)"
+          autocomplete="off"
+          aria-label="カードを検索"
+        />
+        <p id="game-note" class="hint"></p>
+        <ul id="results" class="list"></ul>
+
+        <div class="actions">
+          <button id="test" type="button" class="secondary">テスト通知を送る</button>
+          <button id="forget" type="button" class="secondary">別の Discord で登録し直す</button>
+          <button id="delete" type="button" class="danger">登録を削除</button>
+        </div>
+      </section>
+
+      <p id="status" role="status" aria-live="polite"></p>
+    </main>
+
+    <footer>
+      <h2>ご注意</h2>
+      <ul>
+        <li>
+          表示・通知する価格は海外市場の相場を円換算した参考値で、国内の販売・買取価格ではありません。
+          ポケカは日本語版の欧州相場、遊戯王は英語版で最も安い版の欧州相場、ワンピースは英語版の米国相場です。
+        </li>
+        <li>
+          保存するのは、通知先のウェブフックURLと、登録したカード・目標額だけです。
+          「登録を削除」ですべて消えます。
+        </li>
+        <li>
+          株式会社ポケモン、株式会社コナミデジタルエンタテインメント、株式会社集英社、株式会社バンダイ、Discord
+          とは無関係の非公式サービスです。
+        </li>
+      </ul>
+    </footer>
+  </body>
+</html>
