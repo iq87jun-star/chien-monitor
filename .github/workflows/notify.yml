@@ -1,0 +1,96 @@
+# トレカ値下がり通知(notify/)のテスト・デプロイ・値下がりチェック。
+#   - notify/ を変更するPR: 単体テスト+E2Eテスト
+#   - main への push(notify/ の変更)・手動実行: テスト → Cloudflare にデプロイ
+#   - 定期実行(1日4回・toreca と duel の相場更新の後): 値下がりチェック → Discord に通知
+#     (相場データが前回から更新されていなければ何もしない)
+#
+# Secrets(未設定ならデプロイとチェックはスキップ。設定手順は notify/README.md):
+#   CLOUDFLARE_API_TOKEN  … 権限「D1 編集」「Workers スクリプト 編集」を付けた API トークン
+#   CLOUDFLARE_ACCOUNT_ID … Cloudflare のアカウントID
+
+name: notify
+
+on:
+  push:
+    branches: [main]
+    paths: ["notify/**", ".github/workflows/notify.yml"]
+  pull_request:
+    paths: ["notify/**", ".github/workflows/notify.yml"]
+  schedule:
+    - cron: "20 10,11,22,23 * * *" # toreca(9:17/21:17)・duel(9:51/21:51)の更新後。遅れた時のため2回ずつ
+  workflow_dispatch:
+    inputs:
+      force_check:
+        description: "相場データが更新されていなくても値下がりチェックする"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: notify-${{ github.event_name == 'pull_request' && github.ref || 'main' }}
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+defaults:
+  run:
+    working-directory: notify
+
+jobs:
+  test:
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: notify/package-lock.json
+      - name: Install
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Unit tests
+        run: npm test
+      - name: E2E test (ローカルの Worker と Chromium で登録から通知まで)
+        run: npm run test:e2e
+
+  deploy:
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: notify/package-lock.json
+      - run: npm ci
+      - name: Deploy to Cloudflare
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
+        run: |
+          node scripts/prepare-deploy.mjs
+          npx wrangler d1 migrations apply toreca-notify --remote
+          npx wrangler deploy
+      - name: Secrets 未設定
+        if: env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
+        run: echo "::notice::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID が未設定のためデプロイをスキップしました(notify/README.md 参照)"
+
+  check:
+    needs: deploy
+    # 定期実行、または手動実行(デプロイの後)。deploy がスキップされた定期実行でも動かす
+    if: always() && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && needs.deploy.result != 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 値下がりチェック
+        run: node --disable-warning=ExperimentalWarning scripts/check.mjs ${{ inputs.force_check && '--force' || '' }}

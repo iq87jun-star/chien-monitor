@@ -1,0 +1,191 @@
+:root {
+  --bg: #f6f7f9;
+  --card: #fff;
+  --text: #1f2937;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --accent: #5865f2;
+  --good: #16a34a;
+  --danger: #dc2626;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111318;
+    --card: #1b1e25;
+    --text: #e5e7eb;
+    --muted: #9ca3af;
+    --line: #2d313a;
+  }
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font:
+    15px/1.7 "Hiragino Sans",
+    "Noto Sans JP",
+    "Yu Gothic",
+    system-ui,
+    sans-serif;
+}
+header,
+main,
+footer {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+header {
+  padding-top: 28px;
+}
+h1 {
+  font-size: 24px;
+  margin: 0 0 6px;
+}
+h2 {
+  font-size: 17px;
+  margin: 26px 0 10px;
+}
+main > section {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 4px 18px 18px;
+  margin-top: 16px;
+}
+label {
+  display: block;
+  font-weight: 600;
+  margin: 10px 0 4px;
+}
+input[type="url"],
+input[type="search"],
+input[type="number"] {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+}
+button {
+  font: inherit;
+  border: 0;
+  border-radius: 8px;
+  padding: 9px 16px;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  margin-top: 10px;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+button.secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--line);
+}
+button.danger {
+  background: transparent;
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+button.small {
+  padding: 4px 10px;
+  margin: 0;
+  font-size: 13px;
+}
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+}
+.count {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 14px;
+}
+.tabs {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+.tabs label {
+  font-weight: 400;
+  margin: 0;
+}
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0;
+}
+.list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.list .name {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+.list .sub {
+  display: block;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.list .price {
+  font-weight: 700;
+  white-space: nowrap;
+}
+.list .price.hit {
+  color: var(--good);
+}
+.list form {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-basis: 100%;
+}
+.list form input {
+  max-width: 150px;
+  padding: 5px 8px;
+}
+.list form button {
+  margin: 0;
+  padding: 5px 12px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+.actions button {
+  margin: 0;
+}
+#status {
+  min-height: 1.7em;
+  font-weight: 600;
+}
+#status.error {
+  color: var(--danger);
+}
+footer {
+  color: var(--muted);
+  font-size: 13px;
+  padding-bottom: 40px;
+}
+footer h2 {
+  font-size: 14px;
+}
+footer ul {
+  padding-left: 18px;
+}

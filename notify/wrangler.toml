@@ -1,0 +1,17 @@
+# Cloudflare Worker「トレカ値下がり通知」(登録ページ+登録API)。デプロイは GitHub Actions の notify ワークフロー。
+name = "toreca-notify"
+main = "src/worker.js"
+compatibility_date = "2026-06-01"
+
+# public/ の登録ページを静的アセットとして配信し、/api/* だけ Worker で処理する
+[assets]
+directory = "./public"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "toreca-notify"
+# デプロイ時に scripts/prepare-deploy.mjs が実際のIDに書き換える(無ければ作成する)
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"
