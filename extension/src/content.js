@@ -1,13 +1,13 @@
 // 商品ページに海外相場バッジを表示する content script。
 // matcher.js(globalThis.PokecaMatcher)の後に読み込まれる。
+// ゲーム(ポケカ・遊戯王)ごとの価格データで順に照合し、最初に当たったゲームの相場を出す。
 // メルカリ等のSPAはページ遷移でリロードしないため、URLとタイトルの変化を監視して再判定する。
 (() => {
   const M = globalThis.PokecaMatcher;
-  const SITE_URL = "https://pokeca-kaigai.com/";
   const HOST_ID = "pokeca-kaigai-checker";
   const MAX_CANDIDATES = 3;
 
-  let index = null;
+  let indexes = null;
   let lastKey = "";
   let dismissedUrl = "";
 
@@ -39,13 +39,17 @@
     return el("span", { class: `chg ${cls}` }, `7日平均比 ${pct > 0 ? "+" : ""}${pct}%`);
   }
 
-  function hitNode(hit) {
+  // カードの補足: ポケカはセット名と番号、遊戯王は英語名
+  const cardMeta = (c) =>
+    c.setId ? `${c.setName} ${c.localId}` : c.note ? `英語名: ${c.note}` : "";
+
+  function hitNode(index, hit) {
     const top = hit.cards[0];
     const box = el("div", { class: "hit" });
     box.append(el("div", { class: "name" }, hit.name));
     if (hit.exact) {
       box.append(
-        el("div", { class: "meta" }, `${top.setName} ${top.localId}`),
+        el("div", { class: "meta" }, cardMeta(top)),
         el(
           "div",
           { class: "price" },
@@ -66,14 +70,14 @@
       );
       const list = el("ul");
       for (const c of hit.cards.slice(0, MAX_CANDIDATES)) {
-        list.append(el("li", {}, `${c.setName} ${c.localId}: 約${yen(M.toJpy(index, c.eur))}`));
+        list.append(el("li", {}, `${cardMeta(c)}: 約${yen(M.toJpy(index, c.eur))}`));
       }
       box.append(list);
     }
     return box;
   }
 
-  function render(hits) {
+  function render(index, hits) {
     removeBadge();
     const host = el("div", { id: HOST_ID });
     const root = host.attachShadow({ mode: "open" });
@@ -108,7 +112,7 @@
     const link = el(
       "a",
       {
-        href: `${SITE_URL}?utm_source=extension&utm_medium=badge`,
+        href: `${index.siteUrl}?utm_source=extension&utm_medium=badge`,
         target: "_blank",
         rel: "noopener",
       },
@@ -117,14 +121,9 @@
     const card = el(
       "div",
       { class: "card", role: "complementary", "aria-label": "ポケカ海外相場" },
-      el("div", { class: "head" }, "🌍 海外相場(Cardmarket・日本語版)", close),
-      ...hits.map(hitNode),
-      el(
-        "div",
-        { class: "foot" },
-        link,
-        el("div", {}, `${updated}更新・欧州の取引平均を円換算した参考値です`),
-      ),
+      el("div", { class: "head" }, `🌍 海外相場(Cardmarket・${index.label})`, close),
+      ...hits.map((hit) => hitNode(index, hit)),
+      el("div", { class: "foot" }, link, el("div", {}, `${updated}更新・${index.disclaimer}`)),
     );
     root.append(style, card);
     document.documentElement.append(host);
@@ -139,14 +138,15 @@
     const { enabled = true } = await chrome.storage.sync.get("enabled");
     if (!enabled || dismissedUrl === location.href) return removeBadge();
 
-    if (!index) {
-      const data = await chrome.runtime.sendMessage({ type: "getData" });
-      index = M.buildIndex(data);
-      if (!index) return;
+    if (!indexes) {
+      const all = await chrome.runtime.sendMessage({ type: "getData" });
+      indexes = (all ?? []).map(M.buildIndex).filter(Boolean);
     }
-    const hits = M.match(index, title);
-    if (hits) render(hits);
-    else removeBadge();
+    for (const index of indexes) {
+      const hits = M.match(index, title);
+      if (hits) return render(index, hits);
+    }
+    removeBadge();
   }
 
   let timer = 0;
