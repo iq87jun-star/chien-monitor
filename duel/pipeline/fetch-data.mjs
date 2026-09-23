@@ -12,6 +12,7 @@ import {
   FX_URL,
   MIN_TRACK_EUR,
   HISTORY_KEEP_DAYS,
+  YGORES_NAME_INDEX,
 } from "./config.mjs";
 
 async function fetchJson(url, retries = 3) {
@@ -123,7 +124,53 @@ export async function fetchAll() {
   console.log(
     `fetch: done (${cards.length} priced cards, ${Object.keys(history).length} tracked in history)`,
   );
+  await fetchJaNames(cards);
   return { ok: true };
+}
+
+// 英語名→日本語(OCG)名の対応表を data/raw/ja-names.json に保存する(ブラウザ拡張用)。
+// ygoresources の言語別「カード名→KonamiID」索引を英語・日本語で突き合わせる。
+// 日本語側には漢字表記と読み仮名の両方が入っていることがあるので両方残す。
+// 失敗しても致命ではない(既存の対応表を保持)。対象は履歴追跡と同じ価格帯のカードのみ
+async function fetchJaNames(cards) {
+  let en;
+  let ja;
+  try {
+    [en, ja] = await Promise.all([
+      fetchJson(`${YGORES_NAME_INDEX}/en`),
+      fetchJson(`${YGORES_NAME_INDEX}/ja`),
+    ]);
+  } catch (err) {
+    console.warn(`fetch: ja names unavailable — keeping existing ja-names.json (${err.message})`);
+    return;
+  }
+  const jaById = new Map();
+  for (const [name, ids] of Object.entries(ja)) {
+    for (const id of ids) {
+      if (!jaById.has(id)) jaById.set(id, []);
+      jaById.get(id).push(name);
+    }
+  }
+  const names = {};
+  for (const c of cards) {
+    if (c.eur < MIN_TRACK_EUR) continue;
+    const jaNames = new Set((en[c.name] ?? []).flatMap((id) => jaById.get(id) ?? []));
+    if (jaNames.size > 0) names[c.name] = [...jaNames];
+  }
+  const count = Object.keys(names).length;
+  if (count === 0) {
+    console.warn("fetch: ja names matched nothing — keeping existing ja-names.json");
+    return;
+  }
+  // 対応表はほとんど変わらないので、変化があった時だけ書き換える(毎回のコミット差分を避ける)
+  const file = path.join(RAW_DIR, "ja-names.json");
+  const prev = await readJson(file);
+  if (JSON.stringify(prev?.names) === JSON.stringify(names)) {
+    console.log(`fetch: ja names unchanged (${count} cards)`);
+    return;
+  }
+  await fs.writeFile(file, JSON.stringify({ fetchedAt: new Date().toISOString(), names }));
+  console.log(`fetch: ja names for ${count} cards`);
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

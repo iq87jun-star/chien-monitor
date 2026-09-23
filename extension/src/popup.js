@@ -2,13 +2,20 @@
 const enabledBox = document.getElementById("enabled");
 const statusEl = document.getElementById("status");
 
-function showStatus(data) {
-  if (!data) {
+const GAME_NAMES = { pokeca: "ポケカ", yugioh: "遊戯王" };
+
+function showStatus(all) {
+  if (!all?.length) {
     statusEl.textContent = "データを取得できませんでした(通信状況を確認してください)";
     return;
   }
-  const when = new Date(data.fetchedAt).toLocaleString("ja-JP");
-  statusEl.textContent = `${data.cards.length.toLocaleString()}枚のデータ(${when}時点)`;
+  statusEl.textContent = all
+    .map((data) => {
+      const game = GAME_NAMES[data.game ?? "pokeca"] ?? data.game;
+      const when = new Date(data.fetchedAt).toLocaleString("ja-JP");
+      return `${game}: ${data.cards.length.toLocaleString()}枚(${when}時点)`;
+    })
+    .join(" / ");
 }
 
 chrome.storage.sync.get("enabled").then(({ enabled = true }) => {

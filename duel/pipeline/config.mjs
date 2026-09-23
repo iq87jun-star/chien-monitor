@@ -15,6 +15,10 @@ export const USER_AGENT =
 // YGOPRODeck: キー不要の公開API。全カードのCardmarket(EUR)/TCGplayer(USD)価格を持つ
 export const YGO_API = "https://db.ygoprodeck.com/api/v7/cardinfo.php";
 
+// Yugipedia系の公開DB(キー不要)。カード名→KonamiカードIDの索引を言語別に持つ。
+// 英語名で引いて日本語(OCG)名を得る対応表を作り、ブラウザ拡張で日本のフリマ出品と照合する
+export const YGORES_NAME_INDEX = "https://db.ygoresources.com/data/idx/card/name";
+
 // 為替(ECB公表レート・キー不要)。EUR/USD建て価格の円換算に使う
 export const FX_URL = "https://api.frankfurter.dev/v1/latest?base=EUR&symbols=JPY,USD";
 

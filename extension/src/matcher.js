@@ -1,7 +1,8 @@
 // 商品タイトルとカード価格データの突き合わせ(純粋関数のみ・DOM非依存)。
 // content script(クラシックスクリプト)と node:test の両方から読み込むため、
 // export は使わず globalThis.PokecaMatcher に公開する。
-// データ形式は toreca/pipeline/export-ext.mjs(v1)と対応。
+// データ形式は toreca/pipeline/export-ext.mjs と duel/pipeline/export-ext.mjs(v1)と対応。
+// 1つの価格データ(=1ゲーム)ごとにインデックスを作り、ゲームごとに照合する。
 (() => {
   const FORMAT_VERSION = 1;
   // これより短いカード名は誤検出が多いので照合しない(「グリ」「タロ」等が「グリーン」に当たる)
@@ -40,29 +41,54 @@
 
   const padNo = (n) => String(Number(n)).padStart(3, "0");
 
-  // 価格データから照合用インデックスを作る(取得のたびに1回だけ)
+  // データ側で指定できる表示・判定用の項目だけを取り出す
+  const pick = (data) =>
+    Object.fromEntries(
+      ["game", "label", "siteUrl", "keywords", "disclaimer"]
+        .filter((k) => data[k] != null)
+        .map((k) => [k, data[k]]),
+    );
+
+  // ゲームごとの既定値。ポケカのデータ(v1初版)はこれらの項目を持たないためここで補う
+  const POKECA_DEFAULTS = {
+    game: "pokeca",
+    label: "日本語版",
+    siteUrl: "https://pokeca-kaigai.com/",
+    keywords: ["ポケカ", "ポケモンカード", "pokemoncard", "pokemontcg"],
+    disclaimer: "欧州の取引平均を円換算した参考値です",
+  };
+
+  // 価格データから照合用インデックスを作る(取得のたびに1回だけ)。
+  // カード行: [setId, localId, 名前(文字列、または別名の配列で先頭が表示名), eur, avg7, avg30, 補足]
   function buildIndex(data) {
     if (!data || data.v !== FORMAT_VERSION || !data.available) return null;
+    const meta = { ...POKECA_DEFAULTS, ...pick(data) };
     const setNames = new Map(data.sets.map((s) => [s.id, s.name]));
     const byName = new Map();
-    for (const [setId, localId, name, eur, avg7, avg30] of data.cards) {
-      const key = normalize(name);
-      if (key.length < MIN_NAME_LENGTH) continue;
+    for (const [setId, localId, nameOrNames, eur, avg7, avg30, note] of data.cards) {
+      const names = Array.isArray(nameOrNames) ? nameOrNames : [nameOrNames];
       const card = {
         setId,
         setName: setNames.get(setId) ?? setId,
         localId,
-        name,
+        name: names[0],
         eur,
         avg7,
         avg30,
+        note: note ?? null,
       };
-      if (!byName.has(key)) byName.set(key, []);
-      byName.get(key).push(card);
+      for (const key of new Set(names.map(normalize))) {
+        if (key.length < MIN_NAME_LENGTH) continue;
+        if (!byName.has(key)) byName.set(key, []);
+        byName.get(key).push(card);
+      }
     }
     // 長い名前から照合する(「メガゲッコウガex」を「ゲッコウガ」より優先)
     const names = [...byName.keys()].sort((a, b) => b.length - a.length);
     return {
+      ...meta,
+      keywords: meta.keywords.map(normalize),
+      codeRe: data.codePattern ? new RegExp(data.codePattern, "i") : null,
       eurJpy: data.eurJpy,
       fetchedAt: data.fetchedAt,
       byName,
@@ -84,10 +110,9 @@
     return nums;
   }
 
-  // ポケカの出品らしいか(ぬいぐるみ等の同名グッズに相場を出さないため)。
-  // 「ポケカ」等の語、カード番号、監視セット名のいずれかがあれば対象とする。
+  // そのゲームの出品らしいか(ぬいぐるみ等の同名グッズや他ゲームの出品に相場を出さないため)。
+  // ゲームの語(「ポケカ」「遊戯王」等)、カード番号、監視セット名のいずれかがあれば対象とする。
   // サプライ・未開封BOX等は対象外
-  const CARD_WORDS = ["ポケカ", "ポケモンカード", "pokemoncard", "pokemontcg"];
   // シングルカードの相場を出すと誤解を招く出品(サプライ・未開封品・オリパ)
   const NG_WORDS = [
     "スリーブ",
@@ -102,13 +127,20 @@
     "box",
     "ボックス",
     "パック",
+    "まとめ売り",
     "オリパ",
     "未開封",
+    "ストラクチャーデッキ",
   ];
+  // タイトルと同じ正規化をかけておく(「まとめ売り」→「マトメ売リ」)
+  const NG_KEYS = NG_WORDS.map(normalize);
   function isCardListing(index, title) {
     const text = normalize(title);
-    if (NG_WORDS.some((w) => text.includes(w))) return false;
-    if (CARD_WORDS.some((w) => text.includes(w))) return true;
+    if (NG_KEYS.some((w) => text.includes(w))) return false;
+    if (index.keywords.some((w) => text.includes(w))) return true;
+    if (index.codeRe?.test(String(title).normalize("NFKC"))) return true;
+    // 型番(081/080)・セット名での判定はセット情報を持つデータ(ポケカ)だけ
+    if (index.sets.length === 0) return false;
     if (extractNumbers(title).size > 0) return true;
     return index.sets.some((s) => s.nameKeys.some((k) => text.includes(k)));
   }
@@ -157,6 +189,8 @@
       const byNo = cards.filter((c) => numbers.has(padNo(c.localId)));
       if (byNo.length > 0) cards = byNo;
       cards = [...cards].sort((a, b) => b.eur - a.eur);
+      // 別名(漢字名と読み仮名)が両方タイトルにある場合の重複を除く
+      if (results.some((r) => r.cards[0] === cards[0])) continue;
       results.push({ name: cards[0].name, cards, exact: cards.length === 1 });
     }
     return results.length > 0 ? results : null;

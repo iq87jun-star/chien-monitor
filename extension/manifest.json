@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "ポケカ海外相場チェッカー",
-  "short_name": "ポケカ海外相場",
-  "version": "0.1.0",
-  "description": "メルカリ・ヤフオク・ラクマ・駿河屋の商品ページに、そのポケカ(日本語版)の海外相場(Cardmarket・円換算)を表示します。",
+  "name": "トレカ海外相場チェッカー(ポケカ・遊戯王)",
+  "short_name": "トレカ海外相場",
+  "version": "0.2.0",
+  "description": "メルカリ・ヤフオク・ラクマ・駿河屋の商品ページに、そのポケカ・遊戯王カードの海外相場(Cardmarket・円換算)を表示します。",
   "homepage_url": "https://pokeca-kaigai.com/",
   "icons": { "16": "icons/icon16.png", "48": "icons/icon48.png", "128": "icons/icon128.png" },
   "action": {
@@ -12,7 +12,7 @@
   },
   "background": { "service_worker": "src/background.js" },
   "permissions": ["storage"],
-  "host_permissions": ["https://pokeca-kaigai.com/*"],
+  "host_permissions": ["https://pokeca-kaigai.com/*", "https://pocketduel.tokyo/*"],
   "content_scripts": [
     {
       "matches": [

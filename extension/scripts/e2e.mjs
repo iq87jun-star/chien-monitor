@@ -14,6 +14,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SHOTS_DIR = path.join(ROOT, "store", "screenshots");
 const takeShots = process.argv.includes("--shots");
 const fixture = await fs.readFile(path.join(ROOT, "test", "fixtures", "cards.json"), "utf8");
+const yugiohFixture = await fs.readFile(path.join(ROOT, "test", "fixtures", "yugioh.json"), "utf8");
 
 // 実サイトの構造に依存しない最小のモック(商品名は h1 から取る実装のため h1 だけ再現)
 const mockPage = (title, price) => `<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8">
@@ -43,6 +44,10 @@ const PAGES = {
     "ポケカ メガゲッコウガex まとめてお得",
     45000,
   ),
+  "https://jp.mercari.com/item/m10000000004": mockPage(
+    "遊戯王 真エクゾディア QCCP-JP001 25thシークレット",
+    32000,
+  ),
   "https://jp.mercari.com/item/m10000000003": mockPage(
     "イーブイ ぬいぐるみ ポケモンセンター",
     2800,
@@ -65,6 +70,9 @@ try {
   // 価格データ(service worker の fetch)と商品ページをモックで返す
   await context.route("https://pokeca-kaigai.com/api/cards.json", (route) =>
     route.fulfill({ contentType: "application/json", body: fixture }),
+  );
+  await context.route("https://pocketduel.tokyo/api/cards.json", (route) =>
+    route.fulfill({ contentType: "application/json", body: yugiohFixture }),
   );
   await context.route("https://jp.mercari.com/**", (route) => {
     const body = PAGES[route.request().url()];
@@ -102,13 +110,25 @@ try {
   console.log("ok - 型番なしタイトルで価格幅と候補を表示");
   if (takeShots) await page.screenshot({ path: path.join(SHOTS_DIR, "2-candidates.png") });
 
-  // 3) ポケカ以外: 表示しない
+  // 3) 遊戯王: 日本語名で照合し、英語版の相場であることを明記する
+  await page.goto("https://jp.mercari.com/item/m10000000004");
+  await badge.locator(".card").waitFor({ timeout: 10000 });
+  const text4 = await badge.locator(".card").innerText();
+  assert.match(text4, /遊戯王・英語版TCG/);
+  assert.match(text4, /真エクゾディア/);
+  assert.match(text4, /英語名: True Exodia/);
+  assert.match(text4, /日本語版・レアリティ別ではありません/);
+  assert.match(await badge.locator("a").getAttribute("href"), /^https:\/\/pocketduel\.tokyo\//);
+  console.log("ok - 遊戯王の出品で英語版の相場を表示");
+  if (takeShots) await page.screenshot({ path: path.join(SHOTS_DIR, "3-yugioh.png") });
+
+  // 4) ポケカ・遊戯王以外: 表示しない
   await page.goto("https://jp.mercari.com/item/m10000000003");
   await page.waitForTimeout(1500);
   assert.equal(await badge.count(), 0, "グッズの出品にはバッジを出さないこと");
-  console.log("ok - ポケカ以外の出品には表示しない");
+  console.log("ok - ポケカ・遊戯王以外の出品には表示しない");
 
-  // 4) 閉じるボタン
+  // 5) 閉じるボタン
   await page.goto("https://jp.mercari.com/item/m10000000001");
   await badge.locator(".card").waitFor({ timeout: 10000 });
   await badge.locator("button").click();

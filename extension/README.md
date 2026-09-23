@@ -1,21 +1,24 @@
-# ポケカ海外相場チェッカー(Chrome拡張)
+# トレカ海外相場チェッカー(Chrome拡張・ポケカ/遊戯王)
 
-メルカリ・ヤフオク・ラクマ・駿河屋の商品ページで、そのポケカ(日本語版)の
+メルカリ・ヤフオク・ラクマ・駿河屋の商品ページで、そのポケカ・遊戯王カードの
 **海外相場(Cardmarket・円換算)** を画面右下に表示するブラウザ拡張。
-データは toreca/(pokeca-kaigai.com)のパイプラインが1日2回更新するものを流用する。
+データは toreca/(pokeca-kaigai.com)と duel/(pocketduel.tokyo)のパイプラインが
+1日2回更新するものを流用する。
 
 狙い: 国内のフリマ閲覧中に「海外ではいくらか」を出すツールは見当たらない空白領域。
-拡張自体は無料で、バッジのリンクから pokeca-kaigai.com へ送客する(サイト側の広告・
+拡張自体は無料で、バッジのリンクから各相場サイトへ送客する(サイト側の広告・
 アフィリエイトで収益化)。将来は値下がり通知などを有料機能にする余地を残す。
 
 ## 仕組み
 
 ```
 toreca パイプライン(1日2回)
-  └ npm run build → dist/api/cards.json(22セット約4,000枚・200KB)を pokeca-kaigai.com に配信
-                                   │ 6時間キャッシュで取得
+  └ npm run build → dist/api/cards.json(ポケカ22セット約4,000枚)を pokeca-kaigai.com に配信
+duel パイプライン(1日2回)
+  └ npm run build → dist/api/cards.json(遊戯王 約3,000枚)を pocketduel.tokyo に配信
+                                   │ ゲームごとに6時間キャッシュで取得
 拡張 background.js(service worker)┘
-  └ content.js: 商品ページの h1 を読み取り → matcher.js でカード名と照合 → バッジ表示
+  └ content.js: 商品ページの h1 を読み取り → matcher.js でゲームごとにカード名と照合 → バッジ表示
 ```
 
 - **照合**: 表記揺れ(全角・ひらがな・空白)を正規化し、長いカード名から優先して一致判定。
@@ -26,8 +29,15 @@ toreca パイプライン(1日2回)
   3文字未満のカード名は表示しない。タイトルのセットに該当カードが無い場合(監視外セットの
   同名カード)も別セットの価格を出さない
 - **セット名の略称**: 「151」「テラスタルフェス」のように略された書き方でもセットを判定する
+- **ゲームの判定**: 価格データ側の `keywords`(「ポケカ」「遊戯王」等)と `codePattern`
+  (遊戯王の `QCCP-JP001` 形式)で、どのゲームの出品かを見分ける。他ゲームの出品には反応しない
+- **遊戯王の注意点**: 価格は YGOPRODeck の Cardmarket 価格=**英語版(TCG)で最も安い版**の相場で、
+  日本語版やレアリティ別の相場ではない(バッジに明記)。日本語名は db.ygoresources.com の
+  名前索引で英語名から引いた対応表(`duel/data/raw/ja-names.json`)。最安版が数円のカード
+  (ブラック・マジシャン等)は高レアの出品で誤解を招くので、€0.30以上のカードだけを対象にしている
 - **プライバシー**: 商品名の照合はブラウザ内で完結し、外部に送るのは相場JSONの取得リクエストだけ
-- 形式を変える時は `toreca/pipeline/export-ext.mjs` と `src/matcher.js` の `FORMAT_VERSION` を揃える
+- 形式を変える時は `toreca/pipeline/export-ext.mjs`・`duel/pipeline/export-ext.mjs` と
+  `src/matcher.js` の `FORMAT_VERSION` を揃える
 
 ## 開発
 
@@ -79,6 +89,8 @@ npm run icons                 # アイコンを再生成
 
 ## 今後の拡張案
 
-- 対応ジャンル追加: duel/(遊戯王)も同じ形式のJSONを出せば照合ロジックは流用可能
+- 対応ジャンル追加: 同じ形式のJSON(`game`・`label`・`keywords` 等つき)を出して
+  `src/background.js` の `SOURCES` と manifest の `host_permissions` に足せば照合ロジックは流用可能
+- 遊戯王の日本語版・レアリティ別相場: 現在の英語版最安値より実用的だが、公開APIの取得元が必要
 - 有料機能: 気になるカードの値下がり通知(LINE/Discord)、価格履歴グラフ
 - 対応サイト追加: カードラッシュ・晴れる屋等のショップ(商品名の取得箇所が h1 なら追加はmanifestのみ)
