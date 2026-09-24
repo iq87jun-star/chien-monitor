@@ -21,17 +21,21 @@ Cowork は「止まる」と書かれた所で必ず作業を止め、人に確�
 ## 事前準備(★人が行う)
 
 1. Chrome で、デベロッパー登録済みの Google アカウントにログインしておく
-2. Claude Code から受け取った3つの zip をパソコンに保存し、保存場所を Cowork に伝える
-   - `pokeca-kaigai-checker-0.3.1.zip`(トレカ)
-   - `job-salary-checker-0.1.0.zip`(求人)
-   - `realty-price-checker-0.1.0.zip`(物件)
-3. リポジトリ全体をパソコンに保存して展開し、保存場所を Cowork に伝える
-   (GitHub のリポジトリ画面の「Code」→「Download ZIP」)。掲載文とスクリーンショットはこの中にある
+2. Chrome で GitHub にログインしておく
+3. Cowork に「https://github.com/iq87jun-star/chien-monitor/blob/main/extension/store/cowork-chrome-3.md の作業を
+   A〜C(と D)までして」と伝える
+
+ファイルは Cowork が GitHub から取る([cowork/README.md](../../cowork/README.md) の「ファイルの取り方」):
+
+- `cowork-files` の `chrome/` にある zip(展開せずにそのままアップロードする)
+  - `pokeca-kaigai-checker-0.3.1.zip`(トレカ)・`job-salary-checker-0.1.0.zip`(求人)・`realty-price-checker-0.1.0.zip`(物件)
+  - バージョン番号は更新で変わることがある。`chrome/` にある最新のものを使う
+- 掲載文・スクリーンショット・アイコンは、リポジトリ全体(「Code」→「Download ZIP」)の中
 
 ## 作業A: トレカ海外相場チェッカーの更新版をアップロード(Cowork)
 
 1. [デベロッパーダッシュボード](https://chrome.google.com/webstore/devconsole)で「トレカ海外相場チェッカー」を開く
-2. 「パッケージ」タブ →「新しいパッケージをアップロード」で `pokeca-kaigai-checker-0.3.1.zip` を選ぶ
+2. 「パッケージ」タブ →「新しいパッケージをアップロード」で `chrome/pokeca-kaigai-checker-0.3.1.zip` を選ぶ
 3. 「ストアの掲載情報」タブの「説明」欄を、`extension/store/listing.md` の「説明」の ``` で囲まれた部分に
    置き換える(``` の行自体は貼らない)。現在の内容と同じなら変更しない
 4. 「下書きを保存」を押す
@@ -52,7 +56,7 @@ Cowork は「止まる」と書かれた所で必ず作業を止め、人に確�
 
 入力内容はすべて `realty-extension/store/listing.md` にある。
 
-1. ダッシュボードで「新しいアイテム」を押し、`realty-price-checker-0.1.0.zip` をアップロードする
+1. ダッシュボードで「新しいアイテム」を押し、`chrome/realty-price-checker-0.1.0.zip` をアップロードする
 2. 「ストアの掲載情報」タブ:
    - 説明: `listing.md` の「説明」の ``` で囲まれた部分をそのまま貼る(``` の行自体は貼らない)
    - カテゴリ: 「仕事効率化」、言語: 「日本語」
@@ -95,9 +99,15 @@ Cowork は「止まる」と書かれた所で必ず作業を止め、人に確�
 
 - 「おかしい点」には、表示が出ない・金額が違う・一覧ページで出てしまう、などを書く
 - **表示が出ないページがあれば**、そのページの賃料(給与)欄の見出しの文字(例: 「賃料」「給与」)を書き添える
-- 報告を受けたら、その表を Claude Code のセッションに貼って修正を依頼する
+- この表は Issue の「報告の表」に書く(下の「報告」)
+
+## 報告(Cowork)
+
+作業が終わった時・止まった時は、人に知らせるのに加えて、[cowork/README.md](../../cowork/README.md) の
+「報告の出し方」のとおり GitHub の Issue(「Cowork の作業報告」)に結果と報告の表を書き、Issue の番号を人に伝える。
 
 ## 最終提出(★人が行う)
 
 作業A〜Cの報告を確認し、問題がなければ、ダッシュボードでそれぞれ「審査に提出」を押す(審査は通常数日)。
-作業Dで直すところが見つかった場合は、先に修正版を作ってから提出した方が、却下や低評価を避けられる。
+作業Dで直すところが見つかった場合は、Claude Code に「Issue #番号 に報告を出しました」と伝えて修正版を作ってもらい、
+それから提出した方が、却下や低評価を避けられる。

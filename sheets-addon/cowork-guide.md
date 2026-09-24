@@ -21,8 +21,13 @@ Cowork は「止まる」と書かれた所で必ず作業を止め、人に確�
 ## 事前準備(★人が行う)
 
 1. Chrome で Google アカウントにログインしておく
-2. Claude Code から受け取った次の5つのファイルをパソコンに保存し、保存場所を Cowork に伝える
-   - `lib.js`・`functions.js`・`Code.js`・`Help.html`・`appsscript.json`
+2. Chrome で GitHub にログインしておく
+3. Cowork に「https://github.com/iq87jun-star/chien-monitor/blob/main/sheets-addon/cowork-guide.md の作業を
+   A〜C までして」と伝える
+
+貼るファイル5つ(`lib.js`・`functions.js`・`Code.js`・`Help.html`・`appsscript.json`)は、Cowork が GitHub から取る
+([cowork/README.md](../cowork/README.md) の「ファイルの取り方」の `cowork-files` の `sheets-addon/`)。
+アイコン・バナーは、リポジトリ全体(「Code」→「Download ZIP」)の `sheets-addon/listing/` にある。
 
 ## 作業A: 新しいスプレッドシートにコードを入れる(Cowork)
 
@@ -74,7 +79,7 @@ Cowork は「止まる」と書かれた所で必ず作業を止め、人に確�
 - メニューの「拡張機能」に「日本の計算関数」(または Apps Script のプロジェクト名)があり、「使い方(関数の一覧)」を押すと
   右に説明の画面が出るか。**権限の確認画面が出たら止まり**、人に許可してもらってから続ける
 
-**報告**: 次の表で人に報告する(一致しないものは、表示された値やエラーの文言をそのまま書く)。
+**報告**: 次の表を、Issue の「報告の表」に書く(下の「報告」。一致しないものは、表示された値やエラーの文言をそのまま書く)。
 
 | # | 表示された値 | 正解と一致? | エラーの文言(あれば) |
 |---|---|---|---|
@@ -106,7 +111,12 @@ Cowork は「止まる」と書かれた所で必ず作業を止め、人に確�
    スクリーンショットは作業Cで撮ったもの
 5. **止まる**: 「公開」「審査に提出」は押さずに、入力した内容と警告を人に報告する
 
+## 報告(Cowork)
+
+作業が終わった時・止まった時は、人に知らせるのに加えて、[cowork/README.md](../cowork/README.md) の
+「報告の出し方」のとおり GitHub の Issue(「Cowork の作業報告」)に結果と報告の表を書き、Issue の番号を人に伝える。
+
 ## 最終確認(★人が行う)
 
-作業Bの報告で一致しないものがあれば、その表を Claude Code のセッションに貼って修正を依頼する。
+作業Bの報告で一致しないものがあれば、Claude Code に「Issue #番号 に報告を出しました」と伝えて修正を依頼する。
 作業Dの報告を確認し、問題がなければ Marketplace で「公開」を押して審査に出す(数日〜数週間)。
