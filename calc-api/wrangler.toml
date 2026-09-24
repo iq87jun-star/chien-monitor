@@ -1,0 +1,5 @@
+# Cloudflare Worker「Japan Salary & Real Estate Calculator API」。API マーケット(RapidAPI 等)経由で販売する。
+# デプロイは GitHub Actions の calc-api ワークフロー。マーケットの秘密ヘッダーは Secret の MARKETPLACE_SECRETS。
+name = "jp-listing-calc-api"
+main = "src/worker.js"
+compatibility_date = "2026-06-01"

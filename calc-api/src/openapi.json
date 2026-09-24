@@ -1,0 +1,726 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Japan Salary & Real Estate Calculator API",
+    "version": "1.0.0",
+    "description": "Turn messy Japanese job and property listings into comparable numbers.\n\n- **Salary**: paste the salary text of a Japanese job listing (月給25万円～＋賞与年2回（4.5ヶ月分）, 固定残業代40時間分を含む ...) and get the estimated annual income, hourly equivalent and fixed overtime pay.\n- **Real estate**: send rent / price / area / fees as written on Japanese property pages and get price per m² and per tsubo, effective monthly cost, move-in cost estimate, loan payment and yield.\n\nNo data is stored. Results are estimates computed from the given text.",
+    "license": {
+      "name": "Proprietary"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://jp-listing-calc-api.example.workers.dev",
+      "description": "Replaced with the deployed URL"
+    }
+  ],
+  "paths": {
+    "/v1/salary/analyze": {
+      "post": {
+        "operationId": "analyzeSalary",
+        "summary": "Analyze a Japanese job listing salary",
+        "tags": [
+          "Salary"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SalaryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SalaryResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/realty/analyze": {
+      "post": {
+        "operationId": "analyzeRealty",
+        "summary": "Analyze a Japanese property listing",
+        "tags": [
+          "Real estate"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RealtyRequest"
+              },
+              "examples": {
+                "rent": {
+                  "summary": "Rental apartment",
+                  "value": {
+                    "rent": "12.5万円",
+                    "managementFee": "8000円",
+                    "depositAndKeyMoney": "1ヶ月 / 1ヶ月",
+                    "area": "40.5m2"
+                  }
+                },
+                "sale": {
+                  "summary": "Condominium for sale",
+                  "value": {
+                    "price": "4,980万円",
+                    "area": "70.12㎡（壁芯）",
+                    "managementFee": "1万2000円",
+                    "repairReserve": "1万5000円",
+                    "loanRatePercent": 0.8,
+                    "loanYears": 35
+                  }
+                },
+                "investment": {
+                  "summary": "Investment property",
+                  "value": {
+                    "price": 18500000,
+                    "grossYield": 5.8,
+                    "managementFeeAndRepairReserve": "9,000円 / 6,500円",
+                    "area": 25.2
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RealtyResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "Health check",
+        "tags": [
+          "Status"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SalaryRequest": {
+        "type": "object",
+        "required": [
+          "salary"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "salary": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "The salary section of a Japanese job listing, as written (給与 / 月給 / 年俸 / 賞与 / 固定残業代 / 年収例 ...). Full-width digits and 万 notation are supported.",
+            "example": "月給24万2000円～46万8700円＋各種手当＋賞与年2回（昨年度実績：6.2ヶ月分） 年収例 550万円／30歳"
+          },
+          "workConditions": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Optional working hours / holidays sections (勤務時間 / 休日). Used for the hourly equivalent. If omitted, 8 hours/day and 120 holidays/year are assumed and reported in `assumptions`.",
+            "example": "勤務時間：9：00～17：30（実働7時間30分） 休日：完全週休2日制 年間休日125日"
+          }
+        }
+      },
+      "SalaryResult": {
+        "type": "object",
+        "properties": {
+          "found": {
+            "type": "boolean",
+            "description": "false when no amount could be read (e.g. 当社規定により優遇)"
+          },
+          "basis": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Which pay figure the estimate is based on",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "monthly_salary",
+                  "monthly_income",
+                  "base_salary",
+                  "monthly_amount",
+                  "daily_wage",
+                  "hourly_wage",
+                  "annual_salary",
+                  "other"
+                ]
+              },
+              "ja": {
+                "type": "string"
+              }
+            }
+          },
+          "monthly": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "min": {
+                "type": "integer"
+              },
+              "max": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "min",
+              "max"
+            ],
+            "description": "Monthly pay range in JPY (daily/hourly wages converted to monthly)"
+          },
+          "bonusMonths": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Bonus in months of salary (賞与 ○ヶ月分)"
+          },
+          "annual": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Estimated annual income in JPY: annual salary if stated, else monthly x (12 + bonus months)",
+            "properties": {
+              "min": {
+                "type": "integer"
+              },
+              "max": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "openEnded": {
+                "type": "boolean",
+                "description": "true for 「30万円～」 (no upper bound)"
+              },
+              "bonusIncluded": {
+                "type": "boolean"
+              }
+            }
+          },
+          "statedAnnual": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Annual income written in the listing. Priority: expected > example > stated > company_average",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "expected",
+                  "example",
+                  "stated",
+                  "company_average"
+                ]
+              },
+              "ja": {
+                "type": "string"
+              },
+              "min": {
+                "type": "integer"
+              },
+              "max": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "openEnded": {
+                "type": "boolean"
+              },
+              "companyAverage": {
+                "type": "boolean",
+                "description": "true when it is the company-wide average (平均年収), not this job's pay"
+              }
+            }
+          },
+          "hourlyEquivalent": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "min": {
+                "type": "integer"
+              },
+              "max": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "min",
+              "max"
+            ],
+            "description": "Monthly pay divided by monthly working hours"
+          },
+          "fixedOvertime": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Fixed overtime pay included in the salary (固定残業代 / みなし残業). Negations such as 「みなし残業はありません」 are ignored.",
+            "properties": {
+              "hours": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "amount": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          },
+          "withoutFixedOvertime": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Minimum monthly pay and hourly equivalent after removing fixed overtime pay",
+            "properties": {
+              "monthly": {
+                "type": "integer"
+              },
+              "hourly": {
+                "type": "integer"
+              }
+            }
+          },
+          "hoursPerDay": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "annualHolidays": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "ja": {
+                  "type": "string"
+                },
+                "en": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "ja",
+                "en"
+              ]
+            }
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "JPY"
+            ]
+          }
+        },
+        "required": [
+          "found",
+          "basis",
+          "monthly",
+          "annual",
+          "statedAnnual",
+          "hourlyEquivalent",
+          "fixedOvertime",
+          "assumptions",
+          "currency"
+        ]
+      },
+      "RealtyRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Give either `rent` (rental) or `price` (sale / investment). Strings are parsed as written on Japanese property pages (「8.5万円」「1億2000万円」「25.3m²」「10坪」「1ヶ月」「なし」). Numbers are taken as JPY, square meters or percent.",
+        "properties": {
+          "rent": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Monthly rent (賃料). Number = JPY",
+            "example": "12.5万円"
+          },
+          "managementFee": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Management / common fee per month (管理費・共益費). Number = JPY",
+            "example": "8000円"
+          },
+          "depositAndKeyMoney": {
+            "type": "string",
+            "description": "Deposit and key money written together (敷金/礼金)",
+            "example": "1ヶ月 / 1ヶ月"
+          },
+          "deposit": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Deposit (敷金). 「1ヶ月」 or an amount. Number = JPY",
+            "example": "1ヶ月"
+          },
+          "keyMoney": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Key money (礼金). 「なし」「-」 = 0. Number = JPY",
+            "example": "なし"
+          },
+          "price": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Sale price (価格). Number = JPY",
+            "example": "4,980万円"
+          },
+          "repairReserve": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Repair reserve per month (修繕積立金). Number = JPY",
+            "example": "1万5000円"
+          },
+          "managementFeeAndRepairReserve": {
+            "type": "string",
+            "description": "Management fee and repair reserve written together (管理費/修繕積立金)",
+            "example": "9,000円 / 6,500円"
+          },
+          "grossYield": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Gross yield (表面利回り). Number = percent (5.8 = 5.8%)",
+            "example": "5.8%"
+          },
+          "annualIncome": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Annual rental income (満室時年収). Number = JPY",
+            "example": "107万円"
+          },
+          "area": {
+            "type": [
+              "string",
+              "number"
+            ],
+            "description": "Floor area (専有面積). Number = square meters",
+            "example": "40.5m2"
+          },
+          "loanRatePercent": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 20,
+            "default": 1,
+            "description": "Annual loan interest rate in percent (sale only)"
+          },
+          "loanYears": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 35,
+            "description": "Loan term in years (sale only)"
+          }
+        }
+      },
+      "RealtyResult": {
+        "type": "object",
+        "description": "Fields depend on `type` (rent / sale). All amounts in JPY.",
+        "properties": {
+          "found": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "rent",
+              "sale",
+              null
+            ]
+          },
+          "area": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "description": "Square meters"
+          },
+          "pricePerSquareMeter": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "pricePerTsubo": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "rent": {
+            "type": "integer"
+          },
+          "managementFee": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "monthlyTotal": {
+            "type": "integer"
+          },
+          "deposit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "keyMoney": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "initialCostEstimate": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Minimum move-in cost estimate (rent only)"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "repairReserve": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "loan": {
+            "type": "object",
+            "properties": {
+              "ratePercent": {
+                "type": "number"
+              },
+              "years": {
+                "type": "integer"
+              },
+              "monthlyPayment": {
+                "type": "integer"
+              }
+            }
+          },
+          "grossYieldPercent": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "annualIncome": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "netYieldPercent": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "string"
+                },
+                "ja": {
+                  "type": "string"
+                },
+                "en": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "ja",
+                "en"
+              ]
+            }
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "JPY"
+            ]
+          }
+        },
+        "required": [
+          "found",
+          "type",
+          "currency"
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "invalid_input",
+                  "forbidden",
+                  "not_found",
+                  "method_not_allowed",
+                  "internal_error",
+                  "not_configured"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "field": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Invalid input",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Not called through the marketplace",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "marketplaceKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-RapidAPI-Key",
+        "description": "API key issued by the API marketplace when you subscribe. Other marketplaces use their own header name."
+      }
+    }
+  },
+  "security": [
+    {
+      "marketplaceKey": []
+    }
+  ]
+}
