@@ -225,6 +225,12 @@
 
 再確認送信(2026-09-22 05:32 UTC・同スレッド・to support@ / cc tradingethics@・ユーザー承認「自動送信可」の再確認型): 「item 1 の文が二通りに読めるので、Swap-Free 口座(14166201)で日次ロール(NY 17 時)・水曜トリプル・週末を跨いで保有した場合に swap / financing / administration / holding fee が**一切無い**ことを書面で確認してほしい。あるなら金額と計算法を」。回答待ち(2 時間毎の Routine が転記)。確認が取れれば FN #14166201 はロール捕捉の受け皿になる(FN は 1 口座 1 EA のため NonFX EA へ内蔵)。
 
+**再確認への回答(2026-09-24 04:38 UTC・support@fundednext.com)**:
+
+> "By the extra charge, I was actually referring to the fact that if you take the swap-free feature, there is a 10% more charge while purchasing the account. I was not saying that there are extra fees even after getting the swap free feature. So, yes, I can reconfirm that if you take the swap-free feature, there is no extra cost for holding a trade overnight."
+
+→ ①は **「購入時の Swap-Free アドオン料金(+10%)」の意味で、保有中の追加費用は無い**と書面で確定。#14166201 はアドオン購入済みなので追加負担なし。これで FundedNext は ①費用なし・②保有時間制限なし(サイクル末の自動決済のみ)・③ロール跨ぎ SHORT は abuse でない・④資金化後も継続、の 4 点が書面で揃い、docs/273 §3d の「条件クリア」に該当する。
+
 ### 10c.【2026-09-22】FTMO サポート回答 — Swap-Free 口座は対象外
 
 > 出所: support@ftmo.com(Support Team)・2026-09-22 08:07 UTC・件名 "Re: Swap-free accounts — availability, fees and rollover holding rules - [GJV-XVHXN-709]"(送信 9/21 23:51 UTC・docs/273 §3b の文面)。本文転記。
