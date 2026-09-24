@@ -40,7 +40,7 @@
 //|     GBPJPY月曜LONGはFTMO PD口座のv7と同一日・同方向になり得る。   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.02"
+#property version   "1.03"   // 1.03: InpInitialBalance 既定を 100000 に固定(2026-09-24 の誤 PASS_LOCK 再発防止・docs/241 §1d)
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
@@ -59,7 +59,7 @@ input group "=== 有効期限(直近特化=賞味期限つき。docs/174停止�
 input datetime InpExpiry = D'2026.10.31 23:59';  // 期限後は新規停止(再スクリーニングで更新)
 
 input group "=== 口座/ガード ==="
-input double InpInitialBalance   = 0.0;   // 0=自動(初回アタッチ時の残高を端末に永続保存)
+input double InpInitialBalance   = 100000.0; // 口座初期残高を固定(0=自動は端末変更で基準がずれる。docs/241 §1d)
 input bool   InpBaselineReset    = false; // 新フェーズ開始時のみtrue=基準残高を取り直す
 input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%(FN Stellar=静的10%)
 input double InpAccountFloorDDPct= 9.0;   // 全停止ライン%(-10%枠の手前)
