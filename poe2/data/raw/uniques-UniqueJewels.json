@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 470.6,
-   "chaos": 8.17
+   "exalted": 499,
+   "chaos": 7.87
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,19 +42,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 769.9,
-   "listingCount": 66,
+   "primaryValue": 827.2,
+   "listingCount": 57,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 35.09,
+    "totalChange": 45.15,
     "data": [
-     null,
      0,
      14.84,
      18.97,
      31.08,
      null,
-     35.09
+     35.09,
+     45.15
     ]
    },
    "explicitModifiers": [
@@ -75,19 +75,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 25,
-   "listingCount": 14,
+   "primaryValue": 30,
+   "listingCount": 20,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 8.7,
+    "totalChange": 30.43,
     "data": [
-     null,
      0,
      30.43,
      14.78,
      -20.87,
      null,
-     8.7
+     8.7,
+     30.43
     ]
    },
    "explicitModifiers": [
@@ -109,19 +109,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 10.69,
-   "listingCount": 836,
+   "primaryValue": 9.52,
+   "listingCount": 832,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -23.61,
+    "totalChange": -31.96,
     "data": [
-     null,
      0,
      7.14,
      -13.51,
      -15,
      null,
-     -23.61
+     -23.61,
+     -31.96
     ]
    },
    "explicitModifiers": [
@@ -179,24 +179,24 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Small",
-   "primaryValue": 8.57,
-   "listingCount": 1993,
+   "primaryValue": 8.64,
+   "listingCount": 1899,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 18.19,
+    "totalChange": 19.13,
     "data": [
-     null,
      0,
      40.09,
      24.55,
      9.56,
      null,
-     18.19
+     18.19,
+     19.13
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Notable Passive Skills in Radius also grant [Gain] (2-3)% of Damage as Extra [Fire] Damage",
+     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Fire] Damage",
      "optional": true
     },
     {
@@ -274,39 +274,6 @@
    ]
   },
   {
-   "id": 381,
-   "itemId": "Grand Spectrum Sapphire",
-   "detailsId": "grand-spectrum-sapphire",
-   "name": "Grand Spectrum",
-   "baseType": "Sapphire",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
-   "flavourText": "Skin like steel tempered by bright flames.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 3,
-   "primaryValue": 6,
-   "listingCount": 116,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -57.14,
-    "data": [
-     null,
-     0,
-     -42.86,
-     -50,
-     -50,
-     null,
-     -57.14
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 404,
    "itemId": "The Adorned Diamond",
    "detailsId": "the-adorned-diamond",
@@ -318,17 +285,17 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "primaryValue": 5,
-   "listingCount": 1490,
+   "listingCount": 1604,
    "corrupted": true,
    "sparkLine": {
     "totalChange": 66.67,
     "data": [
-     null,
      0,
      0,
      30,
      66.67,
      null,
+     66.67,
      66.67
     ]
    },
@@ -342,7 +309,7 @@
      "optional": true
     },
     {
-     "text": "(1-77)% increased Effect of [Jewel] Socket Passive Skills\ncontaining [Corrupted] [ItemRarity|Magic] [Jewel|Jewels]",
+     "text": "(1-85)% increased Effect of [Jewel] Socket Passive Skills\ncontaining [Corrupted] [ItemRarity|Magic] [Jewel|Jewels]",
      "optional": true
     },
     {
@@ -402,7 +369,7 @@
      "optional": true
     },
     {
-     "text": "(8-30)% reduced [Armour]",
+     "text": "(4-30)% reduced [Armour]",
      "optional": true
     }
    ]
@@ -418,24 +385,57 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 4,
-   "listingCount": 49,
+   "primaryValue": 4.97,
+   "listingCount": 45,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -11.77,
+    "totalChange": 9.67,
     "data": [
-     null,
      0,
      32.24,
      1.59,
      -8.47,
      null,
-     -11.77
+     -11.77,
+     9.67
     ]
    },
    "explicitModifiers": [
     {
      "text": "2% increased [Spirit|Spirit] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
+   "id": 381,
+   "itemId": "Grand Spectrum Sapphire",
+   "detailsId": "grand-spectrum-sapphire",
+   "name": "Grand Spectrum",
+   "baseType": "Sapphire",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9TYXBwaGlyZSIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/514d06d40e/GrandSpectrum_Sapphire.png",
+   "flavourText": "Skin like steel tempered by bright flames.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 4.32,
+   "listingCount": 127,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -69.16,
+    "data": [
+     0,
+     -42.86,
+     -50,
+     -50,
+     null,
+     -57.14,
+     -69.16
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "+6% to all [Resistances|Elemental Resistances] per socketed Grand Spectrum",
      "optional": false
     }
    ]
@@ -451,19 +451,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.9792,
-   "listingCount": 3572,
+   "primaryValue": 1.02,
+   "listingCount": 3674,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 126.2,
+    "totalChange": 134.8,
     "data": [
-     null,
      0,
      38.52,
      40.02,
      89.56,
      null,
-     126.2
+     126.2,
+     134.8
     ]
    },
    "explicitModifiers": [
@@ -504,28 +504,28 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 0.7344,
-   "listingCount": 4764,
+   "primaryValue": 0.635,
+   "listingCount": 4973,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 35.75,
+    "totalChange": 17.38,
     "data": [
-     null,
      0,
      10.81,
      -10.39,
      9.89,
      null,
-     35.75
+     35.75,
+     17.38
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Remembrancing (105-7950) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
+     "text": "Remembrancing (105-7958) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
      "optional": true
     },
     {
-     "text": "Remembrancing (117-7877) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
+     "text": "Remembrancing (117-7917) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
      "optional": true
     },
     {
@@ -545,19 +545,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.3672,
+   "primaryValue": 0.508,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -32.13,
+    "totalChange": -6.1,
     "data": [
-     null,
      0,
      32.98,
      -10.39,
      64.43,
      null,
-     -32.13
+     -32.13,
+     -6.1
     ]
    },
    "explicitModifiers": [
@@ -590,7 +590,7 @@
      "optional": true
     },
     {
-     "text": "[Minion|Minions] Regenerate (1-2.4)% of maximum Life per second",
+     "text": "[Minion|Minions] Regenerate (1-2.8)% of maximum Life per second",
      "optional": true
     },
     {
@@ -654,7 +654,7 @@
      "optional": true
     },
     {
-     "text": "(6-9)% chance to inflict [Bleeding|Bleeding] on [Hit]",
+     "text": "(5-9)% chance to inflict [Bleeding|Bleeding] on [Hit]",
      "optional": true
     },
     {
@@ -754,7 +754,7 @@
      "optional": true
     },
     {
-     "text": "(40-58)% increased [EnergyShield|Energy Shield] from Equipped Body Armour",
+     "text": "(40-59)% increased [EnergyShield|Energy Shield] from Equipped Body Armour",
      "optional": true
     },
     {
@@ -844,6 +844,84 @@
    ]
   },
   {
+   "id": 401,
+   "itemId": "From Nothing Diamond",
+   "detailsId": "from-nothing-diamond",
+   "name": "From Nothing",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JpdHVhbEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/192c7799d7/RitualJewel.png",
+   "flavourText": "They clawed their way up from the agonising depths of nonexistence,\r\nbreathing deep with joy the exquisite light of meaning.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "radius": "Small",
+   "primaryValue": 0.254,
+   "listingCount": 6102,
+   "corrupted": true,
+   "sparkLine": {
+    "totalChange": 134.8,
+    "data": [
+     0,
+     10.81,
+     12.01,
+     9.89,
+     null,
+     13.12,
+     134.8
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Passives in Radius of [passive_keystone_avatar_of_fire|Avatar of Fire] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_mind_over_matter|Mind Over Matter] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_wildsurge_incantation|Wildsurge Incantation] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_eternal_youth|Eternal Youth] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_lord_of_the_wilds|Lord of the Wilds] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_alternate_es_recovery|Scarred Faith] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_acrobatics|Primal Hunger] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_giants_blood|Giant's Blood] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_heartstopper|Heartstopper] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_glancing_blows_|Glancing Blows] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_two_companions|Trusted Kinship] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_iron_reflexes_|Iron Reflexes] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    }
+   ]
+  },
+  {
    "id": 400,
    "itemId": "Flesh Crucible Diamond",
    "detailsId": "flesh-crucible-diamond",
@@ -854,19 +932,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.2448,
-   "listingCount": 3714,
+   "primaryValue": 0.127,
+   "listingCount": 3674,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -24.58,
+    "totalChange": -60.87,
     "data": [
-     null,
      0,
      -26.12,
      -28.53,
      -26.74,
      null,
-     -24.58
+     -24.58,
+     -60.87
     ]
    },
    "explicitModifiers": [
@@ -891,7 +969,7 @@
      "optional": true
     },
     {
-     "text": "(11-18)% less maximum Life",
+     "text": "(11-20)% less maximum Life",
      "optional": true
     },
     {
@@ -969,84 +1047,6 @@
    ]
   },
   {
-   "id": 401,
-   "itemId": "From Nothing Diamond",
-   "detailsId": "from-nothing-diamond",
-   "name": "From Nothing",
-   "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JpdHVhbEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/192c7799d7/RitualJewel.png",
-   "flavourText": "They clawed their way up from the agonising depths of nonexistence,\r\nbreathing deep with joy the exquisite light of meaning.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 1,
-   "radius": "Small",
-   "primaryValue": 0.1224,
-   "listingCount": 6004,
-   "corrupted": true,
-   "sparkLine": {
-    "totalChange": 13.12,
-    "data": [
-     null,
-     0,
-     10.81,
-     12.01,
-     9.89,
-     null,
-     13.12
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Passives in Radius of [passive_keystone_avatar_of_fire|Avatar of Fire] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_mind_over_matter|Mind Over Matter] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_wildsurge_incantation|Wildsurge Incantation] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_eternal_youth|Eternal Youth] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_lord_of_the_wilds|Lord of the Wilds] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_alternate_es_recovery|Scarred Faith] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_acrobatics|Primal Hunger] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_giants_blood|Giant's Blood] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_heartstopper|Heartstopper] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_glancing_blows_|Glancing Blows] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_two_companions|Trusted Kinship] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_iron_reflexes_|Iron Reflexes] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    }
-   ]
-  },
-  {
    "id": 402,
    "itemId": "Megalomaniac Diamond",
    "detailsId": "megalomaniac-diamond",
@@ -1057,19 +1057,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.1224,
+   "primaryValue": 0.127,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -43.44,
+    "totalChange": -41.31,
     "data": [
-     null,
      0,
      -44.59,
      -43.99,
      -45.06,
      null,
-     -43.44
+     -43.44,
+     -41.31
     ]
    }
   },
@@ -1084,22 +1084,38 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.00212,
+   "primaryValue": 0.002,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -10.17,
+    "totalChange": -15.25,
     "data": [
-     null,
      0,
      -4.66,
      -11.02,
      -5.93,
      null,
-     -10.17
+     -10.17,
+     -15.25
     ]
    },
    "explicitModifiers": [
+    {
+     "text": "+(1-2) to Level of all Lightning Conduit Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Ancestral Cry Skills",
+     "optional": true
+    },
+    {
+     "text": "+2 to Level of all Cross Slash Skills",
+     "optional": true
+    },
+    {
+     "text": "+1 to Level of all Whirlwind Lance Skills",
+     "optional": true
+    },
     {
      "text": "+1 to Level of all Alchemist's Boon Skills",
      "optional": true
@@ -1130,10 +1146,6 @@
     },
     {
      "text": "+1 to Level of all Fragmentation Rounds Skills",
-     "optional": true
-    },
-    {
-     "text": "+2 to Level of all Lightning Conduit Skills",
      "optional": true
     },
     {
@@ -1377,7 +1389,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Thunderous Leap Skills",
+     "text": "+(1-2) to Level of all Thunderous Leap Skills",
      "optional": true
     },
     {
@@ -1405,7 +1417,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Sacrifice Skills",
+     "text": "+(1-2) to Level of all Sacrifice Skills",
      "optional": true
     },
     {
@@ -1561,7 +1573,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Killing Palm Skills",
+     "text": "+(1-2) to Level of all Killing Palm Skills",
      "optional": true
     },
     {
@@ -1569,7 +1581,7 @@
      "optional": true
     },
     {
-     "text": "+1 to Level of all Mana Tempest Skills",
+     "text": "+(1-2) to Level of all Mana Tempest Skills",
      "optional": true
     },
     {
@@ -1645,7 +1657,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Detonate Dead Skills",
+     "text": "+(1-2) to Level of all Detonate Dead Skills",
      "optional": true
     },
     {
