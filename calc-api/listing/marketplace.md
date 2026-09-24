@@ -1,86 +1,141 @@
 # API マーケット掲載情報(RapidAPI 向け・他のマーケットでも流用可)
 
+同じ Worker を、テーマごとに **4つの出品** として掲載する(検索で見つかりやすく、値段も別々に決められる)。
 マーケットの利用者は海外の開発者が中心なので、掲載文は英語。各項目の下に日本語訳を付けている。
-「→」の右をマーケットの各欄に貼る。
 
-## 基本情報
+| 出品(product) | API 名 | 仕様書(登録時にアップロード) |
+|---|---|---|
+| `salary` | Japan Job Listing Salary Parser | `/openapi.json?product=salary` |
+| `realty` | Japan Real Estate Listing Calculator | `/openapi.json?product=realty` |
+| `takehome` | Japan Take-Home Pay Calculator | `/openapi.json?product=takehome` |
+| `calendar` | Japan Holidays, Business Days & Wareki API | `/openapi.json?product=calendar` |
 
-- **API 名** → `Japan Salary & Real Estate Calculator`
-- **カテゴリ** → `Data`(候補が無ければ `Business` / `Finance`)
-- **タグ** → `japan`, `salary`, `real estate`, `job listing`, `rent`, `property`, `yield`, `parser`, `japanese`
-- **ロゴ** → `calc-api/listing/logo.png`(500x500)
-- **仕様書(OpenAPI)** → `calc-api/src/openapi.json` をアップロード
-  (公開後は `https://jp-listing-calc-api.<サブドメイン>.workers.dev/openapi.json` でも取れる)
-- **Base URL** → `https://jp-listing-calc-api.<サブドメイン>.workers.dev`
+仕様書は公開後 `https://jp-listing-calc-api.<サブドメイン>.workers.dev/openapi.json?product=…` から保存してアップロードする
+(公開前なら `npm run dev` で起動して http://localhost:8787/openapi.json?product=… から保存)。
 
-## 短い説明(Short description)
-
-```
-Turn messy Japanese job and property listings into comparable numbers: annual salary, hourly pay, fixed overtime, price per m²/tsubo, monthly cost and yield.
-```
-
-> 訳: ばらばらな日本の求人・物件の記載を、比べられる数字(年収・時給・固定残業代・㎡/坪単価・月額・利回り)に変換します。
-
-## 長い説明(Long description)
+**出品ごとに秘密の値が発行される**ので、GitHub の Secrets の `MARKETPLACE_SECRETS` には出品ごとに書く:
 
 ```
-Japanese job and real estate listings write numbers in many different ways — 「月給25万円～＋賞与年2回（4.5ヶ月分）」, 「固定残業代40時間分を含む」, 「12.5万円」, 「1億2000万円」, 「25.3m²」, 「敷金/礼金 1ヶ月/なし」. This API reads the text exactly as written and returns clean, comparable numbers in JSON.
+x-rapidapi-proxy-secret:<salaryの値>@salary,x-rapidapi-proxy-secret:<realtyの値>@realty,x-rapidapi-proxy-secret:<takehomeの値>@takehome,x-rapidapi-proxy-secret:<calendarの値>@calendar
+```
 
-## Salary (/v1/salary/analyze)
-Send the salary section of a Japanese job listing (and optionally the working hours / holidays section):
-- Estimated annual income (monthly pay x 12 + bonus months, or the stated annual salary 年俸)
-- Monthly pay range, with daily and hourly wages converted to monthly
-- Hourly equivalent based on the stated working hours and annual holidays
-- Fixed overtime pay (固定残業代 / みなし残業): hours, amount, and pay after removing it
-- Annual income written in the listing (想定年収 / 年収例), distinguished from the company-wide average (平均年収)
-- Every assumption (e.g. 8 hours/day when not stated) is returned in both English and Japanese
+共通: ロゴ `calc-api/listing/logo.png`、Base URL `https://jp-listing-calc-api.<サブドメイン>.workers.dev`
 
-## Real estate (/v1/realty/analyze)
-Send rent or price, area and fees as written on Japanese property pages (strings or numbers):
+---
+
+## 1. Japan Job Listing Salary Parser(salary)
+
+- **カテゴリ** → `Data`(無ければ `Business`)
+- **タグ** → `japan`, `salary`, `job listing`, `recruiting`, `hr`, `parser`, `japanese`
+
+**短い説明**
+
+```
+Parse the salary text of Japanese job listings into estimated annual income, monthly range, hourly equivalent and fixed overtime pay.
+```
+
+> 訳: 日本の求人の給与欄を、年収の目安・月給の幅・時給換算・固定残業代に変換します。
+
+**長い説明**
+
+```
+Japanese job listings write pay in many ways — 「月給25万円～＋賞与年2回（4.5ヶ月分）」, 「年俸600万円～」, 「時給1,500円」, 「固定残業代40時間分・5万円を含む」. Send the text as written and get clean numbers in JSON:
+- Estimated annual income (monthly x (12 + bonus months), or the stated annual salary)
+- Monthly pay range (daily and hourly wages converted to monthly)
+- Hourly equivalent from the stated working hours and annual holidays
+- Fixed overtime pay (hours, amount) and pay after removing it
+- Annual income written in the listing (想定年収 / 年収例), separated from the company-wide average (平均年収)
+- Every assumption is returned in English and Japanese
+Handles full-width digits, 万 notation, ranges and spelling variants. No data is stored.
+```
+
+## 2. Japan Real Estate Listing Calculator(realty)
+
+- **カテゴリ** → `Data`(無ければ `Finance`)
+- **タグ** → `japan`, `real estate`, `rent`, `property`, `yield`, `mortgage`, `tsubo`
+
+**短い説明**
+
+```
+Turn Japanese property listing values (12.5万円, 25.3m², 敷金/礼金 1ヶ月/なし) into price per m²/tsubo, monthly cost, move-in cost, loan payment and yield.
+```
+
+> 訳: 日本の物件ページの値を、㎡/坪単価・月額・初期費用・ローン返済・利回りに変換します。
+
+**長い説明**
+
+```
+Send rent or price, area and fees exactly as written on Japanese property pages (strings) or as numbers:
 - Rentals: effective monthly cost (rent + management fee), rent per m² and per tsubo, minimum move-in cost estimate (deposit, key money, brokerage fee, advance rent)
-- Sales: price per m² and per tsubo, monthly loan payment (custom rate and term) plus management fee and repair reserve
-- Investment: gross yield ⇔ annual income, simple net yield after management fee and repair reserve
-
-## Good for
-- Job boards, recruiting and HR tools that aggregate Japanese listings
-- Real estate portals, property comparison and investment analysis tools
-- Scrapers and data pipelines that need normalized numbers from Japanese text
-
-## Notes
-- Handles full-width digits, 万/億 notation, ranges (～), 「ヶ月/ヵ月/カ月」 and common spelling variants.
-- No data is stored. Results are estimates computed from the given text only.
-- Currency is always JPY.
+- Sales: price per m² and per tsubo, monthly loan payment with your rate and term, plus management fee and repair reserve
+- Investment: gross yield <-> annual income, simple net yield after management fee and repair reserve
+Handles 万/億 notation, m²/㎡/坪, 「ヶ月」「なし」「-」. No data is stored.
 ```
 
-> 訳(要約): 日本の求人・物件の数字の書き方はばらばら。この API は記載をそのまま読み、比べられる数字を JSON で返す。
-> 給与: 年収の目安、月給の幅(日給・時給は月額に換算)、時給換算、固定残業代とそれを除いた金額、記載の年収(会社平均と区別)、仮定の内容(英語・日本語)。
-> 物件: 賃貸は実質月額・㎡/坪あたり・初期費用の目安、売買は単価・ローン返済+管理費等、投資は利回り⇔年間収入・簡易実質利回り。
-> 向いている用途: 求人サイト・人事ツール、不動産ポータル・比較・投資分析、日本語の文章から数字が必要なスクレイパー。
-> 注意: 全角数字・万/億・範囲・「ヶ月」の表記揺れに対応。データは保存しない。結果は概算。通貨は円。
+## 3. Japan Take-Home Pay Calculator(takehome)
 
-## 料金プラン(案)
+- **カテゴリ** → `Finance`
+- **タグ** → `japan`, `payroll`, `take-home pay`, `income tax`, `social insurance`, `salary`, `hr`
 
-| プラン | 月額 | 回数/月 | 超過時 |
-|---|---|---|---|
-| BASIC | $0 | 100 | 止める(hard limit) |
-| PRO | $9.99 | 10,000 | 止める |
-| ULTRA | $29.99 | 100,000 | $0.0005/回 |
-| MEGA | $99.99 | 1,000,000 | $0.0002/回 |
+**短い説明**
 
-- 無料枠は試してもらうため。上限で止めて、想定外の請求が出ないようにする
-- 1回あたりの Cloudflare の費用はほぼ0円(無料枠: 1日10万回。超えても100万回あたり数十円程度)
-- 1秒あたりの回数制限(rate limit)は 10回/秒 程度をマーケット側で設定
+```
+Japanese take-home pay from monthly salary and bonus: health insurance by prefecture, pension, employment insurance, income tax and resident tax — FY2026 official rates.
+```
 
-## エンドポイントの説明(マーケットが OpenAPI から自動で作る。直す場合の文案)
+> 訳: 月給と賞与から日本の手取りを計算。都道府県別の健康保険、年金、雇用保険、所得税、住民税。2026年度の公式の率。
 
-- `POST /v1/salary/analyze` → `Analyze the salary text of a Japanese job listing. Returns estimated annual income, hourly equivalent and fixed overtime pay.`
-- `POST /v1/realty/analyze` → `Analyze a Japanese property listing (rent or sale). Returns price per m²/tsubo, monthly cost, move-in cost estimate, loan payment and yield.`
-- `GET /v1/health` → `Health check (no authentication).`
+**長い説明**
+
+```
+Calculate Japanese take-home pay for company employees (Kyokai Kenpo health insurance):
+- Health insurance with the official FY2026 rate of each of the 47 prefectures, nursing care insurance (age 40-64), the new child support levy (0.23%), employees' pension (18.3%) and employment insurance (0.5%)
+- Standard monthly remuneration grades, pension cap, bonus caps and the official rounding rule
+- Income tax with the 2026 tax reform (basic deduction up to ¥1.04M, minimum employment income deduction ¥740k) and the 2.1% reconstruction surtax
+- Estimated resident tax
+Returns each deduction, annual and monthly take-home pay, and the rates used. Assumes a single employee with no dependents; assumptions are listed in the response. Rates are updated every fiscal year.
+```
+
+## 4. Japan Holidays, Business Days & Wareki API(calendar)
+
+- **カテゴリ** → `Data`(無ければ `Tools`)
+- **タグ** → `japan`, `holidays`, `business days`, `calendar`, `wareki`, `japanese era`, `date`
+
+**短い説明**
+
+```
+Japanese national holidays (official data since 1955), business day add/count with year-end closure, and Western <-> Japanese era (令和/平成) date conversion.
+```
+
+> 訳: 日本の祝日(1955年からの公式データ)、年末年始休みにも対応した営業日の加算・日数、西暦⇔和暦の変換。
+
+**長い説明**
+
+```
+- Holidays: official Cabinet Office holiday data from 1955, including substitute holidays and citizens' holidays (e.g. 2026-09-22)
+- Check a date: holiday name, weekday, business day or not, and the wareki date
+- Add or subtract business days, or count business days between two dates — optionally closing Dec 29 - Jan 3, custom closed days and custom weekend days
+- Wareki conversion both ways: 「令和6年4月1日」「R6.4.1」「平成元年」「H31/4/30」, full-width digits, and dates written in an era that had already ended (平成31年5月1日 -> 令和元年)
+```
+
+---
+
+## 料金プラン(案・出品ごと)
+
+| プラン | salary / realty / takehome | calendar(軽い処理なので安め) |
+|---|---|---|
+| BASIC(無料) | 100回/月 | 500回/月 |
+| PRO | $9.99・1万回/月 | $4.99・2万回/月 |
+| ULTRA | $29.99・10万回/月 | $14.99・20万回/月 |
+| MEGA | $99.99・100万回/月 | $49.99・200万回/月 |
+
+- 無料枠は上限で止める(hard limit)。有料プランの超過は1回 $0.0002〜0.0005 程度
+- Cloudflare の費用はほぼ0円(無料枠: 1日10万回)
 
 ## 利用規約に入れる内容(マーケットの規約に追加できる場合)
 
 ```
-Results are estimates computed from the text you send and are provided "as is" without warranty. Do not use them as the sole basis for employment, financial or real estate decisions. We do not store request data.
+Results are estimates computed from your input and are provided "as is" without warranty. They are not tax, legal, financial or real estate advice. Do not use them as the sole basis for payroll, employment, financial or real estate decisions. We do not store request data.
 ```
 
-> 訳: 結果は送られた文章から計算した概算で、無保証。雇用・金融・不動産の判断の唯一の根拠にしないこと。リクエストの内容は保存しない。
+> 訳: 結果は入力から計算した概算で無保証。税務・法律・金融・不動産の助言ではない。給与計算・雇用・金融・不動産の判断の唯一の根拠にしないこと。リクエストの内容は保存しない。

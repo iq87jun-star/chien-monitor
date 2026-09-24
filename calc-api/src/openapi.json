@@ -1,9 +1,9 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Japan Salary & Real Estate Calculator API",
+    "title": "Japan Salary, Tax & Calendar Calculator API",
     "version": "1.0.0",
-    "description": "Turn messy Japanese job and property listings into comparable numbers.\n\n- **Salary**: paste the salary text of a Japanese job listing (月給25万円～＋賞与年2回（4.5ヶ月分）, 固定残業代40時間分を含む ...) and get the estimated annual income, hourly equivalent and fixed overtime pay.\n- **Real estate**: send rent / price / area / fees as written on Japanese property pages and get price per m² and per tsubo, effective monthly cost, move-in cost estimate, loan payment and yield.\n\nNo data is stored. Results are estimates computed from the given text.",
+    "description": "Japan-specific calculations for developers: salary text parsing, real estate listing math, take-home pay (social insurance, income tax, resident tax) and Japanese holidays / business days / wareki (Japanese era) dates.\n\nNo data is stored. Results are estimates computed from the given input.",
     "license": {
       "name": "Proprietary"
     }
@@ -49,7 +49,8 @@
           "403": {
             "$ref": "#/components/responses/Forbidden"
           }
-        }
+        },
+        "x-product": "salary"
       }
     },
     "/v1/realty/analyze": {
@@ -107,6 +108,266 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RealtyResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        },
+        "x-product": "realty"
+      }
+    },
+    "/v1/takehome/calculate": {
+      "post": {
+        "operationId": "calculateTakeHome",
+        "summary": "Calculate Japanese take-home pay",
+        "tags": [
+          "Take-home pay"
+        ],
+        "x-product": "takehome",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TakeHomeRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Monthly ¥300,000, no bonus, Tokyo",
+                  "value": {
+                    "monthlySalary": 300000
+                  }
+                },
+                "bonus": {
+                  "summary": "Monthly ¥400,000 + ¥1,000,000 bonus, age 45, Osaka",
+                  "value": {
+                    "monthlySalary": 400000,
+                    "annualBonus": 1000000,
+                    "age": 45,
+                    "prefecture": "大阪府"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TakeHomeResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/calendar/day": {
+      "post": {
+        "operationId": "calendarDay",
+        "summary": "Check a date (holiday, business day, wareki)",
+        "tags": [
+          "Calendar"
+        ],
+        "x-product": "calendar",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DayRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Day"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/calendar/holidays": {
+      "post": {
+        "operationId": "calendarHolidays",
+        "summary": "List Japanese national holidays of a year",
+        "tags": [
+          "Calendar"
+        ],
+        "x-product": "calendar",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HolidaysRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HolidaysResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/calendar/add-business-days": {
+      "post": {
+        "operationId": "addBusinessDays",
+        "summary": "Add or subtract Japanese business days",
+        "tags": [
+          "Calendar"
+        ],
+        "x-product": "calendar",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddBusinessDaysRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddBusinessDaysResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/calendar/count-business-days": {
+      "post": {
+        "operationId": "countBusinessDays",
+        "summary": "Count Japanese business days between two dates (inclusive)",
+        "tags": [
+          "Calendar"
+        ],
+        "x-product": "calendar",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CountBusinessDaysRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CountBusinessDaysResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/wareki/convert": {
+      "post": {
+        "operationId": "convertWareki",
+        "summary": "Convert between Western dates and Japanese era (wareki) dates",
+        "tags": [
+          "Calendar"
+        ],
+        "x-product": "calendar",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarekiRequest"
+              },
+              "examples": {
+                "toWareki": {
+                  "summary": "Western date to wareki",
+                  "value": {
+                    "date": "2026-09-22"
+                  }
+                },
+                "fromWareki": {
+                  "summary": "Wareki to Western date",
+                  "value": {
+                    "wareki": "R6.4.1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarekiResult"
                 }
               }
             }
@@ -367,23 +628,7 @@
           "assumptions": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "string"
-                },
-                "ja": {
-                  "type": "string"
-                },
-                "en": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "code",
-                "ja",
-                "en"
-              ]
+              "$ref": "#/components/schemas/Assumption"
             }
           },
           "currency": {
@@ -620,23 +865,7 @@
           "assumptions": {
             "type": "array",
             "items": {
-              "type": "object",
-              "properties": {
-                "code": {
-                  "type": "string"
-                },
-                "ja": {
-                  "type": "string"
-                },
-                "en": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "code",
-                "ja",
-                "en"
-              ]
+              "$ref": "#/components/schemas/Assumption"
             }
           },
           "currency": {
@@ -685,6 +914,534 @@
         "required": [
           "error"
         ]
+      },
+      "Assumption": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "ja": {
+            "type": "string"
+          },
+          "en": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "ja",
+          "en"
+        ]
+      },
+      "TakeHomeRequest": {
+        "type": "object",
+        "required": [
+          "monthlySalary"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "monthlySalary": {
+            "type": "number",
+            "description": "Monthly gross salary in JPY (including allowances such as commuting)",
+            "minimum": 1,
+            "maximum": 20000000,
+            "example": 300000
+          },
+          "annualBonus": {
+            "type": "number",
+            "description": "Total annual bonus in JPY",
+            "minimum": 0,
+            "default": 0,
+            "example": 600000
+          },
+          "bonusTimes": {
+            "type": "integer",
+            "description": "Number of bonus payments per year (the bonus is split evenly)",
+            "minimum": 0,
+            "maximum": 12,
+            "default": 2
+          },
+          "age": {
+            "type": "integer",
+            "description": "Age. Nursing care insurance applies from 40 to 64",
+            "minimum": 15,
+            "maximum": 99,
+            "default": 30
+          },
+          "prefecture": {
+            "type": "string",
+            "description": "Prefecture of the employer's Kyokai Kenpo branch. Japanese (東京都 / 東京) or romaji (Tokyo)",
+            "default": "東京都",
+            "example": "大阪府"
+          },
+          "year": {
+            "type": "integer",
+            "description": "Tax / insurance year (only 2026 is supported)",
+            "minimum": 2026,
+            "maximum": 2026,
+            "default": 2026
+          }
+        }
+      },
+      "TakeHomeResult": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer"
+          },
+          "prefecture": {
+            "type": "string"
+          },
+          "grossAnnual": {
+            "type": "integer"
+          },
+          "socialInsurance": {
+            "type": "object",
+            "description": "Employee share per year",
+            "properties": {
+              "healthInsurance": {
+                "type": "integer"
+              },
+              "nursingCareInsurance": {
+                "type": "integer"
+              },
+              "childSupportLevy": {
+                "type": "integer"
+              },
+              "pension": {
+                "type": "integer"
+              },
+              "employmentInsurance": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              },
+              "standardMonthlyRemuneration": {
+                "type": "object",
+                "properties": {
+                  "health": {
+                    "type": "integer"
+                  },
+                  "pension": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          },
+          "incomeTax": {
+            "type": "integer",
+            "description": "Income tax including the 2.1% reconstruction surtax"
+          },
+          "residentTax": {
+            "type": "integer",
+            "description": "Estimated resident tax (levied in the following fiscal year)"
+          },
+          "totalDeductions": {
+            "type": "integer"
+          },
+          "takeHomeAnnual": {
+            "type": "integer"
+          },
+          "takeHomeMonthlyAverage": {
+            "type": "integer"
+          },
+          "takeHomeRatioPercent": {
+            "type": "number"
+          },
+          "rates": {
+            "type": "object",
+            "properties": {
+              "healthInsurancePercent": {
+                "type": "number"
+              },
+              "nursingCarePercent": {
+                "type": "number"
+              },
+              "childSupportPercent": {
+                "type": "number"
+              },
+              "pensionPercent": {
+                "type": "number"
+              },
+              "employmentInsuranceEmployeePercent": {
+                "type": "number"
+              },
+              "totalEmployeeSharePercent": {
+                "type": "number"
+              }
+            }
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Assumption"
+            }
+          },
+          "currency": {
+            "type": "string",
+            "enum": [
+              "JPY"
+            ]
+          }
+        },
+        "required": [
+          "year",
+          "grossAnnual",
+          "socialInsurance",
+          "incomeTax",
+          "residentTax",
+          "takeHomeAnnual",
+          "currency"
+        ]
+      },
+      "Wareki": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "properties": {
+          "era": {
+            "type": "string"
+          },
+          "eraEn": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer"
+          },
+          "text": {
+            "type": "string",
+            "example": "令和8年9月22日"
+          },
+          "short": {
+            "type": "string",
+            "example": "R8.9.22"
+          }
+        }
+      },
+      "Day": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "weekday": {
+            "type": "string"
+          },
+          "weekdayJa": {
+            "type": "string"
+          },
+          "isHoliday": {
+            "type": "boolean"
+          },
+          "holidayName": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "isBusinessDay": {
+            "type": "boolean"
+          },
+          "wareki": {
+            "$ref": "#/components/schemas/Wareki"
+          }
+        },
+        "required": [
+          "date",
+          "isHoliday",
+          "isBusinessDay"
+        ]
+      },
+      "DayRequest": {
+        "type": "object",
+        "required": [
+          "date"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-09-22"
+          },
+          "closedDates": {
+            "type": "array",
+            "maxItems": 400,
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Extra closed days (YYYY-MM-DD)"
+          },
+          "yearEndClosure": {
+            "type": "boolean",
+            "default": false,
+            "description": "Treat Dec 29 - Jan 3 as closed"
+          },
+          "weekendDays": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "sun",
+                "mon",
+                "tue",
+                "wed",
+                "thu",
+                "fri",
+                "sat"
+              ]
+            },
+            "default": [
+              "sat",
+              "sun"
+            ]
+          }
+        }
+      },
+      "HolidaysRequest": {
+        "type": "object",
+        "required": [
+          "year"
+        ],
+        "properties": {
+          "year": {
+            "type": "integer",
+            "description": "Year (1955 to the latest published year)",
+            "example": 2026
+          }
+        }
+      },
+      "HolidaysResult": {
+        "type": "object",
+        "properties": {
+          "year": {
+            "type": "integer"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "holidays": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "weekdayJa": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "source": {
+            "type": "string"
+          }
+        }
+      },
+      "AddBusinessDaysRequest": {
+        "type": "object",
+        "required": [
+          "date",
+          "days"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-09-18"
+          },
+          "days": {
+            "type": "integer",
+            "description": "Business days to add (negative = backwards). The start date is not counted",
+            "minimum": -1000,
+            "maximum": 1000,
+            "example": 1
+          },
+          "closedDates": {
+            "type": "array",
+            "maxItems": 400,
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Extra closed days (YYYY-MM-DD)"
+          },
+          "yearEndClosure": {
+            "type": "boolean",
+            "default": false,
+            "description": "Treat Dec 29 - Jan 3 as closed"
+          },
+          "weekendDays": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "sun",
+                "mon",
+                "tue",
+                "wed",
+                "thu",
+                "fri",
+                "sat"
+              ]
+            },
+            "default": [
+              "sat",
+              "sun"
+            ]
+          }
+        }
+      },
+      "AddBusinessDaysResult": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date"
+          },
+          "days": {
+            "type": "integer"
+          },
+          "result": {
+            "$ref": "#/components/schemas/Day"
+          }
+        }
+      },
+      "CountBusinessDaysRequest": {
+        "type": "object",
+        "required": [
+          "from",
+          "to"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-09-01"
+          },
+          "to": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-09-30"
+          },
+          "closedDates": {
+            "type": "array",
+            "maxItems": 400,
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Extra closed days (YYYY-MM-DD)"
+          },
+          "yearEndClosure": {
+            "type": "boolean",
+            "default": false,
+            "description": "Treat Dec 29 - Jan 3 as closed"
+          },
+          "weekendDays": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "sun",
+                "mon",
+                "tue",
+                "wed",
+                "thu",
+                "fri",
+                "sat"
+              ]
+            },
+            "default": [
+              "sat",
+              "sun"
+            ]
+          }
+        }
+      },
+      "CountBusinessDaysResult": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "calendarDays": {
+            "type": "integer"
+          },
+          "businessDays": {
+            "type": "integer"
+          },
+          "holidays": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "WarekiRequest": {
+        "type": "object",
+        "description": "Give either `date` or `wareki`",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "example": "2026-09-22"
+          },
+          "wareki": {
+            "type": "string",
+            "maxLength": 50,
+            "example": "令和6年4月1日"
+          }
+        }
+      },
+      "WarekiResult": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "wareki": {
+            "$ref": "#/components/schemas/Wareki"
+          },
+          "input": {
+            "type": "object",
+            "properties": {
+              "era": {
+                "type": "string"
+              },
+              "year": {
+                "type": "integer"
+              },
+              "outOfEraRange": {
+                "type": "boolean",
+                "description": "true for dates written in an era that had already ended (e.g. 平成31年5月1日)"
+              }
+            }
+          }
+        }
       }
     },
     "responses": {
@@ -722,5 +1479,23 @@
     {
       "marketplaceKey": []
     }
-  ]
+  ],
+  "x-products": {
+    "salary": {
+      "title": "Japan Job Listing Salary Parser",
+      "description": "Turn the salary text of Japanese job listings (月給25万円～＋賞与年2回（4.5ヶ月分）, 固定残業代40時間分を含む ...) into estimated annual income, hourly equivalent and fixed overtime pay. No data is stored."
+    },
+    "realty": {
+      "title": "Japan Real Estate Listing Calculator",
+      "description": "Send rent / price / area / fees as written on Japanese property pages (12.5万円, 1ヶ月/なし, 25.3m²) and get price per m² and per tsubo, effective monthly cost, move-in cost estimate, loan payment and yield. No data is stored."
+    },
+    "takehome": {
+      "title": "Japan Take-Home Pay Calculator",
+      "description": "Calculate Japanese take-home pay from monthly salary and bonus: health insurance (prefecture rates), nursing care, child support levy, pension, employment insurance, income tax and resident tax, using FY2026 official rates and the 2026 tax reform (basic deduction up to ¥1.04M, minimum employment income deduction ¥740k). Company employees in Kyokai Kenpo, single with no dependents."
+    },
+    "calendar": {
+      "title": "Japan Holidays, Business Days & Wareki API",
+      "description": "Japanese national holidays (official Cabinet Office data from 1955), business day calculation (add / count, with year-end closure and custom closed days) and conversion between Western dates and Japanese era dates (令和6年4月1日, R6.4.1, 平成元年 ...)."
+    }
+  }
 }

@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const SECRET = "e2e-secret";
+const CAL_SECRET = "e2e-calendar-only";
 
 const freePort = () =>
   new Promise((resolve) => {
@@ -29,7 +30,7 @@ const worker = spawn(
     "--inspector-port",
     String(await freePort()),
     "--var",
-    `MARKETPLACE_SECRETS:x-rapidapi-proxy-secret:${SECRET}`,
+    `MARKETPLACE_SECRETS:x-rapidapi-proxy-secret:${SECRET},x-rapidapi-proxy-secret:${CAL_SECRET}@calendar`,
   ],
   { cwd: ROOT, stdio: ["ignore", "pipe", "pipe"], detached: true },
 );
@@ -79,8 +80,27 @@ try {
   assert.equal(rb.pricePerSquareMeter, 3600);
   console.log("ok - 物件の計算(数値で指定)");
 
+  const t = await post("/v1/takehome/calculate", { monthlySalary: 300000 }, viaMarket);
+  assert.equal((await t.json()).takeHomeAnnual, 2876160);
+  console.log("ok - 手取りの計算(2026年の率)");
+
+  const viaCalendar = { "X-RapidAPI-Proxy-Secret": CAL_SECRET };
+  const c = await post(
+    "/v1/calendar/add-business-days",
+    { date: "2026-09-18", days: 1 },
+    viaCalendar,
+  );
+  assert.equal((await c.json()).result.date, "2026-09-24");
+  const w = await post("/v1/wareki/convert", { wareki: "R6.4.1" }, viaCalendar);
+  assert.equal((await w.json()).date, "2024-04-01");
+  const denied = await post("/v1/takehome/calculate", { monthlySalary: 300000 }, viaCalendar);
+  assert.equal(denied.status, 403);
+  console.log("ok - カレンダー専用の秘密の値ではカレンダーだけ使える");
+
   const spec = await (await fetch(`${BASE}/openapi.json`)).json();
-  assert.equal(spec.info.title, "Japan Salary & Real Estate Calculator API");
+  assert.equal(spec.info.title, "Japan Salary, Tax & Calendar Calculator API");
+  const calSpec = await (await fetch(`${BASE}/openapi.json?product=calendar`)).json();
+  assert.equal(calSpec.info.title, "Japan Holidays, Business Days & Wareki API");
   console.log("ok - 仕様書(OpenAPI)を配信");
 } catch (err) {
   failed = true;
