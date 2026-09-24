@@ -1,0 +1,54 @@
+# Cowork(人のパソコンのブラウザを操作する Claude)に渡すファイルを1つの Artifact「cowork-files」にまとめる。
+# Cowork は GitHub の Actions 画面からこれをダウンロードして使う(作業指示は cowork/README.md)。
+#   chrome/     … Chrome ウェブストア・Edge アドオンに出す zip(3つの拡張)
+#   firefox/    … Firefox アドオン(AMO)に出す zip(3つの拡張)
+#   sheets-addon/ … スプレッドシートのアドオンの Apps Script に貼るファイル(5つ)
+# 拡張・アドオン・共有する計算部分を main で変えるたびに作り直す。手動でも実行できる。
+
+name: cowork-files
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "extension/**"
+      - "job-extension/**"
+      - "realty-extension/**"
+      - "sheets-addon/**"
+      - "calc-api/src/**"
+      - ".github/workflows/cowork-files.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 拡張の zip を作る(Chrome・Edge 用と Firefox 用)
+        run: |
+          mkdir -p out/chrome out/firefox
+          for d in extension job-extension realty-extension; do
+            (cd "$d" && node scripts/pack.mjs)
+            cp "$d"/dist/*.zip out/chrome/
+            cp "$d"/dist/firefox/*.zip out/firefox/
+          done
+      - name: スプレッドシートのアドオンのファイルを作る
+        working-directory: sheets-addon
+        run: |
+          npm ci
+          npm run build
+          mkdir -p ../out/sheets-addon
+          cp dist/* ../out/sheets-addon/
+      - name: 中身の一覧
+        run: find out -type f | sort
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cowork-files
+          path: out/
+          retention-days: 90
