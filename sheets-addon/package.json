@@ -1,0 +1,14 @@
+{
+  "name": "jp-calc-sheets-addon",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "npm run build && node --test test/*.test.js",
+    "push": "npm run build && npx --yes @google/clasp@2 push"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
