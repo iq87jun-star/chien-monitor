@@ -1,0 +1,14 @@
+{
+  "name": "jp-listing-calc-api",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "test:e2e": "node scripts/e2e.mjs",
+    "dev": "wrangler dev --var ALLOW_UNAUTHENTICATED:true"
+  },
+  "devDependencies": {
+    "wrangler": "^4.137.0"
+  }
+}

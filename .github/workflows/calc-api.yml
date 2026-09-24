@@ -1,0 +1,81 @@
+# 計算API(calc-api/)のテストとデプロイ。API マーケット(RapidAPI 等)経由で販売する。
+#   - calc-api/ か、共有している拡張の計算部分(job-extension・realty-extension の parser.js)を変更するPR: テスト
+#   - main への push・手動実行: テスト → Cloudflare にデプロイ
+#
+# Secrets(未設定ならデプロイはスキップ。設定手順は calc-api/README.md):
+#   CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID … 値下がり通知(notify)と同じもの
+#   MARKETPLACE_SECRETS … マーケットが付ける秘密ヘッダー「ヘッダー名:値」(複数はカンマ区切り)。
+#     未設定の間、公開した API は計算を返さない(503)ので、無料で使われることはない
+
+name: calc-api
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "calc-api/**"
+      - "job-extension/src/parser.js"
+      - "realty-extension/src/parser.js"
+      - ".github/workflows/calc-api.yml"
+  pull_request:
+    paths:
+      - "calc-api/**"
+      - "job-extension/src/parser.js"
+      - "realty-extension/src/parser.js"
+      - ".github/workflows/calc-api.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calc-api-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: calc-api
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: calc-api/package-lock.json
+      - run: npm ci
+      - name: Unit tests
+        run: npm test
+      - name: E2E test (ローカルの Worker をマーケット経由と同じ形で呼ぶ)
+        run: npm run test:e2e
+      - name: Lint OpenAPI (マーケットに登録する仕様書の検査)
+        run: npx --yes @redocly/cli@1 lint src/openapi.json
+
+  deploy:
+    needs: test
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      MARKETPLACE_SECRETS: ${{ secrets.MARKETPLACE_SECRETS }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: calc-api/package-lock.json
+      - run: npm ci
+      - name: Deploy to Cloudflare
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
+        run: npx wrangler deploy
+      - name: マーケットの秘密ヘッダーを Worker に登録
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && env.MARKETPLACE_SECRETS != ''
+        run: printf '%s' "$MARKETPLACE_SECRETS" | npx wrangler secret put MARKETPLACE_SECRETS
+      - name: Secrets 未設定
+        if: env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
+        run: echo "::notice::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID が未設定のためデプロイをスキップしました(calc-api/README.md 参照)"
