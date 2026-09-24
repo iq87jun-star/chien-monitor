@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+  <head>
+    <base target="_top" />
+    <style>
+      body { font: 13px/1.6 "Noto Sans JP", Arial, sans-serif; color: #202124; margin: 12px; }
+      h2 { font-size: 14px; margin: 16px 0 4px; }
+      code { background: #f1f3f4; padding: 1px 4px; border-radius: 3px; font-size: 12px; }
+      dt { margin-top: 8px; }
+      dd { margin: 2px 0 0 0; color: #5f6368; }
+      .note { color: #5f6368; font-size: 12px; margin-top: 16px; }
+    </style>
+  </head>
+  <body>
+    <p>セルに関数を書くだけで使えます。1つ目の引数に範囲(<code>A2:A100</code>)を渡すとまとめて計算します。</p>
+
+    <h2>手取り(2026年度の率)</h2>
+    <dl>
+      <dt><code>=JP_TAKEHOME(月給, 賞与, 年齢, 都道府県)</code></dt>
+      <dd>1年間の手取り。例: <code>=JP_TAKEHOME(300000)</code></dd>
+      <dt><code>=JP_TAKEHOME_DETAIL(月給, 賞与, 年齢, 都道府県)</code></dt>
+      <dd>健康保険・厚生年金・所得税・住民税などの内訳の表</dd>
+    </dl>
+
+    <h2>求人の給与</h2>
+    <dl>
+      <dt><code>=JP_ANNUAL_INCOME(給与の文章, 勤務時間の文章, "min"|"max")</code></dt>
+      <dd>年収の目安。例: 月給25万円～＋賞与年2回（4.5ヶ月分）→ 4,125,000</dd>
+      <dt><code>=JP_HOURLY_EQUIVALENT(給与の文章, 勤務時間の文章)</code></dt>
+      <dd>時給に換算した額</dd>
+      <dt><code>=JP_FIXED_OVERTIME(給与の文章)</code></dt>
+      <dd>固定残業代の金額</dd>
+    </dl>
+
+    <h2>金額・物件</h2>
+    <dl>
+      <dt><code>=JP_YEN("1億2000万円")</code></dt>
+      <dd>日本語の金額を数値に</dd>
+      <dt><code>=JP_AREA_M2("10坪")</code></dt>
+      <dd>面積を㎡に</dd>
+      <dt><code>=JP_TSUBO_PRICE(価格, 面積)</code></dt>
+      <dd>坪単価</dd>
+      <dt><code>=JP_LOAN_PAYMENT(借入額, 年利%, 年数)</code></dt>
+      <dd>住宅ローンの毎月の返済額(元利均等)</dd>
+    </dl>
+
+    <h2>和暦・祝日・営業日</h2>
+    <dl>
+      <dt><code>=JP_WAREKI(日付, "long"|"short")</code> / <code>=JP_FROM_WAREKI("R6.4.1")</code></dt>
+      <dd>西暦⇔和暦</dd>
+      <dt><code>=JP_IS_HOLIDAY(日付)</code> / <code>=JP_HOLIDAY_NAME(日付)</code> / <code>=JP_HOLIDAYS(2026)</code></dt>
+      <dd>祝日(内閣府の公式データ。振替休日・国民の休日を含む)</dd>
+      <dt><code>=JP_WORKDAY(日付, 日数, 年末年始休み, 休業日の範囲)</code></dt>
+      <dd>○営業日後の日付(日本の祝日対応の WORKDAY)</dd>
+      <dt><code>=JP_NETWORKDAYS(開始日, 終了日, 年末年始休み, 休業日の範囲)</code></dt>
+      <dd>期間の営業日数</dd>
+      <dt><code>=JP_IS_BUSINESS_DAY(日付, 年末年始休み, 休業日の範囲)</code></dt>
+      <dd>営業日かどうか</dd>
+    </dl>
+
+    <p class="note">
+      計算はすべてこのスプレッドシートの中で行い、入力した値を外部に送ることはありません。
+      結果は概算で、税務・法律の助言ではありません。手取りは会社員(協会けんぽ)・独身で扶養なしとして計算します。
+    </p>
+  </body>
+</html>

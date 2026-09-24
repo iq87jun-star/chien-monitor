@@ -1,0 +1,46 @@
+# Google スプレッドシートのアドオン(sheets-addon/)のテスト。
+# 計算の本体は calc-api と拡張の parser.js と共有しているので、それらの変更でも走らせる。
+# 公開(Apps Script への送信・Marketplace の審査)は手作業(sheets-addon/README.md)。
+
+name: sheets-addon
+
+on:
+  pull_request:
+    paths:
+      - "sheets-addon/**"
+      - "calc-api/src/**"
+      - "job-extension/src/parser.js"
+      - "realty-extension/src/parser.js"
+      - ".github/workflows/sheets-addon.yml"
+  push:
+    branches: [main]
+    paths:
+      - "sheets-addon/**"
+      - "calc-api/src/**"
+      - "job-extension/src/parser.js"
+      - "realty-extension/src/parser.js"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: sheets-addon
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: sheets-addon/package-lock.json
+      - run: npm ci
+      - name: Build & test (Apps Script と同じ形で17関数を試す)
+        run: npm test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sheets-addon-dist
+          path: sheets-addon/dist/
