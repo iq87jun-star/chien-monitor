@@ -189,3 +189,19 @@ footer h2 {
 footer ul {
   padding-left: 18px;
 }
+.plan {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+.plan p {
+  margin: 0;
+}
+.plan button {
+  margin-top: 8px;
+}
+footer a {
+  color: var(--muted);
+}

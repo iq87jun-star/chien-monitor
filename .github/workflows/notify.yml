@@ -7,6 +7,7 @@
 # Secrets(未設定ならデプロイとチェックはスキップ。設定手順は notify/README.md):
 #   CLOUDFLARE_API_TOKEN  … 権限「D1 編集」「Workers スクリプト 編集」を付けた API トークン
 #   CLOUDFLARE_ACCOUNT_ID … Cloudflare のアカウントID
+#   STRIPE_SECRET_KEY / STRIPE_PRICE_ID / STRIPE_WEBHOOK_SECRET … 有料プラン(任意。3つ揃うと申し込みを表示)
 
 name: notify
 
@@ -64,6 +65,8 @@ jobs:
     needs: test
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    env:
+      STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -78,6 +81,15 @@ jobs:
           node scripts/prepare-deploy.mjs
           npx wrangler d1 migrations apply toreca-notify --remote
           npx wrangler deploy
+      - name: Stripe の設定を Worker に登録(有料プラン)
+        if: env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' && env.STRIPE_SECRET_KEY != ''
+        env:
+          STRIPE_PRICE_ID: ${{ secrets.STRIPE_PRICE_ID }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+        run: |
+          for name in STRIPE_SECRET_KEY STRIPE_PRICE_ID STRIPE_WEBHOOK_SECRET; do
+            printf '%s' "${!name}" | npx wrangler secret put "$name"
+          done
       - name: Secrets 未設定
         if: env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
         run: echo "::notice::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID が未設定のためデプロイをスキップしました(notify/README.md 参照)"

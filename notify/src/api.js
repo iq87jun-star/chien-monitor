@@ -1,10 +1,13 @@
 // 登録ページから呼ぶ API(Worker の /api/*)。
 //   POST   /api/subscribe      { webhookUrl }                → { key } 管理キーを発行(Discord にも管理リンクを投稿)
-//   GET    /api/me                                           → { plan, limit, watches }
+//   GET    /api/me                                           → { plan, limit, watches, billing }
 //   POST   /api/watches        { cardKey, label, targetJpy } → 追加(同じカードなら目標額を更新)
 //   DELETE /api/watches/:id
 //   POST   /api/test                                          → テスト通知を送る
-//   DELETE /api/me                                           → 登録をすべて削除
+//   DELETE /api/me                                           → 登録をすべて削除(有料プランも解約)
+//   POST   /api/checkout                                     → { url } 有料プランの申し込み(Stripe Checkout)
+//   POST   /api/portal                                       → { url } お支払い方法の変更・解約(Stripe)
+//   POST   /api/stripe/webhook                               ← Stripe からの通知(署名で検証)
 // 認証は Authorization: Bearer <管理キー>。キーは SHA-256 だけを保存する。
 import {
   parseWebhook,
@@ -13,9 +16,15 @@ import {
   webhookExists,
   welcomeMessage,
 } from "./discord.js";
+import {
+  applyStripeEvent,
+  cancelSubscription,
+  createCheckout,
+  createPortal,
+  verifyWebhook,
+} from "./billing.js";
+import { limitOf } from "./plans.js";
 
-// プランごとの登録できるカード数(有料プランは Stripe 連携時に plan='pro' を付与する)
-export const LIMITS = { free: 3, pro: 50 };
 const MAX_BODY = 4096;
 const MAX_TARGET = 100_000_000;
 const CARD_KEY_RE = /^(pokeca|yugioh|onepiece):.{1,150}$/s;
@@ -58,9 +67,9 @@ async function authorize(request, db) {
   return rows[0] ?? null;
 }
 
-// deps: { db, fetchImpl, discordOrigin, now }
+// deps: { db, fetchImpl, discordOrigin, billing(src/billing.js の billingConfig。未設定なら null), now }
 export async function handleApi(request, deps) {
-  const { db, fetchImpl = fetch, discordOrigin, now = () => new Date() } = deps;
+  const { db, fetchImpl = fetch, discordOrigin, billing = null, now = () => new Date() } = deps;
   const url = new URL(request.url);
   const route = `${request.method} ${url.pathname.replace(/\/+$/, "")}`;
 
@@ -88,9 +97,24 @@ export async function handleApi(request, deps) {
     return json(200, { key });
   }
 
+  if (route === "POST /api/stripe/webhook") {
+    if (!billing) return fail(503, "有料プランは準備中です");
+    const payload = await request.text();
+    if (payload.length > 65536) return fail(400, "too large");
+    const ok = await verifyWebhook(
+      payload,
+      request.headers.get("stripe-signature"),
+      billing.webhookSecret,
+      now().getTime() / 1000,
+    );
+    if (!ok) return fail(400, "invalid signature");
+    await applyStripeEvent(db, JSON.parse(payload));
+    return json(200, { received: true });
+  }
+
   const sub = await authorize(request, db);
   if (!sub) return fail(401, "管理キーが正しくありません。登録し直してください");
-  const limit = LIMITS[sub.plan] ?? LIMITS.free;
+  const limit = limitOf(sub.plan);
 
   if (route === "GET /api/me") {
     const watches = await db.all(
@@ -98,7 +122,15 @@ export async function handleApi(request, deps) {
        FROM watches WHERE subscriber_id = ? ORDER BY id`,
       [sub.id],
     );
-    return json(200, { plan: sub.plan, limit, active: sub.active === 1, watches });
+    return json(200, {
+      plan: sub.plan,
+      limit,
+      active: sub.active === 1,
+      watches,
+      billing: billing
+        ? { available: true, priceLabel: billing.priceLabel, proLimit: limitOf("pro") }
+        : { available: false },
+    });
   }
 
   if (route === "POST /api/watches") {
@@ -150,7 +182,29 @@ export async function handleApi(request, deps) {
         );
   }
 
+  if (route === "POST /api/checkout") {
+    if (!billing) return fail(503, "有料プランは準備中です");
+    if (sub.plan === "pro") return fail(400, "すでに有料プランです");
+    return json(200, {
+      url: await createCheckout(billing, fetchImpl, { sub, origin: url.origin }),
+    });
+  }
+
+  if (route === "POST /api/portal") {
+    if (!billing || !sub.stripe_customer_id) return fail(400, "お支払いの記録がありません");
+    return json(200, {
+      url: await createPortal(billing, fetchImpl, {
+        customer: sub.stripe_customer_id,
+        origin: url.origin,
+      }),
+    });
+  }
+
   if (route === "DELETE /api/me") {
+    // 登録を消しても課金が続かないよう、有料プランの契約を先に解約する
+    if (billing && sub.plan === "pro" && sub.stripe_subscription_id) {
+      await cancelSubscription(billing, fetchImpl, sub.stripe_subscription_id);
+    }
     await db.run("DELETE FROM watches WHERE subscriber_id = ?", [sub.id]);
     await db.run("DELETE FROM subscribers WHERE id = ?", [sub.id]);
     return json(200, { ok: true });

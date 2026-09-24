@@ -12,6 +12,7 @@ import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { fileURLToPath } from "node:url";
 import { runCheck } from "../src/check.js";
+import { signWebhook } from "../src/billing.js";
 import { priceData } from "../test/helpers.js";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -20,9 +21,71 @@ const takeShots = process.argv.includes("--shots");
 const HOOK_ID = "123456789012345678";
 const WEBHOOK = `https://discord.com/api/webhooks/${HOOK_ID}/abcdefghijklmnopqrstuvwxyz0123456789ABCD`;
 
-// 偽の Discord: HOOK_ID のウェブフックだけ存在し、投稿を記録する
+const WEBHOOK_SECRET = "whsec_e2e";
+
+// 偽の Stripe: 決済画面・カスタマーポータルを開くと、本物と同じ署名つき Webhook を Worker に送ってから戻る
+let subscriberId = null;
+async function stripeEvent(event) {
+  const payload = JSON.stringify(event);
+  const res = await fetch(`${BASE}/api/stripe/webhook`, {
+    method: "POST",
+    headers: { "stripe-signature": await signWebhook(payload, WEBHOOK_SECRET) },
+    body: payload,
+  });
+  if (!res.ok) throw new Error(`webhook ${res.status}`);
+}
+async function fakeStripe(req, res, body, origin) {
+  const url = new URL(req.url, origin);
+  const params = new URLSearchParams(body);
+  if (url.pathname === "/v1/checkout/sessions") {
+    subscriberId = params.get("client_reference_id");
+    const next = `${origin}/checkout?done=${encodeURIComponent(params.get("success_url"))}`;
+    return res
+      .writeHead(200, { "content-type": "application/json" })
+      .end(JSON.stringify({ url: next }));
+  }
+  if (url.pathname === "/v1/billing_portal/sessions") {
+    const next = `${origin}/portal?back=${encodeURIComponent(params.get("return_url"))}`;
+    return res
+      .writeHead(200, { "content-type": "application/json" })
+      .end(JSON.stringify({ url: next }));
+  }
+  if (url.pathname === "/checkout") {
+    await stripeEvent({
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          mode: "subscription",
+          client_reference_id: subscriberId,
+          customer: "cus_e2e",
+          subscription: "sub_e2e",
+        },
+      },
+    });
+    return res.writeHead(302, { location: url.searchParams.get("done") }).end();
+  }
+  if (url.pathname === "/portal") {
+    // ポータルで解約した想定
+    await stripeEvent({
+      type: "customer.subscription.deleted",
+      data: { object: { id: "sub_e2e" } },
+    });
+    return res.writeHead(302, { location: url.searchParams.get("back") }).end();
+  }
+  res.writeHead(404).end();
+}
+
+// 偽の Discord: HOOK_ID のウェブフックだけ存在し、投稿を記録する(同じサーバーで偽の Stripe も兼ねる)
 const posts = [];
 const discord = http.createServer((req, res) => {
+  if (!req.url.startsWith("/api/webhooks/")) {
+    let body = "";
+    req.on("data", (c) => (body += c));
+    req.on("end", () =>
+      fakeStripe(req, res, body, discordOrigin).catch((e) => res.writeHead(500).end(e.message)),
+    );
+    return;
+  }
   const exists = req.url.startsWith(`/api/webhooks/${HOOK_ID}/`);
   let body = "";
   req.on("data", (c) => (body += c));
@@ -69,6 +132,10 @@ const worker = spawn(
     persist,
     "--var",
     `DISCORD_ORIGIN:${discordOrigin}`,
+    `STRIPE_API_ORIGIN:${discordOrigin}`,
+    "STRIPE_SECRET_KEY:sk_test_e2e",
+    "STRIPE_PRICE_ID:price_e2e",
+    `STRIPE_WEBHOOK_SECRET:${WEBHOOK_SECRET}`,
   ],
   {
     cwd: ROOT,
@@ -174,7 +241,32 @@ try {
   await other.close();
   console.log("ok - Discord のリンクから別のブラウザでも設定を開ける");
 
-  // 7) 同じD1に値下がりチェック: リザードンが1,440円(目標1,500円以下)→ 通知
+  // 7) 有料プラン: 申し込み(偽の Stripe)→ 50枚まで登録できる → 解約で無料に戻り、先の3枚だけ通知
+  const plan = page.locator("#plan");
+  assert.match(await plan.innerText(), /有料プラン\(月額300円\)にすると、50枚まで/);
+  await plan.locator("button").click();
+  await page.waitForURL((u) => u.origin === BASE && u.search === "");
+  await status.filter({ hasText: "お申し込みありがとうございます" }).waitFor();
+  await plan.filter({ hasText: "有料プランをご利用中です(50枚まで)" }).waitFor();
+  assert.equal(await page.locator("#count").innerText(), "2 / 50枚");
+  for (const [game, q, name] of [
+    ["yugioh", "はるうらら", "灰流うらら"],
+    ["yugioh", "せぶん", "セブン"],
+  ]) {
+    await page.check(`input[name=game][value=${game}]`);
+    await page.fill("#query", q);
+    await page.locator("#results li", { hasText: name }).locator("button").click();
+    await page.locator("#watches li", { hasText: name }).waitFor();
+  }
+  assert.equal(await page.locator("#count").innerText(), "4 / 50枚");
+  if (takeShots) await page.screenshot({ path: path.join(SHOTS, "pro.png"), fullPage: true });
+  await plan.locator("button").click(); // お支払い方法の変更・解約 → ポータルで解約
+  await page.waitForURL((u) => u.origin === BASE);
+  await plan.filter({ hasText: "先に登録した3枚だけ通知" }).waitFor();
+  assert.equal(await page.locator("#count").innerText(), "4 / 3枚");
+  console.log("ok - 有料プランの申し込み・50枚まで登録・解約で無料プランに戻る");
+
+  // 8) 同じD1に値下がりチェック: リザードンが1,440円(目標1,500円以下)→ 通知
   const dir = path.join(persist, "v3", "d1", "miniflare-D1DatabaseObject");
   const file = (await fs.readdir(dir)).find((f) => f.endsWith(".sqlite"));
   const raw = new DatabaseSync(path.join(dir, file));
@@ -195,7 +287,7 @@ try {
   await page.locator("#watches li", { hasText: "通知済み" }).waitFor();
   console.log("ok - 値下がりチェックで Discord に通知が届き、画面に「通知済み」と出る");
 
-  // 8) 登録の削除
+  // 9) 登録の削除
   await page.click("#delete");
   await page.locator("#signup").waitFor();
   assert.equal(

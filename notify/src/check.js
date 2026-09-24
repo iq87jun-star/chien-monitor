@@ -3,6 +3,7 @@
 // 同じカードで何度も通知しないよう、通知したら armed=0 にし、相場が目標の5%超まで戻ったら armed=1 に戻す。
 import { loadPrices } from "../public/prices.js";
 import { postWebhook, priceDropMessages } from "./discord.js";
+import { limitOf } from "./plans.js";
 
 export const REARM_RATIO = 1.05;
 
@@ -34,11 +35,16 @@ export async function runCheck(deps) {
   }
 
   const rows = await db.all(
-    `SELECT w.*, s.webhook_url FROM watches w JOIN subscribers s ON s.id = w.subscriber_id
+    `SELECT w.*, s.webhook_url, s.plan FROM watches w JOIN subscribers s ON s.id = w.subscriber_id
      WHERE s.active = 1 ORDER BY w.id`,
   );
   const bySub = new Map();
+  // 有料プランを解約して上限を超えている登録者は、先に登録したカードから上限枚数だけ見る
+  const seen = new Map();
   for (const w of rows) {
+    const n = (seen.get(w.subscriber_id) ?? 0) + 1;
+    seen.set(w.subscriber_id, n);
+    if (n > limitOf(w.plan)) continue;
     const card = cards.get(w.card_key);
     const action = evaluate(w, card?.jpy);
     if (action === "rearm") {

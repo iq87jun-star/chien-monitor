@@ -54,6 +54,7 @@
         <h2>通知するカード <span id="count" class="count"></span></h2>
         <ul id="watches" class="list"></ul>
         <p id="empty" class="hint" hidden>まだありません。下の検索から追加してください。</p>
+        <div id="plan" class="plan" hidden></div>
 
         <h2>カードを追加</h2>
         <div class="tabs" role="radiogroup" aria-label="ゲーム">
@@ -89,14 +90,16 @@
           ポケカは日本語版の欧州相場、遊戯王は英語版で最も安い版の欧州相場、ワンピースは英語版の米国相場です。
         </li>
         <li>
-          保存するのは、通知先のウェブフックURLと、登録したカード・目標額だけです。
-          「登録を削除」ですべて消えます。
+          保存するのは、通知先のウェブフックURLと、登録したカード・目標額だけです (有料プランでは
+          Stripe の顧客ID・契約IDも保存します。カード番号は Stripe
+          が管理し、このサービスには届きません)。「登録を削除」ですべて消えます。
         </li>
         <li>
           株式会社ポケモン、株式会社コナミデジタルエンタテインメント、株式会社集英社、株式会社バンダイ、Discord
           とは無関係の非公式サービスです。
         </li>
       </ul>
+      <p><a href="tokushoho.html">特定商取引法に基づく表記</a></p>
     </footer>
   </body>
 </html>

@@ -136,3 +136,27 @@ test("11件以上は10件ずつに分けて送る", async () => {
     [10, 2],
   );
 });
+
+test("有料プランを解約して上限を超えたら、先に登録した3枚だけ通知する", async () => {
+  const db = memoryDb();
+  await db.run(
+    "INSERT INTO subscribers (id, webhook_url, key_hash, plan, created_at) VALUES ('1', ?, 'h', 'free', 'x')",
+    [WEBHOOK],
+  );
+  const data = priceData();
+  const cards = data["https://pokeca-kaigai.com/api/cards.json"].cards;
+  for (let i = 0; i < 5; i++) {
+    cards.push(["SV2a", String(100 + i), `カード${i}`, 1, null, null]);
+    await db.run(
+      "INSERT INTO watches (subscriber_id, card_key, label, target_jpy, created_at) VALUES ('1', ?, ?, 1000, 'x')",
+      [`pokeca:SV2a-${100 + i}`, `カード${i}`],
+    );
+  }
+  const { fetchImpl, state } = fakeFetch(data);
+  const s = await runCheck({ db, fetchImpl, now: NOW });
+  assert.equal(s.notified, 3);
+  assert.deepEqual(
+    state.posts[0].body.embeds.map((e) => e.title),
+    ["カード0", "カード1", "カード2"],
+  );
+});
