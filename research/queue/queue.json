@@ -12,9 +12,10 @@
    "sessions_done": 3,
    "docs": [
     "docs/247_q1_tsmom_ea_design.md",
-    "docs/253_q1_tsmom_ea_implementation.md"
+    "docs/253_q1_tsmom_ea_implementation.md",
+    "docs/291_q1_tsmom_parity_a_signs.md"
    ],
-   "result": "v1.40 実装済み・パリティ用ツール作成済み。MT5 側の実行(コンパイル・符号ダンプ・テスター)待ち"
+   "result": "v1.40 実装済み・パリティ A 段(符号一致)通過 97.5%(docs/291)。GER40 は MT5 出力に無し(銘柄名確認)。B 段(テスター損益)待ち"
   },
   {
    "id": "Q2",
@@ -1032,6 +1033,14 @@
    "cum_after": 8869,
    "doc": "docs/286",
    "note": "0 pass"
+  },
+  {
+   "date": "2026-09-25",
+   "item": "Q1",
+   "cells": 0,
+   "cum_after": 8869,
+   "doc": "docs/291",
+   "note": "parity A passed 97.5% (322 symbol-months); GER40 missing in MT5 dump"
   }
  ]
 }
