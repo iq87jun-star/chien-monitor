@@ -1,10 +1,12 @@
 # 計算API(calc-api/)のテストとデプロイ。API マーケット(RapidAPI 等)経由で販売する。
 #   - calc-api/ か、共有している拡張の計算部分(job-extension・realty-extension の parser.js)を変更するPR: テスト
 #   - main への push・手動実行: テスト → Cloudflare にデプロイ
+#   - 毎月1日: 内閣府の祝日データに更新がないか確認(更新があれば失敗=赤で知らせる。npm run holidays で取り込む)
 #
 # Secrets(未設定ならデプロイはスキップ。設定手順は calc-api/README.md):
 #   CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID … 値下がり通知(notify)と同じもの
 #   MARKETPLACE_SECRETS … マーケットが付ける秘密ヘッダー「ヘッダー名:値」(複数はカンマ区切り)。
+#     「@salary+realty」のように付けると、その値で使える出品を絞れる(出品を分けて掲載する時)。
 #     未設定の間、公開した API は計算を返さない(503)ので、無料で使われることはない
 
 name: calc-api
@@ -23,6 +25,8 @@ on:
       - "job-extension/src/parser.js"
       - "realty-extension/src/parser.js"
       - ".github/workflows/calc-api.yml"
+  schedule:
+    - cron: "0 3 1 * *"
   workflow_dispatch:
 
 permissions:
@@ -38,6 +42,7 @@ defaults:
 
 jobs:
   test:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -56,7 +61,7 @@ jobs:
 
   deploy:
     needs: test
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.event_name != 'schedule' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -79,3 +84,14 @@ jobs:
       - name: Secrets 未設定
         if: env.CLOUDFLARE_API_TOKEN == '' || env.CLOUDFLARE_ACCOUNT_ID == ''
         run: echo "::notice::CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID が未設定のためデプロイをスキップしました(calc-api/README.md 参照)"
+
+  holidays:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 内閣府の祝日データに更新がないか確認
+        run: node scripts/update-holidays.mjs --check

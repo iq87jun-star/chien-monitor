@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { handle, parseSecrets } from "../src/worker.js";
+import { PRODUCTS, handle, parseSecrets, specFor } from "../src/worker.js";
 import openapi from "../src/openapi.json" with { type: "json" };
 
 const SECRET = "x-rapidapi-proxy-secret:s3cr3t,x-other-market:abc";
@@ -205,10 +205,56 @@ test("秘密ヘッダーが未設定なら、既定では計算APIを使えな�
 
 test("秘密ヘッダーの設定の読み取り", () => {
   assert.deepEqual(parseSecrets(" X-RapidAPI-Proxy-Secret : abc , bad, x-b:c:d ,"), [
-    ["x-rapidapi-proxy-secret", "abc"],
-    ["x-b", "c:d"],
+    { header: "x-rapidapi-proxy-secret", secret: "abc", products: null },
+    { header: "x-b", secret: "c:d", products: null },
+  ]);
+  assert.deepEqual(parseSecrets("x-rapidapi-proxy-secret:abc@salary+realty"), [
+    { header: "x-rapidapi-proxy-secret", secret: "abc", products: ["salary", "realty"] },
   ]);
   assert.deepEqual(parseSecrets(undefined), []);
+});
+
+test("出品ごとの秘密の値: その出品の呼び出し口だけ使える", async () => {
+  const env = {
+    MARKETPLACE_SECRETS:
+      "x-rapidapi-proxy-secret:aaa@salary+realty,x-rapidapi-proxy-secret:bbb@takehome",
+  };
+  const as = (secret) => ({ env, headers: { "x-rapidapi-proxy-secret": secret } });
+  const salaryBody = { body: { salary: "月給30万円" } };
+  const takeBody = { body: { monthlySalary: 300000 } };
+  assert.equal(
+    (await call("POST", "/v1/salary/analyze", { ...salaryBody, ...as("aaa") })).status,
+    200,
+  );
+  assert.equal(
+    (await call("POST", "/v1/salary/analyze", { ...salaryBody, ...as("bbb") })).status,
+    403,
+  );
+  assert.equal(
+    (await call("POST", "/v1/takehome/calculate", { ...takeBody, ...as("bbb") })).status,
+    200,
+  );
+  assert.equal(
+    (await call("POST", "/v1/takehome/calculate", { ...takeBody, ...as("aaa") })).status,
+    403,
+  );
+  assert.equal(
+    (await call("POST", "/v1/calendar/day", { body: { date: "2026-09-22" }, ...as("aaa") })).status,
+    403,
+  );
+});
+
+test("出品ごとの仕様書: その出品の呼び出し口と使う部品だけ", async () => {
+  assert.deepEqual(PRODUCTS, ["salary", "realty", "takehome", "calendar"]);
+  const take = specFor("takehome");
+  assert.deepEqual(Object.keys(take.paths), ["/v1/takehome/calculate", "/v1/health"]);
+  assert.equal(take.info.title, "Japan Take-Home Pay Calculator");
+  assert.ok("TakeHomeResult" in take.components.schemas);
+  assert.ok(!("SalaryResult" in take.components.schemas));
+  const cal = (await call("GET", "/openapi.json?product=calendar")).body;
+  assert.equal(Object.keys(cal.paths).length, 6);
+  assert.ok("Wareki" in cal.components.schemas, "参照の先の参照も残す");
+  assert.equal((await call("GET", "/openapi.json?product=nope")).status, 404);
 });
 
 test("存在しないパス・メソッド違い", async () => {
@@ -222,8 +268,14 @@ test("存在しないパス・メソッド違い", async () => {
 
 test("仕様書のパスと実装のルートが一致する", () => {
   assert.deepEqual(Object.keys(openapi.paths).sort(), [
+    "/v1/calendar/add-business-days",
+    "/v1/calendar/count-business-days",
+    "/v1/calendar/day",
+    "/v1/calendar/holidays",
     "/v1/health",
     "/v1/realty/analyze",
     "/v1/salary/analyze",
+    "/v1/takehome/calculate",
+    "/v1/wareki/convert",
   ]);
 });
