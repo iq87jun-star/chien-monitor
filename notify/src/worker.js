@@ -2,6 +2,7 @@
 // 値下がりのチェック自体は Worker ではなく GitHub Actions(scripts/check.mjs)で行う
 // (相場データの JSON が数百KBあり、Workers 無料プランの CPU 時間では足りないため)。
 import { handleApi } from "./api.js";
+import { billingConfig } from "./billing.js";
 import { fromD1 } from "./db.js";
 
 export default {
@@ -9,7 +10,11 @@ export default {
     const url = new URL(request.url);
     if (url.pathname.startsWith("/api/")) {
       try {
-        return await handleApi(request, { db: fromD1(env.DB), discordOrigin: env.DISCORD_ORIGIN });
+        return await handleApi(request, {
+          db: fromD1(env.DB),
+          discordOrigin: env.DISCORD_ORIGIN,
+          billing: billingConfig(env),
+        });
       } catch (err) {
         console.error(err);
         return new Response(JSON.stringify({ error: "サーバーでエラーが起きました" }), {

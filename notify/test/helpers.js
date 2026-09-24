@@ -80,9 +80,26 @@ export function priceData({ pokecaEur = 10, fetchedAt = "2026-09-23T09:00:00Z" }
 // 相場データの URL と Discord のウェブフックに応答する偽の fetch。
 // discord.status で Discord の応答を変えられ、posts に投稿内容が残る
 export function fakeFetch(data) {
-  const state = { data, posts: [], discord: { status: 204, exists: true } };
+  const state = { data, posts: [], discord: { status: 204, exists: true }, stripe: [] };
   const fetchImpl = async (url, init = {}) => {
     if (state.data[url]) return Response.json(state.data[url]);
+    if (url.startsWith("https://api.stripe.com/")) {
+      const path = url.slice("https://api.stripe.com".length);
+      state.stripe.push({
+        method: init.method,
+        path,
+        auth: init.headers?.authorization,
+        params: Object.fromEntries(new URLSearchParams(init.body ?? "")),
+      });
+      if (path === "/v1/checkout/sessions") {
+        return Response.json({ url: "https://checkout.stripe.com/c/pay/cs_test_1" });
+      }
+      if (path === "/v1/billing_portal/sessions") {
+        return Response.json({ url: "https://billing.stripe.com/p/session/test_1" });
+      }
+      if (path.startsWith("/v1/subscriptions/")) return Response.json({ status: "canceled" });
+      return Response.json({ error: { message: "unknown" } }, { status: 404 });
+    }
     if (url.startsWith("https://discord.com/api/webhooks/")) {
       if ((init.method ?? "GET") === "GET") {
         return new Response(state.discord.exists ? "{}" : "", {
@@ -101,3 +118,11 @@ export const WEBHOOK =
   "https://discord.com/api/webhooks/123456789012345678/abcdefghijklmnopqrstuvwxyz0123456789ABCD";
 export const WEBHOOK2 =
   "https://discord.com/api/webhooks/223456789012345678/bbcdefghijklmnopqrstuvwxyz0123456789ABCD";
+
+export const BILLING = {
+  secretKey: "sk_test_123",
+  priceId: "price_123",
+  webhookSecret: "whsec_test",
+  priceLabel: "月額300円",
+  apiOrigin: "https://api.stripe.com",
+};

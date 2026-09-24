@@ -96,7 +96,44 @@ async function refresh() {
     status("Discord のウェブフックが削除されたため通知を止めています。登録し直してください", true);
   }
   renderWatches();
+  renderPlan();
   renderResults();
+}
+
+// 有料プランの案内・お支払い管理(Stripe が設定されている時だけ)
+function renderPlan() {
+  const box = $("plan");
+  box.replaceChildren();
+  box.hidden = !me.billing?.available;
+  if (box.hidden) return;
+  const go = (path) => async () => {
+    try {
+      location.href = (await api("POST", path)).url;
+    } catch (err) {
+      status(err.message, true);
+    }
+  };
+  if (me.plan === "pro") {
+    box.append(
+      el("p", {}, `有料プランをご利用中です(${me.limit}枚まで)。`),
+      el(
+        "button",
+        { type: "button", class: "secondary", onclick: go("/api/portal") },
+        "お支払い方法の変更・解約",
+      ),
+    );
+    return;
+  }
+  const over = me.watches.length > me.limit;
+  box.append(
+    el(
+      "p",
+      {},
+      `有料プラン(${me.billing.priceLabel})にすると、${me.billing.proLimit}枚まで登録できます。`,
+    ),
+    over ? el("p", { class: "hint" }, `いまは先に登録した${me.limit}枚だけ通知しています。`) : null,
+    el("button", { type: "button", onclick: go("/api/checkout") }, "有料プランにする"),
+  );
 }
 
 function renderWatches() {
@@ -244,7 +281,8 @@ $("forget").addEventListener("click", () => {
 });
 
 $("delete").addEventListener("click", async () => {
-  if (!confirm("登録したカードと通知先をすべて削除します。よろしいですか?")) return;
+  const paid = me?.plan === "pro" ? "有料プランも解約されます。" : "";
+  if (!confirm(`登録したカードと通知先をすべて削除します。${paid}よろしいですか?`)) return;
   try {
     await api("DELETE", "/api/me");
     key = null;
@@ -255,6 +293,14 @@ $("delete").addEventListener("click", async () => {
     status(err.message, true);
   }
 });
+
+// Stripe の決済画面から戻ってきた時
+if (new URLSearchParams(location.search).has("paid")) {
+  history.replaceState(null, "", location.pathname + location.hash);
+  status("お申し込みありがとうございます。反映まで少し時間がかかることがあります");
+  // Stripe からの通知(Webhook)が届くのを待って、もう一度読み込む
+  setTimeout(() => key && refresh().catch(() => {}), 4000);
+}
 
 key = readKey();
 renderResults();

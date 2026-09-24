@@ -15,3 +15,7 @@ database_name = "toreca-notify"
 # デプロイ時に scripts/prepare-deploy.mjs が実際のIDに書き換える(無ければ作成する)
 database_id = "00000000-0000-0000-0000-000000000000"
 migrations_dir = "migrations"
+
+[vars]
+# 登録ページに出す有料プランの価格(Stripe の価格と揃える)
+PRICE_LABEL = "月額300円"
