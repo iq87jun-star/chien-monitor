@@ -2,7 +2,7 @@
 
 トレカ海外相場チェッカー(`extension/`)・求人 年収チェッカー(`job-extension/`)・
 物件 単価・月額チェッカー(`realty-extension/`)の3つとも同じ手順。掲載文は各拡張の
-`store/listing.md` をそのまま使う(**説明文にサイト名を並べない**。Chrome でキーワード スパムとして却下された)。
+`store/listing.md` をそのまま使う(各ストアの項目ごとの入力内容は [edge-firefox-inputs.md](edge-firefox-inputs.md))(**説明文にサイト名を並べない**。Chrome でキーワード スパムとして却下された)。
 
 ## 提出するファイル
 
