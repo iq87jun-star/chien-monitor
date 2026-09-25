@@ -62,26 +62,39 @@
     return values;
   }
 
-  // 見出しを探す方法では読めないサイトの給与欄。null ならそのサイトではない(見出しを探す)
-  function siteSalary() {
+  // 見出しを探す方法では読めないサイトの給与欄・勤務欄。null ならそのサイトではない(見出しを探す)。
+  // work が null なら勤務欄は見出しを探して読む
+  function siteTexts() {
     const host = location.hostname;
     // Indeed: 見出し「給与」はクラス名が毎回変わる div なので、金額の入る要素を直接読む
     if (host === "jp.indeed.com") {
       const boxes = document.querySelectorAll("#salaryInfoAndJobType");
       if (boxes.length !== 1) return null;
       const t = boxes[0].innerText.trim();
-      return t ? [`給与：${t.slice(0, MAX_TEXT)}`] : [];
+      return { salary: t ? [`給与：${t.slice(0, MAX_TEXT)}`] : [], work: null };
     }
-    // ハローワーク: 「賃金形態等: 月給」と「ａ＋ｂ: 164,900円〜164,900円」のように種類と金額が別の欄
+    // ハローワーク: 「賃金形態等: 月給」と「ａ＋ｂ: 164,900円〜164,900円」のように種類と金額が別の欄。
+    // ページ下部に同じ事業所の別の求人(休日数等)が並ぶことがあるので、各欄は最初の1つだけ使う
     if (host === "www.hellowork.mhlw.go.jp") {
       const forms = valuesOf(/^賃金形態等?$/);
-      if (forms.length !== 1) return [];
+      if (forms.length !== 1) return { salary: [], work: [] };
       const kind = forms[0].match(/月給|日給|時給|年俸/)?.[0];
       const amount = [...valuesOf(/^a\+b$/), ...valuesOf(/^基本給$/)]
         .map((v) => v.normalize("NFKC").match(/[\d,]+円(?:\s*[~〜～]\s*[\d,]+円)?/)?.[0])
         .find(Boolean);
-      if (!kind || !amount) return [];
-      return [`給与：${kind}${amount}`, ...valuesOf(/^賞与/).map((v) => `賞与：${v}`)];
+      if (!kind || !amount) return { salary: [], work: [] };
+      const first = (re, label) => {
+        const v = valuesOf(re)[0];
+        return v ? [`${label}：${v}`] : [];
+      };
+      return {
+        salary: [`給与：${kind}${amount}`, ...first(/^賞与/, "賞与")],
+        work: [
+          ...first(/^就業時間$/, "就業時間"),
+          ...first(/^休憩時間$/, "休憩時間"),
+          ...first(/^年間休日数?$/, "年間休日数"),
+        ],
+      };
     }
     return null;
   }
@@ -233,7 +246,8 @@
   }
 
   async function check() {
-    const salaryTexts = siteSalary() ?? collect(SALARY_LABELS);
+    const site = siteTexts();
+    const salaryTexts = site?.salary ?? collect(SALARY_LABELS);
     const key = `${location.href}\n${salaryTexts.join("|")}`;
     if (key === lastKey) return;
     lastKey = key;
@@ -242,7 +256,8 @@
     if (!enabled || dismissedUrl === location.href) return removeBadge();
     if (salaryTexts.length === 0 || salaryTexts.length > MAX_SALARY_BLOCKS) return removeBadge();
 
-    const result = P.analyze(salaryTexts.join("\n"), collect(WORK_LABELS).join("\n"));
+    const workTexts = site?.work ?? collect(WORK_LABELS);
+    const result = P.analyze(salaryTexts.join("\n"), workTexts.join("\n"));
     if (result.found) render(result);
     else removeBadge();
   }

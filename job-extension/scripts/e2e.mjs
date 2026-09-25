@@ -65,7 +65,13 @@ const PAGES = {
       <tr><th>基本給（ａ）</th><td>基本給（月額平均）又は時間額 164,900円〜164,900円</td></tr>
       <tr><th>賃金形態等</th><td>月給</td></tr>
       <tr><th>賞与（前年度実績）</th><td>年2回 計 2.00ヶ月分</td></tr>
-    </table><div id="ticker"></div>
+      <tr><th>就業時間</th><td>(1)08時30分〜17時00分</td></tr>
+      <tr><th>休憩時間</th><td>60分</td></tr>
+      <tr><th>年間休日数</th><td>113日</td></tr>
+    </table>
+    <h2>この事業所の他の求人</h2>
+    <table><tr><th>年間休日数</th><td>101日</td></tr><tr><th>就業時間</th><td>(1)07時00分〜16時00分</td></tr></table>
+    <div id="ticker"></div>
     <script>let n=0;setInterval(()=>{document.getElementById("ticker").textContent=String(n++)},100)</script>`,
   ),
   // 一覧ページ(給与欄が多数)=表示しない
@@ -141,6 +147,7 @@ try {
   assert.ok(Date.now() - started < 5000, `表示まで ${Date.now() - started}ms`);
   assert.match(t3c, /約231万円/); // 164,900×14 ≒ 230.9万
   assert.doesNotMatch(t3c, /〜/, "上限と下限が同じ金額は幅にしない");
+  assert.match(t3c, /実働7.5時間・年間休日113日/, "同じ事業所の別の求人の欄は読まない");
   console.log("ok - ハローワーク: 賃金形態等と金額の欄を組み合わせて表示(変化し続けるページでも)");
 
   // 4) 一覧ページ: 表示しない
