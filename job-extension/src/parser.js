@@ -32,15 +32,19 @@
     const min = parseYen(m[2]);
     const max = m[3] ? parseYen(m[3]) : null;
     if (min == null) return null;
-    const validMax = max != null && max >= min ? max : null;
-    // 「月給30万円～」のように上限なしの幅で書かれているか(単独の金額とは表示を分ける)
-    const open = validMax == null && /^\s*[~〜～]/.test(text.slice(m.index + m[0].length));
+    // 「164,900円〜164,900円」のように上限と下限が同じなら単独の金額として扱う
+    const validMax = max != null && max > min ? max : null;
+    // 「月給30万円～」「月給23万2000円以上」のように上限なしの幅で書かれているか
+    // (単独の金額とは表示を分ける)。上限が下限と同じ時は幅ではない
+    const rest = text.slice(m.index + m[0].length);
+    const open = validMax == null && max == null && /^\s*(?:[~〜～]|以上)/.test(rest);
     return { kind: m[1], min, max: validMax, open };
   }
 
   // 賞与の月数「賞与（4.65ヶ月分）」「賞与年2回（昨年度実績：6.2ヶ月分）」
   function findBonusMonths(text) {
-    const m = text.match(/賞与[^。\n]{0,30}?(\d+(?:\.\d+)?)\s*[ヶヵかカケ箇]?\s*月分/);
+    // 「◆賞与年2回\n（一般職／6月・12月／昨年度実績計4ヶ月分）」のように改行をまたぐことがある
+    const m = text.match(/賞与[^。]{0,40}?(\d+(?:\.\d+)?)\s*[ヶヵかカケ箇]?\s*月分/);
     return m ? Number(m[1]) : null;
   }
 
@@ -61,9 +65,10 @@
   }
 
   // 1日の実働時間「実働7時間45分」「実働7.5時間」「所定労働時間：7時間45分」
+  // 「実働時間：1日あたり7時間30分」の「1日」は時間として読まない
   function findHoursPerDay(text) {
     const m = text.match(
-      /(?:実働|所定労働時間|労働時間)[^\d]{0,4}(\d+(?:\.\d+)?)\s*時間\s*(?:(\d+)\s*分)?/,
+      /(?:実働|所定労働時間|労働時間)[^\d]{0,4}(?:1日(?:あたり|当たり|当り)?[^\d]{0,2})?(\d+(?:\.\d+)?)\s*時間\s*(?:(\d+)\s*分)?/,
     );
     if (!m) return null;
     const h = Number(m[1]) + (m[2] ? Number(m[2]) / 60 : 0);
@@ -80,7 +85,14 @@
   // 記載されている年収。この求人の年収に近いものから優先する
   // (「平均年収」は会社全体の平均なので、他に記載が無い時だけ使い、companyAverage を立てる)。
   // 「年収例 <入社初年度の年収イメージ> ■首都圏：478万円」のように語と金額が離れることがある
-  const STATED_KINDS = ["想定年収", "年収例", "(?<!平均)年収", "平均年収"];
+  // 「初年度の年収 400万円～800万円」は1人の例(年収例)より、この求人の幅として優先する
+  const STATED_KINDS = [
+    "想定年収",
+    "初年度(?:の|想定)?年収",
+    "年収例",
+    "(?<!平均)年収",
+    "平均年収",
+  ];
   function findStatedAnnual(text) {
     for (const kind of STATED_KINDS) {
       const r = findRange(text, kind, 25);
@@ -97,7 +109,8 @@
     const all = `${salary}\n${work}`;
 
     const monthly = findRange(salary, "月給|月収|基本給|月額");
-    const hourly = findRange(salary, "時給");
+    // 「日収例 6,450円（時給換算：1,612円）」の「時給換算」は給与の時給ではない
+    const hourly = findRange(salary, "時給(?!換算)");
     const daily = findRange(salary, "日給");
     const yearly = findRange(salary, "年俸");
     const stated = findStatedAnnual(salary);
