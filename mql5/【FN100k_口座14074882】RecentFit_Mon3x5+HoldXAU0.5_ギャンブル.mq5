@@ -40,7 +40,7 @@
 //|     GBPJPY月曜LONGはFTMO PD口座のv7と同一日・同方向になり得る。   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.03g"  // 2026-09-25 #14074882 ギャンブル版: Mon3 円クロス ×5 + Hold XAUUSD ×0.5。季節RG3 を置換(ユーザー決定「落としても良いのでリスクを取る」)   // 1.03: InpInitialBalance 既定を 100000 に固定(2026-09-24 の誤 PASS_LOCK 再発防止・docs/241 §1d)
+#property version   "1.04"    // 2026-09-25 #14074882 ギャンブル版: Mon3 円クロス ×5 + Hold XAUUSD ×0.5。季節RG3 を置換(ユーザー決定「落としても良いのでリスクを取る」)   // 1.03: InpInitialBalance 既定を 100000 に固定(2026-09-24 の誤 PASS_LOCK 再発防止・docs/241 §1d)
 #property strict
 #property description "[FN #14074882 GAMBLE] Mon3 EURJPY/USDJPY/NZDJPY x5 + Hold XAUUSD x0.5. Target +8% (108,000) before -10% (90,000). Replaces Seasonal RG3."
 //#property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."

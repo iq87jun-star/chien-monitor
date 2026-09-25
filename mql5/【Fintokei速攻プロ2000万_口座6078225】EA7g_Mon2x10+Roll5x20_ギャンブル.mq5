@@ -14,7 +14,7 @@
 //|     docs/249 で無効になった Sess「セル」とは別物(時間帯エッジではなくロールの増分)。       |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.20g"  // 速攻プロ #6078225 ギャンブル版(2026-09-24): Mon2 ×10 + Roll5 ×20・−3%/日次−2%/日次利益上限3% の土俵。期限 10/13。通常口座=スワップ費用込み(合格 約 2 割・失格 約 8 割の賭け)
+#property version   "1.21"    // 速攻プロ #6078225 ギャンブル版(2026-09-24): Mon2 ×10 + Roll5 ×20・−3%/日次−2%/日次利益上限3% の土俵。期限 10/13。通常口座=スワップ費用込み(合格 約 2 割・失格 約 8 割の賭け)
 #property strict
 #property description "[EA7g Fintokei Sokko-Pro GAMBLE] Mon2 x10 + Roll5 x20 (Wed 20:00 UTC short 4h). Normal account (swap cost accepted). Target +6% before -3%/daily -2%. Balance guard -2.8 tick, floor -9, P1 lock 8.05 (P2 6.05)."
 
