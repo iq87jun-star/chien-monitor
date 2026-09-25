@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8869,
+ "cumulative_cells": 8872,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -526,14 +526,14 @@
    "slug": "fix_reversal_m1",
    "title": "フィックス前後(WMR/NY カット・M1)",
    "cells": 12,
-   "status": "in_progress",
+   "status": "done",
    "sessions_planned": 4,
-   "sessions_done": 3,
+   "sessions_done": 4,
    "docs": [
     "docs/284_backlog_q35_q39_prereg.md",
     "docs/286_q36_fix_reversal_results.md"
    ],
-   "result": "EURUSD 0/3・GBPUSD 0/3・USDJPY 0/3。AUDUSD は M1 取得後"
+   "result": "0/12(EURUSD・GBPUSD・USDJPY・AUDUSD 各 0/3)。フィックス直前の動きは継続(逆張り全て負)。月末のみは OOS 12〜13/20 だが IS 裏付けなし"
   }
  ],
  "runs": [
@@ -1041,6 +1041,14 @@
    "cum_after": 8869,
    "doc": "docs/291",
    "note": "parity A passed 97.5% (322 symbol-months); GER40 missing in MT5 dump"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q36 (AUDUSD)",
+   "cells": 3,
+   "cum_after": 8872,
+   "doc": "docs/286",
+   "note": "0 pass; Q36 done; backlog families 1-4 complete, 0 passed"
   }
  ]
 }
