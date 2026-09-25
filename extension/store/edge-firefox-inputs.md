@@ -109,13 +109,13 @@ VMAXクライマックスなどの人気セット、計22セット(約4,000枚)�
 
 ---
 
-## 求人 年収チェッカー(v0.1.0)
+## 求人 年収チェッカー(v0.1.1)
 
 ### Microsoft Edge アドオン(パートナーセンター)
 
 | 画面・項目 | 入力・選択 |
 |---|---|
-| パッケージ | `job-salary-checker-0.1.0.zip`(Chrome と同じzip) |
+| パッケージ | `job-salary-checker-0.1.1.zip`(Chrome と同じzip) |
 | 可用性 → 表示 | パブリック(Public) |
 | 可用性 → 市場 | 日本(すべての市場でも可) |
 | プロパティ → カテゴリ | 生産性(Productivity) |
@@ -138,7 +138,7 @@ VMAXクライマックスなどの人気セット、計22セット(約4,000枚)�
 | 画面・項目 | 入力・選択 |
 |---|---|
 | 公開方法 | このサイトで公開する(On this site) |
-| アップロード | `job-salary-checker-0.1.0-firefox.zip`(Firefox 用) |
+| アップロード | `job-salary-checker-0.1.1-firefox.zip`(Firefox 用) |
 | 対応プラットフォーム | Firefox のみにチェック(Android はチェックを外す) |
 | ソースコードの提出 | いいえ(No) |
 | 名前 | 求人 年収チェッカー(zip から自動で入る) |

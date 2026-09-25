@@ -115,3 +115,43 @@ test("給与の記載が読めなければ found は false", () => {
   assert.equal(P.analyze("給与：経験・能力を考慮の上、当社規定により優遇").found, false);
   assert.equal(P.analyze("").found, false);
 });
+
+// 以下は Cowork による実サイトでの確認(Issue #66)で見つかった表記
+test("「以上」は下限だけの幅として扱う", () => {
+  const r = P.analyze(
+    "月給23万2000円以上（固定残業代含む）※固定残業代は月20時間分を3万1300円以上支給",
+  );
+  assert.deepEqual(r.monthly, { min: 232000, max: null });
+  assert.equal(r.annual.open, true);
+});
+
+test("上限と下限が同じ金額は単独の金額にする", () => {
+  const r = P.analyze("月給164,900円〜164,900円");
+  assert.deepEqual(r.monthly, { min: 164900, max: null });
+  assert.equal(r.annual.open, false);
+});
+
+test("改行をまたいだ賞与の月数を読む", () => {
+  const r = P.analyze(
+    "月給20万4000円～55万7000円\n◆賞与年2回\n（一般職／6月・12月／昨年度実績計4ヶ月分）",
+  );
+  assert.equal(r.bonusMonths, 4);
+});
+
+test("「実働時間：1日あたり7時間30分」を7.5時間と読む", () => {
+  const r = P.analyze("月給25万3000円", "実働時間：1日あたり7時間30分");
+  assert.equal(r.hoursPerDay, 7.5);
+});
+
+test("初年度の年収の幅を、1人の年収例より優先する", () => {
+  const r = P.analyze(
+    "月給25万円～65万円 初年度の年収 400万円～800万円 モデル年収例 年収600万円",
+  );
+  assert.deepEqual([r.stated.min, r.stated.max], [4000000, 8000000]);
+});
+
+test("完全歩合制の給与例にある「時給換算」を時給とみなさない", () => {
+  const r = P.analyze("完全歩合制 日収例① 4時間 6,450円（時給換算：1,612円）");
+  assert.equal(r.basis, null);
+  assert.equal(r.found, false);
+});

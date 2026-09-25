@@ -18,9 +18,13 @@
   let lastKey = "";
   let dismissedUrl = "";
 
-  // 見出しの記号(■【】◆ 等)と空白を除いて比べる
+  // 見出しの記号(■【】◆ 等)・空白・括弧書き(「基本給（ａ）」の「（ａ）」)を除いて比べる
   const labelOf = (el) =>
-    (el.textContent ?? "").replace(/[\s■□◆◇●○★☆【】\[\]<>＜＞:：]/g, "").trim();
+    (el.textContent ?? "")
+      .normalize("NFKC")
+      .replace(/\([^)]*\)/g, "")
+      .replace(/[\s■□◆◇●○★☆【】\[\]<>:]/g, "")
+      .trim();
 
   // 見出しに対応する本文: th→同じ行のtd、dt→次のdd、それ以外→次の兄弟要素
   function contentOf(el) {
@@ -45,6 +49,41 @@
       if (text && !texts.includes(text)) texts.push(text);
     }
     return texts;
+  }
+
+  // 見出しが re に合う欄の本文(見出しの重複は除く)
+  function valuesOf(re) {
+    const values = [];
+    for (const el of document.querySelectorAll(LABEL_SELECTOR)) {
+      if (el.closest(`#${HOST_ID}`) || !re.test(labelOf(el))) continue;
+      const v = contentOf(el).trim();
+      if (v && !values.includes(v)) values.push(v);
+    }
+    return values;
+  }
+
+  // 見出しを探す方法では読めないサイトの給与欄。null ならそのサイトではない(見出しを探す)
+  function siteSalary() {
+    const host = location.hostname;
+    // Indeed: 見出し「給与」はクラス名が毎回変わる div なので、金額の入る要素を直接読む
+    if (host === "jp.indeed.com") {
+      const boxes = document.querySelectorAll("#salaryInfoAndJobType");
+      if (boxes.length !== 1) return null;
+      const t = boxes[0].innerText.trim();
+      return t ? [`給与：${t.slice(0, MAX_TEXT)}`] : [];
+    }
+    // ハローワーク: 「賃金形態等: 月給」と「ａ＋ｂ: 164,900円〜164,900円」のように種類と金額が別の欄
+    if (host === "www.hellowork.mhlw.go.jp") {
+      const forms = valuesOf(/^賃金形態等?$/);
+      if (forms.length !== 1) return [];
+      const kind = forms[0].match(/月給|日給|時給|年俸/)?.[0];
+      const amount = [...valuesOf(/^a\+b$/), ...valuesOf(/^基本給$/)]
+        .map((v) => v.normalize("NFKC").match(/[\d,]+円(?:\s*[~〜～]\s*[\d,]+円)?/)?.[0])
+        .find(Boolean);
+      if (!kind || !amount) return [];
+      return [`給与：${kind}${amount}`, ...valuesOf(/^賞与/).map((v) => `賞与：${v}`)];
+    }
+    return null;
   }
 
   const man = (yen) => {
@@ -194,7 +233,7 @@
   }
 
   async function check() {
-    const salaryTexts = collect(SALARY_LABELS);
+    const salaryTexts = siteSalary() ?? collect(SALARY_LABELS);
     const key = `${location.href}\n${salaryTexts.join("|")}`;
     if (key === lastKey) return;
     lastKey = key;
@@ -208,10 +247,19 @@
     else removeBadge();
   }
 
+  // DOM の変化が落ち着いて 0.5 秒後に判定する。ずっと変化し続けるページ(広告の差し替え等)でも
+  // 最初の変化から 1.5 秒以内には判定する
   let timer = 0;
+  let firstChange = 0;
   const schedule = () => {
+    const now = Date.now();
+    if (!timer) firstChange = now;
     clearTimeout(timer);
-    timer = setTimeout(() => check().catch((e) => console.warn("job-salary-checker:", e)), 500);
+    const wait = Math.max(0, Math.min(500, firstChange + 1500 - now));
+    timer = setTimeout(() => {
+      timer = 0;
+      check().catch((e) => console.warn("job-salary-checker:", e));
+    }, wait);
   };
   new MutationObserver(schedule).observe(document.documentElement, {
     childList: true,

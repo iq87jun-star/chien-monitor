@@ -8,10 +8,10 @@
   // 項目名 → 見出しの正規表現。area は上にあるものを優先する(専有面積 > 建物面積 > …)
   const FIELDS = [
     ["rent", /^(賃料|家賃|月額賃料|賃料・初期費用)$/],
-    ["fee", /^(管理費・共益費|管理費等|共益費|管理費)$/],
+    ["fee", /^(管理費・共益費等?|共益費・管理費|管理費等|共益費|管理費)$/],
     ["depositKey", /^(敷金\/礼金|敷\/礼|敷金・礼金)$/],
-    ["deposit", /^敷金$/],
-    ["keyMoney", /^礼金$/],
+    ["deposit", /^(敷金|敷金\/保証金|保証金)$/],
+    ["keyMoney", /^(礼金|礼金\/償却)$/],
     ["price", /^(価格|販売価格|物件価格)$/],
     ["repair", /^修繕積立金$/],
     ["feeRepair", /^(管理費\/修繕積立|管理費\/修繕積立金|管理費・修繕積立金)$/],
@@ -31,11 +31,13 @@
   let lastKey = "";
   let dismissedUrl = "";
 
-  // 見出しの空白・記号と、SUUMO の「ヒント」(用語解説ボタン)を除いて比べる
+  // 見出しの空白・記号・括弧書き(「管理費（月額）」の「（月額）」)と、
+  // SUUMO の「ヒント」(用語解説ボタン)を除いて比べる
   const labelOf = (el) =>
     (el.textContent ?? "")
       .normalize("NFKC")
       .replace(/ヒント$/, "")
+      .replace(/\([^)]*\)/g, "")
       .replace(/[\s■□◆◇●○★☆【】\[\]<>:：]/g, "")
       .replace(/ヒント$/, "")
       .trim();
@@ -62,6 +64,24 @@
       const value = contentOf(el).replace(/\s+/g, " ").trim();
       if (!value || value.length > MAX_VALUE || FILTER_WORDS.test(value)) continue;
       (found[hit[0]] ??= []).includes(value) || found[hit[0]].push(value);
+    }
+    return found;
+  }
+
+  // 見出しのない欄。サイトごとに、見出しが無い時だけ使う要素
+  const UNLABELED = {
+    // CHINTAI: 賃料が見出しのない td の中の <span class="rent"> にある
+    "www.chintai.net": { rent: "span.rent" },
+  };
+  function collectUnlabeled(found) {
+    const sel = UNLABELED[location.hostname] ?? {};
+    for (const [key, selector] of Object.entries(sel)) {
+      if (found[key]) continue;
+      const values = [...document.querySelectorAll(selector)]
+        .filter((e) => !e.closest(`#${HOST_ID}`))
+        .map((e) => e.innerText.replace(/\s+/g, " ").trim())
+        .filter((v) => v && v.length <= MAX_VALUE);
+      if (values.length) found[key] = [...new Set(values)];
     }
     return found;
   }
@@ -217,7 +237,7 @@
   }
 
   async function check() {
-    const found = collect();
+    const found = collectUnlabeled(collect());
     const key = `${location.href}\n${JSON.stringify(found)}`;
     if (key === lastKey) return;
     lastKey = key;
@@ -241,10 +261,19 @@
     else removeBadge();
   }
 
+  // DOM の変化が落ち着いて 0.5 秒後に判定する。ずっと変化し続けるページでも
+  // 最初の変化から 1.5 秒以内には判定する
   let timer = 0;
+  let firstChange = 0;
   const schedule = () => {
+    const now = Date.now();
+    if (!timer) firstChange = now;
     clearTimeout(timer);
-    timer = setTimeout(() => check().catch((e) => console.warn("realty-price-checker:", e)), 500);
+    const wait = Math.max(0, Math.min(500, firstChange + 1500 - now));
+    timer = setTimeout(() => {
+      timer = 0;
+      check().catch((e) => console.warn("realty-price-checker:", e));
+    }, wait);
   };
   new MutationObserver(schedule).observe(document.documentElement, {
     childList: true,

@@ -65,6 +65,28 @@ const PAGES = {
       <tr><th>価格</th><td>単位は「万円」。消費税がかかる場合は、税込み価格を表示。［値下げ］マークは価格変更1週間以内。</td></tr>
     </table>`,
   ),
+  // Yahoo!不動産: 管理費の見出しが「管理費・共益費等」
+  "https://realestate.yahoo.co.jp/rent/detail/1/": page(
+    "落合駅 5階建 築1年未満",
+    `<dl><dt>賃料</dt><dd>14.5万円</dd><dt>管理費・共益費等</dt><dd>15,000円</dd>
+      <dt>専有面積</dt><dd>30.33m²</dd></dl>`,
+  ),
+  // CHINTAI: 賃料に見出しがなく span.rent にある。敷金・礼金の見出しが「敷金 / 保証金」「礼金 / 償却」
+  "https://www.chintai.net/detail/bk-1/": page(
+    "レックスガーデン神楽坂北町 7階",
+    `<table>
+      <tr><td><span class="rent">15.4万円</span></td></tr>
+      <tr><th>管理費等</th><td>20,000円</td></tr>
+      <tr><th>敷金 / 保証金</th><td>1ヶ月 / -</td></tr>
+      <tr><th>礼金 / 償却</th><td>1ヶ月 / -</td></tr>
+      <tr><th>専有面積</th><td>29.15m²</td></tr>
+    </table>`,
+  ),
+  // CHINTAI の一覧(span.rent が多数)=表示しない
+  "https://www.chintai.net/list/": page(
+    "賃貸物件一覧",
+    Array.from({ length: 6 }, (_, i) => `<p><span class="rent">${8 + i}万円</span></p>`).join(""),
+  ),
   // 一覧ページ(検索条件の欄と、複数の物件の価格)=表示しない
   "https://suumo.jp/chintai/tokyo/": page(
     "賃貸物件一覧",
@@ -137,6 +159,22 @@ try {
   assert.match(t3, /年間収入 107万円/); // 1850万×5.8%=107.3万(100万以上は万円単位で表示)
   console.log("ok - 投資物件: 利回り・年間収入・簡易実質利回りを表示");
   if (takeShots) await tab.screenshot({ path: path.join(SHOTS_DIR, "3-investment.png") });
+
+  // 3b) Yahoo!不動産: 「管理費・共益費等」を月額に足す
+  const t3b = await open("https://realestate.yahoo.co.jp/rent/detail/1/");
+  assert.match(t3b, /16万円/); // 14.5万+15,000円
+  console.log("ok - Yahoo!不動産: 管理費・共益費等を月額に含める");
+
+  // 3c) CHINTAI: 見出しのない賃料と「敷金 / 保証金」「礼金 / 償却」
+  const t3c = await open("https://www.chintai.net/detail/bk-1/");
+  assert.match(t3c, /17.4万円/); // 15.4万+2万
+  assert.match(t3c, /初期費用の目安[\s\S]*約65.1万円/); // 15.4万×2+16.94万+17.4万=65.14万
+  console.log("ok - CHINTAI: 見出しのない賃料・敷金/保証金・礼金/償却を読む");
+
+  await tab.goto("https://www.chintai.net/list/");
+  await tab.waitForTimeout(1500);
+  assert.equal(await badge.count(), 0, "CHINTAI の一覧ページにはバッジを出さないこと");
+  console.log("ok - CHINTAI の一覧ページには表示しない");
 
   // 4) 一覧ページ: 表示しない
   await tab.goto("https://suumo.jp/chintai/tokyo/");

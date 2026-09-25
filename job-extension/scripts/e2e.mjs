@@ -52,6 +52,22 @@ const PAGES = {
     "Webエンジニア",
     `<h3>想定年収</h3><p>500万円～800万円</p><h3>勤務時間</h3><p>フレックスタイム制（標準労働時間8時間）</p>`,
   ),
+  // Indeed: 見出し「給与」がクラス名の変わる div で、金額は #salaryInfoAndJobType にある
+  "https://jp.indeed.com/viewjob?jk=1": page(
+    "一般事務(正社員)",
+    `<div class="css-x1a2b3">給与</div><div id="salaryInfoAndJobType"><span>月給 28万円 ~ 30万円</span><span> - 正社員</span></div>`,
+  ),
+  // ハローワーク: 種類(賃金形態等)と金額(ａ＋ｂ)が別の欄。ずっと DOM が変わり続けるページでも表示する
+  "https://www.hellowork.mhlw.go.jp/kensaku/detail/": page(
+    "嘱託員",
+    `<table>
+      <tr><th>ａ ＋ ｂ（固定残業代がある場合はａ＋ｂ＋ｃ）</th><td>164,900円〜164,900円</td></tr>
+      <tr><th>基本給（ａ）</th><td>基本給（月額平均）又は時間額 164,900円〜164,900円</td></tr>
+      <tr><th>賃金形態等</th><td>月給</td></tr>
+      <tr><th>賞与（前年度実績）</th><td>年2回 計 2.00ヶ月分</td></tr>
+    </table><div id="ticker"></div>
+    <script>let n=0;setInterval(()=>{document.getElementById("ticker").textContent=String(n++)},100)</script>`,
+  ),
   // 一覧ページ(給与欄が多数)=表示しない
   "https://employment.en-japan.com/list/": page(
     "求人一覧",
@@ -113,6 +129,19 @@ try {
   const t3 = await open("https://tenshoku.mynavi.jp/jobinfo-3/");
   assert.match(t3, /求人に記載の年収\(想定年収\)[\s\S]*500万〜800万円/);
   console.log("ok - 見出し+本文: 想定年収を表示");
+
+  // 3b) Indeed: #salaryInfoAndJobType の月給の幅
+  const t3b = await open("https://jp.indeed.com/viewjob?jk=1");
+  assert.match(t3b, /約336万〜360万円/); // 28万×12、30万×12
+  console.log("ok - Indeed: 給与の要素から年収目安を表示");
+
+  // 3c) ハローワーク: 賃金形態等+ａ＋ｂ+賞与。DOM が変わり続けても数秒以内に出る
+  const started = Date.now();
+  const t3c = await open("https://www.hellowork.mhlw.go.jp/kensaku/detail/");
+  assert.ok(Date.now() - started < 5000, `表示まで ${Date.now() - started}ms`);
+  assert.match(t3c, /約231万円/); // 164,900×14 ≒ 230.9万
+  assert.doesNotMatch(t3c, /〜/, "上限と下限が同じ金額は幅にしない");
+  console.log("ok - ハローワーク: 賃金形態等と金額の欄を組み合わせて表示(変化し続けるページでも)");
 
   // 4) 一覧ページ: 表示しない
   await tab.goto("https://employment.en-japan.com/list/");
