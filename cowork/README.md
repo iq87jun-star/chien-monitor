@@ -9,6 +9,7 @@ Cowork(人のパソコンのブラウザを操作する Claude)に任せる作�
 | 作業 | 指示書 |
 |---|---|
 | Chrome ウェブストア: 提出用の文章の準備・未確認サイトでの表示確認(ダッシュボードへの入力は人) | [extension/store/cowork-chrome-3.md](../extension/store/cowork-chrome-3.md) |
+| Edge・Firefox: 3つの拡張の出品の入力(最後の提出は人) | [extension/store/cowork-edge-firefox.md](../extension/store/cowork-edge-firefox.md) |
 | スプレッドシートのアドオン: 試す・正解の値と照合・スクリーンショット・Marketplace 申請の準備 | [sheets-addon/cowork-guide.md](../sheets-addon/cowork-guide.md) |
 | (参考・完了済み)トレカ海外相場チェッカーの初回登録 | [extension/store/cowork-guide.md](../extension/store/cowork-guide.md) |
 
