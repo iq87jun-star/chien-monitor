@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8941,
+ "cumulative_cells": 8966,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -651,6 +651,45 @@
     "docs/294_m1_families_q44_q47.md"
    ],
    "result": "0/8。ギャップは埋まらず継続(全セル負)"
+  },
+  {
+   "id": "Q49",
+   "slug": "fx_tsmom",
+   "title": "FX 時系列モメンタム(14 ペア・月次)",
+   "cells": 14,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/295_abstraction_families_q49_q51.md"
+   ],
+   "result": "0/14。前窓 0.2〜0.4・IS 最良 22/39。FX に TSMOM は移らない"
+  },
+  {
+   "id": "Q50",
+   "slug": "hold_trend_gate",
+   "title": "Hold の SMA200 門(改良系・7 銘柄)",
+   "cells": 7,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/295_abstraction_families_q49_q51.md"
+   ],
+   "result": "改良 0/7。OOS Sharpe を 6/7 で悪化"
+  },
+  {
+   "id": "Q51",
+   "slug": "bond_premium",
+   "title": "債券プレミアム(BUND/USTBOND × Hold・TSMOM)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/295_abstraction_families_q49_q51.md"
+   ],
+   "result": "0/4。2021〜 の債券に期間プレミアム無し"
   }
  ],
  "runs": [
@@ -1229,6 +1268,30 @@
    "cells": 8,
    "cum_after": 8941,
    "doc": "docs/294",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q49",
+   "cells": 14,
+   "cum_after": 8955,
+   "doc": "docs/295",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q50",
+   "cells": 7,
+   "cum_after": 8962,
+   "doc": "docs/295",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q51",
+   "cells": 4,
+   "cum_after": 8966,
+   "doc": "docs/295",
    "note": "0 pass"
   }
  ]
