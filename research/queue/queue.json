@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8966,
+ "cumulative_cells": 8968,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -690,6 +690,19 @@
     "docs/295_abstraction_families_q49_q51.md"
    ],
    "result": "0/4。2021〜 の債券に期間プレミアム無し"
+  },
+  {
+   "id": "Q52",
+   "slug": "donchian_vs_hold",
+   "title": "指数ブレイク買い vs Hold(改良系・NAS100/GER40)",
+   "cells": 2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/296_q52_donchian_vs_hold.md"
+   ],
+   "result": "改良 0/2。IS の Sharpe・最悪月は改善するが OOS Sharpe が低下、リターンは Hold の 1/4"
   }
  ],
  "runs": [
@@ -1293,6 +1306,14 @@
    "cum_after": 8966,
    "doc": "docs/295",
    "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q52",
+   "cells": 2,
+   "cum_after": 8968,
+   "doc": "docs/296",
+   "note": "improvement 0/2"
   }
  ]
 }
