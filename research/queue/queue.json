@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8929,
+ "cumulative_cells": 8941,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -625,6 +625,32 @@
     "docs/294_m1_families_q44_q47.md"
    ],
    "result": "0/8。2024 は CPI 後継続(USDJPY 9/12 +18 bps)だが 2025〜 全て負"
+  },
+  {
+   "id": "Q46",
+   "slug": "tokyo_fix_m1",
+   "title": "東京仲値の M1 版(USDJPY)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/294_m1_families_q44_q47.md"
+   ],
+   "result": "0/4。仲値後 SHORT は 2024 のみ。ゴトー日仲値後 SHORT は OOS 14/20 だが IS 7/12"
+  },
+  {
+   "id": "Q48",
+   "slug": "fx_weekend_gap_m1",
+   "title": "FX 週明けギャップ埋め(M1・4 ペア)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/294_m1_families_q44_q47.md"
+   ],
+   "result": "0/8。ギャップは埋まらず継続(全セル負)"
   }
  ],
  "runs": [
@@ -1186,6 +1212,22 @@
    "item": "Q47",
    "cells": 8,
    "cum_after": 8929,
+   "doc": "docs/294",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q46",
+   "cells": 4,
+   "cum_after": 8933,
+   "doc": "docs/294",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q48",
+   "cells": 8,
+   "cum_after": 8941,
    "doc": "docs/294",
    "note": "0 pass"
   }
