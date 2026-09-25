@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8872,
+ "cumulative_cells": 8913,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -534,6 +534,58 @@
     "docs/286_q36_fix_reversal_results.md"
    ],
    "result": "0/12(EURUSD・GBPUSD・USDJPY・AUDUSD 各 0/3)。フィックス直前の動きは継続(逆張り全て負)。月末のみは OOS 12〜13/20 だが IS 裏付けなし"
+  },
+  {
+   "id": "Q40",
+   "slug": "q40_session_spillover",
+   "title": "地域間セッション波及(F5)",
+   "cells": 14,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/293_q40_q43_families_5_8.md"
+   ],
+   "result": "0/14。追随は全滅、アジアは前日 US に逆行"
+  },
+  {
+   "id": "Q41",
+   "slug": "q41_cb_postmove",
+   "title": "中銀発表後の継続(F6)",
+   "cells": 11,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/293_q40_q43_families_5_8.md"
+   ],
+   "result": "0/11。最良 BoJ→JP225 p=0.16。FOMC→US500 は OOS 反転"
+  },
+  {
+   "id": "Q42",
+   "slug": "q42_fx_carry_xs",
+   "title": "FX キャリー XS・直物のみ(F7)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/293_q40_q43_families_5_8.md"
+   ],
+   "result": "0/4。上位3/下位3 IS 24/39 だが OOS 12/19 −4 bps"
+  },
+  {
+   "id": "Q43",
+   "slug": "q43_index_weekend",
+   "title": "指数の週末反転/継続(F8)",
+   "cells": 12,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/293_q40_q43_families_5_8.md"
+   ],
+   "result": "0/12。IS 追随・OOS 反転で不安定"
   }
  ],
  "runs": [
@@ -1049,6 +1101,38 @@
    "cum_after": 8872,
    "doc": "docs/286",
    "note": "0 pass; Q36 done; backlog families 1-4 complete, 0 passed"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q40",
+   "cells": 14,
+   "cum_after": 8886,
+   "doc": "docs/293",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q41",
+   "cells": 11,
+   "cum_after": 8897,
+   "doc": "docs/293",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q42",
+   "cells": 4,
+   "cum_after": 8901,
+   "doc": "docs/293",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q43",
+   "cells": 12,
+   "cum_after": 8913,
+   "doc": "docs/293",
+   "note": "0 pass"
   }
  ]
 }
