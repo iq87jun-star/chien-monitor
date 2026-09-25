@@ -79,3 +79,6 @@ docs/262 §B の診断(S3 の出口 22 UTC はスプレッド拡大で実測後 
 - ファイル `mql5/【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍.mq5` v1.30: v1.10(非FX + Sess スリーブ)の Sess ブロックを EA7 v1.20 の Roll ブロック(曜日指定・金利差門・`RFRoll_` コメント)で置換。Roll 5 クロス ×0.2・×3.0・水曜 20 UTC・4h・スプレッド上限 3 pip・門 1.0pp。Magic 943600(Mon+1/v4+2/Hold+3/Roll+5)。InpInitialBalance 100000 固定。
 - 前提: FN 書面(docs/185 §10b-3)でロール跨ぎ保有・費用なしを確認済み。Roll の 5 クロスは FN 他口座(Instant #11988011 の Mon GBPJPY/AUDJPY・季節RG3)と曜日・方向が異なるため同一取引には当たらない。
 - 初回 Roll は 9/30(水)20:00 UTC。10/1 の月次監視(docs/279)で水曜要因が負なら InpSessEnable=false で Roll のみ止める。
+
+### 1f.【2026-09-25】FN #14074882 → ギャンブル版(Mon3 円クロス ×5 + Hold XAUUSD ×0.5)へ変更(ユーザー決定「落としても良い」)
+docs/292。季節RG3 v1.45 を外して `RecentFit_Mon3x5+HoldXAU0.5_ギャンブル.mq5` を付ける。MC 到達 61% / 失格 39%(日次終値ベース・日中判定で実際は悪化)。長寿命トラック(季節RG3)は FN では休止。BROAD_IV 完成時の載せ先は要再検討。
