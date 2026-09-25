@@ -30,6 +30,7 @@ def main():
             done.add(ds); n_new += 1; touched.add(sym); mf.setdefault(key, {})["days"] = sorted(done)
             if n_new % 20 == 0: print(f"  [{sym}] {ds} 済 (+{n_new})", flush=True)   # manifest は終了時のみ書く(raw の有無で再開できるため)
     save(mf, side, sorted(touched) if touched else [])
+FULL = os.environ.get("DK_WINDOW", "") == "all"; SUF = "full" if FULL else "1400_1730"   # DK_WINDOW=all で終日 M1 を出力(docs/294)
 def save(mf, side, syms):
     json.dump(mf, open(MF, "w"), indent=1)
     for sym in syms:
@@ -37,8 +38,8 @@ def save(mf, side, syms):
         if not os.path.isdir(f"{D}/raw/{sym}"): continue
         for f in sorted(os.listdir(f"{D}/raw/{sym}")):
             if not f.endswith(f"_{side}.bi5") or os.path.getsize(f"{D}/raw/{sym}/{f}") == 0: continue
-            day = pd.Timestamp(f[:10]); rows += [r for r in decode_day(open(f"{D}/raw/{sym}/{f}", "rb").read(), sym, day) if (r[0].hour == 13 and r[0].minute >= 30) or 14 <= r[0].hour < 17 or (r[0].hour == 17 and r[0].minute < 30)]   # 13:30〜17:30(NY カット 14:00 の直前 30 分を含む)
+            day = pd.Timestamp(f[:10]); rows += [r for r in decode_day(open(f"{D}/raw/{sym}/{f}", "rb").read(), sym, day) if FULL or (r[0].hour == 13 and r[0].minute >= 30) or 14 <= r[0].hour < 17 or (r[0].hour == 17 and r[0].minute < 30)]   # 13:30〜17:30(NY カット 14:00 の直前 30 分を含む)
         if rows:
-            df = pd.DataFrame(rows, columns=["timestamp", "open", "high", "low", "close", "volume"]); df.to_csv(f"{D}/{sym}_{side}_m1_1400_1730.csv.gz", index=False)
-            print(f"[{sym}] {side} M1 rows={len(df)} days={len(mf.get(f'{sym}|{side}', {}).get('days', []))} → {D}/{sym}_{side}_m1_1400_1730.csv.gz", flush=True)
+            df = pd.DataFrame(rows, columns=["timestamp", "open", "high", "low", "close", "volume"]); df.to_csv(f"{D}/{sym}_{side}_m1_{SUF}.csv.gz", index=False)
+            print(f"[{sym}] {side} M1 rows={len(df)} days={len(mf.get(f'{sym}|{side}', {}).get('days', []))} → {D}/{sym}_{side}_m1_{SUF}.csv.gz", flush=True)
 if __name__ == "__main__": main()

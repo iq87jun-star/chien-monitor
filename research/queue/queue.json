@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8913,
+ "cumulative_cells": 8929,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -586,6 +586,45 @@
     "docs/293_q40_q43_families_5_8.md"
    ],
    "result": "0/12。IS 追随・OOS 反転で不安定"
+  },
+  {
+   "id": "Q44",
+   "slug": "fix_continuation_m1",
+   "title": "フィックス継続の複製検定(新ペア USDCAD/NZDUSD/EURJPY・M1)",
+   "cells": 6,
+   "status": "in_progress",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/294_m1_families_q44_q47.md"
+   ],
+   "result": "新ペア M1 取得中(1 ペア約 14 時間)"
+  },
+  {
+   "id": "Q45",
+   "slug": "london_open_m1",
+   "title": "ロンドン寄り付きの初動継続(M1・4 ペア)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/294_m1_families_q44_q47.md"
+   ],
+   "result": "0/8。初動は続かない"
+  },
+  {
+   "id": "Q47",
+   "slug": "us_release_m1",
+   "title": "米指標(CPI/NFP)発表の初動継続(M1・4 ペア)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/294_m1_families_q44_q47.md"
+   ],
+   "result": "0/8。2024 は CPI 後継続(USDJPY 9/12 +18 bps)だが 2025〜 全て負"
   }
  ],
  "runs": [
@@ -1132,6 +1171,22 @@
    "cells": 12,
    "cum_after": 8913,
    "doc": "docs/293",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q45",
+   "cells": 8,
+   "cum_after": 8921,
+   "doc": "docs/294",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q47",
+   "cells": 8,
+   "cum_after": 8929,
+   "doc": "docs/294",
    "note": "0 pass"
   }
  ]
