@@ -8,9 +8,17 @@ Cowork(人のパソコンのブラウザを操作する Claude)に任せる作�
 
 | 作業 | 指示書 |
 |---|---|
-| Chrome ウェブストア: トレカの更新・求人の再申請・物件の新規登録・未確認サイトでの表示確認 | [extension/store/cowork-chrome-3.md](../extension/store/cowork-chrome-3.md) |
+| Chrome ウェブストア: 提出用の文章の準備・未確認サイトでの表示確認(ダッシュボードへの入力は人) | [extension/store/cowork-chrome-3.md](../extension/store/cowork-chrome-3.md) |
 | スプレッドシートのアドオン: 試す・正解の値と照合・スクリーンショット・Marketplace 申請の準備 | [sheets-addon/cowork-guide.md](../sheets-addon/cowork-guide.md) |
 | (参考・完了済み)トレカ海外相場チェッカーの初回登録 | [extension/store/cowork-guide.md](../extension/store/cowork-guide.md) |
+
+## Cowork が操作できないページ
+
+- **Chrome ウェブストア**(`chrome.google.com/webstore`・`chromewebstore.google.com`。デベロッパーダッシュボードを含む):
+  Chrome の仕様で、拡張機能(Claude in Chrome)から読み取り・操作ができない(「The extensions gallery cannot be scripted.」。Issue #64)。
+  ここでの入力・提出は人が行い、Cowork は貼る文章の準備までにする
+- Edge アドオン(Partner Center)・Firefox(AMO)の管理画面は、この制限の対象外の見込み(まだ試していない)。
+  操作できなかった場合は、その時点で止まって報告する
 
 ## 共通の決まり(Cowork 向け)
 
