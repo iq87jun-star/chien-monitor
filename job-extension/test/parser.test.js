@@ -155,3 +155,12 @@ test("完全歩合制の給与例にある「時給換算」を時給とみな�
   assert.equal(r.basis, null);
   assert.equal(r.found, false);
 });
+
+test("就業時間の始業・終業と休憩時間から実働時間を出す(ハローワーク)", () => {
+  const r = P.analyze("時給1,131円〜1,180円", "就業時間：(1)08時30分〜17時00分\n休憩時間：60分");
+  assert.equal(r.hoursPerDay, 7.5);
+  // 休憩の記載がなければ計算しない(8時間と仮定)
+  assert.equal(P.analyze("月給20万円", "就業時間：9:00〜18:00").hoursPerDay, null);
+  // 実働の記載があればそちらを優先
+  assert.equal(P.analyze("月給20万円", "9:00〜18:00(実働7時間45分) 休憩60分").hoursPerDay, 7.75);
+});

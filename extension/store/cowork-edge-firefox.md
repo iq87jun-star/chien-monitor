@@ -35,7 +35,7 @@ Cowork はコピー用のページを作る形に切り替える)。
 4. ファイルを用意する([cowork/README.md](../../cowork/README.md) の「ファイルの取り方」):
    - `cowork-files` の `chrome/`(Edge 用。Chrome と同じ zip)と `firefox/`(Firefox 用)
    - 画像(アイコン・スクリーンショット)は、リポジトリ全体(「Code」→「Download ZIP」)の中
-   - 求人の zip は **0.1.1**(`job-salary-checker-0.1.1.zip`)。0.1.0 が出てきたら古いので取り直す
+   - 求人の zip は **0.1.2**(`job-salary-checker-0.1.2.zip`)。0.1.1 以前が出てきたら古いので取り直す
 5. Cowork に「https://github.com/iq87jun-star/chien-monitor/blob/main/extension/store/cowork-edge-firefox.md の
    作業をして」と伝え、連絡先に使うメールアドレスを伝える
 

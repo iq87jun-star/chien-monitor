@@ -70,9 +70,26 @@
     const m = text.match(
       /(?:実働|所定労働時間|労働時間)[^\d]{0,4}(?:1日(?:あたり|当たり|当り)?[^\d]{0,2})?(\d+(?:\.\d+)?)\s*時間\s*(?:(\d+)\s*分)?/,
     );
-    if (!m) return null;
-    const h = Number(m[1]) + (m[2] ? Number(m[2]) / 60 : 0);
-    return h > 0 && h <= 12 ? h : null;
+    if (m) {
+      const h = Number(m[1]) + (m[2] ? Number(m[2]) / 60 : 0);
+      return h > 0 && h <= 12 ? h : null;
+    }
+    return hoursFromSpan(text);
+  }
+
+  // 「08時30分〜17時00分」「9:00~18:00」と「休憩時間 60分」から実働時間を出す。
+  // 休憩の記載がない時は仮定を増やさないよう計算しない
+  function hoursFromSpan(text) {
+    const span = text.match(
+      /(\d{1,2})\s*[時:]\s*(\d{2})?\s*分?\s*[~〜～\-－]\s*(\d{1,2})\s*[時:]\s*(\d{2})?\s*分?/,
+    );
+    const rest = text.match(/休憩(?:時間)?[^\d]{0,6}(\d+(?:\.\d+)?)\s*(分|時間)/);
+    if (!span || !rest) return null;
+    const start = Number(span[1]) + Number(span[2] ?? 0) / 60;
+    const end = Number(span[3]) + Number(span[4] ?? 0) / 60;
+    const breakHours = Number(rest[1]) / (rest[2] === "分" ? 60 : 1);
+    const h = end - start - breakHours;
+    return h > 0 && h <= 12 ? Math.round(h * 100) / 100 : null;
   }
 
   // 年間休日「年間休日120日以上」
