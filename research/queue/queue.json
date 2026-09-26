@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 8968,
+ "cumulative_cells": 9030,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -703,6 +703,58 @@
     "docs/296_q52_donchian_vs_hold.md"
    ],
    "result": "改良 0/2。IS の Sharpe・最悪月は改善するが OOS Sharpe が低下、リターンは Hold の 1/4"
+  },
+  {
+   "id": "Q53",
+   "slug": "jp_holiday_legs",
+   "title": "日本の祝日 × 採用レグ(Mon/Roll/翌営業日)",
+   "cells": 38,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/303_q53_q55_jp_calendar_voltarget.md"
+   ],
+   "result": "新規 0 通過。改良系: Mon 円クロスの祝日月曜スキップが 5/7 ペア・Mon4/Mon2/Mon7 合成で改良(紙上フォワード候補入り)。祝日月曜は 7 ペアとも平均マイナス"
+  },
+  {
+   "id": "Q54",
+   "slug": "jp_flow_calendar",
+   "title": "日本の資金フロー暦(ゴトー日・月初)× 円クロス",
+   "cells": 14,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/303_q53_q55_jp_calendar_voltarget.md"
+   ],
+   "result": "0/14。ゴトー日・月初とも IS 平均マイナス"
+  },
+  {
+   "id": "Q55",
+   "slug": "vol_target",
+   "title": "ボラターゲット(改良系・7 構成)",
+   "cells": 7,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/303_q53_q55_jp_calendar_voltarget.md"
+   ],
+   "result": "改良 0/7。OOS Sharpe は上がるが IS Sharpe と最悪月が悪化"
+  },
+  {
+   "id": "Q53b",
+   "slug": "jp_holiday_composites",
+   "title": "Q53 合成確認(Mon4/Mon2/Mon7 祝日除外)",
+   "cells": 3,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/303_q53_q55_jp_calendar_voltarget.md"
+   ],
+   "result": "改良 3/3"
   }
  ],
  "runs": [
@@ -1314,6 +1366,38 @@
    "cum_after": 8968,
    "doc": "docs/296",
    "note": "improvement 0/2"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q53",
+   "cells": 38,
+   "cum_after": 9006,
+   "doc": "docs/303",
+   "note": "improvement 5/7 (Mon holiday-skip), new 0"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q54",
+   "cells": 14,
+   "cum_after": 9020,
+   "doc": "docs/303",
+   "note": "0/14"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q55",
+   "cells": 7,
+   "cum_after": 9027,
+   "doc": "docs/303",
+   "note": "improvement 0/7"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q53b",
+   "cells": 3,
+   "cum_after": 9030,
+   "doc": "docs/303",
+   "note": "composite improvement 3/3"
   }
  ]
 }
