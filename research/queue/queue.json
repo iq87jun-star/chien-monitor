@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9079,
+ "cumulative_cells": 9120,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -807,6 +807,71 @@
     "docs/304_q56_q59_participant_filters.md"
    ],
    "result": "0/5・改良 0/1。金曜・ギャップの符号で差なし"
+  },
+  {
+   "id": "Q60",
+   "slug": "mon_session_windows",
+   "title": "Mon 円クロスの時間帯分解(東京/ロンドン/NY)+ ショット前倒し",
+   "cells": 23,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/305_q60_q63_session_windows.md"
+   ],
+   "result": "新規 0。利益はロンドン 07-16 UTC に集中・東京窓はコスト後マイナス。前倒し {0,2,4,6} は Mon2 のみ改良(Mon4 は最悪月悪化)"
+  },
+  {
+   "id": "Q60b",
+   "slug": "mon_london_variants",
+   "title": "Q60 追跡: ロンドン窓のみ・ロンドン開始ショット",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/305_q60_q63_session_windows.md"
+   ],
+   "result": "改良 0/4。現行 4/6/8/10 × 24h を時刻変更で改善できない"
+  },
+  {
+   "id": "Q61",
+   "slug": "roll_participant_filters",
+   "title": "参加者フィルター × ロール(ゴトー・月末・BoJ 週・FOMC 週)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/305_q60_q63_session_windows.md"
+   ],
+   "result": "新規 0。改良 1/4: 月末最終JP営業日の水曜除外(n=13)"
+  },
+  {
+   "id": "Q62",
+   "slug": "mon_remaining_filters",
+   "title": "Mon 残り条件(前金曜JP祝日・翌火曜豪NZ祝日)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/305_q60_q63_session_windows.md"
+   ],
+   "result": "0/4。翌火曜豪NZ祝日は −21.9 bps だが OOS Sharpe 同値で不通過"
+  },
+  {
+   "id": "Q63",
+   "slug": "jp225_holiday_parity",
+   "title": "JP225 × JP 祝日 パリティ診断",
+   "cells": 2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/305_q60_q63_session_windows.md"
+   ],
+   "result": "研究系列は JP 休場日に行なし(EA 化時に祝日スキップが必要)"
   }
  ],
  "runs": [
@@ -1482,6 +1547,46 @@
    "cum_after": 9079,
    "doc": "docs/304",
    "note": "0/5"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q60",
+   "cells": 23,
+   "cum_after": 9102,
+   "doc": "docs/305",
+   "note": "new 0, improvement 1/2 (Mon2 only)"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q61",
+   "cells": 8,
+   "cum_after": 9110,
+   "doc": "docs/305",
+   "note": "improvement 1/4"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q62",
+   "cells": 4,
+   "cum_after": 9114,
+   "doc": "docs/305",
+   "note": "0/4"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q63",
+   "cells": 2,
+   "cum_after": 9116,
+   "doc": "docs/305",
+   "note": "diagnostic"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q60b",
+   "cells": 4,
+   "cum_after": 9120,
+   "doc": "docs/305",
+   "note": "improvement 0/4"
   }
  ]
 }
