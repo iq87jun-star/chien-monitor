@@ -41,7 +41,7 @@
 //|    こと(EA初期化のHWMが実態より低いとガードが甘くなる)。          |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.13"
+#property version   "1.14"
 #property strict
 //| v1.01(Prop版から移植): v4のデータ未同期/発注失敗のバー内再試行・  |
 //|   合議不成立の可視化・Monショット枠の発注前消費修正               |
@@ -95,6 +95,7 @@ input double InpNotifyDayWarnPct = 3.0;   // 日次−この%で警告
 
 input group "=== Mon レッグ設定(月曜マルチショット・docs/09系パリティ) ==="
 input string InpMonHoursUTC   = "4,6,8,10";
+input int    InpMonEntryMinute = 12;     // 各ショットを hh:12 に建てる(24h 後の決済も hh:12)。FN の指標窓(毎正時・30 分 ±5 分)を避ける(docs/310)
 input int    InpMonHoldHours  = 24;
 input int    InpAtrPeriodH1   = 24;
 input double InpCatastropheATR= 2.5;    // 災害SL=2.5×ATR(H1)
@@ -102,7 +103,7 @@ input double InpMinStopPips   = 10.0;
 input double InpMaxSpreadPips = 3.0;
 input string InpMonSpreadCaps = "GBPJPY:2.9,AUDJPY:2.9"; // FXペア別上限(edge20 §3)
 input double InpIdxMaxSpreadBps = 3.0;   // 指数レッグのスプレッド上限(bps。NAS100≈1, US500≈1)
-input int    InpIdxEntryOffsetMin = 5;    // 指数レッグ: 米国現物寄り(13:30夏/14:30冬 UTC)からの遅延分
+input int    InpIdxEntryOffsetMin = 8;    // 指数レッグ: 米国現物寄り(13:30夏/14:30冬 UTC)からの遅延分。8 = 13:30 と 13:45 の指標窓(±5 分・FN News Profit Split)を避ける
 input int    InpIdxEntryWindowMin = 60;   // 指数レッグ: 建て試行の窓(分)。窓内で30秒毎に再試行
 input string InpMonSkipDates  = "";      // Mon を建てない日(UTC "2026.10.05,2026.11.02"。FN ニュース規則確認まで高インパクト日を入れる)
 input bool   InpMonSkipIdxOnly = true;   // true=スキップ日は指数レッグのみ見送り / false=Mon 全レッグ見送り
@@ -416,9 +417,10 @@ int OnInit()
          SymbolInfoDouble(g_monSym[i],SYMBOL_VOLUME_MIN),SymbolInfoDouble(g_monSym[i],SYMBOL_VOLUME_STEP));
    }
    PrintFormat("[INIT G v1.10] 指数レッグ=米国現物寄り+%d分から%d分窓の単発(現在%s) 24h保有",InpIdxEntryOffsetMin,InpIdxEntryWindowMin,(UsDst(TimeGMT())?"夏時間13:30UTC":"冬時間14:30UTC"));
+   PrintFormat("[INIT G v1.14] FXショット分=%d 指数オフセット=%d分(FN 指標窓 ±5 分回避・docs/310)",InpMonEntryMinute,InpIdxEntryOffsetMin);
    PrintFormat("[INIT G v1.10] skipDates='%s' idxOnly=%s idxSpreadCap=%.1fbps",InpMonSkipDates,(InpMonSkipIdxOnly?"true":"false"),InpIdxMaxSpreadBps);
    Print("[NOTE] G構成(docs/298/299)。装着は FN100k #14074882 のギャンブル版切替後のみ(RG3 E-Mon と同一取引回避)。旧 Instant v1.02 の建玉は同 Magic のため引き継いで時間決済。");
-   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.13",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.14",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }
@@ -598,6 +600,7 @@ void EntriesMon(datetime utc)
    if(HolidayBlocked(utc)) return;
    int slot=-1; for(int h=0;h<ArraySize(g_monHours);h++) if(u.hour==g_monHours[h]){ slot=h; break; }
    bool idxWin=IdxEntryWindow(utc);               // v1.10: 指数レッグは米国現物寄り(13:30/14:30 UTC)から60分の単発
+   if(slot>=0 && u.min<InpMonEntryMinute) slot=-1;   // v1.14: FX ショットは hh:InpMonEntryMinute 以降に建てる(FN 指標窓回避・docs/310)
    if(slot<0 && !idxWin) return;
    datetime hourBar=utc-(utc%3600); int nh=ArraySize(g_monHours);
    datetime dayBar=utc-(utc%86400);

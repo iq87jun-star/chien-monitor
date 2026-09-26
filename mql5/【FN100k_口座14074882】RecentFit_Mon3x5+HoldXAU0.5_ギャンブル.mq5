@@ -40,7 +40,7 @@
 //|     GBPJPY月曜LONGはFTMO PD口座のv7と同一日・同方向になり得る。   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.07"    // 2026-09-25 #14074882 ギャンブル版: Mon3 円クロス ×5 + Hold XAUUSD ×0.5。季節RG3 を置換(ユーザー決定「落としても良いのでリスクを取る」)   // 1.03: InpInitialBalance 既定を 100000 に固定(2026-09-24 の誤 PASS_LOCK 再発防止・docs/241 §1d)
+#property version   "1.08"    // 2026-09-25 #14074882 ギャンブル版: Mon3 円クロス ×5 + Hold XAUUSD ×0.5。季節RG3 を置換(ユーザー決定「落としても良いのでリスクを取る」)   // 1.03: InpInitialBalance 既定を 100000 に固定(2026-09-24 の誤 PASS_LOCK 再発防止・docs/241 §1d)
 #property strict
 #property description "[FN #14074882 GAMBLE] Mon3 EURJPY/USDJPY/NZDJPY x5 + Hold XAUUSD x0.5. Target +8% (108,000) before -10% (90,000). Replaces Seasonal RG3."
 //#property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
@@ -83,6 +83,7 @@ input double InpNotifyDayWarnPct = 3.0;   // 日次−この%で警告
 
 input group "=== Mon レッグ設定(月曜マルチショット・docs/09系パリティ) ==="
 input string InpMonHoursUTC   = "4,6,8,10";
+input int    InpMonEntryMinute = 12;     // 各ショットを hh:12 に建てる(24h 後の決済も hh:12)。FN の指標窓(毎正時・30 分 ±5 分)を避ける(docs/310)
 input int    InpMonHoldHours  = 24;
 input int    InpAtrPeriodH1   = 24;
 input double InpCatastropheATR= 2.5;    // 災害SL=2.5×ATR(H1)
@@ -345,7 +346,8 @@ int OnInit()
    PrintFormat("[INIT RecentFit] initBal=%.0f mult=%.1f Σw=%.3f (グロス想定≈%.1fx) expiry=%s Magic=%I64d/%I64d/%I64d",
       g_initBal,InpMult,wsum,wsum*InpMult,TimeToString(InpExpiry,TIME_DATE),g_mMon,g_mV4,g_mHold);
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
-   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.07",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.08",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
+   PrintFormat("[INIT v1.08] Mon ショット分=%d(FN 指標窓 ±5 分回避・docs/310)",InpMonEntryMinute);
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }
@@ -508,7 +510,7 @@ void EntriesMon(datetime utc)
    if(u.day_of_week!=1) return;
    if(HolidayBlocked(utc)) return;
    int slot=-1; for(int h=0;h<ArraySize(g_monHours);h++) if(u.hour==g_monHours[h]){ slot=h; break; }
-   if(slot<0) return;
+   if(slot<0 || u.min<InpMonEntryMinute) return;   // v1.08: hh:InpMonEntryMinute 以降に建てる(FN 指標窓回避・docs/310)
    datetime hourBar=utc-(utc%3600); int nh=ArraySize(g_monHours);
    trade.SetExpertMagicNumber(g_mMon);
    for(int s=0;s<g_nMon;s++){
