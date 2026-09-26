@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9185,
+ "cumulative_cells": 9207,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -976,6 +976,58 @@
     "docs/311_q68_q71_guard_and_signal.md"
    ],
    "result": "0/4。除外は OOS を壊す(2025〜26 の利益は大ギャップ週に集中)"
+  },
+  {
+   "id": "Q72",
+   "slug": "intervention_guard",
+   "title": "介入リスク(急激な円安後)ガード",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/312_q72_q75_guard_validation.md"
+   ],
+   "result": "0/6。条件が広すぎ(36%)、最悪日は非該当週"
+  },
+  {
+   "id": "Q73",
+   "slug": "existing_guards",
+   "title": "既存ガード検証(年末年始・スプレッド上限)",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/312_q72_q75_guard_validation.md"
+   ],
+   "result": "改良 1/3: Mon の年末年始フィルターは正当(−11 bps)。ロールは逆(+14.5 bps・n=13)。スプレッド上限は効果なし"
+  },
+  {
+   "id": "Q74",
+   "slug": "account_guards",
+   "title": "口座ガード(日次・月内停止)の検証",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/312_q72_q75_guard_validation.md"
+   ],
+   "result": "0/4。Mon 主体では発動せず、EA7g は規則装置。閾値変更なし"
+  },
+  {
+   "id": "Q75",
+   "slug": "roll_last_hour",
+   "title": "ロール最終 1 時間の除外",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/312_q72_q75_guard_validation.md"
+   ],
+   "result": "0/6。最終時間は利益の 2〜3 割"
   }
  ],
  "runs": [
@@ -1755,6 +1807,38 @@
    "cum_after": 9185,
    "doc": "docs/311",
    "note": "0/4"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q72",
+   "cells": 6,
+   "cum_after": 9191,
+   "doc": "docs/312",
+   "note": "0/6"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q73",
+   "cells": 6,
+   "cum_after": 9197,
+   "doc": "docs/312",
+   "note": "improvement 1/3 (Mon year-end filter validated)"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q74",
+   "cells": 4,
+   "cum_after": 9201,
+   "doc": "docs/312",
+   "note": "0/4"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q75",
+   "cells": 6,
+   "cum_after": 9207,
+   "doc": "docs/312",
+   "note": "0/6"
   }
  ]
 }
