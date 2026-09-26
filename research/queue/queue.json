@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9142,
+ "cumulative_cells": 9185,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -924,6 +924,58 @@
     "docs/306_q64_q67_third_round.md"
    ],
    "result": "0/10。祝日週の水曜ロールは 2〜3 倍強い(Q58 と整合)"
+  },
+  {
+   "id": "Q68",
+   "slug": "tokyo_window_decision",
+   "title": "東京窓の符号による Mon 途中判断",
+   "cells": 16,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/311_q68_q71_guard_and_signal.md"
+   ],
+   "result": "0/16。東京窓の符号は予測力なし、−1ATR 手仕舞いは Sharpe を大きく下げる"
+  },
+  {
+   "id": "Q69",
+   "slug": "mon_carry_gate",
+   "title": "Mon 円クロスのキャリー門",
+   "cells": 14,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/311_q68_q71_guard_and_signal.md"
+   ],
+   "result": "0/14。GBPJPY/USDJPY は高キャリーで効くが AUD/NZD は逆、時期の代理変数"
+  },
+  {
+   "id": "Q70",
+   "slug": "holiday_monday_short",
+   "title": "ガード日の月曜 SHORT",
+   "cells": 9,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/311_q68_q71_guard_and_signal.md"
+   ],
+   "result": "0/9"
+  },
+  {
+   "id": "Q71",
+   "slug": "gap_magnitude",
+   "title": "週末ギャップ幅ガード",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/311_q68_q71_guard_and_signal.md"
+   ],
+   "result": "0/4。除外は OOS を壊す(2025〜26 の利益は大ギャップ週に集中)"
   }
  ],
  "runs": [
@@ -1671,6 +1723,38 @@
    "cum_after": 9142,
    "doc": "docs/306",
    "note": "0/10 diagnostic"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q68",
+   "cells": 16,
+   "cum_after": 9158,
+   "doc": "docs/311",
+   "note": "0/16"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q69",
+   "cells": 14,
+   "cum_after": 9172,
+   "doc": "docs/311",
+   "note": "0/14"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q70",
+   "cells": 9,
+   "cum_after": 9181,
+   "doc": "docs/311",
+   "note": "0/9"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q71",
+   "cells": 4,
+   "cum_after": 9185,
+   "doc": "docs/311",
+   "note": "0/4"
   }
  ]
 }
