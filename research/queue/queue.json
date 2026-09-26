@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9030,
+ "cumulative_cells": 9079,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -755,6 +755,58 @@
     "docs/303_q53_q55_jp_calendar_voltarget.md"
    ],
    "result": "改良 3/3"
+  },
+  {
+   "id": "Q56",
+   "slug": "participant_filters",
+   "title": "参加者フィルター × Mon(各国祝日・翌日祝日・お盆・月末・ゴトー・月初・BoJ 週・指数×NYSE 祝日)",
+   "cells": 22,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/304_q56_q59_participant_filters.md"
+   ],
+   "result": "新規 0。改良 3/11: 豪NZ祝日月曜除外(AUDJPY/NZDJPY)・翌火曜JP祝日除外・ゴトー日月曜除外(確信度低)。米英休場は無関係。指数 Mon は研究系列が NYSE 休場日に建てていない(EA パリティ)"
+  },
+  {
+   "id": "Q57",
+   "slug": "holiday_tuesday_shift",
+   "title": "祝日月曜の週の火曜シフト",
+   "cells": 7,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/304_q56_q59_participant_filters.md"
+   ],
+   "result": "0/7。IS は 7 ペアともプラスだが OOS 5/7 マイナス・n=18"
+  },
+  {
+   "id": "Q58",
+   "slug": "roll_value_date",
+   "title": "ロールの値日シフト週",
+   "cells": 15,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/304_q56_q59_participant_filters.md"
+   ],
+   "result": "0/15・改良 0/5。火曜に移らず、祝日週の水曜はむしろ強い(値日仮説は否定)"
+  },
+  {
+   "id": "Q59",
+   "slug": "friday_conditioned_mon",
+   "title": "金曜条件付き Mon(H1)",
+   "cells": 5,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/304_q56_q59_participant_filters.md"
+   ],
+   "result": "0/5・改良 0/1。金曜・ギャップの符号で差なし"
   }
  ],
  "runs": [
@@ -1398,6 +1450,38 @@
    "cum_after": 9030,
    "doc": "docs/303",
    "note": "composite improvement 3/3"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q56",
+   "cells": 22,
+   "cum_after": 9052,
+   "doc": "docs/304",
+   "note": "improvement 3/11, new 0"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q57",
+   "cells": 7,
+   "cum_after": 9059,
+   "doc": "docs/304",
+   "note": "0/7"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q58",
+   "cells": 15,
+   "cum_after": 9074,
+   "doc": "docs/304",
+   "note": "0/15"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q59",
+   "cells": 5,
+   "cum_after": 9079,
+   "doc": "docs/304",
+   "note": "0/5"
   }
  ]
 }

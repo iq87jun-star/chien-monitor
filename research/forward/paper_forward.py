@@ -25,13 +25,21 @@ def universe():
 
 
 # docs/229 §4 事前登録の候補セル(2026-10〜2027-03 の 6 ヶ月判定)。universe() には含めない(既知セル集合を変えないため)
-CANDIDATES = [("Thu", "XAUUSD", 3, False)] + [("MonExHol", s, 0, False) for s in ("EURJPY", "GBPJPY", "USDJPY", "NZDJPY", "CHFJPY")]   # 2026-09-26 docs/303 Q53: 祝日月曜スキップ(改良系通過・紙上のみ)   # 2026-09-18 docs/249: 曜日 SHORT 候補 4 本(MonS EURGBP / FriS NZDUSD / WedS CADCHF / TueS CADCHF)はコスト符号バグの産物のため削除
+CANDIDATES = [("Thu", "XAUUSD", 3, False)] + [("MonExHol", s, 0, False) for s in ("EURJPY", "GBPJPY", "USDJPY", "NZDJPY", "CHFJPY")] \
+    + [("MonExAUNZ", s, 0, False) for s in ("AUDJPY", "NZDJPY")] + [("MonExJpTue", s, 0, False) for s in ("USDJPY", "EURJPY", "GBPJPY", "AUDJPY", "NZDJPY", "CADJPY", "CHFJPY")] + [("MonExGotobi", "Mon7", 0, False)]   # 2026-09-26 docs/304 Q56   # 2026-09-26 docs/303 Q53: 祝日月曜スキップ(改良系通過・紙上のみ)   # 2026-09-18 docs/249: 曜日 SHORT 候補 4 本(MonS EURGBP / FriS NZDUSD / WedS CADCHF / TueS CADCHF)はコスト符号バグの産物のため削除
 
 
 def candidate_series(fam, sym, dow, short):
     if fam == "MonExHol":   # docs/303 Q53: 月曜 o2o LONG から日本の祝日月曜を除く
         sys.path.insert(0, os.path.join(ROOT, "queue")); from q_jp import is_jp_holiday
         m = base.mon_cell(sym); return m[[not is_jp_holiday(t) for t in m.index]]
+    if fam in ("MonExAUNZ", "MonExJpTue", "MonExGotobi"):   # docs/304 Q56: 参加者フィルター(改良系通過・紙上のみ)
+        sys.path.insert(0, os.path.join(ROOT, "queue")); from q_jp import is_jp_holiday; from q_cal import CAL, gotobi, mon7
+        m = mon7() if sym == "Mon7" else base.mon_cell(sym)
+        if fam == "MonExAUNZ": keep = [not ((t in CAL["AU"]) or (t in CAL["NZ"])) for t in m.index]
+        elif fam == "MonExJpTue": keep = [not is_jp_holiday(t + pd.Timedelta(days=1)) for t in m.index]
+        else: keep = [not gotobi(t) for t in m.index]
+        return m[keep]
     df = base.load_daily(sym); c = base.IDX_COST.get(sym) or (2 * base.pip_size(sym) / df["open"])
     s = df[df["weekday"] == dow]["o2o"]; s = ((-s if short else s) - c).dropna(); return base.clip(s)   # 2026-09-18 修正(docs/249)
 
