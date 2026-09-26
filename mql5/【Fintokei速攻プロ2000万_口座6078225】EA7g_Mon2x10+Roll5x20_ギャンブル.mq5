@@ -14,7 +14,7 @@
 //|     docs/249 で無効になった Sess「セル」とは別物(時間帯エッジではなくロールの増分)。       |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.23"    // 速攻プロ #6078225 ギャンブル版(2026-09-24): Mon2 ×10 + Roll5 ×20・−3%/日次−2%/日次利益上限3% の土俵。期限 10/13。通常口座=スワップ費用込み(合格 約 2 割・失格 約 8 割の賭け)
+#property version   "1.24"    // 速攻プロ #6078225 ギャンブル版(2026-09-24): Mon2 ×10 + Roll5 ×20・−3%/日次−2%/日次利益上限3% の土俵。期限 10/13。通常口座=スワップ費用込み(合格 約 2 割・失格 約 8 割の賭け)
 #property strict
 #property description "[EA7g Fintokei Sokko-Pro GAMBLE] Mon2 x10 + Roll5 x20 (Wed 20:00 UTC short 4h). Normal account (swap cost accepted). Target +6% before -3%/daily -2%. Balance guard -2.8 tick, floor -9, P1 lock 8.05 (P2 6.05)."
 
@@ -95,7 +95,7 @@ input double InpRollMinCarryPp    = 1.0;   // 門: SHORT レグは carry(base−
 
 input group "=== 防御フィルタ(docs/148) ==="
 input bool   InpHolidayFilterEnable = true; // 12/20〜1/3は新規停止
-input string InpJpHolidayMondays = "2026.10.12,2026.11.23,2027.01.11,2027.03.22,2027.05.03,2027.07.19,2027.09.20,2027.10.11"; // 日本の祝日月曜(UTC 日付)。円クロスの Mon を建てない(docs/303 Q53: 祝日月曜は 7 ペアとも平均マイナス)。2028 年分は要追記
+input string InpJpHolidayMondays = "2026.10.12,2026.11.02,2026.11.23,2027.01.11,2027.02.22,2027.03.22,2027.05.03,2027.07.19,2027.09.20,2027.10.11,2027.11.22"; // 日本の祝日月曜 + 翌火曜が祝日の月曜(UTC 日付)。JPY を含む Mon を建てない(docs/303 Q53・docs/304 Q56)。2028 年分は要追記
 input bool   InpJpHolidayJpyOnly = true;   // true=JPY を含む Mon レッグのみ見送り / false=Mon 全レッグ
 input string InpAuNzHolidayMondays = "2026.10.05,2026.10.26,2026.12.28,2027.01.04,2027.02.08,2027.03.29,2027.04.26,2027.06.07,2027.06.14,2027.10.04,2027.10.25,2027.12.27"; // 豪(NSW)・NZ の祝日月曜(UTC 日付)。AUD/NZD を含む Mon レッグを建てない(docs/304 Q56: 該当日は平均 −2.7 bps)。2028 年分は要追記
 
@@ -354,7 +354,7 @@ int OnInit()
      PrintFormat("[INIT Sess v1.10] legs=%d Σw=%.3f mult=%.1f (グロス想定≈%.1fx・同時最大=20-00UTC窓) spreadCap=%.1fpip minSL=%.0fpip Magic=%I64d",
         g_nSes,ws2,InpSessMult,ws2*InpSessMult,InpSessMaxSpreadPips,InpSessMinStopPips,g_mSes); }
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
-   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.23",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.24",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }

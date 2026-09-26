@@ -37,7 +37,7 @@
 //|  規則失格0%。2.0%は速度優先オプションだが剥落時guard_stop25%)。    |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor recent-fit track"
-#property version   "1.04"   // 1.03: S3 の保有時間を入力化(既定 4h = 20 UTC 決済。docs/262: 22 UTC 決済はスプレッド拡大で実測後 −1.0 bps、20 UTC なら +1.2 bps)
+#property version   "1.05"   // 1.03: S3 の保有時間を入力化(既定 4h = 20 UTC 決済。docs/262: 22 UTC 決済はスプレッド拡大で実測後 −1.0 bps、20 UTC なら +1.2 bps)
 #property strict
 #include <Trade/Trade.mqh>
 
@@ -73,7 +73,7 @@ input string InpSymGBPJPY         = "GBPJPY";
 input string InpSymUSDCHF         = "USDCHF";
 
 input group "=== 詳細 ==="
-input string InpJpHolidayMondays = "2026.10.12,2026.11.23,2027.01.11,2027.03.22,2027.05.03,2027.07.19,2027.09.20,2027.10.11"; // 日本の祝日月曜(UTC 日付)。JPY を含む月曜スリーブ(S2 GBPJPY)を建てない(docs/303 Q53)。2028 年分は要追記
+input string InpJpHolidayMondays = "2026.10.12,2026.11.02,2026.11.23,2027.01.11,2027.02.22,2027.03.22,2027.05.03,2027.07.19,2027.09.20,2027.10.11,2027.11.22"; // 日本の祝日月曜 + 翌火曜が祝日の月曜(UTC 日付)。JPY を含む Mon を建てない(docs/303 Q53・docs/304 Q56)。2028 年分は要追記
 input int    InpServerToUtcHours  = -999;   // -999=TimeGMT()使用(ライブ推奨) / 他=サーバ時刻-この時間をUTCとみなす(テスター用: FN系は夏3冬2)
 input long   InpMagicBase         = 941200; // Magic基底(スリーブ=+1..+5)
 input double InpSlAtrMult         = 3.0;    // 災害SL=この×ATR14(D1)。R換算と一致(変更不可推奨)

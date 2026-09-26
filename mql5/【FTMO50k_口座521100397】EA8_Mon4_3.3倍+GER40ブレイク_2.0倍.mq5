@@ -10,7 +10,7 @@
 //|   FOMC 決定日は Sess を建てない(InpSessSkipDates・2027年分は要更新)               |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.32"   // EA8: Mon4 ×3.3 + GER40 ブレイク ×2.0(docs/297)
+#property version   "1.33"   // EA8: Mon4 ×3.3 + GER40 ブレイク ×2.0(docs/297)
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
@@ -99,7 +99,7 @@ input double InpBrkCatSLAtr    = 6.0;       // 災害SL = 建値 − この×ATR
 
 input group "=== 防御フィルタ(docs/148) ==="
 input bool   InpHolidayFilterEnable = true; // 12/20〜1/3は新規停止
-input string InpJpHolidayMondays = "2026.10.12,2026.11.23,2027.01.11,2027.03.22,2027.05.03,2027.07.19,2027.09.20,2027.10.11"; // 日本の祝日月曜(UTC 日付)。円クロスの Mon を建てない(docs/303 Q53: 祝日月曜は 7 ペアとも平均マイナス)。2028 年分は要追記
+input string InpJpHolidayMondays = "2026.10.12,2026.11.02,2026.11.23,2027.01.11,2027.02.22,2027.03.22,2027.05.03,2027.07.19,2027.09.20,2027.10.11,2027.11.22"; // 日本の祝日月曜 + 翌火曜が祝日の月曜(UTC 日付)。JPY を含む Mon を建てない(docs/303 Q53・docs/304 Q56)。2028 年分は要追記
 input bool   InpJpHolidayJpyOnly = true;   // true=JPY を含む Mon レッグのみ見送り / false=Mon 全レッグ
 input string InpAuNzHolidayMondays = "2026.10.05,2026.10.26,2026.12.28,2027.01.04,2027.02.08,2027.03.29,2027.04.26,2027.06.07,2027.06.14,2027.10.04,2027.10.25,2027.12.27"; // 豪(NSW)・NZ の祝日月曜(UTC 日付)。AUD/NZD を含む Mon レッグを建てない(docs/304 Q56: 該当日は平均 −2.7 bps)。2028 年分は要追記
 
@@ -367,7 +367,7 @@ int OnInit()
       PrintFormat("[INIT Brk v1.30] %s N=%d trail=%.1fATR maxH=%d 名目=%.0f (重み %.2f × 倍率 %.1f) spreadCap=%.1fpt Magic=%I64d 建玉=%d",
          g_brkSym,InpBrkN,InpBrkAtrTrail,InpBrkMaxHours,g_initBal*InpBrkWeight*InpBrkMult,InpBrkWeight,InpBrkMult,InpBrkMaxSpreadPts,g_mBrk,CountPos(g_brkSym,g_mBrk)); }
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
-   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.32",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.33",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }
