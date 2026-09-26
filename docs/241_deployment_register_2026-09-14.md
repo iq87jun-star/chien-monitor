@@ -90,3 +90,6 @@ EA2 の Mon4 は実際には稼働していなかった(履歴で確認)。D 案
 `RecentFit_G_Mon2x4+MonNAS100_US500x1.mq5` v1.10。Mon2 ×4 + Mon NAS100/US500 ×1(指数は米国現物寄りで単発 24h)。ニュース規則未確認のため InpMonSkipDates(指数のみ)を用意、FN への確認メール草案は docs/299 §3(未送信)。
 - 9/26 14:47〜14:51(端末時刻)の Experts ログ確認: 同一端末で #14074882 ギャンブル版 init(initBal=100000 mult=5.0 Σw=1.100, 日開始bal 95,116.25)→ 14:49:59 Instant G init が equity 95,363.97 の口座(=#14074882)上で走った(誤口座・GV は login 別なので実害なし)→ 14:50:21/14:51:10 に Instant(bal 19,913.25)上で正常 init。銘柄解決 NAS100→NDX100 / US500→SPX500、推定 lots GBPJPY 0.08×4 / AUDJPY 0.13×4 / NDX100 0.03 / SPX500 0.12(min 0.01)。要確認: #14074882 側で RG3 が外れギャンブル版が稼働している端末はどれか、旧 Instant v1.02 が外れているか。
 
+### 1i.【2026-09-26】稼働 EA 台帳ページ(常時確認用)
+閲覧用アーティファクト https://claude.ai/artifact/R2TmQdN5iroKdgkaGp33jz(ファイル `scratchpad/ea_register.html`・変更のたびに同 URL で再公開)。本書 §1 系の表と同期させる。2026-09-26 時点の要約: 稼働 6(Instant G / #14074882 ギャンブル版(端末未確認)/ #14166201 v1.30 / #531407058 EA3+C6m / #531343523 RF5 / パール B案)、9/30 切替 2(#521100397 → EA8、速攻プロ → EA7g)、未稼働 2(1-Step、FNmarkets 記録)。
+
