@@ -49,7 +49,7 @@
 //|     GBPJPY月曜LONGはFTMO PD口座のv7と同一日・同方向になり得る。   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.30"   // v1.30(2026-09-25): Sess スリーブを Roll レグ(EA7 v1.20 機構)に置換。非FX ×1.48 + ロール ×3(docs/275)・基準残高 100000 固定   // + 時間帯セル Sess(docs/233-235)を同居(FN「EAは1口座1本」規則のため本EAに内蔵)
+#property version   "1.31"   // v1.30(2026-09-25): Sess スリーブを Roll レグ(EA7 v1.20 機構)に置換。非FX ×1.48 + ロール ×3(docs/275)・基準残高 100000 固定   // + 時間帯セル Sess(docs/233-235)を同居(FN「EAは1口座1本」規則のため本EAに内蔵)
 #property strict
 #property description "[FN #14166201 v1.30] NonFX x1.48 (Hold UK100/WTI + v4 BTCUSD + Mon ETHUSD) + Roll5 x3.0 (Wed 20:00 UTC short 4h, carry gate). Swap-free only."
 //#property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
@@ -124,7 +124,7 @@ input string InpSessLegs          = "USDJPY:S:20:4:0.2,EURJPY:S:20:4:0.2,GBPJPY:
 input double InpSessMult          = 3.0;   // Roll 専用倍率(名目=基準残高×重み×倍率。docs/275: 非FX ×1.48 + ロール ×3)
 input double InpSessMaxSpreadPips = 3.0;   // 建て時スプレッド上限(pip・円クロス)。超過は見送り
 input double InpSessMinStopPips   = 15.0;  // 災害SL最小幅(21 UTC のスプレッド拡大を内側で受ける)
-input string InpSessSkipDates     = "";    // Roll を建てない日(UTC・空=無し)
+input string InpSessSkipDates     = "2026.09.30,2026.12.30,2027.03.31,2027.06.30"; // Roll を建てない日(UTC)。月末最終 JP 営業日の水曜(docs/305 Q61: 平均 −2.9 bps・n=13)。2027 下期以降は要追記
 input string InpSessDaysUTC       = "3";   // Roll を建てる曜日(UTC day_of_week: 0=日…3=水・CSV)。水曜のみ = 3 日分ロール
 input string InpRollRates         = "USD:3.75,JPY:0.75,EUR:2.00,GBP:3.75,AUD:3.60,CAD:2.25,CHF:0.00,NZD:2.25"; // 政策金利(%)・月次で手更新
 input double InpRollMinCarryPp    = 1.0;   // 門: SHORT レグは carry(base−quote)≥ この pp のときだけ建てる

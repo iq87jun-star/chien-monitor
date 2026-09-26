@@ -14,7 +14,7 @@
 //|     docs/249 で無効になった Sess「セル」とは別物(時間帯エッジではなくロールの増分)。       |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.22"    // 速攻プロ #6078225 ギャンブル版(2026-09-24): Mon2 ×10 + Roll5 ×20・−3%/日次−2%/日次利益上限3% の土俵。期限 10/13。通常口座=スワップ費用込み(合格 約 2 割・失格 約 8 割の賭け)
+#property version   "1.23"    // 速攻プロ #6078225 ギャンブル版(2026-09-24): Mon2 ×10 + Roll5 ×20・−3%/日次−2%/日次利益上限3% の土俵。期限 10/13。通常口座=スワップ費用込み(合格 約 2 割・失格 約 8 割の賭け)
 #property strict
 #property description "[EA7g Fintokei Sokko-Pro GAMBLE] Mon2 x10 + Roll5 x20 (Wed 20:00 UTC short 4h). Normal account (swap cost accepted). Target +6% before -3%/daily -2%. Balance guard -2.8 tick, floor -9, P1 lock 8.05 (P2 6.05)."
 
@@ -88,7 +88,7 @@ input string InpSessLegs          = "USDJPY:S:20:4:0.2,EURJPY:S:20:4:0.2,GBPJPY:
 input double InpSessMult          = 20.0;  // Roll 倍率(ギャンブル版 MC の最適 ×20。4 時間窓なので上限到達 43% / 停止 22%)
 input double InpSessMaxSpreadPips = 3.0;   // 建て時スプレッド上限(pip・円クロス)。超過は見送り
 input double InpSessMinStopPips   = 15.0;  // 災害SL最小幅(21 UTC のスプレッド拡大を内側で受ける)
-input string InpSessSkipDates     = "";    // Roll を建てない日(UTC・空=無し。docs/265: FOMC 日も同じ挙動)
+input string InpSessSkipDates     = "2026.09.30,2026.12.30,2027.03.31,2027.06.30"; // Roll を建てない日(UTC)。月末最終 JP 営業日の水曜(docs/305 Q61: 平均 −2.9 bps・n=13)。2027 下期以降は要追記
 input string InpSessDaysUTC       = "3";   // Roll を建てる曜日(UTC day_of_week: 0=日…3=水・CSV)。水曜のみ = 3 日分ロール
 input string InpRollRates         = "USD:3.75,JPY:0.75,EUR:2.00,GBP:3.75,AUD:3.60,CAD:2.25,CHF:0.00,NZD:2.25"; // 政策金利(%)・月次で手更新(docs/265 の表)
 input double InpRollMinCarryPp    = 1.0;   // 門: SHORT レグは carry(base−quote)≥ この pp、LONG レグは ≤ −この pp のときだけ建てる
@@ -97,6 +97,7 @@ input group "=== 防御フィルタ(docs/148) ==="
 input bool   InpHolidayFilterEnable = true; // 12/20〜1/3は新規停止
 input string InpJpHolidayMondays = "2026.10.12,2026.11.23,2027.01.11,2027.03.22,2027.05.03,2027.07.19,2027.09.20,2027.10.11"; // 日本の祝日月曜(UTC 日付)。円クロスの Mon を建てない(docs/303 Q53: 祝日月曜は 7 ペアとも平均マイナス)。2028 年分は要追記
 input bool   InpJpHolidayJpyOnly = true;   // true=JPY を含む Mon レッグのみ見送り / false=Mon 全レッグ
+input string InpAuNzHolidayMondays = "2026.10.05,2026.10.26,2026.12.28,2027.01.04,2027.02.08,2027.03.29,2027.04.26,2027.06.07,2027.06.14,2027.10.04,2027.10.25,2027.12.27"; // 豪(NSW)・NZ の祝日月曜(UTC 日付)。AUD/NZD を含む Mon レッグを建てない(docs/304 Q56: 該当日は平均 −2.7 bps)。2028 年分は要追記
 
 input group "=== 共通 ==="
 input double InpMinLot = 0.01;
@@ -289,9 +290,10 @@ bool HolidayBlocked(datetime utc){
 }
 bool JpHolidayMonday(datetime utc, string sym){   // docs/303 Q53: 東京休場の月曜は建てない
    if(StringLen(InpJpHolidayMondays)==0) return false;
-   if(InpJpHolidayJpyOnly && StringFind(sym,"JPY")<0) return false;
    MqlDateTime u; TimeToStruct(utc,u);
    string today=StringFormat("%04d.%02d.%02d",u.year,u.mon,u.day);
+   if((StringFind(sym,"AUD")>=0||StringFind(sym,"NZD")>=0) && StringLen(InpAuNzHolidayMondays)>0 && StringFind(InpAuNzHolidayMondays,today)>=0) return true;   // docs/304 Q56
+   if(InpJpHolidayJpyOnly && StringFind(sym,"JPY")<0) return false;
    return (StringFind(InpJpHolidayMondays,today)>=0);
 }
 double SpreadCapFor(string sym){
@@ -352,7 +354,7 @@ int OnInit()
      PrintFormat("[INIT Sess v1.10] legs=%d Σw=%.3f mult=%.1f (グロス想定≈%.1fx・同時最大=20-00UTC窓) spreadCap=%.1fpip minSL=%.0fpip Magic=%I64d",
         g_nSes,ws2,InpSessMult,ws2*InpSessMult,InpSessMaxSpreadPips,InpSessMinStopPips,g_mSes); }
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
-   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s(docs/303)","1.22",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"));
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.23",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }
@@ -526,7 +528,7 @@ void EntriesMon(datetime utc)
       int key=s*nh+slot;
       if(g_lastShotMon[key]==hourBar) continue;
       string sym=g_monSym[s]; double pip=PipOf(sym);
-      if(JpHolidayMonday(utc,sym)){ g_lastShotMon[key]=hourBar; if(InpVerboseLog) PrintFormat("[Mon SKIP] %s 日本の祝日月曜(docs/303)",sym); continue; }
+      if(JpHolidayMonday(utc,sym)){ g_lastShotMon[key]=hourBar; if(InpVerboseLog) PrintFormat("[Mon SKIP] %s 祝日月曜(日本 docs/303 / 豪NZ docs/304)",sym); continue; }
       double atr=AtrAt(g_atrH1[s]); if(atr<=0) continue;
       double sd=InpCatastropheATR*atr; double sp=sd/pip;
       if(sp<InpMinStopPips){ sp=InpMinStopPips; sd=sp*pip; }
