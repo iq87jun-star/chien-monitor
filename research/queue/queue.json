@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9120,
+ "cumulative_cells": 9142,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -872,6 +872,58 @@
     "docs/305_q60_q63_session_windows.md"
    ],
    "result": "研究系列は JP 休場日に行なし(EA 化時に祝日スキップが必要)"
+  },
+  {
+   "id": "Q64",
+   "slug": "london_dst_shots",
+   "title": "ロンドン時間に合わせた季節分解・DST 連動ショット",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/306_q64_q67_third_round.md"
+   ],
+   "result": "0/6。夏時間が強いが DST 連動は改良にならない"
+  },
+  {
+   "id": "Q65",
+   "slug": "cn_hk_holidays",
+   "title": "中国連休週 × AUD/NZD・Mon7",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/306_q64_q67_third_round.md"
+   ],
+   "result": "0/4。連休週はむしろ良い"
+  },
+  {
+   "id": "Q66",
+   "slug": "after_long_break",
+   "title": "日本の連休明け最初の月曜",
+   "cells": 2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/306_q64_q67_third_round.md"
+   ],
+   "result": "0/2"
+  },
+  {
+   "id": "Q67",
+   "slug": "roll_early_week_holiday",
+   "title": "ロール × 週初 JP 祝日週",
+   "cells": 10,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/306_q64_q67_third_round.md"
+   ],
+   "result": "0/10。祝日週の水曜ロールは 2〜3 倍強い(Q58 と整合)"
   }
  ],
  "runs": [
@@ -1587,6 +1639,38 @@
    "cum_after": 9120,
    "doc": "docs/305",
    "note": "improvement 0/4"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q64",
+   "cells": 6,
+   "cum_after": 9126,
+   "doc": "docs/306",
+   "note": "0/6"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q65",
+   "cells": 4,
+   "cum_after": 9130,
+   "doc": "docs/306",
+   "note": "0/4"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q66",
+   "cells": 2,
+   "cum_after": 9132,
+   "doc": "docs/306",
+   "note": "0/2"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q67",
+   "cells": 10,
+   "cum_after": 9142,
+   "doc": "docs/306",
+   "note": "0/10 diagnostic"
   }
  ]
 }

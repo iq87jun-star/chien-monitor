@@ -1,0 +1,3 @@
+family,symbol,spec,is_plus,is_n,is_rate,is_mean_bps,is_trades,p,oos_plus,oos_n,oos_mean_bps,pre_n,pre_rate,passed
+連休明け最初の月曜 除外(改良系),Mon7,該当月曜を建てない,27,39,0.692,10.44,165,0.011851351235236507,13,19,3.3,69,0.536,False
+連休明け最初の月曜 のみ,Mon7,直前 10 日に JP 非営業日 4 日以上連続,3,5,0.6,-2.23,5,0.5,3,4,44.92,13,0.538,False
