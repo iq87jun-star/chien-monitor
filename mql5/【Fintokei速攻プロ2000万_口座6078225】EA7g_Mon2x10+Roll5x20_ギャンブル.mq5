@@ -14,7 +14,7 @@
 //|     docs/249 で無効になった Sess「セル」とは別物(時間帯エッジではなくロールの増分)。       |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.21"    // 速攻プロ #6078225 ギャンブル版(2026-09-24): Mon2 ×10 + Roll5 ×20・−3%/日次−2%/日次利益上限3% の土俵。期限 10/13。通常口座=スワップ費用込み(合格 約 2 割・失格 約 8 割の賭け)
+#property version   "1.22"    // 速攻プロ #6078225 ギャンブル版(2026-09-24): Mon2 ×10 + Roll5 ×20・−3%/日次−2%/日次利益上限3% の土俵。期限 10/13。通常口座=スワップ費用込み(合格 約 2 割・失格 約 8 割の賭け)
 #property strict
 #property description "[EA7g Fintokei Sokko-Pro GAMBLE] Mon2 x10 + Roll5 x20 (Wed 20:00 UTC short 4h). Normal account (swap cost accepted). Target +6% before -3%/daily -2%. Balance guard -2.8 tick, floor -9, P1 lock 8.05 (P2 6.05)."
 
@@ -95,6 +95,8 @@ input double InpRollMinCarryPp    = 1.0;   // 門: SHORT レグは carry(base−
 
 input group "=== 防御フィルタ(docs/148) ==="
 input bool   InpHolidayFilterEnable = true; // 12/20〜1/3は新規停止
+input string InpJpHolidayMondays = "2026.10.12,2026.11.23,2027.01.11,2027.03.22,2027.05.03,2027.07.19,2027.09.20,2027.10.11"; // 日本の祝日月曜(UTC 日付)。円クロスの Mon を建てない(docs/303 Q53: 祝日月曜は 7 ペアとも平均マイナス)。2028 年分は要追記
+input bool   InpJpHolidayJpyOnly = true;   // true=JPY を含む Mon レッグのみ見送り / false=Mon 全レッグ
 
 input group "=== 共通 ==="
 input double InpMinLot = 0.01;
@@ -285,6 +287,13 @@ bool HolidayBlocked(datetime utc){
    MqlDateTime t; TimeToStruct(utc,t);
    return ((t.mon==12 && t.day>=20) || (t.mon==1 && t.day<=3));
 }
+bool JpHolidayMonday(datetime utc, string sym){   // docs/303 Q53: 東京休場の月曜は建てない
+   if(StringLen(InpJpHolidayMondays)==0) return false;
+   if(InpJpHolidayJpyOnly && StringFind(sym,"JPY")<0) return false;
+   MqlDateTime u; TimeToStruct(utc,u);
+   string today=StringFormat("%04d.%02d.%02d",u.year,u.mon,u.day);
+   return (StringFind(InpJpHolidayMondays,today)>=0);
+}
 double SpreadCapFor(string sym){
    if(StringLen(InpMonSpreadCaps)==0) return InpMaxSpreadPips;
    string S=sym; StringToUpper(S);
@@ -343,6 +352,7 @@ int OnInit()
      PrintFormat("[INIT Sess v1.10] legs=%d Σw=%.3f mult=%.1f (グロス想定≈%.1fx・同時最大=20-00UTC窓) spreadCap=%.1fpip minSL=%.0fpip Magic=%I64d",
         g_nSes,ws2,InpSessMult,ws2*InpSessMult,InpSessMaxSpreadPips,InpSessMinStopPips,g_mSes); }
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s(docs/303)","1.22",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"));
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }
@@ -516,6 +526,7 @@ void EntriesMon(datetime utc)
       int key=s*nh+slot;
       if(g_lastShotMon[key]==hourBar) continue;
       string sym=g_monSym[s]; double pip=PipOf(sym);
+      if(JpHolidayMonday(utc,sym)){ g_lastShotMon[key]=hourBar; if(InpVerboseLog) PrintFormat("[Mon SKIP] %s 日本の祝日月曜(docs/303)",sym); continue; }
       double atr=AtrAt(g_atrH1[s]); if(atr<=0) continue;
       double sd=InpCatastropheATR*atr; double sp=sd/pip;
       if(sp<InpMinStopPips){ sp=InpMinStopPips; sd=sp*pip; }

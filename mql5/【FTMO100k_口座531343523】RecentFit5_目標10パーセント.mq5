@@ -37,7 +37,7 @@
 //|  規則失格0%。2.0%は速度優先オプションだが剥落時guard_stop25%)。    |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor recent-fit track"
-#property version   "1.03"   // 1.03: S3 の保有時間を入力化(既定 4h = 20 UTC 決済。docs/262: 22 UTC 決済はスプレッド拡大で実測後 −1.0 bps、20 UTC なら +1.2 bps)
+#property version   "1.04"   // 1.03: S3 の保有時間を入力化(既定 4h = 20 UTC 決済。docs/262: 22 UTC 決済はスプレッド拡大で実測後 −1.0 bps、20 UTC なら +1.2 bps)
 #property strict
 #include <Trade/Trade.mqh>
 
@@ -73,6 +73,7 @@ input string InpSymGBPJPY         = "GBPJPY";
 input string InpSymUSDCHF         = "USDCHF";
 
 input group "=== 詳細 ==="
+input string InpJpHolidayMondays = "2026.10.12,2026.11.23,2027.01.11,2027.03.22,2027.05.03,2027.07.19,2027.09.20,2027.10.11"; // 日本の祝日月曜(UTC 日付)。JPY を含む月曜スリーブ(S2 GBPJPY)を建てない(docs/303 Q53)。2028 年分は要追記
 input int    InpServerToUtcHours  = -999;   // -999=TimeGMT()使用(ライブ推奨) / 他=サーバ時刻-この時間をUTCとみなす(テスター用: FN系は夏3冬2)
 input long   InpMagicBase         = 941200; // Magic基底(スリーブ=+1..+5)
 input double InpSlAtrMult         = 3.0;    // 災害SL=この×ATR14(D1)。R換算と一致(変更不可推奨)
@@ -338,6 +339,11 @@ datetime UtcNow()
    return TimeCurrent()-InpServerToUtcHours*3600;
 }
 
+bool JpHolidayMonday(datetime utc, string sym){   // docs/303 Q53: 東京休場の月曜は円クロスを建てない
+   if(StringLen(InpJpHolidayMondays)==0 || StringFind(sym,"JPY")<0) return false;
+   MqlDateTime u; TimeToStruct(utc,u); string today=StringFormat("%04d.%02d.%02d",u.year,u.mon,u.day);
+   return (StringFind(InpJpHolidayMondays,today)>=0);
+}
 void TrySleeveA(int idx)
 {
    MqlDateTime gt; TimeToStruct(UtcNow(),gt);
@@ -345,6 +351,7 @@ void TrySleeveA(int idx)
    if(dowMon0!=g_def[idx].dow || gt.hour!=g_def[idx].hourUtc) return;
    int wk=gt.year*100+ (gt.day_of_year/7);              // 週キー(同週の再建て防止)
    if(g_weekKey[idx]==wk) return;
+   if(g_def[idx].dow==0 && JpHolidayMonday(UtcNow(),g_sym[idx])){ g_weekKey[idx]=wk; PrintFormat("[S%d SKIP] %s 日本の祝日月曜(docs/303)",idx+1,g_sym[idx]); return; }
    if(CountSleeve(idx)>0) return;
    if(OpenSleeve(idx,g_def[idx].dir,StringFormat("RF5-S%d",idx+1)))
       g_weekKey[idx]=wk;

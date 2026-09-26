@@ -93,3 +93,6 @@ EA2 の Mon4 は実際には稼働していなかった(履歴で確認)。D 案
 ### 1i.【2026-09-26】稼働 EA 台帳ページ(常時確認用)
 閲覧用アーティファクト https://claude.ai/artifact/R2TmQdN5iroKdgkaGp33jz(ファイル `scratchpad/ea_register.html`・変更のたびに同 URL で再公開)。本書 §1 系の表と同期させる。2026-09-26 時点の要約: 稼働 6(Instant G / #14074882 ギャンブル版(端末未確認)/ #14166201 v1.30 / #531407058 EA3+C6m / #531343523 RF5 / パール B案)、9/30 切替 2(#521100397 → EA8、速攻プロ → EA7g)、未稼働 2(1-Step、FNmarkets 記録)。
 
+### 1j.【2026-09-26】祝日月曜スキップを EA に実装(ユーザー決定・docs/303 Q53)
+`InpJpHolidayMondays`(2026.10.12〜2027.10.11 の 8 日・2028 年分は要追記)+ `InpJpHolidayJpyOnly=true`(JPY を含む Mon レッグのみ)。対象: Instant G v1.11 / #14074882 ギャンブル v1.05 / EA8 v1.31 / EA7g v1.22 / EA3 v1.13 / パール B案 v1.03 / RF5 v1.04(S2 GBPJPY のみ)。ログ `[INIT JpHoliday vX.XX]`・当日 `[Mon SKIP] … 日本の祝日月曜`。C6m 系(9/30 期限)と #14166201(Mon は ETHUSD のみ)は対象外。初回の適用日は 10/12(月・スポーツの日)。
+

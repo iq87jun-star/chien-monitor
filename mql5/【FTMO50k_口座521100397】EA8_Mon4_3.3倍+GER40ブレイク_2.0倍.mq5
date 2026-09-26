@@ -10,7 +10,7 @@
 //|   FOMC 決定日は Sess を建てない(InpSessSkipDates・2027年分は要更新)               |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.30"   // EA8: Mon4 ×3.3 + GER40 ブレイク ×2.0(docs/297)
+#property version   "1.31"   // EA8: Mon4 ×3.3 + GER40 ブレイク ×2.0(docs/297)
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
@@ -99,6 +99,8 @@ input double InpBrkCatSLAtr    = 6.0;       // 災害SL = 建値 − この×ATR
 
 input group "=== 防御フィルタ(docs/148) ==="
 input bool   InpHolidayFilterEnable = true; // 12/20〜1/3は新規停止
+input string InpJpHolidayMondays = "2026.10.12,2026.11.23,2027.01.11,2027.03.22,2027.05.03,2027.07.19,2027.09.20,2027.10.11"; // 日本の祝日月曜(UTC 日付)。円クロスの Mon を建てない(docs/303 Q53: 祝日月曜は 7 ペアとも平均マイナス)。2028 年分は要追記
+input bool   InpJpHolidayJpyOnly = true;   // true=JPY を含む Mon レッグのみ見送り / false=Mon 全レッグ
 
 input group "=== 共通 ==="
 input double InpMinLot = 0.01;
@@ -290,6 +292,13 @@ bool HolidayBlocked(datetime utc){
    MqlDateTime t; TimeToStruct(utc,t);
    return ((t.mon==12 && t.day>=20) || (t.mon==1 && t.day<=3));
 }
+bool JpHolidayMonday(datetime utc, string sym){   // docs/303 Q53: 東京休場の月曜は建てない
+   if(StringLen(InpJpHolidayMondays)==0) return false;
+   if(InpJpHolidayJpyOnly && StringFind(sym,"JPY")<0) return false;
+   MqlDateTime u; TimeToStruct(utc,u);
+   string today=StringFormat("%04d.%02d.%02d",u.year,u.mon,u.day);
+   return (StringFind(InpJpHolidayMondays,today)>=0);
+}
 double SpreadCapFor(string sym){
    if(StringLen(InpMonSpreadCaps)==0) return InpMaxSpreadPips;
    string S=sym; StringToUpper(S);
@@ -356,6 +365,7 @@ int OnInit()
       PrintFormat("[INIT Brk v1.30] %s N=%d trail=%.1fATR maxH=%d 名目=%.0f (重み %.2f × 倍率 %.1f) spreadCap=%.1fpt Magic=%I64d 建玉=%d",
          g_brkSym,InpBrkN,InpBrkAtrTrail,InpBrkMaxHours,g_initBal*InpBrkWeight*InpBrkMult,InpBrkWeight,InpBrkMult,InpBrkMaxSpreadPts,g_mBrk,CountPos(g_brkSym,g_mBrk)); }
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s(docs/303)","1.31",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"));
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }
@@ -578,6 +588,7 @@ void EntriesMon(datetime utc)
       int key=s*nh+slot;
       if(g_lastShotMon[key]==hourBar) continue;
       string sym=g_monSym[s]; double pip=PipOf(sym);
+      if(JpHolidayMonday(utc,sym)){ g_lastShotMon[key]=hourBar; if(InpVerboseLog) PrintFormat("[Mon SKIP] %s 日本の祝日月曜(docs/303)",sym); continue; }
       double atr=AtrAt(g_atrH1[s]); if(atr<=0) continue;
       double sd=InpCatastropheATR*atr; double sp=sd/pip;
       if(sp<InpMinStopPips){ sp=InpMinStopPips; sd=sp*pip; }
