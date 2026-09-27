@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9605,
+ "cumulative_cells": 9607,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1093,6 +1093,19 @@
     "docs/314_q79_q80_h1_technical_closure.md"
    ],
    "result": "0/76(p<0.05 1・期待 4)。GBPJPY 一目 L は Mon 円クロスと重複、OOS 消失"
+  },
+  {
+   "id": "Q81",
+   "slug": "evz_gate",
+   "title": "通貨ボラ門(CBOE EVZ 80 分位・Mon7 のみ/除外)",
+   "cells": 2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/315_q81_evz_gate.md"
+   ],
+   "result": "0/2。除外は改良基準を形式上満たす(IS 3.58→4.02)が 2022 年を 36 週外す期間代理・OOS 3 ヶ月・EVZ 廃止で不採用"
   }
  ],
  "runs": [
@@ -1944,6 +1957,14 @@
    "cum_after": 9605,
    "doc": "docs/314",
    "note": "0/76"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q81",
+   "cells": 2,
+   "cum_after": 9607,
+   "doc": "docs/315",
+   "note": "0/2(不採用)"
   }
  ]
 }
