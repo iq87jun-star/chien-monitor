@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9207,
+ "cumulative_cells": 9225,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1028,6 +1028,45 @@
     "docs/312_q72_q75_guard_validation.md"
    ],
    "result": "0/6。最終時間は利益の 2〜3 割"
+  },
+  {
+   "id": "Q76",
+   "slug": "mon_stoploss",
+   "title": "Mon 災害 SL(k×ATR24)の検証",
+   "cells": 12,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/313_q76_q78_stoploss_validation.md"
+   ],
+   "result": "0/12。2.5×ATR は 34% 発動・5 年 22.5→20.5%・OOS Sharpe 2.44→1.67。保険として維持(実口座 12.3% と整合)"
+  },
+  {
+   "id": "Q77",
+   "slug": "roll_stoploss",
+   "title": "Roll5 の SL 検証",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/313_q76_q78_stoploss_validation.md"
+   ],
+   "result": "0/4。15pip 固定は 21.7% 発動・IS 4.77→3.50"
+  },
+  {
+   "id": "Q78",
+   "slug": "riskoff_gate",
+   "title": "S&P<SMA200 週の Mon 除外",
+   "cells": 2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/313_q76_q78_stoploss_validation.md"
+   ],
+   "result": "0/2。該当週 +8.0 bps 対 +3.7 でむしろ良い"
   }
  ],
  "runs": [
@@ -1839,6 +1878,30 @@
    "cum_after": 9207,
    "doc": "docs/312",
    "note": "0/6"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q76",
+   "cells": 12,
+   "cum_after": 9219,
+   "doc": "docs/313",
+   "note": "0/12"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q77",
+   "cells": 4,
+   "cum_after": 9223,
+   "doc": "docs/313",
+   "note": "0/4"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q78",
+   "cells": 2,
+   "cum_after": 9225,
+   "doc": "docs/313",
+   "note": "0/2"
   }
  ]
 }
