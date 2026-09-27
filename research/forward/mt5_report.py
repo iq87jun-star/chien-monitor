@@ -28,7 +28,13 @@ def _num(v):
 
 def parse_csv(path):
     """docs/317: VPS エージェント(ops/vps/chien_ops_agent.py)の positions.csv を xlsx と同じ形で返す。"""
-    pos = pd.read_csv(path)
+    cols = ["open_time", "ticket", "symbol", "type", "volume", "open_price", "sl", "tp", "close_time", "close_price", "commission", "swap", "profit", "comment"]
+    try:
+        pos = pd.read_csv(path)
+    except pd.errors.EmptyDataError:
+        pos = pd.DataFrame(columns=cols)
+    for c in cols:
+        if c not in pos.columns: pos[c] = "" if c in ("open_time", "close_time", "ticket", "symbol", "type", "comment") else 0.0
     for c in ("open_time", "close_time"):
         pos[c] = pd.to_datetime(pos[c].astype(str).str.strip(), format="%Y.%m.%d %H:%M:%S", errors="coerce")
     for c in ("volume", "open_price", "sl", "tp", "close_price", "commission", "swap", "profit"):
@@ -43,7 +49,7 @@ def parse_csv(path):
     op = pd.DataFrame(); opp = os.path.join(d, "open_positions.csv")
     if os.path.exists(opp):
         try: op = pd.read_csv(opp)
-        except Exception: op = pd.DataFrame()
+        except Exception: op = pd.DataFrame()   # 空ファイル(建玉なし)も含む
     return {"source": "ops_agent"}, pos, pd.DataFrame(), {"balance": balance}, pd.DataFrame(), op
 
 

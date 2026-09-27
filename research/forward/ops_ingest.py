@@ -16,7 +16,7 @@ LEG_RE = re.compile(r"^RF\w*?(Mon|Hold|Roll|Sess|v4|Tsmom)[A-Za-z]*?_([A-Za-z0-9
 def digest(d):
     acct = os.path.basename(d.rstrip("/\\")); out = dict(account=acct)
     ep = os.path.join(d, "equity_log.csv")
-    if os.path.exists(ep):
+    if os.path.exists(ep) and os.path.getsize(ep) > 0:
         e = pd.read_csv(ep); last = e.iloc[-1]
         out.update(snapshot_utc=str(last.time_utc), balance=float(last.balance), equity=float(last.equity), open_positions=int(last.open_positions), currency=str(last.currency))
         if len(e) > 1: out["equity_24h_change"] = float(last.equity) - float(e[e.time_utc <= (pd.Timestamp(last.time_utc) - pd.Timedelta(hours=24)).strftime("%Y-%m-%d %H:%M:%S")].equity.iloc[-1]) if (e.time_utc <= (pd.Timestamp(last.time_utc) - pd.Timedelta(hours=24)).strftime("%Y-%m-%d %H:%M:%S")).any() else None
@@ -36,12 +36,15 @@ def digest(d):
                 L = pd.DataFrame(legs).groupby(["family", "symbol"]).net.agg(["size", "sum"]).round(2)
                 out["legs_30d"] = {f"{a}/{b}": dict(n=int(n), net=float(s)) for (a, b), (n, s) in L.iterrows()}
     lp = os.path.join(d, "ea_log_extract.csv")
-    if os.path.exists(lp):
-        lg = pd.read_csv(lp)
+    if os.path.exists(lp) and os.path.getsize(lp) > 0:
+        try: lg = pd.read_csv(lp)
+        except pd.errors.EmptyDataError: lg = pd.DataFrame()
         if len(lg):
             out["alerts"] = lg[lg.line.str.contains(r"\[HALT\]|\[BAL GUARD\]|\[DAILY STOP\]|\[EXPIRY\]|\[PROFIT LOCK\]|\[TRAIL|解決できず|SIZE SANITY")].line.tail(10).tolist()
             ini = lg[lg.line.str.contains(r"\[INIT")]
             out["last_init"] = ini.line.iloc[-1][:200] if len(ini) else ""
+            out["ea_names"] = sorted(set(m.group(1) for m in (re.search(r"\t(【[^\t]+?)\s*\(", l) for l in lg.line.astype(str)) if m))   # ログに出た EA 名(端末で動いている EA)
+            out["init_versions"] = sorted(set(re.findall(r"\[INIT [^\]]*?v(\d+\.\d+)\]", " ".join(ini.line.astype(str)))))
             out["entries_3d"] = int(lg.line.str.contains(r"ENTRY\]").sum())
     return out
 
@@ -57,6 +60,7 @@ def main():
     for r in rows:
         print(f"#{r['account']}: eq {r.get('equity', float('nan')):,.0f} (bal {r.get('balance', float('nan')):,.0f}) 建玉 {r.get('open_positions', '-')} | 7日 {r.get('net_7d', '-')} ({r.get('n_7d', '-')} 本) | 30日 {r.get('net_30d', '-')} SL率 {r.get('sl_hit_rate_30d', '-')}% | 3日の建て {r.get('entries_3d', '-')} | 警告 {len(r.get('alerts', []))}")
         for a in r.get("alerts", [])[-3:]: print("   ! " + a[:160])
+        if r.get("ea_names"): print("   EA:", "; ".join(n[:60] for n in r["ea_names"]), "| INIT 版:", ",".join(r.get("init_versions", [])) or "なし")
     for f in res["agent_failures"]: print(f"   × エージェント失敗 #{f.get('account')} {f.get('name')}: {f.get('error')}")
 
 

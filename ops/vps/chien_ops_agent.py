@@ -19,6 +19,8 @@
 """
 import os, sys, json, time, glob, argparse, datetime as dt
 import pandas as pd
+try: sys.stdout.reconfigure(errors="replace")
+except Exception: pass
 
 try:
     import MetaTrader5 as mt5
@@ -31,7 +33,7 @@ DEAL_ENTRY_IN, DEAL_ENTRY_OUT, DEAL_ENTRY_INOUT, DEAL_ENTRY_OUT_BY = 0, 1, 2, 3
 
 
 def ts(v):
-    return dt.datetime.utcfromtimestamp(int(v)).strftime("%Y.%m.%d %H:%M:%S")   # 端末の時刻は「サーバー時刻の Unix 秒」なので utcfromtimestamp でサーバー時刻に戻る
+    return dt.datetime.fromtimestamp(int(v), dt.timezone.utc).strftime("%Y.%m.%d %H:%M:%S")   # 端末の時刻は「サーバー時刻の Unix 秒」なので utcfromtimestamp でサーバー時刻に戻る
 
 
 def build_positions(deals, orders_by_pos):
@@ -65,7 +67,8 @@ def build_positions(deals, orders_by_pos):
         out.append(dict(open_time=ts(r["open_time"]), ticket=r["ticket"], symbol=r["symbol"], type=r["type"], volume=r["volume"], open_price=r["open_price"],
                         sl=r["sl"], tp=r["tp"], close_time=ts(r["close_time"]), close_price=r["close_px_vol"] / r["close_vol"], commission=r["commission"],
                         swap=r["swap"], profit=r["profit"], comment=r["comment"], magic=r["magic"], sl_hit=r["sl_hit"], tp_hit=r.get("tp_hit", False)))
-    df = pd.DataFrame(out)
+    cols = ["open_time", "ticket", "symbol", "type", "volume", "open_price", "sl", "tp", "close_time", "close_price", "commission", "swap", "profit", "comment", "magic", "sl_hit", "tp_hit"]
+    df = pd.DataFrame(out, columns=cols)
     if len(df): df = df.sort_values("open_time")
     return df
 
@@ -95,13 +98,13 @@ def run_terminal(t, since, out_root, log_days):
     if t.get("portable"): kw["portable"] = True
     if not mt5.initialize(**kw):
         err = mt5.last_error(); print(f"[{name}] initialize 失敗 {err}")
-        return dict(account=acct, name=name, ok=False, error=str(err), time=dt.datetime.utcnow().isoformat())
+        return dict(account=acct, name=name, ok=False, error=str(err), time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat())
     try:
         ai = mt5.account_info(); ti = mt5.terminal_info()
         if ai is None or str(ai.login) != acct:
             print(f"[{name}] 口座不一致: 端末 {getattr(ai, 'login', None)} / 設定 {acct}")
-            return dict(account=acct, name=name, ok=False, error="account mismatch", time=dt.datetime.utcnow().isoformat())
-        now = dt.datetime.utcnow()
+            return dict(account=acct, name=name, ok=False, error="account mismatch", time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat())
+        now = dt.datetime.now(dt.timezone.utc).replace(tzinfo=None)
         # 1) 約定 → ポジション
         deals = mt5.history_deals_get(dt.datetime.strptime(since, "%Y-%m-%d"), now + dt.timedelta(days=2)) or []
         pids = sorted({dd.position_id for dd in deals if dd.type in (0, 1)})
@@ -126,6 +129,7 @@ def run_terminal(t, since, out_root, log_days):
         pd.DataFrame([snap]).to_csv(sp, mode="a", header=not os.path.exists(sp), index=False, encoding="utf-8-sig")
         # 4) ログ
         lg = scan_logs(ti.data_path, log_days) if ti is not None else pd.DataFrame()
+        if lg.empty: lg = pd.DataFrame(columns=["file", "line"])
         lg.to_csv(os.path.join(d, "ea_log_extract.csv"), index=False, encoding="utf-8-sig")
         st = dict(account=acct, name=name, ok=True, time=now.isoformat(), balance=ai.balance, equity=ai.equity, open_positions=len(op),
                   closed_positions=int(len(pos)), since=since, data_path=(ti.data_path if ti else ""), log_lines=int(len(lg)),
@@ -205,9 +209,9 @@ def main():
         try:
             status.append(run_terminal(t, cfg.get("since", a.since), out_root, a.log_days))
         except Exception as e:
-            print(f"[{t.get('name')}] 例外 {e!r}"); status.append(dict(account=str(t.get("account")), name=t.get("name"), ok=False, error=repr(e), time=dt.datetime.utcnow().isoformat()))
+            print(f"[{t.get('name')}] 例外 {e!r}"); status.append(dict(account=str(t.get("account")), name=t.get("name"), ok=False, error=repr(e), time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()))
         time.sleep(2)
-    json.dump(dict(generated_utc=dt.datetime.utcnow().isoformat(), agent_version="1.0", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.1", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     ok = sum(1 for s in status if s.get("ok")); print(f"完了 {ok}/{len(status)} 端末 → {out_root}")
 
 
