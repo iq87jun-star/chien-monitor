@@ -41,7 +41,7 @@
 //|    こと(EA初期化のHWMが実態より低いとガードが甘くなる)。          |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.14"
+#property version   "1.15"   // v1.15(2026-09-27): 災害SL 3.0×ATR(docs/313)・指数レッグの NYSE 休場月曜 2027 年分を InpMonSkipDates に既定(docs/304 Q56)
 #property strict
 //| v1.01(Prop版から移植): v4のデータ未同期/発注失敗のバー内再試行・  |
 //|   合議不成立の可視化・Monショット枠の発注前消費修正               |
@@ -98,14 +98,14 @@ input string InpMonHoursUTC   = "4,6,8,10";
 input int    InpMonEntryMinute = 12;     // 各ショットを hh:12 に建てる(24h 後の決済も hh:12)。FN の指標窓(毎正時・30 分 ±5 分)を避ける(docs/310)
 input int    InpMonHoldHours  = 24;
 input int    InpAtrPeriodH1   = 24;
-input double InpCatastropheATR= 2.5;    // 災害SL=2.5×ATR(H1)
+input double InpCatastropheATR= 3.0;    // 災害SL=3.0×ATR(H1)。2026-09-27 ユーザー決定 docs/313 §5 B 案(2.5 → 3.0: 発動 34→27%・5 年 +0.5pt・最悪日 −0.3pt)
 input double InpMinStopPips   = 10.0;
 input double InpMaxSpreadPips = 3.0;
 input string InpMonSpreadCaps = "GBPJPY:2.9,AUDJPY:2.9"; // FXペア別上限(edge20 §3)
 input double InpIdxMaxSpreadBps = 3.0;   // 指数レッグのスプレッド上限(bps。NAS100≈1, US500≈1)
 input int    InpIdxEntryOffsetMin = 8;    // 指数レッグ: 米国現物寄り(13:30夏/14:30冬 UTC)からの遅延分。8 = 13:30 と 13:45 の指標窓(±5 分・FN News Profit Split)を避ける
 input int    InpIdxEntryWindowMin = 60;   // 指数レッグ: 建て試行の窓(分)。窓内で30秒毎に再試行
-input string InpMonSkipDates  = "";      // Mon を建てない日(UTC "2026.10.05,2026.11.02"。FN ニュース規則確認まで高インパクト日を入れる)
+input string InpMonSkipDates  = "2027.01.18,2027.02.15,2027.05.31,2027.07.05,2027.09.06"; // Mon を建てない日(UTC)。既定=NYSE 休場の月曜 2027 年分(指数レッグのみ・docs/304 Q56: 研究は休場日に建てない)。2026 年の残りに該当日なし。2028 年分は要追記
 input bool   InpMonSkipIdxOnly = true;   // true=スキップ日は指数レッグのみ見送り / false=Mon 全レッグ見送り
 
 input group "=== v4 レッグ設定(日足k≥4合議) ==="
@@ -420,7 +420,7 @@ int OnInit()
    PrintFormat("[INIT G v1.14] FXショット分=%d 指数オフセット=%d分(FN 指標窓 ±5 分回避・docs/310)",InpMonEntryMinute,InpIdxEntryOffsetMin);
    PrintFormat("[INIT G v1.10] skipDates='%s' idxOnly=%s idxSpreadCap=%.1fbps",InpMonSkipDates,(InpMonSkipIdxOnly?"true":"false"),InpIdxMaxSpreadBps);
    Print("[NOTE] G構成(docs/298/299)。装着は FN100k #14074882 のギャンブル版切替後のみ(RG3 E-Mon と同一取引回避)。旧 Instant v1.02 の建玉は同 Magic のため引き継いで時間決済。");
-   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.14",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.15",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }

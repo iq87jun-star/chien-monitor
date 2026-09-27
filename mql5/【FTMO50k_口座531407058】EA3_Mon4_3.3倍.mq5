@@ -1,14 +1,14 @@
 //+------------------------------------------------------------------+
-//| ★FTMO 50k 2-Step 口座531407058 EA3: A'(Mon円クロス4本)のみ・2.5倍            |
+//| ★FTMO 50k 2-Step 口座531407058 EA3: A'(Mon円クロス4本)のみ・3.3倍(v1.16・2026-09-27) |
 //|   docs/228/238-239。Hold UK100 除外(スワップ有り)。逆ボラ加重・校正倍率 2.52          |
 //|   Mon: GBPJPY .260/EURJPY .266/AUDJPY .215/USDJPY .258            |
 //|   紙上: 年率(×2.5)≈+12%・最大DD≈−5%・最悪日≈−3.2%。                           |
-//|   ⚠×3.3 では直近12ヶ月 MC 失格 25%(最悪日−4.2%>日次ガード)のため 2.5                 |
+//|   v1.16: 祝日フィルター 4 本適用後の再校正で 2.5→3.3(docs/308 §2・docs/309: 到達↑失格↓)  |
 //|   FTMO: 日次−4%・フロア−9%・P1 ロック 9.9/10.05。Sess 無効                     |
 //|   Magic 944200(既存 C案 943300 と別)。期限 2027-03-31                     |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.15"   // docs/238-239: 2スリーブ汎用版(Mon/v4/Hold + Sess・FOMC日スキップ)
+#property version   "1.16"   // v1.16(2026-09-27): 倍率 3.3(docs/308 §2)・災害SL 3.0×ATR(docs/313)。docs/238-239: 2スリーブ汎用版(Mon/v4/Hold + Sess・FOMC日スキップ)
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
@@ -21,7 +21,7 @@ input group "=== 構成(銘柄:重み CSV。既定=2026-07-30スクリーニン�
 input string InpMonLegs  = "GBPJPY:0.260,EURJPY:0.266,AUDJPY:0.215,USDJPY:0.258"; // Mon: 月曜o2o LONG
 input string InpV4Legs   = "";                          // v4: 未使用
 input string InpHoldLegs = "";                          // Hold: 未使用(スワップ有り口座)
-input double InpMult     = 2.5;   // Mon スリーブ倍率(docs/239)
+input double InpMult     = 3.3;   // Mon スリーブ倍率(2026-09-27 ユーザー決定・docs/308 §2 再校正。旧 2.5 = docs/239)
 
 input group "=== 有効期限(直近特化=賞味期限つき。docs/174停止規則) ==="
 input datetime InpExpiry = D'2027.03.31 23:59';  // 6ヶ月判定(docs/233 §4)
@@ -52,7 +52,7 @@ input group "=== Mon レッグ設定(月曜マルチショット・docs/09系パ
 input string InpMonHoursUTC   = "4,6,8,10";
 input int    InpMonHoldHours  = 24;
 input int    InpAtrPeriodH1   = 24;
-input double InpCatastropheATR= 2.5;    // 災害SL=2.5×ATR(H1)
+input double InpCatastropheATR= 3.0;    // 災害SL=3.0×ATR(H1)。2026-09-27 ユーザー決定 docs/313 §5 B 案(2.5 → 3.0: 発動 34→27%・5 年 +0.5pt・最悪日 −0.3pt)
 input double InpMinStopPips   = 10.0;
 input double InpMaxSpreadPips = 3.0;
 input string InpMonSpreadCaps = "GBPJPY:2.9,EURJPY:2.5,AUDJPY:2.9,USDJPY:2.0";
@@ -345,7 +345,7 @@ int OnInit()
      PrintFormat("[INIT Sess v1.10] legs=%d Σw=%.3f mult=%.1f (グロス想定≈%.1fx・同時最大=20-00UTC窓) spreadCap=%.1fpip minSL=%.0fpip Magic=%I64d",
         g_nSes,ws2,InpSessMult,ws2*InpSessMult,InpSessMaxSpreadPips,InpSessMinStopPips,g_mSes); }
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
-   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.15",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.16",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }

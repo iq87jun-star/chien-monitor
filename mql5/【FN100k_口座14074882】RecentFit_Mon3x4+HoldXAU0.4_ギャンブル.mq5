@@ -1,22 +1,49 @@
 //+------------------------------------------------------------------+
-//| ★Fintokei チャレンジプラン・スイング(swap-free) EA7: Mon 円クロス 4 ×2.0 + Roll 5 ×3.0     |
-//|   docs/276(Q28)。Roll = 水曜 20:00 UTC に円クロス 5 本を SHORT・4h 保有(00:00 UTC 決済)。 |
-//|   根拠 docs/272 §5: NY 17 時のバリューデート繰り上げで高金利通貨が 3 日分の            |
-//|   フォワードポイント分だけ下落する(機械的)。swap-free 口座でのみ成立(通常口座は        |
-//|   スワップで相殺)。Fintokei 書面 docs/220 §8(スイングは swap-free・保有制限なし・違反でない)。|
-//|   門: 政策金利差(base−JPY)≥ InpRollMinCarryPp(1.0pp)。InpRollRates は月次で手更新。        |
-//|   Mon: GBPJPY .260/EURJPY .266/AUDJPY .215/USDJPY .258 ×2.0(4/6/8/10 UTC ショット・24h)   |
-//|   MC(docs/276 §2): 資金化 86.6%・失格 0.3%・中央 216 日・最悪日 −2.5%                    |
-//|   Fintokei スイング規則: 日次 −5%(EA −4% 停止)・全体 −10%・同時保有リスク 3% 警告        |
-//|     → balance 基準 −2.8% で全決済・フロア −9%・P1 ロック 7.9/8.05(P2 移行時 5.9/6.05)     |
-//|   Magic 944600(Mon=+1・Roll=+5)。期限 2027-03-31(再校正日。スイングに期限は無い)          |
-//|   ⚠ Sess スリーブの機構(SYM:方向:建てUTC時:保有h:重み)を Roll レグとして再利用。          |
-//|     docs/249 で無効になった Sess「セル」とは別物(時間帯エッジではなくロールの増分)。       |
+//| ★FN Stellar 100k 2-Step 口座14166201(FundedNext-Server2) 焼き込み版 |
+//|  (docs/182改訂版・2026-08-09購入 $634.99・Swap Free・EAアドオン)      |
+//|  構成(FN適合・FN内銘柄重複ゼロ): Hold UK100 49.1%/WTI 15.3% +      |
+//|   v4 BTCUSD 21.1% + Mon ETHUSD 14.5%                              |
+//|  (research/results/recentfit_nonfx_fn_adapted.json 2026-08-08凍結) |
+//|  倍率1.48・期限2026.10.31・ロック7.9/8.05(FN P1+8%)                |
+//|  P2(+5%)移行時: LockArm=4.9/LockClose=5.05/ProfitStop=5.1/         |
+//|                 InpBaselineReset=true(1回だけ・その後false)         |
+//|  ⚠必須条件: Swap-Free口座で購入(+10%)+EA使用料$30。Hold65%=連続保有 |
+//|  ⚠Hold WTIはマイナス価格級の尾(2020-04)を持つ。災害SL15%+日次ガード |
+//|    で切断するがギャップは飛び越え得る(docs/182 §リスク)             |
+//|  ⚠GER40/JP225/US500/NAS100/XAUUSDはFN内他口座(Instant EMon-E5/     |
+//|    季節RG3)との同一取引回避のため選抜段階で除外済み(7/31書面基準)   |
+//|  ⚠本焼き込み限定コード変更: PipOf()を非FX対応(point×10)に修正       |
+//|      Chien_RecentFit_2026H2_Prop — 直近特化トラック v1.0          |
+//|            (docs/174 設計・事前登録 / docs/175 計測結果)           |
+//|                                                                   |
+//|  ★このEAは「正攻法」(10年検証・LOYO・docs/172の稼働体制)とは別の   |
+//|    明示的なEVベット: 直近12/6ヶ月だけで伸びているセルを事前固定    |
+//|    ルールで選抜した構成。耐久エッジの主張はしない。               |
+//|    直近レジームが数ヶ月続けばチャレンジを高速通過できる、に張る。 |
+//|                                                                   |
+//|  構成(recentfit_screen.py 2026-07-30凍結・docs/175):              |
+//|    Mon  GBPJPY 34.8% / AUDJPY 29.9%  (月曜o2o LONG・24h)          |
+//|    v4   USDJPY 28.3%                 (日足k≥4合議・SL/TP付き)     |
+//|    Hold JP225   7.0%                 (連続LONG・災害SLのみ)       |
+//|    倍率: 標準4.8x / 速攻7.2x(.set) — 直近12ヶ月窓のガード逆算値   |
+//|                                                                   |
+//|  数字(docs/175・楽観/悲観の両バウンド併記が本トラックの規律):     |
+//|    直近12ヶ月サンプル: 資金化到達99.9%・中央68日(標準4.8x)        |
+//|    全期間サンプル:     資金化到達65.2%・失格24.8%(同)             |
+//|    →真値はこの間のどこか。直近寄りに賭けるのが本トラックの本質。  |
+//|                                                                   |
+//|  停止規則(docs/174 事前登録・変更はdocsの追記で):                 |
+//|    ・有効期限(既定2026-10-31)を過ぎたら新規停止=再スクリーニング  |
+//|      必須(同じ固定ルールを再実行して構成を入れ替える)             |
+//|    ・チャレンジ失格2回でトラック撤退(费用予算の上限)              |
+//|  ⚠ 正攻法稼働口座とは別口座・できれば別業者で(重複取引規則)。     |
+//|     GBPJPY月曜LONGはFTMO PD口座のv7と同一日・同方向になり得る。   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.25"    // v1.25(2026-09-27): 災害SL 3.0×ATR(docs/313)・2026.09.30 のロール除外を解除(docs/308: 年末年始と同じく n=13 で機会損失側)。速攻プロ #6078225 ギャンブル版(2026-09-24): Mon2 ×10 + Roll5 ×20・−3%/日次−2%/日次利益上限3% の土俵。期限 10/13。通常口座=スワップ費用込み(合格 約 2 割・失格 約 8 割の賭け)
+#property version   "1.09"    // v1.09(2026-09-27): 倍率 5→4(docs/309 倍率スイープ: 到達・失格とも改善)・災害SL 3.0×ATR(docs/313)。2026-09-25 ギャンブル版: Mon3 円クロス ×5 + Hold XAUUSD ×0.5。季節RG3 を置換(ユーザー決定「落としても良いのでリスクを取る」)   // 1.03: InpInitialBalance 既定を 100000 に固定(2026-09-24 の誤 PASS_LOCK 再発防止・docs/241 §1d)
 #property strict
-#property description "[EA7g Fintokei Sokko-Pro GAMBLE] Mon2 x10 + Roll5 x20 (Wed 20:00 UTC short 4h). Normal account (swap cost accepted). Target +6% before -3%/daily -2%. Balance guard -2.8 tick, floor -9, P1 lock 8.05 (P2 6.05)."
+#property description "[FN #14074882 GAMBLE v1.09] Mon3 EURJPY/USDJPY/NZDJPY x4 + Hold XAUUSD x0.4. Target +8% (108,000) before -10% (90,000). Replaces Seasonal RG3."
+//#property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
 #include <Trade/Trade.mqh>
 #include <Trade/PositionInfo.mqh>
@@ -24,44 +51,45 @@
 input bool   InpAcknowledgeBet  = true;   // 本トラック=直近過剰適合の明示ベット(docs/174)を承認
 
 input group "=== 構成(銘柄:重み CSV。既定=2026-07-30スクリーニング凍結値) ==="
-input string InpMonLegs  = "GBPJPY:0.5,AUDJPY:0.5";   // Mon2: 月曜 LONG(ギャンブル版・MC で最良)
-input string InpV4Legs   = "";                          // v4: 未使用
-input string InpHoldLegs = "";                          // Hold: 未使用(スワップ有り口座)
-input double InpMult     = 10.0;  // Mon 倍率(MC の最適 ×10。日中の −1.9% 停止と +3% 上限の競争)
+input string InpMonLegs  = "EURJPY:0.333,USDJPY:0.333,NZDJPY:0.334"; // Mon3: 月曜o2o LONG(FN 内重複回避: GBPJPY/AUDJPY は Instant と重なるので除外)
+input string InpV4Legs   = "";                          // v4: 不使用
+input string InpHoldLegs = "XAUUSD:0.10";               // Hold XAUUSD 0.10×4 = 名目 0.4 倍(docs/309 のスイープと同じ比率)(連続LONG・swap-free でないので金融費用あり)
+input double InpMult     = 4.0;    // 倍率(2026-09-27 ユーザー決定・docs/309: ×5→×4 で到達 上昇・失格 低下。旧 ×5 = docs/292)
 
 input group "=== 有効期限(直近特化=賞味期限つき。docs/174停止規則) ==="
-input datetime InpExpiry = D'2026.10.13 23:59';  // 速攻プロ期限
+input datetime InpExpiry = D'2026.12.31 23:59';  // FN P1 に期限なし。年末に再判断
 
 input group "=== 口座/ガード ==="
-input double InpInitialBalance   = 20000000.0; // 速攻プロの初期残高(−3% 静的ラインの基準)
+input double InpInitialBalance   = 100000.0; // 口座初期残高を固定(0=自動は端末変更で基準がずれる。docs/241 §1d)
 input bool   InpBaselineReset    = false; // 新フェーズ開始時のみtrue=基準残高を取り直す
-input double InpMaxLossLimitPct  = 3.0;   // 速攻プロ 失格ライン(初期残高 −3% 静的)
-input double InpAccountFloorDDPct= 2.9;   // 全停止ライン(−3% の手前)
-input double InpDailyStopPct     = 1.9;   // 日次 equity −1.9% で当日停止(規約 −2% の手前)
+input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%(FN Stellar=静的10%)
+input double InpAccountFloorDDPct= 9.7;   // 全停止ライン(90,300。FN 静的 −10% = 90,000 の直前。落としてよい口座)
+input double InpDailyStopPct     = 4.0;   // 日次equity−この%で当日新規停止(規約−5%手前)
 
 input group "=== v1.44 balance基準日次ガード(docs/170/171) ==="
-input double InpBalGuardPct      = 0.0;   // ギャンブル版: 残高ガード無効(0)。日次停止 1.9% のみ(Fintokei 同時保有リスク 3% 警告の内側)
+input double InpBalGuardPct      = 4.0;   // equity≤日開始balance−この%で全決済+当日停止(0=無効)
 input int    InpBalGuardMaxMonth = 2;     // 月内発動上限(超過は月末まで新規停止)
 
-input group "=== 利益ロック(Fintokei スイング P1=+8%。P2(+6%)移行時は 5.9/6.05/6.1 に変更・InpBaselineReset=true を1回) ==="
+input group "=== 利益ロック(FN Stellar P1=+8%。P2は5.05/4.9に変更) ==="
 input bool   InpProfitLockEnable = true;
-input double InpLockArmPct    = 5.9;   // equity+この%で新規停止(速攻プロ 目標 +6%)
-input double InpLockClosePct  = 6.05;  // equity+この%で全決済し恒久ロック(PASS_LOCK)
-input double InpProfitStopPct = 6.1;   // +この%で新規停止(保険)
+input double InpLockArmPct    = 7.9;   // equity+この%で新規停止
+input double InpLockClosePct  = 8.05;  // equity+この%で全決済し恒久ロック(PASS_LOCK)
+input double InpProfitStopPct = 8.1;   // +この%で新規停止(保険)
 
 input group "=== プッシュ通知(docs/112) ==="
 input bool   InpNotifyEnable     = true;
 input bool   InpNotifyEntries    = true;
-input double InpNotifyDayWarnPct = 1.5;   // 日次−この%で警告
+input double InpNotifyDayWarnPct = 3.0;   // 日次−この%で警告
 
 input group "=== Mon レッグ設定(月曜マルチショット・docs/09系パリティ) ==="
 input string InpMonHoursUTC   = "4,6,8,10";
+input int    InpMonEntryMinute = 12;     // 各ショットを hh:12 に建てる(24h 後の決済も hh:12)。FN の指標窓(毎正時・30 分 ±5 分)を避ける(docs/310)
 input int    InpMonHoldHours  = 24;
 input int    InpAtrPeriodH1   = 24;
 input double InpCatastropheATR= 3.0;    // 災害SL=3.0×ATR(H1)。2026-09-27 ユーザー決定 docs/313 §5 B 案(2.5 → 3.0: 発動 34→27%・5 年 +0.5pt・最悪日 −0.3pt)
 input double InpMinStopPips   = 10.0;
 input double InpMaxSpreadPips = 3.0;
-input string InpMonSpreadCaps = "GBPJPY:2.9,EURJPY:2.5,AUDJPY:2.9,USDJPY:2.0";
+input string InpMonSpreadCaps = "";                     // 円クロスは InpMaxSpreadPips(3.0)で判定
 
 input group "=== v4 レッグ設定(日足k≥4合議) ==="
 input int    InpV4_RSI       = 14;
@@ -78,20 +106,9 @@ input int    InpV4_MaxHoldDays= 8;
 input bool   InpV4AllowShort = true;
 
 input group "=== Hold レッグ設定(連続LONG) ==="
-input bool   InpHoldEnable    = false;
+input bool   InpHoldEnable    = true;   // false=Holdレッグ停止(手決済を維持したい時もfalseに)
 input double InpHoldCatSLPct  = 15.0;   // 災害SL: 建値−この%(研究はSLなし・保険のみ)
 input double InpHoldMaxSpreadPts = 3000.0;
-
-input group "=== 時間帯セル Sess(docs/233-235・v1.10) ==="
-input bool   InpSessEnable        = true;
-input string InpSessLegs          = "USDJPY:S:20:4:0.2,EURJPY:S:20:4:0.2,GBPJPY:S:20:4:0.2,AUDJPY:S:20:4:0.2,CADJPY:S:20:4:0.2"; // Roll: SYM:方向:建てUTC時:保有h:重み(docs/276 §1)
-input double InpSessMult          = 20.0;  // Roll 倍率(ギャンブル版 MC の最適 ×20。4 時間窓なので上限到達 43% / 停止 22%)
-input double InpSessMaxSpreadPips = 3.0;   // 建て時スプレッド上限(pip・円クロス)。超過は見送り
-input double InpSessMinStopPips   = 15.0;  // 災害SL最小幅(21 UTC のスプレッド拡大を内側で受ける)
-input string InpSessSkipDates     = "2026.12.30,2027.03.31,2027.06.30"; // Roll を建てない日(UTC)。2026.09.30 は解除(2026-09-27 ユーザー決定・docs/308)。月末最終 JP 営業日の水曜(docs/305 Q61: 平均 −2.9 bps・n=13)。2027 下期以降は要追記
-input string InpSessDaysUTC       = "3";   // Roll を建てる曜日(UTC day_of_week: 0=日…3=水・CSV)。水曜のみ = 3 日分ロール
-input string InpRollRates         = "USD:3.75,JPY:0.75,EUR:2.00,GBP:3.75,AUD:3.60,CAD:2.25,CHF:0.00,NZD:2.25"; // 政策金利(%)・月次で手更新(docs/265 の表)
-input double InpRollMinCarryPp    = 1.0;   // 門: SHORT レグは carry(base−quote)≥ この pp、LONG レグは ≤ −この pp のときだけ建てる
 
 input group "=== 防御フィルタ(docs/148) ==="
 input bool   InpHolidayFilterEnable = true; // 12/20〜1/3は新規停止
@@ -102,7 +119,7 @@ input string InpAuNzHolidayMondays = "2026.10.05,2026.10.26,2026.12.28,2027.01.0
 input group "=== 共通 ==="
 input double InpMinLot = 0.01;
 input double InpMaxLot = 50.0;
-input long   InpMagicBase = 944600;  // Mon=+1/v4=+2/Hold=+3/Roll=+5(既存EAと衝突しない基底)
+input long   InpMagicBase = 943800;  // Mon=+1/v4=+2/Hold=+3(季節RG3 940900 と別)
 input int    InpSlippagePoints = 30;
 input bool   InpVerboseLog = true;
 
@@ -114,8 +131,6 @@ CPositionInfo posinfo;
 string  g_monSym[MAXLEG];  double g_monW[MAXLEG];  int g_nMon=0;
 string  g_v4Sym[MAXLEG];   double g_v4W[MAXLEG];   int g_nV4=0;
 string  g_holdSym[MAXLEG]; double g_holdW[MAXLEG]; int g_nHold=0;
-string  g_sesSym[MAXLEG]; bool g_sesShort[MAXLEG]; int g_sesH0[MAXLEG]; int g_sesSpan[MAXLEG]; double g_sesW[MAXLEG]; int g_nSes=0;   // v1.10
-int      g_atrH1Ses[MAXLEG]; datetime g_lastSes[MAXLEG]; datetime g_sesSkip[MAXLEG];
 int     g_monHours[]; int g_atrH1[MAXLEG]; int g_atrD1[MAXLEG]; int g_rsiD1[MAXLEG];
 datetime g_lastShotMon[MAXLEG*8];
 datetime g_lastV4Bar[MAXLEG];
@@ -128,7 +143,7 @@ bool     g_balMonthHalt=false;
 bool     g_halted=false, g_dayBlocked=false, g_passLocked=false, g_expired=false;
 string   g_ntfBuf=""; bool g_ntfArm=false; datetime g_ntfWarnDay=0;
 string   g_gvName="";
-long     g_mMon=0, g_mV4=0, g_mHold=0, g_mSes=0;
+long     g_mMon=0, g_mV4=0, g_mHold=0;
 string   g_sizeWarned="";
 
 //==================================================================
@@ -178,23 +193,6 @@ string ResolveSymbol(string want)
 }
 
 // "SYM:w,SYM:w" をパースし銘柄解決
-// v1.10: "SYM:S|L:H0:SPAN:W"
-int ParseSessLegs(string csv)
-{
-   string parts[]; int n=StringSplit(csv,',',parts); int k=0;
-   for(int i=0;i<n && k<MAXLEG;i++){
-      string kv[]; if(StringSplit(parts[i],':',kv)!=5) continue;
-      string sym=kv[0]; StringTrimLeft(sym); StringTrimRight(sym);
-      string d=kv[1]; StringTrimLeft(d); StringTrimRight(d); StringToUpper(d);
-      int h0=(int)StringToInteger(kv[2]); int span=(int)StringToInteger(kv[3]); double w=StringToDouble(kv[4]);
-      if(StringLen(sym)==0 || (d!="S" && d!="L") || h0<0 || h0>23 || span<1 || span>23 || w<=0){ PrintFormat("⚠ Sess: 書式不正 '%s'",parts[i]); continue; }
-      string r=ResolveSymbol(sym);
-      if(r==""){ PrintFormat("⚠ Sess: 銘柄'%s'を解決できず→スキップ",sym); continue; }
-      if(r!=sym) PrintFormat("[銘柄解決] Sess %s → %s",sym,r);
-      g_sesSym[k]=r; g_sesShort[k]=(d=="S"); g_sesH0[k]=h0; g_sesSpan[k]=span; g_sesW[k]=w; k++;
-   }
-   return k;
-}
 int ParseLegs(string csv, string &syms[], double &ws[], string label)
 {
    string parts[]; int n=StringSplit(csv,',',parts); int k=0;
@@ -265,7 +263,7 @@ int CountPos(string sym, long magic){
       if(posinfo.Symbol()==sym && posinfo.Magic()==magic) n++; }
    return n;
 }
-bool IsMine(long m){ return (m==g_mMon||m==g_mV4||m==g_mHold||m==g_mSes); }
+bool IsMine(long m){ return (m==g_mMon||m==g_mV4||m==g_mHold); }
 void CloseAllMine(string why){
    for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
       if(!posinfo.SelectByTicket(tk)) continue;
@@ -314,13 +312,12 @@ int OnInit()
    g_nMon =ParseLegs(InpMonLegs, g_monSym, g_monW, "Mon");
    g_nV4  =ParseLegs(InpV4Legs,  g_v4Sym,  g_v4W,  "v4");
    g_nHold=(InpHoldEnable? ParseLegs(InpHoldLegs,g_holdSym,g_holdW,"Hold") : 0);
-   g_nSes =(InpSessEnable? ParseSessLegs(InpSessLegs) : 0);
    int nh=SplitHours(InpMonHoursUTC,g_monHours);
    if(nh>8){ ArrayResize(g_monHours,8); nh=8;                       // v1.02: g_lastShotMon[MAXLEG*8]の範囲保護
       Print("⚠ Mon時刻は最大8個まで→先頭8個のみ使用"); }
-   if(g_nMon==0 && g_nV4==0 && g_nHold==0 && g_nSes==0){ Print("レッグが1つも解決できず"); return INIT_FAILED; }
+   if(g_nMon==0 && g_nV4==0 && g_nHold==0){ Print("レッグが1つも解決できず"); return INIT_FAILED; }
    if(g_nMon>0 && nh==0){ Print("Mon時刻のパース失敗"); return INIT_FAILED; }
-   g_mMon=InpMagicBase+1; g_mV4=InpMagicBase+2; g_mHold=InpMagicBase+3; g_mSes=InpMagicBase+5;
+   g_mMon=InpMagicBase+1; g_mV4=InpMagicBase+2; g_mHold=InpMagicBase+3;
 
    g_gvName=StringFormat("ChienRF_base_%I64d_%I64d",
                          (long)AccountInfoInteger(ACCOUNT_LOGIN),(long)InpMagicBase);
@@ -341,8 +338,6 @@ int OnInit()
       g_atrD1[i]=iATR(g_v4Sym[i],PERIOD_D1,InpV4_ATR);
       g_rsiD1[i]=iRSI(g_v4Sym[i],PERIOD_D1,InpV4_RSI,PRICE_CLOSE); }
    ArrayInitialize(g_lastShotMon,0); ArrayInitialize(g_lastV4Bar,0); ArrayInitialize(g_lastHoldTry,0);
-   for(int i=0;i<g_nSes;i++) g_atrH1Ses[i]=iATR(g_sesSym[i],PERIOD_H1,InpAtrPeriodH1);
-   ArrayInitialize(g_lastSes,0); ArrayInitialize(g_sesSkip,0);
    trade.SetDeviationInPoints(InpSlippagePoints);
    RestoreOrResetDay();
    double wsum=0; for(int i=0;i<g_nMon;i++) wsum+=g_monW[i];
@@ -350,18 +345,15 @@ int OnInit()
    for(int i=0;i<g_nHold;i++) wsum+=g_holdW[i];
    PrintFormat("[INIT RecentFit] initBal=%.0f mult=%.1f Σw=%.3f (グロス想定≈%.1fx) expiry=%s Magic=%I64d/%I64d/%I64d",
       g_initBal,InpMult,wsum,wsum*InpMult,TimeToString(InpExpiry,TIME_DATE),g_mMon,g_mV4,g_mHold);
-   { double ws2=0; for(int i=0;i<g_nSes;i++) ws2+=g_sesW[i];
-     PrintFormat("[INIT Sess v1.10] legs=%d Σw=%.3f mult=%.1f (グロス想定≈%.1fx・同時最大=20-00UTC窓) spreadCap=%.1fpip minSL=%.0fpip Magic=%I64d",
-        g_nSes,ws2,InpSessMult,ws2*InpSessMult,InpSessMaxSpreadPips,InpSessMinStopPips,g_mSes); }
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
-   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.25",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.09",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
+   PrintFormat("[INIT v1.09] Mon ショット分=%d(FN 指標窓 ±5 分回避・docs/310)",InpMonEntryMinute);
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }
 void OnDeinit(const int reason){
    EventKillTimer();
    for(int i=0;i<g_nMon;i++) if(g_atrH1[i]!=INVALID_HANDLE) IndicatorRelease(g_atrH1[i]);
-   for(int i=0;i<g_nSes;i++) if(g_atrH1Ses[i]!=INVALID_HANDLE) IndicatorRelease(g_atrH1Ses[i]);
    for(int i=0;i<g_nV4;i++){ if(g_atrD1[i]!=INVALID_HANDLE) IndicatorRelease(g_atrD1[i]);
       if(g_rsiD1[i]!=INVALID_HANDLE) IndicatorRelease(g_rsiD1[i]); }
 }
@@ -487,7 +479,6 @@ void OnTimer()
    }
 
    ManageMonExit();
-   ManageSessExit();
    ManageV4Exit();
 
    bool blockNew = (InpProfitStopPct>0 && equity>=g_initBal*(1.0+InpProfitStopPct/100.0))
@@ -497,7 +488,6 @@ void OnTimer()
    if(blockNew) return;
 
    EntriesMon(utc);
-   EntriesSess(utc);
    EntriesV4();
    EntriesHold();
 }
@@ -520,7 +510,7 @@ void EntriesMon(datetime utc)
    if(u.day_of_week!=1) return;
    if(HolidayBlocked(utc)) return;
    int slot=-1; for(int h=0;h<ArraySize(g_monHours);h++) if(u.hour==g_monHours[h]){ slot=h; break; }
-   if(slot<0) return;
+   if(slot<0 || u.min<InpMonEntryMinute) return;   // v1.08: hh:InpMonEntryMinute 以降に建てる(FN 指標窓回避・docs/310)
    datetime hourBar=utc-(utc%3600); int nh=ArraySize(g_monHours);
    trade.SetExpertMagicNumber(g_mMon);
    for(int s=0;s<g_nMon;s++){
@@ -545,82 +535,6 @@ void EntriesMon(datetime utc)
            if(InpVerboseLog) PrintFormat("[Mon ENTRY] LONG %s h%dUTC lots=%.2f notional=%.0f SL=%.3f",sym,g_monHours[slot],lots,notional,sl);
            if(InpNotifyEntries) Notify(StringFormat("IN Mon %s %.2f",sym,lots)); }
       else PrintFormat("[Mon RETRY] %s h%d 発注失敗ret=%d(同時間帯内で再試行)",sym,g_monHours[slot],(int)trade.ResultRetcode());
-   }
-}
-
-//===== Roll (v1.20: Sess スリーブ再利用。InpSessDaysUTC の曜日・建てUTC時に1本・保有h後に決済。金利差門付き。docs/276) =====
-double RateOf(string ccy)
-{
-   string parts[]; int n=StringSplit(InpRollRates,',',parts);
-   for(int i=0;i<n;i++){ string kv[]; if(StringSplit(parts[i],':',kv)==2 && kv[0]==ccy) return StringToDouble(kv[1]); }
-   return -999.0;   // 未定義
-}
-double CarryPp(string sym)
-{
-   string b=StringSubstr(sym,0,3), q=StringSubstr(sym,3,3); double rb=RateOf(b), rq=RateOf(q);
-   if(rb<=-999.0 || rq<=-999.0) return -999.0;
-   return rb-rq;
-}
-bool DayAllowed(int dow)
-{
-   if(StringLen(InpSessDaysUTC)==0) return (dow>=1 && dow<=4);
-   string parts[]; int n=StringSplit(InpSessDaysUTC,',',parts);
-   for(int i=0;i<n;i++) if((int)StringToInteger(parts[i])==dow) return true;
-   return false;
-}
-void ManageSessExit()
-{
-   for(int i=PositionsTotal()-1;i>=0;i--){ ulong tk=PositionGetTicket(i); if(tk==0) continue;
-      if(!posinfo.SelectByTicket(tk)) continue;
-      if(posinfo.Magic()!=g_mSes) continue;
-      string c=posinfo.Comment(); int p=StringFind(c,"_h"); int h0=(p>=0? (int)StringToInteger(StringSubstr(c,p+2)) : -1);
-      int span=4;
-      for(int s=0;s<g_nSes;s++) if(g_sesSym[s]==posinfo.Symbol() && g_sesH0[s]==h0){ span=g_sesSpan[s]; break; }
-      int held=(int)(TimeCurrent()-(datetime)posinfo.Time());
-      if(held>=span*3600){ if(trade.PositionClose(tk)&&InpVerboseLog) PrintFormat("[Roll TIME EXIT] %s h%d",posinfo.Symbol(),h0); }
-   }
-}
-void EntriesSess(datetime utc)
-{
-   if(g_nSes==0) return;
-   MqlDateTime u; TimeToStruct(utc,u);
-   if(!DayAllowed(u.day_of_week)) return;                  // v1.20: InpSessDaysUTC(既定 水曜のみ)
-   if(HolidayBlocked(utc)) return;
-   { string today=StringFormat("%04d.%02d.%02d",u.year,u.mon,u.day);
-     if(StringLen(InpSessSkipDates)>0 && StringFind(InpSessSkipDates,today)>=0) return; }   // v1.12: FOMC 等の指定日は建てない
-   datetime hourBar=utc-(utc%3600);
-   trade.SetExpertMagicNumber(g_mSes);
-   for(int s=0;s<g_nSes;s++){
-      if(u.hour!=g_sesH0[s]) continue;
-      if(g_atrH1Ses[s]==INVALID_HANDLE) continue;
-      if(g_lastSes[s]==hourBar) continue;
-      string sym=g_sesSym[s]; double pip=PipOf(sym); bool sh=g_sesShort[s]; string side=(sh?"SHORT":"LONG");
-      if(CountPos(sym,g_mSes)>0) continue;                 // 同一銘柄の Roll 建玉が残っていれば建てない
-      { double cy=CarryPp(sym);                              // v1.20: 金利差門
-        bool gateOK=(cy>-999.0) && (sh ? (cy>=InpRollMinCarryPp) : (cy<=-InpRollMinCarryPp));
-        if(!gateOK){ if(g_sesSkip[s]!=hourBar){ g_sesSkip[s]=hourBar; PrintFormat("[Roll SKIP gate] %s carry=%.2fpp 門=%.2f",sym,cy,InpRollMinCarryPp); } g_lastSes[s]=hourBar; continue; } }
-      double atr=AtrAt(g_atrH1Ses[s]); if(atr<=0) continue;
-      double sd=InpCatastropheATR*atr; double sp=sd/pip;
-      if(sp<InpSessMinStopPips){ sp=InpSessMinStopPips; sd=sp*pip; }
-      double ask=SymbolInfoDouble(sym,SYMBOL_ASK), bid=SymbolInfoDouble(sym,SYMBOL_BID);
-      if(ask<=0||bid<=0) continue;
-      double spr=(ask-bid)/pip;
-      if(spr>InpSessMaxSpreadPips){
-         if(g_sesSkip[s]!=hourBar){ g_sesSkip[s]=hourBar;
-            PrintFormat("[Roll SKIP spread] %s h%dUTC spread=%.2fpip > cap=%.2f",sym,g_sesH0[s],spr,InpSessMaxSpreadPips); }
-         continue;                                          // 同時間帯内で 30 秒毎に再試行
-      }
-      double notional=g_initBal*g_sesW[s]*InpSessMult;
-      double lots=LotsForNotional(sym,notional); if(lots<InpMinLot){ g_lastSes[s]=hourBar; continue; }
-      int dg=(int)SymbolInfoInteger(sym,SYMBOL_DIGITS);
-      string cmt=StringFormat("RFRoll_%s_h%d",sym,g_sesH0[s]);
-      bool ok; double sl;
-      if(sh){ sl=NormalizeDouble(bid+sd,dg); ok=trade.Sell(lots,sym,0.0,sl,0.0,cmt); }
-      else  { sl=NormalizeDouble(ask-sd,dg); ok=trade.Buy (lots,sym,0.0,sl,0.0,cmt); }
-      if(ok){ g_lastSes[s]=hourBar;
-              if(InpVerboseLog) PrintFormat("[Roll ENTRY] %s %s h%dUTC +%dh lots=%.2f notional=%.0f spread=%.2fpip SL=%.5f",side,sym,g_sesH0[s],g_sesSpan[s],lots,notional,spr,sl);
-              if(InpNotifyEntries) Notify(StringFormat("IN Roll %s %s %.2f",side,sym,lots)); }
-      else PrintFormat("[Roll RETRY] %s h%d 発注失敗ret=%d",sym,g_sesH0[s],(int)trade.ResultRetcode());
    }
 }
 

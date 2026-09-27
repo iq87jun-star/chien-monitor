@@ -10,7 +10,7 @@
 //|   FOMC 決定日は Sess を建てない(InpSessSkipDates・2027年分は要更新)               |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.33"   // EA8: Mon4 ×3.3 + GER40 ブレイク ×2.0(docs/297)
+#property version   "1.34"   // v1.34(2026-09-27): 災害SL 3.0×ATR(docs/313)。EA8: Mon4 ×3.3 + GER40 ブレイク ×2.0(docs/297)
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 
@@ -54,7 +54,7 @@ input group "=== Mon レッグ設定(月曜マルチショット・docs/09系パ
 input string InpMonHoursUTC   = "4,6,8,10";
 input int    InpMonHoldHours  = 24;
 input int    InpAtrPeriodH1   = 24;
-input double InpCatastropheATR= 2.5;    // 災害SL=2.5×ATR(H1)
+input double InpCatastropheATR= 3.0;    // 災害SL=3.0×ATR(H1)。2026-09-27 ユーザー決定 docs/313 §5 B 案(2.5 → 3.0: 発動 34→27%・5 年 +0.5pt・最悪日 −0.3pt)
 input double InpMinStopPips   = 10.0;
 input double InpMaxSpreadPips = 3.0;
 input string InpMonSpreadCaps = "GBPJPY:2.9,EURJPY:2.5,AUDJPY:2.9,USDJPY:2.0";
@@ -367,7 +367,7 @@ int OnInit()
       PrintFormat("[INIT Brk v1.30] %s N=%d trail=%.1fATR maxH=%d 名目=%.0f (重み %.2f × 倍率 %.1f) spreadCap=%.1fpt Magic=%I64d 建玉=%d",
          g_brkSym,InpBrkN,InpBrkAtrTrail,InpBrkMaxHours,g_initBal*InpBrkWeight*InpBrkMult,InpBrkWeight,InpBrkMult,InpBrkMaxSpreadPts,g_mBrk,CountPos(g_brkSym,g_mBrk)); }
    Print("[NOTE] 直近特化トラック(docs/174/175)。正攻法口座とは別口座・別業者推奨。期限後は新規停止=再スクリーニング必須。");
-   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.33",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
+   PrintFormat("[INIT JpHoliday v%s] 祝日月曜スキップ='%s' jpyOnly=%s 豪NZ='%s'(docs/303/304)","1.34",InpJpHolidayMondays,(InpJpHolidayJpyOnly?"true":"false"),InpAuNzHolidayMondays);
    EventSetTimer(30);
    return INIT_SUCCEEDED;
 }
