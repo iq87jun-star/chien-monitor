@@ -374,13 +374,13 @@
    "slug": "roll_leg_fintokei_swing",
    "title": "ロール捕捉レグ(swap-free)— Fintokei スイングで Mon 4 と併走・EA7",
    "cells": 0,
-   "status": "in_progress",
+   "status": "done",
    "sessions_planned": 3,
    "sessions_done": 1,
    "docs": [
     "docs/276_q28_roll_leg_fintokei_swing.md"
    ],
-   "result": "MC: Mon4 ×2.0 + Roll ×3 → 資金化 86.6% / 失格 0.3% / 中央 216 日。EA7 作成中"
+   "result": "MC: Mon4 ×2.0 + Roll ×3 → 資金化 86.6% / 失格 0.3% / 中央 216 日。EA7 作成中 → EA7 v1.20(docs/276)・EA7g v1.25(#6078225 稼働)・#14166201 v1.31 に Roll5 を実装済み(2026-09-27 台帳整理で done)"
   },
   {
    "id": "Q29",
@@ -1965,6 +1965,15 @@
    "cum_after": 9607,
    "doc": "docs/315",
    "note": "0/2(不採用)"
+  },
+  {
+   "date": "2026-09-28",
+   "item": "Q28",
+   "cells": 0,
+   "cum_after": 9607,
+   "doc": "docs/276",
+   "note": "EA7/EA7g 実装済みのため done に整理(セル加算なし)",
+   "manual": true
   }
  ]
 }
