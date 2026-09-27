@@ -1,4 +1,4 @@
-# chien 運用エージェントの VPS 初回セットアップ(docs/317 §2 を 1 コマンドに)— 管理者 PowerShell で:
+# chien 運用エージェントの VPS 初回セットアップ(docs/317 §2 を 1 コマンドに)— 管理者権限は不要(v4):
 #   powershell -ExecutionPolicy Bypass -File setup.ps1 [-DriveRoot "G:\マイドライブ\chien_ops"] [-SkipPython]
 # やること: Python 3.11(winget)→ pip(MetaTrader5, pandas)→ terminals.json の雛形生成(無ければ)→ MT5 端末の自動検出を表示
 #          → 手動 1 回実行 → 毎時タスク登録。terminals.json の path/login/password は最後に手で確認・記入する。
@@ -14,7 +14,7 @@ if (-not $SkipPython) {
     Write-Host "Python 3.11 を公式サイトから導入(winget 不要)"
     $url = "https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe"; $f = Join-Path $env:TEMP "python-3.11.9-amd64.exe"
     Invoke-WebRequest $url -OutFile $f
-    Start-Process -Wait -FilePath $f -ArgumentList "/quiet","InstallAllUsers=1","PrependPath=1","Include_test=0"
+    Start-Process -Wait -FilePath $f -ArgumentList "/quiet","InstallAllUsers=0","PrependPath=1","Include_test=0"
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
   }
 }
@@ -46,5 +46,5 @@ Step "5. 手動 1 回実行(端末ごとに ok が出るか)"
 Write-Host "→ 失敗した端末があれば terminals.json を直して再実行: python chien_ops_agent.py --config terminals.json"
 
 Step "6. 毎時タスク登録"
-& powershell -ExecutionPolicy Bypass -File (Join-Path $here "install_task.ps1")
+& (Join-Path $here "install_task.ps1")
 Write-Host "`n完了。Drive の chien_ops\<口座>\ に CSV が出ていれば、チャットで「エージェント稼働」と一言。" -ForegroundColor Green
