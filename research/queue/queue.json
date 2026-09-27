@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9225,
+ "cumulative_cells": 9605,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1067,6 +1067,32 @@
     "docs/313_q76_q78_stoploss_validation.md"
    ],
    "result": "0/2。該当週 +8.0 bps 対 +3.7 でむしろ良い"
+  },
+  {
+   "id": "Q79",
+   "slug": "h1_oscillators",
+   "title": "H1 オシレーター(RSI/BB/Stoch/CCI × 逆張り・追随 × 4h/24h)",
+   "cells": 304,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/314_q79_q80_h1_technical_closure.md"
+   ],
+   "result": "0/304(p<0.05 1・期待 15)。16 区分すべて IS 平均負。粗利 0 でコストのみ残る"
+  },
+  {
+   "id": "Q80",
+   "slug": "h1_trend_ichimoku_adx",
+   "title": "H1 一目・ADX トレンド(L/S・24h)",
+   "cells": 76,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/314_q79_q80_h1_technical_closure.md"
+   ],
+   "result": "0/76(p<0.05 1・期待 4)。GBPJPY 一目 L は Mon 円クロスと重複、OOS 消失"
   }
  ],
  "runs": [
@@ -1902,6 +1928,22 @@
    "cum_after": 9225,
    "doc": "docs/313",
    "note": "0/2"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q79",
+   "cells": 304,
+   "cum_after": 9529,
+   "doc": "docs/314",
+   "note": "0/304"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q80",
+   "cells": 76,
+   "cum_after": 9605,
+   "doc": "docs/314",
+   "note": "0/76"
   }
  ]
 }
