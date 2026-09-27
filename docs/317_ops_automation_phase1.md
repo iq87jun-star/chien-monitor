@@ -6,7 +6,7 @@
 | 段階 | 内容 | 状態 |
 |---|---|---|
 | **1** | **運用エージェント**(VPS の Python が各 MT5 端末から約定・建玉・equity・EA ログを毎時 CSV に出す)→ Google Drive → 研究側の Routine が毎朝取り込み、ダイジェスト・逸脱監視・台帳更新 | **本書・実装済み(VPS 側の初回セットアップ待ち)** |
-| 2 | 配備スクリプト: リポジトリ pull → MetaEditor CLI で一括コンパイル → 各端末へ配置 → .set / テンプレート(表示インジケータ込み)を自動適用 | 設計済み・未実装 |
+| 2 | **配備**(`ops/vps/chien_deploy.py` + `ops/config/deploy_manifest.json`): 毎時、端末のプロファイル(chart*.chr)を棚卸しして『どのチャートにどの EA』を記録 → manifest の ensure にある .mq5 を GitHub から取得し端末の MetaEditor でコンパイル → **apply=true の口座のみ**端末を止めて <expert> ブロックを書き換え(remove を外し ensure を付け)再起動。バックアップあり。expertmode は既存ブロックから学習 | **実装済み(2026-09-28・ユーザー「push して」で公開)**。全口座 apply=false で棚卸し・コンパイル確認から開始。適用は manifest の apply を私が書き換える(= ユーザーの「適用して」の後)|
 | 3 | EA の設定ホットリロード(`MQL5/Files/chien_config.json`): 祝日リスト・倍率・スキップ日を再アタッチ無しで反映 | 未実装(EA 8 本の改修) |
 | 4 | 日次ダイジェストの通知(プッシュ/メール) | 段階 1 の Routine 報告で代替、後で通知に拡張 |
 

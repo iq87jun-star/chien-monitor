@@ -85,7 +85,7 @@ def inventory(data_path):
                 charts.append(dict(file=os.path.basename(p), error=repr(ex)))
     learned = [e.get("expertmode") for c in charts for e in c.get("experts", []) if e.get("expertmode")]
     return dict(profile=pname, profile_dir=pdir, charts=charts, expertmode_seen=sorted(set(learned)),
-                attached=[dict(chart=c["file"], symbol=c.get("symbol"), ea=os.path.basename(e.get("name", "")), path=e.get("path", ""), expertmode=e.get("expertmode"))
+                attached=[dict(chart=c["file"], symbol=c.get("symbol"), ea=e.get("name", "").replace("/", "\\").split("\\")[-1], path=e.get("path", ""), expertmode=e.get("expertmode"))
                           for c in charts for e in c.get("experts", [])])
 
 
@@ -161,7 +161,7 @@ def apply(terminal_path, data_path, acct_cfg, inv, compiled, backup_root):
             for e in sorted(c["experts"], key=lambda e: -e["span"][0]):
                 if pat in e.get("name", "") or pat in e.get("path", ""):
                     s = s[:e["span"][0]] + s[e["span"][1]:]; rec[1] = s; rec[3] = True
-                    actions.append(f"remove {os.path.basename(e['name'])} from {c['file']}")
+                    actions.append(f"remove {e['name'].split(chr(92))[-1]} from {c['file']}")
             if rec[3]:
                 c2, _, _ = parse_chart_text(rec[1]); rec[0] = c2
     # 2) ensure
@@ -172,7 +172,7 @@ def apply(terminal_path, data_path, acct_cfg, inv, compiled, backup_root):
         comp = compiled.get(ea, {})
         if not comp.get("ok"):
             actions.append(f"skip ensure {base}: not compiled"); continue
-        present = any(os.path.basename(e.get("name", "")) == base for rec in files.values() for e in rec[0]["experts"])
+        present = any(e.get("name", "").replace("/", "\\").split("\\")[-1] == base for rec in files.values() for e in rec[0]["experts"])
         if present:
             continue
         rel = "Experts\\chien\\" + base + ".ex5"; name = "chien\\" + base
