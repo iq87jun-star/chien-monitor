@@ -11,10 +11,14 @@ Step "1. Python"
 if (-not $SkipPython) {
   $py = Get-Command python -ErrorAction SilentlyContinue
   if (-not $py -or -not ((& python --version 2>&1) -match "3\.1[1-3]")) {
-    Write-Host "Python 3.11 を winget で導入"; winget install -e --id Python.Python.3.11 --accept-package-agreements --accept-source-agreements | Out-Null
+    Write-Host "Python 3.11 を公式サイトから導入(winget 不要)"
+    $url = "https://www.python.org/ftp/python/3.11.9/python-3.11.9-amd64.exe"; $f = Join-Path $env:TEMP "python-3.11.9-amd64.exe"
+    Invoke-WebRequest $url -OutFile $f
+    Start-Process -Wait -FilePath $f -ArgumentList "/quiet","InstallAllUsers=1","PrependPath=1","Include_test=0"
     $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
   }
 }
+$env:PYTHONUTF8="1"
 & python --version
 & python -m pip install --quiet --upgrade pip
 & python -m pip install --quiet MetaTrader5 pandas
