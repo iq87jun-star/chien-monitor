@@ -25,7 +25,8 @@ VPS(Windows)                                   Google Drive              研究�
 研究側は `mt5_report.parse()` が `.csv` を xlsx と同じ形で返すようにしたので、`leg_forward.py`・`deviation_monitor.py`・月次スコアリングがそのまま使える(xlsx の手動送付は不要になる)。
 
 ## 2. VPS 側セットアップ(ユーザー操作・初回のみ、30 分)
-**最短経路(推奨)**: VPS に Claude Code(Windows 版 CLI またはデスクトップ)を入れ、このリポジトリを clone して `ops/vps/setup.ps1` を管理者 PowerShell で実行させる。Python 導入・pip・端末の自動検出・terminals.json 雛形・手動 1 回実行・毎時タスク登録まで 1 コマンド(パスワードは VPS 上のメモ帳で記入し、外に出ない)。Cowork は Windows 上ではコードを隔離 Linux VM で実行するため、Windows 専用の MetaTrader5 パッケージ実行やタスクスケジューラ登録は行えない(ファイルの準備までは可)。以下は手動で行う場合の手順。
+**ワンクリック**: `ops/vps/chien_setup.bat` を VPS に置いてダブルクリック(UAC「はい」)。Git 導入 → clone → `setup.ps1`(Python 導入 → `--discover` で各端末に接続して口座番号を自動判定し terminals.json を生成 → 1 回実行 → 毎時タスク)まで無入力で進む。未ログイン端末があった時だけメモ帳が開く。
+**最短経路(Claude Code)**: VPS に Claude Code(Windows 版 CLI またはデスクトップ)を入れ、このリポジトリを clone して `ops/vps/setup.ps1` を管理者 PowerShell で実行させる。Python 導入・pip・端末の自動検出・terminals.json 雛形・手動 1 回実行・毎時タスク登録まで 1 コマンド(パスワードは VPS 上のメモ帳で記入し、外に出ない)。Cowork は Windows 上ではコードを隔離 Linux VM で実行するため、Windows 専用の MetaTrader5 パッケージ実行やタスクスケジューラ登録は行えない(ファイルの準備までは可)。以下は手動で行う場合の手順。
 1. Python 3.11(64bit)を入れ、`pip install MetaTrader5 pandas`。
 2. Google Drive for desktop を入れ、マイドライブに `chien_ops` フォルダを作る(同期先が `G:\マイドライブ\chien_ops` になる想定。ドライブ文字が違えば手順 4 で直す)。
 3. リポジトリの `ops/vps/` フォルダを VPS にコピー(`chien_ops_agent.py` `terminals.example.json` `install_task.ps1`)。

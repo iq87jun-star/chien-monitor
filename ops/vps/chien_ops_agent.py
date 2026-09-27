@@ -137,13 +137,65 @@ def run_terminal(t, since, out_root, log_days):
         mt5.shutdown()
 
 
+def find_terminals():
+    """標準的な場所から terminal64.exe を探す。"""
+    roots = [os.environ.get("ProgramFiles", r"C:\Program Files"), os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)"),
+             os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs"), r"C:\MT5", r"C:\chien\mt5"]
+    out = []
+    for r in roots:
+        if not r or not os.path.isdir(r): continue
+        for d in sorted(os.listdir(r)):
+            p = os.path.join(r, d, "terminal64.exe")
+            if os.path.exists(p): out.append(p)
+    return out
+
+
+def discover(config_path, paths=None, out_root=None, since="2026-08-01"):
+    """各端末に path だけで接続(ログイン済みの口座を読む)→ terminals.json を自動生成。既存の password は引き継ぐ。"""
+    paths = paths or find_terminals()
+    old = {}
+    if os.path.exists(config_path):
+        try:
+            for t in json.load(open(config_path, encoding="utf-8")).get("terminals", []): old[str(t.get("account"))] = t
+        except Exception: pass
+    terms = []; failed = []
+    print(f"端末候補 {len(paths)} 本")
+    for p in paths:
+        ok = mt5.initialize(path=p, timeout=90000)
+        if not ok:
+            failed.append(dict(path=p, error=str(mt5.last_error()))); print(f"  × {p}: {mt5.last_error()}"); continue
+        try:
+            ai = mt5.account_info()
+            if ai is None or not ai.login:
+                failed.append(dict(path=p, error="not logged in")); print(f"  × {p}: 未ログイン"); continue
+            acct = str(ai.login); prev = old.get(acct, {})
+            terms.append(dict(name=f"{ai.company.split()[0] if ai.company else 'MT5'}_{acct}", account=int(acct), path=p, login=int(acct), server=ai.server,
+                              password=prev.get("password", ""), enabled=True, currency=ai.currency, balance=ai.balance))
+            print(f"  ○ {p} → 口座 {acct} ({ai.company} / {ai.server}) balance={ai.balance:.0f} {ai.currency}")
+        finally:
+            mt5.shutdown()
+        time.sleep(1)
+    for p in failed:   # 未ログイン端末は雛形行を残す(ユーザーが login/password を記入)
+        terms.append(dict(name="UNKNOWN_" + os.path.basename(os.path.dirname(p["path"])).replace(" ", "_"), account=0, path=p["path"], login=0, server="", password="", enabled=False, note=p["error"]))
+    cfg = dict(_comment="chien_ops_agent --discover が生成。enabled=false の行は端末にログインしてから再実行するか、login/password を記入して enabled=true に。",
+               out_root=out_root or (old and json.load(open(config_path, encoding="utf-8")).get("out_root")) or os.path.join(os.path.dirname(os.path.abspath(config_path)), "out"),
+               since=since, terminals=terms)
+    json.dump(cfg, open(config_path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print(f"terminals.json を書き出し: 接続 {len(terms) - len(failed)} / 未接続 {len(failed)} → {config_path}")
+    return len(failed) == 0 and len(terms) > 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "terminals.json"))
     ap.add_argument("--since", default="2026-08-01")
     ap.add_argument("--out", default="")
     ap.add_argument("--log-days", type=int, default=3)
+    ap.add_argument("--discover", action="store_true", help="端末を自動検出して terminals.json を生成(口座はログイン済み端末から読む)")
+    ap.add_argument("--paths", nargs="*", default=None, help="--discover で使う terminal64.exe のパス(省略=標準の場所を走査)")
     a = ap.parse_args()
+    if a.discover:
+        sys.exit(0 if discover(a.config, a.paths, a.out or None, a.since) else 1)
     cfg = json.load(open(a.config, encoding="utf-8"))
     out_root = a.out or cfg.get("out_root") or os.path.join(os.path.dirname(os.path.abspath(a.config)), "out")
     os.makedirs(out_root, exist_ok=True)

@@ -28,23 +28,14 @@ if ($DriveRoot -eq "") {
 }
 New-Item -ItemType Directory -Force -Path $DriveRoot | Out-Null
 
-Step "3. MT5 端末の自動検出"
-$terms = Get-ChildItem "C:\Program Files","C:\Program Files (x86)","$env:LOCALAPPDATA\Programs" -Directory -ErrorAction SilentlyContinue | Where-Object { Test-Path (Join-Path $_.FullName "terminal64.exe") }
-foreach ($t in $terms) { Write-Host ("  " + (Join-Path $t.FullName "terminal64.exe")) }
-if ($terms.Count -eq 0) { Write-Host "  terminal64.exe が見つからない(標準外の場所なら terminals.json に手で記入)" -ForegroundColor Yellow }
-
-Step "4. terminals.json"
+Step "3-4. MT5 端末の自動検出 → terminals.json 生成(各端末に接続して口座番号を読む)"
 $cfg = Join-Path $here "terminals.json"
-if (-not (Test-Path $cfg)) {
-  $j = Get-Content (Join-Path $here "terminals.example.json") -Raw -Encoding UTF8 | ConvertFrom-Json
-  $j.out_root = $DriveRoot
-  # 検出した端末を順に当てはめる(口座は example の並び。違えば手で直す)
-  for ($i = 0; $i -lt $j.terminals.Count; $i++) { if ($i -lt $terms.Count) { $j.terminals[$i].path = (Join-Path $terms[$i].FullName "terminal64.exe") } }
-  $j | ConvertTo-Json -Depth 5 | Set-Content $cfg -Encoding UTF8
-  Write-Host "雛形を生成: $cfg  → 各端末の path / account / login / server(/ password)を確認・修正してから手順 5 へ" -ForegroundColor Yellow
+& python (Join-Path $here "chien_ops_agent.py") --discover --config $cfg --out $DriveRoot
+if ($LASTEXITCODE -ne 0) {
+  Write-Host "未接続の端末があります(未ログインか、標準外の場所)。terminals.json の enabled=false の行に login/password を記入して保存してください。" -ForegroundColor Yellow
   notepad $cfg
-  Read-Host "terminals.json を保存したら Enter"
-} else { Write-Host "既存の terminals.json を使用" }
+  Read-Host "保存したら Enter"
+} else { Write-Host "全端末を自動検出しました(パスワード記入は不要)" -ForegroundColor Green }
 
 Step "5. 手動 1 回実行(端末ごとに ok が出るか)"
 & python (Join-Path $here "chien_ops_agent.py") --config $cfg
