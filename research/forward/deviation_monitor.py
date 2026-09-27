@@ -23,6 +23,9 @@ def latest_reports(d):
     for p in glob.glob(os.path.join(d, "**", "*ReportHistory*.xlsx"), recursive=True):
         a = "".join(ch for ch in os.path.basename(p).split("ReportHistory")[-1] if ch.isdigit())
         if a in ACCT and (a not in out or os.path.getmtime(p) > os.path.getmtime(out[a])): out[a] = p
+    for p in glob.glob(os.path.join(d, "**", "positions.csv"), recursive=True):        # docs/317: VPS エージェント出力(<account>/positions.csv)
+        a = os.path.basename(os.path.dirname(p))
+        if a in ACCT and (a not in out or os.path.getmtime(p) > os.path.getmtime(out[a])): out[a] = p
     return out
 
 

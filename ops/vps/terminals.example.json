@@ -1,0 +1,16 @@
+{
+ "_comment": "terminals.json にコピーして編集する(terminals.json は git 管理外・VPS の外に出さない)。password は端末が既にログイン済みで、path から起動できるなら省略可。",
+ "out_root": "G:\\マイドライブ\\chien_ops",
+ "since": "2026-08-01",
+ "terminals": [
+  {"name": "FN_Instant20k",  "account": 11988011,  "path": "C:\\Program Files\\FundedNext MT5 Terminal\\terminal64.exe", "login": 11988011,  "server": "FundedNext-Server", "password": "", "enabled": true},
+  {"name": "FN100k_14074882","account": 14074882,  "path": "C:\\Program Files\\FundedNext MT5 Terminal (2)\\terminal64.exe", "login": 14074882, "server": "FundedNext-Server", "password": "", "enabled": true},
+  {"name": "FN100k_14166201","account": 14166201,  "path": "C:\\Program Files\\FundedNext MT5 Terminal (3)\\terminal64.exe", "login": 14166201, "server": "FundedNext-Server", "password": "", "enabled": true},
+  {"name": "FTMO50k_521100397", "account": 521100397, "path": "C:\\Program Files\\FTMO MetaTrader 5\\terminal64.exe", "login": 521100397, "server": "FTMO-Server", "password": "", "enabled": true},
+  {"name": "FTMO50k_531407058", "account": 531407058, "path": "C:\\Program Files\\FTMO MetaTrader 5 (2)\\terminal64.exe", "login": 531407058, "server": "FTMO-Server", "password": "", "enabled": true},
+  {"name": "FTMO100k_531343523","account": 531343523, "path": "C:\\Program Files\\FTMO MetaTrader 5 (3)\\terminal64.exe", "login": 531343523, "server": "FTMO-Server", "password": "", "enabled": true},
+  {"name": "FTMO100k_1Step_531466484","account": 531466484, "path": "C:\\Program Files\\FTMO MetaTrader 5 (4)\\terminal64.exe", "login": 531466484, "server": "FTMO-Server", "password": "", "enabled": true},
+  {"name": "Fintokei_Pearl_6071612", "account": 6071612, "path": "C:\\Program Files\\Fintokei MT5\\terminal64.exe", "login": 6071612, "server": "Fintokei-Server", "password": "", "enabled": true},
+  {"name": "Fintokei_Sokko_6078225","account": 6078225, "path": "C:\\Program Files\\Fintokei MT5 (2)\\terminal64.exe", "login": 6078225, "server": "Fintokei-Server", "password": "", "enabled": true}
+ ]
+}

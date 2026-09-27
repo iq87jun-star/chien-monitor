@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """MT5『取引履歴レポート』(日本語・xlsx)のパーサ。ポジション一覧/約定一覧/集計を列位置で読む。"""
-import openpyxl, re, datetime as dt
+import os, openpyxl, re, datetime as dt
 import pandas as pd
 
 def _rows(path):
@@ -26,7 +26,29 @@ def _num(v):
     try: return float(str(v).replace(" ", "").replace(",", ""))
     except: return 0.0
 
+def parse_csv(path):
+    """docs/317: VPS エージェント(ops/vps/chien_ops_agent.py)の positions.csv を xlsx と同じ形で返す。"""
+    pos = pd.read_csv(path)
+    for c in ("open_time", "close_time"):
+        pos[c] = pd.to_datetime(pos[c].astype(str).str.strip(), format="%Y.%m.%d %H:%M:%S", errors="coerce")
+    for c in ("volume", "open_price", "sl", "tp", "close_price", "commission", "swap", "profit"):
+        pos[c] = pd.to_numeric(pos[c], errors="coerce").fillna(0.0)
+    pos["ticket"] = pos["ticket"].astype(str); pos["comment"] = pos["comment"].fillna("").astype(str)
+    pos["net"] = pos["profit"] + pos["commission"] + pos["swap"]
+    d = os.path.dirname(path); balance = None
+    ep = os.path.join(d, "equity_log.csv")
+    if os.path.exists(ep):
+        try: balance = float(pd.read_csv(ep).iloc[-1]["balance"])
+        except Exception: balance = None
+    op = pd.DataFrame(); opp = os.path.join(d, "open_positions.csv")
+    if os.path.exists(opp):
+        try: op = pd.read_csv(opp)
+        except Exception: op = pd.DataFrame()
+    return {"source": "ops_agent"}, pos, pd.DataFrame(), {"balance": balance}, pd.DataFrame(), op
+
+
 def parse(path):
+    if str(path).lower().endswith(".csv"): return parse_csv(path)
     rows = _rows(path); sec = _sections(rows)
     meta = {}
     for r in rows[:6]:
