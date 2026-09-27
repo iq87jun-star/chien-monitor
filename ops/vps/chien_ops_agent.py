@@ -21,12 +21,17 @@ import os, sys, json, time, glob, argparse, datetime as dt
 import pandas as pd
 try: sys.stdout.reconfigure(errors="replace")
 except Exception: pass
+try:
+    import chien_deploy   # docs/317 段階 2(同じフォルダ。無ければ棚卸し/配備は行わない)
+except Exception:
+    chien_deploy = None
 
 try:
     import MetaTrader5 as mt5
 except ImportError:
     print("MetaTrader5 パッケージが無い: pip install MetaTrader5"); sys.exit(2)
 
+MANIFEST = None
 MARKERS = ("[HALT]", "[BAL GUARD]", "[DAILY STOP]", "[EXPIRY]", "[PROFIT LOCK]", "[TRAIL", "[INIT", "[Mon ENTRY]", "[Mon SKIP]", "[Mon TIME EXIT]",
            "[Hold ENTRY]", "[Sess ENTRY]", "[Roll ENTRY]", "[v4 ENTRY]", "[CLOSE ALL", "[NOTIFY]", "SIZE SANITY", "銘柄解決", "解決できず")
 DEAL_ENTRY_IN, DEAL_ENTRY_OUT, DEAL_ENTRY_INOUT, DEAL_ENTRY_OUT_BY = 0, 1, 2, 3
@@ -128,10 +133,23 @@ def run_terminal(t, since, out_root, log_days):
         sp = os.path.join(d, "equity_log.csv")
         pd.DataFrame([snap]).to_csv(sp, mode="a", header=not os.path.exists(sp), index=False, encoding="utf-8-sig")
         # 4) ログ
+        # docs/317 段階 2: 端末のチャート/EA 棚卸し・コンパイル・(manifest で許可された口座のみ)配備
+        dep = None
+        if chien_deploy is not None and ti is not None:
+            try:
+                dep = chien_deploy.run(t["path"], ti.data_path, acct, d, MANIFEST)
+                att = dep.get("inventory", {}).get("attached", [])
+                print(f"  棚卸し: チャート {len(dep.get('inventory', {}).get('charts', []))} 本 / EA {len(att)} 本: " + "; ".join(f"{a['ea']}@{a['symbol']}" for a in att)[:300])
+                for k, v in (dep.get("compiled") or {}).items(): print(f"  コンパイル {k[:50]}: {'OK' if v.get('ok') else 'NG'} {'' if v.get('ok') else str(v.get('log'))[:200]}")
+                if dep.get("apply"): print(f"  配備: {dep['apply']}")
+            except Exception as ex:
+                print(f"  棚卸し/配備 例外 {ex!r}")
         lg = scan_logs(ti.data_path, log_days) if ti is not None else pd.DataFrame()
         if lg.empty: lg = pd.DataFrame(columns=["file", "line"])
         lg.to_csv(os.path.join(d, "ea_log_extract.csv"), index=False, encoding="utf-8-sig")
         st = dict(account=acct, name=name, ok=True, time=now.isoformat(), balance=ai.balance, equity=ai.equity, open_positions=len(op),
+                  attached_eas=[f"{a['ea']}@{a['symbol']}" for a in (dep or {}).get("inventory", {}).get("attached", [])],
+                  deploy=({k: v for k, v in dep.items() if k in ("compiled", "apply")} if dep else None),
                   closed_positions=int(len(pos)), since=since, data_path=(ti.data_path if ti else ""), log_lines=int(len(lg)),
                   halts=int(lg.line.str.contains(r"\[HALT\]|\[BAL GUARD\]|\[DAILY STOP\]|\[EXPIRY\]|\[PROFIT LOCK\]").sum()) if len(lg) else 0,
                   last_init=(lg[lg.line.str.contains(r"\[INIT")].line.iloc[-1] if len(lg) and lg.line.str.contains(r"\[INIT").any() else ""))
@@ -195,6 +213,7 @@ def main():
     ap.add_argument("--since", default="2026-08-01")
     ap.add_argument("--out", default="")
     ap.add_argument("--log-days", type=int, default=3)
+    ap.add_argument("--no-deploy", action="store_true", help="棚卸し・コンパイル・配備を行わない")
     ap.add_argument("--discover", action="store_true", help="端末を自動検出して terminals.json を生成(口座はログイン済み端末から読む)")
     ap.add_argument("--paths", nargs="*", default=None, help="--discover で使う terminal64.exe のパス(省略=標準の場所を走査)")
     a = ap.parse_args()
@@ -203,6 +222,11 @@ def main():
     cfg = json.load(open(a.config, encoding="utf-8"))
     out_root = a.out or cfg.get("out_root") or os.path.join(os.path.dirname(os.path.abspath(a.config)), "out")
     os.makedirs(out_root, exist_ok=True)
+    global MANIFEST
+    MANIFEST = None
+    if chien_deploy is not None and not a.no_deploy:
+        try: MANIFEST = chien_deploy.load_manifest(cfg.get("branch", "claude/prop-trading-new-methods-a8y3l1")); print(f"配備 manifest v{MANIFEST.get('version')} を取得")
+        except Exception as ex: print(f"配備 manifest 取得失敗 {ex!r}(棚卸しのみ)")
     status = []
     for t in cfg["terminals"]:
         if not t.get("enabled", True): continue
@@ -211,7 +235,7 @@ def main():
         except Exception as e:
             print(f"[{t.get('name')}] 例外 {e!r}"); status.append(dict(account=str(t.get("account")), name=t.get("name"), ok=False, error=repr(e), time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()))
         time.sleep(2)
-    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.1", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.2", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     ok = sum(1 for s in status if s.get("ok")); print(f"完了 {ok}/{len(status)} 端末 → {out_root}")
 
 

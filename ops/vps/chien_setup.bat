@@ -10,7 +10,7 @@ set "RAW=https://raw.githubusercontent.com/iq87jun-star/chien-monitor/claude/pro
 if not exist "%ROOT%" mkdir "%ROOT%"
 echo %date% %time% bat started > "%ROOT%\bat_started.txt"
 echo [1/3] download scripts from GitHub ...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol='Tls12'; foreach($f in 'chien_ops_agent.py','terminals.example.json','setup.ps1','install_task.ps1'){ Invoke-WebRequest ('%RAW%/'+$f+'?t='+(Get-Date).Ticks) -OutFile (Join-Path '%ROOT%' $f) -UseBasicParsing; Write-Host ('  ok '+$f) }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol='Tls12'; foreach($f in 'chien_ops_agent.py','chien_deploy.py','terminals.example.json','setup.ps1','install_task.ps1'){ Invoke-WebRequest ('%RAW%/'+$f+'?t='+(Get-Date).Ticks) -OutFile (Join-Path '%ROOT%' $f) -UseBasicParsing; Write-Host ('  ok '+$f) }"
 if errorlevel 1 (
   echo DOWNLOAD FAILED. Check internet access from this VPS.
   goto :end
