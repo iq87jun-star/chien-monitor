@@ -1,4 +1,4 @@
-# chien 運用エージェントを Windows タスクスケジューラに登録する(docs/317 段階 1)
+﻿# chien 運用エージェントを Windows タスクスケジューラに登録する(docs/317 段階 1)
 # 管理者権限は不要(現在のユーザーで登録): powershell -ExecutionPolicy Bypass -File install_task.ps1
 # 毎時 05 分に実行(equity スナップショットは毎時、約定・ログは毎回全量書き直し)。
 $here   = Split-Path -Parent $MyInvocation.MyCommand.Path

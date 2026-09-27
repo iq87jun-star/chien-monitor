@@ -1,4 +1,4 @@
-# chien 運用エージェントの VPS 初回セットアップ(docs/317 §2 を 1 コマンドに)— 管理者権限は不要(v4):
+﻿# chien 運用エージェントの VPS 初回セットアップ(docs/317 §2 を 1 コマンドに)— 管理者権限は不要(v4):
 #   powershell -ExecutionPolicy Bypass -File setup.ps1 [-DriveRoot "G:\マイドライブ\chien_ops"] [-SkipPython]
 # やること: Python 3.11(winget)→ pip(MetaTrader5, pandas)→ terminals.json の雛形生成(無ければ)→ MT5 端末の自動検出を表示
 #          → 手動 1 回実行 → 毎時タスク登録。terminals.json の path/login/password は最後に手で確認・記入する。
