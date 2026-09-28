@@ -15,7 +15,7 @@ def m1(sym, full=True):
 def rt_cost(sym, hour=15):
     """H1 bid/ask の当該 UTC 時のスプレッド中央値 ×2(往復・比率)。ask 無しは q_common の 3 pip 仮定。"""
     p = f"data_dukascopy/{sym}_hour_ask.csv.gz"
-    if not os.path.exists(p): return float(cost(sym, np.array([m1(sym)["open"].iloc[0]]))[0])
+    if not os.path.exists(p): return float(cost(sym, np.array([m1(sym, full=os.path.exists(f"data_dukascopy_m1/{sym}_bid_m1_full.csv.gz"))["open"].iloc[0]]))[0])   # 2026-09-28: 新ペアは窓 M1 のみ
     b = load(sym)["open"]; a = pd.read_csv(p); a["t"] = pd.to_datetime(a["timestamp"]); a = a.set_index("t").sort_index()["open"]; a = a[~a.index.duplicated()]
     b = b[b.index >= "2024-01-01"]; a = a.reindex(b.index); sp = ((a - b) / ((a + b) / 2)); return float(sp[b.index.hour == hour].median() * 2)
 def ret_series(o, t_in, dir_, t_out, c):

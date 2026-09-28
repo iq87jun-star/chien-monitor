@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9607,
+ "cumulative_cells": 9613,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -592,13 +592,13 @@
    "slug": "fix_continuation_m1",
    "title": "フィックス継続の複製検定(新ペア USDCAD/NZDUSD/EURJPY・M1)",
    "cells": 6,
-   "status": "in_progress",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
     "docs/294_m1_families_q44_q47.md"
    ],
-   "result": "新ペア M1 取得中(1 ペア約 14 時間)"
+   "result": "0/6。フィックス直前の継続は新ペア 3 本で IS・OOS とも全セル負 → Q36 は期間・ペア固有。M1 家族閉鎖"
   },
   {
    "id": "Q45",
@@ -1974,6 +1974,14 @@
    "doc": "docs/276",
    "note": "EA7/EA7g 実装済みのため done に整理(セル加算なし)",
    "manual": true
+  },
+  {
+   "date": "2026-09-28",
+   "item": "Q44",
+   "cells": 6,
+   "cum_after": 9613,
+   "doc": "docs/294",
+   "note": "0/6(複製されず)"
   }
  ]
 }
