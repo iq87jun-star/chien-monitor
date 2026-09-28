@@ -136,23 +136,7 @@
    "note": "B案 v1.06",
    "terminal": "Fintokei",
    "prepare_profile": true
-  },
-  "6078225": {
-   "apply": false,
-   "ensure": [
-    {
-     "ea": "【Fintokei速攻プロ2000万_口座6078225】EA7g_Mon2x10+Roll5x20_ギャンブル.mq5",
-     "symbol": "GBPJPY",
-     "period": "H1"
-    }
-   ],
-   "remove": [
-    "EA5_Sess8_20倍",
-    "RecentFit_C6m系_2.5倍"
-   ],
-   "note": "EA7g v1.25(9/30 切替・docs/288)。それまで apply=false",
-   "terminal": "Fintokei",
-   "prepare_profile": true
   }
- }
+ },
+ "_retired_6078225": "2026-09-28 Fintokei から挑戦終了通知(docs/241 §1q)。プロファイル生成対象から外す"
 }
