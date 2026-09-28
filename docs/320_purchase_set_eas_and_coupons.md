@@ -14,8 +14,8 @@ EA の `ResolveSymbol` は接尾辞候補に "p" を持たないが、全銘柄�
 ## 2. EA 3 本(すべて push 済み・manifest に事前コンパイル用の仮キーで登録)
 | 購入 | ファイル | 元 | 差分 | Magic |
 |---|---|---|---|---|
-| Fintokei スイング ルビー 1,000万(¥84,800) | `mql5/【Fintokeiスイング_ルビー1000万】RecentFit_B案_4.0倍.mq5` v1.00 | パール B案 v1.06 | 基準残高 10,000,000 固定・balance −2.8% 全決済(同時保有 3% 警告の内側)・日次 4%・床 −9%・ロック 7.9/8.05 | 943110 |
-| Fintokei スイング トパーズ 3,500万(¥254,800) | `mql5/【Fintokeiスイング_トパーズ3500万】RecentFit_NonFX_1.48倍+Roll5_1.0倍.mq5` v1.00(**EA11・Q82**) | FN #14166201 v1.31 | 基準残高 35,000,000 固定・Roll ×3.0 → **×1.0**・balance −2.8% 全決済・期限 2027-03-31・月末水曜ロール除外は継続 | 943620 |
+| Fintokei スイング ルビー 1,000万(¥84,800) | `mql5/【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_4.0倍.mq5` v1.00 | パール B案 v1.06 | 基準残高 10,000,000 固定・balance −2.8% 全決済(同時保有 3% 警告の内側)・日次 4%・床 −9%・ロック 7.9/8.05 | 943110 |
+| Fintokei スイング トパーズ 3,500万(¥254,800) | `mql5/【Fintokeiスイング_トパーズ3500万_口座6104739】RecentFit_NonFX_1.48倍+Roll5_1.0倍.mq5` v1.00(**EA11・Q82**) | FN #14166201 v1.31 | 基準残高 35,000,000 固定・Roll ×3.0 → **×1.0**・balance −2.8% 全決済・期限 2027-03-31・月末水曜ロール除外は継続 | 943620 |
 | FTMO 2-Step **Swing** 100k(≈$540、無ければ Swing 25k×4) | `mql5/【FTMO100kSwing_2Step】EA9s_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍.mq5` v1.00 | EA9 v1.00(1-Step) | 静的床(トレーリング床 off)・日次 4%・balance 4%・ロック 9.9/10.05(P2 は 4.9/5.05)。25k の場合は InpInitialBalance=25000 | 944710 |
 manifest の仮キー `fintokei_ruby_new` / `fintokei_topaz_new` / `ftmo_swing_new`: 次回 bat 実行で各端末にコンパイルし、プロファイル `chien_fintokei_ruby_new` 等を生成する。口座番号が決まったらキーを差し替える(プロファイル名も変わる)。
 
@@ -61,3 +61,11 @@ manifest の仮キー `fintokei_ruby_new` / `fintokei_topaz_new` / `ftmo_swing_n
 | **Standard 100k + EA10(採用)** | ≈$540 ≈ ¥8.6万(初回報酬で返金) | 0.54%/k | 1 | 1 口座分 | **92.5% / 4.7%** | Hold XAU を外す(`InpHoldEnable=false`)。Hold 重み 0.3 × 1,600万 = ブックの 0.6% なので比率への影響は小さい |
 判定: Swing 25k×4 は費用 2 倍・口座 4 倍・VPS 4 倍で、得られるのは資金化後の Hold XAU(額面比 0.6%)だけ。コスパは明らかに劣後。FTMO 残枠は **Standard 100k に EA10**(#531343523 用と同じファイル・基準残高 100,000)で埋める。EA9s は未使用(将来 Swing に 100k が出た時用に残す)。manifest の仮キー `ftmo_swing_new` → `ftmo_std100k_new`。
 購入後の比率(速攻プロ失格後・トパーズ Roll ×1・ルビー B案・FTMO EA10): Mon 44.7 / Roll 16.5 / その他 18.3 / Hold 20.5(推奨の内側)。
+
+## 7.【2026-09-28 11:32 JST】購入完了(ユーザー画面)
+| 口座 | プラン | 残高 | EA | manifest |
+|---|---|--:|---|---|
+| **6104736** | Ruby Swing Phase 1(JPY, MT5) | ¥10,000,000 | B案 ×4.0 v1.00 | キー 6104736(仮キー差替済み) |
+| **6104739** | Topaz ProTrader Swing Phase 1(MT5) | ¥35,000,000 | EA11 非FX ×1.48 + Roll ×1.0 v1.00 | キー 6104739 |
+EA ファイル名に口座番号を付けて改名。配備: bat 実行 → Fintokei 端末で 6104736 にログイン → プロファイル `chien_6104736` → VPS→移行 → 6104739 で同じ(`chien_6104739`)。MQL5 VPS は口座ごとに契約。
+記録の制約: 手元 PC の Fintokei 端末は 1 口座ずつしかログインできないため、毎時記録はその時ログイン中の口座分のみ(docs/317)。複数口座を記録するには `terminals.json` に同じ端末パスで login/password 違いのエントリを追加する(ユーザーが VPS 上で記入・外に出さない)。

@@ -32,7 +32,7 @@
 //|     GBPJPY月曜LONGはFTMO PD口座のv7と同一日・同方向になり得る。   |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.00"   // ルビー版 v1.00(2026-09-28): パール B案 v1.06 と同構成。Fintokei チャレンジプラン・スイング(swap-free)ルビー 1,000万用に基準残高固定・同時保有リスク 3% 警告の内側ガード(docs/318 §5・docs/276)
+#property version   "1.00"   // ルビー版 v1.00(2026-09-28): パール B案 v1.06 と同構成。Fintokei チャレンジプラン・スイング(swap-free)ルビー 1,000万(口座 6104736・2026-09-28 購入)用に基準残高固定・同時保有リスク 3% 警告の内側ガード(docs/318 §5・docs/276)
 #property strict
 #property description "[RecentFit 2026H2] Recency-bet track (docs/174/175). Mon GBPJPY+AUDJPY / v4 USDJPY / Hold JP225. mult 4.8 std / 7.2 fast. Balance guard -4 tick, floor -9, FN P1 lock 8.05. Expiry-enforced re-screen."
 

@@ -137,34 +137,6 @@
    "terminal": "Fintokei",
    "prepare_profile": true
   },
-  "fintokei_ruby_new": {
-   "apply": false,
-   "ensure": [
-    {
-     "ea": "【Fintokeiスイング_ルビー1000万】RecentFit_B案_4.0倍.mq5",
-     "symbol": "GBPJPY",
-     "period": "H1"
-    }
-   ],
-   "remove": [],
-   "note": "購入前の事前コンパイル・プロファイル chien_fintokei_ruby_new を生成(docs/320)。口座番号が決まったらキーを差し替える",
-   "terminal": "Fintokei",
-   "prepare_profile": true
-  },
-  "fintokei_topaz_new": {
-   "apply": false,
-   "ensure": [
-    {
-     "ea": "【Fintokeiスイング_トパーズ3500万】RecentFit_NonFX_1.48倍+Roll5_1.0倍.mq5",
-     "symbol": "UK100",
-     "period": "H1"
-    }
-   ],
-   "remove": [],
-   "note": "同上(Q82・EA11)",
-   "terminal": "Fintokei",
-   "prepare_profile": true
-  },
   "ftmo_std100k_new": {
    "apply": false,
    "ensure": [
@@ -177,6 +149,34 @@
    "remove": [],
    "note": "FTMO 残枠は Standard 100k + EA10(Swing は 25k のみでコスパ劣後・docs/320 §6)。購入後にキーを口座番号へ",
    "terminal": "FTMO",
+   "prepare_profile": true
+  },
+  "6104736": {
+   "apply": false,
+   "ensure": [
+    {
+     "ea": "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_4.0倍.mq5",
+     "symbol": "GBPJPY",
+     "period": "H1"
+    }
+   ],
+   "remove": [],
+   "note": "Ruby Swing Phase 1(JPY)2026-09-28 購入。B案 ×4.0 v1.00(docs/320)",
+   "terminal": "Fintokei",
+   "prepare_profile": true
+  },
+  "6104739": {
+   "apply": false,
+   "ensure": [
+    {
+     "ea": "【Fintokeiスイング_トパーズ3500万_口座6104739】RecentFit_NonFX_1.48倍+Roll5_1.0倍.mq5",
+     "symbol": "UK100",
+     "period": "H1"
+    }
+   ],
+   "remove": [],
+   "note": "Topaz ProTrader Swing Phase 1 2026-09-28 購入。EA11 非FX ×1.48 + Roll ×1.0 v1.00(docs/320)",
+   "terminal": "Fintokei",
    "prepare_profile": true
   }
  },
