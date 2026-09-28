@@ -36,9 +36,7 @@ Step "3-4. MT5 端末の自動検出 → terminals.json 生成(各端末に接�
 $cfg = Join-Path $here "terminals.json"
 & python (Join-Path $here "chien_ops_agent.py") --discover --config $cfg --out $DriveRoot
 if ($LASTEXITCODE -ne 0) {
-  Write-Host "未接続の端末があります(未ログインか、標準外の場所)。terminals.json の enabled=false の行に login/password を記入して保存してください。" -ForegroundColor Yellow
-  notepad $cfg
-  Read-Host "保存したら Enter"
+  Write-Host "未接続の端末があります(未ログインか、標準外の場所)。その端末は enabled=false のまま無視して続行します。使うなら MT5 でログインしてから bat を再実行。" -ForegroundColor Yellow
 } else { Write-Host "全端末を自動検出しました(パスワード記入は不要)" -ForegroundColor Green }
 
 Step "5. 手動 1 回実行(端末ごとに ok が出るか)"
