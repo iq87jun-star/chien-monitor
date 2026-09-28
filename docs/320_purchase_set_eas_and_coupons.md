@@ -1,0 +1,40 @@
+# 320 購入セットの EA 3 本(ルビー・トパーズ・FTMO Swing)とクーポン(2026-09-28)
+
+ユーザー「新規購入口座の EA は何ですか? 購入に向けて具体的な話をしたいです。メールに割引は有りますか」。docs/318 §5 案 B を具体化。同日、速攻プロ #6078225 の失格(docs/241 §1q)と FTMO スワップフリー不可(docs/185 §10c)を反映して案 B を訂正(docs/318 §7)。
+
+## 1. Fintokei 端末の銘柄(2026-09-28 ユーザー画面・接尾辞 p)
+| 分類 | 確認した銘柄 | EA のレグ名 → 解決先 |
+|---|---|---|
+| Prop Indices | FRA40p GER40p HKD50p JP225p **UK100p US100p** US30p US500p | UK100 → UK100p |
+| Prop Energies | NGASp UKOILp **USOILp**(WTI spot) | WTI → USOILp(ResolveSymbol の WTI 別名 USOIL + 全銘柄走査) |
+| Prop Crypto | ADA/BTC/DOG/ETH/LNK/SOL/XLM/XRP の USD・JPY 建て(**BTCUSDp ETHUSDp**) | BTCUSD → BTCUSDp / ETHUSD → ETHUSDp |
+| Prop Forex | (既知)GBPJPYp AUDJPYp USDJPYp EURJPYp CADJPYp … | GBPJPY → GBPJPYp |
+EA の `ResolveSymbol` は接尾辞候補に "p" を持たないが、全銘柄走査フォールバック(v1.45・docs/173)で `UK100p` 等に解決する(6078225 の EA7g で GBPJPY → gbpjpyp が実証済み)。`chien_deploy.symbol_suffix()` は 1.5 で指数・商品にも接尾辞を付ける(UK100 → UK100p)。
+
+## 2. EA 3 本(すべて push 済み・manifest に事前コンパイル用の仮キーで登録)
+| 購入 | ファイル | 元 | 差分 | Magic |
+|---|---|---|---|---|
+| Fintokei スイング ルビー 1,000万(¥84,800) | `mql5/【Fintokeiスイング_ルビー1000万】RecentFit_B案_4.0倍.mq5` v1.00 | パール B案 v1.06 | 基準残高 10,000,000 固定・balance −2.8% 全決済(同時保有 3% 警告の内側)・日次 4%・床 −9%・ロック 7.9/8.05 | 943110 |
+| Fintokei スイング トパーズ 3,500万(¥254,800) | `mql5/【Fintokeiスイング_トパーズ3500万】RecentFit_NonFX_1.48倍+Roll5_1.0倍.mq5` v1.00(**EA11・Q82**) | FN #14166201 v1.31 | 基準残高 35,000,000 固定・Roll ×3.0 → **×1.0**・balance −2.8% 全決済・期限 2027-03-31・月末水曜ロール除外は継続 | 943620 |
+| FTMO 2-Step **Swing** 100k(≈$540、無ければ Swing 25k×4) | `mql5/【FTMO100kSwing_2Step】EA9s_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍.mq5` v1.00 | EA9 v1.00(1-Step) | 静的床(トレーリング床 off)・日次 4%・balance 4%・ロック 9.9/10.05(P2 は 4.9/5.05)。25k の場合は InpInitialBalance=25000 | 944710 |
+manifest の仮キー `fintokei_ruby_new` / `fintokei_topaz_new` / `ftmo_swing_new`: 次回 bat 実行で各端末にコンパイルし、プロファイル `chien_fintokei_ruby_new` 等を生成する。口座番号が決まったらキーを差し替える(プロファイル名も変わる)。
+
+トパーズの注意: Hold の名目は UK100 73% + WTI 23% + BTC 31% + ETH 21%(合計 1.48 倍)。balance −2.8% ガードは FN 版(4%)より狭く、UK100 の −2% 級の日に全 Hold を閉じて翌日建て直す挙動になる(月 2 回まで、超過は月末まで新規停止)。紙上 MC は §3 でガード 2.8% クリップとして評価。
+
+## 3. 紙上成績(研究系列 2021-10〜2026-08・250 営業日 MC 5,000 本)
+`research/results/q82_topaz_candidates.json`(ジョブ完了後に表を追記)
+
+## 4. クーポン(受信メール・2026-09-28 時点)
+| 業者 | コード | 内容 | 期限 | 使う |
+|---|---|---|---|---|
+| Fintokei | **SHUKAKU15AKI** | 500万以上の全プラン 15% OFF・5 回まで(XP 特典は 9 月中 10 日取引が条件で今回は対象外) | **9/30(水)23:59 JST** | ✅ ルビー ¥84,800 → ¥72,080 / トパーズ ¥254,800 → ¥216,580(合計 ¥288,660・−¥50,940)。スイングが対象かは購入画面でコード入力時に確認 |
+| Fintokei | FULLMOON2625 | 25% OFF・3 回 | 9/25 失効 | — |
+| Fintokei | 6078225 失格クーポン | 5%・同一プラン(速攻プロ 2,000万)のみ・24h | 9/29 17:00 JST | ✗(速攻プロは再購入しない・docs/318 §2) |
+| FTMO | — | 8/18 に 1-Step 100k 20% OFF の案内のみ。2-Step の割引メールなし | — | — |
+| FundedNext | STELLAR09 / INSTANT30 / 9 月末セール | 20〜30% OFF | 9/21〜9/30 | ✗(FN は買わない) |
+
+## 5. 購入手順(提案)
+1. **9/30 までに** Fintokei スイング ルビー 1,000万 + トパーズ 3,500万を SHUKAKU15AKI で購入(¥288,660)。スイングは期限なし(30 日に 1 回の取引)なので、EA の配備が数日後でも不利はない
+2. 購入後: 口座番号を私に伝える → manifest の仮キーを差し替え → bat 実行 → 各口座でログイン → プロファイル `chien_<口座>` → VPS→移行(docs/317 §5 の 3 操作)
+3. FTMO 残 $100k は購入画面で 2-Step Swing の 100k の有無を確認。急ぐ理由はないので 10/1 の採点後でよい
+4. 購入後の比率(docs/318 §7): Mon 45 / Roll 17 / その他 17 / Hold 21、業者 FTMO 43 / FN 24 / Fintokei 34

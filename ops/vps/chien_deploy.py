@@ -250,7 +250,7 @@ def prepare_profile(data_path, account, cfg, inv, compiled):
         if not comp.get("ok"): made.append(f"skip {base}: not compiled"); continue
         sym = want.get("symbol", c0.get("symbol", "")); per = want.get("period", "H1"); pm = PERIOD_MIN.get(per, 60)
         # 業者の銘柄接尾辞(Fintokei は GBPJPYp 等)を既存チャートから継承。無い銘柄名だとチャートが空のまま EA が動かない(2026-09-28 判明)
-        if sfx and re.fullmatch(r"[A-Z]{6}", sym) and not sym.endswith(sfx): sym += sfx
+        if sfx and not sym.endswith(sfx): sym += sfx   # 1.5: 指数・商品(UK100p 等)も同じ接尾辞(Fintokei は全銘柄 p)
         s = re.sub(r"^symbol=.*?$", f"symbol={sym}", s0, count=1, flags=re.M)
         s = re.sub(r"^description=.*?$", "description=", s, count=1, flags=re.M)   # 雛形の説明文(別銘柄)を残さない
         s = re.sub(r"^period_type=.*?$", ("period_type=1" if 60 <= pm < 1440 else "period_type=0"), s, count=1, flags=re.M)

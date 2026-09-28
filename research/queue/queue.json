@@ -1112,13 +1112,15 @@
    "slug": "fintokei_swing_nonfx_roll_ea",
    "title": "Fintokei スイング トパーズ 3,500万用 EA(非FX Hold ×1.48 + Roll5 ×1.0・スイング用ガード)",
    "cells": 0,
-   "status": "queued",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/318_prop_caps_cost_and_portfolio_mix.md"
+    "docs/318_prop_caps_cost_and_portfolio_mix.md",
+    "docs/320_purchase_set_eas_and_coupons.md"
    ],
-   "note": "探索ではなく実装(セル加算なし)。前提: Fintokei での UK100/WTI/BTC/ETH 取引可否(接尾辞 p)・同時保有リスク 3% の内側に Hold 災害 SL(倍率 1.48→1.0 の可能性)・Q28 の水曜ロール監視が 9・10 月と正(docs/279 §4)。購入は 10 月の帰結後"
+   "note": "探索ではなく実装(セル加算なし)。前提: Fintokei での UK100/WTI/BTC/ETH 取引可否(接尾辞 p)・同時保有リスク 3% の内側に Hold 災害 SL(倍率 1.48→1.0 の可能性)・Q28 の水曜ロール監視が 9・10 月と正(docs/279 §4)。購入は 10 月の帰結後",
+   "result": "EA11(トパーズ 3,500万: 非FX ×1.48 + Roll ×1.0・スイング用ガード)を作成。Fintokei 端末で UK100p/USOILp/BTCUSDp/ETHUSDp/GBPJPYp を確認(2026-09-28)。セル加算なし"
   }
  ],
  "runs": [

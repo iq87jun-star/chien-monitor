@@ -136,6 +136,48 @@
    "note": "B案 v1.06",
    "terminal": "Fintokei",
    "prepare_profile": true
+  },
+  "fintokei_ruby_new": {
+   "apply": false,
+   "ensure": [
+    {
+     "ea": "【Fintokeiスイング_ルビー1000万】RecentFit_B案_4.0倍.mq5",
+     "symbol": "GBPJPY",
+     "period": "H1"
+    }
+   ],
+   "remove": [],
+   "note": "購入前の事前コンパイル・プロファイル chien_fintokei_ruby_new を生成(docs/320)。口座番号が決まったらキーを差し替える",
+   "terminal": "Fintokei",
+   "prepare_profile": true
+  },
+  "fintokei_topaz_new": {
+   "apply": false,
+   "ensure": [
+    {
+     "ea": "【Fintokeiスイング_トパーズ3500万】RecentFit_NonFX_1.48倍+Roll5_1.0倍.mq5",
+     "symbol": "UK100",
+     "period": "H1"
+    }
+   ],
+   "remove": [],
+   "note": "同上(Q82・EA11)",
+   "terminal": "Fintokei",
+   "prepare_profile": true
+  },
+  "ftmo_swing_new": {
+   "apply": false,
+   "ensure": [
+    {
+     "ea": "【FTMO100kSwing_2Step】EA9s_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍.mq5",
+     "symbol": "XAUUSD",
+     "period": "H1"
+    }
+   ],
+   "remove": [],
+   "note": "同上(EA9s)。Swing 25k の場合は InpInitialBalance=25000 に変更してから移行",
+   "terminal": "FTMO",
+   "prepare_profile": true
   }
  },
  "_retired_6078225": "2026-09-28 Fintokei から挑戦終了通知(docs/241 §1q)。プロファイル生成対象から外す"
