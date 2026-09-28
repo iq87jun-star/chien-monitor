@@ -164,11 +164,26 @@ def find_terminals():
     roots = [os.environ.get("ProgramFiles", r"C:\Program Files"), os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)"),
              os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs"), r"C:\MT5", r"C:\chien\mt5"]
     out = []
+    # 1) 起動中の terminal64.exe(どこに置かれていても捕まえる・v1.3)
+    try:
+        import subprocess
+        r = subprocess.run(["powershell", "-NoProfile", "-Command", "Get-CimInstance Win32_Process -Filter \"Name='terminal64.exe'\" | Select-Object -ExpandProperty ExecutablePath"], capture_output=True, text=True, timeout=60)
+        for line in r.stdout.splitlines():
+            line = line.strip()
+            if line and os.path.exists(line) and line not in out: out.append(line)
+    except Exception as ex:
+        print(f"[discover] プロセス列挙失敗 {ex!r}")
+    # 2) 標準的な場所 + デスクトップ/ダウンロード/他ドライブ直下(深さ 2)
+    home = os.path.expanduser("~")
+    roots += [os.path.join(home, "Desktop"), os.path.join(home, "OneDrive", "Desktop"), os.path.join(home, "OneDrive", "デスクトップ"), os.path.join(home, "Downloads")]
+    roots += [f"{d}:\\" for d in "DEFGH" if os.path.isdir(f"{d}:\\")]
     for r in roots:
         if not r or not os.path.isdir(r): continue
-        for d in sorted(os.listdir(r)):
-            p = os.path.join(r, d, "terminal64.exe")
-            if os.path.exists(p): out.append(p)
+        try: subs = sorted(os.listdir(r))
+        except Exception: continue
+        for d in subs:
+            for cand in (os.path.join(r, d, "terminal64.exe"), os.path.join(r, d, "MT5", "terminal64.exe")):
+                if os.path.exists(cand) and cand not in out: out.append(cand)
     return out
 
 
@@ -235,7 +250,7 @@ def main():
         except Exception as e:
             print(f"[{t.get('name')}] 例外 {e!r}"); status.append(dict(account=str(t.get("account")), name=t.get("name"), ok=False, error=repr(e), time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()))
         time.sleep(2)
-    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.2", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.3", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     ok = sum(1 for s in status if s.get("ok")); print(f"完了 {ok}/{len(status)} 端末 → {out_root}")
 
 
