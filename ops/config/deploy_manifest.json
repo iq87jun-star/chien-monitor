@@ -165,17 +165,17 @@
    "terminal": "Fintokei",
    "prepare_profile": true
   },
-  "ftmo_swing_new": {
+  "ftmo_std100k_new": {
    "apply": false,
    "ensure": [
     {
-     "ea": "【FTMO100kSwing_2Step】EA9s_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍.mq5",
-     "symbol": "XAUUSD",
+     "ea": "【FTMO100k_口座531343523】EA10_Mon4_3.3倍+GER40ブレイク_2.0倍+HoldXAU0.3.mq5",
+     "symbol": "GBPJPY",
      "period": "H1"
     }
    ],
    "remove": [],
-   "note": "同上(EA9s)。Swing 25k の場合は InpInitialBalance=25000 に変更してから移行",
+   "note": "FTMO 残枠は Standard 100k + EA10(Swing は 25k のみでコスパ劣後・docs/320 §6)。購入後にキーを口座番号へ",
    "terminal": "FTMO",
    "prepare_profile": true
   }

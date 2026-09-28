@@ -53,3 +53,11 @@ manifest の仮キー `fintokei_ruby_new` / `fintokei_topaz_new` / `ftmo_swing_n
 2. 購入後: 口座番号を私に伝える → manifest の仮キーを差し替え → bat 実行 → 各口座でログイン → プロファイル `chien_<口座>` → VPS→移行(docs/317 §5 の 3 操作)
 3. FTMO 残 $100k は購入画面で 2-Step Swing の 100k の有無を確認。急ぐ理由はないので 10/1 の採点後でよい
 4. 購入後の比率(docs/318 §7): Mon 45 / Roll 17 / その他 17 / Hold 21、業者 FTMO 43 / FN 24 / Fintokei 34
+
+## 6.【2026-09-28・訂正】FTMO Swing は 25k のみ(ユーザー確認)→ Standard 100k + EA10 に変更
+| 案 | 費用 | 費用/額面 | 口座数 | MQL5 VPS 月額 | 到達 / 失格(紙上) | 資金化後 |
+|---|--:|--:|--:|--:|--:|---|
+| Swing 25k × 4 + EA9s | €250×4 ≈ ¥17万 | 1.0%/k | 4 | 4 口座分(≈$60/月) | 74% / 0% | Hold XAU 継続可 |
+| **Standard 100k + EA10(採用)** | ≈$540 ≈ ¥8.6万(初回報酬で返金) | 0.54%/k | 1 | 1 口座分 | **92.5% / 4.7%** | Hold XAU を外す(`InpHoldEnable=false`)。Hold 重み 0.3 × 1,600万 = ブックの 0.6% なので比率への影響は小さい |
+判定: Swing 25k×4 は費用 2 倍・口座 4 倍・VPS 4 倍で、得られるのは資金化後の Hold XAU(額面比 0.6%)だけ。コスパは明らかに劣後。FTMO 残枠は **Standard 100k に EA10**(#531343523 用と同じファイル・基準残高 100,000)で埋める。EA9s は未使用(将来 Swing に 100k が出た時用に残す)。manifest の仮キー `ftmo_swing_new` → `ftmo_std100k_new`。
+購入後の比率(速攻プロ失格後・トパーズ Roll ×1・ルビー B案・FTMO EA10): Mon 44.7 / Roll 16.5 / その他 18.3 / Hold 20.5(推奨の内側)。
