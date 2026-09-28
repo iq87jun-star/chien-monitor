@@ -61,3 +61,7 @@ VPS(Windows)                                   Google Drive              研究�
 - VPS 上の EA の版は直接読めないので、**挙動から推定**する(Mon の建て分・Magic・祝日日の建て有無)。9/28 時点の推定: 11988011 は建て分 :00(v1.14 以降なら :12)= 旧版、521100397 は Magic 943401(D 案)= EA8 未配備、6078225 は EA7g(版不明・祝日フィルター無しの可能性)。
 
 手元 PC の役割: 記録取得(毎時)+ コンパイル + プロファイル生成。VPS 移行は手動(3 操作/口座)。
+
+### 5a.【2026-09-28 15:08】Fintokei は銘柄接尾辞 `p`(GBPJPYp)— 生成プロファイルが空チャートになった
+ユーザーの画面: `chien_6078225` を開くと「GBPJPY,H1 / Australian Dollar vs Swiss Franc」の黒い空チャートで止まる。原因は manifest の銘柄 `GBPJPY` が Fintokei に存在しない(雛形チャートは `AUDCHFp`)ため、チャートが読み込まれず EA にティックが来ない。説明文は雛形(AUDCHF)の残り。
+対処: `chien_deploy.symbol_suffix()` が既存チャートの銘柄から接尾辞を推定し、6 文字 FX/金属コードに付ける(`GBPJPY`→`GBPJPYp`)。`description=` は空にする。agent 1.4。bat 再実行で `chien_6078225` / `chien_6071612` が作り直される。即時の代替: 気配値表示の `GBPJPYp` を黒いチャートへドラッグ(EA は付いたまま銘柄が変わる)→ VPS→移行。

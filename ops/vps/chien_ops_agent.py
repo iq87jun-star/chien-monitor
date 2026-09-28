@@ -252,7 +252,7 @@ def main():
         except Exception as e:
             print(f"[{t.get('name')}] 例外 {e!r}"); status.append(dict(account=str(t.get("account")), name=t.get("name"), ok=False, error=repr(e), time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()))
         time.sleep(2)
-    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.3", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.4", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     ok = sum(1 for s in status if s.get("ok")); print(f"完了 {ok}/{len(status)} 端末 → {out_root}")
 
 

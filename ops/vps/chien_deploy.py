@@ -224,6 +224,14 @@ def parse_chart_text(s):
     return dict(symbol=top.get("symbol", ""), experts=experts), s, None
 
 
+def symbol_suffix(inv):
+    """既存チャートの銘柄名から業者接尾辞を推定(AUDCHFp → "p"、USDJPY → "")。6 文字 FX/金属コードのみ対象。"""
+    for c in inv.get("charts", []):
+        m = re.fullmatch(r"([A-Z]{6})([A-Za-z0-9._#-]*)", c.get("symbol", ""))
+        if m: return m.group(2)
+    return ""
+
+
 def prepare_profile(data_path, account, cfg, inv, compiled):
     """MQL5 VPS 用: プロファイル MQL5\\Profiles\\Charts\\chien_<口座>\\chart01.chr を作る(正しい EA 1 本・既定入力)。Default には触らない。
     ユーザーはその口座でログイン → ファイル→プロファイル→chien_<口座> → VPS→移行、で反映する。"""
@@ -235,12 +243,16 @@ def prepare_profile(data_path, account, cfg, inv, compiled):
     name = f"chien_{account}"; ndir = os.path.join(os.path.dirname(pdir), name); os.makedirs(ndir, exist_ok=True)
     eol = "\r\n"; made = []
     c0, s0, enc0 = parse_chart(srcs[0]); s0 = EXPERT_RE.sub("", s0)
+    sfx = symbol_suffix(inv)
     for i, want in enumerate(cfg.get("ensure", []), start=1):
         ea = want["ea"]; base = ea[:-4] if ea.lower().endswith(".mq5") else ea
         comp = compiled.get(ea, {})
         if not comp.get("ok"): made.append(f"skip {base}: not compiled"); continue
         sym = want.get("symbol", c0.get("symbol", "")); per = want.get("period", "H1"); pm = PERIOD_MIN.get(per, 60)
+        # 業者の銘柄接尾辞(Fintokei は GBPJPYp 等)を既存チャートから継承。無い銘柄名だとチャートが空のまま EA が動かない(2026-09-28 判明)
+        if sfx and re.fullmatch(r"[A-Z]{6}", sym) and not sym.endswith(sfx): sym += sfx
         s = re.sub(r"^symbol=.*?$", f"symbol={sym}", s0, count=1, flags=re.M)
+        s = re.sub(r"^description=.*?$", "description=", s, count=1, flags=re.M)   # 雛形の説明文(別銘柄)を残さない
         s = re.sub(r"^period_type=.*?$", ("period_type=1" if 60 <= pm < 1440 else "period_type=0"), s, count=1, flags=re.M)
         s = re.sub(r"^period_size=.*?$", f"period_size={pm // 60 if pm >= 60 else pm}", s, count=1, flags=re.M)
         blk = expert_block("chien\\" + base, "Experts\\chien\\" + base + ".ex5", mode, eol)
