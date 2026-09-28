@@ -1,61 +1,156 @@
 {
- "_comment": "docs/317 段階 2: 口座ごとの『あるべき EA』。VPS の chien_deploy.py が毎時これを GitHub から読み、apply=true の口座だけ端末のプロファイル(chart*.chr)を書き換えて端末を再起動する。apply=false は棚卸し(inventory)とコンパイル確認のみ。ensure の ea は mql5/ 配下のファイル名、chart は装着先(symbol/period)。remove は外す EA 名の部分一致。",
- "version": 1,
+ "_comment": "docs/317 段階 2(MQL5 VPS 版): EA は MetaQuotes の MQL5 VPS で動くため、ローカル端末のチャート書き換えでは配備できない。エージェントは口座ごとに『プロファイル chien_<口座>』(正しい EA を載せたチャート 1 枚)を各業者端末に生成し、ユーザーは「その口座でログイン → ファイル→プロファイル→chien_<口座> → VPS→移行」の 3 操作で反映する。terminal = その口座を扱う端末の実行ファイルパスに含まれる文字列。apply(端末停止+Default 書き換え)は MQL5 VPS では使わない(false 固定)。",
+ "version": 2,
  "branch": "claude/prop-trading-new-methods-a8y3l1",
  "accounts": {
   "521100397": {
    "apply": false,
-   "ensure": [{"ea": "【FTMO50k_口座521100397】EA8_Mon4_3.3倍+GER40ブレイク_2.0倍.mq5", "symbol": "GBPJPY", "period": "H1"}],
-   "remove": ["RecentFit_C6m_6.0倍", "EA2_Mon4+Sess5", "RecentFit_D3m"],
-   "note": "9/30 に D 案 → EA8 v1.34 へ切替(docs/297)。C6m ×6.0 は 531407058 用で本口座には付けない"
+   "ensure": [
+    {
+     "ea": "【FTMO50k_口座521100397】EA8_Mon4_3.3倍+GER40ブレイク_2.0倍.mq5",
+     "symbol": "GBPJPY",
+     "period": "H1"
+    }
+   ],
+   "remove": [
+    "RecentFit_C6m_6.0倍",
+    "EA2_Mon4+Sess5",
+    "RecentFit_D3m"
+   ],
+   "note": "9/30 に D 案 → EA8 v1.34 へ切替(docs/297)。C6m ×6.0 は 531407058 用で本口座には付けない",
+   "terminal": "FTMO",
+   "prepare_profile": true
   },
   "531407058": {
    "apply": false,
-   "ensure": [{"ea": "【FTMO50k_口座531407058】EA3_Mon4_3.3倍.mq5", "symbol": "GBPJPY", "period": "H1"}],
-   "remove": ["EA3_Mon4_2.5倍"],
-   "note": "C6m ×6.0 は 9/30 期限まで同居(remove に入れない)"
+   "ensure": [
+    {
+     "ea": "【FTMO50k_口座531407058】EA3_Mon4_3.3倍.mq5",
+     "symbol": "GBPJPY",
+     "period": "H1"
+    }
+   ],
+   "remove": [
+    "EA3_Mon4_2.5倍"
+   ],
+   "note": "C6m ×6.0 は 9/30 期限まで同居(remove に入れない)",
+   "terminal": "FTMO",
+   "prepare_profile": true
   },
   "11988011": {
    "apply": false,
-   "ensure": [{"ea": "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1.mq5", "symbol": "GBPJPY", "period": "H1"}],
-   "remove": ["RecentFit_2026H2_Instant_4.0倍", "RecentFit_Mon3x", "季節RG3"],
-   "note": "同名ファイルの再コンパイル = v1.15 へ更新(同 Magic 943200 系なので建玉は引き継ぐ)"
+   "ensure": [
+    {
+     "ea": "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1.mq5",
+     "symbol": "GBPJPY",
+     "period": "H1"
+    }
+   ],
+   "remove": [
+    "RecentFit_2026H2_Instant_4.0倍",
+    "RecentFit_Mon3x",
+    "季節RG3"
+   ],
+   "note": "同名ファイルの再コンパイル = v1.15 へ更新(同 Magic 943200 系なので建玉は引き継ぐ)",
+   "terminal": "FundedNext",
+   "prepare_profile": true
   },
   "14074882": {
    "apply": false,
-   "ensure": [{"ea": "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル.mq5", "symbol": "EURJPY", "period": "H1"}],
-   "remove": ["RecentFit_Mon3x5+HoldXAU0.5", "季節RG3"],
-   "note": "v1.09(×4・SL 3.0)"
+   "ensure": [
+    {
+     "ea": "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル.mq5",
+     "symbol": "EURJPY",
+     "period": "H1"
+    }
+   ],
+   "remove": [
+    "RecentFit_Mon3x5+HoldXAU0.5",
+    "季節RG3"
+   ],
+   "note": "v1.09(×4・SL 3.0)",
+   "terminal": "FundedNext",
+   "prepare_profile": true
   },
   "14166201": {
    "apply": false,
-   "ensure": [{"ea": "【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍.mq5", "symbol": "UK100", "period": "H1"}],
-   "remove": ["RecentFit_NonFX_1.48倍_Sess4.8倍", "Sess上位5_4.8倍"],
-   "note": "v1.31"
+   "ensure": [
+    {
+     "ea": "【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍.mq5",
+     "symbol": "UK100",
+     "period": "H1"
+    }
+   ],
+   "remove": [
+    "RecentFit_NonFX_1.48倍_Sess4.8倍",
+    "Sess上位5_4.8倍"
+   ],
+   "note": "v1.31",
+   "terminal": "FundedNext",
+   "prepare_profile": true
   },
   "531343523": {
    "apply": false,
-   "ensure": [{"ea": "【FTMO100k_口座531343523】RecentFit5_目標10パーセント.mq5", "symbol": "GBPUSD", "period": "H1"}],
+   "ensure": [
+    {
+     "ea": "【FTMO100k_口座531343523】RecentFit5_目標10パーセント.mq5",
+     "symbol": "GBPUSD",
+     "period": "H1"
+    }
+   ],
    "remove": [],
-   "note": "RF5 v1.05 は 10/1 に差替予定(docs/241)。それまで apply=false"
+   "note": "RF5 v1.05 は 10/1 に差替予定(docs/241)。それまで apply=false",
+   "terminal": "FTMO",
+   "prepare_profile": true
   },
   "531466484": {
    "apply": false,
-   "ensure": [{"ea": "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍.mq5", "symbol": "XAUUSD", "period": "H1"}],
-   "remove": ["EA6_Sess8_8.0倍"],
-   "note": "EA9 v1.00(docs/316)。EA6 は外す"
+   "ensure": [
+    {
+     "ea": "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍.mq5",
+     "symbol": "XAUUSD",
+     "period": "H1"
+    }
+   ],
+   "remove": [
+    "EA6_Sess8_8.0倍"
+   ],
+   "note": "EA9 v1.00(docs/316)。EA6 は外す",
+   "terminal": "FTMO",
+   "prepare_profile": true
   },
   "6071612": {
    "apply": false,
-   "ensure": [{"ea": "【Fintokeiパール500万】RecentFit_4.0倍.mq5", "symbol": "GBPJPY", "period": "H1"}],
-   "remove": ["EA4_Sess8_4.8倍"],
-   "note": "B案 v1.06"
+   "ensure": [
+    {
+     "ea": "【Fintokeiパール500万】RecentFit_4.0倍.mq5",
+     "symbol": "GBPJPY",
+     "period": "H1"
+    }
+   ],
+   "remove": [
+    "EA4_Sess8_4.8倍"
+   ],
+   "note": "B案 v1.06",
+   "terminal": "Fintokei",
+   "prepare_profile": true
   },
   "6078225": {
    "apply": false,
-   "ensure": [{"ea": "【Fintokei速攻プロ2000万_口座6078225】EA7g_Mon2x10+Roll5x20_ギャンブル.mq5", "symbol": "GBPJPY", "period": "H1"}],
-   "remove": ["EA5_Sess8_20倍", "RecentFit_C6m系_2.5倍"],
-   "note": "EA7g v1.25(9/30 切替・docs/288)。それまで apply=false"
+   "ensure": [
+    {
+     "ea": "【Fintokei速攻プロ2000万_口座6078225】EA7g_Mon2x10+Roll5x20_ギャンブル.mq5",
+     "symbol": "GBPJPY",
+     "period": "H1"
+    }
+   ],
+   "remove": [
+    "EA5_Sess8_20倍",
+    "RecentFit_C6m系_2.5倍"
+   ],
+   "note": "EA7g v1.25(9/30 切替・docs/288)。それまで apply=false",
+   "terminal": "Fintokei",
+   "prepare_profile": true
   }
  }
 }

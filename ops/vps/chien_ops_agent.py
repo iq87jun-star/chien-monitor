@@ -140,7 +140,9 @@ def run_terminal(t, since, out_root, log_days):
                 dep = chien_deploy.run(t["path"], ti.data_path, acct, d, MANIFEST)
                 att = dep.get("inventory", {}).get("attached", [])
                 print(f"  棚卸し: チャート {len(dep.get('inventory', {}).get('charts', []))} 本 / EA {len(att)} 本: " + "; ".join(f"{a['ea']}@{a['symbol']}" for a in att)[:300])
-                for k, v in (dep.get("compiled") or {}).items(): print(f"  コンパイル {k[:50]}: {'OK' if v.get('ok') else 'NG'} {'' if v.get('ok') else str(v.get('log'))[:200]}")
+                for a2, cc in (dep.get("compiled") or {}).items():
+                    for k, v in cc.items(): print(f"  コンパイル[{a2}] {k[:50]}: {'OK' if v.get('ok') else 'NG'} {'' if v.get('ok') else str(v.get('log'))[:200]}")
+                for a2, pr in (dep.get("profiles") or {}).items(): print(f"  プロファイル[{a2}]: {pr.get('profile') or pr.get('error')} {pr.get('made')}")
                 if dep.get("apply"): print(f"  配備: {dep['apply']}")
             except Exception as ex:
                 print(f"  棚卸し/配備 例外 {ex!r}")

@@ -224,23 +224,56 @@ def parse_chart_text(s):
     return dict(symbol=top.get("symbol", ""), experts=experts), s, None
 
 
+def prepare_profile(data_path, account, cfg, inv, compiled):
+    """MQL5 VPS 用: プロファイル MQL5\\Profiles\\Charts\\chien_<口座>\\chart01.chr を作る(正しい EA 1 本・既定入力)。Default には触らない。
+    ユーザーはその口座でログイン → ファイル→プロファイル→chien_<口座> → VPS→移行、で反映する。"""
+    pdir = inv.get("profile_dir")
+    if not pdir: return dict(ok=False, error="profile dir not found")
+    srcs = sorted(glob.glob(os.path.join(pdir, "chart*.chr")))
+    if not srcs: return dict(ok=False, error="no template chart in current profile")
+    modes = inv.get("expertmode_seen") or []; mode = str(cfg.get("expertmode") or (modes[0] if modes else 5))
+    name = f"chien_{account}"; ndir = os.path.join(os.path.dirname(pdir), name); os.makedirs(ndir, exist_ok=True)
+    eol = "\r\n"; made = []
+    c0, s0, enc0 = parse_chart(srcs[0]); s0 = EXPERT_RE.sub("", s0)
+    for i, want in enumerate(cfg.get("ensure", []), start=1):
+        ea = want["ea"]; base = ea[:-4] if ea.lower().endswith(".mq5") else ea
+        comp = compiled.get(ea, {})
+        if not comp.get("ok"): made.append(f"skip {base}: not compiled"); continue
+        sym = want.get("symbol", c0.get("symbol", "")); per = want.get("period", "H1"); pm = PERIOD_MIN.get(per, 60)
+        s = re.sub(r"^symbol=.*?$", f"symbol={sym}", s0, count=1, flags=re.M)
+        s = re.sub(r"^period_type=.*?$", ("period_type=1" if 60 <= pm < 1440 else "period_type=0"), s, count=1, flags=re.M)
+        s = re.sub(r"^period_size=.*?$", f"period_size={pm // 60 if pm >= 60 else pm}", s, count=1, flags=re.M)
+        blk = expert_block("chien\\" + base, "Experts\\chien\\" + base + ".ex5", mode, eol)
+        m = re.search(r"^<window>", s, re.M)
+        s = (s[:m.start()] + blk + s[m.start():]) if m else s.replace("</chart>", blk + "</chart>", 1)
+        # 既存のプロファイル内チャートは消して作り直す(EA 1 本 = チャート 1 枚)
+        for old in glob.glob(os.path.join(ndir, "chart*.chr")): os.remove(old)
+        write_text(os.path.join(ndir, f"chart{i:02d}.chr"), s, enc0); made.append(f"{name}\\chart{i:02d}.chr = {base} @ {sym} {per} (expertmode={mode})")
+    return dict(ok=True, profile=name, made=made)
+
+
 def run(terminal_path, data_path, account, out_dir, manifest):
-    """agent から呼ぶ入口。棚卸し → (manifest にあれば)コンパイル → apply=true なら適用。"""
-    st = dict(time=dt.datetime.now().isoformat(), account=str(account))
+    """agent から呼ぶ入口。棚卸し → この端末で扱う全口座(manifest の terminal 一致)の EA をコンパイル → プロファイル生成。apply は MQL5 VPS では使わない。"""
+    st = dict(time=dt.datetime.now().isoformat(), account=str(account), terminal=terminal_path)
     try:
         inv = inventory(data_path); st["inventory"] = inv
     except Exception as ex:
         st["inventory_error"] = repr(ex); inv = {}
-    cfg = (manifest or {}).get("accounts", {}).get(str(account))
-    st["manifest"] = cfg
-    compiled = {}
-    if cfg:
-        branch = (manifest or {}).get("branch", "claude/prop-trading-new-methods-a8y3l1")
+    accounts = (manifest or {}).get("accounts", {})
+    mine = {a: c for a, c in accounts.items() if (c.get("terminal") and c["terminal"].lower() in terminal_path.lower()) or a == str(account)}
+    st["accounts_for_this_terminal"] = sorted(mine)
+    branch = (manifest or {}).get("branch", "claude/prop-trading-new-methods-a8y3l1")
+    st["compiled"] = {}; st["profiles"] = {}
+    for a, cfg in mine.items():
+        compiled = {}
         for want in cfg.get("ensure", []):
             try: compiled[want["ea"]] = compile_ea(terminal_path, data_path, branch, want["ea"])
             except Exception as ex: compiled[want["ea"]] = dict(ok=False, log=repr(ex))
-        st["compiled"] = {k: {kk: vv for kk, vv in v.items() if kk != "ex5"} for k, v in compiled.items()}
-        if cfg.get("apply"):
+        st["compiled"][a] = {k: {kk: vv for kk, vv in v.items() if kk != "ex5"} for k, v in compiled.items()}
+        if cfg.get("prepare_profile", True):
+            try: st["profiles"][a] = prepare_profile(data_path, a, cfg, inv, compiled)
+            except Exception as ex: st["profiles"][a] = dict(ok=False, error=repr(ex))
+        if cfg.get("apply") and a == str(account):
             try: st["apply"] = apply(terminal_path, data_path, cfg, inv, compiled, os.path.join(out_dir, "chien_backup"))
             except Exception as ex: st["apply"] = dict(changed=False, error=repr(ex))
     os.makedirs(out_dir, exist_ok=True)

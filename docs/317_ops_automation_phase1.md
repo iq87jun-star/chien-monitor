@@ -50,3 +50,14 @@ VPS(Windows)                                   Google Drive              研究�
 - 配備: `ops/vps/deploy.ps1` — `git pull` → `metaeditor64.exe /compile:"<file>" /log` を EA ごとに → `.ex5` を各端末の `MQL5/Experts/chien/` へコピー → 端末の起動 ini(`[StartUp] Expert=chien\EA3 Symbol=GBPJPY Period=H1 ExpertParameters=EA3.set`)。表示インジケータ `Chien_View.mq5`(ショット時刻・SL 水準・スキップ日・指数寄り窓)を `.tpl` に同梱。
 - ホットリロード: 各 EA に `InpConfigFile="chien_config.json"` を追加し、毎時 `FileOpen` で読んで `InpJpHolidayMondays` 等の実効値を上書き(input は変更できないため実効値を別変数に持つ)。リポジトリの `ops/config/chien_config.json` を Drive 経由で各端末の `MQL5/Files/` に同期。
 - どちらもユーザーの「段階 2 に進む」で着手。
+
+## 5.【2026-09-28 判明】EA は MQL5 VPS(MetaQuotes ホスティング)で動いている
+ユーザー確認: 業者ごとに 1 つの MT5 で口座を切り替えてログインし、口座ごとに MQL5 VPS へ移行して動かしている。ローカル(手元 PC)の端末は移行時点の写しで、取引はしない(9/28 の Mon 建ては手元端末のログに ENTRY 無し・VPS 側の建玉のみ)。
+
+影響:
+- 口座記録(約定・建玉・equity)はサーバー側から取れるので **段階 1 はそのまま有効**(手元 PC の bat で毎時取得 → Drive)。
+- **配備の自動化(apply)は不可**。MQL5 VPS へ EA を送る手段は端末の「VPS → 移行」だけ(GUI 操作)。
+- 代わりに `chien_deploy.py` は、業者端末ごとに **その端末で扱う全口座の EA をコンパイルし、口座ごとのプロファイル `chien_<口座>`(正しい EA 1 本を載せたチャート)を生成**する。ユーザーの作業は口座ごとに 3 操作: ①その口座でログイン → ②ファイル→プロファイル→`chien_<口座>` → ③VPS→移行。
+- VPS 上の EA の版は直接読めないので、**挙動から推定**する(Mon の建て分・Magic・祝日日の建て有無)。9/28 時点の推定: 11988011 は建て分 :00(v1.14 以降なら :12)= 旧版、521100397 は Magic 943401(D 案)= EA8 未配備、6078225 は EA7g(版不明・祝日フィルター無しの可能性)。
+
+手元 PC の役割: 記録取得(毎時)+ コンパイル + プロファイル生成。VPS 移行は手動(3 操作/口座)。
