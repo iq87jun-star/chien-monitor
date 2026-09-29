@@ -28,9 +28,8 @@ on:
   workflow_dispatch:
     inputs:
       target:
-        description: 提出する拡張
-        type: choice
-        options: [all, extension, job-extension, realty-extension]
+        description: 提出する拡張のフォルダ名(all で store/amo.json がある拡張すべて)
+        type: string
         default: all
       dry_run:
         description: 送る内容の確認だけ(提出しない)
@@ -64,7 +63,8 @@ jobs:
           TARGET: ${{ inputs.target }}
           DRY_RUN: ${{ inputs.dry_run }}
         run: |
-          all="extension job-extension realty-extension"
+          # store/amo.json と manifest.json がある拡張すべて(新しい拡張も自動で対象になる)
+          all=$(for f in */store/amo.json; do d=${f%%/*}; [ -f "$d/manifest.json" ] && echo "$d"; done | xargs)
           case "${GITHUB_EVENT_NAME}:${GITHUB_REF_NAME}" in
             push:ext-v*)    dirs=extension;        prefix=ext ;;
             push:job-v*)    dirs=job-extension;    prefix=job ;;
@@ -72,6 +72,9 @@ jobs:
             workflow_dispatch:*) dirs=$([ "$TARGET" = all ] && echo "$all" || echo "$TARGET") ;;
             *) dirs=$all ;;
           esac
+          for d in $dirs; do
+            if [ ! -f "$d/store/amo.json" ]; then echo "::error::$d に store/amo.json がない" >&2; exit 1; fi
+          done
           mode=submit
           if [ "$GITHUB_EVENT_NAME" = pull_request ] || [ "$DRY_RUN" = true ]; then mode=dry-run; fi
           echo "dirs=$dirs" >> "$GITHUB_OUTPUT"
