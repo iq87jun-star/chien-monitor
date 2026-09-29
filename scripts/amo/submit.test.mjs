@@ -62,7 +62,15 @@ function fixture(version = "1.2.0") {
 }
 
 // AMO をまねたサーバー。state を変えて「未登録/登録済み/検証エラー」を作る
-const state = { addon: null, versions: [], previews: 0, uploadValid: true, throttle: 0, calls: [] };
+const state = {
+  addon: null,
+  versions: [],
+  previews: 0,
+  uploadValid: true,
+  throttle: 0,
+  policy: null,
+  calls: [],
+};
 let server;
 let base;
 
@@ -133,6 +141,8 @@ before(async () => {
         return send(200, { results: state.versions });
       if (p === `${addonPath}versions/` && req.method === "POST")
         return send(201, { version: "x" });
+      if (p === `${addonPath}eula_policy/` && req.method === "GET")
+        return send(200, { privacy_policy: state.policy });
       if (p === `${addonPath}eula_policy/` && req.method === "PATCH") return send(200, {});
       if (p === `${addonPath}previews/` && req.method === "POST") {
         state.previews++;
@@ -156,7 +166,15 @@ const quiet = () => {};
 const reset = (s) =>
   Object.assign(
     state,
-    { addon: null, versions: [], previews: 0, uploadValid: true, throttle: 0, calls: [] },
+    {
+      addon: null,
+      versions: [],
+      previews: 0,
+      uploadValid: true,
+      throttle: 0,
+      policy: null,
+      calls: [],
+    },
     s,
   );
 
@@ -179,7 +197,7 @@ test("未登録なら新規登録し、掲載情報・プライバシーポリ�
   });
   const upload = state.calls.find((c) => c.path === "/api/v5/addons/upload/");
   assert.match(upload.raw, /name="channel"\r\n\r\nlisted/);
-  const policy = state.calls.find((c) => c.path.endsWith("/eula_policy/"));
+  const policy = state.calls.find((c) => c.method === "PATCH" && c.path.endsWith("/eula_policy/"));
   assert.deepEqual(policy.json, { privacy_policy: { ja: "何も収集しません。" } });
   assert.equal(state.previews, 2);
 });
@@ -268,4 +286,42 @@ test("429 の待ち時間の合計が上限を超えたら、待たずに止め�
   } finally {
     delete process.env.AMO_RETRY_BUDGET_SEC;
   }
+});
+
+// fixture() の掲載情報を AMO が返す形にしたもの(登録済みで何も変わっていない状態)
+const synced = () => ({
+  slug: "sample-checker",
+  name: { ja: "サンプル チェッカー" },
+  summary: { ja: "サンプルの概要です。" },
+  description: { ja: "1行目\n\n■ 2つ目の節" },
+  categories: { firefox: ["other"] },
+  homepage: { url: { ja: "https://pokeca-kaigai.com/" }, outgoing: {} },
+  support_email: { ja: "help@example.com" },
+});
+
+test("掲載情報とプライバシーポリシーが変わっていなければ、編集を送らない", async () => {
+  reset({
+    addon: synced(),
+    versions: [{ version: "1.2.0" }],
+    previews: 2,
+    policy: { ja: "何も収集しません。" },
+  });
+  const r = await submit(fixture("1.2.0"), { env: env(), log: quiet });
+  assert.equal(r.action, "unchanged");
+  assert.deepEqual(
+    state.calls.filter((c) => c.method !== "GET").map((c) => c.path),
+    [],
+  );
+});
+
+test("変わった項目だけ送る", async () => {
+  reset({
+    addon: { ...synced(), summary: { ja: "古い概要" }, categories: { firefox: ["shopping"] } },
+    versions: [{ version: "1.2.0" }],
+    previews: 2,
+    policy: { ja: "何も収集しません。" },
+  });
+  await submit(fixture("1.2.0"), { env: env(), log: quiet });
+  const patch = state.calls.find((c) => c.method === "PATCH");
+  assert.deepEqual(Object.keys(patch.json).sort(), ["categories", "summary"]);
 });
