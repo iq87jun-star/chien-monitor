@@ -116,6 +116,34 @@ export function buildSubmission(dir, env = process.env) {
   };
 }
 
+// 翻訳付きの項目({ ja: "…" } または文字列)から、既定の言語の値を取り出す
+function tr(v) {
+  if (v == null) return null;
+  if (typeof v === "string") return v;
+  return v[LOCALE] ?? Object.values(v)[0] ?? null;
+}
+
+// AMO に登録済みの掲載情報と比べ、変わった項目だけを返す
+export function changedMetadata(addon, metadata) {
+  const current = {
+    name: tr(addon.name),
+    summary: tr(addon.summary),
+    description: tr(addon.description),
+    homepage: tr(addon.homepage?.url ?? addon.homepage),
+    support_email: tr(addon.support_email),
+    categories: [...(addon.categories?.firefox ?? addon.categories ?? [])].sort().join(","),
+  };
+  const out = {};
+  for (const key of ["name", "summary", "description", "homepage", "support_email"]) {
+    if (!(key in metadata)) continue;
+    if ((tr(metadata[key]) ?? null) !== (current[key] ?? null)) out[key] = metadata[key];
+  }
+  if ([...metadata.categories.firefox].sort().join(",") !== current.categories) {
+    out.categories = metadata.categories;
+  }
+  return out;
+}
+
 // --- AMO API ---
 
 function jwt(issuer, secret) {
@@ -242,14 +270,19 @@ export async function submit(dir, { dryRun = false, env = process.env, log = con
     log(`新規登録して審査に提出しました: ${addon.url ?? addon.slug}`);
   } else {
     // 掲載情報は版の提出より先に同期する(版の作成では掲載情報を変えられないため)
-    addon = await api("PATCH", `/addons/addon/${g}/`, s.metadata);
+    // AMO は編集の回数の制限が厳しいので、変わった項目だけ送る(何も変わっていなければ送らない)
+    const changed = changedMetadata(addon, s.metadata);
+    if (Object.keys(changed).length) {
+      addon = await api("PATCH", `/addons/addon/${g}/`, changed);
+      log(`掲載情報を更新しました: ${Object.keys(changed).join(", ")}`);
+    }
     const versions = await api(
       "GET",
       `/addons/addon/${g}/versions/?filter=all_with_unlisted&page_size=50`,
     );
     if ((versions.results ?? []).some((v) => v.version === s.version)) {
       action = "unchanged";
-      log(`v${s.version} は提出済みのため、掲載情報の同期だけ行いました`);
+      log(`v${s.version} は提出済みのため、版の提出は飛ばしました`);
     } else {
       const upload = await uploadAndValidate(api, s.zipPath, log);
       await api("POST", `/addons/addon/${g}/versions/`, { upload, ...s.versionFields });
@@ -258,10 +291,13 @@ export async function submit(dir, { dryRun = false, env = process.env, log = con
     }
   }
 
-  await api("PATCH", `/addons/addon/${g}/eula_policy/`, {
-    privacy_policy: { [LOCALE]: s.privacyPolicy },
-  });
-  log("プライバシーポリシーを同期しました");
+  const policy = await api("GET", `/addons/addon/${g}/eula_policy/`);
+  if (tr(policy.privacy_policy) !== s.privacyPolicy) {
+    await api("PATCH", `/addons/addon/${g}/eula_policy/`, {
+      privacy_policy: { [LOCALE]: s.privacyPolicy },
+    });
+    log("プライバシーポリシーを更新しました");
+  }
 
   // スクリーンショットは足りない分だけ登録する(途中で止まった時も、再実行で続きから)
   const have = (addon.previews ?? []).length;
