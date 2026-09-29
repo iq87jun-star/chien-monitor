@@ -10,7 +10,7 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { submit, buildSubmission, AmoError, AmoThrottled } from "./submit.mjs";
+import { submit, buildSubmission, changedMetadata, AmoError, AmoThrottled } from "./submit.mjs";
 
 process.env.AMO_POLL_MS = "10";
 process.env.AMO_RETRY_SCALE = "0.01";
@@ -327,4 +327,22 @@ test("変わった項目だけ送る", async () => {
   await submit(fixture("1.2.0"), { env: env(), log: quiet });
   const patch = state.calls.find((c) => c.method === "PATCH");
   assert.deepEqual(Object.keys(patch.json).sort(), ["categories", "summary"]);
+});
+
+test("AMO が改行や HTML の形を変えて返しても、同じ内容なら違いとみなさない", () => {
+  const metadata = {
+    name: { ja: "名前" },
+    summary: { ja: "概要" },
+    description: { ja: "1行目\n\n■ 節\n・A & B" },
+    homepage: { ja: "https://pokeca-kaigai.com/" },
+    categories: { firefox: ["other"] },
+  };
+  const addon = {
+    name: { ja: "名前" },
+    summary: { ja: "概要 " },
+    description: { ja: "1行目\r\n\r\n■ 節<br>・A &amp; B" },
+    homepage: { url: { ja: "https://pokeca-kaigai.com" }, outgoing: {} },
+    categories: ["other"],
+  };
+  assert.deepEqual(changedMetadata(addon, metadata), {});
 });

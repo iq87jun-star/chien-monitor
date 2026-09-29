@@ -125,6 +125,24 @@ function tr(v) {
   return v[LOCALE] ?? Object.values(v)[0] ?? null;
 }
 
+// 比べる時の表記の揺れをなくす。AMO は保存時に改行を \r\n にしたり、説明を HTML にして返すことがある
+export function norm(v) {
+  if (v == null) return "";
+  return String(v)
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&#x27;/g, "'")
+    .replace(/\r\n?/g, "\n")
+    .replace(/[ \t\u00a0]+$/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .replace(/\/$/, "")
+    .trim();
+}
+
 // AMO に登録済みの掲載情報と比べ、変わった項目だけを返す
 export function changedMetadata(addon, metadata) {
   const current = {
@@ -138,12 +156,28 @@ export function changedMetadata(addon, metadata) {
   const out = {};
   for (const key of ["name", "summary", "description", "homepage", "support_email"]) {
     if (!(key in metadata)) continue;
-    if ((tr(metadata[key]) ?? null) !== (current[key] ?? null)) out[key] = metadata[key];
+    if (norm(tr(metadata[key])) !== norm(current[key])) out[key] = metadata[key];
   }
   if ([...metadata.categories.firefox].sort().join(",") !== current.categories) {
     out.categories = metadata.categories;
   }
   return out;
+}
+
+// 何が違ったかを短く示す(次に同じ違いが続く時に原因を探すため)
+function describeDiff(addon, changed) {
+  return Object.keys(changed)
+    .map((key) => {
+      if (key === "categories") return `categories(${JSON.stringify(addon.categories)})`;
+      const cur = norm(
+        tr(key === "homepage" ? (addon.homepage?.url ?? addon.homepage) : addon[key]),
+      );
+      const next = norm(tr(changed[key]));
+      let i = 0;
+      while (i < cur.length && cur[i] === next[i]) i++;
+      return `${key}(${i} 文字目から: 登録済み ${JSON.stringify(cur.slice(i, i + 15))} / 新 ${JSON.stringify(next.slice(i, i + 15))})`;
+    })
+    .join(", ");
 }
 
 // --- AMO API ---
@@ -275,6 +309,7 @@ export async function submit(dir, { dryRun = false, env = process.env, log = con
     // AMO は編集の回数の制限が厳しいので、変わった項目だけ送る(何も変わっていなければ送らない)
     const changed = changedMetadata(addon, s.metadata);
     if (Object.keys(changed).length) {
+      log(`掲載情報の違い: ${describeDiff(addon, changed)}`);
       addon = await api("PATCH", `/addons/addon/${g}/`, changed);
       log(`掲載情報を更新しました: ${Object.keys(changed).join(", ")}`);
     }
@@ -294,7 +329,10 @@ export async function submit(dir, { dryRun = false, env = process.env, log = con
   }
 
   const policy = await api("GET", `/addons/addon/${g}/eula_policy/`);
-  if (tr(policy.privacy_policy) !== s.privacyPolicy) {
+  if (norm(tr(policy.privacy_policy)) !== norm(s.privacyPolicy)) {
+    log(
+      `プライバシーポリシーが違うため更新します(登録済み ${norm(tr(policy.privacy_policy)).length} 文字・新 ${norm(s.privacyPolicy).length} 文字)`,
+    );
     await api("PATCH", `/addons/addon/${g}/eula_policy/`, {
       privacy_policy: { [LOCALE]: s.privacyPolicy },
     });
