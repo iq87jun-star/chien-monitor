@@ -1,0 +1,15 @@
+{
+  "_comment": "Firefox アドオン(AMO)の掲載情報。名前・概要は manifest.json、説明は listing.md の「説明」から自動で取る。scripts/amo/submit.mjs が使う",
+  "slug": "job-salary-checker",
+  "categories": [
+    "other"
+  ],
+  "license": "all-rights-reserved",
+  "homepage": "https://pokeca-kaigai.com/",
+  "privacy_policy": "本アドオンは、個人を特定できる情報・閲覧履歴・入力内容を収集せず、外部に送信しません。\nページの読み取りと計算はお使いのブラウザ内だけで行います。\n外部のサーバーとの通信は一切行いません。\n計算結果の下に「PR」と明記した紹介リンク(広告)を表示する場合があります。リンクはクリックした時だけ移動します。\n表示のON/OFFなどの設定だけをブラウザ内(storage)に保存します。\n詳しくは https://pokeca-kaigai.com/job-extension-privacy.html をご覧ください。",
+  "approval_notes": "This extension reads the salary, working hours and holidays sections of job listing pages (by looking for headings such as 給与 / 勤務時間 / 休日) and shows an estimated annual salary, hourly equivalent and fixed overtime pay in the bottom-right corner. All calculation happens locally; the extension makes no network requests. To test: open any job detail page on en-japan.com (en転職). The code is not minified or obfuscated.",
+  "screenshots": [
+    "store/screenshots/1-annual.png",
+    "store/screenshots/2-overtime.png"
+  ]
+}
