@@ -245,8 +245,13 @@ test("API キーが無ければ通信せずに止まる。--dry-run は通信し
   assert.equal(state.calls.length, 0);
 });
 
-test("3つの拡張の amo.json・listing.md・スクリーンショットが揃っている", () => {
-  for (const d of ["extension", "job-extension", "realty-extension"]) {
+test("すべての拡張の amo.json・listing.md・スクリーンショットが揃っている", () => {
+  // store/amo.json がある拡張すべて(新しい拡張も自動で確かめる)
+  const dirs = fs
+    .readdirSync(ROOT)
+    .filter((d) => fs.existsSync(path.join(ROOT, d, "store", "amo.json")));
+  assert.ok(dirs.length >= 3, `拡張が見つからない: ${dirs}`);
+  for (const d of dirs) {
     const dir = path.join(ROOT, d);
     if (!fs.existsSync(path.join(dir, "dist", "firefox")))
       execFileSync("node", ["scripts/pack.mjs"], { cwd: dir, stdio: "ignore" });

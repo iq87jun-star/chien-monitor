@@ -1,7 +1,7 @@
 # Cowork(人のパソコンのブラウザを操作する Claude)に渡すファイルを1つの Artifact「cowork-files」にまとめる。
 # Cowork は GitHub の Actions 画面からこれをダウンロードして使う(作業指示は cowork/README.md)。
-#   chrome/     … Chrome ウェブストア・Edge アドオンに出す zip(3つの拡張)
-#   firefox/    … Firefox アドオン(AMO)に出す zip(3つの拡張)
+#   chrome/     … Chrome ウェブストア・Edge アドオンに出す zip(すべての拡張)
+#   firefox/    … Firefox アドオン(AMO)に出す zip(すべての拡張)
 #   sheets-addon/ … スプレッドシートのアドオンの Apps Script に貼るファイル(5つ)
 # 拡張・アドオン・共有する計算部分を main で変えるたびに作り直す。手動でも実行できる。
 
@@ -14,6 +14,7 @@ on:
       - "extension/**"
       - "job-extension/**"
       - "realty-extension/**"
+      - "*-extension/**"
       - "sheets-addon/**"
       - "calc-api/src/**"
       - ".github/workflows/cowork-files.yml"
@@ -33,7 +34,8 @@ jobs:
       - name: 拡張の zip を作る(Chrome・Edge 用と Firefox 用)
         run: |
           mkdir -p out/chrome out/firefox
-          for d in extension job-extension realty-extension; do
+          # scripts/pack.mjs と store/amo.json がある拡張すべて(新しい拡張も自動で入る)
+          for d in $(for f in */store/amo.json; do d=${f%%/*}; [ -f "$d/scripts/pack.mjs" ] && echo "$d"; done); do
             (cd "$d" && node scripts/pack.mjs)
             cp "$d"/dist/*.zip out/chrome/
             cp "$d"/dist/firefox/*.zip out/firefox/
