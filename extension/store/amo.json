@@ -1,0 +1,17 @@
+{
+  "_comment": "Firefox アドオン(AMO)の掲載情報。名前・概要は manifest.json、説明は listing.md の「説明」から自動で取る。scripts/amo/submit.mjs が使う",
+  "slug": "toreca-kaigai-checker",
+  "categories": [
+    "shopping"
+  ],
+  "license": "all-rights-reserved",
+  "homepage": "https://pokeca-kaigai.com/",
+  "privacy_policy": "本アドオンは、個人を特定できる情報・閲覧履歴・入力内容を収集せず、外部に送信しません。\nページの商品名の読み取りと照合はお使いのブラウザ内だけで行います。\n相場データ(カード名と価格の一覧)を pokeca-kaigai.com・pocketduel.tokyo から数時間おきに取得します。閲覧中のページの情報は送信しません。\n表示のON/OFFなどの設定だけをブラウザ内(storage)に保存します。\n詳しくは https://pokeca-kaigai.com/extension-privacy.html をご覧ください。",
+  "approval_notes": "This extension reads the product title (h1) on marketplace product pages, matches it against trading card names locally in the browser, and shows the overseas market price (converted to JPY) in the bottom-right corner. The only network requests fetch public price data (JSON) from pokeca-kaigai.com and pocketduel.tokyo; no information about the visited page is sent. To test: open a Mercari (jp.mercari.com) product page for a Pokemon card, e.g. search for \"リザードンex 201/165\". The code is not minified or obfuscated.",
+  "screenshots": [
+    "store/screenshots/1-exact.png",
+    "store/screenshots/2-candidates.png",
+    "store/screenshots/3-yugioh.png",
+    "store/screenshots/4-onepiece.png"
+  ]
+}

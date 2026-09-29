@@ -30,6 +30,25 @@ Firefox 用は manifest だけが違う(アドオンID・データ収集の申�
 
 ## Firefox アドオン(AMO・登録無料)
 
+### 自動で提出する(おすすめ)
+
+GitHub Actions の `amo-publish` が、AMO の API で新規登録・掲載情報・プライバシーポリシー・スクリーンショット・
+審査への提出まで行う(`scripts/amo/submit.mjs`)。掲載情報は Chrome と同じ `store/listing.md`(説明)・
+`manifest.json`(名前・概要)と、各拡張の `store/amo.json`(カテゴリ・プライバシーポリシー・審査担当者へのメモ等)から取る。
+
+1. [Firefox アドオン開発者ハブ](https://addons.mozilla.org/developers/) にログインし、開発者の規約に同意する
+2. [API キーの管理](https://addons.mozilla.org/developers/addon/api/key/) で「新しい認証情報を生成」を押し、
+   「JWT 発行者」と「JWT 秘密鍵」を控える
+3. GitHub のリポジトリの Settings → Secrets and variables → Actions に登録する:
+   `AMO_JWT_ISSUER`(JWT 発行者)・`AMO_JWT_SECRET`(JWT 秘密鍵)・`AMO_SUPPORT_EMAIL`(任意。ストアに公開されるサポートメール)
+4. Actions →「amo-publish」→「Run workflow」→ 対象(all で3つとも)を選んで実行する。
+   初回は新規登録、2回目以降は新しい版の提出になる(同じ版が提出済みなら掲載情報の同期だけ)
+5. 以後は、Chrome と同じタグ(`ext-v0.3.2`・`job-v0.1.3`・`realty-v0.1.1` など)を付けると自動で提出される
+
+結果は Actions の実行結果の Summary と、AMO からのメール(審査結果)で確かめる。
+
+### 手で提出する場合
+
 1. [Firefox アドオン開発者ハブ](https://addons.mozilla.org/developers/) に Mozilla アカウントでログインする(登録料なし)
 2. 「新しいアドオンを申請」→ 公開方法は「このサイトで公開する」→ **Firefox 用のzip** をアップロード
    (自動検査が走る。警告が出たらその内容を Claude Code のセッションに貼る)

@@ -1,0 +1,258 @@
+// Firefox アドオン(AMO)への自動提出。3つの拡張で共通に使う。
+//   node scripts/amo/submit.mjs <拡張のフォルダ> [--dry-run]
+//
+// 先に拡張のフォルダで `npm run pack` を実行し、dist/firefox/<名前>-<版>-firefox.zip を作っておく。
+// 1) zip をアップロードして AMO の自動検証を待つ(エラーがあれば内容を出して止まる)
+// 2) まだ AMO に無ければ新規登録、あれば新しい版として提出(同じ版が提出済みなら飛ばす)
+// 3) 掲載情報(名前・概要・説明・カテゴリ・ホームページ・サポートメール)とプライバシーポリシーを同期
+// 4) スクリーンショットが1枚も無ければ登録する
+//
+// 名前・概要は manifest.json、説明は store/listing.md の「## 説明」の ``` の中、
+// それ以外は store/amo.json から取る(Chrome と同じ文章を1か所で管理する)。
+//
+// 環境変数:
+//   AMO_JWT_ISSUER / AMO_JWT_SECRET … AMO の API キー(https://addons.mozilla.org/developers/addon/api/key/)
+//   AMO_SUPPORT_EMAIL               … ストアに載せるサポートメール(任意。公開される)
+//   AMO_API_BASE                    … 既定 https://addons.mozilla.org(テストでモックに向ける時だけ)
+// --dry-run では通信せず、送る内容を確かめて表示するだけ(PR の CI で使う)。
+import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
+import { execFileSync } from "node:child_process";
+import { pathToFileURL } from "node:url";
+
+const SLUG_RE = /^(?!\d+$)[\p{L}\p{N}_~-]+$/u;
+const CATEGORIES = new Set([
+  "alerts-updates",
+  "appearance",
+  "bookmarks",
+  "download-management",
+  "feeds-news-blogging",
+  "games-entertainment",
+  "language-support",
+  "photos-music-videos",
+  "privacy-security",
+  "search-tools",
+  "shopping",
+  "social-communication",
+  "tabs",
+  "web-development",
+  "other",
+]);
+const LOCALE = "ja";
+const POLL_LIMIT_MS = 15 * 60 * 1000;
+
+export class AmoError extends Error {}
+
+// --- 提出内容を組み立てる(通信しない) ---
+
+function listingDescription(dir) {
+  const md = fs.readFileSync(path.join(dir, "store", "listing.md"), "utf8");
+  const i = md.indexOf("## 説明");
+  const m = i >= 0 && md.slice(i).match(/```[^\n]*\n([\s\S]*?)```/);
+  if (!m) throw new AmoError("store/listing.md の「## 説明」に ``` で囲まれた本文が見つかりません");
+  return m[1].trim();
+}
+
+function zipManifest(zipPath) {
+  return JSON.parse(execFileSync("unzip", ["-p", zipPath, "manifest.json"], { encoding: "utf8" }));
+}
+
+export function buildSubmission(dir, env = process.env) {
+  const manifest = JSON.parse(fs.readFileSync(path.join(dir, "manifest.json"), "utf8"));
+  const amo = JSON.parse(fs.readFileSync(path.join(dir, "store", "amo.json"), "utf8"));
+  const zipDir = path.join(dir, "dist", "firefox");
+  const zipName = fs.existsSync(zipDir)
+    ? fs.readdirSync(zipDir).find((f) => f.endsWith(`-${manifest.version}-firefox.zip`))
+    : null;
+  if (!zipName)
+    throw new AmoError(
+      `${zipDir} に版 ${manifest.version} の Firefox 用 zip がありません(先に npm run pack)`,
+    );
+  const zipPath = path.join(zipDir, zipName);
+  const guid = zipManifest(zipPath).browser_specific_settings?.gecko?.id;
+  if (!guid) throw new AmoError("Firefox 用 zip の manifest にアドオンID(gecko.id)がありません");
+
+  const problems = [];
+  if (!SLUG_RE.test(amo.slug ?? "")) problems.push(`slug が不正: ${amo.slug}`);
+  for (const c of amo.categories ?? [])
+    if (!CATEGORIES.has(c)) problems.push(`カテゴリが不正: ${c}`);
+  if (!amo.categories?.length) problems.push("categories が空");
+  if (!manifest.description || [...manifest.description].length > 250)
+    problems.push("概要(manifest.description)は1〜250文字");
+  if (!amo.privacy_policy?.trim()) problems.push("privacy_policy が空");
+  const screenshots = (amo.screenshots ?? []).map((p) => path.join(dir, p));
+  for (const p of screenshots)
+    if (!fs.existsSync(p)) problems.push(`スクリーンショットがない: ${p}`);
+  const description = listingDescription(dir);
+  if (problems.length) throw new AmoError(problems.join("\n"));
+
+  const supportEmail = env.AMO_SUPPORT_EMAIL?.trim();
+  const t = (v) => ({ [LOCALE]: v });
+  return {
+    guid,
+    version: manifest.version,
+    zipPath,
+    screenshots,
+    privacyPolicy: amo.privacy_policy.trim(),
+    // 掲載情報(新規登録と、登録済みの時の同期の両方で送る)
+    metadata: {
+      default_locale: LOCALE,
+      name: t(manifest.name),
+      summary: t(manifest.description),
+      description: t(description),
+      categories: { firefox: amo.categories },
+      homepage: amo.homepage ? t(amo.homepage) : null,
+      ...(supportEmail ? { support_email: t(supportEmail) } : {}),
+      requires_payment: false,
+      is_experimental: false,
+    },
+    slug: amo.slug,
+    versionFields: {
+      license: amo.license ?? "all-rights-reserved",
+      approval_notes: amo.approval_notes ?? "",
+      compatibility: ["firefox"],
+    },
+  };
+}
+
+// --- AMO API ---
+
+function jwt(issuer, secret) {
+  const b64 = (o) => Buffer.from(JSON.stringify(o)).toString("base64url");
+  const now = Math.floor(Date.now() / 1000);
+  const body = `${b64({ alg: "HS256", typ: "JWT" })}.${b64({
+    iss: issuer,
+    jti: crypto.randomUUID(),
+    iat: now,
+    exp: now + 60,
+  })}`;
+  return `${body}.${crypto.createHmac("sha256", secret).update(body).digest("base64url")}`;
+}
+
+function client({ base, issuer, secret }) {
+  return async function api(method, p, body, { allow404 = false } = {}) {
+    const headers = { Authorization: `JWT ${jwt(issuer, secret)}` };
+    let payload;
+    if (body instanceof FormData) payload = body;
+    else if (body !== undefined) {
+      headers["Content-Type"] = "application/json";
+      payload = JSON.stringify(body);
+    }
+    const res = await fetch(new URL(`/api/v5${p}`, base), { method, headers, body: payload });
+    if (allow404 && res.status === 404) return null;
+    const text = await res.text();
+    if (!res.ok) throw new AmoError(`${method} ${p} → ${res.status}: ${text.slice(0, 2000)}`);
+    return text ? JSON.parse(text) : {};
+  };
+}
+
+async function uploadAndValidate(api, zipPath, log) {
+  const form = new FormData();
+  form.append("upload", new Blob([fs.readFileSync(zipPath)]), path.basename(zipPath));
+  form.append("channel", "listed");
+  let up = await api("POST", "/addons/upload/", form);
+  log(`アップロード ${up.uuid}: 自動検証を待っています`);
+  const start = Date.now();
+  while (!up.processed) {
+    if (Date.now() - start > POLL_LIMIT_MS)
+      throw new AmoError("自動検証が15分で終わりませんでした");
+    await new Promise((r) => setTimeout(r, Number(process.env.AMO_POLL_MS ?? 5000)));
+    up = await api("GET", `/addons/upload/${up.uuid}/`);
+  }
+  if (!up.valid) {
+    const msgs = (up.validation?.messages ?? [])
+      .filter((m) => m.type === "error")
+      .map((m) => `- ${m.message}${m.file ? ` (${m.file})` : ""}`);
+    throw new AmoError(
+      `AMO の自動検証でエラー:\n${msgs.join("\n") || JSON.stringify(up.validation).slice(0, 2000)}`,
+    );
+  }
+  const warnings = up.validation?.warnings ?? 0;
+  log(`自動検証: 合格(警告 ${warnings} 件)`);
+  return up.uuid;
+}
+
+export async function submit(dir, { dryRun = false, env = process.env, log = console.log } = {}) {
+  const s = buildSubmission(dir, env);
+  log(`${s.metadata.name[LOCALE]} v${s.version}(${s.guid})`);
+  if (dryRun) {
+    log(
+      `[dry-run] zip: ${path.relative(dir, s.zipPath)} / slug: ${s.slug} / カテゴリ: ${s.metadata.categories.firefox.join(",")}`,
+    );
+    log(
+      `[dry-run] 説明 ${[...s.metadata.description[LOCALE]].length} 文字・スクリーンショット ${s.screenshots.length} 枚・プライバシーポリシー ${[...s.privacyPolicy].length} 文字`,
+    );
+    return { action: "dry-run", guid: s.guid, version: s.version };
+  }
+  if (!env.AMO_JWT_ISSUER || !env.AMO_JWT_SECRET)
+    throw new AmoError("AMO_JWT_ISSUER / AMO_JWT_SECRET が未設定です");
+  const api = client({
+    base: env.AMO_API_BASE || "https://addons.mozilla.org",
+    issuer: env.AMO_JWT_ISSUER,
+    secret: env.AMO_JWT_SECRET,
+  });
+  const g = encodeURIComponent(s.guid);
+
+  let addon = await api("GET", `/addons/addon/${g}/`, undefined, { allow404: true });
+  let action;
+  if (!addon) {
+    const upload = await uploadAndValidate(api, s.zipPath, log);
+    addon = await api("POST", "/addons/addon/", {
+      ...s.metadata,
+      slug: s.slug,
+      version: { upload, ...s.versionFields },
+    });
+    action = "created";
+    log(`新規登録して審査に提出しました: ${addon.url ?? addon.slug}`);
+  } else {
+    // 掲載情報は版の提出より先に同期する(版の作成では掲載情報を変えられないため)
+    addon = await api("PATCH", `/addons/addon/${g}/`, s.metadata);
+    const versions = await api(
+      "GET",
+      `/addons/addon/${g}/versions/?filter=all_with_unlisted&page_size=50`,
+    );
+    if ((versions.results ?? []).some((v) => v.version === s.version)) {
+      action = "unchanged";
+      log(`v${s.version} は提出済みのため、掲載情報の同期だけ行いました`);
+    } else {
+      const upload = await uploadAndValidate(api, s.zipPath, log);
+      await api("POST", `/addons/addon/${g}/versions/`, { upload, ...s.versionFields });
+      action = "updated";
+      log(`v${s.version} を審査に提出しました`);
+    }
+  }
+
+  await api("PATCH", `/addons/addon/${g}/eula_policy/`, {
+    privacy_policy: { [LOCALE]: s.privacyPolicy },
+  });
+  log("プライバシーポリシーを同期しました");
+
+  if (!(addon.previews ?? []).length && s.screenshots.length) {
+    for (const [i, p] of s.screenshots.entries()) {
+      const form = new FormData();
+      form.append("image", new Blob([fs.readFileSync(p)], { type: "image/png" }), path.basename(p));
+      form.append("position", String(i));
+      await api("POST", `/addons/addon/${g}/previews/`, form);
+    }
+    log(`スクリーンショット ${s.screenshots.length} 枚を登録しました`);
+  }
+  return { action, guid: s.guid, version: s.version, url: addon.url };
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const args = process.argv.slice(2);
+  const dir = path.resolve(args.find((a) => !a.startsWith("--")) ?? ".");
+  try {
+    const r = await submit(dir, { dryRun: args.includes("--dry-run") });
+    if (process.env.GITHUB_STEP_SUMMARY) {
+      fs.appendFileSync(
+        process.env.GITHUB_STEP_SUMMARY,
+        `- Firefox(AMO) ${path.basename(dir)} v${r.version}: ${r.action}${r.url ? ` ${r.url}` : ""}\n`,
+      );
+    }
+  } catch (e) {
+    console.error(e instanceof AmoError ? e.message : e);
+    process.exit(1);
+  }
+}

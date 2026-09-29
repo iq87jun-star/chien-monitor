@@ -1,0 +1,116 @@
+# Firefox アドオン(AMO)への自動提出(3つの拡張共通・scripts/amo/submit.mjs)。
+#   - タグ ext-v* / job-v* / realty-v* の push: その拡張をテスト → zip 作成 → AMO に提出
+#     (未登録なら新規登録、登録済みなら新しい版。Chrome の *-publish.yml と同じタグで一緒に動く)
+#   - 手動実行(Actions →「amo-publish」→ Run workflow): 対象の拡張を選んで提出。
+#     初回の新規登録もこれで行う。dry_run にすると送る内容の確認だけ
+#   - 提出の仕組み・掲載情報を変える PR: テストと dry-run のみ
+#
+# Secrets(未設定なら提出は飛ばして通知だけ出す):
+#   AMO_JWT_ISSUER / AMO_JWT_SECRET … https://addons.mozilla.org/developers/addon/api/key/ で発行する API キー
+#   AMO_SUPPORT_EMAIL               … ストアに載せるサポートメール(任意。公開される)
+
+name: amo-publish
+
+on:
+  push:
+    tags: ["ext-v*", "job-v*", "realty-v*"]
+  pull_request:
+    paths:
+      - "scripts/amo/**"
+      - "*/store/amo.json"
+      - "*/store/listing.md"
+      - ".github/workflows/amo-publish.yml"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 提出する拡張
+        type: choice
+        options: [all, extension, job-extension, realty-extension]
+        default: all
+      dry_run:
+        description: 送る内容の確認だけ(提出しない)
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: amo-publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  amo:
+    runs-on: ubuntu-latest
+    env:
+      AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+      AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+      AMO_SUPPORT_EMAIL: ${{ secrets.AMO_SUPPORT_EMAIL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 対象と動かし方を決める
+        id: plan
+        env:
+          TARGET: ${{ inputs.target }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          all="extension job-extension realty-extension"
+          case "${GITHUB_EVENT_NAME}:${GITHUB_REF_NAME}" in
+            push:ext-v*)    dirs=extension;        prefix=ext ;;
+            push:job-v*)    dirs=job-extension;    prefix=job ;;
+            push:realty-v*) dirs=realty-extension; prefix=realty ;;
+            workflow_dispatch:*) dirs=$([ "$TARGET" = all ] && echo "$all" || echo "$TARGET") ;;
+            *) dirs=$all ;;
+          esac
+          mode=submit
+          if [ "$GITHUB_EVENT_NAME" = pull_request ] || [ "$DRY_RUN" = true ]; then mode=dry-run; fi
+          echo "dirs=$dirs" >> "$GITHUB_OUTPUT"
+          echo "prefix=${prefix:-}" >> "$GITHUB_OUTPUT"
+          echo "mode=$mode" >> "$GITHUB_OUTPUT"
+          echo "対象: $dirs / $mode"
+
+      - name: タグと manifest の版が一致するか
+        if: steps.plan.outputs.prefix != ''
+        run: |
+          d="${{ steps.plan.outputs.dirs }}"
+          version=$(node -p "require('./$d/manifest.json').version")
+          if [ "${{ steps.plan.outputs.prefix }}-v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "タグ ${GITHUB_REF_NAME} と manifest の版 ${version} が一致しない" >&2
+            exit 1
+          fi
+
+      - name: 拡張のテストと Firefox 用 zip の作成
+        run: |
+          for d in ${{ steps.plan.outputs.dirs }}; do
+            echo "::group::$d"
+            (cd "$d" && npm ci && npm test && node scripts/pack.mjs \
+              && npx --yes web-ext@8 lint --source-dir dist/firefox-src --warnings-as-errors)
+            echo "::endgroup::"
+          done
+
+      - name: 提出の仕組みのテスト(AMO をまねたサーバーで)
+        run: node --test scripts/amo/submit.test.mjs
+
+      - name: 送る内容の確認(dry-run)
+        run: |
+          for d in ${{ steps.plan.outputs.dirs }}; do node scripts/amo/submit.mjs "$d" --dry-run; done
+
+      - name: Firefox アドオン(AMO)に提出
+        if: steps.plan.outputs.mode == 'submit'
+        run: |
+          if [ -z "$AMO_JWT_ISSUER" ] || [ -z "$AMO_JWT_SECRET" ]; then
+            echo "::notice::AMO_JWT_ISSUER / AMO_JWT_SECRET が未設定のため、AMO への提出を飛ばしました"
+            exit 0
+          fi
+          status=0
+          for d in ${{ steps.plan.outputs.dirs }}; do
+            echo "::group::$d"
+            node scripts/amo/submit.mjs "$d" || { echo "::error::$d の提出に失敗"; status=1; }
+            echo "::endgroup::"
+          done
+          exit $status
