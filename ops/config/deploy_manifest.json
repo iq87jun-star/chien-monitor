@@ -169,13 +169,15 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【Fintokeiスイング_トパーズ3500万_口座6104739】RecentFit_NonFX_1.48倍+Roll5_1.0倍.mq5",
-     "symbol": "UK100",
+     "ea": "【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x2.0+Roll5x1.0+NonFX0.5.mq5",
+     "symbol": "GBPJPY",
      "period": "H1"
     }
    ],
-   "remove": [],
-   "note": "Topaz ProTrader Swing Phase 1 2026-09-28 購入。EA11 非FX ×1.48 + Roll ×1.0 v1.00(docs/320)",
+   "remove": [
+    "RecentFit_NonFX_1.48倍+Roll5_1.0倍"
+   ],
+   "note": "EA11 v1.10(Mon4 ×2.0 + Roll ×1.0 + 非FX ×0.5・docs/320 §8)。v1.00 の Hold 建玉(943623)を手動決済してから移行",
    "terminal": "Fintokei",
    "prepare_profile": true
   }
