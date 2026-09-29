@@ -130,21 +130,44 @@ function jwt(issuer, secret) {
   return `${body}.${crypto.createHmac("sha256", secret).update(body).digest("base64url")}`;
 }
 
-function client({ base, issuer, secret }) {
+function client({ base, issuer, secret, log = console.log }) {
   return async function api(method, p, body, { allow404 = false } = {}) {
-    const headers = { Authorization: `JWT ${jwt(issuer, secret)}` };
-    let payload;
-    if (body instanceof FormData) payload = body;
-    else if (body !== undefined) {
-      headers["Content-Type"] = "application/json";
-      payload = JSON.stringify(body);
+    // 429(短時間に送りすぎ)は、AMO が示す秒数だけ待って同じ内容を送り直す
+    for (let attempt = 1; ; attempt++) {
+      const headers = { Authorization: `JWT ${jwt(issuer, secret)}` };
+      let payload;
+      if (body instanceof FormData) payload = body;
+      else if (body !== undefined) {
+        headers["Content-Type"] = "application/json";
+        payload = JSON.stringify(body);
+      }
+      const res = await fetch(new URL(`/api/v5${p}`, base), { method, headers, body: payload });
+      if (allow404 && res.status === 404) return null;
+      const text = await res.text();
+      if (res.status === 429 && attempt <= MAX_RETRIES) {
+        const wait = retryAfterSeconds(res, text);
+        log(
+          `${method} ${p}: 送りすぎの制限(429)。${wait} 秒待って送り直します(${attempt}/${MAX_RETRIES})`,
+        );
+        await new Promise((r) => setTimeout(r, wait * 1000 * RETRY_SCALE()));
+        continue;
+      }
+      if (!res.ok) throw new AmoError(`${method} ${p} → ${res.status}: ${text.slice(0, 2000)}`);
+      return text ? JSON.parse(text) : {};
     }
-    const res = await fetch(new URL(`/api/v5${p}`, base), { method, headers, body: payload });
-    if (allow404 && res.status === 404) return null;
-    const text = await res.text();
-    if (!res.ok) throw new AmoError(`${method} ${p} → ${res.status}: ${text.slice(0, 2000)}`);
-    return text ? JSON.parse(text) : {};
   };
+}
+
+const MAX_RETRIES = 8;
+// テストで待ち時間を縮めるための倍率(通常は 1)
+const RETRY_SCALE = () => Number(process.env.AMO_RETRY_SCALE ?? 1);
+
+// Retry-After ヘッダーか、本文の「Expected available in 57 seconds.」から待つ秒数を取る(最大10分)
+function retryAfterSeconds(res, text) {
+  const header = Number(res.headers.get("retry-after"));
+  const body = Number(text.match(/available in (\d+) second/)?.[1]);
+  const sec = [header, body].find((v) => Number.isFinite(v) && v > 0) ?? 60;
+  return Math.min(sec + 2, 600);
 }
 
 async function uploadAndValidate(api, zipPath, log) {
@@ -191,6 +214,7 @@ export async function submit(dir, { dryRun = false, env = process.env, log = con
     base: env.AMO_API_BASE || "https://addons.mozilla.org",
     issuer: env.AMO_JWT_ISSUER,
     secret: env.AMO_JWT_SECRET,
+    log,
   });
   const g = encodeURIComponent(s.guid);
 

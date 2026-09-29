@@ -13,6 +13,7 @@ import { fileURLToPath } from "node:url";
 import { submit, buildSubmission, AmoError } from "./submit.mjs";
 
 process.env.AMO_POLL_MS = "10";
+process.env.AMO_RETRY_SCALE = "0.01";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const GUID = "sample@pokeca-kaigai.com";
 const SECRET = "test-secret";
@@ -61,7 +62,7 @@ function fixture(version = "1.2.0") {
 }
 
 // AMO をまねたサーバー。state を変えて「未登録/登録済み/検証エラー」を作る
-const state = { addon: null, versions: [], previews: 0, uploadValid: true, calls: [] };
+const state = { addon: null, versions: [], previews: 0, uploadValid: true, throttle: 0, calls: [] };
 let server;
 let base;
 
@@ -109,6 +110,10 @@ before(async () => {
               },
         );
       }
+      if (req.method === "POST" && p === "/api/v5/addons/addon/" && state.throttle > 0) {
+        state.throttle--;
+        return send(429, { detail: "Request was throttled. Expected available in 1 seconds." });
+      }
       if (req.method === "POST" && p === "/api/v5/addons/addon/") {
         state.addon = {
           slug: json.slug,
@@ -149,7 +154,11 @@ const env = () => ({
 });
 const quiet = () => {};
 const reset = (s) =>
-  Object.assign(state, { addon: null, versions: [], previews: 0, uploadValid: true, calls: [] }, s);
+  Object.assign(
+    state,
+    { addon: null, versions: [], previews: 0, uploadValid: true, throttle: 0, calls: [] },
+    s,
+  );
 
 test("未登録なら新規登録し、掲載情報・プライバシーポリシー・スクリーンショットを送る", async () => {
   reset();
@@ -228,4 +237,16 @@ test("3つの拡張の amo.json・listing.md・スクリーンショットが揃
     assert.ok([...s.metadata.description.ja].length > 250, `${d} の説明が短すぎる`);
     assert.ok(s.screenshots.length >= 2, d);
   }
+});
+
+test("送りすぎの制限(429)なら、示された秒数だけ待って送り直す", async () => {
+  reset({ throttle: 2 });
+  const logs = [];
+  const r = await submit(fixture(), { env: env(), log: (m) => logs.push(m) });
+  assert.equal(r.action, "created");
+  const creates = state.calls.filter(
+    (c) => c.method === "POST" && c.path === "/api/v5/addons/addon/",
+  );
+  assert.equal(creates.length, 3, "429 が2回 → 3回目で登録");
+  assert.equal(logs.filter((m) => /429/.test(m)).length, 2);
 });
