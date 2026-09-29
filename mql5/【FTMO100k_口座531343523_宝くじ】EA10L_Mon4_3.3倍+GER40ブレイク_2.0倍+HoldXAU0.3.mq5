@@ -111,7 +111,7 @@ input string InpAuNzHolidayMondays = "2026.10.05,2026.10.26,2026.12.28,2027.01.0
 input group "=== 共通 ==="
 input double InpMinLot = 0.01;
 input double InpMaxLot = 50.0;
-input long   InpMagicBase = 944810;  // Mon=+1/v4=+2/Hold=+3/Sess=+5/Brk=+6(RF5 941200・EA8 944100 と別)
+input long   InpMagicBase = 944800;  // EA10 v1.00 と同じ基底(VPS で稼働中の EA10 の建玉 944803 を引き継ぐ)  // Mon=+1/v4=+2/Hold=+3/Sess=+5/Brk=+6(RF5 941200・EA8 944100 と別)
 input int    InpSlippagePoints = 30;
 input bool   InpVerboseLog = true;
 
