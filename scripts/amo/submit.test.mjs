@@ -250,3 +250,22 @@ test("送りすぎの制限(429)なら、示された秒数だけ待って送り
   assert.equal(creates.length, 3, "429 が2回 → 3回目で登録");
   assert.equal(logs.filter((m) => /429/.test(m)).length, 2);
 });
+
+test("スクリーンショットが途中までなら、足りない分だけ登録する", async () => {
+  reset({ addon: { slug: "sample-checker" }, versions: [{ version: "1.2.0" }], previews: 1 });
+  await submit(fixture("1.2.0"), { env: env(), log: quiet });
+  const posted = state.calls.filter((c) => c.path.endsWith("/previews/"));
+  assert.equal(posted.length, 1);
+  assert.match(posted[0].raw, /filename="2\.png"/);
+  assert.match(posted[0].raw, /name="position"\r\n\r\n1/);
+});
+
+test("429 の待ち時間の合計が上限を超えたら、待たずに止める", async () => {
+  reset({ throttle: 5 });
+  process.env.AMO_RETRY_BUDGET_SEC = "2";
+  try {
+    await assert.rejects(submit(fixture(), { env: env(), log: quiet }), /中断しました/);
+  } finally {
+    delete process.env.AMO_RETRY_BUDGET_SEC;
+  }
+});

@@ -131,6 +131,10 @@ function jwt(issuer, secret) {
 }
 
 function client({ base, issuer, secret, log = console.log }) {
+  // 1つの拡張の提出で 429 を待つ時間の合計の上限。AMO は1時間単位の制限もあり、
+  // 待ち続けると実行が何十分も止まるため、上限を超えたら止めて後で再実行してもらう
+  const budgetSec = Number(process.env.AMO_RETRY_BUDGET_SEC ?? 900);
+  let waitedSec = 0;
   return async function api(method, p, body, { allow404 = false } = {}) {
     // 429(短時間に送りすぎ)は、AMO が示す秒数だけ待って同じ内容を送り直す
     for (let attempt = 1; ; attempt++) {
@@ -146,6 +150,13 @@ function client({ base, issuer, secret, log = console.log }) {
       const text = await res.text();
       if (res.status === 429 && attempt <= MAX_RETRIES) {
         const wait = retryAfterSeconds(res, text);
+        if (waitedSec + wait > budgetSec) {
+          throw new AmoError(
+            `${method} ${p}: 送りすぎの制限(429)が続いているため中断しました(待ち時間の合計が ${budgetSec} 秒を超える)。` +
+              "1時間ほど後にもう一度実行すると、終わっていない所から続きを行います",
+          );
+        }
+        waitedSec += wait;
         log(
           `${method} ${p}: 送りすぎの制限(429)。${wait} 秒待って送り直します(${attempt}/${MAX_RETRIES})`,
         );
@@ -252,14 +263,18 @@ export async function submit(dir, { dryRun = false, env = process.env, log = con
   });
   log("プライバシーポリシーを同期しました");
 
-  if (!(addon.previews ?? []).length && s.screenshots.length) {
-    for (const [i, p] of s.screenshots.entries()) {
+  // スクリーンショットは足りない分だけ登録する(途中で止まった時も、再実行で続きから)
+  const have = (addon.previews ?? []).length;
+  const missing = s.screenshots.slice(have);
+  if (missing.length) {
+    for (const [j, p] of missing.entries()) {
+      const i = have + j;
       const form = new FormData();
       form.append("image", new Blob([fs.readFileSync(p)], { type: "image/png" }), path.basename(p));
       form.append("position", String(i));
       await api("POST", `/addons/addon/${g}/previews/`, form);
     }
-    log(`スクリーンショット ${s.screenshots.length} 枚を登録しました`);
+    log(`スクリーンショット ${missing.length} 枚を登録しました(計 ${s.screenshots.length} 枚)`);
   }
   return { action, guid: s.guid, version: s.version, url: addon.url };
 }
