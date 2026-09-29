@@ -91,19 +91,13 @@
   },
   "531343523": {
    "apply": false,
-   "ensure": [
-    {
-     "ea": "【FTMO100k_口座531343523】EA10_Mon4_3.3倍+GER40ブレイク_2.0倍+HoldXAU0.3.mq5",
-     "symbol": "GBPJPY",
-     "period": "H1"
-    }
-   ],
+   "ensure": [],
    "remove": [
     "RecentFit5_目標10パーセント"
    ],
-   "note": "EA10 v1.00(docs/319)を準備。装着は 10/1 の月次採点でユーザー判断。移行前に RF5(941200 系)の建玉を手動決済",
+   "note": "2026-09-29 判明: 残高 91,988(−8.0%)で RF5 の床ガード(−8%)が発動し恒久停止。FTMO 失格線 90,000 まで 2%。EA10 の入替対象から外す(docs/241 §1t)。EA10 は ftmo_std100k_new(新規 Standard 100k)へ",
    "terminal": "FTMO",
-   "prepare_profile": true
+   "prepare_profile": false
   },
   "531466484": {
    "apply": false,
