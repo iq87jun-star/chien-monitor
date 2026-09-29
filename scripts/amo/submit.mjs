@@ -43,6 +43,8 @@ const LOCALE = "ja";
 const POLL_LIMIT_MS = 15 * 60 * 1000;
 
 export class AmoError extends Error {}
+// 送りすぎの制限で中断した(後で再実行すれば続きから行える)。終了コード 75 で知らせる
+export class AmoThrottled extends AmoError {}
 
 // --- 提出内容を組み立てる(通信しない) ---
 
@@ -179,7 +181,7 @@ function client({ base, issuer, secret, log = console.log }) {
       if (res.status === 429 && attempt <= MAX_RETRIES) {
         const wait = retryAfterSeconds(res, text);
         if (waitedSec + wait > budgetSec) {
-          throw new AmoError(
+          throw new AmoThrottled(
             `${method} ${p}: 送りすぎの制限(429)が続いているため中断しました(待ち時間の合計が ${budgetSec} 秒を超える)。` +
               "1時間ほど後にもう一度実行すると、終わっていない所から続きを行います",
           );
@@ -328,6 +330,6 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
     }
   } catch (e) {
     console.error(e instanceof AmoError ? e.message : e);
-    process.exit(1);
+    process.exit(e instanceof AmoThrottled ? 75 : 1);
   }
 }

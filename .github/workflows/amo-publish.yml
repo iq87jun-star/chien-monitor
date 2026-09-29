@@ -4,6 +4,7 @@
 #   - 手動実行(Actions →「amo-publish」→ Run workflow): 対象の拡張を選んで提出。
 #     初回の新規登録もこれで行う。dry_run にすると送る内容の確認だけ
 #   - 提出の仕組み・掲載情報を変える PR: テストと dry-run のみ
+#   - 毎日 12:17(日本時間): 3つとも、足りない所だけ続きを行う(送りすぎの制限で止まった分の続き)
 #
 # Secrets(未設定なら提出は飛ばして通知だけ出す):
 #   AMO_JWT_ISSUER / AMO_JWT_SECRET … https://addons.mozilla.org/developers/addon/api/key/ で発行する API キー
@@ -20,6 +21,10 @@ on:
       - "*/store/amo.json"
       - "*/store/listing.md"
       - ".github/workflows/amo-publish.yml"
+  # 毎日1回、足りない所(スクリーンショット・変わった掲載情報)を埋める。
+  # AMO は送信回数の制限が厳しく、1回の実行で終わらないことがあるため(変わりが無ければ何も送らない)
+  schedule:
+    - cron: "17 3 * * *"
   workflow_dispatch:
     inputs:
       target:
@@ -110,7 +115,12 @@ jobs:
           status=0
           for d in ${{ steps.plan.outputs.dirs }}; do
             echo "::group::$d"
-            node scripts/amo/submit.mjs "$d" || { echo "::error::$d の提出に失敗"; status=1; }
+            rc=0; node scripts/amo/submit.mjs "$d" || rc=$?
+            if [ "$rc" = 75 ]; then
+              echo "::notice::$d は送りすぎの制限で途中まで。次の実行(毎日)で続きを行います"
+            elif [ "$rc" != 0 ]; then
+              echo "::error::$d の提出に失敗"; status=1
+            fi
             echo "::endgroup::"
           done
           exit $status

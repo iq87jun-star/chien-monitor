@@ -10,7 +10,7 @@ import os from "node:os";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { submit, buildSubmission, AmoError } from "./submit.mjs";
+import { submit, buildSubmission, AmoError, AmoThrottled } from "./submit.mjs";
 
 process.env.AMO_POLL_MS = "10";
 process.env.AMO_RETRY_SCALE = "0.01";
@@ -282,7 +282,10 @@ test("429 の待ち時間の合計が上限を超えたら、待たずに止め�
   reset({ throttle: 5 });
   process.env.AMO_RETRY_BUDGET_SEC = "2";
   try {
-    await assert.rejects(submit(fixture(), { env: env(), log: quiet }), /中断しました/);
+    await assert.rejects(
+      submit(fixture(), { env: env(), log: quiet }),
+      (e) => e instanceof AmoThrottled && /中断しました/.test(e.message),
+    );
   } finally {
     delete process.env.AMO_RETRY_BUDGET_SEC;
   }
