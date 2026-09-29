@@ -91,13 +91,19 @@
   },
   "531343523": {
    "apply": false,
-   "ensure": [],
+   "ensure": [
+    {
+     "ea": "【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_3.3倍+GER40ブレイク_2.0倍+HoldXAU0.3.mq5",
+     "symbol": "GBPJPY",
+     "period": "H1"
+    }
+   ],
    "remove": [
     "RecentFit5_目標10パーセント"
    ],
-   "note": "2026-09-29 判明: 残高 91,988(−8.0%)で RF5 の床ガード(−8%)が発動し恒久停止。FTMO 失格線 90,000 まで 2%。EA10 の入替対象から外す(docs/241 §1t)。EA10 は ftmo_std100k_new(新規 Standard 100k)へ",
+   "note": "宝くじ版 EA10L v1.01(床 −9.5%・Magic 944810)。ユーザー決定 2026-09-29。RF5 は停止中(建玉なし)",
    "terminal": "FTMO",
-   "prepare_profile": false
+   "prepare_profile": true
   },
   "531466484": {
    "apply": false,
