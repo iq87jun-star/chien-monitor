@@ -281,6 +281,17 @@ test("請求: 支払日・源泉徴収(出力が仕様書と一致)", async () =
   assert.match(spec.info.title, /Withholding/);
 });
 
+test("マーケットに取り込む仕様書: 認証を書かず、公開先の URL を指す", () => {
+  for (const spec of [openapi, ...PRODUCTS.map(specFor)]) {
+    assert.equal(spec.security, undefined, "認証はマーケットの入口が行う(鍵の欄が二重になる)");
+    assert.equal(spec.components.securitySchemes, undefined);
+    assert.deepEqual(
+      spec.servers.map((s) => s.url),
+      ["https://jp-listing-calc-api.iq87jun.workers.dev"],
+    );
+  }
+});
+
 test("存在しないパス・メソッド違い", async () => {
   assert.equal((await call("GET", "/nope")).status, 404);
   assert.equal((await call("GET", "/v1/salary/analyze")).status, 405);

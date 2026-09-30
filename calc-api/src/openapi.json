@@ -10,8 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://jp-listing-calc-api.example.workers.dev",
-      "description": "Replaced with the deployed URL"
+      "url": "https://jp-listing-calc-api.iq87jun.workers.dev"
     }
   ],
   "paths": {
@@ -1836,21 +1835,8 @@
           }
         }
       }
-    },
-    "securitySchemes": {
-      "marketplaceKey": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "X-RapidAPI-Key",
-        "description": "API key issued by the API marketplace when you subscribe. Other marketplaces use their own header name."
-      }
     }
   },
-  "security": [
-    {
-      "marketplaceKey": []
-    }
-  ],
   "x-products": {
     "salary": {
       "title": "Japan Job Listing Salary Parser",
