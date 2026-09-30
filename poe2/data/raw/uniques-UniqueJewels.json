@@ -24,8 +24,8 @@
    }
   ],
   "rates": {
-   "exalted": 523.1,
-   "chaos": 7.91
+   "exalted": 601,
+   "chaos": 9.37
   },
   "primary": "divine",
   "secondary": "chaos"
@@ -42,19 +42,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 945.9,
-   "listingCount": 87,
+   "primaryValue": 887.7,
+   "listingCount": 83,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": 22.86,
+    "totalChange": 7.31,
     "data": [
      0,
-     7.44,
      null,
-     16.82,
-     11.69,
-     33.42,
-     22.86
+     8.73,
+     3.95,
+     24.18,
+     14.35,
+     7.31
     ]
    },
    "explicitModifiers": [
@@ -75,25 +75,135 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 33.9,
-   "listingCount": 10,
+   "primaryValue": 28.7,
+   "listingCount": 38,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 35.6,
+    "totalChange": -4.33,
     "data": [
      0,
-     20,
      null,
-     0,
-     2.4,
-     17.6,
-     35.6
+     -16.67,
+     -14.67,
+     -2,
+     13,
+     -4.33
     ]
    },
    "explicitModifiers": [
     {
      "text": "2% increased Maximum Life per socketed Grand Spectrum",
      "optional": false
+    }
+   ]
+  },
+  {
+   "id": 382,
+   "itemId": "Against the Darkness Time-Lost Diamond",
+   "detailsId": "against-the-darkness-time-lost-diamond",
+   "name": "Against the Darkness",
+   "baseType": "Time-Lost Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NhbmN0dW1KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/95cd807e91/SanctumJewel.png",
+   "flavourText": "After the fires, in the depths of the Winter of the World, all life in the Vastiri banded together. Whether serpent, hyena, human, or golem, hated enemies clasped hand to claw, built refuge, and fought side by side against the Abyssals. Thus, the Third Pact was born.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 1,
+   "radius": "Small",
+   "primaryValue": 9.92,
+   "listingCount": 1535,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 14.9,
+    "data": [
+     0,
+     null,
+     -4.62,
+     4.52,
+     -3.88,
+     -12.83,
+     14.9
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Fire] Damage",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +8 to maximum Mana",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-3)% to [Resistances|Chaos Resistance]",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Cold Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Dexterity]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Intelligence]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Strength]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Fire Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Lightning Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant [Gain] 3% of Damage as Extra [Cold] Damage",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +8 to maximum Life",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Chaos] Damage",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Freeze|Freeze] Duration on you",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Ignite|Ignite] Duration on you",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Shock|Shock] duration on you",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Fire Resistance]",
+     "optional": true
+    },
+    {
+     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Lightning Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Chaos Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Cold Resistance]",
+     "optional": true
+    },
+    {
+     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Lightning] Damage",
+     "optional": true
     }
    ]
   },
@@ -109,19 +219,19 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "radius": "Variable",
-   "primaryValue": 9.57,
-   "listingCount": 1067,
+   "primaryValue": 7.47,
+   "listingCount": 1153,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -10.51,
+    "totalChange": -21.59,
     "data": [
      0,
-     -10.93,
      null,
-     -3.72,
-     6.61,
-     -5.78,
-     -10.51
+     8.09,
+     19.7,
+     5.78,
+     0.47,
+     -21.59
     ]
    },
    "explicitModifiers": [
@@ -168,145 +278,6 @@
    ]
   },
   {
-   "id": 382,
-   "itemId": "Against the Darkness Time-Lost Diamond",
-   "detailsId": "against-the-darkness-time-lost-diamond",
-   "name": "Against the Darkness",
-   "baseType": "Time-Lost Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1NhbmN0dW1KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/95cd807e91/SanctumJewel.png",
-   "flavourText": "After the fires, in the depths of the Winter of the World, all life in the Vastiri banded together. Whether serpent, hyena, human, or golem, hated enemies clasped hand to claw, built refuge, and fought side by side against the Abyssals. Thus, the Third Pact was born.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 1,
-   "radius": "Small",
-   "primaryValue": 7.53,
-   "listingCount": 1915,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -12.13,
-    "data": [
-     0,
-     0.79,
-     null,
-     -3.87,
-     5.35,
-     -3.12,
-     -12.13
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Fire] Damage",
-     "optional": true
-    },
-    {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +8 to maximum Mana",
-     "optional": true
-    },
-    {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-3)% to [Resistances|Chaos Resistance]",
-     "optional": true
-    },
-    {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Cold Resistance]",
-     "optional": true
-    },
-    {
-     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Dexterity]",
-     "optional": true
-    },
-    {
-     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Intelligence]",
-     "optional": true
-    },
-    {
-     "text": "Notable Passive Skills in Radius also grant (2-3)% increased [Strength]",
-     "optional": true
-    },
-    {
-     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Fire Resistance]",
-     "optional": true
-    },
-    {
-     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Lightning Resistance]",
-     "optional": true
-    },
-    {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +8 to maximum Life",
-     "optional": true
-    },
-    {
-     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Chaos] Damage",
-     "optional": true
-    },
-    {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Freeze|Freeze] Duration on you",
-     "optional": true
-    },
-    {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Ignite|Ignite] Duration on you",
-     "optional": true
-    },
-    {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant (4-6)% reduced [Shock|Shock] duration on you",
-     "optional": true
-    },
-    {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Fire Resistance]",
-     "optional": true
-    },
-    {
-     "text": "[SmallPassive|Small Passive] Skills in Radius also grant +(2-4)% to [Resistances|Lightning Resistance]",
-     "optional": true
-    },
-    {
-     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Chaos Resistance]",
-     "optional": true
-    },
-    {
-     "text": "Notable Passive Skills in Radius also grant +1% to [MaximumResistances|Maximum Cold Resistance]",
-     "optional": true
-    },
-    {
-     "text": "Notable Passive Skills in Radius also grant [Gain] (2-4)% of Damage as Extra [Lightning] Damage",
-     "optional": true
-    }
-   ]
-  },
-  {
-   "id": 379,
-   "itemId": "Grand Spectrum Emerald",
-   "detailsId": "grand-spectrum-emerald",
-   "name": "Grand Spectrum",
-   "baseType": "Emerald",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9FbWVyYWxkIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/687a109210/GrandSpectrum_Emerald.png",
-   "flavourText": "An indomitable force of control.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 3,
-   "primaryValue": 3.94,
-   "listingCount": 91,
-   "corrupted": false,
-   "sparkLine": {
-    "totalChange": -1.43,
-    "data": [
-     0,
-     24.3,
-     null,
-     -3.48,
-     0,
-     10.56,
-     -1.43
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "2% increased [Spirit|Spirit] per socketed Grand Spectrum",
-     "optional": false
-    }
-   ]
-  },
-  {
    "id": 404,
    "itemId": "The Adorned Diamond",
    "detailsId": "the-adorned-diamond",
@@ -318,17 +289,17 @@
    "category": "[Jewel]",
    "limitedTo": 1,
    "primaryValue": 3,
-   "listingCount": 1940,
+   "listingCount": 1923,
    "corrupted": true,
    "sparkLine": {
     "totalChange": -40,
     "data": [
      0,
-     0,
      null,
      -20,
      -20,
      -20,
+     -40,
      -40
     ]
    },
@@ -346,7 +317,7 @@
      "optional": true
     },
     {
-     "text": "(8-28)% reduced [Chaos] Damage",
+     "text": "(1-28)% reduced [Chaos] Damage",
      "optional": true
     },
     {
@@ -408,6 +379,39 @@
    ]
   },
   {
+   "id": 379,
+   "itemId": "Grand Spectrum Emerald",
+   "detailsId": "grand-spectrum-emerald",
+   "name": "Grand Spectrum",
+   "baseType": "Emerald",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1VuaXF1ZXMvR3JhbmRTcGVjdHJ1bV9FbWVyYWxkIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/687a109210/GrandSpectrum_Emerald.png",
+   "flavourText": "An indomitable force of control.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "limitedTo": 3,
+   "primaryValue": 2.67,
+   "listingCount": 125,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": -46.35,
+    "data": [
+     0,
+     null,
+     -22.34,
+     -19.55,
+     -11.05,
+     -20.7,
+     -46.35
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "2% increased [Spirit|Spirit] per socketed Grand Spectrum",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 381,
    "itemId": "Grand Spectrum Sapphire",
    "detailsId": "grand-spectrum-sapphire",
@@ -418,19 +422,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 3,
-   "primaryValue": 2.42,
-   "listingCount": 141,
+   "primaryValue": 2.13,
+   "listingCount": 161,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": -59.59,
+    "totalChange": -50.58,
     "data": [
      0,
-     -28.03,
      null,
-     -35.65,
-     -47.74,
-     -53.6,
-     -59.59
+     -10.58,
+     -27.38,
+     -35.53,
+     -43.85,
+     -50.58
     ]
    },
    "explicitModifiers": [
@@ -451,28 +455,28 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "radius": "Very Large",
-   "primaryValue": 1.01,
-   "listingCount": 3896,
+   "primaryValue": 0.8536,
+   "listingCount": 3948,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 3.27,
+    "totalChange": -15.98,
     "data": [
      0,
-     3.76,
      null,
-     -8,
-     7.19,
-     -8.71,
-     3.27
+     -11.33,
+     3.31,
+     -12.02,
+     -0.47,
+     -15.98
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Glorifying the defilement of (312-30686) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "text": "Glorifying the defilement of (662-30198) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
      "optional": true
     },
     {
-     "text": "Glorifying the defilement of (911-30198) souls in tribute to Ulaman\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
+     "text": "Glorifying the defilement of (312-30686) souls in tribute to Kulemak\nPassives in radius are Conquered by the Abyssals\n[UnstableDesecration|Desecration makes this item unstable]",
      "optional": true
     },
     {
@@ -494,6 +498,47 @@
    ]
   },
   {
+   "id": 383,
+   "itemId": "Heroic Tragedy Timeless Jewel",
+   "detailsId": "heroic-tragedy-timeless-jewel",
+   "name": "Heroic Tragedy",
+   "baseType": "Timeless Jewel",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V4cGVkaXRpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8356e82d27/ExpeditionJewel.png",
+   "flavourText": "They believed themselves courageous and selfless,\r\nbut that bravery became the doom at their door.",
+   "levelRequired": 0,
+   "category": "[Jewel]",
+   "radius": "Very Large",
+   "primaryValue": 0.7469,
+   "listingCount": 6111,
+   "corrupted": false,
+   "sparkLine": {
+    "totalChange": 17.62,
+    "data": [
+     0,
+     null,
+     1.34,
+     21.9,
+     20.66,
+     -0.47,
+     17.62
+    ]
+   },
+   "explicitModifiers": [
+    {
+     "text": "Remembrancing (105-7995) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "Remembrancing (117-7917) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
+     "optional": true
+    },
+    {
+     "text": "[Historic]",
+     "optional": false
+    }
+   ]
+  },
+  {
    "id": 378,
    "itemId": "Heart of the Well Diamond",
    "detailsId": "heart-of-the-well-diamond",
@@ -504,19 +549,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.8405,
+   "primaryValue": 0.3201,
    "listingCount": 10000,
    "corrupted": false,
    "sparkLine": {
-    "totalChange": 128.9,
+    "totalChange": -36.99,
     "data": [
      0,
-     38.34,
      null,
-     -29.9,
-     7.19,
-     4.33,
-     128.9
+     -49.33,
+     -22.52,
+     -24.59,
+     65.46,
+     -36.99
     ]
    },
    "explicitModifiers": [
@@ -613,7 +658,7 @@
      "optional": true
     },
     {
-     "text": "(5-9)% chance to inflict [Bleeding|Bleeding] on [Hit]",
+     "text": "(5-10)% chance to inflict [Bleeding|Bleeding] on [Hit]",
      "optional": true
     },
     {
@@ -803,43 +848,80 @@
    ]
   },
   {
-   "id": 383,
-   "itemId": "Heroic Tragedy Timeless Jewel",
-   "detailsId": "heroic-tragedy-timeless-jewel",
-   "name": "Heroic Tragedy",
-   "baseType": "Timeless Jewel",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL0V4cGVkaXRpb25KZXdlbCIsInciOjEsImgiOjEsInNjYWxlIjoxLCJyZWFsbSI6InBvZTIifV0/8356e82d27/ExpeditionJewel.png",
-   "flavourText": "They believed themselves courageous and selfless,\r\nbut that bravery became the doom at their door.",
+   "id": 401,
+   "itemId": "From Nothing Diamond",
+   "detailsId": "from-nothing-diamond",
+   "name": "From Nothing",
+   "baseType": "Diamond",
+   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JpdHVhbEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/192c7799d7/RitualJewel.png",
+   "flavourText": "They clawed their way up from the agonising depths of nonexistence,\r\nbreathing deep with joy the exquisite light of meaning.",
    "levelRequired": 0,
    "category": "[Jewel]",
-   "radius": "Very Large",
-   "primaryValue": 0.632,
-   "listingCount": 5866,
-   "corrupted": false,
+   "limitedTo": 1,
+   "radius": "Small",
+   "primaryValue": 0.2134,
+   "listingCount": 7050,
+   "corrupted": true,
    "sparkLine": {
-    "totalChange": -13.94,
+    "totalChange": -15.98,
     "data": [
      0,
-     -13.53,
      null,
-     -12.38,
-     5.4,
-     4.33,
-     -13.94
+     1.34,
+     -48.35,
+     -49.72,
+     -49.76,
+     -15.98
     ]
    },
    "explicitModifiers": [
     {
-     "text": "Remembrancing (105-7995) songworthy deeds by the line of Medved\nPassives in radius are Conquered by the Kalguur",
+     "text": "Passives in Radius of [passive_keystone_avatar_of_fire|Avatar of Fire] can be Allocated\nwithout being connected to your tree",
      "optional": true
     },
     {
-     "text": "Remembrancing (117-7917) songworthy deeds by the line of Olroth\nPassives in radius are Conquered by the Kalguur",
+     "text": "Passives in Radius of [passive_keystone_mind_over_matter|Mind Over Matter] can be Allocated\nwithout being connected to your tree",
      "optional": true
     },
     {
-     "text": "[Historic]",
-     "optional": false
+     "text": "Passives in Radius of [passive_keystone_wildsurge_incantation|Wildsurge Incantation] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_eternal_youth|Eternal Youth] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_lord_of_the_wilds|Lord of the Wilds] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_alternate_es_recovery|Scarred Faith] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_acrobatics|Primal Hunger] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_giants_blood|Giant's Blood] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_heartstopper|Heartstopper] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_glancing_blows_|Glancing Blows] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_two_companions|Trusted Kinship] can be Allocated\nwithout being connected to your tree",
+     "optional": true
+    },
+    {
+     "text": "Passives in Radius of [passive_keystone_iron_reflexes_|Iron Reflexes] can be Allocated\nwithout being connected to your tree",
+     "optional": true
     }
    ]
   },
@@ -854,19 +936,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.2424,
-   "listingCount": 3748,
+   "primaryValue": 0.2027,
+   "listingCount": 3889,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -0.96,
+    "totalChange": 59.63,
     "data": [
      0,
-     -48.12,
      null,
-     -0.11,
-     1.83,
-     4.33,
-     -0.96
+     92.54,
+     96.28,
+     101.1,
+     90.9,
+     59.63
     ]
    },
    "explicitModifiers": [
@@ -973,84 +1055,6 @@
    ]
   },
   {
-   "id": 401,
-   "itemId": "From Nothing Diamond",
-   "detailsId": "from-nothing-diamond",
-   "name": "From Nothing",
-   "baseType": "Diamond",
-   "icon": "https://web.poecdn.com/gen/image/WzI1LDE0LHsiZiI6IjJESXRlbXMvSmV3ZWxzL1JpdHVhbEpld2VsIiwidyI6MSwiaCI6MSwic2NhbGUiOjEsInJlYWxtIjoicG9lMiJ9XQ/192c7799d7/RitualJewel.png",
-   "flavourText": "They clawed their way up from the agonising depths of nonexistence,\r\nbreathing deep with joy the exquisite light of meaning.",
-   "levelRequired": 0,
-   "category": "[Jewel]",
-   "limitedTo": 1,
-   "radius": "Small",
-   "primaryValue": 0.1276,
-   "listingCount": 6568,
-   "corrupted": true,
-   "sparkLine": {
-    "totalChange": 4.25,
-    "data": [
-     0,
-     107.5,
-     null,
-     110.3,
-     7.19,
-     4.33,
-     4.25
-    ]
-   },
-   "explicitModifiers": [
-    {
-     "text": "Passives in Radius of [passive_keystone_avatar_of_fire|Avatar of Fire] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_mind_over_matter|Mind Over Matter] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_wildsurge_incantation|Wildsurge Incantation] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_eternal_youth|Eternal Youth] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_lord_of_the_wilds|Lord of the Wilds] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_alternate_es_recovery|Scarred Faith] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_acrobatics|Primal Hunger] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_giants_blood|Giant's Blood] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_heartstopper|Heartstopper] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_glancing_blows_|Glancing Blows] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_two_companions|Trusted Kinship] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    },
-    {
-     "text": "Passives in Radius of [passive_keystone_iron_reflexes_|Iron Reflexes] can be Allocated\nwithout being connected to your tree",
-     "optional": true
-    }
-   ]
-  },
-  {
    "id": 402,
    "itemId": "Megalomaniac Diamond",
    "detailsId": "megalomaniac-diamond",
@@ -1061,19 +1065,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.1188,
+   "primaryValue": 0.1067,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -2.92,
+    "totalChange": -15.98,
     "data": [
      0,
-     3.76,
      null,
-     5.15,
-     7.19,
-     4.33,
-     -2.92
+     1.34,
+     3.31,
+     0.55,
+     -6.43,
+     -15.98
     ]
    }
   },
@@ -1088,19 +1092,19 @@
    "levelRequired": 0,
    "category": "[Jewel]",
    "limitedTo": 1,
-   "primaryValue": 0.002,
+   "primaryValue": 0.00166,
    "listingCount": 10000,
    "corrupted": true,
    "sparkLine": {
-    "totalChange": -5.66,
+    "totalChange": -17,
     "data": [
      0,
-     -5.66,
      null,
-     -5.66,
-     -4.72,
-     -3.3,
-     -5.66
+     0,
+     1,
+     2.5,
+     0,
+     -17
     ]
    },
    "explicitModifiers": [
@@ -1201,7 +1205,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Herald of Plague Skills",
+     "text": "+(1-2) to Level of all Herald of Plague Skills",
      "optional": true
     },
     {
@@ -1393,7 +1397,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Ghost Dance Skills",
+     "text": "+(1-2) to Level of all Ghost Dance Skills",
      "optional": true
     },
     {
@@ -1481,7 +1485,7 @@
      "optional": true
     },
     {
-     "text": "+2 to Level of all Defiance Banner Skills",
+     "text": "+(1-2) to Level of all Defiance Banner Skills",
      "optional": true
     },
     {
