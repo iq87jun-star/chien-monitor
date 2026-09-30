@@ -1,6 +1,6 @@
 # 日本の計算関数(Excel アドイン)
 
-Excel のセルに `=JP.TAKEHOME(300000)` のように書くだけで、日本特有の計算ができる関数を19個追加するアドイン。
+Excel のセルに `=JP.TAKEHOME(300000)` のように書くだけで、日本特有の計算ができる関数を21個追加するアドイン。
 スプレッドシート版(`sheets-addon/`)の Excel 版で、計算の本体は計算API(`calc-api/`)と同じコード(結果も同じ)。
 計算はすべて Excel の中で行い、入力した値を外部に送らない。
 
@@ -19,7 +19,7 @@ Excel のセルに `=JP.TAKEHOME(300000)` のように書くだけで、日本�
 | 金額・物件 | `JP.YEN("1億2000万円")` / `JP.AREA_M2("10坪")` / `JP.TSUBO_PRICE(価格, 面積)` / `JP.LOAN_PAYMENT(借入額, 年利%, 年数)` |
 | 和暦 | `JP.WAREKI(日付, "long"/"short")` / `JP.FROM_WAREKI("R6.4.1")` |
 | 祝日・営業日 | `JP.IS_HOLIDAY` / `JP.HOLIDAY_NAME` / `JP.HOLIDAYS(年)` / `JP.WORKDAY` / `JP.NETWORKDAYS` / `JP.IS_BUSINESS_DAY` |
-| 請求・支払 | `JP.PAYMENT_DATE(取引日, "末締め翌月25日払い", "前"/"翌"/"なし", 休業日)` / `JP.WITHHOLDING(報酬の額, 税込か)`(源泉徴収税額) |
+| 請求・支払 | `JP.PAYMENT_DATE(取引日, "末締め翌月25日払い", "前"/"翌"/"なし", 休業日)` / `JP.WITHHOLDING(報酬の額, 税込か)`(源泉徴収税額) / `JP.IS_VALID_REGNO(番号)`・`JP.REGNO(番号)`(登録番号の検査・整形) |
 
 - 「範囲も可」の引数に範囲(`A2:A100`)を渡すと、行ごとにまとめて計算して同じ形で返す(スピル)
 - 日付を返す関数はシリアル値を返す(Excel 標準の `WORKDAY` と同じ。セルの表示形式を「日付」にする)
@@ -50,7 +50,7 @@ https://pokeca-kaigai.com/excel-addin/  ←── Excel が manifest.xml に書�
 ```bash
 cd excel-addin
 npm ci
-npm test         # dist/ を作り、Excel と同じ形(範囲の2次元配列・シリアル値・省略は null)で19関数を試す
+npm test         # dist/ を作り、Excel と同じ形(範囲の2次元配列・シリアル値・省略は null)で21関数を試す
 npm run build    # dist/ を作るだけ(配信先を変える時は EXCEL_ADDIN_BASE_URL=https://…/ を付ける)
 ```
 
@@ -102,6 +102,6 @@ Windows の Excel で試す場合は、共有フォルダに `manifest.xml` を�
 ## 有料化(実績ができてから)
 
 AppSource はアドインの課金を代行しないので、有料版は自前のライセンスで売る。
-候補は「今ある19関数は無料のまま、これから足す手間のかかる経理の部品(全銀フォーマット等)を有料の関数にする」形。
+候補は「今ある21関数は無料のまま、これから足す手間のかかる経理の部品(全銀フォーマット等)を有料の関数にする」形。
 ライセンスキーの確認は通知サービス(`notify/`)の Stripe 連携を流用し、スプレッドシート版・kintone 版と共通にする
 ([部品工場の手順書](../parts-factory/README.md))。

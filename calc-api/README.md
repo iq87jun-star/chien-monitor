@@ -25,6 +25,7 @@
 | calendar | `POST /v1/wareki/convert` | 西暦 ⇔ 和暦(「令和6年4月1日」「R6.4.1」「平成元年」等) |
 | invoice | `POST /v1/invoice/payment-date` | 取引日・支払条件(「末締め翌月25日払い」等の文章 or 締め日・何か月後・支払日)→ 締め日・支払日(休日は前/翌営業日) |
 | invoice | `POST /v1/invoice/withholding` | 報酬の額 → 消費税・請求の合計・源泉徴収税額(10.21%/20.42%)・差引の支払額 |
+| invoice | `POST /v1/invoice/validate-number` | 登録番号(T+13桁)・法人番号 → 検査用数字が合うか・整えた番号・国税庁の確認ページ(外部と通信しない) |
 | — | `GET /v1/health` | 稼働確認(認証不要) |
 | — | `GET /openapi.json[?product=…]` | 仕様書(出品ごとに絞れる。認証不要) |
 

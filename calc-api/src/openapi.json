@@ -490,6 +490,64 @@
         }
       }
     },
+    "/v1/invoice/validate-number": {
+      "post": {
+        "operationId": "validateNumber",
+        "summary": "Validate a Japanese invoice registration number (T + 13 digits) or corporate number",
+        "tags": [
+          "Invoice"
+        ],
+        "x-product": "invoice",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidateNumberRequest"
+              },
+              "examples": {
+                "registration": {
+                  "summary": "Invoice registration number",
+                  "value": {
+                    "number": "T7000012050002"
+                  }
+                },
+                "messy": {
+                  "summary": "Full-width with a label",
+                  "value": {
+                    "number": "登録番号：Ｔ７０００－０１２０－５０００２"
+                  }
+                },
+                "typo": {
+                  "summary": "Mistyped check digit",
+                  "value": {
+                    "number": "T8000012050002"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result (valid or not)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidateNumberResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
     "/v1/health": {
       "get": {
         "operationId": "health",
@@ -1812,6 +1870,101 @@
             }
           }
         }
+      },
+      "ValidateNumberRequest": {
+        "type": "object",
+        "required": [
+          "number"
+        ],
+        "properties": {
+          "number": {
+            "type": "string",
+            "maxLength": 40,
+            "description": "Invoice registration number (T + 13 digits) or 13-digit corporate number (法人番号). Full-width digits, spaces, hyphens and labels are ignored",
+            "example": "T7000012050002"
+          }
+        }
+      },
+      "ValidateNumberResult": {
+        "type": "object",
+        "required": [
+          "input",
+          "type",
+          "normalized",
+          "valid",
+          "error"
+        ],
+        "properties": {
+          "input": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "registration_number",
+              "corporate_number"
+            ]
+          },
+          "normalized": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The number with full-width characters, spaces and hyphens removed"
+          },
+          "valid": {
+            "type": "boolean",
+            "description": "13 digits with a correct check digit. This does not mean the business is currently registered; check lookupUrl"
+          },
+          "error": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "code": {
+                "type": "string",
+                "enum": [
+                  "empty",
+                  "length",
+                  "check_digit"
+                ]
+              },
+              "ja": {
+                "type": "string"
+              },
+              "en": {
+                "type": "string"
+              }
+            }
+          },
+          "checkDigit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "expectedCheckDigit": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "registrationNumber": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "T + 13 digits (for a corporate number: the registration number the corporation would have)"
+          },
+          "lookupUrl": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "National Tax Agency page to confirm the registration or the corporation"
+          }
+        }
       }
     },
     "responses": {
@@ -1856,7 +2009,7 @@
     },
     "invoice": {
       "title": "Japan Invoice Payment Date & Withholding Tax API",
-      "description": "Accounting helpers for Japan: turn payment terms such as 末締め翌月25日払い into the actual payment date (skipping weekends and Japanese holidays), and calculate withholding tax on fees (源泉徴収 10.21% / 20.42%) with invoice total and net payment."
+      "description": "Accounting helpers for Japan: turn payment terms such as 末締め翌月25日払い into the actual payment date (skipping weekends and Japanese holidays), and calculate withholding tax on fees (源泉徴収 10.21% / 20.42%) with invoice total and net payment, and offline validation of invoice registration numbers (T + 13 digits) and corporate numbers by their check digit."
     }
   }
 }

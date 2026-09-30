@@ -4,7 +4,7 @@
 //   realty   POST /v1/realty/analyze        物件の賃料・価格・面積等 → 単価・実質月額・初期費用・ローン・利回り
 //   takehome POST /v1/takehome/calculate    月給・賞与 → 社会保険料・所得税・住民税・手取り
 //   calendar POST /v1/calendar/*・/v1/wareki/convert  祝日・営業日・和暦
-//   invoice  POST /v1/invoice/*              支払条件 → 支払日 / 報酬 → 源泉徴収税額・差引の支払額
+//   invoice  POST /v1/invoice/*              支払条件 → 支払日 / 報酬 → 源泉徴収税額・差引の支払額 / 登録番号・法人番号の検査
 //   GET  /v1/health                         稼働確認(認証不要)
 //   GET  /openapi.json[?product=takehome]   API の仕様(出品ごとに絞れる。マーケットへの登録に使う)
 // APIキーの発行・回数制限・課金はマーケットが行う。こちらはマーケットが付ける秘密のヘッダーを確かめ、
@@ -19,6 +19,7 @@ import {
   countBusinessDays,
 } from "./calendar.js";
 import { paymentDate, withholding } from "./invoice.js";
+import { validateNumber } from "./regno.js";
 import { calculateTakeHome } from "./takehome.js";
 import openapi from "./openapi.json" with { type: "json" };
 
@@ -44,6 +45,7 @@ const ROUTES = {
   "POST /v1/wareki/convert": [convertWareki, "calendar"],
   "POST /v1/invoice/payment-date": [paymentDate, "invoice"],
   "POST /v1/invoice/withholding": [withholding, "invoice"],
+  "POST /v1/invoice/validate-number": [validateNumber, "invoice"],
 };
 export const PRODUCTS = [...new Set(Object.values(ROUTES).map(([, p]) => p))];
 

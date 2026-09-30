@@ -94,10 +94,10 @@ Claude の定期実行(Routine)が、この手順書に従ってブラウザ拡�
 | `calc-api/README.md` | エンドポイントの表に1行 |
 | `sheets-addon/src/lib-entry.js` | 新しい計算を `JPCalc` に出す |
 | `sheets-addon/src/functions.js` | `JP_<名前>` 関数(`@customfunction` の説明を日本語で。範囲をまとめて渡せる形) |
-| `sheets-addon/test/functions.test.js` | 関数のテスト。関数の数を数えるテスト(今は 19)の数も直す |
+| `sheets-addon/test/functions.test.js` | 関数のテスト。関数の数を数えるテスト(今は 21)の数も直す |
 | `sheets-addon/src/Help.html`・`listing/store.md`・`cowork-guide.md` | 関数の一覧・説明・正解の値の表に足す |
 | `excel-addin/src/functions.js` | `FUNCTIONS` に `<名前>` を1つ足す(スプレッドシート版と同じ計算・同じ説明。範囲の引数は `range: true`)。使い方の画面は自動で作られる |
-| `excel-addin/test/functions.test.js`・`listing/store.md` | 関数のテストと、関数の数(今は 19)。掲載情報の一覧 |
+| `excel-addin/test/functions.test.js`・`listing/store.md` | 関数のテストと、関数の数(今は 21)。掲載情報の一覧 |
 
 公開について(人の最初の登録が済むまでは、コードだけ入って公開はされない):
 - 計算API: Cloudflare の Secrets があれば、マージで自動で反映される。**新しい出品名**の時だけ、人が RapidAPI で出品を1つ足す

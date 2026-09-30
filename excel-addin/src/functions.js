@@ -9,6 +9,7 @@
 import { analyzeSalary } from "../../calc-api/src/calc.js";
 import { calculateTakeHome } from "../../calc-api/src/takehome.js";
 import { holidayRuleOf, paymentDate, withholding } from "../../calc-api/src/invoice.js";
+import { validateNumber } from "../../calc-api/src/regno.js";
 import {
   HOLIDAYS,
   addBusinessDays,
@@ -429,5 +430,29 @@ export const FUNCTIONS = [
         withholding({ amount: Math.round(num(a, "報酬の額")), amountIncludesTax: yes(includesTax) })
           .withholdingTax,
       ),
+  },
+  {
+    name: "IS_VALID_REGNO",
+    category: "invoice",
+    description:
+      "インボイスの登録番号(T + 13桁)または法人番号(13桁)が正しい形か(検査用数字が合うか)を返します。登録されているかは国税庁のサイトで確認してください。",
+    example: '=JP.IS_VALID_REGNO("T7000012050002") → TRUE',
+    params: [{ name: "number", description: "登録番号または法人番号(全角・ハイフン可)。範囲も可", range: true }],
+    result: "matrix",
+    fn: (number) => mapCells(number, (n) => validateNumber({ number: String(n) }).valid),
+  },
+  {
+    name: "REGNO",
+    category: "invoice",
+    description: "登録番号・法人番号を「T + 13桁」の形に整えます(全角・空白・ハイフンを除き、法人番号なら先頭に T)。",
+    example: '=JP.REGNO("登録番号：Ｔ７０００－０１２０－５０００２") → T7000012050002',
+    params: [{ name: "number", description: "登録番号または法人番号。範囲も可", range: true }],
+    result: "matrix",
+    fn: (number) =>
+      mapCells(number, (n) => {
+        const r = validateNumber({ number: String(n) });
+        if (!r.valid) throw new Error(`${r.error.ja}: ${n}`);
+        return r.registrationNumber;
+      }),
   },
 ];
