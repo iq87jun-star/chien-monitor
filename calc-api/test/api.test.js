@@ -275,10 +275,26 @@ test("請求: 支払日・源泉徴収(出力が仕様書と一致)", async () =
   assert.deepEqual(Object.keys(spec.paths), [
     "/v1/invoice/payment-date",
     "/v1/invoice/withholding",
+    "/v1/invoice/validate-number",
     "/v1/health",
   ]);
   assert.ok("Day" in spec.components.schemas, "支払日の結果が使う Day も残す");
   assert.match(spec.info.title, /Withholding/);
+});
+
+test("請求: 登録番号・法人番号の検査(出力が仕様書と一致)", async () => {
+  const ok = await call("POST", "/v1/invoice/validate-number", { body: { number: "Ｔ７０００－０１２０－５０００２" } });
+  assert.equal(ok.status, 200);
+  matchesSchema(ok.body, "ValidateNumberResult");
+  assert.equal(ok.body.valid, true);
+  assert.equal(ok.body.normalized, "T7000012050002");
+  const typo = await call("POST", "/v1/invoice/validate-number", { body: { number: "T8000012050002" } });
+  assert.equal(typo.status, 200);
+  matchesSchema(typo.body, "ValidateNumberResult");
+  assert.equal(typo.body.error.code, "check_digit");
+  const bad = await call("POST", "/v1/invoice/validate-number", { body: {} });
+  assert.equal(bad.status, 400);
+  assert.equal(bad.body.error.field, "number");
 });
 
 test("マーケットに取り込む仕様書: 認証を書かず、公開先の URL を指す", () => {
@@ -309,6 +325,7 @@ test("仕様書のパスと実装のルートが一致する", () => {
     "/v1/calendar/holidays",
     "/v1/health",
     "/v1/invoice/payment-date",
+    "/v1/invoice/validate-number",
     "/v1/invoice/withholding",
     "/v1/realty/analyze",
     "/v1/salary/analyze",

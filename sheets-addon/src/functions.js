@@ -459,3 +459,33 @@ function JP_WITHHOLDING(amount, includesTax) {
     });
   });
 }
+
+/**
+ * インボイスの登録番号(T + 13桁)または法人番号(13桁)が正しい形か(検査用数字が合うか)を返します。外部と通信しません。
+ * 全角・空白・ハイフン・「登録番号：」のような文字は無視します。実際に登録されているかは国税庁のサイトで確かめてください。
+ *
+ * @param {string} number 登録番号または法人番号。範囲も可
+ * @return TRUE / FALSE
+ * @customfunction
+ */
+function JP_IS_VALID_REGNO(number) {
+  return mapCells_(number, function (n) {
+    return JPCalc.validateNumber({ number: String(n) }).valid;
+  });
+}
+
+/**
+ * 登録番号・法人番号を「T + 13桁」の登録番号の形に整えます(全角・空白・ハイフンを除く。法人番号なら先頭に T)。
+ * 検査用数字が合わない番号はエラーにします。
+ *
+ * @param {string} number 登録番号または法人番号。範囲も可
+ * @return 登録番号(例: T7000012050002)
+ * @customfunction
+ */
+function JP_REGNO(number) {
+  return mapCells_(number, function (n) {
+    var r = JPCalc.validateNumber({ number: String(n) });
+    if (!r.valid) throw new Error(r.error.ja + ": " + n);
+    return r.registrationNumber;
+  });
+}

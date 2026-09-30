@@ -137,6 +137,7 @@ Japanese accounting helpers: payment date from payment terms like 末締め翌�
 ```
 - Payment date: send the transaction date and the payment terms as written in Japanese (末締め翌月25日払い, 20日締め翌々月末日支払, 休日の場合は翌営業日) or as fields (closing day, months after, payment day). Get the closing date, the scheduled date and the actual payment date moved to the previous or next business day using official Japanese holidays, with optional year-end closure and custom closed days
 - Withholding tax on fees paid to individuals (writing, lectures, design, etc.): 10.21% up to ¥1,000,000 and 20.42% above, including the special reconstruction income tax, with consumption tax, invoice total and net payment. Handles tax-inclusive amounts where consumption tax is not stated separately
+- Registration number check: validate invoice registration numbers (T + 13 digits) and corporate numbers (法人番号) offline by their check digit, normalize full-width / hyphenated input, and get the National Tax Agency page to confirm the registration
 - Every assumption is returned in English and Japanese. No data is stored
 ```
 

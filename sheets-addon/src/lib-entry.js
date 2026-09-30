@@ -3,6 +3,7 @@
 import { analyzeRealty, analyzeSalary } from "../../calc-api/src/calc.js";
 import { calculateTakeHome } from "../../calc-api/src/takehome.js";
 import { holidayRuleOf, paymentDate, withholding } from "../../calc-api/src/invoice.js";
+import { validateNumber } from "../../calc-api/src/regno.js";
 import {
   HOLIDAYS,
   RANGE,
@@ -33,5 +34,6 @@ export {
   parseDate,
   paymentDate,
   toWareki,
+  validateNumber,
   withholding,
 };

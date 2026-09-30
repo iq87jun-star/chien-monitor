@@ -22,7 +22,7 @@
 ## 詳しい説明
 
 ```
-Google スプレッドシートに、日本特有の計算をする関数を19個追加します。セルに関数を書くだけで使え、範囲を渡せばまとめて計算します。
+Google スプレッドシートに、日本特有の計算をする関数を21個追加します。セルに関数を書くだけで使え、範囲を渡せばまとめて計算します。
 
 ■ 手取り(2026年度の率)
 =JP_TAKEHOME(月給, 賞与, 年齢, 都道府県) で1年間の手取り、=JP_TAKEHOME_DETAIL(…) で健康保険・介護保険・子ども・子育て支援金・厚生年金・雇用保険・所得税・住民税の内訳を表示。協会けんぽの都道府県別の保険料率と、2026年の税制改正(基礎控除・給与所得控除の引き上げ)に対応。
@@ -37,7 +37,7 @@ Google スプレッドシートに、日本特有の計算をする関数を19�
 求人の給与欄の文章から年収の目安・時給換算・固定残業代。「1億2000万円」「10坪」のような書き方を数値に、坪単価・住宅ローンの返済額。
 
 ■ 請求・支払
-=JP_PAYMENT_DATE(取引日, "末締め翌月25日払い") で、土日・祝日を避けた支払日(前営業日・翌営業日を選べる)。=JP_WITHHOLDING(報酬の額) で報酬・料金の源泉徴収税額(10.21%・100万円を超える部分は20.42%)。
+=JP_PAYMENT_DATE(取引日, "末締め翌月25日払い") で、土日・祝日を避けた支払日(前営業日・翌営業日を選べる)。=JP_WITHHOLDING(報酬の額) で報酬・料金の源泉徴収税額(10.21%・100万円を超える部分は20.42%)。=JP_IS_VALID_REGNO(番号) でインボイスの登録番号・法人番号の打ち間違いを検査(外部と通信しません)、=JP_REGNO(番号) で「T + 13桁」の形に整えます。
 
 ■ プライバシー
 計算はすべてスプレッドシートの中(Apps Script)で行い、入力した値を外部に送りません。
@@ -49,5 +49,5 @@ Google スプレッドシートに、日本特有の計算をする関数を19�
 ## 英語版(英語の欄がある場合)
 
 ```
-Adds 19 Japan-specific functions to Google Sheets: take-home pay with FY2026 social insurance and tax rates, Japanese national holidays and business days (WORKDAY / NETWORKDAYS for Japan), Western <-> Japanese era (wareki) dates, annual income from Japanese job listing text, real estate helpers (tsubo price, loan payment, 1億2000万円 -> 120000000), payment dates from Japanese payment terms (末締め翌月25日払い) and withholding tax on fees. All calculations run inside Apps Script; no data leaves your spreadsheet.
+Adds 21 Japan-specific functions to Google Sheets: take-home pay with FY2026 social insurance and tax rates, Japanese national holidays and business days (WORKDAY / NETWORKDAYS for Japan), Western <-> Japanese era (wareki) dates, annual income from Japanese job listing text, real estate helpers (tsubo price, loan payment, 1億2000万円 -> 120000000), payment dates from Japanese payment terms (末締め翌月25日払い) withholding tax on fees, and offline check-digit validation of invoice registration numbers (T + 13 digits). All calculations run inside Apps Script; no data leaves your spreadsheet.
 ```

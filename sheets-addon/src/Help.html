@@ -64,6 +64,8 @@
       <dd>支払日。例: <code>=JP_PAYMENT_DATE(A2, "末締め翌月25日払い")</code>(土日・祝日は前営業日)</dd>
       <dt><code>=JP_WITHHOLDING(報酬の額, 税込か)</code></dt>
       <dd>報酬・料金の源泉徴収税額(100万円まで10.21%、超える部分は20.42%)</dd>
+      <dt><code>=JP_IS_VALID_REGNO(番号)</code> / <code>=JP_REGNO(番号)</code></dt>
+      <dd>インボイスの登録番号・法人番号の打ち間違いの検査(外部と通信しません)/「T + 13桁」の形に整える</dd>
     </dl>
 
     <p class="note">

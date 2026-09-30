@@ -171,6 +171,18 @@ test("請求・支払: 支払日・源泉徴収", () => {
   assert.deepEqual(plain(g.JP_WITHHOLDING([[100000], [""], [1000000]])), [[10210], [""], [102100]]);
 });
 
+test("登録番号・法人番号の検査", () => {
+  assert.equal(g.JP_IS_VALID_REGNO("T7000012050002"), true);
+  assert.equal(g.JP_IS_VALID_REGNO("Ｔ７０００－０１２０－５０００２"), true);
+  assert.equal(g.JP_IS_VALID_REGNO(7000012050002), true);
+  assert.equal(g.JP_IS_VALID_REGNO("T8000012050002"), false);
+  assert.equal(g.JP_IS_VALID_REGNO("未登録"), false);
+  assert.deepEqual(plain(g.JP_IS_VALID_REGNO([["T7000012050002"], [""], ["T123"]])), [[true], [""], [false]]);
+  assert.equal(g.JP_REGNO("登録番号：t7000-0120-50002"), "T7000012050002");
+  assert.equal(g.JP_REGNO(7000012050002), "T7000012050002");
+  assert.throws(() => g.JP_REGNO("T8000012050002"), /検査用数字/);
+});
+
 test("メニュー: 使い方の画面を開く項目を追加する", () => {
   g.onOpen();
   assert.deepEqual(menu[0], ["使い方(関数の一覧)", "showHelp"]);
@@ -179,7 +191,7 @@ test("メニュー: 使い方の画面を開く項目を追加する", () => {
 test("関数の説明(@customfunction)がすべての JP_ 関数に付いている", () => {
   const src = fs.readFileSync(path.join(DIST, "functions.js"), "utf8");
   const fns = [...src.matchAll(/^function (JP_\w+)\(/gm)].map((m) => m[1]);
-  assert.equal(fns.length, 19);
+  assert.equal(fns.length, 21);
   for (const name of fns) {
     const before = src.slice(0, src.indexOf(`function ${name}(`));
     assert.match(before.slice(before.lastIndexOf("/**")), /@customfunction/, name);

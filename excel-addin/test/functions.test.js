@@ -43,8 +43,8 @@ function call(name, ...args) {
 }
 const serial = (iso) => (Date.parse(`${iso}T00:00:00Z`) - Date.UTC(1899, 11, 30)) / 86400000;
 
-test("メタデータ: 19関数がすべて登録され、名前・id が Excel の決まりに合う", () => {
-  assert.equal(metadata.functions.length, 19);
+test("メタデータ: 21関数がすべて登録され、名前・id が Excel の決まりに合う", () => {
+  assert.equal(metadata.functions.length, 21);
   assert.deepEqual([...registered.keys()].sort(), metadata.functions.map((f) => f.id).sort());
   for (const f of metadata.functions) {
     assert.equal(f.id, f.name);
@@ -179,4 +179,13 @@ test("請求・支払: 支払日・源泉徴収", () => {
   assert.equal(call("WITHHOLDING", "150万円"), 204200);
   assert.equal(call("WITHHOLDING", 110000, true), 11231);
   assert.deepEqual(call("WITHHOLDING", [[100000], [""], [1000000]]), [[10210], [""], [102100]]);
+});
+
+test("登録番号・法人番号の検査", () => {
+  assert.equal(call("IS_VALID_REGNO", "T7000012050002"), true);
+  assert.equal(call("IS_VALID_REGNO", 7000012050002), true);
+  assert.equal(call("IS_VALID_REGNO", "T8000012050002"), false);
+  assert.deepEqual(call("IS_VALID_REGNO", [["T7000012050002"], [""], ["T123"]]), [[true], [""], [false]]);
+  assert.equal(call("REGNO", "登録番号：Ｔ７０００－０１２０－５０００２"), "T7000012050002");
+  assert.throws(() => call("REGNO", "T8000012050002"), (e) => e.code === "#VALUE!" && /検査用数字/.test(e.message));
 });
