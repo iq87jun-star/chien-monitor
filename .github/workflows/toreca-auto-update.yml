@@ -16,6 +16,15 @@ on:
   schedule:
     - cron: "17 9,21 * * *" # 1日2回(UTC)。Cardmarket更新(8時UTC頃)の後
   workflow_dispatch:
+  # 同じサイトで配信している物(Excel アドイン・プライバシーポリシー等)が main で変わったら、すぐ配信し直す
+  push:
+    branches: [main]
+    paths:
+      - "excel-addin/**"
+      - "calc-api/src/**"
+      - "job-extension/src/parser.js"
+      - "realty-extension/src/parser.js"
+      - "toreca/public/**"
 
 permissions:
   contents: write

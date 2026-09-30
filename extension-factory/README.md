@@ -52,7 +52,7 @@ Claude の定期実行(Routine)が、この手順書に従ってブラウザ拡�
 5. テストを通す(計算API・スプレッドシート・Excel の `npm test`・`npm run test:e2e` も): `npm test`・`npm run test:e2e`・`npx web-ext@8 lint --source-dir dist/firefox-src --warnings-as-errors`・
    `node --test scripts/amo/submit.test.mjs`・`node scripts/amo/submit.mjs <フォルダ> --dry-run`
 6. ブランチを切って PR を作り、CI がすべて緑になったらマージする(赤なら直して押し直す。3回直して駄目なら Issue に状況を書いて止まる)
-7. プライバシーポリシーのページを公開する: Actions の `toreca-auto-update` を手動実行し、
+7. プライバシーポリシーのページを公開する: マージで `toreca-auto-update` が自動で走る(走っていなければ手動実行)。
    `https://pokeca-kaigai.com/<名前>-extension-privacy.html` が 200 を返すまで待つ
 8. Firefox に提出する: Actions の `amo-publish` を target=`<名前>-extension` で手動実行し、結果のログを確かめる
 9. Issue に結果を書き、ラベルを `ext-done` に替えて閉じる。書くこと:

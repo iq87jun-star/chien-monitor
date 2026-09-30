@@ -41,7 +41,7 @@ calc-api/src/*.js(計算の本体・テスト)
 7. `ledger.md` の部品の表に1行足す
 
 公開について:
-- 計算API・Excel はマージで自動的に届く(Excel は `toreca-auto-update` の次の実行で配信)
+- 計算API・Excel はマージで自動的に届く(Excel はマージで `toreca-auto-update` が自動で走って配信)
 - スプレッドシートは、Marketplace に公開済みなら人が Apps Script で新しい版を作る
 
 ## これからの順番
