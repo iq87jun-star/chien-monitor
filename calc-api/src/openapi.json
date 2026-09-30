@@ -3,7 +3,7 @@
   "info": {
     "title": "Japan Salary, Tax & Calendar Calculator API",
     "version": "1.0.0",
-    "description": "Japan-specific calculations for developers: salary text parsing, real estate listing math, take-home pay (social insurance, income tax, resident tax) and Japanese holidays / business days / wareki (Japanese era) dates.\n\nNo data is stored. Results are estimates computed from the given input.",
+    "description": "Japan-specific calculations for developers: salary text parsing, real estate listing math, take-home pay (social insurance, income tax, resident tax), Japanese holidays / business days / wareki (Japanese era) dates, and invoice helpers (payment date from payment terms, withholding tax on fees).\n\nNo data is stored. Results are estimates computed from the given input.",
     "license": {
       "name": "Proprietary"
     }
@@ -368,6 +368,116 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WarekiResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/invoice/payment-date": {
+      "post": {
+        "operationId": "paymentDate",
+        "summary": "Payment date from Japanese payment terms (締め日・支払日)",
+        "tags": [
+          "Invoice"
+        ],
+        "x-product": "invoice",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentDateRequest"
+              },
+              "examples": {
+                "terms": {
+                  "summary": "末締め翌月25日払い (close at month end, pay on the 25th of next month)",
+                  "value": {
+                    "date": "2026-09-15",
+                    "terms": "末締め翌月25日払い"
+                  }
+                },
+                "fields": {
+                  "summary": "Close on the 20th, pay at the end of the month after next, next business day if closed",
+                  "value": {
+                    "date": "2026-09-25",
+                    "closingDay": 20,
+                    "paymentMonthOffset": 2,
+                    "paymentDay": "end",
+                    "holidayRule": "next"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDateResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          }
+        }
+      }
+    },
+    "/v1/invoice/withholding": {
+      "post": {
+        "operationId": "withholding",
+        "summary": "Japanese withholding tax on fees (源泉徴収) and net payment",
+        "tags": [
+          "Invoice"
+        ],
+        "x-product": "invoice",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WithholdingRequest"
+              },
+              "examples": {
+                "basic": {
+                  "summary": "Fee ¥100,000 + 10% consumption tax",
+                  "value": {
+                    "amount": 100000
+                  }
+                },
+                "inclusive": {
+                  "summary": "Tax-inclusive ¥110,000 (tax not stated separately)",
+                  "value": {
+                    "amount": 110000,
+                    "amountIncludesTax": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WithholdingResult"
                 }
               }
             }
@@ -1442,6 +1552,267 @@
             }
           }
         }
+      },
+      "PaymentDateRequest": {
+        "type": "object",
+        "required": [
+          "date"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date",
+            "description": "Transaction or invoice date",
+            "example": "2026-09-15"
+          },
+          "terms": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Payment terms as written in Japanese, e.g. \"末締め翌月25日払い\", \"20日締め翌々月末日支払（休日の場合は翌営業日）\". Explicit fields below override what is read from the text",
+            "example": "末締め翌月25日払い"
+          },
+          "closingDay": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 31
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "end"
+                ]
+              }
+            ],
+            "default": "end",
+            "description": "Closing day of the month (1-31, or \"end\"). Days beyond the month length mean the last day"
+          },
+          "paymentMonthOffset": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 12,
+            "default": 1,
+            "description": "Months after the closing month (0 = same month 当月, 1 = next month 翌月, 2 = 翌々月)"
+          },
+          "paymentDay": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 31
+              },
+              {
+                "type": "string",
+                "enum": [
+                  "end"
+                ]
+              }
+            ],
+            "description": "Payment day of the month (1-31, or \"end\"). Required unless \"terms\" includes it"
+          },
+          "holidayRule": {
+            "type": "string",
+            "enum": [
+              "previous",
+              "next",
+              "none"
+            ],
+            "default": "previous",
+            "description": "If the payment day is not a business day: move to the previous business day (common in Japan), the next one, or keep it"
+          },
+          "closedDates": {
+            "type": "array",
+            "maxItems": 400,
+            "items": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Extra closed days (YYYY-MM-DD)"
+          },
+          "yearEndClosure": {
+            "type": "boolean",
+            "default": false,
+            "description": "Treat Dec 29 - Jan 3 as closed"
+          },
+          "weekendDays": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "sun",
+                "mon",
+                "tue",
+                "wed",
+                "thu",
+                "fri",
+                "sat"
+              ]
+            },
+            "default": [
+              "sat",
+              "sun"
+            ]
+          }
+        }
+      },
+      "PaymentDateResult": {
+        "type": "object",
+        "required": [
+          "date",
+          "terms",
+          "closingDate",
+          "scheduledDate",
+          "paymentDate",
+          "adjusted",
+          "daysUntilPayment"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "terms": {
+            "type": "object",
+            "properties": {
+              "closingDay": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 31
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "end"
+                    ]
+                  }
+                ]
+              },
+              "paymentMonthOffset": {
+                "type": "integer"
+              },
+              "paymentDay": {
+                "oneOf": [
+                  {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 31
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "end"
+                    ]
+                  }
+                ]
+              },
+              "holidayRule": {
+                "type": "string"
+              }
+            }
+          },
+          "closingDate": {
+            "type": "string",
+            "format": "date",
+            "description": "The closing date that includes the given date"
+          },
+          "scheduledDate": {
+            "type": "string",
+            "format": "date",
+            "description": "Payment date before the business day adjustment"
+          },
+          "paymentDate": {
+            "$ref": "#/components/schemas/Day"
+          },
+          "adjusted": {
+            "type": "boolean",
+            "description": "True if moved because the scheduled date is not a business day"
+          },
+          "daysUntilPayment": {
+            "type": "integer"
+          }
+        }
+      },
+      "WithholdingRequest": {
+        "type": "object",
+        "required": [
+          "amount"
+        ],
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100000000000,
+            "description": "Fee in JPY (tax-exclusive by default)",
+            "example": 100000
+          },
+          "amountIncludesTax": {
+            "type": "boolean",
+            "default": false,
+            "description": "True if the amount includes consumption tax that is not stated separately (withholding then applies to the whole amount)"
+          },
+          "taxRate": {
+            "type": "number",
+            "enum": [
+              0,
+              0.08,
+              0.1
+            ],
+            "default": 0.1,
+            "description": "Consumption tax rate added to the invoice when amountIncludesTax is false"
+          }
+        }
+      },
+      "WithholdingResult": {
+        "type": "object",
+        "required": [
+          "amount",
+          "invoiceTotal",
+          "withholdingBase",
+          "withholdingTax",
+          "netPayment",
+          "assumptions"
+        ],
+        "properties": {
+          "amount": {
+            "type": "integer"
+          },
+          "amountIncludesTax": {
+            "type": "boolean"
+          },
+          "taxRate": {
+            "type": "number"
+          },
+          "consumptionTax": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "invoiceTotal": {
+            "type": "integer",
+            "description": "Amount + consumption tax"
+          },
+          "withholdingBase": {
+            "type": "integer"
+          },
+          "withholdingTax": {
+            "type": "integer",
+            "description": "10.21% up to ¥1,000,000 and 20.42% above (includes the special reconstruction income tax). Fractions under ¥1 are cut off"
+          },
+          "netPayment": {
+            "type": "integer",
+            "description": "invoiceTotal - withholdingTax (amount actually paid)"
+          },
+          "assumptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Assumption"
+            }
+          }
+        }
       }
     },
     "responses": {
@@ -1496,6 +1867,10 @@
     "calendar": {
       "title": "Japan Holidays, Business Days & Wareki API",
       "description": "Japanese national holidays (official Cabinet Office data from 1955), business day calculation (add / count, with year-end closure and custom closed days) and conversion between Western dates and Japanese era dates (令和6年4月1日, R6.4.1, 平成元年 ...)."
+    },
+    "invoice": {
+      "title": "Japan Invoice Payment Date & Withholding Tax API",
+      "description": "Accounting helpers for Japan: turn payment terms such as 末締め翌月25日払い into the actual payment date (skipping weekends and Japanese holidays), and calculate withholding tax on fees (源泉徴収 10.21% / 20.42%) with invoice total and net payment."
     }
   }
 }

@@ -1,6 +1,6 @@
 # API マーケット掲載情報(RapidAPI 向け・他のマーケットでも流用可)
 
-同じ Worker を、テーマごとに **4つの出品** として掲載する(検索で見つかりやすく、値段も別々に決められる)。
+同じ Worker を、テーマごとに **5つの出品** として掲載する(検索で見つかりやすく、値段も別々に決められる)。
 マーケットの利用者は海外の開発者が中心なので、掲載文は英語。各項目の下に日本語訳を付けている。
 
 | 出品(product) | API 名 | 仕様書(登録時にアップロード) |
@@ -9,6 +9,7 @@
 | `realty` | Japan Real Estate Listing Calculator | `/openapi.json?product=realty` |
 | `takehome` | Japan Take-Home Pay Calculator | `/openapi.json?product=takehome` |
 | `calendar` | Japan Holidays, Business Days & Wareki API | `/openapi.json?product=calendar` |
+| `invoice` | Japan Invoice Payment Date & Withholding Tax API | `/openapi.json?product=invoice` |
 
 仕様書は公開後 `https://jp-listing-calc-api.<サブドメイン>.workers.dev/openapi.json?product=…` から保存してアップロードする
 (公開前なら `npm run dev` で起動して http://localhost:8787/openapi.json?product=… から保存)。
@@ -16,7 +17,7 @@
 **出品ごとに秘密の値が発行される**ので、GitHub の Secrets の `MARKETPLACE_SECRETS` には出品ごとに書く:
 
 ```
-x-rapidapi-proxy-secret:<salaryの値>@salary,x-rapidapi-proxy-secret:<realtyの値>@realty,x-rapidapi-proxy-secret:<takehomeの値>@takehome,x-rapidapi-proxy-secret:<calendarの値>@calendar
+x-rapidapi-proxy-secret:<salaryの値>@salary,x-rapidapi-proxy-secret:<realtyの値>@realty,x-rapidapi-proxy-secret:<takehomeの値>@takehome,x-rapidapi-proxy-secret:<calendarの値>@calendar,x-rapidapi-proxy-secret:<invoiceの値>@invoice
 ```
 
 共通: ロゴ `calc-api/listing/logo.png`、Base URL `https://jp-listing-calc-api.<サブドメイン>.workers.dev`
@@ -118,11 +119,32 @@ Japanese national holidays (official data since 1955), business day add/count wi
 - Wareki conversion both ways: 「令和6年4月1日」「R6.4.1」「平成元年」「H31/4/30」, full-width digits, and dates written in an era that had already ended (平成31年5月1日 -> 令和元年)
 ```
 
+## 5. Japan Invoice Payment Date & Withholding Tax API(invoice)
+
+- **カテゴリ** → `Finance`(無ければ `Business`)
+- **タグ** → `japan`, `invoice`, `accounting`, `payment terms`, `withholding tax`, `business days`, `bookkeeping`
+
+**短い説明**
+
+```
+Japanese accounting helpers: payment date from payment terms like 末締め翌月25日払い (skipping holidays), and withholding tax on fees (源泉徴収) with net payment.
+```
+
+> 訳: 日本の経理の部品。「末締め翌月25日払い」のような支払条件から休日を避けた支払日を、報酬の源泉徴収税額と差引の支払額を計算。
+
+**長い説明**
+
+```
+- Payment date: send the transaction date and the payment terms as written in Japanese (末締め翌月25日払い, 20日締め翌々月末日支払, 休日の場合は翌営業日) or as fields (closing day, months after, payment day). Get the closing date, the scheduled date and the actual payment date moved to the previous or next business day using official Japanese holidays, with optional year-end closure and custom closed days
+- Withholding tax on fees paid to individuals (writing, lectures, design, etc.): 10.21% up to ¥1,000,000 and 20.42% above, including the special reconstruction income tax, with consumption tax, invoice total and net payment. Handles tax-inclusive amounts where consumption tax is not stated separately
+- Every assumption is returned in English and Japanese. No data is stored
+```
+
 ---
 
 ## 料金プラン(案・出品ごと)
 
-| プラン | salary / realty / takehome | calendar(軽い処理なので安め) |
+| プラン | salary / realty / takehome | calendar・invoice(軽い処理なので安め) |
 |---|---|---|
 | BASIC(無料) | 100回/月 | 500回/月 |
 | PRO | $9.99・1万回/月 | $4.99・2万回/月 |

@@ -43,8 +43,8 @@ function call(name, ...args) {
 }
 const serial = (iso) => (Date.parse(`${iso}T00:00:00Z`) - Date.UTC(1899, 11, 30)) / 86400000;
 
-test("メタデータ: 17関数がすべて登録され、名前・id が Excel の決まりに合う", () => {
-  assert.equal(metadata.functions.length, 17);
+test("メタデータ: 19関数がすべて登録され、名前・id が Excel の決まりに合う", () => {
+  assert.equal(metadata.functions.length, 19);
   assert.deepEqual([...registered.keys()].sort(), metadata.functions.map((f) => f.id).sort());
   for (const f of metadata.functions) {
     assert.equal(f.id, f.name);
@@ -149,4 +149,34 @@ test("祝日・営業日: WORKDAY・NETWORKDAYS の日本版", () => {
   assert.deepEqual(call("HOLIDAY_NAME", [[serial("2026-09-21"), serial("2026-09-23")]]), [
     ["敬老の日", "秋分の日"],
   ]);
+});
+
+test("請求・支払: 支払日・源泉徴収", () => {
+  assert.equal(call("PAYMENT_DATE", serial("2026-09-15"), "末締め翌月25日払い"), serial("2026-10-23"));
+  assert.equal(call("PAYMENT_DATE", serial("2026-09-15"), "末締め翌月25日払い", "翌"), serial("2026-10-26"));
+  assert.equal(call("PAYMENT_DATE", "2026/9/25", "20日締め翌月末払い"), serial("2026-11-30"));
+  // 1つの条件を全部の行に / 行ごとに違う条件
+  assert.deepEqual(
+    call("PAYMENT_DATE", [[serial("2026-09-15")], [""], [serial("2026-09-16")]], "末締め翌月25日払い"),
+    [[serial("2026-10-23")], [""], [serial("2026-10-23")]],
+  );
+  assert.deepEqual(
+    call(
+      "PAYMENT_DATE",
+      [[serial("2026-09-15")], [serial("2026-09-25")]],
+      [["末締め翌月25日払い"], ["20日締め翌月末払い"]],
+    ),
+    [[serial("2026-10-23")], [serial("2026-11-30")]],
+  );
+  assert.equal(
+    call("PAYMENT_DATE", serial("2026-09-25"), "20日締め翌月末払い", null, [[serial("2026-11-30")]]),
+    serial("2026-11-27"),
+  );
+  assert.throws(() => call("PAYMENT_DATE", serial("2026-09-15"), "未定"), /terms/);
+  assert.throws(() => call("PAYMENT_DATE", serial("2026-09-15"), ""), /支払条件がありません/);
+  assert.throws(() => call("PAYMENT_DATE", serial("2026-09-15"), "末締め翌月25日払い", "適当"), /休日の扱い/);
+  assert.equal(call("WITHHOLDING", 100000), 10210);
+  assert.equal(call("WITHHOLDING", "150万円"), 204200);
+  assert.equal(call("WITHHOLDING", 110000, true), 11231);
+  assert.deepEqual(call("WITHHOLDING", [[100000], [""], [1000000]]), [[10210], [""], [102100]]);
 });

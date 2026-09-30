@@ -2,6 +2,7 @@
 // Apps Script では グローバルの JPCalc として使う(scripts/build.mjs で dist/lib.js に書き出す)。
 import { analyzeRealty, analyzeSalary } from "../../calc-api/src/calc.js";
 import { calculateTakeHome } from "../../calc-api/src/takehome.js";
+import { holidayRuleOf, paymentDate, withholding } from "../../calc-api/src/invoice.js";
 import {
   HOLIDAYS,
   RANGE,
@@ -28,6 +29,9 @@ export {
   calendarHolidays,
   countBusinessDays,
   fromWareki,
+  holidayRuleOf,
   parseDate,
+  paymentDate,
   toWareki,
+  withholding,
 };

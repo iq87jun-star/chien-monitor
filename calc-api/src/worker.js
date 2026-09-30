@@ -1,9 +1,10 @@
 // Cloudflare Worker: 日本の給与・物件・手取り・暦の計算API。API マーケット経由で販売する。
-// 出品(product)ごとにマーケットへ別々に掲載できるよう、呼び出し口を4つに分けている:
+// 出品(product)ごとにマーケットへ別々に掲載できるよう、呼び出し口を5つに分けている:
 //   salary   POST /v1/salary/analyze        求人の給与の文章 → 年収の目安・時給換算・固定残業代
 //   realty   POST /v1/realty/analyze        物件の賃料・価格・面積等 → 単価・実質月額・初期費用・ローン・利回り
 //   takehome POST /v1/takehome/calculate    月給・賞与 → 社会保険料・所得税・住民税・手取り
 //   calendar POST /v1/calendar/*・/v1/wareki/convert  祝日・営業日・和暦
+//   invoice  POST /v1/invoice/*              支払条件 → 支払日 / 報酬 → 源泉徴収税額・差引の支払額
 //   GET  /v1/health                         稼働確認(認証不要)
 //   GET  /openapi.json[?product=takehome]   API の仕様(出品ごとに絞れる。マーケットへの登録に使う)
 // APIキーの発行・回数制限・課金はマーケットが行う。こちらはマーケットが付ける秘密のヘッダーを確かめ、
@@ -17,6 +18,7 @@ import {
   convertWareki,
   countBusinessDays,
 } from "./calendar.js";
+import { paymentDate, withholding } from "./invoice.js";
 import { calculateTakeHome } from "./takehome.js";
 import openapi from "./openapi.json" with { type: "json" };
 
@@ -40,6 +42,8 @@ const ROUTES = {
   "POST /v1/calendar/add-business-days": [addBusinessDays, "calendar"],
   "POST /v1/calendar/count-business-days": [countBusinessDays, "calendar"],
   "POST /v1/wareki/convert": [convertWareki, "calendar"],
+  "POST /v1/invoice/payment-date": [paymentDate, "invoice"],
+  "POST /v1/invoice/withholding": [withholding, "invoice"],
 };
 export const PRODUCTS = [...new Set(Object.values(ROUTES).map(([, p]) => p))];
 

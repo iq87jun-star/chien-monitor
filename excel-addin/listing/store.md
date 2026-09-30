@@ -23,7 +23,7 @@
 ## 詳しい説明
 
 ```
-Excel に、日本特有の計算をする関数を17個追加します。セルに =JP. と入力すると一覧が出ます。範囲を渡せばまとめて計算します。
+Excel に、日本特有の計算をする関数を19個追加します。セルに =JP. と入力すると一覧が出ます。範囲を渡せばまとめて計算します。
 
 ■ 手取り(2026年度の率)
 =JP.TAKEHOME(月給, 賞与, 年齢, 都道府県) で1年間の手取り、=JP.TAKEHOME_DETAIL(…) で健康保険・介護保険・子ども・子育て支援金・厚生年金・雇用保険・所得税・住民税の内訳を表示。協会けんぽの都道府県別の保険料率と、2026年の税制改正(基礎控除・給与所得控除の引き上げ)に対応。
@@ -36,6 +36,9 @@ Excel に、日本特有の計算をする関数を17個追加します。セル
 
 ■ 求人・物件
 求人の給与欄の文章から年収の目安・時給換算・固定残業代。「1億2000万円」「10坪」のような書き方を数値に、坪単価・住宅ローンの返済額。
+
+■ 請求・支払
+=JP.PAYMENT_DATE(取引日, "末締め翌月25日払い") で、土日・祝日を避けた支払日(前営業日・翌営業日を選べる)。=JP.WITHHOLDING(報酬の額) で報酬・料金の源泉徴収税額(10.21%・100万円を超える部分は20.42%)。
 
 ■ プライバシー
 計算はすべて Excel の中で行い、入力した値を外部に送りません。Cookie・広告・アクセス解析もありません。
@@ -54,11 +57,12 @@ Japanese take-home pay, holidays, business days and Japanese era dates as simple
 Long:
 
 ```
-Adds 17 Japan-specific functions to Excel. Type =JP. in a cell to see them; pass a range to calculate many rows at once.
+Adds 19 Japan-specific functions to Excel. Type =JP. in a cell to see them; pass a range to calculate many rows at once.
 
 - Take-home pay (FY2026 rates): =JP.TAKEHOME and a full breakdown with =JP.TAKEHOME_DETAIL (health insurance by prefecture, nursing care, child support levy, pension, employment insurance, income tax, resident tax).
 - Holidays and business days: official Cabinet Office holiday data including substitute holidays; Japanese versions of WORKDAY and NETWORKDAYS with optional year-end closure and custom closed dates.
 - Japanese era (wareki): =JP.WAREKI and =JP.FROM_WAREKI ("R6.4.1", "令和6年4月1日").
+- Invoices: payment date from Japanese payment terms (=JP.PAYMENT_DATE(A2, "末締め翌月25日払い"), skipping weekends and holidays) and withholding tax on fees (=JP.WITHHOLDING, 10.21% / 20.42%).
 - Job and real estate text: annual income, hourly equivalent and fixed overtime from Japanese salary text; "1億2000万円" / "10坪" to numbers, price per tsubo, monthly loan payment.
 
 All calculations run inside Excel. No inputs are sent anywhere; no cookies, ads or analytics.
@@ -76,7 +80,9 @@ How to test:
 3. Enter =JP.HOLIDAYS(2026). Expected: 18 rows (serial dates and holiday names in Japanese). Format column A as Date to see dates.
 4. Enter =JP.WAREKI(DATE(2026,9,24)). Expected: 令和8年9月24日
 5. Enter =JP.WORKDAY(DATE(2026,9,18),1) and format as Date. Expected: 2026/9/24 (skips Japanese holidays 9/21-9/23).
-6. Enter =JP.YEN("未定"). Expected: #VALUE! with the message "金額として読めません" (invalid amount).
+6. Enter =JP.PAYMENT_DATE(DATE(2026,9,15),"末締め翌月25日払い") and format as Date. Expected: 2026/10/23 (10/25 is a Sunday, so the previous business day).
+7. Enter =JP.WITHHOLDING(100000). Expected: 10210.
+8. Enter =JP.YEN("未定"). Expected: #VALUE! with the message "金額として読めません" (invalid amount).
 
 The task pane (help.html) is a static help page listing all functions. All calculations are performed locally in the custom functions runtime; the add-in makes no network requests after loading.
 ```

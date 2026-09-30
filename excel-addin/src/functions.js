@@ -8,6 +8,7 @@
 //   - 空のセル・省略した引数は "" / null / undefined のどれかで届くので、まとめて「無し」として扱う
 import { analyzeSalary } from "../../calc-api/src/calc.js";
 import { calculateTakeHome } from "../../calc-api/src/takehome.js";
+import { holidayRuleOf, paymentDate, withholding } from "../../calc-api/src/invoice.js";
 import {
   HOLIDAYS,
   addBusinessDays,
@@ -33,6 +34,15 @@ function mapCells(matrix, fn) {
   const rows = Array.isArray(matrix) ? matrix : [[matrix]];
   return rows.map((row) =>
     (Array.isArray(row) ? row : [row]).map((c) => (isBlank(c) ? "" : fn(c))),
+  );
+}
+
+// 2つ目の引数が1セルなら全部の行に同じ値を、同じ形の範囲なら同じ位置の値を使う
+function mapCells2(matrix, other, fn) {
+  const single = !Array.isArray(other) || (other.length === 1 && other[0].length === 1);
+  const one = Array.isArray(other) ? other[0]?.[0] : other;
+  return mapCells(matrix, (c) => c).map((row, i) =>
+    row.map((c, j) => (c === "" ? "" : fn(c, single ? one : other[i]?.[j]))),
   );
 }
 
@@ -94,6 +104,7 @@ export const CATEGORIES = [
   { key: "salary", title: "求人の給与" },
   { key: "money", title: "金額・物件" },
   { key: "calendar", title: "和暦・祝日・営業日" },
+  { key: "invoice", title: "請求・支払" },
 ];
 
 export const FUNCTIONS = [
@@ -371,5 +382,52 @@ export const FUNCTIONS = [
         isoToSerial(h.date),
         h.name,
       ]),
+  },
+  {
+    name: "PAYMENT_DATE",
+    category: "invoice",
+    description: "支払条件(例: 末締め翌月25日払い)から支払日(シリアル値)を返します。土日・祝日なら前営業日にします。",
+    example: '=JP.PAYMENT_DATE(A2, "末締め翌月25日払い") → 25日が休日なら前営業日(表示形式を日付に)',
+    params: [
+      { name: "date", description: "取引日・請求日。範囲も可", range: true },
+      {
+        name: "terms",
+        description: "支払条件の文章(例: 末締め翌月25日払い、20日締め翌々月末日支払)。行ごとに違う条件なら範囲も可",
+        range: true,
+      },
+      {
+        name: "holidayRule",
+        description: '休日の時: "前"(前営業日・省略時)、"翌"(翌営業日)、"なし"。文章に「翌営業日」とあればそれに従う',
+        optional: true,
+      },
+      { name: "closedDates", description: "独自の休業日の範囲(省略可)", optional: true, range: true },
+    ],
+    result: "matrix",
+    fn: (date, terms, holidayRule, closed) => {
+      const rule = holidayRuleOf(holidayRule);
+      const c = closedDates(closed);
+      return mapCells2(date, terms, (d, t) => {
+        if (isBlank(t)) throw new Error("支払条件がありません");
+        const body = { date: toIso(d), terms: String(t), closedDates: c };
+        if (rule) body.holidayRule = rule;
+        return isoToSerial(paymentDate(body).paymentDate.date);
+      });
+    },
+  },
+  {
+    name: "WITHHOLDING",
+    category: "invoice",
+    description: "報酬・料金の源泉徴収税額を返します(100万円までは10.21%、超える部分は20.42%。1円未満切り捨て)。",
+    example: "=JP.WITHHOLDING(100000) → 10,210",
+    params: [
+      { name: "amount", description: "報酬の額(税抜。「10万円」のような書き方も可)。範囲も可", range: true },
+      { name: "includesTax", description: "TRUE なら、消費税を区分していない税込の額として扱う", optional: true },
+    ],
+    result: "matrix",
+    fn: (amount, includesTax) =>
+      mapCells(amount, (a) =>
+        withholding({ amount: Math.round(num(a, "報酬の額")), amountIncludesTax: yes(includesTax) })
+          .withholdingTax,
+      ),
   },
 ];
