@@ -35,7 +35,7 @@ export function parseDate(input) {
   return Number.isNaN(t) || iso(t) !== s ? null : s;
 }
 
-function dateField(body, key) {
+export function dateField(body, key) {
   const v = body?.[key];
   if (v == null || v === "") throw new InputError(`"${key}" is required (YYYY-MM-DD)`, key);
   const d = typeof v === "string" ? parseDate(v) : null;
@@ -43,7 +43,7 @@ function dateField(body, key) {
   return d;
 }
 
-function inRange(d, key) {
+export function inRange(d, key) {
   if (d < RANGE.from || d > RANGE.to) {
     throw new InputError(
       `"${key}" must be between ${RANGE.from} and ${RANGE.to} (holiday data range)`,
@@ -53,7 +53,7 @@ function inRange(d, key) {
 }
 
 // 営業日の条件: 土日・祝日・年末年始(任意)・独自の休業日(任意)以外
-function options(body) {
+export function options(body) {
   const closed = body?.closedDates ?? [];
   if (!Array.isArray(closed) || closed.length > 400) {
     throw new InputError('"closedDates" must be an array of up to 400 dates', "closedDates");
@@ -75,7 +75,7 @@ function options(body) {
   return { closedSet, yearEnd, weekend: new Set(weekend.map((w) => WEEKDAYS_EN.indexOf(w))) };
 }
 
-function isBusinessDay(d, o) {
+export function isBusinessDay(d, o) {
   const dow = new Date(toTime(d)).getUTCDay();
   if (o.weekend.has(dow) || HOLIDAYS[d] || o.closedSet.has(d)) return false;
   if (o.yearEnd) {
@@ -123,7 +123,7 @@ export function fromWareki(text) {
   return { date: d, era: era.name, year: n, outOfEraRange: outOfRange };
 }
 
-function describe(d, o) {
+export function describe(d, o) {
   const dow = new Date(toTime(d)).getUTCDay();
   return {
     date: d,

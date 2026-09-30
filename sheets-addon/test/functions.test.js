@@ -143,6 +143,34 @@ test("祝日・営業日: WORKDAY・NETWORKDAYS の日本版", () => {
   );
 });
 
+test("請求・支払: 支払日・源泉徴収", () => {
+  assert.equal(iso(g.JP_PAYMENT_DATE(cellDate("2026-09-15"), "末締め翌月25日払い")), "2026-10-23");
+  assert.equal(iso(g.JP_PAYMENT_DATE(cellDate("2026-09-15"), "末締め翌月25日払い", "翌")), "2026-10-26");
+  assert.equal(iso(g.JP_PAYMENT_DATE("2026/9/25", "20日締め翌月末払い")), "2026-11-30");
+  // 行ごとに違う条件(範囲どうし)と空のセル
+  const rows = plain(
+    g.JP_PAYMENT_DATE(
+      [[cellDate("2026-09-15")], [""], [cellDate("2026-09-25")]],
+      [["末締め翌月25日払い"], [""], ["20日締め翌月末払い"]],
+    ),
+  );
+  assert.deepEqual(
+    rows.map((r) => (r[0] === "" ? "" : iso(new Date(r[0])))),
+    ["2026-10-23", "", "2026-11-30"],
+  );
+  // 独自の休業日
+  assert.equal(
+    iso(g.JP_PAYMENT_DATE(cellDate("2026-09-25"), "20日締め翌月末払い", "", [[cellDate("2026-11-30")]])),
+    "2026-11-27",
+  );
+  assert.throws(() => g.JP_PAYMENT_DATE(cellDate("2026-09-15"), "未定"), /terms/);
+  assert.throws(() => g.JP_PAYMENT_DATE(cellDate("2026-09-15"), "末締め翌月25日払い", "適当"), /休日の扱い/);
+  assert.equal(g.JP_WITHHOLDING(100000), 10210);
+  assert.equal(g.JP_WITHHOLDING("150万円"), 204200);
+  assert.equal(g.JP_WITHHOLDING(110000, true), 11231);
+  assert.deepEqual(plain(g.JP_WITHHOLDING([[100000], [""], [1000000]])), [[10210], [""], [102100]]);
+});
+
 test("メニュー: 使い方の画面を開く項目を追加する", () => {
   g.onOpen();
   assert.deepEqual(menu[0], ["使い方(関数の一覧)", "showHelp"]);
@@ -151,7 +179,7 @@ test("メニュー: 使い方の画面を開く項目を追加する", () => {
 test("関数の説明(@customfunction)がすべての JP_ 関数に付いている", () => {
   const src = fs.readFileSync(path.join(DIST, "functions.js"), "utf8");
   const fns = [...src.matchAll(/^function (JP_\w+)\(/gm)].map((m) => m[1]);
-  assert.equal(fns.length, 17);
+  assert.equal(fns.length, 19);
   for (const name of fns) {
     const before = src.slice(0, src.indexOf(`function ${name}(`));
     assert.match(before.slice(before.lastIndexOf("/**")), /@customfunction/, name);

@@ -245,7 +245,7 @@ test("出品ごとの秘密の値: その出品の呼び出し口だけ使える
 });
 
 test("出品ごとの仕様書: その出品の呼び出し口と使う部品だけ", async () => {
-  assert.deepEqual(PRODUCTS, ["salary", "realty", "takehome", "calendar"]);
+  assert.deepEqual(PRODUCTS, ["salary", "realty", "takehome", "calendar", "invoice"]);
   const take = specFor("takehome");
   assert.deepEqual(Object.keys(take.paths), ["/v1/takehome/calculate", "/v1/health"]);
   assert.equal(take.info.title, "Japan Take-Home Pay Calculator");
@@ -255,6 +255,30 @@ test("出品ごとの仕様書: その出品の呼び出し口と使う部品だ
   assert.equal(Object.keys(cal.paths).length, 6);
   assert.ok("Wareki" in cal.components.schemas, "参照の先の参照も残す");
   assert.equal((await call("GET", "/openapi.json?product=nope")).status, 404);
+});
+
+test("請求: 支払日・源泉徴収(出力が仕様書と一致)", async () => {
+  const p = await call("POST", "/v1/invoice/payment-date", {
+    body: { date: "2026-09-15", terms: "末締め翌月25日払い" },
+  });
+  assert.equal(p.status, 200);
+  matchesSchema(p.body, "PaymentDateResult");
+  assert.equal(p.body.paymentDate.date, "2026-10-23");
+  const w = await call("POST", "/v1/invoice/withholding", { body: { amount: 100000 } });
+  assert.equal(w.status, 200);
+  matchesSchema(w.body, "WithholdingResult");
+  assert.equal(w.body.netPayment, 99790);
+  const bad = await call("POST", "/v1/invoice/payment-date", { body: { date: "2026-09-15", terms: "未定" } });
+  assert.equal(bad.status, 400);
+  assert.equal(bad.body.error.field, "terms");
+  const spec = specFor("invoice");
+  assert.deepEqual(Object.keys(spec.paths), [
+    "/v1/invoice/payment-date",
+    "/v1/invoice/withholding",
+    "/v1/health",
+  ]);
+  assert.ok("Day" in spec.components.schemas, "支払日の結果が使う Day も残す");
+  assert.match(spec.info.title, /Withholding/);
 });
 
 test("マーケットに取り込む仕様書: 認証を書かず、公開先の URL を指す", () => {
@@ -284,6 +308,8 @@ test("仕様書のパスと実装のルートが一致する", () => {
     "/v1/calendar/day",
     "/v1/calendar/holidays",
     "/v1/health",
+    "/v1/invoice/payment-date",
+    "/v1/invoice/withholding",
     "/v1/realty/analyze",
     "/v1/salary/analyze",
     "/v1/takehome/calculate",

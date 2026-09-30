@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 自動生成の元(scripts/build.mjs が {{BASE_URL}} などを置き換えて dist/manifest.xml を作る)。
+     Id は公開後に変えると別のアドインになるので変えない。Version は更新のたびに上げる(package.json の version から作る) -->
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+           xsi:type="TaskPaneApp">
+  <Id>9d420d4a-0cbc-418e-bfff-0968429b8802</Id>
+  <Version>{{VERSION}}</Version>
+  <ProviderName>{{PROVIDER}}</ProviderName>
+  <DefaultLocale>ja-JP</DefaultLocale>
+  <DisplayName DefaultValue="日本の計算関数(手取り・祝日・和暦)">
+    <Override Locale="en-US" Value="Japan Calc Functions (Take-home, Holidays, Wareki)" />
+  </DisplayName>
+  <Description DefaultValue="手取り・年収・坪単価・和暦・日本の祝日と営業日を、セルに =JP.TAKEHOME(300000) のような関数を書くだけで計算できます。入力した値を外部に送りません。">
+    <Override Locale="en-US" Value="Japanese take-home pay, salary text parsing, tsubo price, Japanese era (wareki), holidays and business days as Excel functions such as =JP.TAKEHOME(300000). No data leaves your workbook." />
+  </Description>
+  <IconUrl DefaultValue="{{BASE_URL}}assets/icon-32.png" />
+  <HighResolutionIconUrl DefaultValue="{{BASE_URL}}assets/icon-64.png" />
+  <SupportUrl DefaultValue="{{BASE_URL}}help.html" />
+  <Hosts>
+    <Host Name="Workbook" />
+  </Hosts>
+  <Requirements>
+    <Sets DefaultMinVersion="1.1">
+      <Set Name="CustomFunctionsRuntime" MinVersion="1.1" />
+    </Sets>
+  </Requirements>
+  <DefaultSettings>
+    <SourceLocation DefaultValue="{{BASE_URL}}help.html" />
+  </DefaultSettings>
+  <Permissions>ReadWriteDocument</Permissions>
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Workbook">
+        <AllFormFactors>
+          <ExtensionPoint xsi:type="CustomFunctions">
+            <Script>
+              <SourceLocation resid="Functions.Script.Url" />
+            </Script>
+            <Page>
+              <SourceLocation resid="Functions.Page.Url" />
+            </Page>
+            <Metadata>
+              <SourceLocation resid="Functions.Metadata.Url" />
+            </Metadata>
+            <Namespace resid="Functions.Namespace" />
+          </ExtensionPoint>
+        </AllFormFactors>
+      </Host>
+    </Hosts>
+    <Resources>
+      <bt:Urls>
+        <bt:Url id="Functions.Script.Url" DefaultValue="{{BASE_URL}}functions.js" />
+        <bt:Url id="Functions.Metadata.Url" DefaultValue="{{BASE_URL}}functions.json" />
+        <bt:Url id="Functions.Page.Url" DefaultValue="{{BASE_URL}}functions.html" />
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="Functions.Namespace" DefaultValue="JP" />
+      </bt:ShortStrings>
+    </Resources>
+  </VersionOverrides>
+</OfficeApp>

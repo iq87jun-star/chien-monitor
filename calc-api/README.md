@@ -1,6 +1,6 @@
 # Japan Salary, Tax & Calendar Calculator API(計算API)
 
-日本特有の計算をまとめた API。API マーケット(RapidAPI 等)で、テーマごとに4つの出品として販売する。
+日本特有の計算をまとめた API。API マーケット(RapidAPI 等)で、テーマごとに5つの出品として販売する。
 給与・物件の計算はブラウザ拡張(求人 年収チェッカー・物件 単価・月額チェッカー)の `parser.js` をそのまま使う。
 どれも自分で作った計算か、再配布が自由な公的データ(内閣府の祝日・協会けんぽ等の料率)なので、取得元の権利の問題がない。
 
@@ -23,6 +23,8 @@
 | calendar | `POST /v1/calendar/add-business-days` | 日付・日数 → ○営業日後(前)の日付(年末年始・独自の休業日・曜日の指定可) |
 | calendar | `POST /v1/calendar/count-business-days` | 期間 → 営業日数・期間中の祝日 |
 | calendar | `POST /v1/wareki/convert` | 西暦 ⇔ 和暦(「令和6年4月1日」「R6.4.1」「平成元年」等) |
+| invoice | `POST /v1/invoice/payment-date` | 取引日・支払条件(「末締め翌月25日払い」等の文章 or 締め日・何か月後・支払日)→ 締め日・支払日(休日は前/翌営業日) |
+| invoice | `POST /v1/invoice/withholding` | 報酬の額 → 消費税・請求の合計・源泉徴収税額(10.21%/20.42%)・差引の支払額 |
 | — | `GET /v1/health` | 稼働確認(認証不要) |
 | — | `GET /openapi.json[?product=…]` | 仕様書(出品ごとに絞れる。認証不要) |
 
@@ -48,6 +50,8 @@
 | 毎月自動 | 祝日(内閣府が例年2月ごろ翌年分を追加)。ワークフローが赤くなったら `npm run holidays` | `src/holidays.json` |
 
 新しい年度は `RATES` に年を足し、`DEFAULT_YEAR` を進め、テストの手計算の例も新しい率で作り直す。
+率・祝日はスプレッドシート版(`sheets-addon/`)と Excel 版(`excel-addin/`)にも同じものが入る。
+Excel 版は toreca の自動更新で配信し直すだけで届く。スプレッドシート版は Apps Script へ送り直す。
 
 ## 開発
 

@@ -71,6 +71,19 @@ function closedDates_(range) {
     .map(toIso_);
 }
 
+// 2つ目の引数も範囲なら同じ位置の値を、1つの値なら全部の行に同じ値を使う
+function mapCells2_(value, other, fn) {
+  if (Array.isArray(value)) {
+    return value.map(function (row, i) {
+      return row.map(function (c, j) {
+        var o = Array.isArray(other) ? (other[i] || [])[j] : other;
+        return c === "" || c == null ? "" : fn(c, o);
+      });
+    });
+  }
+  return value === "" || value == null ? "" : fn(value, other);
+}
+
 function wrap_(fn) {
   try {
     return fn();
@@ -401,6 +414,48 @@ function JP_HOLIDAYS(year) {
   return wrap_(function () {
     return JPCalc.calendarHolidays({ year: Math.floor(Number(year)) }).holidays.map(function (h) {
       return [toDate_(h.date), h.name];
+    });
+  });
+}
+
+// ---- 請求・支払 ----
+
+/**
+ * 支払条件(例: 末締め翌月25日払い)から支払日を返します。支払日が土日・祝日なら前営業日にします(3つ目の引数で変更可)。
+ *
+ * @param {Date} date 取引日・請求日。範囲も可
+ * @param {string} terms 支払条件の文章(例: 末締め翌月25日払い、20日締め翌々月末日支払)。行ごとに違う条件なら範囲も可
+ * @param {string} [holidayRule] 休日の時: "前"(前営業日・省略時)、"翌"(翌営業日)、"なし"(ずらさない)。文章に「翌営業日」とあればそれに従う
+ * @param {Date} [closedDates] 独自の休業日の範囲(省略可)
+ * @return 支払日
+ * @customfunction
+ */
+function JP_PAYMENT_DATE(date, terms, holidayRule, closedDates) {
+  var closed = closedDates_(closedDates);
+  return wrap_(function () {
+    var rule = JPCalc.holidayRuleOf(holidayRule);
+    return mapCells2_(date, terms, function (d, t) {
+      if (t === "" || t == null) throw new Error("支払条件がありません");
+      var body = { date: toIso_(d), terms: String(t), closedDates: closed };
+      if (rule) body.holidayRule = rule;
+      return toDate_(JPCalc.paymentDate(body).paymentDate.date);
+    });
+  });
+}
+
+/**
+ * 報酬・料金の源泉徴収税額を返します(100万円までは10.21%、超える部分は20.42%。1円未満切り捨て)。
+ *
+ * @param {number} amount 報酬の額(税抜。「10万円」のような書き方も可)。範囲も可
+ * @param {boolean} [includesTax] TRUE なら、消費税を区分していない税込の額として扱う
+ * @return 源泉徴収税額(円)
+ * @customfunction
+ */
+function JP_WITHHOLDING(amount, includesTax) {
+  return mapCells_(amount, function (a) {
+    return wrap_(function () {
+      return JPCalc.withholding({ amount: Math.round(num_(a, "報酬の額")), amountIncludesTax: includesTax === true })
+        .withholdingTax;
     });
   });
 }
