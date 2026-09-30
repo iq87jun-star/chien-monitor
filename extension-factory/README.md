@@ -1,8 +1,9 @@
 # 拡張の自動づくり(アイデア → 作成 → 提出)
 
 Claude の定期実行(Routine)が、この手順書に従ってブラウザ拡張を増やす。
-**1つの案から3つの商品を作る**: ブラウザ拡張・計算API(`calc-api/`)のエンドポイント・スプレッドシートの `JP_` 関数
-(`sheets-addon/`)。3つとも同じ `parser.js` とテストを使うので、手間を大きく増やさずに売り先を3つにできる。人がすることは **Issue で案を選ぶ** ことと、
+**1つの案から4つの商品を作る**: ブラウザ拡張・計算API(`calc-api/`)のエンドポイント・スプレッドシートの `JP_` 関数
+(`sheets-addon/`)・Excel の `JP.` 関数(`excel-addin/`)。どれも同じ `parser.js` とテストを使うので、手間を大きく増やさずに売り先を増やせる
+(拡張を伴わない「業務の部品」は [parts-factory](../parts-factory/README.md))。人がすることは **Issue で案を選ぶ** ことと、
 **Chrome ウェブストアへの新規登録(1件10分ほど・コピー用の文章は用意される)** だけ。
 
 ```
@@ -48,7 +49,7 @@ Claude の定期実行(Routine)が、この手順書に従ってブラウザ拡�
 3. Issue にラベル `ext-building` を付け、「作り始めました」とコメントする
 4. `job-extension/` をひな形にして、新しいフォルダ `<名前>-extension/` を作る(下の「作るもの」)。
    同じ PR で、計算API のエンドポイントとスプレッドシートの関数も足す(下の「計算API と関数」)
-5. テストを通す(計算API・スプレッドシートの `npm test`・`npm run test:e2e` も): `npm test`・`npm run test:e2e`・`npx web-ext@8 lint --source-dir dist/firefox-src --warnings-as-errors`・
+5. テストを通す(計算API・スプレッドシート・Excel の `npm test`・`npm run test:e2e` も): `npm test`・`npm run test:e2e`・`npx web-ext@8 lint --source-dir dist/firefox-src --warnings-as-errors`・
    `node --test scripts/amo/submit.test.mjs`・`node scripts/amo/submit.mjs <フォルダ> --dry-run`
 6. ブランチを切って PR を作り、CI がすべて緑になったらマージする(赤なら直して押し直す。3回直して駄目なら Issue に状況を書いて止まる)
 7. プライバシーポリシーのページを公開する: Actions の `toreca-auto-update` を手動実行し、
@@ -95,11 +96,14 @@ Claude の定期実行(Routine)が、この手順書に従ってブラウザ拡�
 | `sheets-addon/src/functions.js` | `JP_<名前>` 関数(`@customfunction` の説明を日本語で。範囲をまとめて渡せる形) |
 | `sheets-addon/test/functions.test.js` | 関数のテスト。関数の数を数えるテスト(今は 17)の数も直す |
 | `sheets-addon/src/Help.html`・`listing/store.md`・`cowork-guide.md` | 関数の一覧・説明・正解の値の表に足す |
+| `excel-addin/src/functions.js` | `FUNCTIONS` に `<名前>` を1つ足す(スプレッドシート版と同じ計算・同じ説明。範囲の引数は `range: true`)。使い方の画面は自動で作られる |
+| `excel-addin/test/functions.test.js`・`listing/store.md` | 関数のテストと、関数の数(今は 17)。掲載情報の一覧 |
 
 公開について(人の最初の登録が済むまでは、コードだけ入って公開はされない):
 - 計算API: Cloudflare の Secrets があれば、マージで自動で反映される。**新しい出品名**の時だけ、人が RapidAPI で出品を1つ足す
   (`listing/marketplace.md` の文章を貼る)。Issue にその手順を書く
 - スプレッドシート: Marketplace に公開済みなら、人が Apps Script で新しい版を作って反映する。未公開なら何もしない
+- Excel: マージ後の `toreca-auto-update` で pokeca-kaigai.com/excel-addin/ に配信され、利用者の Excel に自動で届く(再提出は不要)
 
 ## 人がすること
 

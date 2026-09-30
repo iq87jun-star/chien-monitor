@@ -48,6 +48,8 @@
 | 毎月自動 | 祝日(内閣府が例年2月ごろ翌年分を追加)。ワークフローが赤くなったら `npm run holidays` | `src/holidays.json` |
 
 新しい年度は `RATES` に年を足し、`DEFAULT_YEAR` を進め、テストの手計算の例も新しい率で作り直す。
+率・祝日はスプレッドシート版(`sheets-addon/`)と Excel 版(`excel-addin/`)にも同じものが入る。
+Excel 版は toreca の自動更新で配信し直すだけで届く。スプレッドシート版は Apps Script へ送り直す。
 
 ## 開発
 

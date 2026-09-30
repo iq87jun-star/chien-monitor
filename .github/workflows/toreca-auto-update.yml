@@ -56,6 +56,16 @@ jobs:
           npm run pipeline
           npm run build
 
+      - name: Build Excel add-in (pokeca-kaigai.com/excel-addin/ で配信)
+        # Excel は関数の本体をこのサイトから読み込むので、毎回のデプロイに必ず含める
+        # (含めずにデプロイすると、アドインを入れた人の関数が動かなくなる)
+        run: |
+          set -e
+          cd excel-addin
+          npm ci
+          npm test
+          cp -r dist ../toreca/dist/excel-addin
+
       - name: Commit updated data
         run: |
           git config user.name "market-monitor-bot"

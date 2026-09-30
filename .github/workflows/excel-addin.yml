@@ -1,0 +1,47 @@
+# Excel のアドイン(excel-addin/)のテスト。
+# 計算の本体は calc-api と拡張の parser.js と共有しているので、それらの変更でも走らせる。
+# 配信(pokeca-kaigai.com/excel-addin/)は toreca-auto-update.yml が toreca のサイトと一緒に行う。
+# AppSource への提出は手作業(excel-addin/README.md)。
+
+name: excel-addin
+
+on:
+  pull_request:
+    paths:
+      - "excel-addin/**"
+      - "calc-api/src/**"
+      - "job-extension/src/parser.js"
+      - "realty-extension/src/parser.js"
+      - ".github/workflows/excel-addin.yml"
+  push:
+    branches: [main]
+    paths:
+      - "excel-addin/**"
+      - "calc-api/src/**"
+      - "job-extension/src/parser.js"
+      - "realty-extension/src/parser.js"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: excel-addin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: excel-addin/package-lock.json
+      - run: npm ci
+      - name: Build & test (Excel と同じ形で17関数を試す)
+        run: npm test
+      - uses: actions/upload-artifact@v4
+        with:
+          name: excel-addin-dist
+          path: excel-addin/dist/
