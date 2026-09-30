@@ -65,7 +65,7 @@ npx --yes office-addin-manifest validate dist/manifest.xml   # 「The manifest i
 ### 1. 配信する(5分)
 
 1. このフォルダを含む PR を `main` にマージする
-2. GitHub → Actions →「toreca-auto-update」→「Run workflow」(待てば1日2回の自動実行でも配信される)
+2. 待つだけ(マージすると `toreca-auto-update` が自動で走って配信する。急ぐ時は Actions →「toreca-auto-update」→「Run workflow」)
 3. ブラウザで https://pokeca-kaigai.com/excel-addin/help.html が開けば配信できている
 
 ### 2. 自分の Excel で試す(15分)

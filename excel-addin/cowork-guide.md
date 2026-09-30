@@ -19,7 +19,7 @@ Cowork は「止まる」と書かれた所で必ず作業を止め、人に確�
 
 ## 事前準備(★人が行う)
 
-1. `excel-addin/` を含む PR が `main` にマージされ、GitHub → Actions →「toreca-auto-update」→「Run workflow」で配信済みであること
+1. `excel-addin/` を含む PR が `main` にマージされ、配信済みであること(マージで `toreca-auto-update` が自動で走る)
    (https://pokeca-kaigai.com/excel-addin/help.html が開けば OK)
 2. Chrome で https://www.office.com に Microsoft アカウントでログインしておく(無料のアカウントでよい)
 3. Cowork に「https://github.com/iq87jun-star/chien-monitor/blob/main/excel-addin/cowork-guide.md の作業を
