@@ -1,6 +1,8 @@
 # 拡張の自動づくり(アイデア → 作成 → 提出)
 
-Claude の定期実行(Routine)が、この手順書に従ってブラウザ拡張を増やす。人がすることは **Issue で案を選ぶ** ことと、
+Claude の定期実行(Routine)が、この手順書に従ってブラウザ拡張を増やす。
+**1つの案から3つの商品を作る**: ブラウザ拡張・計算API(`calc-api/`)のエンドポイント・スプレッドシートの `JP_` 関数
+(`sheets-addon/`)。3つとも同じ `parser.js` とテストを使うので、手間を大きく増やさずに売り先を3つにできる。人がすることは **Issue で案を選ぶ** ことと、
 **Chrome ウェブストアへの新規登録(1件10分ほど・コピー用の文章は用意される)** だけ。
 
 ```
@@ -30,8 +32,8 @@ Claude の定期実行(Routine)が、この手順書に従ってブラウザ拡�
      **ページに書かれている数字や文字から、利用者が自分で計算していること** を肩代わりする
    - 既存の `parser.js` 型(文章 → 数値 → 計算)で作れる。外部の API やデータの取得が要らない
      (要る場合は、公的で再配布自由なデータを自分のサイトに置く形にできるものだけ)
-   - 収益の筋がある: 計算結果の下に「PR」と明記した紹介リンク(`src/offers.js`)を置ける分野か、
-     計算 API(`calc-api/`)の新しい出品にもなるもの
+   - 収益の筋がある: 計算結果の下に「PR」と明記した紹介リンク(`src/offers.js`)を置ける分野で、
+     同じ計算が計算API(企業や開発者が使う)とスプレッドシートの関数(表でまとめて計算する人が使う)にもなるもの
 3. GitHub に Issue を作る(テンプレート「拡張のアイデア」・ラベル `ext-idea`)。各案に次を書く:
    名前・一言で何をするか・対象の種類のサイト(例として2〜3サイト。**これは Issue の中だけ**で、説明文には書かない)・
    計算の中身・収益の筋・作る量の見込み(小/中/大)・心配な点
@@ -44,8 +46,9 @@ Claude の定期実行(Routine)が、この手順書に従ってブラウザ拡�
    無ければ何もしないで終わる(報告もしない)。1回の実行で作るのは **1つだけ**
 2. 30日で2つの上限を確かめる。超えるなら Issue に「上限のため◯日以降に作ります」と書いて終わる
 3. Issue にラベル `ext-building` を付け、「作り始めました」とコメントする
-4. `job-extension/` をひな形にして、新しいフォルダ `<名前>-extension/` を作る(下の「作るもの」)
-5. テストを通す: `npm test`・`npm run test:e2e`・`npx web-ext@8 lint --source-dir dist/firefox-src --warnings-as-errors`・
+4. `job-extension/` をひな形にして、新しいフォルダ `<名前>-extension/` を作る(下の「作るもの」)。
+   同じ PR で、計算API のエンドポイントとスプレッドシートの関数も足す(下の「計算API と関数」)
+5. テストを通す(計算API・スプレッドシートの `npm test`・`npm run test:e2e` も): `npm test`・`npm run test:e2e`・`npx web-ext@8 lint --source-dir dist/firefox-src --warnings-as-errors`・
    `node --test scripts/amo/submit.test.mjs`・`node scripts/amo/submit.mjs <フォルダ> --dry-run`
 6. ブランチを切って PR を作り、CI がすべて緑になったらマージする(赤なら直して押し直す。3回直して駄目なら Issue に状況を書いて止まる)
 7. プライバシーポリシーのページを公開する: Actions の `toreca-auto-update` を手動実行し、
@@ -76,8 +79,31 @@ Claude の定期実行(Routine)が、この手順書に従ってブラウザ拡�
 | `.github/workflows/<名前>-extension-publish.yml` | `job-extension-publish.yml` の写し(タグ `<短い名前>-v*`) |
 | `toreca/public/<名前>-extension-privacy.html` | プライバシーポリシー(`job-extension-privacy.html` の写しを直す) |
 
+### 計算API と関数(同じ PR で足す)
+
+拡張の `src/parser.js` を import して使う(計算を二重に書かない)。
+
+| 場所 | 足すもの |
+|---|---|
+| `calc-api/src/calc.js` | `import "../../<名前>-extension/src/parser.js"` と、入力を受けて英語のキーで返す `analyze<名前>()`(`InputError` で入力の誤りを返す) |
+| `calc-api/src/worker.js` | `ROUTES` に `"POST /v1/<分野>/<動詞>": [関数, "<出品名>"]`。新しい出品名なら RapidAPI の出品が1つ増える |
+| `calc-api/src/openapi.json` | エンドポイントの仕様・例と、新しい出品なら `x-products` に英語の名前と説明。`npx @redocly/cli lint` を通す |
+| `calc-api/test/api.test.js` | 実際の表記を使ったテスト。出力が仕様書と合うことも確かめる |
+| `calc-api/listing/marketplace.md` | 新しい出品なら、名前・説明・カテゴリ・タグ・料金案 |
+| `calc-api/README.md` | エンドポイントの表に1行 |
+| `sheets-addon/src/lib-entry.js` | 新しい計算を `JPCalc` に出す |
+| `sheets-addon/src/functions.js` | `JP_<名前>` 関数(`@customfunction` の説明を日本語で。範囲をまとめて渡せる形) |
+| `sheets-addon/test/functions.test.js` | 関数のテスト。関数の数を数えるテスト(今は 17)の数も直す |
+| `sheets-addon/src/Help.html`・`listing/store.md`・`cowork-guide.md` | 関数の一覧・説明・正解の値の表に足す |
+
+公開について(人の最初の登録が済むまでは、コードだけ入って公開はされない):
+- 計算API: Cloudflare の Secrets があれば、マージで自動で反映される。**新しい出品名**の時だけ、人が RapidAPI で出品を1つ足す
+  (`listing/marketplace.md` の文章を貼る)。Issue にその手順を書く
+- スプレッドシート: Marketplace に公開済みなら、人が Apps Script で新しい版を作って反映する。未公開なら何もしない
+
 ## 人がすること
 
 - 週に1回、Issue「[拡張アイデア] …」を見て、作ってほしい案の番号をコメントする(作らない週はコメントしないでよい)
 - 作成係が Issue に書いた手順で、Chrome ウェブストアに新規登録する(Firefox は自動)
+- 計算API の新しい出品名ができた時は、RapidAPI で出品を足す(Cloudflare・RapidAPI の登録が済んでから)
 - 止めたい時は、この README の先頭に「停止中」と書くか、Claude に「拡張の自動づくりを止めて」と伝える
