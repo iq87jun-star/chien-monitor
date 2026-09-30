@@ -257,6 +257,17 @@ test("出品ごとの仕様書: その出品の呼び出し口と使う部品だ
   assert.equal((await call("GET", "/openapi.json?product=nope")).status, 404);
 });
 
+test("マーケットに取り込む仕様書: 認証を書かず、公開先の URL を指す", () => {
+  for (const spec of [openapi, ...PRODUCTS.map(specFor)]) {
+    assert.equal(spec.security, undefined, "認証はマーケットの入口が行う(鍵の欄が二重になる)");
+    assert.equal(spec.components.securitySchemes, undefined);
+    assert.deepEqual(
+      spec.servers.map((s) => s.url),
+      ["https://jp-listing-calc-api.iq87jun.workers.dev"],
+    );
+  }
+});
+
 test("存在しないパス・メソッド違い", async () => {
   assert.equal((await call("GET", "/nope")).status, 404);
   assert.equal((await call("GET", "/v1/salary/analyze")).status, 405);

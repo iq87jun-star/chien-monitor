@@ -1,0 +1,7 @@
+# 仕様書の検査(npx @redocly/cli lint)の設定。
+# 認証はマーケット(RapidAPI など)の入口が行い、仕様書に書くと取り込み時に鍵の欄が二重になるため、
+# 仕様書には認証(security)を書かない。そのため security-defined の規則だけ止める。
+extends:
+  - recommended
+rules:
+  security-defined: off
