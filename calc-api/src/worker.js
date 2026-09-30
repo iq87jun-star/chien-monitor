@@ -109,7 +109,7 @@ export function specFor(product) {
     }
   };
   walk(paths);
-  const components = { securitySchemes: openapi.components.securitySchemes };
+  const components = {};
   for (const kind of ["schemas", "responses"]) {
     components[kind] = Object.fromEntries(
       Object.entries(openapi.components[kind]).filter(([name]) => used.has(`${kind}/${name}`)),
