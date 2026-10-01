@@ -1,4 +1,4 @@
-// 手元で試す用(本番は Cloudflare Worker の src/worker.js が10分ごとに実行する)。
+// 手元で試す用(本番は Claude の定期実行が relay.mjs で取得し、Cloudflare Worker の src/worker.js が判定・通知する)。
 //
 //   node watch.mjs            … 通知し、状態を state.json に保存
 //   node watch.mjs --dry-run  … 通知も保存もせず、通知対象を表示するだけ

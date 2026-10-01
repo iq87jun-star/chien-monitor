@@ -3,8 +3,13 @@ name = "gametrade-watch"
 main = "src/worker.js"
 compatibility_date = "2026-06-01"
 
+# 一覧の取得は Claude の定期実行が relay.mjs で行う(ゲームトレードがクラウドのサーバーからのアクセスを拒否するため)
 [triggers]
-crons = ["*/10 * * * *"]
+crons = []
+
+[vars]
+# POST /ingest の合言葉の SHA-256(合言葉そのものは Claude の定期実行の指示文にだけある)
+INGEST_TOKEN_SHA256 = "03cce08b9e028e81b2501daf4f46563d42f96093840c24b261f3d818db454f38"
 
 # 前回の状態を保存する(notify と同じく D1。API トークンの権限を増やさずに済むため)
 [[d1_databases]]

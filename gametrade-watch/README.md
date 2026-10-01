@@ -15,17 +15,22 @@
 
 ## 仕組み
 
-- Cloudflare Worker(`src/worker.js`)が10分ごとに一覧を確認し、状態(最大ID・価格)を D1 に保存します。
-  GitHub Actions のサーバーからはサイトに接続できない(403・応答なし)ため Cloudflare で動かしています。
-- `https://gametrade-watch.<サブドメイン>.workers.dev/status` で最後の実行結果を確認できます。
-- 判定などの本体は `src/core.js`(テストは `npm test`)。
+ゲームトレードはクラウドのサーバー(GitHub Actions・Cloudflare)からのアクセスを 403 で拒否するため、
+取得と判定を分けています。
+
+1. **取得**: Claude の定期実行(Routine、1時間ごと)が `relay.mjs` で一覧ページを取得し、Worker に送る
+2. **判定・通知**: Cloudflare Worker(`src/worker.js`)の `POST /ingest` が出品を判定して Discord に通知し、状態(最大ID・価格)を D1 に保存
+
+- `/ingest` には合言葉が必要です。合言葉は Routine の指示文にだけあり、`wrangler.toml` には SHA-256 だけを置いています
+- `https://gametrade-watch.iq87jun.workers.dev/status` で最後の実行結果を確認できます
+- 判定などの本体は `src/core.js`(テストは `npm test`)
 
 ## 設定
 
 1. Discord で通知したいチャンネルの「設定 → 連携サービス → ウェブフック → 新しいウェブフック」で URL をコピー
 2. GitHub のリポジトリ「Settings → Secrets and variables → Actions」に `GAMETRADE_DISCORD_WEBHOOK` として登録
 3. `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` は notify と共用(追加の権限は不要)
-4. main に入るとデプロイされ、10分ごとに動きます(「Actions → gametrade-watch → Run workflow」で再デプロイ)
+4. main に入ると Worker がデプロイされます(「Actions → gametrade-watch → Run workflow」で再デプロイ)
 
 ## 手元で試す
 
