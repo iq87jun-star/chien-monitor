@@ -1121,6 +1121,230 @@
    ],
    "note": "探索ではなく実装(セル加算なし)。前提: Fintokei での UK100/WTI/BTC/ETH 取引可否(接尾辞 p)・同時保有リスク 3% の内側に Hold 災害 SL(倍率 1.48→1.0 の可能性)・Q28 の水曜ロール監視が 9・10 月と正(docs/279 §4)。購入は 10 月の帰結後",
    "result": "EA11(トパーズ 3,500万: 非FX ×1.48 + Roll ×1.0・スイング用ガード)を作成。Fintokei 端末で UK100p/USOILp/BTCUSDp/ETHUSDp/GBPJPYp を確認(2026-09-28)。セル加算なし"
+  },
+  {
+   "id": "Q83",
+   "slug": "exec_gap",
+   "title": "執行差の測定装置(実口座 vs 紙上・レグ別・月次)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "診断。ops_inbox の positions.csv(magic/コメント)と紙上同日セルを突き合わせ forward/exec_gap.py を作る。規則: 実−紙が 2 か月連続で Mon −5 / Roll −3 bps/取引未満のレグは縮小案",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 1
+  },
+  {
+   "id": "Q93",
+   "slug": "jpy_lot_path_fix",
+   "title": "円建て口座のロット計算経路の修正(SIZE SANITY の原因・EA11/ルビー/パール)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "工学。LotFromNotional の tick 値換算を口座通貨で正しく行い v+0.01。テスターで UK100p/USOILp/BTCUSDp のロット一致を確認。配備は「切替」後",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 2
+  },
+  {
+   "id": "Q85",
+   "slug": "guard_mult_frontier",
+   "title": "口座規則別のガード・倍率フロンティア(FTMO Std / Fintokei スイング / FN・MC 格子)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "register_metrics の MC で 倍率{2.0,2.5,3.3,4.0}×日次停止{3,4,5%}×床{8,9,10%}。採用点は最悪年でも失格 ≤10% の中で到達率最大。既存口座は P1→P2 時のみ適用",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 3
+  },
+  {
+   "id": "Q84",
+   "slug": "mon_shot_exclude_real",
+   "title": "実口座で劣化が大きい Mon ショットの除外(改良系)",
+   "cells": 4,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "Q83 の結果で劣化最大ショットを特定し、研究系列で除外版 Mon4 を改良系基準で判定",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 4
+  },
+  {
+   "id": "Q89",
+   "slug": "hold_universe_ext",
+   "title": "Hold 族の銘柄拡張(XAGUSD/COPPER/UKOIL/NGAS/US2000/HK50/AUS200/EU50)",
+   "cells": 8,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "hold_cell と同一構成・標準基準(IS/OOS 符号一致・前窓 ≥50%・Bonferroni)。通過 → 紙上候補",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 5
+  },
+  {
+   "id": "Q90",
+   "slug": "hold_disaster_sl",
+   "title": "Hold の災害 SL 水準(改良系・{10%,20%,なし} × Hold 6 銘柄)",
+   "cells": 6,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "改良系基準。通過 → 11 月 EA 改訂案の InpHoldSLPct",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 6
+  },
+  {
+   "id": "Q91",
+   "slug": "mon_eth_exit",
+   "title": "Mon ETHUSD の出口(改良系・{12h,36h,翌日 NY 引け,24h+トレイル})",
+   "cells": 4,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "改良系基準。通過 → 14166201 G案・EA11 の ETHUSD レグ",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 7
+  },
+  {
+   "id": "Q92",
+   "slug": "index_mon_stop_rule",
+   "title": "指数 Mon(6 本)の継続判定(docs/276 停止規則・研究系列と実口座)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "診断。外す/残すを 11 月 EA 改訂案に出す",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 8
+  },
+  {
+   "id": "Q86",
+   "slug": "funded_mult_payout",
+   "title": "資金化後の倍率逓減と出金最大化(12 か月 MC)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "Mon4 ×3.3 維持 vs ×2.0/×1.5、出金 2 週/4 週。提案: InpFundedMult の要否",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 9
+  },
+  {
+   "id": "Q87",
+   "slug": "book_mix_auto",
+   "title": "帳簿リスク寄与の自動計算(forward/book_mix.py・毎月 1 日)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "docs/318 §3/§8a を自動化。目標からの乖離 ±10pt 超を改正案に",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 10
+  },
+  {
+   "id": "Q94",
+   "slug": "tester_automation",
+   "title": "ストラテジーテスターの自動化(terminal64 /config:tester.ini → Drive _tester/)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "chien_deploy に run_tester()。Q1 の B 段パリティを人手なしで回す",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 11
+  },
+  {
+   "id": "Q95",
+   "slug": "ea_core_include",
+   "title": "EA 共通部の include 化(mql5/include/chien_core.mqh)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "Q94 のパリティで include 版 = 現行版を確認してから切替",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 12
+  },
+  {
+   "id": "Q96",
+   "slug": "p1_p2_lock_switch",
+   "title": "P1 通過 → P2 のロック自動切替(設計)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "設計書のみ。実装は 11 月の EA 改訂で",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 13
+  },
+  {
+   "id": "Q88",
+   "slug": "purchase_mc_2026-11",
+   "title": "11 月購入候補の MC 比較(11/1 実行・10 月分までのレグ DB)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "FTMO Std 100k+EA10 / Fintokei チャレンジ / FN Stellar / Alpha Capital Swing / The5ers。docs/318 §2 の業者上限を制約。実行日 2026-11-01 以降(10 月データが揃ってから)",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 14
   }
  ],
  "runs": [
@@ -1997,6 +2221,10 @@
    "cum_after": 9613,
    "doc": "docs/294",
    "note": "0/6(複製されず)"
+  },
+  {
+   "date": "2026-10-01",
+   "note": "docs/322 改正プログラム Q83〜Q96 を一括登録(ユーザー「登録」)。順序は order 欄。Q88 は 11/1 以降に実行"
   }
  ]
 }
