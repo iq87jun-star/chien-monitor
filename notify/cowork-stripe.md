@@ -74,3 +74,15 @@ https://github.com/iq87jun-star/chien-monitor/settings/secrets/actions/new で�
 
 登録したら Claude Code に「Stripe の Secrets を登録しました」と伝える。Claude Code が通知サービスを公開し直し、
 テストカード(`4242 4242 4242 4242`)で申し込み→解約まで確かめる手順を案内する。
+
+## 本番への切り替え(テストで申し込み→解約まで確かめた後)
+
+★人が先に行う: Stripe の「アカウントを有効化」(事業者情報・本人確認・振込先口座)を済ませ、審査が通っていること。
+「特定商取引法に基づく表記」の URL を聞かれたら `https://toreca-notify.iq87jun.workers.dev/tokushoho.html`。
+
+その後、人が Cowork に「notify/cowork-stripe.md の作業を**本番モード**で S1〜S3 だけして」と伝える。
+本番モードの時だけ、上の「テストモードが ON であることを確かめる」を「**OFF(本番)であることを確かめる**」に読み替える。
+それ以外の決まり(鍵を表示しない・カード情報を入れない)は同じ。
+
+最後に人が、GitHub の Secrets の3つを本番の値(`sk_live_…`・本番の `price_…`・本番の Webhook の `whsec_…`)で
+**上書き**(Secrets の一覧で各名前の「Update」)し、Claude Code に「本番の Stripe の Secrets に差し替えました」と伝える。
