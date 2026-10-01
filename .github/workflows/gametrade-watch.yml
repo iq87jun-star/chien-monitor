@@ -1,0 +1,59 @@
+# ゲームトレード(gametrade.jp)の新着出品を Discord に通知する(gametrade-watch/)。
+# 10分ごとに一覧を見て、まだ通知していない出品があれば送る。
+# 「見た出品ID」は Actions のキャッシュに保存する(main にコミットを積まないため)。
+#
+# Secrets:
+#   GAMETRADE_DISCORD_WEBHOOK … 通知先の Discord ウェブフックURL(未設定ならログに出すだけ)
+
+name: gametrade-watch
+
+on:
+  schedule:
+    - cron: "*/10 * * * *" # GitHub 側の混雑で数分〜十数分遅れることがある
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write # 古いキャッシュの削除
+
+concurrency:
+  group: gametrade-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: gametrade-watch
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 前回の状態を復元
+        uses: actions/cache/restore@v4
+        with:
+          path: gametrade-watch/state.json
+          key: gametrade-watch-state-${{ github.run_id }}
+          restore-keys: gametrade-watch-state-
+
+      - name: 新着チェック
+        env:
+          GAMETRADE_DISCORD_WEBHOOK: ${{ secrets.GAMETRADE_DISCORD_WEBHOOK }}
+        run: node gametrade-watch/watch.mjs
+
+      - name: 状態を保存
+        uses: actions/cache/save@v4
+        with:
+          path: gametrade-watch/state.json
+          key: gametrade-watch-state-${{ github.run_id }}
+
+      - name: 古い状態キャッシュを削除
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh cache list --repo "$GITHUB_REPOSITORY" --key gametrade-watch-state- --sort created_at --order desc --limit 100 --json key -q '.[].key' \
+            | tail -n +4 | xargs -r -I{} gh cache delete {} --repo "$GITHUB_REPOSITORY" || true
