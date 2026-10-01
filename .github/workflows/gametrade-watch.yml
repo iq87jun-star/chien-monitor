@@ -1,5 +1,5 @@
 # ゲームトレード新着通知(gametrade-watch/)のテストと Cloudflare へのデプロイ。
-# チェック自体は Cloudflare Worker が10分ごとに行う(GitHub Actions のサーバーからはサイトに接続できないため)。
+# 一覧の取得は Claude の定期実行が relay.mjs で行い、Worker(判定・通知)に送る(クラウドのサーバーからはサイトに接続できないため)。
 #   - gametrade-watch/ を変更するPR: 単体テスト
 #   - main への push(gametrade-watch/ の変更)・手動実行: テスト → Cloudflare にデプロイ
 #

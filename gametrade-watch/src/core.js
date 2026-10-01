@@ -138,20 +138,39 @@ async function fetchPage(fetchImpl, url, sleep) {
 
 // 1回分のチェック。state は前回の状態(無ければ初回=記録だけ)。
 // 返り値: { state: 次の状態, hits: 通知する出品, total: 取得した件数, notified: 送ったか }
-export async function runCheck({ config, state, webhook, fetchImpl = fetch, sleep = wait, dryRun = false }) {
+// 監視する一覧の各ページのURL
+export function pageUrls(config) {
   const base = new URL(config.url);
   base.searchParams.delete("page");
+  return Array.from({ length: config.pages ?? 3 }, (_, i) => {
+    const url = new URL(base);
+    url.searchParams.set("page", String(i + 1));
+    return url.href;
+  });
+}
+
+// 一覧の各ページを取ってくる(間を空けて)
+export async function fetchPages(config, { fetchImpl = fetch, sleep = wait } = {}) {
+  const pages = [];
+  for (const url of pageUrls(config)) {
+    if (pages.length) await sleep(2000);
+    pages.push(await fetchPage(fetchImpl, url, sleep));
+  }
+  return pages;
+}
+
+// 1回分のチェック。state は前回の状態(無ければ初回=記録だけ)。
+// pages(取得済みの一覧ページの HTML)を渡すとそれを使い、無ければ自分で取りに行く。
+// 返り値: { state: 次の状態, hits: 通知する出品, total: 取得した件数, first: 初回か, notified: 送ったか }
+export async function runCheck({ config, state, webhook, pages, fetchImpl = fetch, sleep = wait, dryRun = false }) {
+  const base = new URL(config.url);
   // サイト側が価格の絞り込みを無視することがあるので、こちらでも絞り込む
   const low = Number(base.searchParams.get("low_price")) || 0;
   const high = Number(base.searchParams.get("high_price")) || Infinity;
 
+  pages ??= await fetchPages(config, { fetchImpl, sleep });
   const found = new Map();
-  for (let page = 1; page <= (config.pages ?? 3); page++) {
-    if (page > 1) await sleep(2000);
-    const url = new URL(base);
-    url.searchParams.set("page", String(page));
-    for (const it of parseExhibits(await fetchPage(fetchImpl, url, sleep), base.origin)) found.set(it.id, it);
-  }
+  for (const html of pages) for (const it of parseExhibits(html, base.origin)) found.set(it.id, it);
   if (found.size === 0) throw new Error("出品を1件も読み取れませんでした(サイトの構造が変わった可能性)");
 
   const all = [...found.values()];
