@@ -65,10 +65,11 @@ Actions の「Run workflow」で「相場データが更新されていなくて
 
 ## 有料プランの公開手順(Stripe・無料プランの公開後に)
 
+3〜5 の Stripe の画面の入力は Cowork に任せられる: [cowork-stripe.md](cowork-stripe.md)
+
 1. **Stripe に登録**: https://dashboard.stripe.com/register 。本番で決済を受けるには、事業者情報・
    本人確認・振込先口座の登録と審査が必要(数日かかることがある)。それまではテストモードで動作確認できる
-2. **特定商取引法に基づく表記**: `public/tokushoho.html` の【】の箇所(氏名・メールアドレス等)を書き換えて
-   main に入れる。有料で販売するには法律上この表記が必要。Stripe の審査でもこのページのURLを聞かれる
+2. **特定商取引法に基づく表記**: `public/tokushoho.html`(記入済み)。有料で販売するには法律上この表記が必要。Stripe の審査でもこのページのURLを聞かれる
    (`https://toreca-notify.<サブドメイン>.workers.dev/tokushoho.html`)
 3. **商品と価格を作る**: Stripe の「商品カタログ」→「商品を追加」→ 名前「トレカ値下がり通知 有料プラン」、
    価格「300円・継続・毎月」。作成後の価格ID(`price_…`)を控える。価格を変える時は `wrangler.toml` の
