@@ -52,7 +52,7 @@ def digest(d):
 def main():
     root = sys.argv[1] if len(sys.argv) > 1 else "ops_inbox"
     st = os.path.join(root, "status.json"); status = json.load(open(st, encoding="utf-8")) if os.path.exists(st) else {}
-    rows = [digest(d) for d in sorted(glob.glob(os.path.join(root, "*"))) if os.path.isdir(d)]
+    rows = [digest(d) for d in sorted(glob.glob(os.path.join(root, "*"))) if os.path.isdir(d) and os.path.basename(d).isdigit()]   # _diag 等は口座ではない
     res = dict(ingested_utc=dt.datetime.utcnow().isoformat(), agent_generated_utc=status.get("generated_utc"), accounts=rows,
                agent_failures=[t for t in status.get("terminals", []) if not t.get("ok")])
     os.makedirs("results", exist_ok=True); json.dump(res, open("results/ops_digest_latest.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)

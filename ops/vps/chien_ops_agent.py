@@ -230,7 +230,12 @@ def write_diag(out_root, script_dir):
     import subprocess
     d = os.path.join(out_root, "_diag"); os.makedirs(d, exist_ok=True)
     def run(cmd):
-        try: return subprocess.run(cmd, capture_output=True, text=True, timeout=60, errors="replace").stdout
+        try:
+            b = subprocess.run(cmd, capture_output=True, timeout=60).stdout
+            for enc in ("cp932", "utf-8"):
+                try: return b.decode(enc)
+                except Exception: pass
+            return b.decode("utf-8", errors="replace")
         except Exception as e: return f"ERR {e!r}"
     try: lines = open(os.path.join(script_dir, "agent.log"), encoding="utf-8", errors="replace").read().splitlines()[-80:]
     except Exception as e: lines = [f"agent.log 読めず {e!r}"]
@@ -244,7 +249,31 @@ def write_diag(out_root, script_dir):
     open(os.path.join(d, "host.txt"), "w", encoding="utf-8").write(host)
 
 
+class _Tee:
+    """stdout/stderr を agent.log にも書く(タスクの cmd リダイレクトは引用符の扱いで失敗したため、自前で記録する)。"""
+    def __init__(self, stream, path):
+        self.s = stream
+        try:
+            if os.path.exists(path) and os.path.getsize(path) > 2_000_000:
+                tail = open(path, encoding="utf-8", errors="replace").read().splitlines()[-2000:]
+                open(path, "w", encoding="utf-8").write("\n".join(tail) + "\n")
+            self.f = open(path, "a", encoding="utf-8", errors="replace")
+        except Exception: self.f = None
+    def write(self, x):
+        try: self.s.write(x)
+        except Exception: pass
+        if self.f:
+            try: self.f.write(x); self.f.flush()
+            except Exception: pass
+    def flush(self):
+        try: self.s.flush()
+        except Exception: pass
+
+
 def main():
+    _log = os.path.join(os.path.dirname(os.path.abspath(__file__)), "agent.log")
+    sys.stdout = _Tee(sys.stdout, _log); sys.stderr = _Tee(sys.stderr, _log)
+    print(f"\n==== {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()} UTC agent 1.7 ====")
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "terminals.json"))
     ap.add_argument("--since", default="2026-08-01")
@@ -272,7 +301,7 @@ def main():
         except Exception as e:
             print(f"[{t.get('name')}] 例外 {e!r}"); status.append(dict(account=str(t.get("account")), name=t.get("name"), ok=False, error=repr(e), time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()))
         time.sleep(2)
-    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.6", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.7", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     ok = sum(1 for s in status if s.get("ok")); print(f"完了 {ok}/{len(status)} 端末 → {out_root}")
     try: write_diag(out_root, os.path.dirname(os.path.abspath(__file__)))
     except Exception as e: print(f"_diag 書き出し失敗 {e!r}")

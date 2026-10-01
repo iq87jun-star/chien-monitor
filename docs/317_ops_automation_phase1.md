@@ -74,4 +74,5 @@ VPS(Windows)                                   Google Drive              研究�
 - **ログオン・トリガー**: タスクに「ログオン 3 分後から 1 時間繰り返し」を追加(従来の日付 00:00 起点の毎時は残す)。PC を起動すれば自動で再開する。
 - **電池設定**: `-AllowStartIfOnBatteries -DontStopIfGoingOnBatteries`(既定は AC 電源時のみ実行で、ノート PC が電池駆動だと毎時タスクは一切動かない)。失敗時 5 分間隔で 3 回再試行。
 - **適用**: `chien_setup.bat` をもう一度ダブルクリック(新しい `install_task.ps1` / `chien_ops_agent.py` を GitHub から取り直し、タスクを上書き登録し、1 回実行して Drive に記録と `_diag` を書く)。以後、止まったと思ったときも同じ操作でよい。
+- **【10/1 20:04 JST 判明・原因確定】** 再実行後の `_diag/task.txt`: 前回の実行時刻 2026/10/01 20:00:01・**前回の結果 1**、`agent_tail.txt`: agent.log が存在しない。つまり毎時タスクは起動していたが毎回失敗しており、9/29 以降 Drive に届いていた記録はすべて bat の手動実行分だった。原因は登録していたアクション `cmd.exe /c "python" "script" --config "cfg" >> "log" 2>&1` — cmd は `/c` の後に引用符が 3 個以上あると先頭と末尾の引用符を剥がすため、パスが壊れて exit 1 になる(電池・Drive・ログオンは無関係: battery_status=2 / drive_process=2)。**install_task v3** で python を直接起動するアクションに変え、ログは **agent 1.7** が自分で `agent.log` に追記する(`_Tee`)。適用はもう一度 `chien_setup.bat` をダブルクリック。
 - 残る限界: PC が落ちている間の記録は無い(docs/317 §0 の「VPS 1 台に集約」が最終解)。
