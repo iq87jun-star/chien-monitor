@@ -45,4 +45,4 @@ Write-Host "→ 失敗した端末があれば terminals.json を直して再実
 
 Step "6. 毎時タスク登録"
 & (Join-Path $here "install_task.ps1")
-Write-Host "`n完了。Drive の chien_ops\<口座>\ に CSV が出ていれば、チャットで「エージェント稼働」と一言。" -ForegroundColor Green
+Write-Host "`n完了。Drive の chien_ops\<口座>\ に CSV が出ていれば、チャットで「エージェント稼働」と一言。以後は PC 起動のたびに自動で再開(ログオン 3 分後 + 毎時)。止まったと思ったらこの bat をもう一度ダブルクリック。" -ForegroundColor Green

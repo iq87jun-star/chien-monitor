@@ -224,6 +224,26 @@ def discover(config_path, paths=None, out_root=None, since="2026-08-01"):
     return len(failed) == 0 and len(terms) > 0
 
 
+def write_diag(out_root, script_dir):
+    """自己診断を out_root/_diag/ に書く(docs/317 §5b)。タスクが動かない・Drive に届かない原因を、ユーザーに schtasks や
+    agent.log を貼ってもらわずに研究側(毎朝の Routine)が読めるようにする。失敗しても本体の結果には影響させない。"""
+    import subprocess
+    d = os.path.join(out_root, "_diag"); os.makedirs(d, exist_ok=True)
+    def run(cmd):
+        try: return subprocess.run(cmd, capture_output=True, text=True, timeout=60, errors="replace").stdout
+        except Exception as e: return f"ERR {e!r}"
+    try: lines = open(os.path.join(script_dir, "agent.log"), encoding="utf-8", errors="replace").read().splitlines()[-80:]
+    except Exception as e: lines = [f"agent.log 読めず {e!r}"]
+    open(os.path.join(d, "agent_tail.txt"), "w", encoding="utf-8").write("\n".join(lines))
+    open(os.path.join(d, "task.txt"), "w", encoding="utf-8").write(run(["schtasks", "/query", "/tn", "chien_ops_agent", "/v", "/fo", "list"]))
+    ps = ("$b=Get-CimInstance Win32_Battery -ErrorAction SilentlyContinue; 'battery_status=' + $(if($b){$b.BatteryStatus}else{'none'}); "
+          "'drive_process=' + ((Get-Process GoogleDriveFS -ErrorAction SilentlyContinue | Measure-Object).Count); "
+          "'uptime_min=' + [int]((Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime).TotalMinutes")
+    host = (f"written_utc={dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()}\npython={sys.executable}\nscript={script_dir}\nout_root={out_root}\n"
+            + run(["powershell", "-NoProfile", "-Command", ps]))
+    open(os.path.join(d, "host.txt"), "w", encoding="utf-8").write(host)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "terminals.json"))
@@ -252,8 +272,10 @@ def main():
         except Exception as e:
             print(f"[{t.get('name')}] 例外 {e!r}"); status.append(dict(account=str(t.get("account")), name=t.get("name"), ok=False, error=repr(e), time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()))
         time.sleep(2)
-    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.5", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.6", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     ok = sum(1 for s in status if s.get("ok")); print(f"完了 {ok}/{len(status)} 端末 → {out_root}")
+    try: write_diag(out_root, os.path.dirname(os.path.abspath(__file__)))
+    except Exception as e: print(f"_diag 書き出し失敗 {e!r}")
 
 
 if __name__ == "__main__":

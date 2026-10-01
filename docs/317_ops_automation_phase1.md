@@ -65,3 +65,13 @@ VPS(Windows)                                   Google Drive              研究�
 ### 5a.【2026-09-28 15:08】Fintokei は銘柄接尾辞 `p`(GBPJPYp)— 生成プロファイルが空チャートになった
 ユーザーの画面: `chien_6078225` を開くと「GBPJPY,H1 / Australian Dollar vs Swiss Franc」の黒い空チャートで止まる。原因は manifest の銘柄 `GBPJPY` が Fintokei に存在しない(雛形チャートは `AUDCHFp`)ため、チャートが読み込まれず EA にティックが来ない。説明文は雛形(AUDCHF)の残り。
 対処: `chien_deploy.symbol_suffix()` が既存チャートの銘柄から接尾辞を推定し、6 文字 FX/金属コードに付ける(`GBPJPY`→`GBPJPYp`)。`description=` は空にする。agent 1.4。bat 再実行で `chien_6078225` / `chien_6071612` が作り直される。即時の代替: 気配値表示の `GBPJPYp` を黒いチャートへドラッグ(EA は付いたまま銘柄が変わる)→ VPS→移行。
+
+### 5b.【2026-10-01】停止原因の自己診断と、PC 起動時の自動再開(agent 1.6 / install_task v2)
+
+9/30〜10/1、PC 停止中は記録が止まり、起動後も毎時タスクが再開しなかった(原因は端末側の情報が無く特定できず、`schtasks` の出力と `agent.log` の貼り付けを依頼した)。これを**依頼せずに済む形**に変更:
+
+- **自己診断**: エージェントは毎回の実行末尾に `out_root/_diag/` を書く(`host.txt` = 実行時刻・python パス・電池駆動か(`battery_status` 1=電池 / 2=AC / none=デスクトップ)・Drive プロセスの有無(`drive_process`)・起動後の分数、`task.txt` = `schtasks /query /tn chien_ops_agent /v`、`agent_tail.txt` = agent.log 末尾 80 行)。研究側の毎朝 Routine は `status.json` が古いときにここを読んで原因を 1 行で書く。
+- **ログオン・トリガー**: タスクに「ログオン 3 分後から 1 時間繰り返し」を追加(従来の日付 00:00 起点の毎時は残す)。PC を起動すれば自動で再開する。
+- **電池設定**: `-AllowStartIfOnBatteries -DontStopIfGoingOnBatteries`(既定は AC 電源時のみ実行で、ノート PC が電池駆動だと毎時タスクは一切動かない)。失敗時 5 分間隔で 3 回再試行。
+- **適用**: `chien_setup.bat` をもう一度ダブルクリック(新しい `install_task.ps1` / `chien_ops_agent.py` を GitHub から取り直し、タスクを上書き登録し、1 回実行して Drive に記録と `_diag` を書く)。以後、止まったと思ったときも同じ操作でよい。
+- 残る限界: PC が落ちている間の記録は無い(docs/317 §0 の「VPS 1 台に集約」が最終解)。
