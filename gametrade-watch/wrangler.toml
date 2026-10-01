@@ -1,0 +1,15 @@
+# Cloudflare Worker「ゲームトレード新着通知」。デプロイは GitHub Actions の gametrade-watch ワークフロー。
+name = "gametrade-watch"
+main = "src/worker.js"
+compatibility_date = "2026-06-01"
+
+[triggers]
+crons = ["*/10 * * * *"]
+
+# 前回の状態を保存する(notify と同じく D1。API トークンの権限を増やさずに済むため)
+[[d1_databases]]
+binding = "DB"
+database_name = "gametrade-watch"
+# デプロイ時に scripts/prepare-deploy.mjs が実際のIDに書き換える(無ければ作成する)
+database_id = "00000000-0000-0000-0000-000000000000"
+migrations_dir = "migrations"

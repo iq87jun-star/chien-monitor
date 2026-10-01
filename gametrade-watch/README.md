@@ -13,15 +13,24 @@
 - 一覧の先頭 `pages` ページ(既定 3ページ ≒ 120件)を確認します。
 - 初回実行は現在の出品と価格を記録するだけで、通知はしません。
 
+## 仕組み
+
+- Cloudflare Worker(`src/worker.js`)が10分ごとに一覧を確認し、状態(最大ID・価格)を D1 に保存します。
+  GitHub Actions のサーバーからはサイトに接続できない(403・応答なし)ため Cloudflare で動かしています。
+- `https://gametrade-watch.<サブドメイン>.workers.dev/status` で最後の実行結果を確認できます。
+- 判定などの本体は `src/core.js`(テストは `npm test`)。
+
 ## 設定
 
 1. Discord で通知したいチャンネルの「設定 → 連携サービス → ウェブフック → 新しいウェブフック」で URL をコピー
 2. GitHub のリポジトリ「Settings → Secrets and variables → Actions」に `GAMETRADE_DISCORD_WEBHOOK` として登録
-3. このフォルダと `.github/workflows/gametrade-watch.yml` が main に入ると10分ごとに動きます
-   (「Actions → gametrade-watch → Run workflow」で手動実行も可)
+3. `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` は notify と共用(追加の権限は不要)
+4. main に入るとデプロイされ、10分ごとに動きます(「Actions → gametrade-watch → Run workflow」で再デプロイ)
 
-## ローカルで試す
+## 手元で試す
 
 ```sh
-node gametrade-watch/watch.mjs --dry-run   # 通知も保存もせず、通知対象を表示
+cd gametrade-watch
+node watch.mjs --dry-run   # 通知も保存もせず、通知対象を表示
+npm test
 ```
