@@ -66,7 +66,12 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function fetchPage(url) {
   for (let attempt = 0; ; attempt++) {
     const res = await fetch(url, {
-      headers: { "user-agent": "Mozilla/5.0 (compatible; chien-monitor/1.0)", "accept-language": "ja" },
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36",
+        accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "accept-language": "ja,en-US;q=0.9,en;q=0.8",
+      },
     });
     if (res.ok) return res.text();
     if (attempt >= 3 || ![403, 429, 500, 502, 503, 504].includes(res.status)) {
