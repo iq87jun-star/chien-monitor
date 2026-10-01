@@ -1127,16 +1127,18 @@
    "slug": "exec_gap",
    "title": "執行差の測定装置(実口座 vs 紙上・レグ別・月次)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/323_q83_exec_gap.md"
    ],
    "note": "診断。ops_inbox の positions.csv(magic/コメント)と紙上同日セルを突き合わせ forward/exec_gap.py を作る。規則: 実−紙が 2 か月連続で Mon −5 / Roll −3 bps/取引未満のレグは縮小案",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 1
+   "order": 1,
+   "result": "診断。定時レグ(Roll/S1-S3/Sess)の執行差 ±2 bps/取引、ETH Mon の滑り+コスト −14〜15 bps = モデル 15 bps と一致(モデルは FX で保守的)。縮小案なし。発見: FN v1.30 と EA11 で Roll 9/30 スキップが不一致、531343523 は 9/9〜27 建玉なし(月内停止ガード最有力)"
   },
   {
    "id": "Q93",
@@ -2225,6 +2227,11 @@
   {
    "date": "2026-10-01",
    "note": "docs/322 改正プログラム Q83〜Q96 を一括登録(ユーザー「登録」)。順序は order 欄。Q88 は 11/1 以降に実行"
+  },
+  {
+   "date": "2026-10-02",
+   "item": "Q83",
+   "note": "docs/323: exec_gap.py 作成・8〜9 月の 3 口座。縮小案なし。設定不一致(Roll 9/30 スキップ)と RF5 の建て損ね 75% を提案に"
   }
  ]
 }
