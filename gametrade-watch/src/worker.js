@@ -24,6 +24,8 @@ async function check(env) {
   const startedAt = new Date().toISOString();
   let status;
   try {
+    // 実行が始まったことを先に残す(途中で止まった時に「動いていない」と区別できるように)
+    await put(env, "status", JSON.stringify({ running: true, startedAt }));
     const state = JSON.parse((await get(env, KEY)) ?? "null");
     const r = await runCheck({ config, state, webhook: env.GAMETRADE_DISCORD_WEBHOOK });
     await put(env, KEY, JSON.stringify(r.state));
