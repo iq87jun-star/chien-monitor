@@ -6,7 +6,7 @@
 //   DB                        … D1(前回の状態。kv テーブル)
 //   GAMETRADE_DISCORD_WEBHOOK … Secret(通知先の Discord ウェブフックURL)
 //   INGEST_TOKEN_SHA256       … POST /ingest の合言葉の SHA-256(wrangler.toml の vars)
-// GET /status で最後の実行結果を確認できる。
+// GET /status で最後の実行結果を確認できる。POST /ingest に {"test": true} でテスト投稿。
 
 import config from "../config.json";
 import { runCheck } from "./core.js";
@@ -63,6 +63,15 @@ export default {
         return json({ ok: false, error: "unauthorized" }, 401);
       }
       const body = await req.json().catch(() => null);
+      // 通知先の確認用: {"test": true} で Discord にテスト投稿だけする
+      if (body?.test === true) {
+        const res = await fetch(env.GAMETRADE_DISCORD_WEBHOOK, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ username: "ゲームトレード新着", content: "✅ テスト通知です。ここに新着が届きます。" }),
+        });
+        return json({ ok: res.ok, status: res.status }, res.ok ? 200 : 502);
+      }
       if (!Array.isArray(body?.pages) || !body.pages.every((p) => typeof p === "string")) {
         return json({ ok: false, error: "pages (HTML の配列) が必要です" }, 400);
       }
