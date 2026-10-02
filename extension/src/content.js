@@ -6,6 +6,16 @@
   const M = globalThis.PokecaMatcher;
   const HOST_ID = "pokeca-kaigai-checker";
   const MAX_CANDIDATES = 3;
+  // 値下がり通知(無料・Discord に届く)の登録ページ。?card= でカードを選んだ状態で開く
+  const NOTIFY_URL = "https://toreca-notify.iq87jun.workers.dev/";
+  const notifyUrl = (cardKey) => {
+    const u = new URL(NOTIFY_URL);
+    if (cardKey) u.searchParams.set("card", cardKey);
+    u.searchParams.set("utm_source", "extension");
+    return u.href;
+  };
+  const notifyLink = (cardKey, text) =>
+    el("a", { class: "notify", href: notifyUrl(cardKey), target: "_blank", rel: "noopener" }, text);
 
   let indexes = null;
   let lastKey = "";
@@ -61,6 +71,11 @@
           " ",
           changeNode(top),
         ),
+        el(
+          "div",
+          { class: "act" },
+          notifyLink(M.notifyKey(index, top), "🔔 値下がりしたら通知(無料)"),
+        ),
       );
     } else {
       // 同名カードが複数ある場合は価格幅と上位候補を出す(型番を書かない出品が多いため)
@@ -110,6 +125,8 @@
       .up { color: #5FD08A; } .down { color: #F07A7A; }
       ul { margin: 4px 0 0; padding-left: 16px; color: #A9ACB8; font-size: 12px; }
       a { color: #EBCB7A; font-size: 12px; }
+      .act { margin-top: 4px; }
+      .foot a { display: block; }
       .foot { border-top: 1px solid #2A3350; padding-top: 8px; font-size: 11px; color: #6E7284; }
     `;
     const close = el("button", { title: "閉じる", "aria-label": "閉じる" }, "×");
@@ -123,6 +140,7 @@
       ? el(
           "a",
           {
+            class: "rank",
             href: `${index.siteUrl}?utm_source=extension&utm_medium=badge`,
             target: "_blank",
             rel: "noopener",
@@ -135,7 +153,14 @@
       { class: "card", role: "complementary", "aria-label": "トレカ海外相場" },
       el("div", { class: "head" }, `🌍 海外相場(${index.source}・${index.label})`, close),
       ...hits.map((hit) => hitNode(index, hit)),
-      el("div", { class: "foot" }, link, el("div", {}, `${updated}更新・${index.disclaimer}`)),
+      el(
+        "div",
+        { class: "foot" },
+        link,
+        // 1枚に絞れなかった時は、カードを選ばずに登録ページへ(ページで検索して選ぶ)
+        hits.some((h) => h.exact) ? "" : notifyLink(null, "🔔 値下がり通知を設定(無料)"),
+        el("div", {}, `${updated}更新・${index.disclaimer}`),
+      ),
     );
     root.append(style, card);
     document.documentElement.append(host);

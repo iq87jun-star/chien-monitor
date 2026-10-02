@@ -88,8 +88,13 @@ Actions の「Run workflow」で「相場データが更新されていなくて
 テストモードの鍵(`sk_test_…` と、テストモードで作った価格・Webhook)で先に一通り試し、
 カード番号 `4242 4242 4242 4242` で申し込み → 解約まで確認してから本番の鍵に差し替えると安全。
 
+## 拡張からの案内
+
+トレカ海外相場チェッカー(0.3.2〜)のバッジの「値下がりしたら通知」リンクは `/?card=<カードの識別子>` を開き、
+そのカードを検索結果に出す。識別子の規則は `public/prices.js` の `buildCards` と拡張の `matcher.js` の
+`notifyKey` で揃えている(拡張の `test/notify-key.test.js` で照合)。
+
 ## 今後
 
 - LINE 版: LINE 公式アカウント(Messaging API)。LINE Notify は2025年3月に終了したため使えない
-- 拡張のバッジに「値下がり通知を設定」リンク(カードを選んだ状態で登録ページを開く)
 - 独自ドメイン(例: notify.pokeca-kaigai.com)。pokeca-kaigai.com の DNS を Cloudflare に移す必要がある

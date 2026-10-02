@@ -6,8 +6,8 @@
   ],
   "license": "all-rights-reserved",
   "homepage": "https://pokeca-kaigai.com/",
-  "privacy_policy": "本アドオンは、個人を特定できる情報・閲覧履歴・入力内容を収集せず、外部に送信しません。\nページの商品名の読み取りと照合はお使いのブラウザ内だけで行います。\n相場データ(カード名と価格の一覧)を pokeca-kaigai.com・pocketduel.tokyo から数時間おきに取得します。閲覧中のページの情報は送信しません。\n表示のON/OFFなどの設定だけをブラウザ内(storage)に保存します。\n詳しくは https://pokeca-kaigai.com/extension-privacy.html をご覧ください。",
-  "approval_notes": "This extension reads the product title (h1) on marketplace product pages, matches it against trading card names locally in the browser, and shows the overseas market price (converted to JPY) in the bottom-right corner. The only network requests fetch public price data (JSON) from pokeca-kaigai.com and pocketduel.tokyo; no information about the visited page is sent. To test: open a Mercari (jp.mercari.com) product page for a Pokemon card, e.g. search for \"リザードンex 201/165\". The code is not minified or obfuscated.",
+  "privacy_policy": "本アドオンは、個人を特定できる情報・閲覧履歴・入力内容を収集せず、外部に送信しません。\nページの商品名の読み取りと照合はお使いのブラウザ内だけで行います。\n相場データ(カード名と価格の一覧)を pokeca-kaigai.com・pocketduel.tokyo から数時間おきに取得します。閲覧中のページの情報は送信しません。\n表示のON/OFFなどの設定だけをブラウザ内(storage)に保存します。\n「値下がりしたら通知」リンクを押した時だけ、そのカードの識別子(例: pokeca:M4-120)をリンク先の通知サービス(toreca-notify.iq87jun.workers.dev)に渡します。\n詳しくは https://pokeca-kaigai.com/extension-privacy.html をご覧ください。",
+  "approval_notes": "This extension reads the product title (h1) on marketplace product pages, matches it against trading card names locally in the browser, and shows the overseas market price (converted to JPY) in the bottom-right corner. The only network requests fetch public price data (JSON) from pokeca-kaigai.com and pocketduel.tokyo; no information about the visited page is sent. The badge also has an optional link to our separate price-drop notification page (toreca-notify.iq87jun.workers.dev); only when the user clicks it, the card identifier (e.g. pokeca:M4-120) is passed in the URL. To test: open a Mercari (jp.mercari.com) product page for a Pokemon card, e.g. search for \"リザードンex 201/165\". The code is not minified or obfuscated.",
   "screenshots": [
     "store/screenshots/1-exact.png",
     "store/screenshots/2-candidates.png",
