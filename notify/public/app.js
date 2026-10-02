@@ -16,6 +16,16 @@ let key = null;
 let prices = null; // loadPrices() の結果
 let me = null; // GET /api/me の結果
 
+// 拡張の「値下がり通知を設定」リンク(?card=<カードの識別子>)から来た時、そのカードを検索結果の先頭に出す
+const params = new URLSearchParams(location.search);
+let pickedKey = params.get("card");
+if (pickedKey) {
+  params.delete("card");
+  const rest = params.toString();
+  history.replaceState(null, "", location.pathname + (rest ? `?${rest}` : "") + location.hash);
+}
+const pickedCard = () => (pickedKey && prices?.cards.get(pickedKey)) || null;
+
 function readKey() {
   const m = /[#&]k=([\w-]+)/.exec(location.hash);
   if (m) {
@@ -191,7 +201,9 @@ function renderResults() {
   $("game-note").textContent = GAME_NOTES[game];
   if (!prices) return;
   const q = $("query").value;
-  const found = searchCards(prices.cards, q, { game, limit: 20 });
+  let found = searchCards(prices.cards, q, { game, limit: 20 });
+  const picked = pickedCard();
+  if (picked && !q.trim() && picked.game === game) found = [picked];
   if (q.trim() && found.length === 0) {
     list.append(el("li", { class: "hint" }, "見つかりませんでした"));
     return;
@@ -259,7 +271,10 @@ $("signup-form").addEventListener("submit", async (e) => {
   }
 });
 
-$("query").addEventListener("input", renderResults);
+$("query").addEventListener("input", () => {
+  pickedKey = null; // 自分で検索し始めたら、拡張から選んだカードの表示はやめる
+  renderResults();
+});
 for (const r of document.querySelectorAll("input[name=game]")) {
   r.addEventListener("change", renderResults);
 }
@@ -307,6 +322,18 @@ renderResults();
 loadPrices()
   .then((p) => {
     prices = p;
+    const picked = pickedCard();
+    if (picked) {
+      const radio = document.querySelector(`input[name=game][value=${picked.game}]`);
+      if (radio) radio.checked = true;
+      status(
+        key
+          ? `「${picked.label}」の目標額を決めて「通知」を押してください`
+          : `登録すると「${picked.label}」が値下がりした時に通知できます`,
+      );
+    } else if (pickedKey) {
+      pickedKey = null;
+    }
     if (me) renderWatches();
     renderResults();
   })

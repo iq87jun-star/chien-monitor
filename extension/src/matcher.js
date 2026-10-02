@@ -241,6 +241,18 @@
   const change7d = (card) =>
     card.avg7 ? Math.round(((card.price - card.avg7) / card.avg7) * 1000) / 10 : null;
 
+  // 値下がり通知(notify/)に登録する時のカードの識別子。notify/public/prices.js の buildCards と同じ規則:
+  //   ポケカ pokeca:<セット>-<番号> / 遊戯王 yugioh:<英語名> / ワンピース onepiece:<カード番号>:<版>
+  function notifyKey(index, card) {
+    if (index.game === "pokeca") return `pokeca:${card.setId}-${card.localId}`;
+    if (index.game === "onepiece") return `onepiece:${card.localId}:${card.variant ?? "normal"}`;
+    if (index.game === "yugioh") {
+      const en = String(card.note ?? "").replace(/^"(.*)"$/, "$1");
+      return `yugioh:${en || card.name}`;
+    }
+    return null;
+  }
+
   globalThis.PokecaMatcher = {
     FORMAT_VERSION,
     normalize,
@@ -250,5 +262,6 @@
     match,
     toJpy,
     change7d,
+    notifyKey,
   };
 })();

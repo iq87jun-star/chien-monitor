@@ -238,8 +238,18 @@ try {
   await page2.goto(manageUrl);
   await page2.locator("#watches li", { hasText: "リザードンex" }).waitFor();
   assert.equal(new URL(page2.url()).hash, ""); // キーはアドレスバーから消す
-  await other.close();
   console.log("ok - Discord のリンクから別のブラウザでも設定を開ける");
+
+  // 6b) 拡張の「値下がり通知を設定」リンク(?card=)から来ると、そのカードだけを出し、ゲームも切り替える
+  await page2.check("input[name=game][value=yugioh]");
+  await page2.goto(`${BASE}?card=${encodeURIComponent("pokeca:SV2a-201")}`);
+  await page2.locator("#results li", { hasText: "ポケモンカード151 201" }).waitFor();
+  assert.equal(await page2.locator("#results li").count(), 1);
+  assert.ok(await page2.isChecked("input[name=game][value=pokeca]"));
+  assert.match(await page2.locator("#status").innerText(), /リザードンex/);
+  assert.equal(new URL(page2.url()).search, ""); // ?card= はアドレスバーから消す
+  await other.close();
+  console.log("ok - 拡張のリンク(?card=)から来るとそのカードを先頭に出す");
 
   // 7) 有料プラン: 申し込み(偽の Stripe)→ 50枚まで登録できる → 解約で無料に戻り、先の3枚だけ通知
   const plan = page.locator("#plan");

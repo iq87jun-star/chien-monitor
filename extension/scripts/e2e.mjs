@@ -107,7 +107,10 @@ try {
   assert.match(text1, /メガゲッコウガex/);
   assert.ok(text1.includes(expectedYen), `円換算価格 ${expectedYen} が表示されること:\n${text1}`);
   assert.match(text1, /ニンジャスピナー 120/);
-  console.log("ok - 型番つきタイトルで1枚の相場を表示");
+  const notify1 = new URL(await badge.locator("a.notify").getAttribute("href"));
+  assert.equal(notify1.origin, "https://toreca-notify.iq87jun.workers.dev");
+  assert.equal(notify1.searchParams.get("card"), "pokeca:M4-120");
+  console.log("ok - 型番つきタイトルで1枚の相場と、そのカードの値下がり通知リンクを表示");
   if (takeShots) {
     await fs.mkdir(SHOTS_DIR, { recursive: true });
     await page.screenshot({ path: path.join(SHOTS_DIR, "1-exact.png") });
@@ -118,6 +121,9 @@ try {
   await badge.locator(".card").waitFor({ timeout: 10000 });
   const text2 = await badge.locator(".card").innerText();
   assert.match(text2, /同名カード4種/);
+  // 1枚に絞れない時は、カードを選ばずに登録ページへ
+  const notify2 = new URL(await badge.locator("a.notify").getAttribute("href"));
+  assert.equal(notify2.searchParams.get("card"), null);
   console.log("ok - 型番なしタイトルで価格幅と候補を表示");
   if (takeShots) await page.screenshot({ path: path.join(SHOTS_DIR, "2-candidates.png") });
 
@@ -129,7 +135,7 @@ try {
   assert.match(text4, /真エクゾディア/);
   assert.match(text4, /英語名: True Exodia/);
   assert.match(text4, /日本語版・レアリティ別ではありません/);
-  assert.match(await badge.locator("a").getAttribute("href"), /^https:\/\/pocketduel\.tokyo\//);
+  assert.match(await badge.locator("a.rank").getAttribute("href"), /^https:\/\/pocketduel\.tokyo\//);
   console.log("ok - 遊戯王の出品で英語版の相場を表示");
   if (takeShots) await page.screenshot({ path: path.join(SHOTS_DIR, "3-yugioh.png") });
 
@@ -142,7 +148,7 @@ try {
   assert.match(text5, /コミパラ/);
   // コミパラは2種(通常・再録)あるので価格幅で出る
   assert.match(text5, /約¥[\d,]+〜¥[\d,]+/);
-  assert.equal(await badge.locator("a").count(), 0, "ランキングサイトが無いのでリンクは出さない");
+  assert.equal(await badge.locator("a.rank").count(), 0, "ランキングサイトが無いのでリンクは出さない");
   console.log("ok - ワンピースの出品でカード番号と版から英語版の相場を表示");
   if (takeShots) await page.screenshot({ path: path.join(SHOTS_DIR, "4-onepiece.png") });
 
