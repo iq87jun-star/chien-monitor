@@ -1,15 +1,17 @@
 # ゲーム相場モニター群 自動更新パイプライン
-# 6時間ごとに各サイト(poe2 / poe1 / tarkov / ff14)のデータを取得し、
-# 変化があればAI記事を生成してGitHub Pagesへ再デプロイする。
+# 更新を続けているのは ff14 だけ。変化があればAI記事を生成してGitHub Pagesへ再デプロイする。
+# poe2 / poe1 / tarkov は更新停止中で、保存済みのデータのままページだけ作り直す
+# (game-souba.com 内のリンク切れを防ぐため)。
+# X への自動投稿は全サイトで停止中(X_* を渡さないので、投稿処理は自動でスキップされる)。
 #
 # Secrets(任意・未設定の機能は自動スキップ):
-#   ANTHROPIC_API_KEY(AI記事) / X_*(PoE2のX速報) / GGG_*(PoE2ビルド統計)
+#   ANTHROPIC_API_KEY(FF14 の AI 記事)
 
 name: poe2-auto-update
 
 on:
   schedule:
-    - cron: "23 3,9,12,22 * * *" # JST 7:23 / 12:23 / 18:23 / 21:23 (Xのゴールデンタイムに合わせる)
+    - cron: "23 3,9,12,22 * * *" # JST 7:23 / 12:23 / 18:23 / 21:23
   workflow_dispatch:
 
 permissions:
@@ -34,21 +36,16 @@ jobs:
       - name: Run pipelines and build all sites
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GGG_CLIENT_ID: ${{ secrets.GGG_CLIENT_ID }}
-          GGG_CLIENT_SECRET: ${{ secrets.GGG_CLIENT_SECRET }}
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-          FF14_X_ACCESS_TOKEN: ${{ secrets.FF14_X_ACCESS_TOKEN }}
-          FF14_X_ACCESS_TOKEN_SECRET: ${{ secrets.FF14_X_ACCESS_TOKEN_SECRET }}
-          TARKOV_X_ACCESS_TOKEN: ${{ secrets.TARKOV_X_ACCESS_TOKEN }}
-          TARKOV_X_ACCESS_TOKEN_SECRET: ${{ secrets.TARKOV_X_ACCESS_TOKEN_SECRET }}
         run: |
           set -e
           for site in poe2 poe1 tarkov ff14; do
             echo "===== $site ====="
-            (cd "$site" && npm ci && npm run pipeline && npm run build)
+            if [ "$site" = "ff14" ]; then
+              (cd "$site" && npm ci && npm run pipeline && npm run build)
+            else
+              # 更新停止中: データ取得・記事生成は行わず、保存済みデータでビルドだけ行う
+              (cd "$site" && npm ci && npm run build)
+            fi
           done
 
       - name: Commit updated data
