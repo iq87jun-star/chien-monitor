@@ -1,15 +1,19 @@
-# ゲーム相場モニター群 自動更新パイプライン
-# 6時間ごとに各サイト(poe2 / poe1 / tarkov / ff14)のデータを取得し、
-# 変化があればAI記事を生成してGitHub Pagesへ再デプロイする。
+# ゲーム相場モニター(game-souba.com)自動更新パイプライン
+# 運用しているのは ff14 だけ。1日1回データを取得し、変化があればAI記事を生成して
+# GitHub Pagesへ再デプロイする。
+# poe2 / poe1 / tarkov は運用終了。コードはリポジトリに残しているが、ビルドも配信もしない
+# (古いURLは portal/404.html が受けて FF14 へ案内する)。
+# X への自動投稿は停止中(X_* を渡さないので、投稿処理は自動でスキップされる)。
+# ワークフロー名は実行履歴を引き継ぐため poe2-auto-update のままにしている。
 #
 # Secrets(任意・未設定の機能は自動スキップ):
-#   ANTHROPIC_API_KEY(AI記事) / X_*(PoE2のX速報) / GGG_*(PoE2ビルド統計)
+#   ANTHROPIC_API_KEY(FF14 の AI 記事)
 
 name: poe2-auto-update
 
 on:
   schedule:
-    - cron: "23 3,9,12,22 * * *" # JST 7:23 / 12:23 / 18:23 / 21:23 (Xのゴールデンタイムに合わせる)
+    - cron: "23 22 * * *" # 1日1回(JST 7:23)
   workflow_dispatch:
 
 permissions:
@@ -29,33 +33,24 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: poe2/package-lock.json
+          cache-dependency-path: ff14/package-lock.json
 
-      - name: Run pipelines and build all sites
+      - name: Run pipeline and build (ff14)
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GGG_CLIENT_ID: ${{ secrets.GGG_CLIENT_ID }}
-          GGG_CLIENT_SECRET: ${{ secrets.GGG_CLIENT_SECRET }}
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
-          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
-          FF14_X_ACCESS_TOKEN: ${{ secrets.FF14_X_ACCESS_TOKEN }}
-          FF14_X_ACCESS_TOKEN_SECRET: ${{ secrets.FF14_X_ACCESS_TOKEN_SECRET }}
-          TARKOV_X_ACCESS_TOKEN: ${{ secrets.TARKOV_X_ACCESS_TOKEN }}
-          TARKOV_X_ACCESS_TOKEN_SECRET: ${{ secrets.TARKOV_X_ACCESS_TOKEN_SECRET }}
         run: |
           set -e
-          for site in poe2 poe1 tarkov ff14; do
-            echo "===== $site ====="
-            (cd "$site" && npm ci && npm run pipeline && npm run build)
-          done
+          echo "===== ff14 ====="
+          cd ff14
+          npm ci
+          npm run pipeline
+          npm run build
 
       - name: Commit updated data
         run: |
           git config user.name "market-monitor-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add poe2/data poe2/content poe1/data poe1/content tarkov/data tarkov/content ff14/data ff14/content
+          git add ff14/data ff14/content
           if git diff --cached --quiet; then
             echo "no data changes"
           else
@@ -63,20 +58,18 @@ jobs:
             git push
           fi
 
-      - name: Assemble combined site
+      - name: Assemble site
         run: |
           mkdir -p site-dist
           cp portal/index.html site-dist/index.html
-          cp portal/robots.txt portal/ogp.png portal/privacy.html site-dist/
+          cp portal/404.html portal/robots.txt portal/ogp.png portal/privacy.html site-dist/
           # Playストア掲載用素材(スマホから直接ダウンロードできるよう配信)
           cp -r portal/play-assets site-dist/play-assets
           # Android(TWA)アプリのドメイン所有証明
           mkdir -p site-dist/.well-known
           cp portal/.well-known/assetlinks.json site-dist/.well-known/
           node scripts/generate-sitemap.mjs
-          for site in poe2 poe1 tarkov ff14; do
-            cp -r "$site/dist" "site-dist/$site"
-          done
+          cp -r ff14/dist site-dist/ff14
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4

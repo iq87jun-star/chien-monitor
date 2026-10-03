@@ -1,11 +1,10 @@
 # ポケカ海外相場モニター 自動更新パイプライン
-# Cardmarket価格はTCGdex側で1日1回(朝8時UTC頃)更新されるため、1日2回取得する。
+# 定期更新は停止中。手動実行か、同じサイトで配信している物(Excel アドイン等)が変わったときだけ動く。
 # 変化があればAI記事を生成し、デプロイ先が設定されていればGitHub Pagesへ再デプロイする。
 #
 # Secrets(任意・未設定の機能は自動スキップ):
 #   ANTHROPIC_API_KEY  … AI記事生成
-#   X_API_KEY / X_API_SECRET(アプリ共通)+ TORECA_X_ACCESS_TOKEN /
-#     TORECA_X_ACCESS_TOKEN_SECRET(bot垢) … X(Twitter)速報
+#   X(Twitter)速報は停止中(X_* / TORECA_X_* を渡さないので、投稿処理は自動でスキップされる)
 #   TORECA_DEPLOY_TOKEN / TORECA_DEPLOY_REPO … 別リポジトリのgh-pagesへのデプロイ
 #     (ジャンルが違うためgame-souba.comとはドメイン・リポジトリを分ける方針。
 #      TORECA_DEPLOY_REPO は "owner/repo" 形式)
@@ -13,8 +12,9 @@
 name: toreca-auto-update
 
 on:
-  schedule:
-    - cron: "17 9,21 * * *" # 1日2回(UTC)。Cardmarket更新(8時UTC頃)の後
+  # 定期更新は停止中(サイト運営の縮小)。再開するときは下の2行のコメントを外す
+  # schedule:
+  #   - cron: "17 9,21 * * *" # 1日2回(UTC)。Cardmarket更新(8時UTC頃)の後
   workflow_dispatch:
   # 同じサイトで配信している物(Excel アドイン・プライバシーポリシー等)が main で変わったら、すぐ配信し直す
   push:
@@ -52,12 +52,6 @@ jobs:
       - name: Run pipeline and build
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          X_API_KEY: ${{ secrets.X_API_KEY }}
-          X_API_SECRET: ${{ secrets.X_API_SECRET }}
-          TORECA_X_API_KEY: ${{ secrets.TORECA_X_API_KEY }}
-          TORECA_X_API_SECRET: ${{ secrets.TORECA_X_API_SECRET }}
-          TORECA_X_ACCESS_TOKEN: ${{ secrets.TORECA_X_ACCESS_TOKEN }}
-          TORECA_X_ACCESS_TOKEN_SECRET: ${{ secrets.TORECA_X_ACCESS_TOKEN_SECRET }}
         run: |
           set -e
           cd toreca

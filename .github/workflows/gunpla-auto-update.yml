@@ -15,8 +15,9 @@
 name: gunpla-auto-update
 
 on:
-  schedule:
-    - cron: "3 8,20 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
+  # 定期更新は停止中(サイト運営の縮小)。再開するときは下の2行のコメントを外す
+  # schedule:
+  #   - cron: "3 8,20 * * *" # 1日2回(UTC)。他サイトのワークフローと時間をずらす
   workflow_dispatch:
 
 permissions:

@@ -1,13 +1,13 @@
-// デプロイ時に全サイトの記事を含むsitemap.xmlを site-dist/ に生成する
+// デプロイ時に、運用中のサイト(現在は ff14 のみ)の記事を含むsitemap.xmlを site-dist/ に生成する
 import fs from "node:fs/promises";
 
 const BASE = "https://game-souba.com";
-const SITES = ["poe2", "poe1", "tarkov", "ff14"];
+const SITES = ["ff14"];
 
 const urls = [{ loc: `${BASE}/`, changefreq: "daily", priority: "1.0" }];
 
 for (const site of SITES) {
-  urls.push({ loc: `${BASE}/${site}/`, changefreq: "hourly", priority: "0.9" });
+  urls.push({ loc: `${BASE}/${site}/`, changefreq: "daily", priority: "0.9" });
   urls.push({ loc: `${BASE}/${site}/articles/`, changefreq: "daily", priority: "0.6" });
   let articles = [];
   try {
