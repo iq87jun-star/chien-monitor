@@ -1,0 +1,35 @@
+# 毎朝の数字: 拡張(Firefox・Chrome)の利用者数、通知サービスの登録者数、Stripe の有料プランを
+# Issue「毎朝の数字(自動)」(ラベル daily-report)にコメントする。中身は scripts/report/daily.mjs
+name: daily-report
+
+on:
+  schedule:
+    - cron: "41 22 * * *" # 日本時間 7:41
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "scripts/report/**"
+      - ".github/workflows/daily-report.yml"
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: テスト
+        run: node --test scripts/report/daily.test.mjs
+      - name: 数字を集めて Issue にコメント
+        if: github.event_name != 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+        run: node scripts/report/daily.mjs
