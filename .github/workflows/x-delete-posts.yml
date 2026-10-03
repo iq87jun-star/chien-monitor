@@ -1,0 +1,49 @@
+# X(Twitter)投稿の選択削除(手動実行専用)
+# 共通bot垢(X_* Secrets)のタイムラインから、指定URLへのリンクを含む投稿だけを削除する。
+# 既定はドライラン。ログで対象を確認してから dry_run を false にして再実行する。
+#
+# Secrets: X_API_KEY / X_API_SECRET / X_ACCESS_TOKEN / X_ACCESS_TOKEN_SECRET
+
+name: x-delete-posts
+
+on:
+  workflow_dispatch:
+    inputs:
+      match_url:
+        description: "このURLへのリンクを含む投稿を削除する"
+        default: "https://game-souba.com/poe2/"
+        required: true
+      tweet_ids:
+        description: "(任意)カンマ区切りの投稿ID。指定時はこのIDだけ削除する"
+        default: ""
+        required: false
+      dry_run:
+        description: "ドライラン(対象の一覧表示のみ)"
+        type: boolean
+        default: true
+
+concurrency:
+  group: x-delete-posts
+  cancel-in-progress: false
+
+jobs:
+  delete:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Delete matching posts
+        env:
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}
+          X_ACCESS_TOKEN_SECRET: ${{ secrets.X_ACCESS_TOKEN_SECRET }}
+          MATCH_URL: ${{ inputs.match_url }}
+          TWEET_IDS: ${{ inputs.tweet_ids }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: node scripts/x/delete-posts.mjs
