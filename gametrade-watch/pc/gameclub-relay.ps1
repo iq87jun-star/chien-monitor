@@ -21,7 +21,9 @@ try {
     $f = Join-Path $env:TEMP "gameclub_p$p.html"
     $code = curl.exe -s -A $ua -o $f -w "%{http_code}" "$base&page=$p"
     if ($code -ne "200") { throw "page ${p}: HTTP $code" }
-    $html = Get-Content $f -Raw -Encoding UTF8
+    # ReadAllText gives a plain string. Get-Content adds PSPath etc., which PowerShell 5.1's ConvertTo-Json
+    # would send as an object instead of a string (the Worker then answers 400).
+    $html = [System.IO.File]::ReadAllText($f, [System.Text.Encoding]::UTF8)
     if ($html -match "Just a moment") { throw "page ${p}: got the bot-check page" }
     $pages += $html
     if ($html -notmatch 'class="pager-next"') { break }  # last page
