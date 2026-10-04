@@ -75,7 +75,10 @@ export default {
     if (pathname === "/status") {
       const site = new URL(req.url).searchParams.get("site") ?? "gametrade";
       if (!Object.hasOwn(CONFIGS, site)) return json({ ok: false, error: "unknown site" }, 404);
-      return json(JSON.parse((await get(env, keys(site).status)) ?? "{}"));
+      const status = JSON.parse((await get(env, keys(site).status)) ?? "{}");
+      // PC から送るサイトは、PC 側で起きた最後のエラーも見せる
+      const pcError = await get(env, `pcerror:${site}`);
+      return json(pcError ? { ...status, lastPcError: JSON.parse(pcError) } : status);
     }
     // 新しいサイトに対応する時の下調べ用: ページの HTML を一時的に保存し(POST)、読み出す(GET)
     if (pathname === "/sample") {
@@ -111,6 +114,11 @@ export default {
         return json({ ok: false, error, ...shape }, 400);
       };
       // 通知先の確認用: {"test": true} で Discord にテスト投稿だけする
+      // PC 側のエラー報告: {"site": "gameclub", "error": "..."}(取得に失敗した時など。/status に出る)
+      if (typeof body?.error === "string" && Object.hasOwn(CONFIGS, body.site ?? "")) {
+        await put(env, `pcerror:${body.site}`, JSON.stringify({ at: new Date().toISOString(), error: body.error.slice(0, 2000) }));
+        return json({ ok: true, recorded: true });
+      }
       if (body?.test === true) {
         const res = await fetch(env.GAMETRADE_DISCORD_WEBHOOK, {
           method: "POST",
