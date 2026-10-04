@@ -81,9 +81,29 @@ export default {
       }
       return new Response((await get(env, "sample")) ?? "", { headers: { "content-type": "text/plain; charset=utf-8" } });
     }
+    if (pathname === "/reject") return json(JSON.parse((await get(env, "reject")) ?? "{}"));
     if (pathname === "/ingest" && req.method === "POST") {
       if (!(await authorized(req, env))) return json({ ok: false, error: "unauthorized" }, 401);
-      const body = await req.json().catch(() => null);
+      const raw = await req.text();
+      let body = null;
+      try {
+        body = JSON.parse(raw);
+      } catch {}
+      // 受け付けなかった理由を残す(GET /reject で見られる。中身は形と長さだけで HTML は残さない)
+      const reject = async (error) => {
+        const shape = {
+          bytes: raw.length,
+          head: raw.slice(0, 80),
+          parsed: body !== null,
+          keys: body && typeof body === "object" ? Object.keys(body) : null,
+          site: body?.site ?? null,
+          pages: Array.isArray(body?.pages)
+            ? body.pages.map((p) => (typeof p === "string" ? `string(${p.length})` : `${typeof p}:${Object.keys(p ?? {}).join(",")}`))
+            : typeof body?.pages,
+        };
+        await put(env, "reject", JSON.stringify({ at: new Date().toISOString(), error, ...shape }));
+        return json({ ok: false, error, ...shape }, 400);
+      };
       // 通知先の確認用: {"test": true} で Discord にテスト投稿だけする
       if (body?.test === true) {
         const res = await fetch(env.GAMETRADE_DISCORD_WEBHOOK, {
@@ -94,11 +114,11 @@ export default {
         return json({ ok: res.ok, status: res.status }, res.ok ? 200 : 502);
       }
       if (!Array.isArray(body?.pages) || !body.pages.every((p) => typeof p === "string")) {
-        return json({ ok: false, error: "pages (HTML の配列) が必要です" }, 400);
+        return reject("pages (HTML の配列) が必要です");
       }
       // site を省くとゲームトレード(既存の定期実行はこれ)
       const site = body.site ?? "gametrade";
-      if (!Object.hasOwn(CONFIGS, site)) return json({ ok: false, error: `unknown site: ${site}` }, 400);
+      if (!Object.hasOwn(CONFIGS, site)) return reject(`unknown site: ${site}`);
       const status = await check(env, site, body.pages);
       return json(status, status.ok ? 200 : 500);
     }

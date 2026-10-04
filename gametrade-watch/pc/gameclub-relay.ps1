@@ -30,15 +30,16 @@ try {
     Start-Sleep -Seconds 3
   }
   $body = @{ site = "gameclub"; pages = $pages } | ConvertTo-Json -Compress
-  $res = Invoke-WebRequest -UseBasicParsing -Method Post -Uri "https://gametrade-watch.iq87jun.workers.dev/ingest" `
-    -Headers @{ authorization = "Bearer $token" } -ContentType "application/json; charset=utf-8" `
-    -Body ([System.Text.Encoding]::UTF8.GetBytes($body))
-  Log "ok pages=$($pages.Count) $($res.Content)"
+  # Send with curl.exe from a UTF-8 (no BOM) file so the Worker's answer is always visible, even on errors.
+  $bodyFile = Join-Path $env:TEMP "gameclub_body.json"
+  [System.IO.File]::WriteAllText($bodyFile, $body, (New-Object System.Text.UTF8Encoding($false)))
+  $resFile = Join-Path $env:TEMP "gameclub_res.json"
+  $code = curl.exe -s -o $resFile -w "%{http_code}" -X POST "https://gametrade-watch.iq87jun.workers.dev/ingest" `
+    -H "authorization: Bearer $token" -H "content-type: application/json; charset=utf-8" --data-binary "@$bodyFile"
+  $res = [System.IO.File]::ReadAllText($resFile, [System.Text.Encoding]::UTF8)
+  if ($code -ne "200") { throw "worker HTTP ${code}: $res" }
+  Log "ok pages=$($pages.Count) $res"
 } catch {
-  $detail = $_.Exception.Message
-  if ($_.Exception.Response) {
-    try { $detail += " " + (New-Object IO.StreamReader($_.Exception.Response.GetResponseStream())).ReadToEnd() } catch {}
-  }
-  Log "error $detail"
+  Log "error $($_.Exception.Message)"
   exit 1
 }
