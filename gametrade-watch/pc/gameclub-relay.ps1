@@ -1,10 +1,11 @@
-# ゲームクラブ(gameclub.jp)の一覧ページを取得して Cloudflare Worker(src/worker.js)に送る。
-# ゲームクラブはクラウドのサーバーからのアクセスにボット対策の確認画面を返すため、自宅の PC から毎晩実行する。
-# 判定・Discord 通知・状態の保存は Worker が行う。登録は pc/install-gameclub.ps1。
+# GameClub (gameclub.jp) relay: fetch the listing pages and send them to the Cloudflare Worker (src/worker.js).
+# GameClub shows a bot-check page to cloud servers, so this runs on the home PC every night.
+# The Worker does the matching, the Discord notification and keeps the state. Installed by pc/install-gameclub.ps1.
 #
 #   powershell -ExecutionPolicy Bypass -File gameclub-relay.ps1
 #
-# 合言葉は同じフォルダの token.txt(リポジトリには入れない)。ログは同じフォルダの relay.log。
+# The token is read from token.txt in the same folder (never committed). Log: relay.log in the same folder.
+# Keep this file ASCII only: Windows PowerShell 5.1 misreads UTF-8 without BOM.
 
 $ErrorActionPreference = "Stop"
 $dir = $PSScriptRoot
@@ -19,11 +20,11 @@ try {
   for ($p = 1; $p -le 5; $p++) {
     $f = Join-Path $env:TEMP "gameclub_p$p.html"
     $code = curl.exe -s -A $ua -o $f -w "%{http_code}" "$base&page=$p"
-    if ($code -ne "200") { throw "page $p: HTTP $code" }
+    if ($code -ne "200") { throw "page ${p}: HTTP $code" }
     $html = Get-Content $f -Raw -Encoding UTF8
-    if ($html -match "Just a moment") { throw "page $p: ボット対策の確認画面が返った" }
+    if ($html -match "Just a moment") { throw "page ${p}: got the bot-check page" }
     $pages += $html
-    if ($html -notmatch 'class="pager-next"') { break }  # 最後のページ
+    if ($html -notmatch 'class="pager-next"') { break }  # last page
     Start-Sleep -Seconds 3
   }
   $body = @{ site = "gameclub"; pages = $pages } | ConvertTo-Json -Compress
