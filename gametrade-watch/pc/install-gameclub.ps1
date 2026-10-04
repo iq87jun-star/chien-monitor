@@ -14,7 +14,8 @@ $ErrorActionPreference = "Stop"
 $dir = "C:\chien\gameclub"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
 $script = Join-Path $dir "gameclub-relay.ps1"
-curl.exe -sSf -o $script "https://raw.githubusercontent.com/iq87jun-star/chien-monitor/main/gametrade-watch/pc/gameclub-relay.ps1"
+# ?v= avoids an old copy from GitHub's cache (it keeps files for about 5 minutes)
+curl.exe -sSf -o $script "https://raw.githubusercontent.com/iq87jun-star/chien-monitor/main/gametrade-watch/pc/gameclub-relay.ps1?v=$(Get-Date -Format yyyyMMddHHmmss)"
 if ($LASTEXITCODE -ne 0) { throw "could not download gameclub-relay.ps1" }
 Set-Content -Path (Join-Path $dir "token.txt") -Value $Token -NoNewline -Encoding ASCII
 
