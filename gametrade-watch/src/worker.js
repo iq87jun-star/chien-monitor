@@ -6,7 +6,7 @@
 //   DB                        … D1(前回の状態。kv テーブル)
 //   GAMETRADE_DISCORD_WEBHOOK … Secret(通知先の Discord ウェブフックURL)
 //   INGEST_TOKEN_SHA256       … POST /ingest の合言葉の SHA-256(wrangler.toml の vars)
-// GET /status で最後の実行結果を確認できる。POST /ingest に {"test": true} でテスト投稿。
+// GET /status で最後の実行結果を確認できる。/sample は新しいサイトの下調べ用(合言葉が必要)。POST /ingest に {"test": true} でテスト投稿。
 
 import config from "../config.json";
 import { runCheck } from "./core.js";
@@ -53,15 +53,27 @@ async function check(env, pages) {
   return status;
 }
 
+const authorized = async (req, env) => {
+  const token = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
+  return Boolean(env.INGEST_TOKEN_SHA256) && (await sha256(token)) === env.INGEST_TOKEN_SHA256;
+};
+
 export default {
   async fetch(req, env) {
     const { pathname } = new URL(req.url);
     if (pathname === "/status") return json(JSON.parse((await get(env, "status")) ?? "{}"));
-    if (pathname === "/ingest" && req.method === "POST") {
-      const token = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
-      if (!env.INGEST_TOKEN_SHA256 || (await sha256(token)) !== env.INGEST_TOKEN_SHA256) {
-        return json({ ok: false, error: "unauthorized" }, 401);
+    // 新しいサイトに対応する時の下調べ用: ページの HTML を一時的に保存し(POST)、読み出す(GET)
+    if (pathname === "/sample") {
+      if (!(await authorized(req, env))) return json({ ok: false, error: "unauthorized" }, 401);
+      if (req.method === "POST") {
+        const text = await req.text();
+        await put(env, "sample", text);
+        return json({ ok: true, bytes: text.length });
       }
+      return new Response((await get(env, "sample")) ?? "", { headers: { "content-type": "text/plain; charset=utf-8" } });
+    }
+    if (pathname === "/ingest" && req.method === "POST") {
+      if (!(await authorized(req, env))) return json({ ok: false, error: "unauthorized" }, 401);
       const body = await req.json().catch(() => null);
       // 通知先の確認用: {"test": true} で Discord にテスト投稿だけする
       if (body?.test === true) {
