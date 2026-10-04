@@ -85,3 +85,52 @@ test("11件以上は10件ずつに分けて送る", () => {
   const items = Array.from({ length: 12 }, (_, i) => ({ id: String(i), name: "x", price: 1, info: [], kind: "new" }));
   assert.deepEqual(discordPayloads(items, "L").map((p) => p.embeds.length), [10, 2]);
 });
+
+const gcItem = (id, name, price, { sold = false, type = "引退垢" } = {}) =>
+  `<div class="item-row "><div class="item-row-top"><span class="item-status status10">アカウント販売・RMT</span>` +
+  `<span class="item-status status account-type">${type}</span>${sold ? '<div class="product-statuses sold">SOLD</div>' : ""}</div>` +
+  `<div class="item-row-middle"><div class="item-row-images"><a href="/genshin-impact/${id}"><img\n src="https://cdn.gameclub.jp/${id}.jpg" alt="x" class="item-thumb"></a></div>` +
+  `<div class="item-row-content"><div class="title"><h3>\n<a href="/genshin-impact/${id}">${name}</a></h3></div>` +
+  `<div class="game-title"><span><i class="fas fa-history"></i>2026/10/03 18:19</span></div>` +
+  `<div class="item-status"><div class="item-status-item"><div class="item-title">冒険者ランク</div>\n<div class="item-content">60</div></div></div>` +
+  `<div class="item-price"><div class="price-box"><div class="price">&yen;${price.toLocaleString("en-US")}</div></div></div></div></div></div>`;
+
+test("ゲームクラブの一覧から出品を取り出す(販売済みは除く)", async () => {
+  const { parseGameclub } = await import("../src/core.js");
+  const r = parseGameclub(gcItem(300, "A &amp; B", 111111) + gcItem(301, "売れた", 90000, { sold: true }), "https://gameclub.jp");
+  assert.deepEqual(r, [
+    {
+      id: "300",
+      name: "A & B",
+      price: 111111,
+      url: "https://gameclub.jp/genshin-impact/300",
+      image: "https://cdn.gameclub.jp/300.jpg",
+      previousPrice: null,
+      info: ["種類：引退垢", "出品・更新：2026/10/03 18:19", "冒険者ランク：60"],
+    },
+  ]);
+});
+
+test("ゲームクラブ: 新規・値下げに加え、記録のない古い出品が価格帯に現れたら価格変更として通知する", async () => {
+  const pages1 = [gcItem(100, "a", 120000) + gcItem(90, "b", 100000)];
+  const pages2 = [gcItem(101, "new", 80000) + gcItem(100, "a", 110000) + gcItem(90, "b", 100000) + gcItem(50, "old", 140000)];
+  const posts = [];
+  const fetchImpl = async (url, init) => {
+    posts.push(JSON.parse(init.body));
+    return new Response(null, { status: 204 });
+  };
+  const config = {
+    site: "gameclub",
+    username: "ゲームクラブ新着",
+    label: "GC",
+    url: "https://gameclub.jp/genshin-impact?search%5BpriceMin%5D=75000&search%5BpriceMax%5D=150000",
+  };
+  const opts = { config, webhook: "https://discord.test/hook", fetchImpl, sleep: async () => {} };
+  const first = await runCheck({ ...opts, state: null, pages: pages1 });
+  assert.equal(posts.length, 0);
+  const second = await runCheck({ ...opts, state: first.state, pages: pages2 });
+  assert.deepEqual(second.hits.map((h) => `${h.id}:${h.kind}`), ["101:new", "100:drop", "50:changed"]);
+  assert.equal(posts[0].username, "ゲームクラブ新着");
+  assert.equal(posts[0].content, "🆕 GC: 新規出品 1件 / 値下げ 1件 / 価格変更で該当 1件");
+  assert.deepEqual(posts[0].embeds.map((e) => e.title), ["【新規】new", "【値下げ】a", "【価格変更】old"]);
+});

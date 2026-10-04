@@ -25,6 +25,15 @@
 - `https://gametrade-watch.iq87jun.workers.dev/status` で最後の実行結果を確認できます
 - 判定などの本体は `src/core.js`(テストは `npm test`)
 
+## ゲームクラブ(gameclub.jp)
+
+ゲームクラブはクラウドのサーバーからのアクセスにボット対策の確認画面を返すため、**自宅の PC** から送ります。
+
+- `pc/gameclub-relay.ps1`: 一覧(¥75,000〜¥150,000・アカウント販売)の全ページを取得し、Worker の `POST /ingest` に `{"site": "gameclub", ...}` で送る
+- `pc/install-gameclub.ps1 -Token <合言葉>`: `C:\chien\gameclub` にスクリプトを置き、毎日 22:40 のタスク `gameclub_watch` を登録して1回実行(ログは `relay.log`)
+- 判定は `config.gameclub.json` と `src/core.js` の `parseGameclub`。価格帯の出品を毎回すべて見ているので、記録のない古い出品が現れたら【価格変更】として通知する(価格帯の外から入ってきた)
+- 状態は `https://gametrade-watch.iq87jun.workers.dev/status?site=gameclub`
+
 ## 設定
 
 1. Discord で通知したいチャンネルの「設定 → 連携サービス → ウェブフック → 新しいウェブフック」で URL をコピー

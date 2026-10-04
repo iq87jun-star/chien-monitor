@@ -6,12 +6,15 @@
 //   DB                        … D1(前回の状態。kv テーブル)
 //   GAMETRADE_DISCORD_WEBHOOK … Secret(通知先の Discord ウェブフックURL)
 //   INGEST_TOKEN_SHA256       … POST /ingest の合言葉の SHA-256(wrangler.toml の vars)
-// GET /status で最後の実行結果を確認できる。/sample は新しいサイトの下調べ用(合言葉が必要)。POST /ingest に {"test": true} でテスト投稿。
+// GET /status(?site=gameclub)で最後の実行結果を確認できる。/sample は新しいサイトの下調べ用(合言葉が必要)。POST /ingest に {"test": true} でテスト投稿。
 
-import config from "../config.json";
+import gametrade from "../config.json";
+import gameclub from "../config.gameclub.json";
 import { runCheck } from "./core.js";
 
-const KEY = "state";
+const CONFIGS = { gametrade, gameclub };
+// D1 のキー(ゲームトレードは最初からある "state" / "status" のまま)
+const keys = (site) => (site === "gametrade" ? { state: "state", status: "status" } : { state: `state:${site}`, status: `status:${site}` });
 
 const get = async (env, key) => {
   const row = await env.DB.prepare("SELECT value FROM kv WHERE key = ?").bind(key).first();
@@ -30,7 +33,9 @@ async function sha256(text) {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-async function check(env, pages) {
+async function check(env, site, pages) {
+  const config = CONFIGS[site];
+  const KEY = keys(site).state;
   const startedAt = new Date().toISOString();
   let status;
   try {
@@ -49,7 +54,7 @@ async function check(env, pages) {
   } catch (err) {
     status = { ok: false, startedAt, error: String(err?.message ?? err) };
   }
-  await put(env, "status", JSON.stringify(status));
+  await put(env, keys(site).status, JSON.stringify(status));
   return status;
 }
 
@@ -61,7 +66,11 @@ const authorized = async (req, env) => {
 export default {
   async fetch(req, env) {
     const { pathname } = new URL(req.url);
-    if (pathname === "/status") return json(JSON.parse((await get(env, "status")) ?? "{}"));
+    if (pathname === "/status") {
+      const site = new URL(req.url).searchParams.get("site") ?? "gametrade";
+      if (!Object.hasOwn(CONFIGS, site)) return json({ ok: false, error: "unknown site" }, 404);
+      return json(JSON.parse((await get(env, keys(site).status)) ?? "{}"));
+    }
     // 新しいサイトに対応する時の下調べ用: ページの HTML を一時的に保存し(POST)、読み出す(GET)
     if (pathname === "/sample") {
       if (!(await authorized(req, env))) return json({ ok: false, error: "unauthorized" }, 401);
@@ -87,7 +96,10 @@ export default {
       if (!Array.isArray(body?.pages) || !body.pages.every((p) => typeof p === "string")) {
         return json({ ok: false, error: "pages (HTML の配列) が必要です" }, 400);
       }
-      const status = await check(env, body.pages);
+      // site を省くとゲームトレード(既存の定期実行はこれ)
+      const site = body.site ?? "gametrade";
+      if (!Object.hasOwn(CONFIGS, site)) return json({ ok: false, error: `unknown site: ${site}` }, 400);
+      const status = await check(env, site, body.pages);
       return json(status, status.ok ? 200 : 500);
     }
     return new Response("gametrade-watch", { status: 404 });
