@@ -1145,16 +1145,18 @@
    "slug": "jpy_lot_path_fix",
    "title": "円建て口座のロット計算経路の修正(SIZE SANITY の原因・EA11/ルビー/パール)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/324_q93_jpy_lot_path.md"
    ],
    "note": "工学。LotFromNotional の tick 値換算を口座通貨で正しく行い v+0.01。テスターで UK100p/USOILp/BTCUSDp のロット一致を確認。配備は「切替」後",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 2
+   "order": 2,
+   "result": "工学。原因 = AXSE の tick 値が損益通貨建て(未換算)。損益経路を正にした v1.11(EA11)/ v1.01(ルビー)/ v1.07(パール)を別ファイルで追加。ロット値は不変(検算 3.88/0.17 一致)、偽警告と強通貨口座の過小ロットを解消。配備は 11 月改訂でまとめて"
   },
   {
    "id": "Q85",
@@ -2232,6 +2234,11 @@
    "date": "2026-10-02",
    "item": "Q83",
    "note": "docs/323: exec_gap.py 作成・8〜9 月の 3 口座。縮小案なし。設定不一致(Roll 9/30 スキップ)と RF5 の建て損ね 75% を提案に"
+  },
+  {
+   "date": "2026-10-05",
+   "item": "Q93",
+   "note": "docs/324: 偽 SIZE SANITY の原因特定・v+0.01 を 3 本追加(配備変更なし)"
   }
  ]
 }
