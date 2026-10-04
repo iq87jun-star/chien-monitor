@@ -1,0 +1,76 @@
+# FF14マーケットモニター(@meruru_prop)の砕けた口調ポスト — 1日2回(JST 12:17 / 20:47)
+# 保存済みの集計データ(ff14/data/site/economy.json。poe2-auto-update が毎朝更新)から、
+# Claude が短い雑談調の投稿を1件作って X に投稿する(ff14/pipeline/post-casual.mjs)。
+# 同じ時間帯の二重投稿は ff14/data/site/posted.json の casualSlots で防ぐ。
+# 手動実行で dry_run を true にすると、投稿せず文面をログに出すだけ。
+#
+# Secrets: ANTHROPIC_API_KEY / X_API_KEY / X_API_SECRET / FF14_X_ACCESS_TOKEN / FF14_X_ACCESS_TOKEN_SECRET
+
+name: ff14-x-casual
+
+on:
+  schedule:
+    - cron: "17 3 * * *" # JST 12:17
+    - cron: "47 11 * * *" # JST 20:47
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: "時間帯(am / pm)。空なら実行時刻から決める"
+        default: ""
+        required: false
+      dry_run:
+        description: "ドライラン(投稿せず文面を表示するだけ)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+# データ更新(poe2-auto-update)と posted.json のコミットがぶつからないよう同じグループで順番に動かす
+concurrency:
+  group: poe2-auto-update
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: ff14/package-lock.json
+
+      - name: Post casual tweet
+        working-directory: ff14
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          X_API_KEY: ${{ secrets.X_API_KEY }}
+          X_API_SECRET: ${{ secrets.X_API_SECRET }}
+          FF14_X_ACCESS_TOKEN: ${{ secrets.FF14_X_ACCESS_TOKEN }}
+          FF14_X_ACCESS_TOKEN_SECRET: ${{ secrets.FF14_X_ACCESS_TOKEN_SECRET }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '1' || '' }}
+          SLOT: ${{ inputs.slot }}
+        run: |
+          npm ci
+          if [ -n "$SLOT" ]; then
+            node pipeline/post-casual.mjs --slot "$SLOT"
+          else
+            node pipeline/post-casual.mjs
+          fi
+
+      - name: Commit posted state
+        run: |
+          git config user.name "market-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add ff14/data/site/posted.json
+          if git diff --cached --quiet; then
+            echo "no state changes"
+          else
+            git commit -m "chore: ff14 casual post state [skip ci]"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push
+          fi

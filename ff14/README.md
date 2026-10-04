@@ -37,6 +37,17 @@ npm run dev          # 開発サーバー
 npm run build        # 本番ビルド → dist/
 ```
 
+## X(@meruru_prop)の砕けた口調ポスト
+
+`.github/workflows/ff14-x-casual.yml` が1日2回(JST 12:17 / 20:47)、`pipeline/post-casual.mjs` を実行する。
+保存済みの `data/site/economy.json` から Claude が短い雑談調の投稿を1件作り、X に投稿する。
+
+- 型(値上がりツッコミ・値下がり・取引量あるある・高額品・アンケート)を日替わりで回す。直近8件で取り上げた品目は避ける
+- 取引が薄い品目(1日3件未満・最安出品が平均価格の2割未満・変動率+500%以上/-90%以下)は使わない(`pipeline/market-filter.mjs`。急騰TOP3も同じ条件)
+- 本文の数値は検品ゲートで集計データと照合し、合わなければ作り直す(最大3回。全部だめなら投稿せずジョブを失敗にする)
+- 手動実行の既定はドライラン(文面をログに出すだけ)。ローカルでは `DRY_RUN=1 ANTHROPIC_API_KEY=... node pipeline/post-casual.mjs --slot am`
+- Secrets: `ANTHROPIC_API_KEY` / `X_API_KEY` / `X_API_SECRET` / `FF14_X_ACCESS_TOKEN` / `FF14_X_ACCESS_TOKEN_SECRET`
+
 ## 注意事項
 
 - UniversalisのAPIには説明的なUser-Agentを送信し、1回の実行あたり数リクエストに抑えている

@@ -5,6 +5,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import crypto from "node:crypto";
 import { SITE_DIR, CONTENT_DIR } from "./config.mjs";
+import { isReliable } from "./market-filter.mjs";
 
 const SITE_URL = "https://game-souba.com/ff14/";
 const MAX_POSTS_PER_RUN = 2;
@@ -43,7 +44,8 @@ function oauth1Header(method, url, creds) {
   );
 }
 
-async function postTweet(text, creds) {
+// body は { text } か、アンケート付きなら { text, poll: { options, duration_minutes } }
+export async function postTweet(body, creds) {
   const url = "https://api.twitter.com/2/tweets";
   const res = await fetch(url, {
     method: "POST",
@@ -51,11 +53,11 @@ async function postTweet(text, creds) {
       Authorization: oauth1Header("POST", url, creds),
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ text }),
+    body: JSON.stringify(body),
   });
-  const body = await res.text();
-  if (!res.ok) throw new Error(`tweet failed: HTTP ${res.status} ${body.slice(0, 200)}`);
-  return JSON.parse(body);
+  const resBody = await res.text();
+  if (!res.ok) throw new Error(`tweet failed: HTTP ${res.status} ${resBody.slice(0, 200)}`);
+  return JSON.parse(resBody);
 }
 
 async function readJson(file, fallback = null) {
@@ -66,19 +68,27 @@ async function readJson(file, fallback = null) {
   }
 }
 
-export async function postToX() {
+// 認証情報が揃っていなければ null
+export function xCredsFromEnv() {
   const { X_API_KEY, X_API_SECRET, FF14_X_ACCESS_TOKEN, FF14_X_ACCESS_TOKEN_SECRET } =
     process.env;
   if (!X_API_KEY || !X_API_SECRET || !FF14_X_ACCESS_TOKEN || !FF14_X_ACCESS_TOKEN_SECRET) {
-    console.log("x-bot: X API credentials not set — skipping");
-    return;
+    return null;
   }
-  const creds = {
+  return {
     apiKey: X_API_KEY,
     apiSecret: X_API_SECRET,
     accessToken: FF14_X_ACCESS_TOKEN,
     accessSecret: FF14_X_ACCESS_TOKEN_SECRET,
   };
+}
+
+export async function postToX() {
+  const creds = xCredsFromEnv();
+  if (!creds) {
+    console.log("x-bot: X API credentials not set — skipping");
+    return;
+  }
 
   const economy = await readJson(path.join(SITE_DIR, "economy.json"), null);
   const articles = (await readJson(path.join(CONTENT_DIR, "articles.json"), { articles: [] }))
@@ -100,7 +110,11 @@ export async function postToX() {
 
   // 2. デイリー急騰ランキング(日本時間で1日1回だけ)
   const todayJst = new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
-  const top3 = (economy?.gainers ?? []).filter((g) => g.change7d > 0).slice(0, 3);
+  // 取引が薄い品目の極端な変動率は除く(market-filter.mjs)
+  const top3 = (economy?.items ?? [])
+    .filter((g) => isReliable(g) && g.change7d > 0)
+    .sort((a, b) => b.change7d - a.change7d)
+    .slice(0, 3);
   if (state.lastRankingDate !== todayJst && top3.length === 3) {
     const lines = top3
       .map((g, i) => `${i + 1}. ${g.name} +${g.change7d}%`)
@@ -119,7 +133,7 @@ export async function postToX() {
 
   for (const item of queue.slice(0, MAX_POSTS_PER_RUN)) {
     try {
-      const result = await postTweet(item.text, creds);
+      const result = await postTweet({ text: item.text }, creds);
       console.log(`x-bot: posted ${item.kind} (tweet id: ${result.data?.id})`);
       if (item.kind === "ranking") state.lastRankingDate = item.key;
       else state.articleIds.push(item.key);
