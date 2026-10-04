@@ -13,6 +13,8 @@ const decode = (s) =>
     .replace(/&gt;/g, ">")
     .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
     .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)))
+    .replace(/&yen;/g, "¥")
+    .replace(/&nbsp;/g, " ")
     .replace(/&amp;/g, "&");
 
 // 一覧ページの HTML から出品を取り出す
@@ -49,11 +51,42 @@ export function parseExhibits(html, origin) {
   return items;
 }
 
+// ゲームクラブ(gameclub.jp)の一覧ページから出品を取り出す(販売済みは除く)
+export function parseGameclub(html, origin) {
+  const items = [];
+  for (const block of html.split('<div class="item-row ').slice(1)) {
+    if (block.includes("product-statuses sold")) continue;
+    const id = /href="\/[\w-]+\/(\d+)"/.exec(block)?.[1];
+    const name = /<h3>\s*<a [^>]*>([\s\S]*?)<\/a>/.exec(block)?.[1];
+    const price = /class="price">([^<]+)</.exec(block)?.[1];
+    if (!id || !name || !price) continue;
+    const href = /<h3>\s*<a href="([^"]+)"/.exec(block)?.[1] ?? "";
+    const img = /<img\s+src="([^"]+)"/.exec(block)?.[1];
+    const date = /fa-history"><\/i>([^<]+)</.exec(block)?.[1]?.trim();
+    const info = [...block.matchAll(/<div class="item-title">([\s\S]*?)<\/div>\s*<div class="item-content">([\s\S]*?)<\/div>/g)].map(
+      (m) => `${decode(m[1]).trim()}：${decode(m[2]).trim()}`,
+    );
+    const type = /account-type">([^<]+)</.exec(block)?.[1]?.trim();
+    items.push({
+      id,
+      name: decode(name).trim(),
+      price: Number(decode(price).replace(/[^\d]/g, "")),
+      url: new URL(href || `/${id}`, origin).href,
+      image: img ?? null,
+      previousPrice: null,
+      info: [type && `種類：${type}`, date && `出品・更新：${date}`, ...info].filter(Boolean),
+    });
+  }
+  return items;
+}
+
 // 通知する出品を決める。
 //   新規出品: 前回までに見た最大の出品IDより新しいID(出品IDは作成順に増える)
 //   値下げ  : 記録した価格より下がった / 記録がなく一覧に「元の価格」が出ている
+//   価格変更: fullRange(価格帯の出品を毎回すべて見ているサイト)で、記録のない古いIDが価格帯に現れた
+//            = 価格帯の外から価格を変えて入ってきた
 // 古い出品が説明文の編集などで一覧の上に来ただけのものは通知しない
-export function pick(all, low, high, state) {
+export function pick(all, low, high, state, { fullRange = false } = {}) {
   const out = [];
   for (const it of all) {
     if (it.price < low || it.price > high) continue;
@@ -64,6 +97,8 @@ export function pick(all, low, high, state) {
       out.push({ ...it, kind: "new" });
     } else if (it.previousPrice && it.previousPrice > it.price) {
       out.push({ ...it, kind: "drop", before: it.previousPrice });
+    } else if (fullRange) {
+      out.push({ ...it, kind: "changed" });
     }
   }
   return out;
@@ -88,26 +123,29 @@ export const priceText = (it) =>
     : yen(it.price);
 
 // Discord に送る内容(1投稿あたり埋め込み10件まで)
-export function discordPayloads(items, label) {
-  const counts = [
-    ["new", "新規出品"],
-    ["drop", "値下げ"],
-  ]
-    .map(([k, name]) => [name, items.filter((it) => it.kind === k).length])
+const KINDS = {
+  new: { name: "新規出品", tag: "【新規】", color: 0x2563eb },
+  drop: { name: "値下げ", tag: "【値下げ】", color: 0xdc2626 },
+  changed: { name: "価格変更で該当", tag: "【価格変更】", color: 0xd97706 },
+};
+
+export function discordPayloads(items, label, username = "ゲームトレード新着") {
+  const counts = Object.entries(KINDS)
+    .map(([k, { name }]) => [name, items.filter((it) => it.kind === k).length])
     .filter(([, n]) => n)
     .map(([name, n]) => `${name} ${n}件`)
     .join(" / ");
   const payloads = [];
   for (let i = 0; i < items.length; i += 10) {
     payloads.push({
-      username: "ゲームトレード新着",
+      username,
       allowed_mentions: { parse: [] },
       content: i === 0 ? `🆕 ${label ?? "新着"}: ${counts}` : undefined,
       embeds: items.slice(i, i + 10).map((it) => ({
-        title: `${it.kind === "drop" ? "【値下げ】" : "【新規】"}${it.name}`.slice(0, 250),
+        title: `${KINDS[it.kind].tag}${it.name}`.slice(0, 250),
         url: it.url,
         description: [priceText(it), ...it.info].join("\n").slice(0, 4000),
-        color: it.kind === "drop" ? 0xdc2626 : 0x2563eb,
+        color: KINDS[it.kind].color,
         thumbnail: it.image ? { url: it.image } : undefined,
       })),
     });
@@ -136,9 +174,6 @@ async function fetchPage(fetchImpl, url, sleep) {
   }
 }
 
-// 1回分のチェック。state は前回の状態(無ければ初回=記録だけ)。
-// 返り値: { state: 次の状態, hits: 通知する出品, total: 取得した件数, notified: 送ったか }
-// 監視する一覧の各ページのURL
 export function pageUrls(config) {
   const base = new URL(config.url);
   base.searchParams.delete("page");
@@ -159,26 +194,34 @@ export async function fetchPages(config, { fetchImpl = fetch, sleep = wait } = {
   return pages;
 }
 
+// サイトごとの違い: 解析・価格帯の URL パラメータ・価格帯の出品を毎回すべて見ているか
+const SITES = {
+  gametrade: { parse: parseExhibits, low: "low_price", high: "high_price", fullRange: false },
+  // ゲームクラブは価格帯の絞り込みが効き、該当は数ページなので全ページを送ってもらう
+  gameclub: { parse: parseGameclub, low: "search[priceMin]", high: "search[priceMax]", fullRange: true },
+};
+
 // 1回分のチェック。state は前回の状態(無ければ初回=記録だけ)。
 // pages(取得済みの一覧ページの HTML)を渡すとそれを使い、無ければ自分で取りに行く。
 // 返り値: { state: 次の状態, hits: 通知する出品, total: 取得した件数, first: 初回か, notified: 送ったか }
 export async function runCheck({ config, state, webhook, pages, fetchImpl = fetch, sleep = wait, dryRun = false }) {
   const base = new URL(config.url);
+  const site = SITES[config.site ?? "gametrade"];
   // サイト側が価格の絞り込みを無視することがあるので、こちらでも絞り込む
-  const low = Number(base.searchParams.get("low_price")) || 0;
-  const high = Number(base.searchParams.get("high_price")) || Infinity;
+  const low = Number(base.searchParams.get(site.low)) || 0;
+  const high = Number(base.searchParams.get(site.high)) || Infinity;
 
   pages ??= await fetchPages(config, { fetchImpl, sleep });
   const found = new Map();
-  for (const html of pages) for (const it of parseExhibits(html, base.origin)) found.set(it.id, it);
+  for (const html of pages) for (const it of site.parse(html, base.origin)) found.set(it.id, it);
   if (found.size === 0) throw new Error("出品を1件も読み取れませんでした(サイトの構造が変わった可能性)");
 
   const all = [...found.values()];
   const prev = state?.maxId ? state : null; // 古い形式の状態は初回扱い
-  const hits = prev ? pick(all, low, high, prev) : [];
+  const hits = prev ? pick(all, low, high, prev, { fullRange: site.fullRange }) : [];
   let notified = false;
   if (!dryRun && hits.length && webhook) {
-    for (const payload of discordPayloads(hits, config.label)) {
+    for (const payload of discordPayloads(hits, config.label, config.username)) {
       const res = await fetchImpl(webhook, {
         method: "POST",
         headers: { "content-type": "application/json" },
