@@ -14,7 +14,13 @@ import { runCheck } from "./core.js";
 
 const CONFIGS = { gametrade, gameclub };
 // D1 のキー(ゲームトレードは最初からある "state" / "status" のまま)
-const keys = (site) => (site === "gametrade" ? { state: "state", status: "status" } : { state: `state:${site}`, status: `status:${site}` });
+// fullRange のサイト(ゲームクラブ)は価格帯ごとに状態を分ける。価格帯を広げた時に、新しく入った既存の出品が
+// すべて【価格変更】として通知されないよう、価格帯を変えたら初回(記録のみ)からやり直す
+const keys = (site) => {
+  if (site === "gametrade") return { state: "state", status: "status" };
+  const q = new URL(CONFIGS[site].url).searchParams;
+  return { state: `state:${site}:${q.get("search[priceMin]")}-${q.get("search[priceMax]")}`, status: `status:${site}` };
+};
 
 const get = async (env, key) => {
   const row = await env.DB.prepare("SELECT value FROM kv WHERE key = ?").bind(key).first();

@@ -29,10 +29,10 @@
 
 ゲームクラブはクラウドのサーバーからのアクセスにボット対策の確認画面を返すため、**自宅の PC** から送ります。
 
-- `pc/gameclub-relay.ps1`: 一覧(¥75,000〜¥150,000・アカウント販売)の全ページを取得し、Worker の `POST /ingest` に `{"site": "gameclub", ...}` で送る
+- `pc/gameclub-relay.ps1`: 一覧(`config.gameclub.json` の URL・価格帯。毎回 GitHub から読むので変更に再インストールは不要)の全ページを取得し、Worker の `POST /ingest` に `{"site": "gameclub", ...}` で送る
 - `pc/install-gameclub.ps1 -Token <合言葉>`: `C:\chien\gameclub` にスクリプトを置き、毎日 22:40 のタスク `gameclub_watch` を登録して1回実行(ログは `relay.log`)
 - 判定は `config.gameclub.json` と `src/core.js` の `parseGameclub`。価格帯の出品を毎回すべて見ているので、記録のない古い出品が現れたら【価格変更】として通知する(価格帯の外から入ってきた)
-- 状態は `https://gametrade-watch.iq87jun.workers.dev/status?site=gameclub`
+- 状態は価格帯ごとに保存する(価格帯を変えた次の回は記録のみ)。実行結果は `https://gametrade-watch.iq87jun.workers.dev/status?site=gameclub`
 
 ## 設定
 

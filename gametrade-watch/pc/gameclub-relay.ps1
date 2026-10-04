@@ -14,10 +14,21 @@ function Log($msg) { "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') $msg" | Tee-Obje
 
 try {
   $token = (Get-Content (Join-Path $dir "token.txt") -Raw).Trim()
-  $base = "https://gameclub.jp/genshin-impact?search%5Btype%5D%5B1%5D=1&search%5BpriceMin%5D=75000&search%5BpriceMax%5D=150000"
+  # The listing URL (price range) comes from config.gameclub.json on GitHub, so changing the range needs no reinstall.
+  # ?v= avoids GitHub's cache. Falls back to the built-in URL if GitHub can't be reached.
+  $base = "https://gameclub.jp/genshin-impact?search%5Btype%5D%5B1%5D=1&search%5BpriceMin%5D=70000&search%5BpriceMax%5D=200000"
+  $maxPages = 10
+  try {
+    $cfgText = curl.exe -sSf "https://raw.githubusercontent.com/iq87jun-star/chien-monitor/main/gametrade-watch/config.gameclub.json?v=$(Get-Date -Format yyyyMMddHHmmss)"
+    if ($LASTEXITCODE -eq 0) {
+      $cfg = ($cfgText -join "`n") | ConvertFrom-Json
+      if ($cfg.url) { $base = [string]$cfg.url }
+      if ($cfg.pages) { $maxPages = [int]$cfg.pages }
+    }
+  } catch {}
   $ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
   $pages = @()
-  for ($p = 1; $p -le 5; $p++) {
+  for ($p = 1; $p -le $maxPages; $p++) {
     $f = Join-Path $env:TEMP "gameclub_p$p.html"
     $code = curl.exe -s -A $ua -o $f -w "%{http_code}" "$base&page=$p"
     if ($code -ne "200") { throw "page ${p}: HTTP $code" }
