@@ -44,7 +44,7 @@ async function allow(env, ip) {
 }
 
 // Claude に返してもらう形
-const SCHEMA = {
+export const SCHEMA = {
   type: "object",
   additionalProperties: false,
   required: ["characters", "uid_visible"],
@@ -57,7 +57,8 @@ const SCHEMA = {
         required: ["name", "cons", "mochi"],
         properties: {
           name: { type: "string" },
-          cons: { type: "integer", minimum: 0, maximum: 6 },
+          // 構造化出力は minimum / maximum を受け付けないので、取りうる値を並べる
+          cons: { type: "integer", enum: [0, 1, 2, 3, 4, 5, 6] },
           mochi: { type: "boolean" },
         },
       },
@@ -114,6 +115,7 @@ async function read(env, body, ip) {
       ],
     });
   } catch (err) {
+    console.error("anthropic", err?.status, err?.message);
     if (err instanceof Anthropic.RateLimitError) return json({ ok: false, error: "混み合っています。少し待ってからお試しください" }, 429);
     if (err instanceof Anthropic.BadRequestError) return json({ ok: false, error: "画像を読み取れませんでした" }, 400);
     if (err instanceof Anthropic.APIError) return json({ ok: false, error: `読み取りに失敗しました(${err.status})` }, 502);

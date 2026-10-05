@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { parseRoster, featureNames } from "../public/lib/features.js";
 import { fitRidge, dot } from "../public/lib/model.js";
 import { estimate } from "../public/lib/estimate.js";
-import { prompt } from "../src/worker.js";
+import { prompt, SCHEMA } from "../src/worker.js";
 
 test("タイトルからキャラごとの凸数と餅を読む(次のキャラ名の手前まで)", () => {
   assert.deepEqual(parseRoster("サンドローネ オデット マーヴィカ1凸+餅 ナヒーダ3凸", "genshin-impact"), {
@@ -65,4 +65,8 @@ test("公開しているモデルはキャラ辞書と合っている", () => {
 test("読み取りの指示にキャラ名の一覧が入る", () => {
   assert.match(prompt("houkaistarrail"), /キャストリス/);
   assert.match(prompt("genshin-impact"), /命ノ星座/);
+});
+
+test("読み取り結果の形は構造化出力で使えない制約(minimum など)を含まない", () => {
+  assert.doesNotMatch(JSON.stringify(SCHEMA), /"(minimum|maximum|multipleOf|minLength|maxLength)"/);
 });
