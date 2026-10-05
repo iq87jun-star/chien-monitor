@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/*.test.js",
-    "train": "node scripts/train.mjs",
+    "train": "node scripts/train.mjs && node scripts/report.mjs",
     "dev": "wrangler dev"
   },
   "dependencies": {

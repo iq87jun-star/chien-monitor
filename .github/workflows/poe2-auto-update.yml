@@ -1,5 +1,6 @@
 # ゲーム相場モニター(game-souba.com)自動更新パイプライン
-# 運用しているのは ff14 だけ。1日1回データを取得し、変化があればAI記事を生成して
+# 運用しているのは ff14 と hoyo(原神・スタレ ツール。hoyo/ と satei/public/ を /hoyo/ に置く)。
+# ff14 は1日1回データを取得し、変化があればAI記事を生成して
 # GitHub Pagesへ再デプロイする。
 # poe2 / poe1 / tarkov は運用終了。コードはリポジトリに残しているが、ビルドも配信もしない
 # (古いURLは portal/404.html が受けて FF14 へ案内する)。
@@ -15,6 +16,10 @@ on:
   schedule:
     - cron: "23 22 * * *" # 1日1回(JST 7:23)
   workflow_dispatch:
+  # 原神・スタレ ツール(静的ページ)を変えたら、データ取得なしで載せ直す
+  push:
+    branches: [main]
+    paths: ["hoyo/**", "satei/public/**", "portal/**", "scripts/generate-sitemap.mjs"]
 
 permissions:
   contents: write
@@ -43,7 +48,8 @@ jobs:
           echo "===== ff14 ====="
           cd ff14
           npm ci
-          npm run pipeline
+          # push(ツールの更新)の時は、データ取得と記事生成をせずに組み立てだけ
+          if [ "${{ github.event_name }}" != "push" ]; then npm run pipeline; fi
           npm run build
 
       - name: Commit updated data
@@ -70,6 +76,9 @@ jobs:
           cp portal/.well-known/assetlinks.json site-dist/.well-known/
           node scripts/generate-sitemap.mjs
           cp -r ff14/dist site-dist/ff14
+          # 原神・スタレ ツール。査定は satei/public(画像の読み取りだけ Worker の /api/read に送る)
+          cp -r hoyo site-dist/hoyo
+          cp -r satei/public site-dist/hoyo/satei
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4

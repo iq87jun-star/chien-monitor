@@ -1,10 +1,14 @@
-// デプロイ時に、運用中のサイト(現在は ff14 のみ)の記事を含むsitemap.xmlを site-dist/ に生成する
+// デプロイ時に、運用中のサイト(ff14 と原神・スタレ ツール)の記事を含むsitemap.xmlを site-dist/ に生成する
 import fs from "node:fs/promises";
 
 const BASE = "https://game-souba.com";
 const SITES = ["ff14"];
 
 const urls = [{ loc: `${BASE}/`, changefreq: "daily", priority: "1.0" }];
+
+// 原神・スタレ ツール(hoyo/)
+urls.push({ loc: `${BASE}/hoyo/`, changefreq: "weekly", priority: "0.9" });
+for (const page of ["souba", "satei", "theater"]) urls.push({ loc: `${BASE}/hoyo/${page}/`, changefreq: "weekly", priority: "0.8" });
 
 for (const site of SITES) {
   urls.push({ loc: `${BASE}/${site}/`, changefreq: "daily", priority: "0.9" });

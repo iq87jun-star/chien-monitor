@@ -1,0 +1,12 @@
+/* game-souba.com/hoyo/ 共通(上部のナビとフッター)。各ツールの中身の見た目はページごと */
+.hoyo-nav { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 4px 14px; flex-wrap: wrap;
+  padding: 10px 16px; background: rgba(18, 16, 24, .92); backdrop-filter: blur(8px); border-bottom: 1px solid #2c2838;
+  font: 600 13px/1.4 "Hiragino Sans", "Noto Sans JP", "Yu Gothic", system-ui, sans-serif; }
+.hoyo-nav a { color: #cfc6e0; text-decoration: none; padding: 4px 2px; }
+.hoyo-nav a:hover { color: #fff; }
+.hoyo-nav a[aria-current="page"] { color: #f2cf7a; }
+.hoyo-nav .brand { color: #fff; margin-right: auto; font-weight: 800; letter-spacing: .03em; }
+.hoyo-nav .brand small { color: #9a90ad; font-weight: 600; margin-left: 6px; }
+.hoyo-foot { max-width: 760px; margin: 40px auto 0; padding: 16px 16px 40px; border-top: 1px solid rgba(128, 120, 150, .3);
+  font: 12px/1.8 "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; color: #8a8199; }
+.hoyo-foot a { color: inherit; }

@@ -18,6 +18,12 @@ const MAX_BASE64 = 5_000_000; // 1枚あたり(画面側で縮小してから送
 const TYPES = ["image/jpeg", "image/png", "image/webp"];
 const GAME_LABEL = { "genshin-impact": "原神", houkaistarrail: "崩壊:スターレイル" };
 
+// 画面は game-souba.com/hoyo/satei/(GitHub Pages)。そこからの /api/read を受け付ける
+const ORIGINS = ["https://game-souba.com", "https://www.game-souba.com"];
+const corsHeaders = (req) => {
+  const origin = req.headers.get("origin");
+  return ORIGINS.includes(origin) ? { "access-control-allow-origin": origin, vary: "origin" } : {};
+};
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json; charset=utf-8" } });
 
@@ -137,18 +143,38 @@ async function read(env, body, ip) {
   return json({ ok: true, characters, uid_visible: Boolean(out.uid_visible) });
 }
 
+async function handle(req, env) {
+  const url = new URL(req.url);
+  const { pathname } = url;
+  if (pathname === "/api/read" && req.method === "POST") {
+    if (!env.ANTHROPIC_API_KEY) return json({ ok: false, error: "画像の読み取りは準備中です。手入力で査定できます" }, 503);
+    let body = null;
+    try {
+      body = await req.json();
+    } catch {}
+    return read(env, body, req.headers.get("cf-connecting-ip") ?? "unknown");
+  }
+  if (pathname.startsWith("/api/")) return json({ ok: false, error: "not found" }, 404);
+  // 公開先は game-souba.com に移った。workers.dev のページは移転先へ(モデルなどのデータはそのまま配る)
+  if (url.hostname.endsWith(".workers.dev") && (pathname === "/" || pathname === "/index.html")) {
+    return Response.redirect("https://game-souba.com/hoyo/satei/", 301);
+  }
+  return env.ASSETS.fetch(req);
+}
+
 export default {
   async fetch(req, env) {
-    const { pathname } = new URL(req.url);
-    if (pathname === "/api/read" && req.method === "POST") {
-      if (!env.ANTHROPIC_API_KEY) return json({ ok: false, error: "画像の読み取りは準備中です。手入力で査定できます" }, 503);
-      let body = null;
-      try {
-        body = await req.json();
-      } catch {}
-      return read(env, body, req.headers.get("cf-connecting-ip") ?? "unknown");
+    const cors = corsHeaders(req);
+    if (req.method === "OPTIONS" && new URL(req.url).pathname.startsWith("/api/")) {
+      return new Response(null, {
+        status: 204,
+        headers: { ...cors, "access-control-allow-methods": "POST", "access-control-allow-headers": "content-type", "access-control-max-age": "86400" },
+      });
     }
-    if (pathname.startsWith("/api/")) return json({ ok: false, error: "not found" }, 404);
-    return env.ASSETS.fetch(req);
+    const res = await handle(req, env);
+    if (!Object.keys(cors).length || !new URL(req.url).pathname.startsWith("/api/")) return res;
+    const out = new Response(res.body, res);
+    for (const [k, v] of Object.entries(cors)) out.headers.set(k, v);
+    return out;
   },
 };
