@@ -22,7 +22,7 @@ GAMETRADE_INGEST_TOKEN=<合言葉> npm run train   # public/model.json を書き
 - 特徴量: タイトル・説明文から読んだキャラごとの所持・凸数・モチーフ武器(`public/lib/features.js`)と星5の数
 - モデル: log(売値) のリッジ回帰(`public/lib/model.js`)
 - 査定では、値段に効く上位 `topK` 人だけを数える(出品タイトルに書かれるのは目玉の数人なので、手持ち全員を足すと高く出すぎる)
-- 買取の割合は `scripts/train.mjs` の `BUY_RATE`
+- 買取の割合は `scripts/train.mjs` の `BUY_RATE`、ゲームごとの補正(実際の買取の感覚に合わせる)は `ADJUST`
 - 新キャラが出たら `public/lib/chars.js` に名前と別名を足してから学習し直す
 
 ## 設定
