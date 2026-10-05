@@ -1,0 +1,59 @@
+# メルル査定(satei/)のテストと Cloudflare へのデプロイ。
+#   - satei/ を変更するPR: 単体テスト
+#   - main への push(satei/ の変更)・手動実行: テスト → Cloudflare にデプロイ
+#
+# Secrets:
+#   CLOUDFLARE_API_TOKEN / CLOUDFLARE_ACCOUNT_ID … notify と共用
+#   SATEI_ANTHROPIC_API_KEY                      … 画像読み取り用の Anthropic API キー(Worker の Secret に登録する。未設定なら手入力のみ)
+
+name: satei
+
+on:
+  push:
+    branches: [main]
+    paths: ["satei/**", ".github/workflows/satei.yml"]
+  pull_request:
+    paths: ["satei/**", ".github/workflows/satei.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: satei-${{ github.event_name == 'pull_request' && github.ref || 'main' }}
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  SATEI_ANTHROPIC_API_KEY: ${{ secrets.SATEI_ANTHROPIC_API_KEY }}
+
+defaults:
+  run:
+    working-directory: satei
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: satei/package-lock.json
+      - run: npm ci
+      - name: Unit tests
+        run: npm test
+      - name: Deploy to Cloudflare
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != ''
+        run: |
+          node scripts/prepare-deploy.mjs
+          npx wrangler d1 migrations apply satei --remote
+          npx wrangler deploy
+      - name: Anthropic API キーを Worker に登録
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && env.CLOUDFLARE_API_TOKEN != '' && env.SATEI_ANTHROPIC_API_KEY != ''
+        run: printf '%s' "$SATEI_ANTHROPIC_API_KEY" | npx wrangler secret put ANTHROPIC_API_KEY
+      - name: API キー未設定
+        if: github.event_name != 'pull_request' && env.SATEI_ANTHROPIC_API_KEY == ''
+        run: echo "::warning::SATEI_ANTHROPIC_API_KEY が未設定です。画像の読み取りは止まり、手入力の査定だけが動きます(satei/README.md 参照)"

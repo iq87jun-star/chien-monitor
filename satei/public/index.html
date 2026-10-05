@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>メルル査定|原神・スタレのアカウント買取査定</title>
+<meta name="description" content="原神・崩壊スターレイルのアカウントを、キャラ一覧のスクショから無料で買取査定。ゲームトレードの成約データをもとに買取額の目安を出します。" />
+<meta property="og:title" content="メルル査定|原神・スタレのアカウント買取査定" />
+<meta property="og:description" content="キャラ一覧のスクショを入れるだけで、買取額の目安が分かります。" />
+<meta name="twitter:card" content="summary" />
+<style>
+  :root {
+    --bg: #fff8fb; --card: #ffffff; --ink: #2b2230; --sub: #6d6075; --line: #f0dbe6;
+    --accent: #e8568f; --accent-ink: #ffffff; --soft: #fde8f1; --warn: #a15c00; --warn-bg: #fff4e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1520; --card: #251d2b; --ink: #f4ecf7; --sub: #b9aac2; --line: #3b2f44;
+      --accent: #ff7aab; --accent-ink: #1b1520; --soft: #3a2533; --warn: #ffc56b; --warn-bg: #3a2c16;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.7 system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 0 0 12px; }
+  .lead { color: var(--sub); margin: 0 0 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 16px; margin-bottom: 16px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tabs button { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: inherit; cursor: pointer; }
+  .tabs button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+  .hint { color: var(--sub); font-size: 14px; margin: 8px 0 0; }
+  .btn { display: inline-block; padding: 12px 18px; border-radius: 10px; border: 0; background: var(--accent); color: var(--accent-ink); font: inherit; font-weight: 700; cursor: pointer; text-decoration: none; text-align: center; }
+  .btn.sub { background: var(--soft); color: var(--ink); }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .row .btn { flex: 1 1 180px; }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 12px; }
+  .thumbs img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+  table { width: 100%; border-collapse: collapse; }
+  td:first-child { width: 46%; }
+  td { padding: 6px 4px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  td input[type=text] { width: 100%; padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; }
+  select { padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; }
+  .x { background: none; border: 0; color: var(--sub); font-size: 20px; cursor: pointer; }
+  .off { font-size: 12px; color: var(--sub); }
+  .notice { background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-top: 12px; }
+  .result { text-align: center; }
+  .result .label { color: var(--sub); margin: 0; }
+  .result .price { font-size: 34px; font-weight: 800; color: var(--accent); margin: 4px 0; letter-spacing: .02em; }
+  .result .keys { color: var(--sub); font-size: 14px; }
+  footer { color: var(--sub); font-size: 13px; margin-top: 24px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>メルル査定🌸</h1>
+  <p class="lead">原神・崩壊スターレイルのアカウントを、スクショから無料で買取査定します。</p>
+
+  <div class="tabs" role="group" aria-label="ゲーム">
+    <button type="button" data-game="genshin-impact" aria-pressed="true">原神</button>
+    <button type="button" data-game="houkaistarrail" aria-pressed="false">スターレイル</button>
+  </div>
+
+  <section class="card">
+    <h2>① スクショを選ぶ</h2>
+    <input id="files" type="file" accept="image/*" multiple />
+    <p class="hint" id="shotHint"></p>
+    <div class="thumbs" id="thumbs"></div>
+    <div class="row"><button class="btn" id="readBtn" type="button" disabled>AIで読み取る</button></div>
+    <p class="notice">UID が写っている場合は、隠してから選んでください。画像は読み取りにだけ使い、保存しません。</p>
+    <p class="hint" id="readMsg" role="status"></p>
+  </section>
+
+  <section class="card">
+    <h2>② 星5キャラを確認する</h2>
+    <p class="hint">読み取り結果を確認して、違うところは直してください。手入力でも査定できます。</p>
+    <table><tbody id="roster"></tbody></table>
+    <datalist id="names"></datalist>
+    <div class="row"><button class="btn sub" id="addBtn" type="button">+ キャラを追加</button></div>
+  </section>
+
+  <section class="card">
+    <h2>③ 査定する</h2>
+    <div class="row"><button class="btn" id="estBtn" type="button">買取額を見る</button></div>
+    <div class="result" id="result" hidden>
+      <p class="label">メルルの買取額の目安</p>
+      <p class="price" id="price"></p>
+      <p class="keys" id="keys"></p>
+      <div class="row">
+        <a class="btn" id="dmBtn" target="_blank" rel="noopener">この金額で売りたい(XでDM)</a>
+        <a class="btn sub" id="discordBtn" target="_blank" rel="noopener" hidden>Discordで相談</a>
+      </div>
+      <div class="row">
+        <a class="btn sub" id="shareBtn" target="_blank" rel="noopener">結果をXでシェア</a>
+        <button class="btn sub" id="saveBtn" type="button">結果を画像で保存</button>
+      </div>
+      <p class="hint">ゲームトレードで実際に売れたアカウントの価格から算出した目安です。正式な買取額は、アカウントを確認してDMでお伝えします。</p>
+    </div>
+  </section>
+
+  <footer>メルル🌸|原神・崩スタ アカウント買取販売 <a href="https://x.com/Meruru_Genshin" target="_blank" rel="noopener">@Meruru_Genshin</a></footer>
+</main>
+
+<script type="module">
+import { CHARS } from "./lib/chars.js";
+import { estimate } from "./lib/estimate.js";
+
+// 連絡先(Discord の招待リンクができたら入れる)
+const X_URL = "https://x.com/Meruru_Genshin";
+const DISCORD_URL = "";
+const LABEL = { "genshin-impact": "原神", houkaistarrail: "スタレ" };
+const SHOT_HINT = {
+  "genshin-impact": "おすすめ: HoYoLAB の「全キャラクター」画面(凸数が出ます)と、ゲーム内の武器一覧。最大6枚。",
+  houkaistarrail: "おすすめ: HoYoLAB のキャラ一覧(星魂と光円錐が出ます)と、ゲーム内の光円錐一覧。最大6枚。",
+};
+
+const $ = (id) => document.getElementById(id);
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
+let game = store.get("satei:game") === "houkaistarrail" ? "houkaistarrail" : "genshin-impact";
+let model = null;
+let images = [];
+let last = null;
+
+async function loadModel() {
+  model ??= await (await fetch("./model.json")).json();
+  return model;
+}
+
+function setGame(g) {
+  game = g;
+  store.set("satei:game", g);
+  document.querySelectorAll("[data-game]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.game === g)));
+  $("shotHint").textContent = SHOT_HINT[g];
+  $("names").innerHTML = Object.keys(CHARS[g]).map((n) => `<option value="${n}">`).join("");
+  $("roster").innerHTML = "";
+  $("result").hidden = true;
+  addRow();
+}
+
+function addRow(c = { name: "", cons: 0, mochi: false }) {
+  const tr = document.createElement("tr");
+  const weapon = game === "houkaistarrail" ? "餅(光円錐)" : "餅(武器)";
+  tr.innerHTML = `
+    <td><input type="text" list="names" placeholder="キャラ名" aria-label="キャラ名"><span class="off" hidden>値付けの対象外</span></td>
+    <td><select aria-label="凸数">${[0, 1, 2, 3, 4, 5, 6].map((n) => `<option value="${n}">${n === 6 ? "完凸" : n + "凸"}</option>`).join("")}</select></td>
+    <td><label style="white-space:nowrap;font-size:14px"><input type="checkbox"> ${weapon}</label></td>
+    <td><button class="x" type="button" aria-label="削除">×</button></td>`;
+  const [name, cons, mochi] = [tr.querySelector("input[type=text]"), tr.querySelector("select"), tr.querySelector("input[type=checkbox]")];
+  name.value = c.name;
+  cons.value = String(c.cons);
+  mochi.checked = c.mochi;
+  const mark = () => (tr.querySelector(".off").hidden = !name.value || Object.hasOwn(CHARS[game], name.value.trim()));
+  name.addEventListener("input", mark);
+  mark();
+  tr.querySelector(".x").addEventListener("click", () => tr.remove());
+  $("roster").append(tr);
+}
+
+function roster() {
+  return [...$("roster").querySelectorAll("tr")]
+    .map((tr) => ({
+      name: tr.querySelector("input[type=text]").value.trim(),
+      cons: Number(tr.querySelector("select").value),
+      mochi: tr.querySelector("input[type=checkbox]").checked,
+    }))
+    .filter((c) => c.name);
+}
+
+// 長辺 1568px の JPEG に縮めて base64 にする(送る量と読み取りの費用を抑える)
+async function shrink(file) {
+  const bmp = await createImageBitmap(file);
+  const scale = Math.min(1, 1568 / Math.max(bmp.width, bmp.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bmp.width * scale);
+  canvas.height = Math.round(bmp.height * scale);
+  canvas.getContext("2d").drawImage(bmp, 0, 0, canvas.width, canvas.height);
+  const url = canvas.toDataURL("image/jpeg", 0.85);
+  return { media_type: "image/jpeg", data: url.split(",")[1], url };
+}
+
+$("files").addEventListener("change", async (e) => {
+  const files = [...e.target.files].slice(0, 6);
+  $("readMsg").textContent = files.length > 0 && e.target.files.length > 6 ? "6枚までにしました。" : "";
+  images = await Promise.all(files.map(shrink));
+  $("thumbs").innerHTML = images.map((im) => `<img src="${im.url}" alt="">`).join("");
+  $("readBtn").disabled = images.length === 0;
+});
+
+$("readBtn").addEventListener("click", async () => {
+  $("readBtn").disabled = true;
+  $("readMsg").textContent = "読み取り中です…(30秒〜1分ほどかかります)";
+  try {
+    const res = await fetch("/api/read", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ game, images: images.map(({ media_type, data }) => ({ media_type, data })) }),
+    });
+    const out = await res.json();
+    if (!out.ok) throw new Error(out.error);
+    $("roster").innerHTML = "";
+    out.characters.forEach(addRow);
+    if (!out.characters.length) addRow();
+    $("readMsg").textContent = `星5キャラを${out.characters.length}人読み取りました。②で確認してください。` + (out.uid_visible ? " ※画像に UID が写っていました。" : "");
+  } catch (err) {
+    $("readMsg").textContent = `${err.message || "読み取りに失敗しました"}`;
+  } finally {
+    $("readBtn").disabled = images.length === 0;
+  }
+});
+
+$("addBtn").addEventListener("click", () => addRow());
+document.querySelectorAll("[data-game]").forEach((b) => b.addEventListener("click", () => setGame(b.dataset.game)));
+
+const man = (yen) => `${(yen / 10000).toFixed(yen % 10000 === 0 ? 0 : 1)}万`;
+
+$("estBtn").addEventListener("click", async () => {
+  const r = estimate(await loadModel(), game, roster());
+  last = { ...r, game };
+  const text = `約${man(r.low)}〜${man(r.high)}円`;
+  $("price").textContent = text;
+  $("keys").textContent = r.keys.length ? `評価したキャラ: ${r.keys.join("、")}` : "キャラを入れると、より正確になります";
+  const share = `私の${LABEL[game]}アカウントの買取査定は「${text}」でした🌸 #メルル査定`;
+  $("shareBtn").href = `https://x.com/intent/post?text=${encodeURIComponent(share)}&url=${encodeURIComponent(location.origin + "/")}`;
+  $("dmBtn").href = X_URL;
+  $("discordBtn").hidden = !DISCORD_URL;
+  if (DISCORD_URL) $("discordBtn").href = DISCORD_URL;
+  $("result").hidden = false;
+  $("result").scrollIntoView({ behavior: "smooth", block: "center" });
+});
+
+// シェア用の画像(1200×630)
+$("saveBtn").addEventListener("click", () => {
+  if (!last) return;
+  const c = document.createElement("canvas");
+  c.width = 1200;
+  c.height = 630;
+  const g = c.getContext("2d");
+  const grad = g.createLinearGradient(0, 0, 1200, 630);
+  grad.addColorStop(0, "#fde8f1");
+  grad.addColorStop(1, "#e9e4ff");
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 1200, 630);
+  g.fillStyle = "#2b2230";
+  g.textAlign = "center";
+  g.font = "bold 44px sans-serif";
+  g.fillText(`${LABEL[last.game]}アカウント 買取査定`, 600, 170);
+  g.fillStyle = "#e8568f";
+  g.font = "bold 110px sans-serif";
+  g.fillText(`約${man(last.low)}〜${man(last.high)}円`, 600, 330);
+  g.fillStyle = "#6d6075";
+  g.font = "32px sans-serif";
+  if (last.keys.length) g.fillText(last.keys.slice(0, 5).join(" / "), 600, 420);
+  g.font = "bold 34px sans-serif";
+  g.fillText("メルル査定🌸 @Meruru_Genshin", 600, 540);
+  const a = document.createElement("a");
+  a.href = c.toDataURL("image/png");
+  a.download = "meruru-satei.png";
+  a.click();
+});
+
+setGame(game);
+</script>
+</body>
+</html>
