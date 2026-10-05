@@ -21,6 +21,7 @@ test("一覧から出品を取り出す", () => {
     image: "https://cdn.example/200.jpg",
     previousPrice: null,
     info: ["冒険者ランク：60ランク", "星5キャラクターの数：30体"],
+    sold: false,
   });
   assert.equal(r[1].previousPrice, 100000);
 });
