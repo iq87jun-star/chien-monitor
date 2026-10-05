@@ -17,6 +17,8 @@ import { loadSold } from "./data.mjs";
 const here = dirname(fileURLToPath(import.meta.url));
 const LAMBDA = 3;
 const BUY_RATE = 0.55; // 査定額 = 売れた相場 × この割合(買取額)
+// ゲームごとの補正(メルルの実際の買取の感覚に合わせる。1 = 補正なし)
+const ADJUST = { "genshin-impact": 1, houkaistarrail: 1 };
 
 const quantile = (a, q) => {
   const s = [...a].sort((x, y) => x - y);
@@ -52,6 +54,7 @@ for (const game of Object.keys(CHARS)) {
     features: featureNames(game),
     weights: w.map((v) => Math.round(v * 1e5) / 1e5),
     // 出品タイトルに書かれるキャラは数人なので、査定でも上位この人数だけを数える(手持ち全員を足すと高く出すぎる)
+    adjust: ADJUST[game] ?? 1,
     topK: Math.max(3, Math.round(quantile(withChars.map((d) => d.mentioned), 0.75))),
     // 幅: 交差検証の残差の 25%〜75% 点
     band: [quantile(resid, 0.25), quantile(resid, 0.75)].map((v) => Math.round(v * 1e4) / 1e4),
