@@ -27,7 +27,7 @@ export function estimate(model, game, roster) {
     roster: Object.fromEntries(picked.map((c) => [c.name, { cons: c.cons, mochi: c.mochi }])),
     star5: roster.length,
   });
-  const market = Math.exp(dot(m.weights, x));
+  const market = Math.exp(dot(m.weights, x)) * (m.adjust ?? 1);
   return {
     low: roundDown(market * Math.exp(m.band[0]) * model.buyRate),
     high: roundUp(market * Math.exp(m.band[1]) * model.buyRate),
