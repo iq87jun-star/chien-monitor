@@ -6,38 +6,19 @@
 // モデル: log(売値) をリッジ回帰で当てる。特徴量はキャラごとの所持・凸数・モチーフ武器と星5の数(public/lib/features.js)。
 // 査定額の幅は、交差検証の誤差(log の残差)の分位点から決める。
 
-import { readFile, writeFile } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import { CHARS } from "../public/lib/chars.js";
 import { parseRoster, infoNumber, STAR5_RE, featurize, featureNames } from "../public/lib/features.js";
 import { fitRidge, dot } from "../public/lib/model.js";
+import { loadSold } from "./data.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const WORKER = "https://gametrade-watch.iq87jun.workers.dev";
 const LAMBDA = 3;
 const BUY_RATE = 0.55; // 査定額 = 売れた相場 × この割合(買取額)
 // ゲームごとの補正(メルルの実際の買取の感覚に合わせる。1 = 補正なし)
 const ADJUST = { "genshin-impact": 1, houkaistarrail: 1 };
-const args = process.argv.slice(2);
-const from = args.includes("--from") ? args[args.indexOf("--from") + 1] : null;
-
-async function load(game) {
-  if (from) return JSON.parse(await readFile(join(from, `${game}.json`), "utf8"));
-  const token = process.env.GAMETRADE_INGEST_TOKEN;
-  if (!token) throw new Error("GAMETRADE_INGEST_TOKEN が未設定です(または --from を使う)");
-  const rows = [];
-  for (let after = 0; ; ) {
-    const res = await fetch(`${WORKER}/sold/export?game=${game}&after=${after}&limit=2000`, {
-      headers: { authorization: `Bearer ${token}`, "user-agent": "satei-train" },
-    });
-    if (!res.ok) throw new Error(`export: ${res.status} ${await res.text()}`);
-    const d = await res.json();
-    rows.push(...d.rows);
-    if (!d.next) return rows;
-    after = d.next;
-  }
-}
 
 const quantile = (a, q) => {
   const s = [...a].sort((x, y) => x - y);
@@ -56,7 +37,7 @@ export function example(game, r) {
 
 const model = { trainedAt: new Date().toISOString(), buyRate: BUY_RATE, games: {} };
 for (const game of Object.keys(CHARS)) {
-  const rows = (await load(game)).filter((r) => !/専用/.test(r.name) && r.price > 0);
+  const rows = (await loadSold(game)).filter((r) => !/専用/.test(r.name) && r.price > 0);
   const data = rows.map((r) => example(game, r));
   // 5分割の交差検証で、予測と実際の売値のずれ(log)を集める
   const resid = [];

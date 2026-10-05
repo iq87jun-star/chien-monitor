@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7LZS5DCBSG"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-7LZS5DCBSG');</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>原神・スタレ アカウント相場レポート|ゲーム相場モニター</title>
+<meta name="description" content="原神・崩壊スターレイルのアカウントが実際にいくらで売れているかを、ゲームトレードの成約データから集計。価格帯の分布、キャラ・完凸ごとの相場。" />
+<link rel="canonical" href="https://game-souba.com/hoyo/souba/" />
+<meta property="og:type" content="article" />
+<meta property="og:site_name" content="ゲーム相場モニター" />
+<meta property="og:title" content="原神・スタレ アカウント相場レポート" />
+<meta property="og:description" content="実際に売れたアカウントの価格を、キャラ・完凸ごとに集計" />
+<meta property="og:url" content="https://game-souba.com/hoyo/souba/" />
+<meta property="og:image" content="https://game-souba.com/ogp.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="stylesheet" href="../hoyo.css" />
+<style>
+  :root { --bg:#100e16; --card:#1a1724; --line:#2c2838; --ink:#ece6f6; --sub:#a59cb6; --gold:#f2cf7a; --bar:#8f7bd9; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",system-ui,sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:32px 16px 0; }
+  h1 { font-size:24px; margin:0 0 6px; }
+  h2 { font-size:17px; margin:28px 0 10px; }
+  .lead, .note { color:var(--sub); font-size:13px; line-height:1.8; margin:0 0 16px; }
+  .tabs { display:flex; gap:8px; margin:16px 0; }
+  .tabs button { flex:1; padding:10px; border-radius:10px; border:1px solid var(--line); background:var(--card); color:var(--ink); font:inherit; cursor:pointer; }
+  .tabs button[aria-pressed="true"] { background:var(--gold); color:#1a1408; border-color:var(--gold); font-weight:700; }
+  .stats { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .stat { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  .stat span { color:var(--sub); font-size:12px; }
+  .stat b { display:block; font-size:24px; font-variant-numeric:tabular-nums; }
+  .bands { display:grid; gap:6px; }
+  .band { display:grid; grid-template-columns:96px 1fr 64px; gap:8px; align-items:center; font-size:13px; font-variant-numeric:tabular-nums; }
+  .band .track { height:14px; background:var(--line); border-radius:7px; overflow:hidden; }
+  .band .fill { height:100%; background:var(--bar); border-radius:7px; }
+  .band .v { text-align:right; color:var(--sub); }
+  .tablewrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:14px; font-variant-numeric:tabular-nums; }
+  th, td { padding:8px 6px; border-bottom:1px solid var(--line); text-align:right; white-space:nowrap; }
+  th:first-child, td:first-child { text-align:left; }
+  th { color:var(--sub); font-weight:600; font-size:12px; }
+  td.up { color:#7fd6b4; }
+  .cta { display:block; margin:28px 0 0; padding:16px; border-radius:14px; text-align:center; text-decoration:none; font-weight:700;
+    background:linear-gradient(135deg,#e8568f,#b06ad8); color:#fff; }
+  .cta small { display:block; font-weight:400; font-size:12px; opacity:.9; margin-top:2px; }
+</style>
+</head>
+<body>
+<nav class="hoyo-nav">
+  <a class="brand" href="/hoyo/">原神・スタレ<small>ゲーム相場</small></a>
+  <a href="/hoyo/souba/" aria-current="page">相場</a><a href="/hoyo/satei/">査定</a><a href="/hoyo/theater/">シアター</a>
+</nav>
+<main>
+  <h1>📈 アカウント相場レポート</h1>
+  <p class="lead">原神・崩壊スターレイルのアカウントが、実際にいくらで売れているかの集計です。<span id="updated"></span></p>
+  <div class="tabs" role="group" aria-label="ゲーム">
+    <button type="button" data-game="genshin-impact" aria-pressed="true">原神</button>
+    <button type="button" data-game="houkaistarrail" aria-pressed="false">スターレイル</button>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><span>集計した成約</span><b id="n">—</b></div>
+    <div class="stat"><span>売れた価格の中央値</span><b id="median">—</b></div>
+  </div>
+
+  <h2>価格帯の分布</h2>
+  <div class="bands" id="bands"></div>
+
+  <h2>完凸だと相場はいくら?</h2>
+  <p class="note">そのキャラが「完凸」と書かれていたアカウントの売れた価格(中央値)です。キャラ単体の値段ではなく、アカウント全体の価格です。</p>
+  <div class="tablewrap"><table><thead><tr><th>キャラ</th><th>完凸の相場</th><th>所持の相場</th><th>件数</th></tr></thead><tbody id="c6"></tbody></table></div>
+
+  <h2>よく売れているキャラ</h2>
+  <p class="note">成約したアカウントで名前が挙がっていた回数の多い順です。</p>
+  <div class="tablewrap"><table><thead><tr><th>キャラ</th><th>件数</th><th>相場(中央値)</th></tr></thead><tbody id="popular"></tbody></table></div>
+
+  <a class="cta" href="/hoyo/satei/">🌸 自分のアカウントはいくら? スクショで査定する<small>キャラ一覧のスクショを選ぶだけ・無料</small></a>
+
+  <p class="note" style="margin-top:24px">集計方法: <span id="source"></span>の出品のうち、取引が成立したもの(個別取引の「専用」出品は除く)。キャラと凸数は出品のタイトル・説明文から読み取っています。毎週更新します。</p>
+</main>
+<footer class="hoyo-foot">
+  当サイトは HoYoverse とは関係のない非公式ファンサイトです。相場はゲームトレードの公開情報から集計した参考値で、価格を保証するものではありません。
+</footer>
+<script type="module">
+const $ = (id) => document.getElementById(id);
+const yen = (v) => `${(v / 10000).toFixed(v % 10000 === 0 ? 0 : 1)}万円`;
+let report = null;
+
+function render(game) {
+  document.querySelectorAll("[data-game]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.game === game)));
+  const g = report.games[game];
+  $("n").textContent = `${g.n.toLocaleString()}件`;
+  $("median").textContent = yen(g.median);
+  const max = Math.max(...g.bands.map((b) => b.n));
+  $("bands").innerHTML = g.bands
+    .map((b) => `<div class="band"><span>${b.label}</span><span class="track"><span class="fill" style="width:${(b.n / max) * 100}%;display:block"></span></span><span class="v">${b.n.toLocaleString()}件</span></div>`)
+    .join("");
+  $("c6").innerHTML = g.characters
+    .filter((c) => c.c6)
+    .sort((a, b) => b.c6.median - a.c6.median)
+    .slice(0, 15)
+    .map((c) => `<tr><td>${c.name}</td><td class="${c.c6.median > c.median ? "up" : ""}">${yen(c.c6.median)}</td><td>${yen(c.median)}</td><td>${c.c6.n}件</td></tr>`)
+    .join("");
+  $("popular").innerHTML = [...g.characters]
+    .sort((a, b) => b.n - a.n)
+    .slice(0, 15)
+    .map((c) => `<tr><td>${c.name}</td><td>${c.n.toLocaleString()}件</td><td>${yen(c.median)}</td></tr>`)
+    .join("");
+}
+
+report = await (await fetch("/hoyo/satei/report.json")).json();
+$("updated").textContent = `(${report.updatedAt.slice(0, 10)} 更新)`;
+$("source").textContent = report.source;
+document.querySelectorAll("[data-game]").forEach((b) => b.addEventListener("click", () => render(b.dataset.game)));
+render("genshin-impact");
+</script>
+</body>
+</html>

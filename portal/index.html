@@ -11,7 +11,7 @@
   </script>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="FF14(日本リージョン)のマーケットボード相場・市場データを自動集計して日本語で解説する非公式ファンサイト" />
+<meta name="description" content="FF14のマーケットボード相場と、原神・崩壊スターレイルのアカウント相場を自動集計する非公式ファンサイト" />
 <title>ゲーム相場モニター</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -25,6 +25,7 @@
   .card h2 { font-size:18px; margin-bottom:6px; }
   .card p { font-size:13px; line-height:1.7; }
   .tag { display:inline-block; font-size:11px; border-radius:999px; padding:2px 10px; margin-bottom:10px; font-weight:700; }
+  .hoyo { background:#1A1724; border-color:#2C2838; } .hoyo h2{color:#E9C9FF} .hoyo p{color:#A59CB6} .hoyo .tag{background:#F2CF7A;color:#1A1408}
   .ff14 { background:#131A28; border-color:#25303A; } .ff14 h2{color:#7FB4E6} .ff14 p{color:#8898AC} .ff14 .tag{background:#D9C27A;color:#131A28}
   footer { margin-top:40px; font-size:11px; color:#6A6455; line-height:1.8; border-top:1px solid #2A2620; padding-top:16px; }
 </style>
@@ -42,12 +43,17 @@
 <body>
 <div class="wrap">
   <h1>🎮 ゲーム相場モニター</h1>
-  <p class="lead">FINAL FANTASY XIV のマーケットボード相場・市場データを自動収集し、AIによる日本語の市場解説とあわせてお届けする非公式ファンサイトです。データは1日1回、自動更新されます。</p>
+  <p class="lead">FINAL FANTASY XIV のマーケットボード相場と、原神・崩壊スターレイルのアカウント相場を自動で集計してお届けする非公式ファンサイトです。</p>
   <div class="grid">
     <a class="card ff14" href="./ff14/">
       <span class="tag">FINAL FANTASY XIV</span>
       <h2>💎 FF14マーケットモニター</h2>
       <p>日本リージョンのマーケットボード相場・取引量ランキング、AI市場レポート</p>
+    </a>
+    <a class="card hoyo" href="./hoyo/">
+      <span class="tag">原神・崩壊スターレイル</span>
+      <h2>🌸 原神・スタレ ツール</h2>
+      <p>アカウント相場レポート(実際に売れた価格の集計)、スクショから買取査定、幻想シアター準備帳</p>
     </a>
   </div>
   <footer>

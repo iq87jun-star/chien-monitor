@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7LZS5DCBSG"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-7LZS5DCBSG');</script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>幻想シアター準備帳(2026年10月)|原神・スタレ ツール</title>
+<meta name="description" content="原神の幻想シアター(2026年10月・水/氷/風)に、手持ちのキャラで何人出せるか判定。各難易度にあと何人足りないか、次に育てる★4キャラを提案します。" />
+<link rel="canonical" href="https://game-souba.com/hoyo/theater/" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="ゲーム相場モニター" />
+<meta property="og:title" content="幻想シアター準備帳(2026年10月)" />
+<meta property="og:description" content="手持ちのキャラで今月のシアターに何人出せるかを判定" />
+<meta property="og:url" content="https://game-souba.com/hoyo/theater/" />
+<meta property="og:image" content="https://game-souba.com/ogp.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<link rel="stylesheet" href="../hoyo.css" />
+<style>body{margin:0}</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Cormorant+Garamond:ital,wght@1,500;1,600&display=swap">
+<style>
+/* Layout: a stage. Curtained proscenium header with a spotlight on the verdict; below it the cast roster (left) and a ticket-stub result panel (right, sticky). Single deliberate dark look: a theater after the house lights go down. */
+:root{
+  color-scheme:dark;
+  --house:#120d1c;        /* auditorium dark */
+  --velvet:#5b1631;       /* curtain */
+  --velvet-deep:#2e0a1a;
+  --stage:#1c1529;        /* panel surface */
+  --stage-2:#251c36;
+  --brass:#d6b56a;        /* gilt trim, accent */
+  --brass-dim:#8a7444;
+  --ink:#f1e9dc;          /* ivory text */
+  --muted:#a89cb8;
+  --line:#3a2f4d;
+  --hydro:#6aa8ff; --cryo:#8fe3f0; --anemo:#6fe0b5; --invite:#e8c46e;
+  --ok:#8fe3a8; --warn:#ffbe6b;
+  --display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho",serif;
+  --body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --latin:"Cormorant Garamond","Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html{background:var(--house)}
+body{background:var(--house);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.65;padding-block:0 56px;padding-inline:0;
+  background-image:radial-gradient(1200px 600px at 50% -200px,#3a1a3e 0%,transparent 70%),radial-gradient(800px 400px at 50% 100%,#1d1430 0%,transparent 70%);background-attachment:fixed}
+button{font:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px}
+
+/* ── Proscenium ───────────────────────── */
+.proscenium{position:relative;overflow:hidden;padding:64px 16px 44px;text-align:center;border-bottom:1px solid var(--brass-dim);
+  background:radial-gradient(ellipse 60% 90% at 50% 0%,rgba(255,226,160,.22) 0%,rgba(255,226,160,.06) 45%,transparent 70%)}
+.valance{position:absolute;inset:0 0 auto 0;height:34px;z-index:3;
+  background:radial-gradient(circle at 50% 0,var(--velvet) 0 22px,transparent 23px) 0 0/48px 34px repeat-x,linear-gradient(var(--velvet),var(--velvet)) 0 0/100% 12px no-repeat;
+  filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+.valance::after{content:"";position:absolute;left:0;right:0;top:11px;height:2px;background:var(--brass);opacity:.7}
+.curtain{position:absolute;top:0;bottom:0;width:min(22vw,220px);z-index:2;
+  background:repeating-linear-gradient(90deg,var(--velvet-deep) 0 6px,var(--velvet) 14px 24px,var(--velvet-deep) 34px 38px);
+  box-shadow:inset 0 -40px 60px rgba(0,0,0,.45);animation:open 1.4s cubic-bezier(.6,.05,.25,1) both}
+.curtain.l{left:0;border-bottom-right-radius:60% 30%;transform-origin:left}
+.curtain.r{right:0;border-bottom-left-radius:60% 30%;transform-origin:right}
+@keyframes open{from{width:52vw}to{width:min(22vw,220px)}}
+.stagehead{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:0 min(20vw,200px)}
+h1 .ln{white-space:nowrap}
+@media (max-width:640px){.curtain{width:14vw}@keyframes open{from{width:52vw}to{width:14vw}}.stagehead{padding:0 14vw}}
+.kicker{font-family:var(--latin);font-style:italic;color:var(--brass);font-size:18px;letter-spacing:.06em}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(24px,4.6vw,46px);line-height:1.25;margin:6px 0 14px;text-wrap:balance;letter-spacing:.02em;
+  text-shadow:0 0 30px rgba(255,220,150,.25)}
+.bill{display:inline-flex;flex-wrap:wrap;justify-content:center;gap:8px 10px;align-items:center;font-size:13px;color:var(--muted)}
+.gem{display:inline-flex;align-items:center;gap:5px;padding:2px 11px 2px 7px;border-radius:999px;border:1px solid currentColor;font-weight:700;background:color-mix(in srgb,currentColor 10%,transparent)}
+.gem svg{width:14px;height:14px}
+.gem.hydro{color:var(--hydro)}.gem.cryo{color:var(--cryo)}.gem.anemo{color:var(--anemo)}
+
+/* ── Body grid ────────────────────────── */
+.wrap{max-width:1160px;margin:0 auto;padding-inline:16px}
+.grid{display:grid;grid-template-columns:1fr;gap:28px;margin-top:28px}
+@media (min-width:920px){.grid{grid-template-columns:minmax(0,1fr) 370px}.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start}}
+
+.howto{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;padding:12px 16px;border:1px solid var(--line);border-radius:12px;background:var(--stage)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.lamp{width:12px;height:12px;border-radius:50%;border:1.5px solid var(--brass-dim)}
+.lamp.s1{background:color-mix(in srgb,var(--brass) 45%,transparent);border-color:var(--brass)}
+.lamp.s2{background:var(--brass);border-color:var(--brass);box-shadow:0 0 10px var(--brass)}
+.tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{background:transparent;border:1px solid var(--brass-dim);border-radius:999px;padding:5px 14px;font-size:12.5px;color:var(--ink);transition:background .2s,border-color .2s}
+.btn:hover{border-color:var(--brass);background:color-mix(in srgb,var(--brass) 12%,transparent)}
+.flag{font-size:11.5px;color:var(--house);background:var(--brass);border-radius:4px;padding:1px 8px;font-weight:700}
+
+/* ── Roster ───────────────────────────── */
+section.group{margin-top:30px}
+.ghead{display:flex;align-items:baseline;gap:12px;margin:0 0 12px;border-bottom:1px solid var(--line);padding-bottom:8px}
+.ghead h2{font-family:var(--display);font-size:20px;margin:0;display:flex;align-items:center;gap:8px;color:var(--el)}
+.ghead h2 svg{width:20px;height:20px}
+.ghead .en{font-family:var(--latin);font-style:italic;color:var(--muted);font-size:15px}
+.ghead .cnt{margin-left:auto;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.ghead .cnt b{color:var(--ink);font-size:15px}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(136px,1fr));gap:10px}
+.chip{--glow:transparent;position:relative;display:flex;flex-direction:column;gap:3px;align-items:flex-start;text-align:left;min-width:0;
+  padding:12px 12px 10px;border-radius:10px;border:1px solid var(--line);background:linear-gradient(180deg,var(--stage-2),var(--stage));
+  overflow:hidden;transition:transform .18s,border-color .2s,box-shadow .25s,background .25s}
+.chip::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;background:var(--el);opacity:.35;transition:opacity .2s}
+.chip:hover:not(:disabled){transform:translateY(-2px);border-color:color-mix(in srgb,var(--el) 60%,var(--line))}
+.chip .nm{font-family:var(--display);font-weight:700;font-size:15px;line-height:1.3;overflow-wrap:anywhere}
+.chip .meta{display:flex;gap:6px;align-items:center;font-size:11.5px;color:var(--muted)}
+.stars{color:var(--brass-dim);letter-spacing:-1px;font-size:11px}
+.chip[data-r="5"] .stars{color:var(--brass)}
+.chip .nm{padding-right:14px}
+.chip .st{position:absolute;top:10px;right:10px;width:10px;height:10px;border-radius:50%;border:1.5px solid var(--brass-dim)}
+.chip .lvtag{font-size:10.5px;font-weight:700;color:var(--brass);letter-spacing:.04em;margin-top:2px}
+.chip[data-s="1"]{border-color:color-mix(in srgb,var(--brass) 50%,var(--line))}
+.chip[data-s="1"] .st{background:color-mix(in srgb,var(--brass) 45%,transparent);border-color:var(--brass)}
+.chip[data-s="2"]{border-color:var(--brass);
+  background:radial-gradient(120% 90% at 50% -20%,color-mix(in srgb,var(--el) 38%,transparent) 0%,transparent 70%),linear-gradient(180deg,#2f2442,var(--stage-2));
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--brass) 40%,transparent),0 8px 24px -10px color-mix(in srgb,var(--el) 70%,transparent)}
+.chip[data-s="2"]::before{opacity:1}
+.chip[data-s="2"] .st{background:var(--brass);border-color:var(--brass);box-shadow:0 0 10px var(--brass)}
+.chip.trial{cursor:default;border-style:dashed;border-color:var(--brass-dim);background:linear-gradient(180deg,#2a1f38,var(--stage))}
+.chip.trial::before{opacity:1}
+.chip.trial .st{display:none}
+.chip.trial::after{content:"開幕";position:absolute;top:0;right:0;font-size:10.5px;font-weight:700;color:var(--house);background:var(--brass);padding:1px 8px 2px 10px;border-bottom-left-radius:8px}
+
+/* ── Ticket panel ─────────────────────── */
+.ticket{position:relative;background:linear-gradient(180deg,#2a2038,#1d1629);border:1px solid var(--brass-dim);border-radius:16px;padding:22px 20px 20px;
+  box-shadow:0 30px 60px -30px rgba(0,0,0,.8),inset 0 0 0 4px var(--stage),inset 0 0 0 5px color-mix(in srgb,var(--brass) 25%,transparent)}
+.perf{position:relative;height:0;border-top:2px dashed var(--brass-dim);margin:20px -20px}
+.perf::before,.perf::after{content:"";position:absolute;top:-13px;width:24px;height:24px;border-radius:50%;background:var(--house);border:1px solid var(--brass-dim)}
+.perf::before{left:-13px;clip-path:inset(0 0 0 50%)}
+.perf::after{right:-13px;clip-path:inset(0 50% 0 0)}
+.tlabel{font-family:var(--latin);font-style:italic;color:var(--brass);font-size:15px;letter-spacing:.05em;text-align:center}
+.gauge{display:grid;place-items:center;margin:4px auto 6px;width:220px;max-width:100%;aspect-ratio:1;position:relative}
+.gauge svg{width:100%;height:100%;overflow:visible}
+.gauge .center{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.gauge .big{font-family:var(--display);font-size:54px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}
+.gauge .unit{font-size:12px;color:var(--muted)}
+.gauge .rank{margin-top:6px;font-family:var(--display);font-size:17px;font-weight:700;color:var(--brass)}
+.verdict{text-align:center;font-size:13.5px;color:var(--muted);margin:2px 0 0;text-wrap:balance}
+.verdict b{color:var(--ink)}
+.tiers{display:flex;flex-direction:column;gap:2px;margin-top:4px}
+.tier{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:7px 4px;font-size:13.5px;font-variant-numeric:tabular-nums;border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)}
+.tier:last-child{border-bottom:0}
+.tier .mk{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--brass-dim);display:grid;place-items:center;font-size:10px;color:var(--house)}
+.tier.ok .mk{background:var(--brass);border-color:var(--brass)}
+.tier .name{font-family:var(--display);font-weight:700}
+.tier .lv{font-size:11.5px;color:var(--muted)}
+.tier .num{text-align:right;color:var(--muted)}
+.tier .num b{color:var(--ink)}
+.tier.ok .num b{color:var(--ok)}
+.tier.next{background:color-mix(in srgb,var(--warn) 8%,transparent);border-radius:8px}
+.tier.next .num{color:var(--warn)}
+.h4{font-family:var(--display);font-size:15px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:baseline}
+.h4 small{font-family:var(--body);font-size:11.5px;color:var(--muted);font-weight:400}
+.roles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.role{border:1px solid var(--line);border-radius:10px;padding:10px 6px 8px;text-align:center;background:var(--stage)}
+.role b{display:block;font-family:var(--display);font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums}
+.role span{font-size:11px;color:var(--muted)}
+.role.low{border-color:var(--warn)}
+.role.low b{color:var(--warn)}
+.note{font-size:12.5px;margin:10px 0 0;color:var(--muted)}
+.note.warn{color:var(--warn)}
+.sugg{display:flex;flex-wrap:wrap;gap:6px;margin:0;padding:0;list-style:none}
+.sugg li{font-size:12.5px;border:1px solid var(--brass-dim);color:var(--ink);border-radius:999px;padding:2px 11px;background:color-mix(in srgb,var(--brass) 6%,transparent)}
+.sugg li em{font-style:normal;color:var(--brass);font-size:11px;margin-left:3px}
+
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);max-width:76ch}
+footer a{color:var(--brass)}
+@media (prefers-reduced-motion:reduce){.curtain{animation:none}.chip,.btn{transition:none}#arc{transition:none!important}}
+</style>
+</head>
+<body>
+<nav class="hoyo-nav">
+  <a class="brand" href="/hoyo/">原神・スタレ<small>ゲーム相場</small></a>
+  <a href="/hoyo/souba/">相場</a><a href="/hoyo/satei/">査定</a><a href="/hoyo/theater/" aria-current="page">シアター</a>
+</nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-hydro" viewBox="0 0 24 24"><path d="M12 2.5C8 8 5.5 11.4 5.5 14.6a6.5 6.5 0 0 0 13 0C18.5 11.4 16 8 12 2.5Z" fill="currentColor" opacity=".25" stroke="currentColor" stroke-width="1.6"/><path d="M9 15.5a3 3 0 0 0 3 3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-cryo" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M12 2v20M3.3 7l17.4 10M3.3 17 20.7 7"/><path d="m9.5 4 2.5 2 2.5-2M9.5 20l2.5-2 2.5 2"/></g></symbol>
+  <symbol id="i-anemo" viewBox="0 0 24 24"><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M3 9h11a3 3 0 1 0-3-3"/><path d="M3 13h15a3 3 0 1 1-3 3"/><path d="M3 17h7"/></g></symbol>
+  <symbol id="i-invite" viewBox="0 0 24 24"><path d="M3 7h18v3a2 2 0 0 0 0 4v3H3v-3a2 2 0 0 0 0-4V7Z" fill="currentColor" opacity=".2" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="m12 9.3.9 1.9 2 .2-1.5 1.4.4 2-1.8-1-1.8 1 .4-2-1.5-1.4 2-.2.9-1.9Z" fill="currentColor"/></symbol>
+</svg>
+
+<header class="proscenium">
+  <div class="valance" aria-hidden="true"></div>
+  <div class="curtain l" aria-hidden="true"></div>
+  <div class="curtain r" aria-hidden="true"></div>
+  <div class="stagehead">
+    <div class="kicker">Imaginarium Theater · October 2026</div>
+    <h1><span class="ln">今月のシアター、</span><br><span class="ln">何人足りる？</span></h1>
+    <div class="bill">
+      <span>10/1 〜 11/1 の上演元素</span>
+      <span class="gem hydro"><svg><use href="#i-hydro"/></svg>水</span>
+      <span class="gem cryo"><svg><use href="#i-cryo"/></svg>氷</span>
+      <span class="gem anemo"><svg><use href="#i-anemo"/></svg>風</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="grid">
+    <main>
+      <div class="howto">
+        <div class="legend" aria-label="凡例">
+          <span><i class="lamp"></i>未所持</span>
+          <span><i class="lamp s1"></i>Lv60〜69</span>
+          <span><i class="lamp s2"></i>Lv70以上</span>
+        </div>
+        <div class="tools">
+          <span id="sample-flag" class="flag" hidden>サンプル表示中</span>
+          <button class="btn" id="btn-clear" type="button">すべて未所持に</button>
+          <button class="btn" id="btn-sample" type="button">サンプルを読み込む</button>
+        </div>
+      </div>
+      <div id="roster"></div>
+    </main>
+
+    <aside class="side">
+      <div class="ticket" aria-live="polite">
+        <div class="tlabel">Admit One — 出演可能キャスト</div>
+        <div class="gauge">
+          <svg viewBox="0 0 220 220" id="gauge-svg" aria-hidden="true"></svg>
+          <div class="center">
+            <div class="big" id="big">0</div>
+            <div class="unit">人 / Lv70以上</div>
+            <div class="rank" id="rank">—</div>
+          </div>
+        </div>
+        <p class="verdict" id="verdict"></p>
+        <div class="perf" aria-hidden="true"></div>
+        <div class="tiers" id="tiers"></div>
+        <div class="perf" aria-hidden="true"></div>
+        <div class="h4">役割バランス<small>Lv70以上</small></div>
+        <div class="roles" id="roles"></div>
+        <p class="note" id="role-note"></p>
+        <div class="perf" aria-hidden="true"></div>
+        <div class="h4">次に育てる★4<small>Lv70まで上げるだけで +1人</small></div>
+        <ul class="sugg" id="sugg"></ul>
+      </div>
+    </aside>
+  </div>
+
+  <footer>
+    <p>開幕キャスト6人はお試しキャラとして自動で人数に含めています。フレンドから借りるサポートキャラは数えていません。役割は大まかな目安です。</p>
+    <p>特別招待キャストは「八重神子・イネファの2人」とする情報と「トーマ・千織を加えた4人」とする情報があったため、4人とも表示しています。必要人数とキャラ一覧は 2026年10月時点の攻略情報をもとにした試作データです。正確な条件はゲーム内でご確認ください。</p>
+    <p>参考：<a href="https://gaming-st.com/pc-games/genshin-imaginarium-theater-guide/">ゲーミングスタイル</a>・<a href="https://genshin.5ing-myway.com/imaginarium-theater-202610/">気ままに原神ブログ</a>・<a href="https://jpgamex.hatenablog.jp/entry/2026/09/24/050627">JPGamex</a>。非公式のファンツールで、HoYoverse とは関係ありません。</p>
+  </footer>
+</div>
+
+<script>
+// role: A=アタッカー, S=サブ・バフ, H=回復・シールド, ""=未分類
+const SEASON = {
+  opening: ["ヌヴィレット","バーバラ","シトラリ","ガイア","放浪者","プルーネ"],
+  tiers: [
+    {name:"イージー", need:8,  lv:1, gems:220},
+    {name:"ノーマル", need:12, lv:1, gems:440},
+    {name:"ハード",   need:16, lv:2, gems:620},
+    {name:"マスター", need:22, lv:2, gems:800},
+    {name:"月諭",     need:28, lv:2, gems:1000},
+  ],
+  recommend4: ["行秋","ディオナ","ロサリア","レイラ","シャルロット","スクロース","ファルザン","リネット","藍硯"],
+};
+const C = (n,r,role)=>({n,r,role});
+const ROSTER = [
+  {key:"hydro", label:"水元素", en:"Hydro", color:"var(--hydro)", list:[
+    C("フリーナ",5,"S"),C("ヌヴィレット",5,"A"),C("夜蘭",5,"S"),C("ニィロウ",5,"S"),C("神里綾人",5,"A"),
+    C("珊瑚宮心海",5,"H"),C("タルタリヤ",5,"A"),C("モナ",5,"S"),C("ムアラニ",5,"A"),C("シグウィン",5,"H"),
+    C("コロンビーナ",5,""),C("ヴォジャニーツァ",5,""),
+    C("バーバラ",4,"H"),C("行秋",4,"S"),C("キャンディス",4,"S"),C("ダリア",4,""),C("アイノ",4,"")]},
+  {key:"cryo", label:"氷元素", en:"Cryo", color:"var(--cryo)", list:[
+    C("神里綾華",5,"A"),C("甘雨",5,"A"),C("エウルア",5,"A"),C("申鶴",5,"S"),C("七七",5,"H"),C("リオセスリ",5,"A"),
+    C("シトラリ",5,"S"),C("エスコフィエ",5,"H"),C("スカーク",5,"A"),C("オデット",5,""),C("サンドローネ",5,""),C("アーロイ",5,"A"),
+    C("ガイア",4,"S"),C("ディオナ",4,"H"),C("ロサリア",4,"S"),C("重雲",4,"S"),C("レイラ",4,"H"),C("ミカ",4,"H"),
+    C("シャルロット",4,"H"),C("フレミネ",4,"A")]},
+  {key:"anemo", label:"風元素", en:"Anemo", color:"var(--anemo)", list:[
+    C("ウェンティ",5,"S"),C("楓原万葉",5,"S"),C("ジン",5,"H"),C("魈",5,"A"),C("閑雲",5,"S"),C("放浪者",5,"A"),
+    C("チャスカ",5,"A"),C("夢見月瑞希",5,"H"),C("ファルカ",5,""),C("ヴェスナ",5,""),
+    C("スクロース",4,"S"),C("早柚",4,"H"),C("鹿野院平蔵",4,"A"),C("ファルザン",4,"S"),C("リネット",4,"S"),
+    C("藍硯",4,"H"),C("イファ",4,"H"),C("プルーネ",4,"")]},
+  {key:"invite", label:"特別招待", en:"Special Invitation", color:"var(--invite)", list:[
+    C("八重神子",5,"S"),C("イネファ",5,"S"),C("千織",5,"S"),C("トーマ",4,"H")]},
+];
+const ROLE_LABEL = {A:"アタッカー",S:"サブ・バフ",H:"回復・シールド","":"未分類"};
+const SAMPLE = {"行秋":2,"フリーナ":2,"夜蘭":2,"珊瑚宮心海":2,"キャンディス":1,"神里綾華":2,"申鶴":2,"ディオナ":2,"ロサリア":2,"重雲":1,"レイラ":2,"シャルロット":1,"楓原万葉":2,"スクロース":2,"ジン":2,"早柚":1,"鹿野院平蔵":1,"八重神子":2,"トーマ":2};
+const STORE_KEY = "theater-2026-10";
+
+let state = {}, isSample = false;
+try {
+  const saved = JSON.parse(localStorage.getItem(STORE_KEY) || "null");
+  if (saved && typeof saved === "object") state = saved; else { state = {...SAMPLE}; isSample = true; }
+} catch { state = {...SAMPLE}; isSample = true; }
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch{} }
+
+const opening = new Set(SEASON.opening);
+const all = ROSTER.flatMap(g=>g.list);
+const lvl = c => opening.has(c.n) ? 2 : (state[c.n]||0);
+
+function renderRoster(){
+  const root = document.getElementById("roster");
+  root.innerHTML = "";
+  for (const g of ROSTER){
+    const sec = document.createElement("section");
+    sec.className = "group";
+    sec.style.setProperty("--el", g.color);
+    const ready = g.list.filter(c=>lvl(c)>=2).length;
+    sec.innerHTML = `<div class="ghead"><h2><svg aria-hidden="true"><use href="#i-${g.key}"/></svg>${g.label}</h2><span class="en">${g.en}</span><span class="cnt"><b>${ready}</b> / ${g.list.length} 人が出演可</span></div>`;
+    const box = document.createElement("div");
+    box.className = "chips";
+    for (const c of g.list){
+      const b = document.createElement("button");
+      b.type = "button";
+      b.id = "c-" + c.n;
+      const trial = opening.has(c.n);
+      const s = state[c.n]||0;
+      b.className = "chip" + (trial ? " trial" : "");
+      b.dataset.s = trial ? "0" : String(s);
+      b.dataset.r = String(c.r);
+      b.innerHTML = `<span class="nm">${c.n}</span><span class="meta"><span class="stars">${"★".repeat(c.r)}</span>${ROLE_LABEL[c.role]}</span><span class="st"></span>${!trial && s ? `<span class="lvtag">${s===2?"Lv70+":"Lv60+"}</span>` : ""}`;
+      b.setAttribute("aria-label", `${c.n} ${trial ? "開幕キャスト（お試し）" : ["未所持","Lv60〜69","Lv70以上"][s]}`);
+      if (trial) b.disabled = true;
+      else b.addEventListener("click", ()=>{
+        state[c.n] = ((state[c.n]||0)+1) % 3;
+        if (!state[c.n]) delete state[c.n];
+        isSample = false;
+        save(); render(c.n);
+      });
+      box.appendChild(b);
+    }
+    sec.appendChild(box);
+    root.appendChild(sec);
+  }
+}
+
+// Ring gauge: 0 → 28 (月諭) around the circle, with brass ticks at each tier threshold.
+function renderGauge(n70){
+  const max = 28, R = 92, cx = 110, cy = 110, circ = 2*Math.PI*R;
+  const ticks = SEASON.tiers.map(t=>{
+    const a = (t.need/max)*2*Math.PI - Math.PI/2;
+    const x1 = cx + Math.cos(a)*(R-11), y1 = cy + Math.sin(a)*(R-11);
+    const x2 = cx + Math.cos(a)*(R+11), y2 = cy + Math.sin(a)*(R+11);
+    const lx = cx + Math.cos(a)*(R+24), ly = cy + Math.sin(a)*(R+24);
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--brass)" stroke-width="2" opacity=".9"/>
+      <text x="${lx}" y="${ly}" fill="var(--muted)" font-size="10" text-anchor="middle" dominant-baseline="middle" font-family="var(--body)">${t.need}</text>`;
+  }).join("");
+  const frac = Math.min(n70, max)/max;
+  document.getElementById("gauge-svg").innerHTML = `
+    <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3d991"/><stop offset="1" stop-color="#b8892f"/></linearGradient></defs>
+    <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="var(--line)" stroke-width="10"/>
+    <circle id="arc" cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="url(#g)" stroke-width="10" stroke-linecap="round"
+      stroke-dasharray="${circ}" stroke-dashoffset="${circ*(1-frac)}" transform="rotate(-90 ${cx} ${cy})"
+      style="transition:stroke-dashoffset .6s cubic-bezier(.3,.7,.3,1);filter:drop-shadow(0 0 6px rgba(214,181,106,.55))"/>
+    ${ticks}`;
+}
+
+function renderResult(){
+  const count = min => all.filter(c=>lvl(c)>=min).length;
+  const n70 = count(2);
+  document.getElementById("big").textContent = n70;
+  renderGauge(n70);
+
+  const tiersEl = document.getElementById("tiers");
+  tiersEl.innerHTML = "";
+  let best = null, next = null;
+  for (const t of SEASON.tiers){
+    const have = count(t.lv), ok = have >= t.need;
+    if (ok) best = t; else if (!next) next = {t, gap: t.need - have};
+    const row = document.createElement("div");
+    row.className = "tier" + (ok ? " ok" : "") + (next && next.t === t ? " next" : "");
+    row.innerHTML = `<span class="mk">${ok ? "✓" : ""}</span>
+      <span><span class="name">${t.name}</span><br><span class="lv">Lv${t.lv===2?70:60}以上 ・ 原石 ${t.gems.toLocaleString()}</span></span>
+      <span class="num">${ok ? `<b>${have}</b> / ${t.need}` : `あと <b>${t.need-have}</b> 人`}</span>`;
+    tiersEl.appendChild(row);
+  }
+  document.getElementById("rank").textContent = best ? `${best.name} 挑戦可` : "まだ届かず";
+  document.getElementById("verdict").innerHTML = next
+    ? `次は <b>${next.t.name}</b>。Lv${next.t.lv===2?70:60}以上をあと <b>${next.gap}人</b>。`
+    : `全難易度の条件を満たしています。`;
+
+  const ready = all.filter(c=>lvl(c)>=2);
+  const rc = {A:0,S:0,H:0};
+  ready.forEach(c=>{ if (c.role in rc) rc[c.role]++; });
+  const lowH = rc.H < 3, lowS = rc.A > rc.S + 2;
+  document.getElementById("roles").innerHTML =
+    ["A","S","H"].map(k=>`<div class="role${(k==="H"&&lowH)||(k==="S"&&lowS)?" low":""}"><b>${rc[k]}</b><span>${ROLE_LABEL[k]}</span></div>`).join("");
+  const note = document.getElementById("role-note");
+  if (lowH){ note.className="note warn"; note.textContent = "回復・シールド役が少なめです。後半の幕は1キャラ2回までしか出せないので、3〜4人いると安定します。"; }
+  else if (lowS){ note.className="note warn"; note.textContent = "アタッカーに偏っています。サブ・バフ役を増やすと編成を組みやすくなります。"; }
+  else { note.className="note"; note.textContent = "役割のバランスは良好です。"; }
+
+  const sugg = SEASON.recommend4.filter(n => (state[n]||0) < 2 && !opening.has(n));
+  document.getElementById("sugg").innerHTML = sugg.length
+    ? sugg.map(n=>`<li>${n}${state[n]===1 ? "<em>Lv70へ</em>" : ""}</li>`).join("")
+    : "<li>おすすめ★4はすべて育成済みです</li>";
+  document.getElementById("sample-flag").hidden = !isSample;
+}
+
+function render(focusName){
+  renderRoster(); renderResult();
+  if (focusName){ const el = document.getElementById("c-" + focusName); if (el) el.focus({preventScroll:true}); }
+}
+document.getElementById("btn-clear").addEventListener("click", ()=>{ state = {}; isSample=false; save(); render(); });
+document.getElementById("btn-sample").addEventListener("click", ()=>{ state = {...SAMPLE}; isSample=true; try{localStorage.removeItem(STORE_KEY);}catch{} render(); });
+render();
+</script>
+</body>
+</html>
