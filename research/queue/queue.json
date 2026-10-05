@@ -1163,16 +1163,18 @@
    "slug": "guard_mult_frontier",
    "title": "口座規則別のガード・倍率フロンティア(FTMO Std / Fintokei スイング / FN・MC 格子)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/325_q85_guard_mult_frontier.md"
    ],
    "note": "register_metrics の MC で 倍率{2.0,2.5,3.3,4.0}×日次停止{3,4,5%}×床{8,9,10%}。採用点は最悪年でも失格 ≤10% の中で到達率最大。既存口座は P1→P2 時のみ適用",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 3
+   "order": 3,
+   "result": "診断(108 格子)。FTMO Std: ×2.0/日次5%/床10% が採用点(到達 87.5・失格 0.7・最悪年 7.9%)で現行 ×3.3 は最悪年 30.6%。Fintokei: ×2.0 維持・日次 3% で最悪年 18→10%。FN 非FX+Roll は全格子不可(最悪年 40〜58%)→ 構成見直しを 11 月議題に"
   },
   {
    "id": "Q84",
@@ -2239,6 +2241,11 @@
    "date": "2026-10-05",
    "item": "Q93",
    "note": "docs/324: 偽 SIZE SANITY の原因特定・v+0.01 を 3 本追加(配備変更なし)"
+  },
+  {
+   "date": "2026-10-06",
+   "item": "Q85",
+   "note": "docs/325: ガード・倍率フロンティア。新規 FTMO Std は ×2.0 提案、トパーズは P2 時に日次 3%、FN は構成見直し"
   }
  ]
 }
