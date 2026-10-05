@@ -34,6 +34,28 @@
 - 判定は `config.gameclub.json` と `src/core.js` の `parseGameclub`。価格帯の出品を毎回すべて見ているので、記録のない古い出品が現れたら【価格変更】として通知する(価格帯の外から入ってきた)
 - 状態は価格帯ごとに保存する(価格帯を変えた次の回は記録のみ)。実行結果は `https://gametrade-watch.iq87jun.workers.dev/status?site=gameclub`
 
+## 売れたアカウントの記録(査定ツールの学習用)
+
+ゲームトレードは取引が終わった出品も一覧に **SOLD** と価格付きで残すので、それを集めて D1 の `sold` テーブルに貯めます。
+「どのキャラ・何凸で、いくらで売れたか」を学習して、アカウント査定ツールの値付けに使うためのデータです。
+
+- `sold-relay.mjs`: `config.sold.json` のゲーム(原神・崩壊スターレイル)の一覧(全ての商品・新着順・1万〜50万円)を
+  `pages` ページ見て、SOLD の出品を Worker の `POST /sold` に送る(同じ出品は二重に入らない)。
+  続けて、説明文の全文と画像がまだ無いものを `GET /sold/missing` で聞き、出品ページを1件ずつ(2秒おき)読んで `POST /sold/details` で足す
+  (一覧の説明文は途中で切れているため)
+- 定期実行(新着チェックと同じ Routine)は依存なしで動かすため、必要な4ファイルだけを GitHub から取ってきて実行する:
+
+  ```bash
+  d=$(mktemp -d); mkdir -p "$d/src"
+  B=https://raw.githubusercontent.com/iq87jun-star/chien-monitor/main/gametrade-watch
+  for f in sold-relay.mjs config.sold.json src/core.js src/sold.js; do curl -sSf -o "$d/$f" "$B/$f?v=$(date +%s)" || exit 1; done
+  GAMETRADE_INGEST_TOKEN=<合言葉> node "$d/sold-relay.mjs"
+  ```
+
+- 件数の確認: `https://gametrade-watch.iq87jun.workers.dev/sold/stats`
+- 学習用の書き出し(合言葉が必要): `GET /sold/export?game=genshin-impact&after=<id>&limit=500`(続きは返ってきた `next` を `after` に)
+- 「〇〇様専用」のような個別取引の出品も、そのまま記録する(学習の時に除く)
+
 ## 設定
 
 1. Discord で通知したいチャンネルの「設定 → 連携サービス → ウェブフック → 新しいウェブフック」で URL をコピー
@@ -46,5 +68,6 @@
 ```sh
 cd gametrade-watch
 node watch.mjs --dry-run   # 通知も保存もせず、通知対象を表示
+node sold-relay.mjs --dry-run --pages 3   # 売れた出品の件数と例、出品ページ1件の読み取り結果を表示(送らない)
 npm test
 ```

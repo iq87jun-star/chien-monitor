@@ -5,7 +5,7 @@ const MAX_PRICES = 5000;
 const UA =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36";
 
-const decode = (s) =>
+export const decode = (s) =>
   s
     .replace(/&quot;/g, '"')
     .replace(/&#x27;|&#39;/g, "'")
@@ -46,6 +46,8 @@ export function parseExhibits(html, origin) {
       // 値下げされた出品は一覧に元の価格が出る
       previousPrice: Number(/<li class="previous_price"><p>[^0-9]*([\d,]+)/.exec(block)?.[1].replace(/,/g, "")) || null,
       info,
+      // 取引が終わった出品(SOLD)も一覧に残る。売れたアカウントの記録(sold.js)で使う
+      sold: block.includes("sales-done"),
     });
   }
   return items;
