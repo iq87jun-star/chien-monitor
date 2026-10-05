@@ -1,0 +1,17 @@
+{
+  "name": "satei",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "train": "node scripts/train.mjs",
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.137.0"
+  }
+}

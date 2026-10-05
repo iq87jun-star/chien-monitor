@@ -6,7 +6,8 @@ const KANJI_NUM = { 無: 0, 一: 1, 二: 2, 三: 3, 四: 4, 五: 5, 六: 6 };
 
 // 名前の後ろ(次の区切りまで)を見て、凸数と餅を読む
 function readAfter(tail) {
-  const seg = tail.slice(0, 10).split(/[、,，/／|｜\n。()()【】\[\]]/)[0];
+  // 「ヌヴィ C2」のように名前の直後の空白は区切りにしない
+  const seg = tail.replace(/^\|+/, "").slice(0, 10).split(/[、,，/／|｜\n。()()【】\[\]]/)[0];
   let cons = null;
   let mochi = /餅|モチ|ﾓﾁ/.test(seg);
   if (/両完凸/.test(seg)) {
