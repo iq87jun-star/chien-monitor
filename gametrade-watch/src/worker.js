@@ -59,6 +59,7 @@ async function check(env, site, pages) {
       hits: r.hits.length,
       first: r.first,
       notified: r.notified,
+      ...(r.skipped?.length ? { skipped: r.skipped } : {}),
       webhook: Boolean(env.GAMETRADE_DISCORD_WEBHOOK),
     };
   } catch (err) {
