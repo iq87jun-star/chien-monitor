@@ -107,3 +107,16 @@ test("代理出品: 査定ページからの相談と集計画面の更新を確
   });
   assert.deepEqual(validPatch({ status: "不明", next_at: "10/10" }), { next_at: null });
 });
+
+test("成約データの上限を超える高額アカウントは、金額を断言せず個別査定にする", () => {
+  const game = "genshin-impact";
+  const features = featureNames(game);
+  const weights = features.map((f) => (f === "bias" ? Math.log(100000) : f.startsWith("has:") ? 0.3 : 0));
+  const model = { buyRate: 0.5, games: { [game]: { features, weights, topK: 30, band: [Math.log(0.8), Math.log(1.2)], cap: 200000 } } };
+  const many = ["フリーナ", "ナヒーダ", "夜蘭", "千織", "閑雲", "雷電将軍"].map((name) => ({ name, cons: 6, mochi: true }));
+  const r = estimate(model, game, many); // 相場 10万 × e^1.8 ≒ 60万 > 上限 20万
+  assert.equal(r.capped, true);
+  assert.equal(r.high, null);
+  assert.equal(r.low, 100000); // 上限 20万 × 0.5
+  assert.equal(estimate(model, game, many.slice(0, 1)).capped, undefined);
+});

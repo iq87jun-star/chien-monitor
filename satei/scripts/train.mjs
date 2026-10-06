@@ -55,6 +55,8 @@ for (const game of Object.keys(CHARS)) {
     weights: w.map((v) => Math.round(v * 1e5) / 1e5),
     // 出品タイトルに書かれるキャラは数人なので、査定でも上位この人数だけを数える(手持ち全員を足すと高く出すぎる)
     adjust: ADJUST[game] ?? 1,
+    // 相場の上限(売れた価格の 99% 点)。学習データより大きいアカウントは一次式で高く出すぎるので、ここで止めて個別査定にする
+    cap: quantile(rows.map((r) => r.price), 0.99),
     topK: Math.max(3, Math.round(quantile(withChars.map((d) => d.mentioned), 0.75))),
     // 幅: 交差検証の残差の 25%〜75% 点
     band: [quantile(resid, 0.25), quantile(resid, 0.75)].map((v) => Math.round(v * 1e4) / 1e4),

@@ -13,7 +13,8 @@ const roundDown = (yen) => Math.max(1000, Math.floor(yen / 1000) * 1000);
 const roundUp = (yen) => Math.max(1000, Math.ceil(yen / 1000) * 1000);
 
 // roster: [{ name, cons, mochi }](星5キャラ。辞書にない名前は値付けに使わない)
-// 返り値: { low, high }(買取額の幅・円)と、値付けに効いたキャラ
+// 返り値: { low, high }(買取額の幅・円)と、値付けに効いたキャラ。
+//   相場が学習データの上限(cap)を超える時は { capped: true, low: 上限の買取額, high: null }(高額のため個別査定)
 export function estimate(model, game, roster) {
   const m = model.games[game];
   if (!m || featureNames(game).join() !== m.features.join()) throw new Error("モデルとキャラ辞書が合っていません");
@@ -28,6 +29,10 @@ export function estimate(model, game, roster) {
     star5: roster.length,
   });
   const market = Math.exp(dot(m.weights, x)) * (m.adjust ?? 1);
+  if (m.cap && market * Math.exp(m.band[1]) > m.cap) {
+    const low = Math.min(market * Math.exp(m.band[0]), m.cap);
+    return { capped: true, low: roundDown(low * model.buyRate), high: null, keys: picked.map((c) => c.name) };
+  }
   return {
     low: roundDown(market * Math.exp(m.band[0]) * model.buyRate),
     high: roundUp(market * Math.exp(m.band[1]) * model.buyRate),
