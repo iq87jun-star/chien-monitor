@@ -5,6 +5,8 @@
 //       画像は読み取りにだけ使い、保存しない
 //   POST /api/event {kind: estimate|dm, game, sid, chars, low, high} … 利用記録(src/events.js)
 //   GET  /api/stats(合言葉が必要)… 利用記録の集計。画面は public/admin.html
+//   POST /api/lead {game, handle?, wish?, chars, low, high, sid} … 査定ページからの相談 → 代理出品の管理に入り、管理番号を返す
+//   /api/consign・/api/templates(合言葉が必要)… 代理出品の一覧・更新・DM の定型文(src/consign.js)
 //
 // バインディング:
 //   ANTHROPIC_API_KEY … Secret(未設定なら /api/read は 503。画面は手入力だけで動く)
@@ -15,6 +17,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { CHARS } from "../public/lib/chars.js";
 import { validEvent, record, stats } from "./events.js";
+import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES } from "./consign.js";
 
 const MODEL = "claude-opus-5-5";
 const MAX_IMAGES = 6;
@@ -27,6 +30,15 @@ const ORIGINS = ["https://game-souba.com", "https://www.game-souba.com"];
 const corsHeaders = (req) => {
   const origin = req.headers.get("origin");
   return ORIGINS.includes(origin) ? { "access-control-allow-origin": origin, vary: "origin" } : {};
+};
+const readJson = async (req, max = 50_000) => {
+  const text = await req.text();
+  if (text.length > max) return null;
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
+  }
 };
 const json = (body, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json; charset=utf-8" } });
@@ -173,10 +185,48 @@ async function handle(req, env, ctx) {
     await record(env, ev);
     return json({ ok: true });
   }
-  if (pathname === "/api/stats" && req.method === "GET") {
+  // 査定ページの「この金額で売りたい」からの相談(誰でも送れるので、1日の件数に上限を置く)
+  if (pathname === "/api/lead" && req.method === "POST") {
+    const lead = validLead(await readJson(req), Object.keys(CHARS));
+    if (!lead) return json({ ok: false, error: "入力を確認してください" }, 400);
+    const today = await env.DB.prepare("SELECT COUNT(*) AS n FROM consign WHERE source = 'tool' AND created_at >= ?")
+      .bind(new Date(Date.now() - 86400_000).toISOString())
+      .first();
+    if ((today?.n ?? 0) >= (Number(env.DAILY_LIMIT_LEADS) || 100)) return json({ ok: false, error: "混み合っています。XのDMで直接ご相談ください" }, 429);
+    return json({ ok: true, no: await createLead(env, lead) });
+  }
+  // ここから下は集計画面用(合言葉が必要)
+  const admin = pathname === "/api/stats" || pathname.startsWith("/api/consign") || pathname === "/api/templates";
+  if (admin) {
     const token = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
     if (!env.STATS_TOKEN_SHA256 || (await sha256(token)) !== env.STATS_TOKEN_SHA256) return json({ ok: false, error: "合言葉が違います" }, 401);
+  }
+  if (pathname === "/api/stats" && req.method === "GET") {
     return json({ ok: true, ...(await stats(env, Math.min(Number(url.searchParams.get("days")) || 30, 365))) });
+  }
+  if (pathname === "/api/consign" && req.method === "GET") {
+    return json({ ok: true, statuses: STATUSES, items: await listConsign(env), templates: await getTemplates(env) });
+  }
+  if (pathname === "/api/consign" && req.method === "POST") {
+    const body = await readJson(req);
+    const handle = body?.handle ? normHandle(body.handle) : null;
+    if (!handle || !CHARS[body.game]) return json({ ok: false, error: "ユーザー名とゲームを確認してください" }, 400);
+    const id = await createLead(env, { handle, game: body.game, chars: [], low: null, high: null, wish: null, sid: "" }, "manual");
+    await updateConsign(env, id, validPatch(body));
+    return json({ ok: true, no: id });
+  }
+  const m = /^\/api\/consign\/(\d+)(\/dm)?$/.exec(pathname);
+  if (m && req.method === "PATCH" && !m[2]) {
+    const ok = await updateConsign(env, Number(m[1]), validPatch(await readJson(req)));
+    return json({ ok }, ok ? 200 : 404);
+  }
+  if (m && req.method === "POST" && m[2]) {
+    await logDm(env, Number(m[1]), (await readJson(req))?.template);
+    return json({ ok: true });
+  }
+  if (pathname === "/api/templates" && req.method === "PUT") {
+    const n = await saveTemplates(env, (await readJson(req))?.templates);
+    return n ? json({ ok: true, saved: n }) : json({ ok: false, error: "定型文が空です" }, 400);
   }
   if (pathname.startsWith("/api/")) return json({ ok: false, error: "not found" }, 404);
   // 公開先は game-souba.com に移った。workers.dev のページは移転先へ(モデルなどのデータはそのまま配る)
@@ -192,7 +242,7 @@ export default {
     if (req.method === "OPTIONS" && new URL(req.url).pathname.startsWith("/api/")) {
       return new Response(null, {
         status: 204,
-        headers: { ...cors, "access-control-allow-methods": "GET, POST", "access-control-allow-headers": "content-type, authorization", "access-control-max-age": "86400" },
+        headers: { ...cors, "access-control-allow-methods": "GET, POST, PATCH, PUT", "access-control-allow-headers": "content-type, authorization", "access-control-max-age": "86400" },
       });
     }
     const res = await handle(req, env, ctx);

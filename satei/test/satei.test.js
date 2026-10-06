@@ -84,3 +84,26 @@ test("利用記録は形を確かめ、個人を特定できるものは受け�
   assert.equal(validEvent({ kind: "dm", game: "houkaistarrail", sid: "<script>" }, games), null);
   assert.equal(validEvent({ kind: "dm", game: "houkaistarrail", sid: "abcdEFGH1234", low: -1, high: 1.5 }, games).low, null);
 });
+
+test("代理出品: 定型文に管理番号・ユーザー名・金額・投稿URLを差し込む", async () => {
+  const { fillTemplate, DEFAULT_TEMPLATES } = await import("../src/consign.js");
+  const c = { id: 12, handle: "meru_fan", game: "houkaistarrail", chars: [{ name: "黄泉", cons: 6 }, { name: "花火", cons: 0 }], low: 51000, high: 96000, wish: 80000, post_url: "https://x.com/Meruru_Genshin/status/1", next_at: "2026-10-09" };
+  assert.equal(fillTemplate("{番号}|{名前}|{ゲーム}|{キャラ}|{査定額}|{希望額}|{投稿URL}|{期限}", c), "12|@meru_fan|スタレ|黄泉完凸・花火|5.1万円〜9.6万円|8万円|https://x.com/Meruru_Genshin/status/1|10月9日");
+  const posted = DEFAULT_TEMPLATES.find((t) => t.key === "posted").body;
+  assert.match(fillTemplate(posted, c), /【No\.12】@meru_fan様[\s\S]*status\/1[\s\S]*いいね[\s\S]*リアクション/);
+});
+
+test("代理出品: 査定ページからの相談と集計画面の更新を確かめる", async () => {
+  const { validLead, validPatch } = await import("../src/consign.js");
+  const games = ["genshin-impact", "houkaistarrail"];
+  assert.deepEqual(validLead({ game: "genshin-impact", handle: "@Abc_1", wish: 50000, chars: [{ name: "夜蘭", cons: 9 }], low: 1, high: 2, sid: "x" }, games), {
+    game: "genshin-impact", handle: "Abc_1", chars: [{ name: "夜蘭", cons: 6, mochi: false }], low: 1, high: 2, wish: 50000, sid: "x",
+  });
+  assert.equal(validLead({ game: "genshin-impact", handle: "bad handle!" }, games), null);
+  assert.equal(validLead({ game: "x" }, games), null);
+  assert.equal(validLead({ game: "houkaistarrail" }, games).handle, null);
+  assert.deepEqual(validPatch({ status: "出品中", wish: "70000", next_at: "2026-10-10", post_url: "https://evil.example/", handle: "", memo: " m " }), {
+    status: "出品中", wish: 70000, next_at: "2026-10-10", post_url: null, handle: null, memo: "m",
+  });
+  assert.deepEqual(validPatch({ status: "不明", next_at: "10/10" }), { next_at: null });
+});

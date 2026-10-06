@@ -14,6 +14,8 @@ run_worker_first = ["/api/*", "/", "/index.html"]
 # 画像読み取りの1日の上限(Claude の利用料の上限にもなる)
 DAILY_LIMIT_PER_IP = "5"
 DAILY_LIMIT_TOTAL = "200"
+# 査定ページからの代理出品の相談(/api/lead)の1日の上限
+DAILY_LIMIT_LEADS = "100"
 # /api/stats(利用記録の集計)の合言葉の SHA-256。gametrade-watch の INGEST_TOKEN_SHA256 と同じ合言葉
 STATS_TOKEN_SHA256 = "03cce08b9e028e81b2501daf4f46563d42f96093840c24b261f3d818db454f38"
 
