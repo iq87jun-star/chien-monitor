@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9613,
+ "cumulative_cells": 9617,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1181,16 +1181,18 @@
    "slug": "mon_shot_exclude_real",
    "title": "実口座で劣化が大きい Mon ショットの除外(改良系)",
    "cells": 4,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/326_q84_mon_shot_exclude_real.md"
    ],
    "note": "Q83 の結果で劣化最大ショットを特定し、研究系列で除外版 Mon4 を改良系基準で判定",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 4
+   "order": 4,
+   "result": "棄却: 実口座特定は 8 UTC(執行成分 +2.4 bps・誤差内)。ex8 は IS/OOS Sharpe +0.04 だが最悪月 IS −0.6 / OOS −4.5 bps 悪化で改良系不成立。配備構成不変。副産物: ETHUSD Mon は 00 UTC にエッジ集中の疑い(次期キュー候補)"
   },
   {
    "id": "Q89",
@@ -2474,6 +2476,13 @@
   {
    "date": "2026-10-06",
    "note": "第 2 期 Q97〜Q110 を一括登録(ユーザー「登録」)。order は Q88 の後ろに続く(Q99 は 11/1 以降)"
+  },
+  {
+   "date": "2026-10-07",
+   "item": "Q84",
+   "cells": 4,
+   "cumulative": 9617,
+   "summary": "Mon3(除外版)棄却・配備不変。ETHUSD Mon 00 UTC ショットを次期候補に"
   }
  ]
 }
