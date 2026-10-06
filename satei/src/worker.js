@@ -1,16 +1,20 @@
 // Cloudflare Worker「メルル査定」。画面(public/)は静的アセットとして配り、ここでは /api/* だけを扱う。
 //
-//   POST /api/read  {game, images: [{media_type, data(base64)}]}
+//   POST /api/read  {game, sid, images: [{media_type, data(base64)}]}
 //     → キャラ一覧・武器(光円錐)のスクショを Claude に読ませ、星5キャラの凸数と餅を返す
 //       画像は読み取りにだけ使い、保存しない
+//   POST /api/event {kind: estimate|dm, game, sid, chars, low, high} … 利用記録(src/events.js)
+//   GET  /api/stats(合言葉が必要)… 利用記録の集計。画面は public/admin.html
 //
 // バインディング:
 //   ANTHROPIC_API_KEY … Secret(未設定なら /api/read は 503。画面は手入力だけで動く)
 //   DB                … D1(1日あたりの利用回数。IP はハッシュにして保存)
 //   DAILY_LIMIT_PER_IP / DAILY_LIMIT_TOTAL … 1日の上限(wrangler.toml の vars)
+//   STATS_TOKEN_SHA256 … /api/stats の合言葉の SHA-256(wrangler.toml の vars。gametrade-watch と同じ合言葉)
 
 import Anthropic from "@anthropic-ai/sdk";
 import { CHARS } from "../public/lib/chars.js";
+import { validEvent, record, stats } from "./events.js";
 
 const MODEL = "claude-opus-5-5";
 const MAX_IMAGES = 6;
@@ -89,7 +93,7 @@ export function prompt(game) {
 同じキャラが複数の画像に出ていたら1つにまとめ、凸数は大きい方にしてください。読み取れないものを推測で足さないでください。`;
 }
 
-async function read(env, body, ip) {
+async function read(env, body, ip, ctx) {
   const game = body?.game;
   if (!CHARS[game]) return json({ ok: false, error: "game が不正です" }, 400);
   const images = Array.isArray(body.images) ? body.images : [];
@@ -140,10 +144,12 @@ async function read(env, body, ip) {
   const characters = out.characters
     .map((c) => ({ name: c.name.trim(), cons: Math.min(6, Math.max(0, c.cons | 0)), mochi: Boolean(c.mochi), known: known.has(c.name.trim()) }))
     .sort((a, b) => Number(b.known) - Number(a.known) || b.cons - a.cons);
+  const ev = validEvent({ kind: "read", game, sid: body.sid, chars: characters }, Object.keys(CHARS));
+  if (ev) ctx.waitUntil(record(env, ev).catch(() => {}));
   return json({ ok: true, characters, uid_visible: Boolean(out.uid_visible) });
 }
 
-async function handle(req, env) {
+async function handle(req, env, ctx) {
   const url = new URL(req.url);
   const { pathname } = url;
   if (pathname === "/api/read" && req.method === "POST") {
@@ -152,7 +158,25 @@ async function handle(req, env) {
     try {
       body = await req.json();
     } catch {}
-    return read(env, body, req.headers.get("cf-connecting-ip") ?? "unknown");
+    return read(env, body, req.headers.get("cf-connecting-ip") ?? "unknown", ctx);
+  }
+  // 利用記録。sendBeacon でも送れるよう、本文は content-type に関係なく JSON として読む
+  if (pathname === "/api/event" && req.method === "POST") {
+    const text = await req.text();
+    if (text.length > 20_000) return json({ ok: false }, 413);
+    let body = null;
+    try {
+      body = JSON.parse(text);
+    } catch {}
+    const ev = validEvent(body, Object.keys(CHARS));
+    if (!ev || ev.kind === "read") return json({ ok: false }, 400);
+    await record(env, ev);
+    return json({ ok: true });
+  }
+  if (pathname === "/api/stats" && req.method === "GET") {
+    const token = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
+    if (!env.STATS_TOKEN_SHA256 || (await sha256(token)) !== env.STATS_TOKEN_SHA256) return json({ ok: false, error: "合言葉が違います" }, 401);
+    return json({ ok: true, ...(await stats(env, Math.min(Number(url.searchParams.get("days")) || 30, 365))) });
   }
   if (pathname.startsWith("/api/")) return json({ ok: false, error: "not found" }, 404);
   // 公開先は game-souba.com に移った。workers.dev のページは移転先へ(モデルなどのデータはそのまま配る)
@@ -163,15 +187,15 @@ async function handle(req, env) {
 }
 
 export default {
-  async fetch(req, env) {
+  async fetch(req, env, ctx) {
     const cors = corsHeaders(req);
     if (req.method === "OPTIONS" && new URL(req.url).pathname.startsWith("/api/")) {
       return new Response(null, {
         status: 204,
-        headers: { ...cors, "access-control-allow-methods": "POST", "access-control-allow-headers": "content-type", "access-control-max-age": "86400" },
+        headers: { ...cors, "access-control-allow-methods": "GET, POST", "access-control-allow-headers": "content-type, authorization", "access-control-max-age": "86400" },
       });
     }
-    const res = await handle(req, env);
+    const res = await handle(req, env, ctx);
     if (!Object.keys(cors).length || !new URL(req.url).pathname.startsWith("/api/")) return res;
     const out = new Response(res.body, res);
     for (const [k, v] of Object.entries(cors)) out.headers.set(k, v);

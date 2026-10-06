@@ -70,3 +70,17 @@ test("読み取りの指示にキャラ名の一覧が入る", () => {
 test("読み取り結果の形は構造化出力で使えない制約(minimum など)を含まない", () => {
   assert.doesNotMatch(JSON.stringify(SCHEMA), /"(minimum|maximum|multipleOf|minLength|maxLength)"/);
 });
+
+test("利用記録は形を確かめ、個人を特定できるものは受け取らない", async () => {
+  const { validEvent } = await import("../src/events.js");
+  const games = ["genshin-impact", "houkaistarrail"];
+  const ev = validEvent(
+    { kind: "estimate", game: "houkaistarrail", sid: "abcdEFGH1234", chars: [{ name: " 黄泉 ", cons: 9, mochi: 1, uid: "123" }], low: 50000, high: 90000, ip: "1.2.3.4" },
+    games,
+  );
+  assert.deepEqual(ev, { kind: "estimate", game: "houkaistarrail", sid: "abcdEFGH1234", chars: [{ name: "黄泉", cons: 6, mochi: true }], low: 50000, high: 90000, ok: 1 });
+  assert.equal(validEvent({ kind: "hack", game: "houkaistarrail", sid: "abcdEFGH1234" }, games), null);
+  assert.equal(validEvent({ kind: "dm", game: "x", sid: "abcdEFGH1234" }, games), null);
+  assert.equal(validEvent({ kind: "dm", game: "houkaistarrail", sid: "<script>" }, games), null);
+  assert.equal(validEvent({ kind: "dm", game: "houkaistarrail", sid: "abcdEFGH1234", low: -1, high: 1.5 }, games).low, null);
+});

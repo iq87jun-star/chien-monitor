@@ -78,7 +78,7 @@
     <p class="hint" id="shotHint"></p>
     <div class="thumbs" id="thumbs"></div>
     <div class="row"><button class="btn" id="readBtn" type="button" disabled>AIで読み取る</button></div>
-    <p class="notice">UID が写っている場合は、隠してから選んでください。画像は読み取りにだけ使い、保存しません。</p>
+    <p class="notice">UID が写っている場合は、隠してから選んでください。画像は読み取りにだけ使い、保存しません。査定の改善のため、読み取ったキャラ・凸数と査定額だけを、個人を特定しない形で記録します。</p>
     <p class="hint" id="readMsg" role="status"></p>
   </section>
 
@@ -134,6 +134,15 @@ let game = store.get("satei:game") === "houkaistarrail" ? "houkaistarrail" : "ge
 let model = null;
 let images = [];
 let last = null;
+// 利用記録用。画面を開くたびに作るランダムな ID(個人は特定しない)
+const SID = (crypto.randomUUID?.() ?? String(Math.random()).slice(2) + Date.now()).replace(/[^A-Za-z0-9_-]/g, "");
+function logEvent(ev, beacon = false) {
+  const body = JSON.stringify({ ...ev, sid: SID });
+  try {
+    if (beacon && navigator.sendBeacon) return navigator.sendBeacon(`${API}/api/event`, new Blob([body], { type: "text/plain" }));
+    fetch(`${API}/api/event`, { method: "POST", headers: { "content-type": "text/plain" }, body, keepalive: true }).catch(() => {});
+  } catch {}
+}
 
 async function loadModel() {
   model ??= await (await fetch("./model.json")).json();
@@ -207,7 +216,7 @@ $("readBtn").addEventListener("click", async () => {
     const res = await fetch(`${API}/api/read`, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ game, images: images.map(({ media_type, data }) => ({ media_type, data })) }),
+      body: JSON.stringify({ game, sid: SID, images: images.map(({ media_type, data }) => ({ media_type, data })) }),
     });
     const out = await res.json();
     if (!out.ok) throw new Error(out.error);
@@ -230,12 +239,14 @@ const man = (yen) => `${(yen / 10000).toFixed(yen % 10000 === 0 ? 0 : 1)}万`;
 $("estBtn").addEventListener("click", async () => {
   const r = estimate(await loadModel(), game, roster());
   last = { ...r, game };
+  logEvent({ kind: "estimate", game, chars: roster(), low: r.low, high: r.high });
   const text = `約${man(r.low)}〜${man(r.high)}円`;
   $("price").textContent = text;
   $("keys").textContent = r.keys.length ? `評価したキャラ: ${r.keys.join("、")}` : "キャラを入れると、より正確になります";
   const share = `私の${LABEL[game]}アカウントの買取査定は「${text}」でした🌸 #メルル査定`;
   $("shareBtn").href = `https://x.com/intent/post?text=${encodeURIComponent(share)}&url=${encodeURIComponent(PAGE_URL)}`;
   $("dmBtn").href = X_URL;
+  $("dmBtn").onclick = () => logEvent({ kind: "dm", game, chars: roster(), low: r.low, high: r.high }, true);
   $("discordBtn").hidden = !DISCORD_URL;
   if (DISCORD_URL) $("discordBtn").href = DISCORD_URL;
   $("result").hidden = false;
