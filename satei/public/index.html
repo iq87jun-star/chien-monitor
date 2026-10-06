@@ -250,9 +250,13 @@ $("estBtn").addEventListener("click", async () => {
   const r = estimate(await loadModel(), game, roster());
   last = { ...r, game };
   logEvent({ kind: "estimate", game, chars: roster(), low: r.low, high: r.high });
-  const text = `約${man(r.low)}〜${man(r.high)}円`;
+  // 高額アカウント(学習データの上限を超える)は金額を断言せず、個別査定へ
+  const range = (x) => (x.capped ? `${man(x.low)}円以上` : `約${man(x.low)}〜${man(x.high)}円`);
+  const text = range(r);
   $("price").textContent = text;
-  $("keys").textContent = r.keys.length ? `評価したキャラ: ${r.keys.join("、")}` : "キャラを入れると、より正確になります";
+  $("keys").textContent =
+    (r.capped ? "これまでの成約データを超える高額アカウントです。DMで個別に査定します。" : "") +
+    (r.keys.length ? `評価したキャラ: ${r.keys.slice(0, 8).join("、")}${r.keys.length > 8 ? " ほか" : ""}` : "キャラを入れると、より正確になります");
   const share = `私の${LABEL[game]}アカウントの買取査定は「${text}」でした🌸 #メルル査定`;
   $("shareBtn").href = `https://x.com/intent/post?text=${encodeURIComponent(share)}&url=${encodeURIComponent(PAGE_URL)}`;
   $("leadForm").hidden = true;
@@ -275,7 +279,7 @@ $("estBtn").addEventListener("click", async () => {
       });
       const out = await res.json();
       if (!out.ok) throw new Error(out.error);
-      const msg = `【No.${out.no}】査定ツールから買取の相談です(査定額 約${man(r.low)}〜${man(r.high)}円)`;
+      const msg = `【No.${out.no}】査定ツールから買取の相談です(査定額 ${range(r)}${r.capped ? "・個別査定希望" : ""})`;
       try { await navigator.clipboard.writeText(msg); } catch {}
       $("leadDone").hidden = false;
       $("leadDone").innerHTML = `相談番号は <b>No.${out.no}</b> です。XのDMで次の文面を送ってください(コピー済み):<br>「${msg}」`;
@@ -312,7 +316,7 @@ $("saveBtn").addEventListener("click", () => {
   g.fillText(`${LABEL[last.game]}アカウント 買取査定`, 600, 170);
   g.fillStyle = "#e8568f";
   g.font = "bold 110px sans-serif";
-  g.fillText(`約${man(last.low)}〜${man(last.high)}円`, 600, 330);
+  g.fillText(last.capped ? `${man(last.low)}円以上` : `約${man(last.low)}〜${man(last.high)}円`, 600, 330);
   g.fillStyle = "#6d6075";
   g.font = "32px sans-serif";
   if (last.keys.length) g.fillText(last.keys.slice(0, 5).join(" / "), 600, 420);
