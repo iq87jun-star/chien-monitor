@@ -51,15 +51,10 @@ Discord に1件だけ拒否された時は、その1件を飛ばして残りを�
   `pages` ページ見て、SOLD の出品を Worker の `POST /sold` に送る(同じ出品は二重に入らない)。
   続けて、説明文の全文と画像がまだ無いものを `GET /sold/missing` で聞き、出品ページを1件ずつ(2秒おき)読んで `POST /sold/details` で足す
   (一覧の説明文は途中で切れているため)
-- 定期実行(新着チェックと同じ Routine)は依存なしで動かすため、必要な4ファイルだけを GitHub から取ってきて実行する:
-
-  ```bash
-  d=$(mktemp -d); mkdir -p "$d/src"
-  B=https://raw.githubusercontent.com/iq87jun-star/chien-monitor/main/gametrade-watch
-  for f in sold-relay.mjs config.sold.json src/core.js src/sold.js; do curl -sSf -o "$d/$f" "$B/$f?v=$(date +%s)" || exit 1; done
-  GAMETRADE_INGEST_TOKEN=<合言葉> node "$d/sold-relay.mjs"
-  ```
-
+- **自宅 PC のタスク(`pc/gameclub-relay.ps1`)が毎晩実行する**(Claude の定期実行は自動モードの判定で Worker への送信を止められるため)。
+  一覧の HTML を `POST /sold/pages`(5ページずつ)に送り、`GET /sold/missing` で聞いた出品ページの HTML を `POST /sold/detail-html` に送る。
+  読み取りは Worker 側(`src/sold.js`)。ゲーム・価格帯・ページ数・出品ページの件数は `config.sold.json`(毎回 GitHub から読む)
+- 手元からも同じことができる: `GAMETRADE_INGEST_TOKEN=<合言葉> node sold-relay.mjs`(読み取りは手元で行い `POST /sold`・`/sold/details` に送る)
 - 件数の確認: `https://gametrade-watch.iq87jun.workers.dev/sold/stats`
 - 学習用の書き出し(合言葉が必要): `GET /sold/export?game=genshin-impact&after=<id>&limit=500`(続きは返ってきた `next` を `after` に)
 - 「〇〇様専用」のような個別取引の出品も、そのまま記録する(学習の時に除く)

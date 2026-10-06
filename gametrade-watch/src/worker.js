@@ -8,13 +8,14 @@
 //   INGEST_TOKEN_SHA256       … POST /ingest の合言葉の SHA-256(wrangler.toml の vars)
 // 売れたアカウント(査定ツールの学習用。sold-relay.mjs が送る):
 //   POST /sold {game, items}・GET /sold/missing・POST /sold/details {details}・GET /sold/export(合言葉が必要)
+//   自宅 PC から(読み取りは Worker 側): POST /sold/pages {game, pages: [一覧の HTML]}・POST /sold/detail-html {id, html}
 //   GET /sold/stats で件数を確認できる
 // GET /status(?site=gameclub)で最後の実行結果を確認できる。/sample は新しいサイトの下調べ用(合言葉が必要)。POST /ingest に {"test": true} でテスト投稿。
 
 import gametrade from "../config.json";
 import gameclub from "../config.gameclub.json";
 import { runCheck } from "./core.js";
-import { validRecords } from "./sold.js";
+import { validRecords, parseSold, parseDetail, soldRecord } from "./sold.js";
 
 const CONFIGS = { gametrade, gameclub };
 // D1 のキー(ゲームトレードは最初からある "state" / "status" のまま)
@@ -92,19 +93,43 @@ async function sold(req, env, pathname, params) {
   }
   if (!(await authorized(req, env))) return json({ ok: false, error: "unauthorized" }, 401);
   const now = new Date().toISOString();
-  if (pathname === "/sold" && req.method === "POST") {
-    const body = await readJson(req);
-    if (!/^[a-z0-9-]+$/.test(body?.game ?? "")) return json({ ok: false, error: "game が必要です" }, 400);
-    const items = validRecords(body.items).slice(0, 500);
+  const insert = async (game, items) => {
     const stmt = env.DB.prepare(
       "INSERT OR IGNORE INTO sold (site, id, game, name, price, url, image, info, first_seen) VALUES ('gametrade', ?, ?, ?, ?, ?, ?, ?, ?)",
     );
     const res = items.length
-      ? await env.DB.batch(
-          items.map((it) => stmt.bind(it.id, body.game, it.name, it.price, it.url ?? null, it.image ?? null, JSON.stringify(it.info ?? []), now)),
-        )
+      ? await env.DB.batch(items.map((it) => stmt.bind(it.id, game, it.name, it.price, it.url ?? null, it.image ?? null, JSON.stringify(it.info ?? []), now)))
       : [];
-    return json({ ok: true, received: items.length, added: res.reduce((n, r) => n + (r.meta?.changes ?? 0), 0) });
+    return res.reduce((n, r) => n + (r.meta?.changes ?? 0), 0);
+  };
+  const saveDetails = async (details) => {
+    const stmt = env.DB.prepare("UPDATE sold SET description = ?, images = ?, detail_at = ? WHERE site = 'gametrade' AND id = ?");
+    const res = details.length
+      ? await env.DB.batch(details.map((d) => stmt.bind(d.description.slice(0, 20000), JSON.stringify(d.images.filter((x) => typeof x === "string").slice(0, 30)), now, String(d.id))))
+      : [];
+    return res.reduce((n, r) => n + (r.meta?.changes ?? 0), 0);
+  };
+  if (pathname === "/sold" && req.method === "POST") {
+    const body = await readJson(req);
+    if (!/^[a-z0-9-]+$/.test(body?.game ?? "")) return json({ ok: false, error: "game が必要です" }, 400);
+    const items = validRecords(body.items).slice(0, 500);
+    return json({ ok: true, received: items.length, added: await insert(body.game, items) });
+  }
+  // 自宅 PC は一覧の HTML をそのまま送る(読み取りはここで)
+  if (pathname === "/sold/pages" && req.method === "POST") {
+    const body = await readJson(req);
+    if (!/^[a-z0-9-]+$/.test(body?.game ?? "")) return json({ ok: false, error: "game が必要です" }, 400);
+    if (!Array.isArray(body.pages) || !body.pages.every((p) => typeof p === "string")) return json({ ok: false, error: "pages (HTML の配列) が必要です" }, 400);
+    const found = new Map();
+    for (const html of body.pages.slice(0, 10)) for (const it of parseSold(html)) found.set(it.id, soldRecord(it));
+    const items = validRecords([...found.values()]);
+    return json({ ok: true, sold: items.length, added: await insert(body.game, items) });
+  }
+  if (pathname === "/sold/detail-html" && req.method === "POST") {
+    const body = await readJson(req);
+    if (!/^\d+$/.test(String(body?.id ?? "")) || typeof body.html !== "string") return json({ ok: false, error: "id と html が必要です" }, 400);
+    const d = parseDetail(body.html);
+    return json({ ok: true, updated: await saveDetails([{ id: body.id, description: d.description, images: d.images }]) });
   }
   if (pathname === "/sold/missing") {
     const limit = Math.min(Number(params.get("limit")) || 50, 200);
@@ -120,11 +145,7 @@ async function sold(req, env, pathname, params) {
     const details = (Array.isArray(body?.details) ? body.details : [])
       .filter((d) => /^\d+$/.test(String(d?.id ?? "")) && typeof d.description === "string" && Array.isArray(d.images))
       .slice(0, 200);
-    const stmt = env.DB.prepare("UPDATE sold SET description = ?, images = ?, detail_at = ? WHERE site = 'gametrade' AND id = ?");
-    const res = details.length
-      ? await env.DB.batch(details.map((d) => stmt.bind(d.description.slice(0, 20000), JSON.stringify(d.images.filter((x) => typeof x === "string").slice(0, 30)), now, String(d.id))))
-      : [];
-    return json({ ok: true, updated: res.reduce((n, r) => n + (r.meta?.changes ?? 0), 0) });
+    return json({ ok: true, updated: await saveDetails(details) });
   }
   // 学習用の書き出し: ?game=genshin-impact&after=<id>&limit=500(id の昇順。続きは最後の id を after に)
   if (pathname === "/sold/export") {
