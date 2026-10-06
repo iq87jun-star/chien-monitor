@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex, nofollow" />
-<title>査定ツールの利用記録</title>
+<title>査定ツールの管理</title>
 <style>
   :root { --bg:#fff8fb; --card:#fff; --ink:#2b2230; --sub:#6d6075; --line:#f0dbe6; --accent:#e8568f; }
   @media (prefers-color-scheme: dark) { :root { --bg:#1b1520; --card:#251d2b; --ink:#f4ecf7; --sub:#b9aac2; --line:#3b2f44; --accent:#ff7aab; } }
@@ -26,11 +26,28 @@
   .muted { color:var(--sub); font-size:13px; }
   .tag { display:inline-block; font-size:11px; padding:1px 8px; border-radius:999px; background:var(--line); }
   .tag.dm { background:var(--accent); color:#fff; }
+  .tabs { display:flex; gap:6px; margin:16px 0 4px; flex-wrap:wrap; }
+  .tabs button { background:var(--card); color:var(--ink); border:1px solid var(--line); font-weight:600; }
+  .tabs button[aria-pressed="true"] { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .item { margin-top:10px; }
+  .item.due { border-color:var(--accent); }
+  .item header { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .item header b { font-size:17px; }
+  .item header a { color:var(--accent); font-weight:700; text-decoration:none; }
+  .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:8px; margin-top:8px; }
+  .grid2 label, .tpl label { font-size:12px; color:var(--sub); display:block; }
+  .grid2 input, .grid2 select, .tpl input, textarea { width:100%; margin-top:2px; }
+  textarea { font:inherit; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--ink); min-height:60px; }
+  .tpl textarea { min-height:160px; }
+  .dms { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+  .dms button { background:var(--bg); color:var(--ink); border:1px solid var(--accent); font-size:13px; padding:6px 10px; }
+  .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+  .toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:10px; font-size:14px; }
 </style>
 </head>
 <body>
 <main>
-  <h1>🌸 査定ツールの利用記録</h1>
+  <h1>🌸 査定ツールの管理</h1>
   <div class="card">
     <form id="f">
       <input id="token" type="password" placeholder="合言葉" autocomplete="current-password" required />
@@ -39,6 +56,37 @@
     </form>
     <p class="muted" id="msg">画像・IP・UID は記録していません。同じ画面での一連の操作は「訪問」として1つに数えます。</p>
   </div>
+
+  <div class="tabs" id="tabs" hidden>
+    <button type="button" data-tab="consign" aria-pressed="true">代理出品</button>
+    <button type="button" data-tab="out" aria-pressed="false">利用記録</button>
+    <button type="button" data-tab="tpls" aria-pressed="false">DMの定型文</button>
+  </div>
+
+  <section id="consign" hidden>
+    <div class="card">
+      <div class="row">
+        <select id="filter"><option value="">すべて(成約・見送り以外)</option></select>
+        <span class="muted" id="ccount"></span>
+      </div>
+      <details style="margin-top:8px"><summary>+ 手動で追加</summary>
+        <div class="grid2">
+          <label>Xのユーザー名<input id="n-handle" placeholder="@user" /></label>
+          <label>ゲーム<select id="n-game"><option value="genshin-impact">原神</option><option value="houkaistarrail">スタレ</option></select></label>
+          <label>希望額(円)<input id="n-wish" type="number" min="0" step="1000" /></label>
+          <label>メモ<input id="n-memo" /></label>
+        </div>
+        <div class="row"><button type="button" id="n-add">追加</button></div>
+      </details>
+    </div>
+    <div id="items"></div>
+  </section>
+
+  <section id="tpls" hidden>
+    <p class="muted">使える差し込み: {番号} {名前} {ゲーム} {キャラ} {査定額} {希望額} {投稿URL} {期限}(次の連絡日)</p>
+    <div id="tplList"></div>
+    <div class="row"><button type="button" id="tplAdd" style="background:var(--bg);color:var(--ink);border:1px solid var(--line)">+ 定型文を追加</button><button type="button" id="tplSave">定型文を保存</button></div>
+  </section>
 
   <div id="out" hidden>
     <h2>期間の合計</h2>
@@ -59,36 +107,166 @@
     <div class="card wrap"><table><thead><tr><th>日時</th><th>種類</th><th>ゲーム</th><th>買取額</th><th>キャラ</th></tr></thead><tbody id="recent"></tbody></table></div>
   </div>
 </main>
-<script>
+<script type="module">
+import { fillTemplate } from "./lib/dm.js";
 const $ = (id) => document.getElementById(id);
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
 const GAME = { "genshin-impact": "原神", houkaistarrail: "スタレ" };
 const KIND = { read: "読み取り", estimate: "査定", dm: "DM" };
-const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const man = (v) => (v == null ? "—" : `${(v / 10000).toFixed(1)}万`);
 const jst = (iso) => new Date(iso).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+const today = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+const charsText = (cs) => cs.map((c) => `${c.name}${c.cons === 6 ? "完凸" : c.cons ? c.cons + "凸" : ""}${c.mochi ? "+餅" : ""}`).join("、");
+let token = "";
+let data = null; // { statuses, items, templates }
 try { $("token").value = localStorage.getItem("satei:admin") ?? ""; } catch {}
+
+async function api(path, init = {}) {
+  const res = await fetch(`${API}${path}`, { ...init, headers: { authorization: `Bearer ${token}`, "content-type": "application/json", ...(init.headers ?? {}) } });
+  const d = await res.json();
+  if (!d.ok) throw new Error(d.error || res.status);
+  return d;
+}
+function toast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  document.body.append(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+// ── タブ ──
+function showTab(name) {
+  for (const b of document.querySelectorAll("[data-tab]")) b.setAttribute("aria-pressed", String(b.dataset.tab === name));
+  for (const id of ["consign", "out", "tpls"]) $(id).hidden = id !== name;
+}
+document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
+
+// ── 利用記録 ──
+async function loadStats() {
+  const d = await api(`/api/stats?days=${$("days").value}`);
+  const sum = (k) => d.daily.reduce((n, r) => n + (r[k] || 0), 0);
+  $("k-visit").textContent = sum("visitors");
+  $("k-read").textContent = sum("reads");
+  $("k-est").textContent = sum("estimates");
+  $("k-dm").textContent = sum("dms");
+  $("daily").innerHTML = d.daily.map((r) => `<tr><td>${esc(r.day)}</td><td>${r.visitors}</td><td>${r.reads}</td><td>${r.estimates}</td><td>${r.dms}</td></tr>`).join("") || `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
+  $("chars").innerHTML = d.chars.map((c) => `<tr><td>${GAME[c.game] ?? esc(c.game)}</td><td>${esc(c.name)}</td><td>${c.n}</td><td>${c.c6}</td></tr>`).join("") || `<tr><td colspan="4" class="muted">まだ記録がありません</td></tr>`;
+  $("recent").innerHTML = d.recent
+    .map((r) => `<tr><td>${jst(r.at)}</td><td><span class="tag ${r.kind}">${KIND[r.kind] ?? esc(r.kind)}</span></td><td>${GAME[r.game] ?? esc(r.game)}</td><td>${r.low == null ? "—" : `${man(r.low)}〜${man(r.high)}`}</td><td>${esc(charsText(r.chars))}</td></tr>`)
+    .join("") || `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
+}
+
+// ── 代理出品 ──
+function renderConsign() {
+  const f = $("filter").value;
+  const items = data.items.filter((c) => (f ? c.status === f : !["成約", "見送り"].includes(c.status)));
+  const due = (c) => c.next_at && c.next_at <= today && !["成約", "見送り"].includes(c.status);
+  items.sort((a, b) => Number(due(b)) - Number(due(a)));
+  $("ccount").textContent = `${items.length}件` + (items.some(due) ? `(連絡日が来た人 ${items.filter(due).length}件)` : "");
+  $("items").innerHTML = items
+    .map(
+      (c) => `<article class="card item${due(c) ? " due" : ""}" data-id="${c.id}">
+      <header><b>No.${c.id}</b>${c.handle ? `<a href="https://x.com/${esc(c.handle)}" target="_blank" rel="noopener">@${esc(c.handle)}</a>` : `<span class="muted">ユーザー名なし</span>`}
+        <span class="tag">${GAME[c.game] ?? esc(c.game)}</span><span class="tag">${esc(c.status)}</span>${due(c) ? `<span class="tag dm">連絡日</span>` : ""}
+        <span class="muted">${jst(c.created_at)} ${c.source === "tool" ? "査定ページから" : "手動"}${c.last_dm ? ` ・ 最後のDM ${jst(c.last_dm)}` : ""}</span></header>
+      <p class="muted" style="margin:6px 0 0">査定 ${c.low == null ? "—" : `${man(c.low)}〜${man(c.high)}`} ・ ${esc(charsText(c.chars).slice(0, 120)) || "キャラ情報なし"}</p>
+      <div class="grid2">
+        <label>状態<select data-f="status">${data.statuses.map((s) => `<option${s === c.status ? " selected" : ""}>${s}</option>`).join("")}</select></label>
+        <label>Xのユーザー名<input data-f="handle" value="${esc(c.handle)}" placeholder="@user" /></label>
+        <label>希望額(円)<input data-f="wish" type="number" min="0" step="1000" value="${c.wish ?? ""}" /></label>
+        <label>次の連絡日<input data-f="next_at" type="date" value="${esc(c.next_at)}" /></label>
+        <label>紹介した投稿のURL<input data-f="post_url" value="${esc(c.post_url)}" placeholder="https://x.com/Meruru_Genshin/status/..." /></label>
+        <label>メモ<input data-f="memo" value="${esc(c.memo)}" /></label>
+      </div>
+      <div class="row"><button type="button" data-act="save">保存</button></div>
+      <div class="dms">${data.templates.map((t) => `<button type="button" data-act="dm" data-key="${esc(t.key)}">✉️ ${esc(t.title)}</button>`).join("")}</div>
+    </article>`,
+    )
+    .join("") || `<p class="muted">該当する人はいません</p>`;
+}
+async function loadConsign() {
+  data = await api("/api/consign");
+  $("filter").innerHTML = `<option value="">すべて(成約・見送り以外)</option>` + data.statuses.map((s) => `<option>${s}</option>`).join("");
+  renderConsign();
+  renderTemplates();
+}
+$("filter").addEventListener("change", renderConsign);
+$("items").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-act]");
+  if (!btn) return;
+  const card = btn.closest("[data-id]");
+  const id = Number(card.dataset.id);
+  const c = data.items.find((x) => x.id === id);
+  if (btn.dataset.act === "save") {
+    const patch = {};
+    for (const el of card.querySelectorAll("[data-f]")) patch[el.dataset.f] = el.value;
+    try {
+      await api(`/api/consign/${id}`, { method: "PATCH", body: JSON.stringify(patch) });
+      toast(`No.${id} を保存しました`);
+      await loadConsign();
+    } catch (err) { toast(`保存できませんでした(${err.message})`); }
+    return;
+  }
+  // DM: 番号入りの文面をコピーして、相手の X を開く(送信はメルルが X の画面で押す)
+  const t = data.templates.find((x) => x.key === btn.dataset.key);
+  const text = fillTemplate(t.body, c);
+  if (t.body.includes("{投稿URL}") && !c.post_url) return toast("先に「紹介した投稿のURL」を保存してください");
+  const tab = window.open(c.handle ? `https://x.com/${c.handle}` : "https://x.com/messages", "_blank");
+  try { await navigator.clipboard.writeText(text); toast(`No.${id} の文面をコピーしました。DMに貼り付けて送ってください`); }
+  catch { prompt("コピーして DM に貼り付けてください", text); }
+  if (!tab) location.href = c.handle ? `https://x.com/${c.handle}` : "https://x.com/messages";
+  api(`/api/consign/${id}/dm`, { method: "POST", body: JSON.stringify({ template: t.key }) }).catch(() => {});
+});
+$("n-add").addEventListener("click", async () => {
+  try {
+    const d = await api("/api/consign", { method: "POST", body: JSON.stringify({ handle: $("n-handle").value, game: $("n-game").value, wish: $("n-wish").value, memo: $("n-memo").value, status: "検討中" }) });
+    toast(`No.${d.no} を追加しました`);
+    for (const id of ["n-handle", "n-wish", "n-memo"]) $(id).value = "";
+    await loadConsign();
+  } catch (err) { toast(`追加できませんでした(${err.message})`); }
+});
+
+// ── 定型文 ──
+function renderTemplates() {
+  $("tplList").innerHTML = data.templates
+    .map((t, i) => `<div class="card tpl item" data-i="${i}"><input type="hidden" data-t="key" value="${esc(t.key)}" />
+      <label>タイトル<input data-t="title" value="${esc(t.title)}" /></label>
+      <label>本文<textarea data-t="body">${esc(t.body)}</textarea></label>
+      <div class="row"><button type="button" data-del style="background:var(--bg);color:var(--ink);border:1px solid var(--line)">削除</button></div></div>`)
+    .join("");
+}
+function readTemplates() {
+  return [...$("tplList").querySelectorAll("[data-i]")].map((el) => ({ key: el.querySelector('[data-t="key"]').value, title: el.querySelector('[data-t="title"]').value, body: el.querySelector('[data-t="body"]').value }));
+}
+$("tplList").addEventListener("click", (e) => {
+  if (!e.target.closest("[data-del]")) return;
+  data.templates = readTemplates().filter((_, i) => i !== Number(e.target.closest("[data-i]").dataset.i));
+  renderTemplates();
+});
+$("tplAdd").addEventListener("click", () => {
+  data.templates = [...readTemplates(), { key: `t${Date.now()}`, title: "新しい定型文", body: "【No.{番号}】{名前}様\n" }];
+  renderTemplates();
+});
+$("tplSave").addEventListener("click", async () => {
+  try {
+    await api("/api/templates", { method: "PUT", body: JSON.stringify({ templates: readTemplates() }) });
+    toast("定型文を保存しました");
+    await loadConsign();
+  } catch (err) { toast(`保存できませんでした(${err.message})`); }
+});
 
 $("f").addEventListener("submit", async (e) => {
   e.preventDefault();
+  token = $("token").value;
   $("msg").textContent = "読み込み中…";
   try {
-    const res = await fetch(`${API}/api/stats?days=${$("days").value}`, { headers: { authorization: `Bearer ${$("token").value}` } });
-    const d = await res.json();
-    if (!d.ok) throw new Error(d.error || res.status);
-    try { localStorage.setItem("satei:admin", $("token").value); } catch {}
-    const sum = (k) => d.daily.reduce((n, r) => n + (r[k] || 0), 0);
-    $("k-visit").textContent = sum("visitors");
-    $("k-read").textContent = sum("reads");
-    $("k-est").textContent = sum("estimates");
-    $("k-dm").textContent = sum("dms");
-    $("daily").innerHTML = d.daily.map((r) => `<tr><td>${esc(r.day)}</td><td>${r.visitors}</td><td>${r.reads}</td><td>${r.estimates}</td><td>${r.dms}</td></tr>`).join("") || `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
-    $("chars").innerHTML = d.chars.map((c) => `<tr><td>${GAME[c.game] ?? esc(c.game)}</td><td>${esc(c.name)}</td><td>${c.n}</td><td>${c.c6}</td></tr>`).join("") || `<tr><td colspan="4" class="muted">まだ記録がありません</td></tr>`;
-    $("recent").innerHTML = d.recent
-      .map((r) => `<tr><td>${jst(r.at)}</td><td><span class="tag ${r.kind}">${KIND[r.kind] ?? esc(r.kind)}</span></td><td>${GAME[r.game] ?? esc(r.game)}</td><td>${r.low == null ? "—" : `${man(r.low)}〜${man(r.high)}`}</td><td>${esc(r.chars.map((c) => `${c.name}${c.cons === 6 ? "完凸" : c.cons ? c.cons + "凸" : ""}${c.mochi ? "+餅" : ""}`).join("、"))}</td></tr>`)
-      .join("") || `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
-    $("out").hidden = false;
-    $("msg").textContent = `直近${d.days}日の記録です。`;
+    await Promise.all([loadStats(), loadConsign()]);
+    try { localStorage.setItem("satei:admin", token); } catch {}
+    $("tabs").hidden = false;
+    showTab(document.querySelector('[data-tab][aria-pressed="true"]').dataset.tab);
+    $("msg").textContent = `利用記録は直近${$("days").value}日分です。画像・IP・UID は記録していません。`;
   } catch (err) {
     $("msg").textContent = `表示できませんでした(${err.message})`;
   }

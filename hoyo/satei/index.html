@@ -49,6 +49,9 @@
   select { padding: 8px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; }
   .x { background: none; border: 0; color: var(--sub); font-size: 20px; cursor: pointer; }
   .off { font-size: 12px; color: var(--sub); }
+  .lead-form { text-align: left; margin-top: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; }
+  .lead-form label { display: block; font-size: 14px; margin-top: 8px; }
+  .lead-form input { display: block; width: 100%; margin-top: 4px; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; }
   .notice { background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-top: 12px; }
   .result { text-align: center; }
   .result .label { color: var(--sub); margin: 0; }
@@ -98,8 +101,15 @@
       <p class="price" id="price"></p>
       <p class="keys" id="keys"></p>
       <div class="row">
-        <a class="btn" id="dmBtn" target="_blank" rel="noopener">この金額で売りたい(XでDM)</a>
+        <button class="btn" id="dmBtn" type="button">この金額で売りたい(XでDM)</button>
         <a class="btn sub" id="discordBtn" target="_blank" rel="noopener" hidden>Discordで相談</a>
+      </div>
+      <div class="lead-form" id="leadForm" hidden>
+        <p class="hint">相談番号を発行します。XのDMでこの番号を送っていただくと、査定結果を見ながらご案内できます。</p>
+        <label>Xのユーザー名(任意)<input type="text" id="leadHandle" placeholder="@your_id" autocomplete="off" inputmode="latin" /></label>
+        <label>ご希望の金額(任意・万円)<input type="number" id="leadWish" min="0" step="0.5" placeholder="例: 5" /></label>
+        <div class="row"><button class="btn" id="leadBtn" type="button">相談番号を発行する</button></div>
+        <div class="notice" id="leadDone" hidden></div>
       </div>
       <div class="row">
         <a class="btn sub" id="shareBtn" target="_blank" rel="noopener">結果をXでシェア</a>
@@ -245,8 +255,39 @@ $("estBtn").addEventListener("click", async () => {
   $("keys").textContent = r.keys.length ? `評価したキャラ: ${r.keys.join("、")}` : "キャラを入れると、より正確になります";
   const share = `私の${LABEL[game]}アカウントの買取査定は「${text}」でした🌸 #メルル査定`;
   $("shareBtn").href = `https://x.com/intent/post?text=${encodeURIComponent(share)}&url=${encodeURIComponent(PAGE_URL)}`;
-  $("dmBtn").href = X_URL;
-  $("dmBtn").onclick = () => logEvent({ kind: "dm", game, chars: roster(), low: r.low, high: r.high }, true);
+  $("leadForm").hidden = true;
+  $("leadDone").hidden = true;
+  $("dmBtn").onclick = () => {
+    logEvent({ kind: "dm", game, chars: roster(), low: r.low, high: r.high }, true);
+    $("leadForm").hidden = false;
+    $("leadForm").scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+  // 相談番号を発行 → 番号入りの文面をコピーして、メルルの X を開く
+  $("leadBtn").onclick = async () => {
+    const tab = window.open("", "_blank"); // 非同期の後だとポップアップが止められるので先に開く
+    $("leadBtn").disabled = true;
+    try {
+      const wish = Number($("leadWish").value);
+      const res = await fetch(`${API}/api/lead`, {
+        method: "POST",
+        headers: { "content-type": "text/plain" },
+        body: JSON.stringify({ game, sid: SID, handle: $("leadHandle").value.trim() || undefined, wish: wish > 0 ? Math.round(wish * 10000) : undefined, chars: roster(), low: r.low, high: r.high }),
+      });
+      const out = await res.json();
+      if (!out.ok) throw new Error(out.error);
+      const msg = `【No.${out.no}】査定ツールから買取の相談です(査定額 約${man(r.low)}〜${man(r.high)}円)`;
+      try { await navigator.clipboard.writeText(msg); } catch {}
+      $("leadDone").hidden = false;
+      $("leadDone").innerHTML = `相談番号は <b>No.${out.no}</b> です。XのDMで次の文面を送ってください(コピー済み):<br>「${msg}」`;
+      if (tab) tab.location = X_URL; else location.href = X_URL;
+    } catch (err) {
+      if (tab) tab.close();
+      $("leadDone").hidden = false;
+      $("leadDone").textContent = `${err.message || "送信できませんでした"}。お手数ですが、XのDMで直接ご相談ください。`;
+    } finally {
+      $("leadBtn").disabled = false;
+    }
+  };
   $("discordBtn").hidden = !DISCORD_URL;
   if (DISCORD_URL) $("discordBtn").href = DISCORD_URL;
   $("result").hidden = false;
