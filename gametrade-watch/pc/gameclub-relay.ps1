@@ -22,12 +22,12 @@ function Log($msg) {
 
 # (--stderr instead of 2> : in PowerShell 5.1 a 2> redirect of a native command stops the script under "Stop".)
 # POST a file to the Worker with retries (the network can drop for a moment). Returns @(httpCode, responseText, curlError).
-function Send($bodyFile) {
+function Send($bodyFile, $path = "/ingest") {
   $resFile = Join-Path $env:TEMP "gamewatch_res.json"
   $errFile = Join-Path $env:TEMP "gamewatch_err.txt"
   Remove-Item $resFile, $errFile -ErrorAction SilentlyContinue
   $code = curl.exe -sS --connect-timeout 20 --max-time 180 --retry 3 --retry-delay 20 --retry-all-errors `
-    -o $resFile -w "%{http_code}" -X POST "$worker/ingest" `
+    -o $resFile -w "%{http_code}" -X POST "$worker$path" `
     -H "authorization: Bearer $token" -H "content-type: application/json; charset=utf-8" --data-binary "@$bodyFile" --stderr $errFile
   $res = if (Test-Path $resFile) { [System.IO.File]::ReadAllText($resFile, [System.Text.Encoding]::UTF8) } else { "" }
   $err = if (Test-Path $errFile) { ([System.IO.File]::ReadAllText($errFile)).Trim() } else { "" }
@@ -92,6 +92,52 @@ function RunSite($site, $cfgFile, $defaultUrl, $defaultPages, $marker, $stopAtLa
   }
 }
 
+# Sold accounts (for the account price tool): GameTrade keeps finished trades in its listing as SOLD with the price.
+# Send the listing pages of each game (all items, newest first, price range from config.sold.json) to /sold/pages,
+# then fill in the full description and images of new ones: ask /sold/missing, fetch each listing page and send
+# its HTML to /sold/detail-html. The Worker does the parsing. A failure here does not fail the task.
+function RunSold() {
+  try {
+    $text = curl.exe -sSf --connect-timeout 20 --retry 2 --retry-all-errors "$raw/config.sold.json?v=$(Get-Date -Format yyyyMMddHHmmss)"
+    if ($LASTEXITCODE -ne 0) { throw "could not read config.sold.json" }
+    $cfg = ($text -join "`n") | ConvertFrom-Json
+    $added = 0
+    foreach ($g in $cfg.games) {
+      $base = "https://gametrade.jp/$($g.game)/exhibits?filter=all&sort=new&low_price=$($cfg.low)&high_price=$($cfg.high)"
+      $pages = FetchPages "sold_$($g.game)" $base ([int]$cfg.pages) 'name="exhibit_data"' $false
+      # 5 pages per request keeps each request small
+      for ($i = 0; $i -lt $pages.Count; $i += 5) {
+        $chunk = @($pages[$i..([Math]::Min($i + 4, $pages.Count - 1))])
+        $r = Send (WriteJson @{ game = $g.game; pages = $chunk } "sold_body.json") "/sold/pages"
+        if ($r[0] -ne "200") { throw "sold/pages $($g.game) HTTP $($r[0]) ($($r[2])): $($r[1])" }
+        $added += [int](($r[1] | ConvertFrom-Json).added)
+      }
+    }
+    # Listings still missing the full description
+    $missFile = Join-Path $env:TEMP "sold_missing.json"
+    $code = curl.exe -sS --connect-timeout 20 --max-time 60 --retry 2 --retry-all-errors -o $missFile -w "%{http_code}" `
+      -H "authorization: Bearer $token" "$worker/sold/missing?limit=$([int]$cfg.details)"
+    if ($code -ne "200") { throw "sold/missing HTTP $code" }
+    $missing = ([System.IO.File]::ReadAllText($missFile, [System.Text.Encoding]::UTF8) | ConvertFrom-Json).items
+    $filled = 0
+    foreach ($m in $missing) {
+      Start-Sleep -Seconds 2
+      $f = Join-Path $env:TEMP "sold_detail.html"
+      Remove-Item $f -ErrorAction SilentlyContinue
+      $c = curl.exe -s --connect-timeout 20 --max-time 60 --retry 2 --retry-delay 10 --retry-all-errors -A $ua -H "accept-language: ja" -o $f -w "%{http_code}" $m.url
+      if ($c -ne "200") { continue }  # deleted listing etc.; tried again next time
+      $html = [System.IO.File]::ReadAllText($f, [System.Text.Encoding]::UTF8)
+      $r = Send (WriteJson @{ id = [string]$m.id; html = $html } "sold_detail.json") "/sold/detail-html"
+      if ($r[0] -eq "200") { $filled++ }
+    }
+    Log "sold ok added=$added details=$filled/$($missing.Count)"
+  } catch {
+    $msg = $_.Exception.Message
+    Log "sold error $msg"
+    try { [void](Send (WriteJson @{ site = "gametrade"; error = "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') sold: $msg" } "sold_error.json")) } catch {}
+  }
+}
+
 $token = (Get-Content (Join-Path $dir "token.txt") -Raw).Trim()
 $ok1 = RunSite "gameclub" "config.gameclub.json" `
   "https://gameclub.jp/genshin-impact?search%5Btype%5D%5B1%5D=1&search%5BpriceMin%5D=70000&search%5BpriceMax%5D=200000" `
@@ -99,4 +145,5 @@ $ok1 = RunSite "gameclub" "config.gameclub.json" `
 $ok2 = RunSite "gametrade" "config.json" `
   "https://gametrade.jp/genshin-impact/exhibits?5star-character=all&exclude_keyword=&filter=purchasable&genseki=all&high_price=200000&identity_verification=checked&keyword=&low_price=70000&rank=all&sort=new" `
   5 'name="exhibit_data"' $false
+RunSold
 if (-not ($ok1 -and $ok2)) { exit 1 }
