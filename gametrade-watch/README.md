@@ -25,6 +25,14 @@
 - `https://gametrade-watch.iq87jun.workers.dev/status` で最後の実行結果を確認できます
 - 判定などの本体は `src/core.js`(テストは `npm test`)
 
+## 自宅 PC からの取得(ゲームクラブ・ゲームトレード)
+
+ゲームクラブとゲームトレードはクラウドのサーバーからのアクセスを拒否するため、**自宅 PC** の毎晩のタスク
+`gameclub_watch`(22:40)が両方の一覧を取得して Worker に送る(`pc/gameclub-relay.ps1`)。
+タスクは `pc/gameclub-run.ps1` を実行し、毎回 GitHub から最新の `gameclub-relay.ps1` を取り直す。
+サイトごとに独立して動き、失敗はそのサイトの `/status?site=<site>` の `lastPcError` に出る。
+Discord に1件だけ拒否された時は、その1件を飛ばして残りを届け、`/status` の `skipped` に残す。
+
 ## ゲームクラブ(gameclub.jp)
 
 ゲームクラブはクラウドのサーバーからのアクセスにボット対策の確認画面を返すため、**自宅の PC** から送ります。

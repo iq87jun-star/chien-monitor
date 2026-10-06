@@ -131,6 +131,9 @@ const KINDS = {
   changed: { name: "価格変更で該当", tag: "【価格変更】", color: 0xd97706 },
 };
 
+// Discord は https 以外(相対パス・data: など)の URL を含む埋め込みを 400 で拒否する
+const httpsUrl = (u) => (typeof u === "string" && /^https:\/\/[^\s"<>]+$/.test(u) && u.length < 2000 ? u : undefined);
+
 export function discordPayloads(items, label, username = "ゲームトレード新着") {
   const counts = Object.entries(KINDS)
     .map(([k, { name }]) => [name, items.filter((it) => it.kind === k).length])
@@ -145,10 +148,10 @@ export function discordPayloads(items, label, username = "ゲームトレード�
       content: i === 0 ? `🆕 ${label ?? "新着"}: ${counts}` : undefined,
       embeds: items.slice(i, i + 10).map((it) => ({
         title: `${KINDS[it.kind].tag}${it.name}`.slice(0, 250),
-        url: it.url,
+        url: httpsUrl(it.url),
         description: [priceText(it), ...it.info].join("\n").slice(0, 4000),
         color: KINDS[it.kind].color,
-        thumbnail: it.image ? { url: it.image } : undefined,
+        thumbnail: httpsUrl(it.image) ? { url: it.image } : undefined,
       })),
     });
   }
@@ -205,7 +208,8 @@ const SITES = {
 
 // 1回分のチェック。state は前回の状態(無ければ初回=記録だけ)。
 // pages(取得済みの一覧ページの HTML)を渡すとそれを使い、無ければ自分で取りに行く。
-// 返り値: { state: 次の状態, hits: 通知する出品, total: 取得した件数, first: 初回か, notified: 送ったか }
+// 返り値: { state: 次の状態, hits: 通知する出品, total: 取得した件数, first: 初回か, notified: 送ったか,
+//          skipped: Discord に拒否されて送れなかった出品 }
 export async function runCheck({ config, state, webhook, pages, fetchImpl = fetch, sleep = wait, dryRun = false }) {
   const base = new URL(config.url);
   const site = SITES[config.site ?? "gametrade"];
@@ -222,17 +226,53 @@ export async function runCheck({ config, state, webhook, pages, fetchImpl = fetc
   const prev = state?.maxId ? state : null; // 古い形式の状態は初回扱い
   const hits = prev ? pick(all, low, high, prev, { fullRange: site.fullRange }) : [];
   let notified = false;
+  const skipped = [];
   if (!dryRun && hits.length && webhook) {
+    const post = async (payload) => {
+      for (let attempt = 0; ; attempt++) {
+        const res = await fetchImpl(webhook, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (res.status === 429 && attempt < 2) {
+          // 送りすぎ: Discord が指定する秒数だけ待ってやり直す
+          const wait = Number((await res.json().catch(() => ({}))).retry_after) || 2;
+          await sleep(Math.min(wait, 30) * 1000);
+          continue;
+        }
+        return { ok: res.ok, status: res.status, text: res.ok ? "" : await res.text() };
+      }
+    };
     for (const payload of discordPayloads(hits, config.label, config.username)) {
-      const res = await fetchImpl(webhook, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error(`Discord への送信に失敗: ${res.status} ${await res.text()}`);
+      const r = await post(payload);
+      if (r.ok) {
+        notified = true;
+      } else if (r.status === 400) {
+        // どれか1件の形が Discord に拒否された: 1件ずつ送り直し、それでも駄目なら画像とリンクを外し、
+        // なお駄目なものだけ飛ばす(1件のせいで全部が届かないことがないように)
+        let content = payload.content;
+        for (const embed of payload.embeds) {
+          let one = await post({ ...payload, content, embeds: [embed] });
+          if (!one.ok && one.status === 400) {
+            const { thumbnail, url, ...plain } = embed;
+            one = await post({ ...payload, content, embeds: [plain] });
+          }
+          if (one.ok) {
+            notified = true;
+            content = undefined;
+          } else if (one.status === 400) {
+            skipped.push({ title: embed.title, error: one.text.slice(0, 300) });
+          } else {
+            throw new Error(`Discord への送信に失敗: ${one.status} ${one.text}`);
+          }
+          await sleep(1000);
+        }
+      } else {
+        throw new Error(`Discord への送信に失敗: ${r.status} ${r.text}`);
+      }
       await sleep(1000);
     }
-    notified = true;
   }
-  return { state: nextState(prev, all), hits, total: all.length, first: !prev, notified };
+  return { state: nextState(prev, all), hits, total: all.length, first: !prev, notified, skipped };
 }

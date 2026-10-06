@@ -135,3 +135,40 @@ test("ゲームクラブ: 新規・値下げに加え、記録のない古い出
   assert.equal(posts[0].content, "🆕 GC: 新規出品 1件 / 値下げ 1件 / 価格変更で該当 1件");
   assert.deepEqual(posts[0].embeds.map((e) => e.title), ["【新規】new", "【値下げ】a", "【価格変更】old"]);
 });
+
+test("Discord に拒否された1件だけを飛ばし、残りは届ける(https でない画像は最初から付けない)", async () => {
+  const pages1 = [gcItem(100, "a", 120000)];
+  const pages2 = [gcItem(101, "ok1", 80000) + gcItem(102, "bad", 90000) + gcItem(103, "ok2", 95000) + gcItem(100, "a", 120000)];
+  // 102 の画像を相対パスにする
+  pages2[0] = pages2[0].replace("https://cdn.gameclub.jp/102.jpg", "/img/noimage.png");
+  const posts = [];
+  const fetchImpl = async (url, init) => {
+    const body = JSON.parse(init.body);
+    posts.push(body);
+    // 偽 Discord: タイトルに "ok2" を含む埋め込みは理由なく拒否、https でない URL も拒否
+    const badIdx = body.embeds.findIndex(
+      (e) => e.title.includes("ok2") || (e.thumbnail && !e.thumbnail.url.startsWith("https://")),
+    );
+    if (badIdx >= 0) return new Response(JSON.stringify({ embeds: [String(badIdx)] }), { status: 400 });
+    return new Response(null, { status: 204 });
+  };
+  const config = {
+    site: "gameclub",
+    username: "GC",
+    label: "GC",
+    url: "https://gameclub.jp/genshin-impact?search%5BpriceMin%5D=70000&search%5BpriceMax%5D=200000",
+  };
+  const opts = { config, webhook: "https://discord.test/hook", fetchImpl, sleep: async () => {} };
+  const first = await runCheck({ ...opts, state: null, pages: pages1 });
+  const second = await runCheck({ ...opts, state: first.state, pages: pages2 });
+  assert.equal(second.notified, true);
+  // 相対パスの画像は付けずに送られる
+  assert.equal(posts[0].embeds.find((e) => e.title.includes("bad")).thumbnail, undefined);
+  // まとめて送って拒否 → 1件ずつ: ok1 と bad は届き、ok2 だけ飛ばされる
+  assert.deepEqual(second.skipped.map((x) => x.title), ["【新規】ok2"]);
+  const delivered = posts.slice(1).filter((p) => !p.embeds.some((e) => e.title.includes("ok2"))).flatMap((p) => p.embeds.map((e) => e.title));
+  assert.deepEqual(delivered, ["【新規】ok1", "【新規】bad"]);
+  // 見出しは最初に届いた投稿にだけ付く
+  assert.ok(posts[1].content);
+  assert.equal(posts.at(-1).content, undefined);
+});
