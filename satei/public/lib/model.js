@@ -1,6 +1,7 @@
 // リッジ回帰(log(売値) を特徴量の一次式で当てる)。依存なしで学習と予測をする。
 
-// (XᵀX + λI) w = Xᵀy をコレスキー分解で解く(切片には罰則をかけない)
+// (XᵀX + λI) w = Xᵀy をコレスキー分解で解く(切片には罰則をかけない)。
+// lambda は全特徴量で同じ値か、特徴量ごとの配列
 export function fitRidge(X, y, lambda) {
   const d = X[0].length;
   const A = Array.from({ length: d }, () => new Float64Array(d));
@@ -13,7 +14,7 @@ export function fitRidge(X, y, lambda) {
       for (let j = 0; j < d; j++) if (x[j]) A[i][j] += x[i] * x[j];
     }
   }
-  for (let i = 1; i < d; i++) A[i][i] += lambda;
+  for (let i = 1; i < d; i++) A[i][i] += Array.isArray(lambda) ? lambda[i] : lambda;
   A[0][0] += 1e-9;
   // コレスキー分解 A = L Lᵀ
   const L = Array.from({ length: d }, () => new Float64Array(d));

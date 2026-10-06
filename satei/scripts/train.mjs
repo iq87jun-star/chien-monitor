@@ -9,13 +9,27 @@
 import { writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { CHARS } from "../public/lib/chars.js";
+import { CHARS, STANDARD, OLD } from "../public/lib/chars.js";
 import { parseRoster, infoNumber, STAR5_RE, featurize, featureNames } from "../public/lib/features.js";
 import { fitRidge, dot } from "../public/lib/model.js";
 import { loadSold } from "./data.mjs";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const LAMBDA = 3;
+const OLD_FACTOR = 10; // 古い限定キャラの罰則の倍率
+const STANDARD_FACTOR = 1e6; // 恒常キャラは実質 0 にする
+
+// 特徴量ごとの罰則
+export function penalties(game) {
+  const std = new Set(STANDARD[game] ?? []);
+  const old = new Set(OLD[game] ?? []);
+  return featureNames(game).map((f) => {
+    const name = f.includes(":") ? f.slice(f.indexOf(":") + 1) : null;
+    if (std.has(name)) return LAMBDA * STANDARD_FACTOR;
+    if (old.has(name)) return LAMBDA * OLD_FACTOR;
+    return LAMBDA;
+  });
+}
 const BUY_RATE = 0.55; // 査定額 = 売れた相場 × この割合(買取額)
 // ゲームごとの補正(メルルの実際の買取の感覚に合わせる。1 = 補正なし)
 const ADJUST = { "genshin-impact": 1, houkaistarrail: 1 };
@@ -43,10 +57,10 @@ for (const game of Object.keys(CHARS)) {
   const resid = [];
   for (let f = 0; f < 5; f++) {
     const tr = data.filter((_, i) => i % 5 !== f);
-    const w = fitRidge(tr.map((d) => d.x), tr.map((d) => d.y), LAMBDA);
+    const w = fitRidge(tr.map((d) => d.x), tr.map((d) => d.y), penalties(game));
     for (const d of data.filter((_, i) => i % 5 === f)) resid.push(d.y - dot(w, d.x));
   }
-  const w = fitRidge(data.map((d) => d.x), data.map((d) => d.y), LAMBDA);
+  const w = fitRidge(data.map((d) => d.x), data.map((d) => d.y), penalties(game));
   const withChars = data.filter((d) => d.mentioned > 0);
   const absErr = resid.map((r) => Math.abs(Math.exp(r) - 1));
   model.games[game] = {
