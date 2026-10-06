@@ -1351,6 +1351,230 @@
    "registered": "2026-10-01",
    "program": "docs/322",
    "order": 14
+  },
+  {
+   "id": "Q97",
+   "slug": "fn_14166201_redesign",
+   "title": "FN 14166201 の構成見直し(Mon4 核の候補 MC・FN 規則)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "Q85 で非FX+Roll は全格子不可。FN Stellar 規則(目標 8%・床 10%・日次 5%)で Mon4 核の候補を Q85 と同じ格子で比較し、Q87 の家族配分目標と整合させる。EA は別ファイル(版 +0.01)で用意、配備は「切替」後",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 15
+  },
+  {
+   "id": "Q98",
+   "slug": "ea10_mult2_variant",
+   "title": "EA10 ×2.0 版の作成(新規 FTMO Std 用)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "Q85 の採用点(×2.0・日次 5%・床 10%)。EA10 の InpMult/ガード既定値を変えた別ファイル。manifest の ftmo_std100k_new は変更しない(購入時にユーザー判断)",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 16
+  },
+  {
+   "id": "Q99",
+   "slug": "roll_x3_guard_grid",
+   "title": "Roll ×3.0 版のガード格子(11/1 判定後)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "docs/279 §4 の 10 月判定が正なら、トパーズ EA11 の Roll ×3.0 を Q85 と同じ格子で再計算。実行は 11/1 以降",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 17
+  },
+  {
+   "id": "Q100",
+   "slug": "miss_detect_auto",
+   "title": "建て損ね検知の自動化(予定表を manifest から生成し毎週照合)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "exec_gap.py の SCHEDULE 手書きを deploy_manifest + EA 入力(レグ・ショット・曜日)から生成。毎週月曜のダイジェストで建て損ねを 1 行報告",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 18
+  },
+  {
+   "id": "Q101",
+   "slug": "topaz_eth_mon_missing",
+   "title": "トパーズ Mon ETHUSDp が建たない原因(スプレッド上限・銘柄解決)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "10/5 に ETHUSDp の Mon 建玉なし・ログに理由なし。EA11 のスプレッド上限 45 pip・ResolveSymbol・取引時間を点検し、必要なら v+0.01 でログ行を追加",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 19
+  },
+  {
+   "id": "Q102",
+   "slug": "monthly_scoring_routine",
+   "title": "実口座の月次採点(docs/219 系)の Routine 化",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "毎月 1 日の採点を ops_inbox の記録から自動実行し、月次改正案に載せる。手順は docs/219 系と同じ",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 20
+  },
+  {
+   "id": "Q103",
+   "slug": "ea_log_alert_classify",
+   "title": "EA ログの警告を agent 側で分類(MONTH STOP など)しダイジェストへ",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "chien_ops_agent の抽出に [MONTH STOP]/[BAL GUARD]/[DAILY STOP] の分類と直近 30 日の保持を追加(agent 1.8)。Q83 の建て損ね原因を記録から確定できるように",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 21
+  },
+  {
+   "id": "Q104",
+   "slug": "holiday_skip_parity",
+   "title": "祝日スキップの実口座パリティ(10/5 AUDJPY で初確認 → 他の祝日)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "Q53/Q56 の祝日表と実口座の [Mon SKIP] ログを照合し、研究系列の除外日と EA の除外日が一致するか毎月確認する装置",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 22
+  },
+  {
+   "id": "Q105",
+   "slug": "p2_lock_optimize",
+   "title": "P2 のロック値最適化(目標 5/6% × ロック幅・MC)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "FTMO P2 4.9/5.05・Fintokei 5.9/6.05 の現行値を、レグ DB の MC で到達率・失格率の格子にかけて検証。基準は Q85 と同じ",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 23
+  },
+  {
+   "id": "Q106",
+   "slug": "fintokei_concurrent_risk",
+   "title": "同時保有リスク 3% 警告(Fintokei)の実測と EA の警告線",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "トパーズ・ルビーの建玉から同時保有リスク(SL 到達時の損失合計)を日次で計算し、3% 警告線との距離をダイジェストに出す。EA の警告線との整合も確認",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 24
+  },
+  {
+   "id": "Q107",
+   "slug": "candidate_interim_auto",
+   "title": "紙上フォワード候補 16 本の中間判定を毎月自動化",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "docs/229 §4 の 6 か月判定(2026-10〜2027-03)の累積を毎月 1 日に自動集計し、月次改正案に載せる。判定基準は変えない",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 25
+  },
+  {
+   "id": "Q108",
+   "slug": "payout_rules_check",
+   "title": "資金化後の出金・残高扱いの実測(FN/FTMO 規約の再確認)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "Q86 の MC の前提(出金周期・出金後の残高・利益分配率)を各社の現行規約から確認し、docs に表で残す。KYC 等の業者手続きには触れない",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 26
+  },
+  {
+   "id": "Q109",
+   "slug": "hold_reentry_cost",
+   "title": "Hold の再エントリー規則と月初コストの実測",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "Q83 で参考扱いだった Hold(UK100/WTI/XAU)の実口座の建て直し(9/14・9/21・9/25)と研究系列の月初 5 bps コストを突き合わせ、Hold の執行差を測る",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 27
+  },
+  {
+   "id": "Q110",
+   "slug": "vps_consolidation_design",
+   "title": "VPS 1 台への集約設計(手元 PC 依存の解消)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "docs/317 §0 の最終解。手元 PC の毎時エージェントと MQL5 VPS の役割を 1 台の VPS に集約する構成案(費用・手順・リスク)。実施はユーザー判断",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 28
   }
  ],
  "runs": [
@@ -2246,6 +2470,10 @@
    "date": "2026-10-06",
    "item": "Q85",
    "note": "docs/325: ガード・倍率フロンティア。新規 FTMO Std は ×2.0 提案、トパーズは P2 時に日次 3%、FN は構成見直し"
+  },
+  {
+   "date": "2026-10-06",
+   "note": "第 2 期 Q97〜Q110 を一括登録(ユーザー「登録」)。order は Q88 の後ろに続く(Q99 は 11/1 以降)"
   }
  ]
 }
