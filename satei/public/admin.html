@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>査定ツールの利用記録</title>
+<style>
+  :root { --bg:#fff8fb; --card:#fff; --ink:#2b2230; --sub:#6d6075; --line:#f0dbe6; --accent:#e8568f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1b1520; --card:#251d2b; --ink:#f4ecf7; --sub:#b9aac2; --line:#3b2f44; --accent:#ff7aab; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.6 system-ui,"Hiragino Sans","Noto Sans JP",sans-serif; }
+  main { max-width:900px; margin:0 auto; padding:20px 16px 60px; }
+  h1 { font-size:20px; margin:0 0 12px; }
+  h2 { font-size:16px; margin:24px 0 8px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; }
+  form { display:flex; gap:8px; flex-wrap:wrap; }
+  input, select, button { font:inherit; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--ink); }
+  button { background:var(--accent); color:#fff; border:0; font-weight:700; cursor:pointer; }
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
+  .kpi span { color:var(--sub); font-size:12px; } .kpi b { display:block; font-size:24px; font-variant-numeric:tabular-nums; }
+  .wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums; }
+  th, td { padding:6px; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+  th { color:var(--sub); font-weight:600; white-space:nowrap; }
+  .muted { color:var(--sub); font-size:13px; }
+  .tag { display:inline-block; font-size:11px; padding:1px 8px; border-radius:999px; background:var(--line); }
+  .tag.dm { background:var(--accent); color:#fff; }
+</style>
+</head>
+<body>
+<main>
+  <h1>🌸 査定ツールの利用記録</h1>
+  <div class="card">
+    <form id="f">
+      <input id="token" type="password" placeholder="合言葉" autocomplete="current-password" required />
+      <select id="days"><option value="7">直近7日</option><option value="30" selected>直近30日</option><option value="90">直近90日</option></select>
+      <button>表示</button>
+    </form>
+    <p class="muted" id="msg">画像・IP・UID は記録していません。同じ画面での一連の操作は「訪問」として1つに数えます。</p>
+  </div>
+
+  <div id="out" hidden>
+    <h2>期間の合計</h2>
+    <div class="kpis">
+      <div class="card kpi"><span>訪問(画面を開いて操作)</span><b id="k-visit">0</b></div>
+      <div class="card kpi"><span>AIで読み取り</span><b id="k-read">0</b></div>
+      <div class="card kpi"><span>買取額を表示</span><b id="k-est">0</b></div>
+      <div class="card kpi"><span>DMボタン</span><b id="k-dm">0</b></div>
+    </div>
+
+    <h2>日ごと</h2>
+    <div class="card wrap"><table><thead><tr><th>日付</th><th>訪問</th><th>読み取り</th><th>査定</th><th>DM</th></tr></thead><tbody id="daily"></tbody></table></div>
+
+    <h2>査定で多かったキャラ</h2>
+    <div class="card wrap"><table><thead><tr><th>ゲーム</th><th>キャラ</th><th>回数</th><th>うち完凸</th></tr></thead><tbody id="chars"></tbody></table></div>
+
+    <h2>直近の記録(100件)</h2>
+    <div class="card wrap"><table><thead><tr><th>日時</th><th>種類</th><th>ゲーム</th><th>買取額</th><th>キャラ</th></tr></thead><tbody id="recent"></tbody></table></div>
+  </div>
+</main>
+<script>
+const $ = (id) => document.getElementById(id);
+const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
+const GAME = { "genshin-impact": "原神", houkaistarrail: "スタレ" };
+const KIND = { read: "読み取り", estimate: "査定", dm: "DM" };
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const man = (v) => (v == null ? "—" : `${(v / 10000).toFixed(1)}万`);
+const jst = (iso) => new Date(iso).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+try { $("token").value = localStorage.getItem("satei:admin") ?? ""; } catch {}
+
+$("f").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  $("msg").textContent = "読み込み中…";
+  try {
+    const res = await fetch(`${API}/api/stats?days=${$("days").value}`, { headers: { authorization: `Bearer ${$("token").value}` } });
+    const d = await res.json();
+    if (!d.ok) throw new Error(d.error || res.status);
+    try { localStorage.setItem("satei:admin", $("token").value); } catch {}
+    const sum = (k) => d.daily.reduce((n, r) => n + (r[k] || 0), 0);
+    $("k-visit").textContent = sum("visitors");
+    $("k-read").textContent = sum("reads");
+    $("k-est").textContent = sum("estimates");
+    $("k-dm").textContent = sum("dms");
+    $("daily").innerHTML = d.daily.map((r) => `<tr><td>${esc(r.day)}</td><td>${r.visitors}</td><td>${r.reads}</td><td>${r.estimates}</td><td>${r.dms}</td></tr>`).join("") || `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
+    $("chars").innerHTML = d.chars.map((c) => `<tr><td>${GAME[c.game] ?? esc(c.game)}</td><td>${esc(c.name)}</td><td>${c.n}</td><td>${c.c6}</td></tr>`).join("") || `<tr><td colspan="4" class="muted">まだ記録がありません</td></tr>`;
+    $("recent").innerHTML = d.recent
+      .map((r) => `<tr><td>${jst(r.at)}</td><td><span class="tag ${r.kind}">${KIND[r.kind] ?? esc(r.kind)}</span></td><td>${GAME[r.game] ?? esc(r.game)}</td><td>${r.low == null ? "—" : `${man(r.low)}〜${man(r.high)}`}</td><td>${esc(r.chars.map((c) => `${c.name}${c.cons === 6 ? "完凸" : c.cons ? c.cons + "凸" : ""}${c.mochi ? "+餅" : ""}`).join("、"))}</td></tr>`)
+      .join("") || `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
+    $("out").hidden = false;
+    $("msg").textContent = `直近${d.days}日の記録です。`;
+  } catch (err) {
+    $("msg").textContent = `表示できませんでした(${err.message})`;
+  }
+});
+</script>
+</body>
+</html>
