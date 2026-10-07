@@ -1583,16 +1583,18 @@
    "slug": "vps_log_push_webrequest",
    "title": "VPS ログ送信(EA WebRequest + Apps Script)と決済コメント理由コード",
    "cells": 0,
-   "status": "pending",
+   "status": "in_progress",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/327_q111_vps_log_push.md"
    ],
    "note": "EA が VPS 上から [SKIP]/[HALT]/[MONTH STOP]/[ENTRY] 等の行・毎時スナップショット(残高・有効証拠金・建玉)・決済取引を HTTPS POST し、Apps Script が Drive chien_ops/<口座>/vps_log.csv に追記。決済コメントに理由コード(|SL |MONTHSTOP 等)。include 化(Q95)に組み込み、URL は InpLogUrl(.set 側・公開リポジトリに書かない)。WebRequest は事象時と毎時のみ・タイムアウト 2 秒。ops_ingest に読み込みを追加し『最後の受信から 2 時間以上』をダイジェストで警告。PC エージェントは保険として維持。実施(許可 URL 登録・再移行)は 11 月の切替と同時",
    "registered": "2026-10-07",
    "program": "docs/322 第2期",
-   "order": 29
+   "order": 29,
+   "result": "記録版 10 本生成(別ファイル・版 +0.01)+ Apps Script 受け口 + ops_ingest 取り込み。配備は不変。切替(manifest 更新・許可 URL・再移行)はユーザーの「切替」後 → 完了で done"
   }
  ],
  "runs": [
@@ -2499,6 +2501,13 @@
    "cells": 4,
    "cumulative": 9617,
    "summary": "Mon3(除外版)棄却・配備不変。ETHUSD Mon 00 UTC ショットを次期候補に"
+  },
+  {
+   "date": "2026-10-07",
+   "item": "Q111",
+   "cells": 0,
+   "cumulative": 9617,
+   "summary": "記録版 EA 10 本・Apps Script 受け口・取り込み側を作成(ユーザー依頼で前倒し)。配備不変"
   }
  ]
 }

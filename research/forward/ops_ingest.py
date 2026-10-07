@@ -46,6 +46,25 @@ def digest(d):
             out["ea_names"] = sorted(set(m.group(1) for m in (re.search(r"\t(【[^\t]+?)\s*\(", l) for l in lg.line.astype(str)) if m))   # ログに出た EA 名(端末で動いている EA)
             out["init_versions"] = sorted(set(re.findall(r"\[INIT [^\]]*?v(\d+\.\d+)\]", " ".join(ini.line.astype(str)))))
             out["entries_3d"] = int(lg.line.str.contains(r"ENTRY\]").sum())
+    vl = sorted(glob.glob(os.path.join(d, "vps_log_*.csv")))   # Q111(docs/327): EA が VPS から送るログ
+    if vl:
+        try:
+            v = pd.concat([pd.read_csv(f) for f in vl], ignore_index=True)
+        except Exception: v = pd.DataFrame()
+        if len(v):
+            v["utc"] = pd.to_datetime(v.utc, errors="coerce"); v = v.dropna(subset=["utc"]).sort_values("utc")
+            last = v.utc.iloc[-1]; age_h = (dt.datetime.utcnow() - last.to_pydatetime()).total_seconds() / 3600
+            out["vps_last_utc"] = str(last); out["vps_age_h"] = round(age_h, 1)
+            d24 = v[v.utc >= last - pd.Timedelta(hours=24)]
+            out["vps_24h"] = {k: int(n) for k, n in d24.kind.value_counts().items()}
+            logs = v[v.kind == "LOG"].text.astype(str)
+            al = logs[logs.str.contains(r"\[HALT\]|\[BAL GUARD\]|\[DAILY STOP\]|\[EXPIRY\]|\[PROFIT LOCK\]|\[TRAIL|解決できず|SIZE SANITY|\[MONTH STOP\]|\[LOG SEND\]")]
+            out["vps_alerts"] = al.tail(10).tolist()
+            out["vps_entries_3d"] = int(v[(v.kind == "LOG") & (v.utc >= last - pd.Timedelta(days=3))].text.astype(str).str.contains(r"ENTRY\]").sum())
+            ini = logs[logs.str.contains(r"\[INIT")]; out["vps_last_init"] = ini.iloc[-1][:200] if len(ini) else ""
+            if age_h > 2: out.setdefault("alerts", []).append(f"[VPS SILENT] 最後の受信 {last} UTC({age_h:.1f} 時間前)— EA 停止・端末切断・WebRequest 不許可のいずれか")
+            if out.get("alerts") is None: out["alerts"] = []
+            out["alerts"] = list(out.get("alerts", [])) + [a for a in out["vps_alerts"] if a not in out.get("alerts", [])][-5:]
     return out
 
 
@@ -58,6 +77,7 @@ def main():
     os.makedirs("results", exist_ok=True); json.dump(res, open("results/ops_digest_latest.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"エージェント生成 {status.get('generated_utc')} / 口座 {len(rows)} / 失敗 {len(res['agent_failures'])}")
     for r in rows:
+        if r.get("vps_last_utc"): print(f"   VPS ログ: 最終 {r['vps_last_utc']} UTC({r['vps_age_h']} h 前) 24h {r.get('vps_24h')} ENTRY 3d {r.get('vps_entries_3d')}")
         print(f"#{r['account']}: eq {r.get('equity', float('nan')):,.0f} (bal {r.get('balance', float('nan')):,.0f}) 建玉 {r.get('open_positions', '-')} | 7日 {r.get('net_7d', '-')} ({r.get('n_7d', '-')} 本) | 30日 {r.get('net_30d', '-')} SL率 {r.get('sl_hit_rate_30d', '-')}% | 3日の建て {r.get('entries_3d', '-')} | 警告 {len(r.get('alerts', []))}")
         for a in r.get("alerts", [])[-3:]: print("   ! " + a[:160])
         if r.get("ea_names"): print("   EA:", "; ".join(n[:60] for n in r["ea_names"]), "| INIT 版:", ",".join(r.get("init_versions", [])) or "なし")
