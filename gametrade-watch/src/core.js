@@ -210,7 +210,9 @@ const SITES = {
 // pages(取得済みの一覧ページの HTML)を渡すとそれを使い、無ければ自分で取りに行く。
 // 返り値: { state: 次の状態, hits: 通知する出品, total: 取得した件数, first: 初回か, notified: 送ったか,
 //          skipped: Discord に拒否されて送れなかった出品 }
-export async function runCheck({ config, state, webhook, pages, fetchImpl = fetch, sleep = wait, dryRun = false }) {
+// complete === false: 価格帯の全ページは読めていない(ページ数の上限で打ち切った)。fullRange の前提が崩れるので
+// 「記録のない古い出品 = 価格変更」の判定をしない
+export async function runCheck({ config, state, webhook, pages, complete, fetchImpl = fetch, sleep = wait, dryRun = false }) {
   const base = new URL(config.url);
   const site = SITES[config.site ?? "gametrade"];
   // サイト側が価格の絞り込みを無視することがあるので、こちらでも絞り込む
@@ -224,7 +226,8 @@ export async function runCheck({ config, state, webhook, pages, fetchImpl = fetc
 
   const all = [...found.values()];
   const prev = state?.maxId ? state : null; // 古い形式の状態は初回扱い
-  const hits = prev ? pick(all, low, high, prev, { fullRange: site.fullRange }) : [];
+  const fullRange = site.fullRange && complete !== false;
+  const hits = prev ? pick(all, low, high, prev, { fullRange }) : [];
   let notified = false;
   const skipped = [];
   if (!dryRun && hits.length && webhook) {
@@ -274,5 +277,14 @@ export async function runCheck({ config, state, webhook, pages, fetchImpl = fetc
       await sleep(1000);
     }
   }
-  return { state: nextState(prev, all), hits, total: all.length, first: !prev, notified, skipped };
+  // 確認用: 読んだページ数・価格帯に入っていた件数・読んだ出品の最安と最高(サイト側の絞り込みが効いているか)
+  const prices = all.map((it) => it.price);
+  const summary = {
+    pages: pages.length,
+    complete: complete ?? null,
+    inRange: all.filter((it) => it.price >= low && it.price <= high).length,
+    priceMin: Math.min(...prices),
+    priceMax: Math.max(...prices),
+  };
+  return { state: nextState(prev, all), hits, total: all.length, first: !prev, notified, skipped, summary };
 }

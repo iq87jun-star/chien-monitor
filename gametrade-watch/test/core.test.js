@@ -172,3 +172,18 @@ test("Discord に拒否された1件だけを飛ばし、残りは届ける(http
   assert.ok(posts[1].content);
   assert.equal(posts.at(-1).content, undefined);
 });
+
+test("ゲームクラブ: 全ページを読めていない(complete=false)時は【価格変更】を出さない", async () => {
+  const config = {
+    site: "gameclub",
+    url: "https://gameclub.jp/zenless?search%5BpriceMin%5D=70000&search%5BpriceMax%5D=200000",
+  };
+  const opts = { config, webhook: "https://discord.test/hook", fetchImpl: async () => new Response(null, { status: 204 }), sleep: async () => {} };
+  const first = await runCheck({ ...opts, state: null, pages: [gcItem(100, "a", 120000)], complete: false });
+  const pages2 = [gcItem(101, "new", 80000) + gcItem(100, "a", 110000) + gcItem(50, "old", 140000)];
+  const partial = await runCheck({ ...opts, state: first.state, pages: pages2, complete: false });
+  assert.deepEqual(partial.hits.map((h) => `${h.id}:${h.kind}`), ["101:new", "100:drop"]);
+  const full = await runCheck({ ...opts, state: first.state, pages: pages2, complete: true });
+  assert.deepEqual(full.hits.map((h) => `${h.id}:${h.kind}`), ["101:new", "100:drop", "50:changed"]);
+  assert.deepEqual(full.summary, { pages: 1, complete: true, inRange: 3, priceMin: 80000, priceMax: 140000 });
+});
