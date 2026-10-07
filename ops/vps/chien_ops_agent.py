@@ -33,7 +33,7 @@ except ImportError:
 
 MANIFEST = None
 MARKERS = ("[HALT]", "[BAL GUARD]", "[DAILY STOP]", "[EXPIRY]", "[PROFIT LOCK]", "[TRAIL", "[INIT", "[Mon ENTRY]", "[Mon SKIP]", "[Mon TIME EXIT]",
-           "[Hold ENTRY]", "[Sess ENTRY]", "[Roll ENTRY]", "[v4 ENTRY]", "[CLOSE ALL", "[NOTIFY]", "SIZE SANITY", "銘柄解決", "解決できず")
+           "[Hold ENTRY]", "[Sess ENTRY]", "[Roll ENTRY]", "[v4 ENTRY]", "[CLOSE ALL", "[NOTIFY]", "SIZE SANITY", "銘柄解決", "解決できず", "[LOG]", "[LOG SEND]")   # 1.7a: Q111 記録版の送信状態(docs/327)
 DEAL_ENTRY_IN, DEAL_ENTRY_OUT, DEAL_ENTRY_INOUT, DEAL_ENTRY_OUT_BY = 0, 1, 2, 3
 
 
