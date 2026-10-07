@@ -100,6 +100,8 @@ test("代理出品: 定型文に管理番号・ユーザー名・金額・投稿
   assert.equal(fillTemplate("{番号}|{名前}|{ゲーム}|{キャラ}|{査定額}|{希望額}|{投稿URL}|{期限}", c), "12|@meru_fan|スタレ|黄泉完凸・花火|5.1万円〜9.6万円|8万円|https://x.com/Meruru_Genshin/status/1|10月9日");
   const posted = DEFAULT_TEMPLATES.find((t) => t.key === "posted").body;
   assert.match(fillTemplate(posted, c), /【No\.12】@meru_fan様[\s\S]*status\/1[\s\S]*いいね[\s\S]*リアクション/);
+  // 呼び名があれば「〇〇様」はそちらを使う
+  assert.match(fillTemplate(posted, { ...c, name: "らもん" }), /【No\.12】らもん様/);
 });
 
 test("代理出品: 査定ページからの相談と集計画面の更新を確かめる", async () => {

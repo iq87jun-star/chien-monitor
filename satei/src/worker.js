@@ -208,7 +208,10 @@ async function handle(req, env, ctx) {
   if (pathname === "/api/consign" && req.method === "POST") {
     const body = await readJson(req);
     const handle = body?.handle ? normHandle(body.handle) : null;
-    if (!handle || !CHARS[body.game]) return json({ ok: false, error: "ユーザー名とゲームを確認してください" }, 400);
+    // ユーザー名か呼び名のどちらかは要る
+    if ((!handle && !body?.name?.trim()) || (body?.handle && !handle) || !CHARS[body.game]) {
+      return json({ ok: false, error: "ユーザー名(または呼び名)とゲームを確認してください" }, 400);
+    }
     const id = await createLead(env, { handle, game: body.game, chars: [], low: null, high: null, wish: null, sid: "" }, "manual");
     await updateConsign(env, id, validPatch(body));
     return json({ ok: true, no: id });
