@@ -200,7 +200,8 @@ def discover(config_path, paths=None, out_root=None, since="2026-08-01"):
     terms = []; failed = []
     print(f"端末候補 {len(paths)} 本")
     for p in paths:
-        ok = mt5.initialize(path=p, timeout=90000)
+        portable = os.path.isdir(os.path.join(os.path.dirname(p), "MQL5"))   # 1.7b: インストール先に MQL5 がある = ポータブル配置(docs/328 の C:\chien\mt5\<口座>)
+        ok = mt5.initialize(path=p, timeout=90000, portable=True) if portable else mt5.initialize(path=p, timeout=90000)
         if not ok:
             failed.append(dict(path=p, error=str(mt5.last_error()))); print(f"  × {p}: {mt5.last_error()}"); continue
         try:
@@ -209,7 +210,7 @@ def discover(config_path, paths=None, out_root=None, since="2026-08-01"):
                 failed.append(dict(path=p, error="not logged in")); print(f"  × {p}: 未ログイン"); continue
             acct = str(ai.login); prev = old.get(acct, {})
             terms.append(dict(name=f"{ai.company.split()[0] if ai.company else 'MT5'}_{acct}", account=int(acct), path=p, login=int(acct), server=ai.server,
-                              password=prev.get("password", ""), enabled=True, currency=ai.currency, balance=ai.balance))
+                              password=prev.get("password", ""), enabled=True, portable=bool(portable), currency=ai.currency, balance=ai.balance))
             print(f"  ○ {p} → 口座 {acct} ({ai.company} / {ai.server}) balance={ai.balance:.0f} {ai.currency}")
         finally:
             mt5.shutdown()
@@ -273,7 +274,7 @@ class _Tee:
 def main():
     _log = os.path.join(os.path.dirname(os.path.abspath(__file__)), "agent.log")
     sys.stdout = _Tee(sys.stdout, _log); sys.stderr = _Tee(sys.stderr, _log)
-    print(f"\n==== {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()} UTC agent 1.7 ====")
+    print(f"\n==== {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()} UTC agent 1.7b ====")
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "terminals.json"))
     ap.add_argument("--since", default="2026-08-01")
