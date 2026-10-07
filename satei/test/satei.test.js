@@ -22,11 +22,14 @@ test("タイトルからキャラごとの凸数と餅を読む(次のキャラ�
     キャストリス: { cons: 2, mochi: false },
     丹恒騰荒: { cons: 0, mochi: false },
   });
+  // イーシェンは儀玄の読み
   assert.deepEqual(parseRoster("雅両完凸 葉瞬光M2 イシェン", "zzz"), {
     星見雅: { cons: 6, mochi: true },
     葉瞬光: { cons: 2, mochi: false },
-    イーシェン: { cons: 0, mochi: false },
+    儀玄: { cons: 0, mochi: false },
   });
+  // 「花火」と「火花」は別のキャラ
+  assert.deepEqual(Object.keys(parseRoster("火花完凸 花火", "houkaistarrail")).sort(), ["火花", "花火"].sort());
   assert.deepEqual(parseRoster("カルテジア完凸餅 ショアキ", "wutheringwaves"), {
     カルテジア: { cons: 6, mochi: true },
     ショアキーパー: { cons: 0, mochi: false },
