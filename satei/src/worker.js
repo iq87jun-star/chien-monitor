@@ -15,7 +15,7 @@
 //   STATS_TOKEN_SHA256 … /api/stats の合言葉の SHA-256(wrangler.toml の vars。gametrade-watch と同じ合言葉)
 
 import Anthropic from "@anthropic-ai/sdk";
-import { CHARS } from "../public/lib/chars.js";
+import { CHARS, TERMS } from "../public/lib/chars.js";
 import { validEvent, record, stats } from "./events.js";
 import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES } from "./consign.js";
 
@@ -23,7 +23,6 @@ const MODEL = "claude-opus-5-5";
 const MAX_IMAGES = 6;
 const MAX_BASE64 = 5_000_000; // 1枚あたり(画面側で縮小してから送る)
 const TYPES = ["image/jpeg", "image/png", "image/webp"];
-const GAME_LABEL = { "genshin-impact": "原神", houkaistarrail: "崩壊:スターレイル" };
 
 // 画面は game-souba.com/hoyo/satei/(GitHub Pages)。そこからの /api/read を受け付ける
 const ORIGINS = ["https://game-souba.com", "https://www.game-souba.com"];
@@ -91,15 +90,14 @@ export const SCHEMA = {
 
 export function prompt(game) {
   const names = Object.keys(CHARS[game]).join("、");
-  const cons = game === "houkaistarrail" ? "星魂(凸数)" : "命ノ星座(凸数)";
-  const weapon = game === "houkaistarrail" ? "光円錐" : "武器";
-  return `${GAME_LABEL[game]}のアカウントのスクリーンショットです(キャラ一覧、${weapon}一覧など)。
-星5キャラクターだけを列挙してください。星4キャラ・主人公(旅人/開拓者)は含めないでください。
+  const { full, cons, weapon, star5 } = TERMS[game];
+  return `${full}のアカウントのスクリーンショットです(キャラ一覧、${weapon}一覧など)。
+${star5}だけを列挙してください。それより下のレアリティのキャラ・主人公(旅人/開拓者/漂泊者など)は含めないでください。
 
 - name: キャラ名。次の一覧にあるキャラはこの表記にそろえる。一覧にないキャラは画面の表記のまま。
   ${names}
 - cons: ${cons}。0〜6 の整数。キャラ一覧のアイコン右上などの数字で、数字が無ければ 0。
-- mochi: そのキャラのモチーフ${weapon}(専用の星5${weapon})を持っていれば true。${weapon}一覧で装備キャラのアイコンや名前から判断し、分からなければ false。
+- mochi: そのキャラのモチーフ${weapon}(専用の最高レアリティの${weapon})を持っていれば true。${weapon}一覧で装備キャラのアイコンや名前から判断し、分からなければ false。
 - uid_visible: 画像に UID が写っていれば true。
 
 同じキャラが複数の画像に出ていたら1つにまとめ、凸数は大きい方にしてください。読み取れないものを推測で足さないでください。`;

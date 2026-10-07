@@ -32,7 +32,7 @@ export function penalties(game) {
 }
 const BUY_RATE = 0.55; // 査定額 = 売れた相場 × この割合(買取額)
 // ゲームごとの補正(メルルの実際の買取の感覚に合わせる。1 = 補正なし)
-const ADJUST = { "genshin-impact": 1, houkaistarrail: 1 };
+const ADJUST = { "genshin-impact": 1, houkaistarrail: 1, zzz: 1, wutheringwaves: 1 };
 
 const quantile = (a, q) => {
   const s = [...a].sort((x, y) => x - y);

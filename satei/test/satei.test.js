@@ -22,6 +22,15 @@ test("タイトルからキャラごとの凸数と餅を読む(次のキャラ�
     キャストリス: { cons: 2, mochi: false },
     丹恒騰荒: { cons: 0, mochi: false },
   });
+  assert.deepEqual(parseRoster("雅両完凸 葉瞬光M2 イシェン", "zzz"), {
+    星見雅: { cons: 6, mochi: true },
+    葉瞬光: { cons: 2, mochi: false },
+    イーシェン: { cons: 0, mochi: false },
+  });
+  assert.deepEqual(parseRoster("カルテジア完凸餅 ショアキ", "wutheringwaves"), {
+    カルテジア: { cons: 6, mochi: true },
+    ショアキーパー: { cons: 0, mochi: false },
+  });
 });
 
 test("リッジ回帰は一次式を当てる", () => {

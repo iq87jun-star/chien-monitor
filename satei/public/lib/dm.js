@@ -1,6 +1,6 @@
 // 代理出品の DM の定型文を埋める(集計画面と Worker で共通)
 export const STATUSES = ["新規", "検討中", "代理出品OK", "出品中", "成約", "見送り"];
-const GAMES = { "genshin-impact": "原神", houkaistarrail: "スタレ" };
+const GAMES = { "genshin-impact": "原神", houkaistarrail: "スタレ", zzz: "ゼンゼロ", wutheringwaves: "鳴潮" };
 
 // 定型文の {番号} などを、対象者の情報で置き換える
 export function fillTemplate(body, c) {
