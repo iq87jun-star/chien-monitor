@@ -10,21 +10,26 @@
 //   POST /sold {game, items}・GET /sold/missing・POST /sold/details {details}・GET /sold/export(合言葉が必要)
 //   自宅 PC から(読み取りは Worker 側): POST /sold/pages {game, pages: [一覧の HTML]}・POST /sold/detail-html {id, html}
 //   GET /sold/stats で件数を確認できる
-// GET /status(?site=gameclub)で最後の実行結果を確認できる。/sample は新しいサイトの下調べ用(合言葉が必要)。POST /ingest に {"test": true} でテスト投稿。
+// GET /status(?site=gameclub / gametrade-zzz など)で最後の実行結果を確認できる。/sample は新しいサイトの下調べ用(合言葉が必要)。POST /ingest に {"test": true} でテスト投稿。
 
 import gametrade from "../config.json";
 import gameclub from "../config.gameclub.json";
+import targets from "../config.targets.json";
 import { runCheck } from "./core.js";
 import { validRecords, parseSold, parseDetail, soldRecord } from "./sold.js";
 
-const CONFIGS = { gametrade, gameclub };
-// D1 のキー(ゲームトレードは最初からある "state" / "status" のまま)
+// 監視先。キー(id)は /ingest・/status の site。原神の2つは最初からの id のまま、ほかのゲームは config.targets.json
+// (各要素の site は解析の種類 gametrade / gameclub)
+const CONFIGS = { gametrade, gameclub, ...Object.fromEntries(targets.map((t) => [t.id, t])) };
+// D1 のキー(ゲームトレードの原神は最初からある "state" / "status" のまま)
 // fullRange のサイト(ゲームクラブ)は価格帯ごとに状態を分ける。価格帯を広げた時に、新しく入った既存の出品が
 // すべて【価格変更】として通知されないよう、価格帯を変えたら初回(記録のみ)からやり直す
-const keys = (site) => {
-  if (site === "gametrade") return { state: "state", status: "status" };
-  const q = new URL(CONFIGS[site].url).searchParams;
-  return { state: `state:${site}:${q.get("search[priceMin]")}-${q.get("search[priceMax]")}`, status: `status:${site}` };
+const keys = (id) => {
+  if (id === "gametrade") return { state: "state", status: "status" };
+  const config = CONFIGS[id];
+  if ((config.site ?? id) !== "gameclub") return { state: `state:${id}`, status: `status:${id}` };
+  const q = new URL(config.url).searchParams;
+  return { state: `state:${id}:${q.get("search[priceMin]")}-${q.get("search[priceMax]")}`, status: `status:${id}` };
 };
 
 const get = async (env, key) => {
