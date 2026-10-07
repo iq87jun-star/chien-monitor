@@ -26,27 +26,34 @@ export async function record(env, ev) {
     .run();
 }
 
+// 同じ日に同じ内容(種類・ゲーム・キャラ・査定額)の記録は1件にまとめる(同じ人が何度も押した分を数えない)。
+// キャラが無い記録(読み取りの失敗など)は、別の人のものをまとめないよう画面ごと(sid)に分ける
+const DAY = "substr(datetime(at, '+9 hours'), 1, 10)";
+const UNIQUE = `SELECT MAX(at) AS at, ${DAY} AS day, kind, game, MAX(sid) AS sid, MIN(ok) AS ok, chars, MAX(n) AS n, low, high, COUNT(*) AS times
+  FROM events WHERE at >= ?
+  GROUP BY day, kind, game, chars, low, high, CASE WHEN n = 0 THEN sid ELSE '' END`;
+
 // 集計(日本時間の日ごと・直近の記録・よく出るキャラ)
 export async function stats(env, days = 30) {
   const since = new Date(Date.now() - days * 86400_000).toISOString();
-  const [daily, recent, chars] = await env.DB.batch([
+  const [daily, visitors, recent, chars] = await env.DB.batch([
     env.DB.prepare(
-      `SELECT substr(datetime(at, '+9 hours'), 1, 10) AS day,
-        SUM(kind = 'read') AS reads, SUM(kind = 'estimate') AS estimates, SUM(kind = 'dm') AS dms,
-        COUNT(DISTINCT sid) AS visitors
-       FROM events WHERE at >= ? GROUP BY day ORDER BY day DESC`,
+      `SELECT day, SUM(kind = 'read') AS reads, SUM(kind = 'estimate') AS estimates, SUM(kind = 'dm') AS dms
+       FROM (${UNIQUE}) GROUP BY day ORDER BY day DESC`,
     ).bind(since),
-    env.DB.prepare("SELECT at, kind, game, sid, ok, chars, n, low, high FROM events ORDER BY id DESC LIMIT 100"),
+    env.DB.prepare(`SELECT ${DAY} AS day, COUNT(DISTINCT sid) AS visitors FROM events WHERE at >= ? GROUP BY day`).bind(since),
+    env.DB.prepare(`SELECT at, kind, game, sid, ok, chars, n, low, high, times FROM (${UNIQUE}) ORDER BY at DESC LIMIT 100`).bind(since),
     env.DB.prepare(
       `SELECT game, json_extract(c.value, '$.name') AS name, COUNT(*) AS n,
         SUM(json_extract(c.value, '$.cons') = 6) AS c6
-       FROM events, json_each(events.chars) AS c
-       WHERE kind = 'estimate' AND at >= ? GROUP BY game, name ORDER BY n DESC LIMIT 40`,
+       FROM (${UNIQUE}) AS u, json_each(u.chars) AS c
+       WHERE kind = 'estimate' GROUP BY game, name ORDER BY n DESC LIMIT 40`,
     ).bind(since),
   ]);
+  const v = Object.fromEntries(visitors.results.map((r) => [r.day, r.visitors]));
   return {
     days,
-    daily: daily.results,
+    daily: daily.results.map((r) => ({ ...r, visitors: v[r.day] ?? 0 })),
     recent: recent.results.map((r) => ({ ...r, chars: JSON.parse(r.chars ?? "[]") })),
     chars: chars.results,
   };
