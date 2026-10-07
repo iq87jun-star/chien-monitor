@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9617,
+ "cumulative_cells": 9625,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1199,16 +1199,18 @@
    "slug": "hold_universe_ext",
    "title": "Hold 族の銘柄拡張(XAGUSD/COPPER/UKOIL/NGAS/US2000/HK50/AUS200/EU50)",
    "cells": 8,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/329_q89_hold_universe_ext.md"
    ],
    "note": "hold_cell と同一構成・標準基準(IS/OOS 符号一致・前窓 ≥50%・Bonferroni)。通過 → 紙上候補",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 5
+   "order": 5,
+   "result": "棄却 0/8: IS +月率 44〜54%(p 0.37〜0.83)、前窓は 8 本とも ≥50% だが有意から遠い。XAGUSD/COPPER は OOS(2025)だけ強い。配備不変。参考: 配備中 Hold 6 も単独では標準基準 p 0.17〜0.37(採用経路が RecentFit 校正のため)"
   },
   {
    "id": "Q90",
@@ -2517,6 +2519,13 @@
    "cells": 0,
    "cumulative": 9617,
    "summary": "VPS 集約の設計書(ユーザー依頼で前倒し)。実施は VPS 購入後"
+  },
+  {
+   "date": "2026-10-08",
+   "item": "Q89",
+   "cells": 8,
+   "cumulative": 9625,
+   "summary": "Hold 銘柄拡張 8 セル全棄却(docs/329)。次回 Q90"
   }
  ]
 }
