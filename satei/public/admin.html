@@ -154,7 +154,7 @@ async function loadStats() {
   $("daily").innerHTML = d.daily.map((r) => `<tr><td>${esc(r.day)}</td><td>${r.visitors}</td><td>${r.reads}</td><td>${r.estimates}</td><td>${r.dms}</td></tr>`).join("") || `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
   $("chars").innerHTML = d.chars.map((c) => `<tr><td>${GAME[c.game] ?? esc(c.game)}</td><td>${esc(c.name)}</td><td>${c.n}</td><td>${c.c6}</td></tr>`).join("") || `<tr><td colspan="4" class="muted">まだ記録がありません</td></tr>`;
   $("recent").innerHTML = d.recent
-    .map((r) => `<tr><td>${jst(r.at)}</td><td><span class="tag ${r.kind}">${KIND[r.kind] ?? esc(r.kind)}</span></td><td>${GAME[r.game] ?? esc(r.game)}</td><td>${r.low == null ? "—" : `${man(r.low)}〜${man(r.high)}`}</td><td>${esc(charsText(r.chars))}</td></tr>`)
+    .map((r) => `<tr><td>${jst(r.at)}</td><td><span class="tag ${r.kind}">${KIND[r.kind] ?? esc(r.kind)}</span>${r.times > 1 ? ` <span class="muted">×${r.times}</span>` : ""}</td><td>${GAME[r.game] ?? esc(r.game)}</td><td>${r.low == null ? "—" : `${man(r.low)}〜${man(r.high)}`}</td><td>${esc(charsText(r.chars))}</td></tr>`)
     .join("") || `<tr><td colspan="5" class="muted">まだ記録がありません</td></tr>`;
 }
 
@@ -266,7 +266,7 @@ $("f").addEventListener("submit", async (e) => {
     try { localStorage.setItem("satei:admin", token); } catch {}
     $("tabs").hidden = false;
     showTab(document.querySelector('[data-tab][aria-pressed="true"]').dataset.tab);
-    $("msg").textContent = `利用記録は直近${$("days").value}日分です。画像・IP・UID は記録していません。`;
+    $("msg").textContent = `利用記録は直近${$("days").value}日分です。同じ日に同じ内容の記録は1件にまとめています(×回数)。画像・IP・UID は記録していません。`;
   } catch (err) {
     $("msg").textContent = `表示できませんでした(${err.message})`;
   }
