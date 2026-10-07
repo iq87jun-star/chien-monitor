@@ -49,14 +49,14 @@ async function sha256(text) {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-async function check(env, site, pages) {
+async function check(env, site, pages, complete) {
   const config = CONFIGS[site];
   const KEY = keys(site).state;
   const startedAt = new Date().toISOString();
   let status;
   try {
     const state = JSON.parse((await get(env, KEY)) ?? "null");
-    const r = await runCheck({ config, state, pages, webhook: env.GAMETRADE_DISCORD_WEBHOOK });
+    const r = await runCheck({ config, state, pages, complete, webhook: env.GAMETRADE_DISCORD_WEBHOOK });
     await put(env, KEY, JSON.stringify(r.state));
     status = {
       ok: true,
@@ -65,6 +65,7 @@ async function check(env, site, pages) {
       hits: r.hits.length,
       first: r.first,
       notified: r.notified,
+      ...r.summary,
       ...(r.skipped?.length ? { skipped: r.skipped } : {}),
       webhook: Boolean(env.GAMETRADE_DISCORD_WEBHOOK),
     };
@@ -231,7 +232,8 @@ export default {
       // site を省くとゲームトレード(既存の定期実行はこれ)
       const site = body.site ?? "gametrade";
       if (!Object.hasOwn(CONFIGS, site)) return reject(`unknown site: ${site}`);
-      const status = await check(env, site, body.pages);
+      // complete: PC が価格帯の全ページを読めたか(false ならゲームクラブの【価格変更】判定をしない)
+      const status = await check(env, site, body.pages, typeof body.complete === "boolean" ? body.complete : undefined);
       return json(status, status.ok ? 200 : 500);
     }
     return new Response("gametrade-watch", { status: 404 });

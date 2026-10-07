@@ -40,24 +40,34 @@ function WriteJson($obj, $name) {
   return $f
 }
 
+# Read a JSON file from GitHub (?v= avoids GitHub's cache). Download to a file and read it as UTF-8:
+# curl's console output is decoded with the Japanese code page in PowerShell 5.1, which garbles Japanese text
+# and can break the JSON.
+function GetJson($file) {
+  $f = Join-Path $env:TEMP "gamewatch_cfg.json"
+  Remove-Item $f -ErrorAction SilentlyContinue
+  curl.exe -sSf --connect-timeout 20 --retry 2 --retry-all-errors -o $f "$raw/$($file)?v=$(Get-Date -Format yyyyMMddHHmmss)"
+  if ($LASTEXITCODE -ne 0) { throw "could not read $file" }
+  return ([System.IO.File]::ReadAllText($f, [System.Text.Encoding]::UTF8) | ConvertFrom-Json)
+}
+
 # The listing URL (price range) and page count come from the site's config on GitHub, so changing them needs
 # no reinstall. ?v= avoids GitHub's cache. Falls back to the built-in values if GitHub can't be reached.
 function SiteConfig($file, $url, $pages) {
   try {
-    $text = curl.exe -sSf --connect-timeout 20 --retry 2 --retry-all-errors "$raw/$($file)?v=$(Get-Date -Format yyyyMMddHHmmss)"
-    if ($LASTEXITCODE -eq 0) {
-      $cfg = ($text -join "`n") | ConvertFrom-Json
-      if ($cfg.url) { $url = [string]$cfg.url }
-      if ($cfg.pages) { $pages = [int]$cfg.pages }
-    }
+    $cfg = GetJson $file
+    if ($cfg.url) { $url = [string]$cfg.url }
+    if ($cfg.pages) { $pages = [int]$cfg.pages }
   } catch {}
   return @($url, $pages)
 }
 
 # Fetch up to $maxPages pages. $marker must appear in a real listing page. With $stopAtLast, stop at the page
 # without a "next" link (GameClub filters the price range itself, so the range fits in a few pages).
+# $script:pagesComplete tells whether every page was read (with $stopAtLast: the last page had no "next" link).
 function FetchPages($site, $base, $maxPages, $marker, $stopAtLast) {
   $pages = @()
+  $script:pagesComplete = $false
   for ($p = 1; $p -le $maxPages; $p++) {
     $f = Join-Path $env:TEMP "$($site)_p$p.html"
     Remove-Item $f -ErrorAction SilentlyContinue
@@ -69,7 +79,7 @@ function FetchPages($site, $base, $maxPages, $marker, $stopAtLast) {
     if ($html -match "Just a moment") { throw "page ${p}: got the bot-check page" }
     if ($html -notmatch $marker) { throw "page ${p}: no listings found (the page layout may have changed)" }
     $pages += $html
-    if ($stopAtLast -and $html -notmatch 'class="pager-next"') { break }  # last page
+    if ($stopAtLast -and $html -notmatch 'class="pager-next"') { $script:pagesComplete = $true; break }  # last page
     Start-Sleep -Seconds 3
   }
   return ,$pages
@@ -80,7 +90,8 @@ function RunSite($site, $cfgFile, $defaultUrl, $defaultPages, $marker, $stopAtLa
   try {
     $cfg = if ($cfgFile) { SiteConfig $cfgFile $defaultUrl $defaultPages } else { @($defaultUrl, $defaultPages) }
     $pages = FetchPages $site $cfg[0] $cfg[1] $marker $stopAtLast
-    $r = Send (WriteJson @{ site = $site; pages = $pages } "$($site)_body.json")
+    # complete=false: more pages than $maxPages, so the Worker must not assume it saw the whole price range
+    $r = Send (WriteJson @{ site = $site; pages = $pages; complete = [bool]$script:pagesComplete } "$($site)_body.json")
     if ($r[0] -ne "200") { throw "worker HTTP $($r[0]) ($($r[2])): $($r[1])" }
     Log "$site ok pages=$($pages.Count) $($r[1])"
     return $true
@@ -99,9 +110,7 @@ function RunSite($site, $cfgFile, $defaultUrl, $defaultPages, $marker, $stopAtLa
 # its HTML to /sold/detail-html. The Worker does the parsing. A failure here does not fail the task.
 function RunSold() {
   try {
-    $text = curl.exe -sSf --connect-timeout 20 --retry 2 --retry-all-errors "$raw/config.sold.json?v=$(Get-Date -Format yyyyMMddHHmmss)"
-    if ($LASTEXITCODE -ne 0) { throw "could not read config.sold.json" }
-    $cfg = ($text -join "`n") | ConvertFrom-Json
+    $cfg = GetJson "config.sold.json"
     $added = 0
     foreach ($g in $cfg.games) {
       $base = "https://gametrade.jp/$($g.game)/exhibits?filter=all&sort=new&low_price=$($cfg.low)&high_price=$($cfg.high)"
@@ -150,9 +159,7 @@ $ok2 = RunSite "gametrade" "config.json" `
 # so adding a game needs no change on this PC. "site" is the kind of page: gametrade or gameclub.
 $ok3 = $true
 try {
-  $text = curl.exe -sSf --connect-timeout 20 --retry 2 --retry-all-errors "$raw/config.targets.json?v=$(Get-Date -Format yyyyMMddHHmmss)"
-  if ($LASTEXITCODE -ne 0) { throw "could not read config.targets.json" }
-  foreach ($t in (($text -join "`n") | ConvertFrom-Json)) {
+  foreach ($t in (GetJson "config.targets.json")) {
     if ($t.site -eq "gameclub") { $marker = 'class="item-row'; $last = $true } else { $marker = 'name="exhibit_data"'; $last = $false }
     if (-not (RunSite ([string]$t.id) "" ([string]$t.url) ([int]$t.pages) $marker $last)) { $ok3 = $false }
   }
