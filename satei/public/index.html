@@ -5,9 +5,9 @@
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-7LZS5DCBSG');</script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>原神・スタレ アカウント買取査定|ゲーム相場モニター</title>
-<meta name="description" content="原神・崩壊スターレイルのアカウントを、キャラ一覧のスクショから無料で買取査定。ゲームトレードの成約データをもとに買取額の目安を出します。" />
-<meta property="og:title" content="メルル査定|原神・スタレのアカウント買取査定" />
+<title>原神・スタレ・ゼンゼロ・鳴潮 アカウント買取査定|ゲーム相場モニター</title>
+<meta name="description" content="原神・崩壊スターレイル・ゼンレスゾーンゼロ・鳴潮のアカウントを、キャラ一覧のスクショから無料で買取査定。ゲームトレードの成約データをもとに買取額の目安を出します。" />
+<meta property="og:title" content="メルル査定|原神・スタレ・ゼンゼロ・鳴潮のアカウント買取査定" />
 <meta property="og:description" content="キャラ一覧のスクショを入れるだけで、買取額の目安が分かります。" />
 <meta name="twitter:card" content="summary" />
 <link rel="canonical" href="https://game-souba.com/hoyo/satei/" />
@@ -68,11 +68,13 @@
 </nav>
 <main>
   <h1>メルル査定🌸</h1>
-  <p class="lead">原神・崩壊スターレイルのアカウントを、スクショから無料で買取査定します。</p>
+  <p class="lead">原神・崩壊スターレイル・ゼンレスゾーンゼロ・鳴潮のアカウントを、スクショから無料で買取査定します。</p>
 
   <div class="tabs" role="group" aria-label="ゲーム">
     <button type="button" data-game="genshin-impact" aria-pressed="true">原神</button>
-    <button type="button" data-game="houkaistarrail" aria-pressed="false">スターレイル</button>
+    <button type="button" data-game="houkaistarrail" aria-pressed="false">スタレ</button>
+    <button type="button" data-game="zzz" aria-pressed="false">ゼンゼロ</button>
+    <button type="button" data-game="wutheringwaves" aria-pressed="false">鳴潮</button>
   </div>
 
   <section class="card">
@@ -123,7 +125,7 @@
 </main>
 
 <script type="module">
-import { CHARS } from "./lib/chars.js";
+import { CHARS, TERMS } from "./lib/chars.js";
 import { estimate } from "./lib/estimate.js";
 
 // 連絡先(Discord の招待リンクができたら入れる)
@@ -132,15 +134,17 @@ const PAGE_URL = "https://game-souba.com/hoyo/satei/";
 // 画像の読み取り(Claude)は Worker が受ける。game-souba.com(GitHub Pages)からは Worker の URL に送る
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
 const DISCORD_URL = "";
-const LABEL = { "genshin-impact": "原神", houkaistarrail: "スタレ" };
+const LABEL = Object.fromEntries(Object.entries(TERMS).map(([g, t]) => [g, t.label]));
 const SHOT_HINT = {
   "genshin-impact": "おすすめ: HoYoLAB の「全キャラクター」画面(凸数が出ます)と、ゲーム内の武器一覧。キャラが画面の端で切れないよう、スクロールして複数枚に分けて撮ってください(最大6枚)。",
   houkaistarrail: "おすすめ: HoYoLAB のキャラ一覧(星魂と光円錐が出ます)と、ゲーム内の光円錐一覧。キャラが画面の端で切れないよう、スクロールして複数枚に分けて撮ってください(最大6枚)。",
+  zzz: "おすすめ: HoYoLAB のエージェント一覧(影画の数が出ます)と、ゲーム内の音動機一覧。キャラが画面の端で切れないよう、スクロールして複数枚に分けて撮ってください(最大6枚)。",
+  wutheringwaves: "おすすめ: ゲーム内の共鳴者一覧(共鳴チェーンの数が分かる画面)と、武器一覧。キャラが画面の端で切れないよう、スクロールして複数枚に分けて撮ってください(最大6枚)。",
 };
 
 const $ = (id) => document.getElementById(id);
 const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
-let game = store.get("satei:game") === "houkaistarrail" ? "houkaistarrail" : "genshin-impact";
+let game = TERMS[store.get("satei:game")] ? store.get("satei:game") : "genshin-impact";
 let model = null;
 let images = [];
 let last = null;
@@ -172,7 +176,7 @@ function setGame(g) {
 
 function addRow(c = { name: "", cons: 0, mochi: false }) {
   const tr = document.createElement("tr");
-  const weapon = game === "houkaistarrail" ? "餅(光円錐)" : "餅(武器)";
+  const weapon = `餅(${TERMS[game].weapon})`;
   tr.innerHTML = `
     <td><input type="text" list="names" placeholder="キャラ名" aria-label="キャラ名"><span class="off" hidden>値付けの対象外</span></td>
     <td><select aria-label="凸数">${[0, 1, 2, 3, 4, 5, 6].map((n) => `<option value="${n}">${n === 6 ? "完凸" : n + "凸"}</option>`).join("")}</select></td>
