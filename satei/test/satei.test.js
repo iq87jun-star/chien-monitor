@@ -131,3 +131,27 @@ test("成約データの上限を超える高額アカウントは、金額を�
   assert.equal(r.low, 100000); // 上限 20万 × 0.5
   assert.equal(estimate(model, game, many.slice(0, 1)).capped, undefined);
 });
+
+test("代理出品: 同じ人がもう一度送った相談は前の番号にまとめる", async () => {
+  const { DatabaseSync } = await import("node:sqlite");
+  const { readFileSync } = await import("node:fs");
+  const { createLead } = await import("../src/consign.js");
+  const db = new DatabaseSync(":memory:");
+  for (const f of ["0003_consign.sql", "0004_consign_name.sql"]) db.exec(readFileSync(new URL(`../migrations/${f}`, import.meta.url), "utf8"));
+  // D1 の prepare().bind().first()/run() だけをまねる
+  const env = { DB: { prepare: (q) => ({ bind: (...a) => ({ first: async () => db.prepare(q).get(...a) ?? null, run: async () => db.prepare(q).run(...a) }) }) } };
+  const lead = (o) => ({ game: "houkaistarrail", handle: null, chars: [], low: 1, high: 2, wish: null, sid: "s1", ...o });
+  assert.deepEqual(await createLead(env, lead({})), { id: 1, merged: false });
+  // 同じ画面からもう一度 → No.1 にまとめ、新しく書いたユーザー名・希望額で上書き
+  assert.deepEqual(await createLead(env, lead({ handle: "abc", wish: 30000, low: 5 })), { id: 1, merged: true });
+  // 別の画面でも同じユーザー名ならまとめる
+  assert.deepEqual(await createLead(env, lead({ sid: "s2", handle: "abc" })), { id: 1, merged: true });
+  const r = db.prepare("SELECT handle, wish, low FROM consign WHERE id = 1").get();
+  assert.deepEqual({ ...r }, { handle: "abc", wish: 30000, low: 1 });
+  // 別のゲーム・別の人は新しい番号
+  assert.equal((await createLead(env, lead({ game: "zzz" }))).id, 2);
+  assert.equal((await createLead(env, lead({ sid: "s3" }))).id, 3);
+  // 終わった相談にはまとめない
+  db.prepare("UPDATE consign SET status = '見送り' WHERE id = 3").run();
+  assert.equal((await createLead(env, lead({ sid: "s3" }))).id, 4);
+});

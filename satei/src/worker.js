@@ -191,7 +191,8 @@ async function handle(req, env, ctx) {
       .bind(new Date(Date.now() - 86400_000).toISOString())
       .first();
     if ((today?.n ?? 0) >= (Number(env.DAILY_LIMIT_LEADS) || 100)) return json({ ok: false, error: "混み合っています。XのDMで直接ご相談ください" }, 429);
-    return json({ ok: true, no: await createLead(env, lead) });
+    const { id, merged } = await createLead(env, lead);
+    return json({ ok: true, no: id, merged });
   }
   // ここから下は集計画面用(合言葉が必要)
   const admin = pathname === "/api/stats" || pathname.startsWith("/api/consign") || pathname === "/api/templates";
@@ -212,7 +213,7 @@ async function handle(req, env, ctx) {
     if ((!handle && !body?.name?.trim()) || (body?.handle && !handle) || !CHARS[body.game]) {
       return json({ ok: false, error: "ユーザー名(または呼び名)とゲームを確認してください" }, 400);
     }
-    const id = await createLead(env, { handle, game: body.game, chars: [], low: null, high: null, wish: null, sid: "" }, "manual");
+    const { id } = await createLead(env, { handle, game: body.game, chars: [], low: null, high: null, wish: null, sid: "" }, "manual");
     await updateConsign(env, id, validPatch(body));
     return json({ ok: true, no: id });
   }

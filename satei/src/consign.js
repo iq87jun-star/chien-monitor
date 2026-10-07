@@ -104,20 +104,47 @@ export function validPatch(body) {
 
 const parse = (r) => ({ ...r, chars: JSON.parse(r.chars ?? "[]") });
 
+// 同じ人がもう一度送った相談は、新しい番号を作らず前の番号にまとめる。
+// 同じゲームで、同じ画面(sid)か同じユーザー名から、この日数のうちに来た進行中の相談を同じ人とみなす
+const MERGE_DAYS = 3;
+
+async function findSame(env, lead) {
+  if (!lead.sid && !lead.handle) return null;
+  const since = new Date(Date.now() - MERGE_DAYS * 86400_000).toISOString();
+  return env.DB.prepare(
+    `SELECT id FROM consign WHERE game = ? AND created_at >= ? AND status NOT IN ('成約', '見送り', '重複')
+       AND ((sid <> '' AND sid = ?) OR (handle IS NOT NULL AND handle = ?))
+     ORDER BY id LIMIT 1`,
+  )
+    .bind(lead.game, since, lead.sid ?? "", lead.handle ?? "")
+    .first();
+}
+
+// 返り値: { id, merged }(merged = 前の番号にまとめた)
 export async function createLead(env, lead, source = "tool") {
   const now = new Date().toISOString();
+  const same = source === "tool" ? await findSame(env, lead) : null;
+  if (same) {
+    // キャラと査定額は新しい方にする。ユーザー名・希望額は、新しく書かれた時だけ上書きする
+    await env.DB.prepare(
+      "UPDATE consign SET updated_at = ?, chars = ?, low = ?, high = ?, handle = COALESCE(?, handle), wish = COALESCE(?, wish) WHERE id = ?",
+    )
+      .bind(now, JSON.stringify(lead.chars), lead.low, lead.high, lead.handle, lead.wish, same.id)
+      .run();
+    return { id: same.id, merged: true };
+  }
   const r = await env.DB.prepare(
     "INSERT INTO consign (created_at, updated_at, handle, game, chars, low, high, wish, status, sid, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '新規', ?, ?) RETURNING id",
   )
     .bind(now, now, lead.handle, lead.game, JSON.stringify(lead.chars), lead.low, lead.high, lead.wish, lead.sid ?? "", source)
     .first();
-  return r.id;
+  return { id: r.id, merged: false };
 }
 
 export async function listConsign(env) {
   const { results } = await env.DB.prepare(
     `SELECT c.*, (SELECT MAX(at) FROM dm_log WHERE consign_id = c.id) AS last_dm
-     FROM consign c ORDER BY CASE c.status WHEN '成約' THEN 2 WHEN '見送り' THEN 3 ELSE 1 END, c.id DESC LIMIT 500`,
+     FROM consign c ORDER BY CASE c.status WHEN '成約' THEN 2 WHEN '見送り' THEN 3 WHEN '重複' THEN 4 ELSE 1 END, c.id DESC LIMIT 500`,
   ).all();
   return results.map(parse);
 }
