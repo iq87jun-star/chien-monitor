@@ -93,6 +93,7 @@ export function validPatch(body) {
   const out = {};
   if (!body || typeof body !== "object") return out;
   if ("handle" in body) out.handle = body.handle ? normHandle(body.handle) : null;
+  if ("name" in body) out.name = clean(body.name ?? "", 30) || null;
   if ("status" in body && STATUSES.includes(body.status)) out.status = body.status;
   if ("wish" in body) out.wish = body.wish === null || body.wish === "" ? null : yen(Number(body.wish));
   if ("next_at" in body) out.next_at = body.next_at ? date(body.next_at) : null;

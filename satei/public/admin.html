@@ -72,6 +72,7 @@
       <details style="margin-top:8px"><summary>+ 手動で追加</summary>
         <div class="grid2">
           <label>Xのユーザー名<input id="n-handle" placeholder="@user" /></label>
+          <label>呼び名(DMの「〇〇様」)<input id="n-name" placeholder="らもん" /></label>
           <label>ゲーム<select id="n-game"><option value="genshin-impact">原神</option><option value="houkaistarrail">スタレ</option><option value="zzz">ゼンゼロ</option><option value="wutheringwaves">鳴潮</option></select></label>
           <label>希望額(円)<input id="n-wish" type="number" min="0" step="1000" /></label>
           <label>メモ<input id="n-memo" /></label>
@@ -168,13 +169,14 @@ function renderConsign() {
   $("items").innerHTML = items
     .map(
       (c) => `<article class="card item${due(c) ? " due" : ""}" data-id="${c.id}">
-      <header><b>No.${c.id}</b>${c.handle ? `<a href="https://x.com/${esc(c.handle)}" target="_blank" rel="noopener">@${esc(c.handle)}</a>` : `<span class="muted">ユーザー名なし</span>`}
+      <header><b>No.${c.id}</b>${c.name ? `<b>${esc(c.name)}</b>` : ""}${c.handle ? `<a href="https://x.com/${esc(c.handle)}" target="_blank" rel="noopener">@${esc(c.handle)}</a>` : `<span class="muted">ユーザー名なし</span>`}
         <span class="tag">${GAME[c.game] ?? esc(c.game)}</span><span class="tag">${esc(c.status)}</span>${due(c) ? `<span class="tag dm">連絡日</span>` : ""}
         <span class="muted">${jst(c.created_at)} ${c.source === "tool" ? "査定ページから" : "手動"}${c.last_dm ? ` ・ 最後のDM ${jst(c.last_dm)}` : ""}</span></header>
       <p class="muted" style="margin:6px 0 0">査定 ${c.low == null ? "—" : `${man(c.low)}〜${man(c.high)}`} ・ ${esc(charsText(c.chars).slice(0, 120)) || "キャラ情報なし"}</p>
       <div class="grid2">
         <label>状態<select data-f="status">${data.statuses.map((s) => `<option${s === c.status ? " selected" : ""}>${s}</option>`).join("")}</select></label>
         <label>Xのユーザー名<input data-f="handle" value="${esc(c.handle)}" placeholder="@user" /></label>
+        <label>呼び名(DMの「〇〇様」)<input data-f="name" value="${esc(c.name)}" placeholder="プロフィール名" /></label>
         <label>希望額(円)<input data-f="wish" type="number" min="0" step="1000" value="${c.wish ?? ""}" /></label>
         <label>次の連絡日<input data-f="next_at" type="date" value="${esc(c.next_at)}" /></label>
         <label>紹介した投稿のURL<input data-f="post_url" value="${esc(c.post_url)}" placeholder="https://x.com/Meruru_Genshin/status/..." /></label>
@@ -221,9 +223,9 @@ $("items").addEventListener("click", async (e) => {
 });
 $("n-add").addEventListener("click", async () => {
   try {
-    const d = await api("/api/consign", { method: "POST", body: JSON.stringify({ handle: $("n-handle").value, game: $("n-game").value, wish: $("n-wish").value, memo: $("n-memo").value, status: "検討中" }) });
+    const d = await api("/api/consign", { method: "POST", body: JSON.stringify({ handle: $("n-handle").value, name: $("n-name").value, game: $("n-game").value, wish: $("n-wish").value, memo: $("n-memo").value, status: "検討中" }) });
     toast(`No.${d.no} を追加しました`);
-    for (const id of ["n-handle", "n-wish", "n-memo"]) $(id).value = "";
+    for (const id of ["n-handle", "n-name", "n-wish", "n-memo"]) $(id).value = "";
     await loadConsign();
   } catch (err) { toast(`追加できませんでした(${err.message})`); }
 });

@@ -12,7 +12,8 @@ export function fillTemplate(body, c) {
   const [y, m, d] = (c.next_at ?? "").split("-");
   const values = {
     番号: String(c.id),
-    名前: c.handle ? `@${c.handle}` : "お客",
+    // 呼び名(プロフィール名)があればそれを、無ければ @ユーザー名
+    名前: c.name || (c.handle ? `@${c.handle}` : "お客"),
     ゲーム: GAMES[c.game] ?? "",
     キャラ: chars,
     査定額: c.low != null ? `${man(c.low)}〜${man(c.high)}` : "",
