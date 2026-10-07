@@ -1577,6 +1577,22 @@
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
    "order": 28
+  },
+  {
+   "id": "Q111",
+   "slug": "vps_log_push_webrequest",
+   "title": "VPS ログ送信(EA WebRequest + Apps Script)と決済コメント理由コード",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "EA が VPS 上から [SKIP]/[HALT]/[MONTH STOP]/[ENTRY] 等の行・毎時スナップショット(残高・有効証拠金・建玉)・決済取引を HTTPS POST し、Apps Script が Drive chien_ops/<口座>/vps_log.csv に追記。決済コメントに理由コード(|SL |MONTHSTOP 等)。include 化(Q95)に組み込み、URL は InpLogUrl(.set 側・公開リポジトリに書かない)。WebRequest は事象時と毎時のみ・タイムアウト 2 秒。ops_ingest に読み込みを追加し『最後の受信から 2 時間以上』をダイジェストで警告。PC エージェントは保険として維持。実施(許可 URL 登録・再移行)は 11 月の切替と同時",
+   "registered": "2026-10-07",
+   "program": "docs/322 第2期",
+   "order": 29
   }
  ],
  "runs": [
