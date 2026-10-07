@@ -27,9 +27,12 @@ const CONFIGS = { gametrade, gameclub, ...Object.fromEntries(targets.map((t) => 
 const keys = (id) => {
   if (id === "gametrade") return { state: "state", status: "status" };
   const config = CONFIGS[id];
-  if ((config.site ?? id) !== "gameclub") return { state: `state:${id}`, status: `status:${id}` };
   const q = new URL(config.url).searchParams;
-  return { state: `state:${id}:${q.get("search[priceMin]")}-${q.get("search[priceMax]")}`, status: `status:${id}` };
+  if ((config.site ?? id) === "gameclub") {
+    return { state: `state:${id}:${q.get("search[priceMin]")}-${q.get("search[priceMax]")}`, status: `status:${id}` };
+  }
+  // ゲームトレードの追加分も価格帯ごとに分ける(サイト側の絞り込みが効くので、範囲に新しく入った出品は記録がない)
+  return { state: `state:${id}:${q.get("low_price")}-${q.get("high_price")}`, status: `status:${id}` };
 };
 
 const get = async (env, key) => {
