@@ -78,3 +78,15 @@ Sources: [MetaQuotes VPS 価格](https://www.metatrader5.com/en/news/2300.md) / 
 - VPS 設置日に VPS の IP から両サイトを取得して試す。通れば `gametrade-watch/pc/install-gameclub.ps1` を VPS で実行してタスクを移し、自宅 PC のタスクを外す。
 - 弾かれる場合: (a) その夜間タスクだけ自宅 PC に残す(現状どおり)、(b) Tailscale の exit node を自宅(PC かルーター)に置き、VPS からの取得だけ自宅回線を出口にする。(b) は常時起動の小さな機械が自宅に要る。
 - 取引側(端末 10 本・毎時エージェント・遠隔操作)の集約はこれと独立に進める。
+
+## 9.【2026-10-07 実施記録】P0〜P3 完了(同日 22:30〜翌 00:45 JST)
+| 段階 | 結果 |
+|---|---|
+| P0 | お名前.com デスクトップクラウド Premium 8GB(月 7,260 円・1 か月払い)を購入。Windows Server。 |
+| P1 | RDP → Claude Code(native)導入・`claude auth login`・`C:\chien` を信頼・`claude remote-control` で接続(bridge 環境)。以後は研究側セッションが VPS 側セッション「VPS セットアップ(Q110 P1–P2)」に指示(persistent_session_id 宛の Routine を fire)して進めた。つまずき: PATH 未登録(`%USERPROFILE%\.local\bin` をユーザー PATH に追加)、ISE では対話画面が動かない、既定ブラウザが IE(Edge で開き直し)、ログインコードは `#` 以降を含めて最新の試行のものを貼る、コンソールの「選択」モードでキー入力が止まる、`Trust? [y/N]` と `Enable Remote Control? (y/n)` は `y` が要る。 |
+| P2 | VPS 側セッションが 3 社のインストーラで導入 → `C:\chien\mt5\<口座>` に 10 本複製(**ポータブルモード**・各フォルダ内に MQL5/config)・デスクトップに `MT5_<業者>_<口座>` ショートカット 10 個。ユーザーが 10 本にマスターでログイン(保存)・自動売買 OFF。Google Drive for desktop ログイン(G:)。Python 3.12(`C:\Program Files\Python312`)。 |
+| P3 | `chien_setup.bat run` → agent 1.7b(ポータブル配置は `portable=True` で接続・terminals.json に記録)が 10 端末を自動検出 → 手動 1 回実行で Drive `chien_ops\<口座>\` 10 口座分に positions / open_positions / equity_log / ea_log_extract を出力(15:41〜15:43 UTC)。毎時タスク `chien_ops_agent` 登録。`_diag/host.txt` の python が VPS のパスになっていることを確認。 |
+
+- Drive の新規フォルダ ID: 521100397 `1rFJ5TL_Tbe4A0LpG8wx73QjxQ4Zy-L7K` / 531407058 `11gUePK80zY54r9asy104Bwk6H25QcpHt` / 531466484 `1lkLf00rNBlWmonO-4V5DvjI-DLxTf_0Q` / 6071612 `1TGibINorzKW52I3OoFz23Iz1zQOEl7mD` / 14074882 `1fsAo_b2lMpg1FdwEDXZIvdx8OxDl0wry`(既存: 11988011 / 14166201 / 531343523 / 6104736 / 6104739 は従来の ID)。朝の取り込みはこれで 10 口座分を読める。
+- 手元 PC の毎時タスクは VPS と同じフォルダに書くため**無効化**する(`schtasks /change /tn chien_ops_agent /disable`)。ユーザーに依頼済み。
+- 次: P4 観察運転(10/8 いっぱい・EA なし・自動売買 OFF)→ 10/9(木)以降の日中に P5 の口座ごと切替。P5 前にリポジトリ側の変更(§6: manifest `apply: true`・端末のログオン時起動タスク・agent 1.8 の端末再起動)を入れる。
