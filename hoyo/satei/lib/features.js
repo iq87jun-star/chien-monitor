@@ -15,7 +15,7 @@ function readAfter(tail) {
     mochi = true;
   } else if (/完凸/.test(seg)) cons = 6;
   else {
-    const m = /(?:^|[^0-9])([0-6])凸|[CE]([0-6])(?![0-9])|([無一二三四五六])凸/.exec(seg);
+    const m = /(?:^|[^0-9])([0-6])凸|[CEM]([0-6])(?![0-9])|([無一二三四五六])凸/.exec(seg);
     if (m) cons = m[1] != null ? Number(m[1]) : m[2] != null ? Number(m[2]) : KANJI_NUM[m[3]];
   }
   return { cons, mochi };
@@ -56,7 +56,8 @@ export function infoNumber(info, re) {
   return null;
 }
 
-export const STAR5_RE = /星5キャラ(?:クター)?の数：(\d+)/;
+// ゼンゼロは「Sランクキャラ所持数」
+export const STAR5_RE = /(?:星5キャラ(?:クター)?の数|Sランクキャラ所持数)：(\d+)/;
 
 // 特徴量の並び(モデルの重みと同じ順)
 export function featureNames(game) {

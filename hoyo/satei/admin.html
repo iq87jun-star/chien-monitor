@@ -72,7 +72,7 @@
       <details style="margin-top:8px"><summary>+ 手動で追加</summary>
         <div class="grid2">
           <label>Xのユーザー名<input id="n-handle" placeholder="@user" /></label>
-          <label>ゲーム<select id="n-game"><option value="genshin-impact">原神</option><option value="houkaistarrail">スタレ</option></select></label>
+          <label>ゲーム<select id="n-game"><option value="genshin-impact">原神</option><option value="houkaistarrail">スタレ</option><option value="zzz">ゼンゼロ</option><option value="wutheringwaves">鳴潮</option></select></label>
           <label>希望額(円)<input id="n-wish" type="number" min="0" step="1000" /></label>
           <label>メモ<input id="n-memo" /></label>
         </div>
@@ -111,7 +111,7 @@
 import { fillTemplate } from "./lib/dm.js";
 const $ = (id) => document.getElementById(id);
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
-const GAME = { "genshin-impact": "原神", houkaistarrail: "スタレ" };
+const GAME = { "genshin-impact": "原神", houkaistarrail: "スタレ", zzz: "ゼンゼロ", wutheringwaves: "鳴潮" };
 const KIND = { read: "読み取り", estimate: "査定", dm: "DM" };
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const man = (v) => (v == null ? "—" : `${(v / 10000).toFixed(1)}万`);
