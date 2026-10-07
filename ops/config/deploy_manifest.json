@@ -7,7 +7,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FTMO50k_口座521100397】EA8_Mon4_3.3倍+GER40ブレイク_2.0倍.mq5",
+     "ea": "【FTMO50k_口座521100397】EA8_Mon4_3.3倍+GER40ブレイク_2.0倍_v1.35.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -17,7 +17,7 @@
     "EA2_Mon4+Sess5",
     "RecentFit_D3m"
    ],
-   "note": "9/30 に D 案 → EA8 v1.34 へ切替(docs/297)。C6m ×6.0 は 531407058 用で本口座には付けない",
+   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FTMO50k_口座521100397】EA8_Mon4_3.3倍+GER40ブレイク_2.0倍.mq5。 旧 9/30 に D 案 → EA8 v1.34 へ切替(docs/297)。C6m ×6.0 は 531407058 用で本口座には付けない",
    "terminal": "FTMO",
    "prepare_profile": true
   },
@@ -25,7 +25,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FTMO50k_口座531407058】EA3_Mon4_3.3倍.mq5",
+     "ea": "【FTMO50k_口座531407058】EA3_Mon4_3.3倍_v1.17.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -33,7 +33,7 @@
    "remove": [
     "EA3_Mon4_2.5倍"
    ],
-   "note": "C6m ×6.0 は 9/30 期限まで同居(remove に入れない)",
+   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FTMO50k_口座531407058】EA3_Mon4_3.3倍.mq5。 旧 C6m ×6.0 は 9/30 期限まで同居(remove に入れない)",
    "terminal": "FTMO",
    "prepare_profile": true
   },
@@ -41,7 +41,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1.mq5",
+     "ea": "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1_v1.16.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -51,7 +51,7 @@
     "RecentFit_Mon3x",
     "季節RG3"
    ],
-   "note": "同名ファイルの再コンパイル = v1.15 へ更新(同 Magic 943200 系なので建玉は引き継ぐ)",
+   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1.mq5。 旧 同名ファイルの再コンパイル = v1.15 へ更新(同 Magic 943200 系なので建玉は引き継ぐ)",
    "terminal": "FundedNext",
    "prepare_profile": true
   },
@@ -59,7 +59,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル.mq5",
+     "ea": "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.10.mq5",
      "symbol": "EURJPY",
      "period": "H1"
     }
@@ -68,7 +68,7 @@
     "RecentFit_Mon3x5+HoldXAU0.5",
     "季節RG3"
    ],
-   "note": "v1.09(×4・SL 3.0)",
+   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル.mq5。 旧 v1.09(×4・SL 3.0)",
    "terminal": "FundedNext",
    "prepare_profile": true
   },
@@ -76,7 +76,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍.mq5",
+     "ea": "【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍_v1.32.mq5",
      "symbol": "UK100",
      "period": "H1"
     }
@@ -85,7 +85,7 @@
     "RecentFit_NonFX_1.48倍_Sess4.8倍",
     "Sess上位5_4.8倍"
    ],
-   "note": "v1.31",
+   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍.mq5。 旧 v1.31",
    "terminal": "FundedNext",
    "prepare_profile": true
   },
@@ -93,7 +93,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_3.3倍+GER40ブレイク_2.0倍+HoldXAU0.3.mq5",
+     "ea": "【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_3.3倍+GER40ブレイク_2.0倍+HoldXAU0.3_v1.02.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -101,7 +101,7 @@
    "remove": [
     "RecentFit5_目標10パーセント"
    ],
-   "note": "EA10 v1.00 が 9/28 22:47 JST から VPS で稼働中(Hold XAU 0.07・944803)。EA10L v1.01 は床 −9.5% 版(Magic は 944800 で建玉を引き継ぐ)。再移行は任意",
+   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_3.3倍+GER40ブレイク_2.0倍+HoldXAU0.3.mq5。 旧 EA10 v1.00 が 9/28 22:47 JST から VPS で稼働中(Hold XAU 0.07・944803)。EA10L v1.01 は床 −9.5% 版(Magic は 944800 で建玉を引き継ぐ)。再移行は任意",
    "terminal": "FTMO",
    "prepare_profile": true
   },
@@ -109,7 +109,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍.mq5",
+     "ea": "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍_v1.01.mq5",
      "symbol": "XAUUSD",
      "period": "H1"
     }
@@ -117,7 +117,7 @@
    "remove": [
     "EA6_Sess8_8.0倍"
    ],
-   "note": "EA9 v1.00(docs/316)。EA6 は外す",
+   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍.mq5。 旧 EA9 v1.00(docs/316)。EA6 は外す",
    "terminal": "FTMO",
    "prepare_profile": true
   },
@@ -125,7 +125,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【Fintokeiパール500万】RecentFit_4.0倍.mq5",
+     "ea": "【Fintokeiパール500万】RecentFit_4.0倍_v1.08.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -133,7 +133,7 @@
    "remove": [
     "EA4_Sess8_4.8倍"
    ],
-   "note": "B案 v1.06",
+   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【Fintokeiパール500万】RecentFit_4.0倍.mq5。 Q93 のロット経路修正(docs/324)も同梱。 旧 B案 v1.06",
    "terminal": "Fintokei",
    "prepare_profile": true
   },
@@ -155,13 +155,13 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_4.0倍.mq5",
+     "ea": "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_4.0倍_v1.02.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
    ],
    "remove": [],
-   "note": "Ruby Swing Phase 1(JPY)2026-09-28 購入。B案 ×4.0 v1.00(docs/320)",
+   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_4.0倍.mq5。 Q93 のロット経路修正(docs/324)も同梱。 旧 Ruby Swing Phase 1(JPY)2026-09-28 購入。B案 ×4.0 v1.00(docs/320)",
    "terminal": "Fintokei",
    "prepare_profile": true
   },
@@ -169,7 +169,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x2.0+Roll5x1.0+NonFX0.5.mq5",
+     "ea": "【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x2.0+Roll5x1.0+NonFX0.5_v1.12.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -177,7 +177,7 @@
    "remove": [
     "RecentFit_NonFX_1.48倍+Roll5_1.0倍"
    ],
-   "note": "EA11 v1.10(Mon4 ×2.0 + Roll ×1.0 + 非FX ×0.5・docs/320 §8)。v1.00 の Hold 建玉(943623)を手動決済してから移行",
+   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x2.0+Roll5x1.0+NonFX0.5.mq5。 Q93 のロット経路修正(docs/324)も同梱。 旧 EA11 v1.10(Mon4 ×2.0 + Roll ×1.0 + 非FX ×0.5・docs/320 §8)。v1.00 の Hold 建玉(943623)を手動決済してから移行",
    "terminal": "Fintokei",
    "prepare_profile": true
   }
