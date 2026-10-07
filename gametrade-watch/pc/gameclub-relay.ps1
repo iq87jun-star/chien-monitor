@@ -75,9 +75,10 @@ function FetchPages($site, $base, $maxPages, $marker, $stopAtLast) {
   return ,$pages
 }
 
+# $cfgFile: the site's config on GitHub, or "" to use $defaultUrl / $defaultPages as given (config.targets.json)
 function RunSite($site, $cfgFile, $defaultUrl, $defaultPages, $marker, $stopAtLast) {
   try {
-    $cfg = SiteConfig $cfgFile $defaultUrl $defaultPages
+    $cfg = if ($cfgFile) { SiteConfig $cfgFile $defaultUrl $defaultPages } else { @($defaultUrl, $defaultPages) }
     $pages = FetchPages $site $cfg[0] $cfg[1] $marker $stopAtLast
     $r = Send (WriteJson @{ site = $site; pages = $pages } "$($site)_body.json")
     if ($r[0] -ne "200") { throw "worker HTTP $($r[0]) ($($r[2])): $($r[1])" }
@@ -145,5 +146,19 @@ $ok1 = RunSite "gameclub" "config.gameclub.json" `
 $ok2 = RunSite "gametrade" "config.json" `
   "https://gametrade.jp/genshin-impact/exhibits?5star-character=all&exclude_keyword=&filter=purchasable&genseki=all&high_price=200000&identity_verification=checked&keyword=&low_price=70000&rank=all&sort=new" `
   5 'name="exhibit_data"' $false
+# Other games (Zenless Zone Zero, Wuthering Waves, ...): config.targets.json on GitHub lists them,
+# so adding a game needs no change on this PC. "site" is the kind of page: gametrade or gameclub.
+$ok3 = $true
+try {
+  $text = curl.exe -sSf --connect-timeout 20 --retry 2 --retry-all-errors "$raw/config.targets.json?v=$(Get-Date -Format yyyyMMddHHmmss)"
+  if ($LASTEXITCODE -ne 0) { throw "could not read config.targets.json" }
+  foreach ($t in (($text -join "`n") | ConvertFrom-Json)) {
+    if ($t.site -eq "gameclub") { $marker = 'class="item-row'; $last = $true } else { $marker = 'name="exhibit_data"'; $last = $false }
+    if (-not (RunSite ([string]$t.id) "" ([string]$t.url) ([int]$t.pages) $marker $last)) { $ok3 = $false }
+  }
+} catch {
+  Log "targets error $($_.Exception.Message)"
+  $ok3 = $false
+}
 RunSold
-if (-not ($ok1 -and $ok2)) { exit 1 }
+if (-not ($ok1 -and $ok2 -and $ok3)) { exit 1 }
