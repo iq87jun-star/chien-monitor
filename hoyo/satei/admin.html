@@ -66,7 +66,7 @@
   <section id="consign" hidden>
     <div class="card">
       <div class="row">
-        <select id="filter"><option value="">すべて(成約・見送り以外)</option></select>
+        <select id="filter"><option value="">すべて(成約・見送り・重複以外)</option></select>
         <span class="muted" id="ccount"></span>
       </div>
       <details style="margin-top:8px"><summary>+ 手動で追加</summary>
@@ -109,7 +109,7 @@
   </div>
 </main>
 <script type="module">
-import { fillTemplate } from "./lib/dm.js";
+import { fillTemplate, CLOSED } from "./lib/dm.js";
 const $ = (id) => document.getElementById(id);
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
 const GAME = { "genshin-impact": "原神", houkaistarrail: "スタレ", zzz: "ゼンゼロ", wutheringwaves: "鳴潮" };
@@ -162,8 +162,8 @@ async function loadStats() {
 // ── 代理出品 ──
 function renderConsign() {
   const f = $("filter").value;
-  const items = data.items.filter((c) => (f ? c.status === f : !["成約", "見送り"].includes(c.status)));
-  const due = (c) => c.next_at && c.next_at <= today && !["成約", "見送り"].includes(c.status);
+  const items = data.items.filter((c) => (f ? c.status === f : !CLOSED.includes(c.status)));
+  const due = (c) => c.next_at && c.next_at <= today && !CLOSED.includes(c.status);
   items.sort((a, b) => Number(due(b)) - Number(due(a)));
   $("ccount").textContent = `${items.length}件` + (items.some(due) ? `(連絡日が来た人 ${items.filter(due).length}件)` : "");
   $("items").innerHTML = items
@@ -190,7 +190,7 @@ function renderConsign() {
 }
 async function loadConsign() {
   data = await api("/api/consign");
-  $("filter").innerHTML = `<option value="">すべて(成約・見送り以外)</option>` + data.statuses.map((s) => `<option>${s}</option>`).join("");
+  $("filter").innerHTML = `<option value="">すべて(成約・見送り・重複以外)</option>` + data.statuses.map((s) => `<option>${s}</option>`).join("");
   renderConsign();
   renderTemplates();
 }
