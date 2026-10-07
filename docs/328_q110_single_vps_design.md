@@ -72,3 +72,9 @@
 購入して RDP に入れる状態になったら「VPS 用意できた」と送ってください。P1 から私が遠隔で進めます。
 
 Sources: [MetaQuotes VPS 価格](https://www.metatrader5.com/en/news/2300.md) / [Kamatera 4 core 8 GB](https://vpsbenchmarks.com/hosters/kamatera/plans/avail_8gb_4cores) / [Vultr Regular 8 GB](https://vpsbenchmarks.com/hosters/vultr/plans/regular_8gb_4cores) / [Contabo Cloud VPS 10](https://www.comparevps.com/contabo-servers) / [2026 VPS 価格比較](https://vpssos.com/how-much-do-1-vcpu2gb-2-vcpu-4gb-and-4-vcpu-8gb-servers-cost/)
+
+## 8.【2026-10-07 追記】別枝(money-earning-methods)の自宅 PC タスクの扱い
+ユーザー「ここら辺の自動化も纏めて集約できますか」。あちらの自動化は (1) Cloudflare Worker + D1 + Discord(判定・通知・保存・既にクラウド)、(2) Claude Routine の `relay.mjs`(クラウド)、(3) **自宅 PC の夜間タスク `gameclub_watch`(22:40)** = ゲームトレード / ゲームクラブの一覧取得と SOLD 収集 → Worker へ送信、の 3 層。(3) だけが PC 依存で、理由はサイトがクラウド IP(GitHub Actions・Cloudflare)を 403 / ボット確認で弾くため。
+- VPS 設置日に VPS の IP から両サイトを取得して試す。通れば `gametrade-watch/pc/install-gameclub.ps1` を VPS で実行してタスクを移し、自宅 PC のタスクを外す。
+- 弾かれる場合: (a) その夜間タスクだけ自宅 PC に残す(現状どおり)、(b) Tailscale の exit node を自宅(PC かルーター)に置き、VPS からの取得だけ自宅回線を出口にする。(b) は常時起動の小さな機械が自宅に要る。
+- 取引側(端末 10 本・毎時エージェント・遠隔操作)の集約はこれと独立に進める。
