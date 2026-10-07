@@ -1567,16 +1567,18 @@
    "slug": "vps_consolidation_design",
    "title": "VPS 1 台への集約設計(手元 PC 依存の解消)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/328_q110_single_vps_design.md"
    ],
    "note": "docs/317 §0 の最終解。手元 PC の毎時エージェントと MQL5 VPS の役割を 1 台の VPS に集約する構成案(費用・手順・リスク)。実施はユーザー判断",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 28
+   "order": 28,
+   "result": "設計書: Windows VPS 1 台(ロンドン 4 vCPU/8GB・月 $15〜55)に端末 10 本 + エージェント + claude remote-control。MQL5 VPS($115〜135/月)を 1 か月並走後に解約。切替は停止→装着の順(二重稼働禁止)。実施はユーザーの VPS 購入後(ユーザー 10/7 前倒し指示)"
   },
   {
    "id": "Q111",
@@ -2508,6 +2510,13 @@
    "cells": 0,
    "cumulative": 9617,
    "summary": "記録版 EA 10 本・Apps Script 受け口・取り込み側を作成(ユーザー依頼で前倒し)。配備不変"
+  },
+  {
+   "date": "2026-10-07",
+   "item": "Q110",
+   "cells": 0,
+   "cumulative": 9617,
+   "summary": "VPS 集約の設計書(ユーザー依頼で前倒し)。実施は VPS 購入後"
   }
  ]
 }
