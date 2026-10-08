@@ -118,7 +118,7 @@
   <textarea id="dmText"></textarea>
   <div class="row">
     <button type="button" id="dmCopy">📋 コピー</button>
-    <a class="open" id="dmOpen" target="_blank" rel="noopener">X を開く</a>
+    <a class="open" id="dmOpen" rel="noopener">X を開く</a>
     <button type="button" id="dmClose">閉じる</button>
   </div>
 </dialog>
@@ -142,6 +142,14 @@ async function api(path, init = {}) {
   const d = await res.json();
   if (!d.ok) throw new Error(d.error || res.status);
   return d;
+}
+// X を開くリンク。Android は X アプリを直接開く(アプリが無ければ web の X)。
+// 新しいタブで開くと、アプリに切り替わった後に空のタブが「読み込めません」になるので、同じタブで開く
+function xLink(handle) {
+  const web = handle ? `https://x.com/${handle}` : "https://x.com/messages";
+  if (!/Android/i.test(navigator.userAgent)) return web;
+  const path = handle ? `user?screen_name=${handle}` : "messages";
+  return `intent://${path}#Intent;scheme=twitter;package=com.twitter.android;S.browser_fallback_url=${encodeURIComponent(web)};end`;
 }
 // クリップボードへコピー。押した直後(画面が前にある間)に呼ぶ。古い方法も試す
 async function copyText(text) {
@@ -249,7 +257,7 @@ $("items").addEventListener("click", async (e) => {
   // 先にコピーしてから X を開く(X を同時に開くと画面の切り替わりでコピーが失敗するため、開くのはボタンで)
   $("dmTitle").textContent = `No.${id} ${t.title}`;
   $("dmText").value = text;
-  $("dmOpen").href = c.handle ? `https://x.com/${c.handle}` : "https://x.com/messages";
+  $("dmOpen").href = xLink(c.handle);
   $("dmOpen").textContent = c.handle ? `@${c.handle} の X を開く` : "X のメッセージを開く";
   $("dmDialog").showModal();
   showCopied(await copyText(text));
