@@ -111,9 +111,12 @@ test("代理出品: 査定ページからの相談と集計画面の更新を確
   const { validLead, validPatch } = await import("../src/consign.js");
   const games = ["genshin-impact", "houkaistarrail"];
   assert.deepEqual(validLead({ game: "genshin-impact", handle: "@Abc_1", wish: 50000, chars: [{ name: "夜蘭", cons: 9 }], low: 1, high: 2, sid: "x" }, games), {
-    game: "genshin-impact", handle: "Abc_1", chars: [{ name: "夜蘭", cons: 6, mochi: false }], low: 1, high: 2, wish: 50000, sid: "x",
+    game: "genshin-impact", handle: "Abc_1", name: null, chars: [{ name: "夜蘭", cons: 6, mochi: false }], low: 1, high: 2, wish: 50000, sid: "x",
   });
-  assert.equal(validLead({ game: "genshin-impact", handle: "bad handle!" }, games), null);
+  // @ID として読めない入力は断らず、呼び名にする
+  const named = validLead({ game: "genshin-impact", handle: "じゃるぎ" }, games);
+  assert.equal(named.handle, null);
+  assert.equal(named.name, "じゃるぎ");
   assert.equal(validLead({ game: "x" }, games), null);
   assert.equal(validLead({ game: "houkaistarrail" }, games).handle, null);
   assert.deepEqual(validPatch({ status: "出品中", wish: "70000", next_at: "2026-10-10", post_url: "https://evil.example/", handle: "", memo: " m " }), {

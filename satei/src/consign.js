@@ -79,13 +79,14 @@ const date = (v) => (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v 
 // 査定ページからの相談(公開)。ユーザー名・希望額は任意
 export function validLead(body, games) {
   if (!body || !games.includes(body.game)) return null;
+  // @ID として読めない入力(「じゃるぎ」のような表示名など)は断らず、呼び名として受け取る
   const handle = body.handle ? normHandle(body.handle) : null;
-  if (body.handle && !handle) return null;
+  const name = !handle && body.handle ? clean(String(body.handle), 30).replace(/^@/, "") || null : null;
   const chars = (Array.isArray(body.chars) ? body.chars : [])
     .slice(0, 60)
     .map((c) => ({ name: clean(c?.name, 30), cons: Math.min(6, Math.max(0, Number(c?.cons) | 0)), mochi: Boolean(c?.mochi) }))
     .filter((c) => c.name);
-  return { game: body.game, handle, chars, low: yen(body.low), high: yen(body.high), wish: yen(body.wish), sid: clean(body.sid, 40) };
+  return { game: body.game, handle, name, chars, low: yen(body.low), high: yen(body.high), wish: yen(body.wish), sid: clean(body.sid, 40) };
 }
 
 // 集計画面からの更新。渡された項目だけ変える
@@ -127,16 +128,16 @@ export async function createLead(env, lead, source = "tool") {
   if (same) {
     // キャラと査定額は新しい方にする。ユーザー名・希望額は、新しく書かれた時だけ上書きする
     await env.DB.prepare(
-      "UPDATE consign SET updated_at = ?, chars = ?, low = ?, high = ?, handle = COALESCE(?, handle), wish = COALESCE(?, wish) WHERE id = ?",
+      "UPDATE consign SET updated_at = ?, chars = ?, low = ?, high = ?, handle = COALESCE(?, handle), name = COALESCE(?, name), wish = COALESCE(?, wish) WHERE id = ?",
     )
-      .bind(now, JSON.stringify(lead.chars), lead.low, lead.high, lead.handle, lead.wish, same.id)
+      .bind(now, JSON.stringify(lead.chars), lead.low, lead.high, lead.handle, lead.name ?? null, lead.wish, same.id)
       .run();
     return { id: same.id, merged: true };
   }
   const r = await env.DB.prepare(
-    "INSERT INTO consign (created_at, updated_at, handle, game, chars, low, high, wish, status, sid, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, '新規', ?, ?) RETURNING id",
+    "INSERT INTO consign (created_at, updated_at, handle, name, game, chars, low, high, wish, status, sid, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '新規', ?, ?) RETURNING id",
   )
-    .bind(now, now, lead.handle, lead.game, JSON.stringify(lead.chars), lead.low, lead.high, lead.wish, lead.sid ?? "", source)
+    .bind(now, now, lead.handle, lead.name ?? null, lead.game, JSON.stringify(lead.chars), lead.low, lead.high, lead.wish, lead.sid ?? "", source)
     .first();
   return { id: r.id, merged: false };
 }
