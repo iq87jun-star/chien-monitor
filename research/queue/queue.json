@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9625,
+ "cumulative_cells": 9631,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1217,16 +1217,18 @@
    "slug": "hold_disaster_sl",
    "title": "Hold の災害 SL 水準(改良系・{10%,20%,なし} × Hold 6 銘柄)",
    "cells": 6,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/330_q90_hold_disaster_sl.md"
    ],
    "note": "改良系基準。通過 → 11 月 EA 改訂案の InpHoldSLPct",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 6
+   "order": 6,
+   "result": "改良 1/18(BTCUSD 10% のみ・Sharpe +0.02 の僅差・BTC Hold は未配備)。指数/金は 15% の有無でほぼ不変(10 年でヒット 0〜3 回・2020/2025 の V 字で損確定、2022 で保護)。InpHoldCatSLPct=15 維持。BTCUSD HoldSL10 を紙上候補に追加"
   },
   {
    "id": "Q91",
@@ -2526,6 +2528,13 @@
    "cells": 8,
    "cumulative": 9625,
    "summary": "Hold 銘柄拡張 8 セル全棄却(docs/329)。次回 Q90"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q90",
+   "cells": 6,
+   "cumulative": 9631,
+   "summary": "Hold 災害 SL 水準: 現行 15% 維持。BTCUSD 10% のみ僅差で改良系通過 → 紙上候補(docs/330)。次回 Q91"
   }
  ]
 }
