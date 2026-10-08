@@ -143,13 +143,11 @@ async function api(path, init = {}) {
   if (!d.ok) throw new Error(d.error || res.status);
   return d;
 }
-// X を開くリンク。Android は X アプリを直接開く(アプリが無ければ web の X)。
-// 新しいタブで開くと、アプリに切り替わった後に空のタブが「読み込めません」になるので、同じタブで開く
+// X を開くリンク。普通の x.com のリンクにして同じタブで開く(Android では X アプリが受け取る)。
+// 新しいタブだと X アプリに渡った後の空のタブが「読み込めません」になり、
+// intent で渡すとアプリが行き先を読まずに自分のプロフィールなどを開いてしまう
 function xLink(handle) {
-  const web = handle ? `https://x.com/${handle}` : "https://x.com/messages";
-  if (!/Android/i.test(navigator.userAgent)) return web;
-  // twitter://user?screen_name= は今の X アプリでは「読み込めません」になるので、web と同じ URL をアプリに渡す
-  return `intent://${web.replace("https://", "")}#Intent;scheme=https;package=com.twitter.android;S.browser_fallback_url=${encodeURIComponent(web)};end`;
+  return handle ? `https://x.com/${handle}` : "https://x.com/messages";
 }
 // クリップボードへコピー。押した直後(画面が前にある間)に呼ぶ。古い方法も試す
 async function copyText(text) {
