@@ -42,6 +42,10 @@
   .dms { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
   .dms button { background:var(--bg); color:var(--ink); border:1px solid var(--accent); font-size:13px; padding:6px 10px; }
   .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:8px; }
+  dialog.dm { width:min(560px, calc(100% - 32px)); border:1px solid var(--line); border-radius:14px; background:var(--card, var(--bg)); color:var(--ink); padding:16px; }
+  dialog.dm::backdrop { background:rgba(0,0,0,.45); }
+  dialog.dm textarea { width:100%; min-height:220px; box-sizing:border-box; }
+  dialog.dm .open { display:inline-block; padding:10px 16px; border-radius:10px; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; }
   .toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:10px; font-size:14px; }
 </style>
 </head>
@@ -108,6 +112,16 @@
     <div class="card wrap"><table><thead><tr><th>日時</th><th>種類</th><th>ゲーム</th><th>買取額</th><th>キャラ</th></tr></thead><tbody id="recent"></tbody></table></div>
   </div>
 </main>
+<dialog class="dm" id="dmDialog">
+  <b id="dmTitle"></b>
+  <p class="muted" id="dmMsg" style="margin:6px 0"></p>
+  <textarea id="dmText"></textarea>
+  <div class="row">
+    <button type="button" id="dmCopy">📋 コピー</button>
+    <a class="open" id="dmOpen" target="_blank" rel="noopener">X を開く</a>
+    <button type="button" id="dmClose">閉じる</button>
+  </div>
+</dialog>
 <script type="module">
 import { fillTemplate, CLOSED } from "./lib/dm.js";
 const $ = (id) => document.getElementById(id);
@@ -128,6 +142,23 @@ async function api(path, init = {}) {
   const d = await res.json();
   if (!d.ok) throw new Error(d.error || res.status);
   return d;
+}
+// クリップボードへコピー。押した直後(画面が前にある間)に呼ぶ。古い方法も試す
+async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch {
+    const ta = $("dmText");
+    ta.focus();
+    ta.select();
+    try { return document.execCommand("copy"); } catch { return false; }
+  }
+}
+function showCopied(ok) {
+  $("dmMsg").textContent = ok
+    ? "✅ コピーしました。「X を開く」→ ✉ メッセージ → 貼り付けて送ってください"
+    : "⚠️ 自動でコピーできませんでした。「📋 コピー」を押すか、下の文を長押しでコピーしてください";
 }
 function toast(msg) {
   const t = document.createElement("div");
@@ -215,12 +246,18 @@ $("items").addEventListener("click", async (e) => {
   const t = data.templates.find((x) => x.key === btn.dataset.key);
   const text = fillTemplate(t.body, c);
   if (t.body.includes("{投稿URL}") && !c.post_url) return toast("先に「紹介した投稿のURL」を保存してください");
-  const tab = window.open(c.handle ? `https://x.com/${c.handle}` : "https://x.com/messages", "_blank");
-  try { await navigator.clipboard.writeText(text); toast(`No.${id} の文面をコピーしました。DMに貼り付けて送ってください`); }
-  catch { prompt("コピーして DM に貼り付けてください", text); }
-  if (!tab) location.href = c.handle ? `https://x.com/${c.handle}` : "https://x.com/messages";
+  // 先にコピーしてから X を開く(X を同時に開くと画面の切り替わりでコピーが失敗するため、開くのはボタンで)
+  $("dmTitle").textContent = `No.${id} ${t.title}`;
+  $("dmText").value = text;
+  $("dmOpen").href = c.handle ? `https://x.com/${c.handle}` : "https://x.com/messages";
+  $("dmOpen").textContent = c.handle ? `@${c.handle} の X を開く` : "X のメッセージを開く";
+  $("dmDialog").showModal();
+  showCopied(await copyText(text));
   api(`/api/consign/${id}/dm`, { method: "POST", body: JSON.stringify({ template: t.key }) }).catch(() => {});
 });
+$("dmCopy").addEventListener("click", async () => showCopied(await copyText($("dmText").value)));
+$("dmClose").addEventListener("click", () => $("dmDialog").close());
+$("dmOpen").addEventListener("click", () => setTimeout(() => $("dmDialog").close(), 300));
 $("n-add").addEventListener("click", async () => {
   try {
     const d = await api("/api/consign", { method: "POST", body: JSON.stringify({ handle: $("n-handle").value, name: $("n-name").value, game: $("n-game").value, wish: $("n-wish").value, memo: $("n-memo").value, status: "検討中" }) });
