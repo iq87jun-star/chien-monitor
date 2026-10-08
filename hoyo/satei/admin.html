@@ -148,8 +148,8 @@ async function api(path, init = {}) {
 function xLink(handle) {
   const web = handle ? `https://x.com/${handle}` : "https://x.com/messages";
   if (!/Android/i.test(navigator.userAgent)) return web;
-  const path = handle ? `user?screen_name=${handle}` : "messages";
-  return `intent://${path}#Intent;scheme=twitter;package=com.twitter.android;S.browser_fallback_url=${encodeURIComponent(web)};end`;
+  // twitter://user?screen_name= は今の X アプリでは「読み込めません」になるので、web と同じ URL をアプリに渡す
+  return `intent://${web.replace("https://", "")}#Intent;scheme=https;package=com.twitter.android;S.browser_fallback_url=${encodeURIComponent(web)};end`;
 }
 // クリップボードへコピー。押した直後(画面が前にある間)に呼ぶ。古い方法も試す
 async function copyText(text) {
