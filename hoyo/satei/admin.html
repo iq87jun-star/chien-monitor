@@ -117,8 +117,8 @@
   <p class="muted" id="dmMsg" style="margin:6px 0"></p>
   <textarea id="dmText"></textarea>
   <div class="row">
-    <button type="button" id="dmCopy">📋 コピー</button>
-    <a class="open" id="dmOpen" rel="noopener">X を開く</a>
+    <button type="button" id="dmCopy">📋 文面をコピー</button>
+    <button type="button" id="dmHandle" hidden></button>
     <button type="button" id="dmClose">閉じる</button>
   </div>
 </dialog>
@@ -143,12 +143,6 @@ async function api(path, init = {}) {
   if (!d.ok) throw new Error(d.error || res.status);
   return d;
 }
-// X を開くリンク。普通の x.com のリンクにして同じタブで開く(Android では X アプリが受け取る)。
-// 新しいタブだと X アプリに渡った後の空のタブが「読み込めません」になり、
-// intent で渡すとアプリが行き先を読まずに自分のプロフィールなどを開いてしまう
-function xLink(handle) {
-  return handle ? `https://x.com/${handle}` : "https://x.com/messages";
-}
 // クリップボードへコピー。押した直後(画面が前にある間)に呼ぶ。古い方法も試す
 async function copyText(text) {
   try {
@@ -161,9 +155,10 @@ async function copyText(text) {
     try { return document.execCommand("copy"); } catch { return false; }
   }
 }
+let dmTarget = "相手";
 function showCopied(ok) {
   $("dmMsg").textContent = ok
-    ? "✅ コピーしました。「X を開く」→ ✉ メッセージ → 貼り付けて送ってください"
+    ? `✅ 文面をコピーしました。X アプリで ${dmTarget} を開き、✉ メッセージに貼り付けて送ってください`
     : "⚠️ 自動でコピーできませんでした。「📋 コピー」を押すか、下の文を長押しでコピーしてください";
 }
 function toast(msg) {
@@ -252,18 +247,24 @@ $("items").addEventListener("click", async (e) => {
   const t = data.templates.find((x) => x.key === btn.dataset.key);
   const text = fillTemplate(t.body, c);
   if (t.body.includes("{投稿URL}") && !c.post_url) return toast("先に「紹介した投稿のURL」を保存してください");
-  // 先にコピーしてから X を開く(X を同時に開くと画面の切り替わりでコピーが失敗するため、開くのはボタンで)
+  // 文面をコピーして確認の画面を出す。X は自分で開く(管理画面から X を開くと、端末によって
+  // 読み込めない・自分のプロフィールが開くなどがあったため、リンクは置かない)
   $("dmTitle").textContent = `No.${id} ${t.title}`;
   $("dmText").value = text;
-  $("dmOpen").href = xLink(c.handle);
-  $("dmOpen").textContent = c.handle ? `@${c.handle} の X を開く` : "X のメッセージを開く";
+  dmTarget = c.handle ? `@${c.handle}` : (c.name ? `${c.name}さん` : "相手");
+  $("dmHandle").hidden = !c.handle;
+  $("dmHandle").textContent = `📋 @${c.handle ?? ""} をコピー`;
+  $("dmHandle").dataset.handle = c.handle ?? "";
   $("dmDialog").showModal();
   showCopied(await copyText(text));
   api(`/api/consign/${id}/dm`, { method: "POST", body: JSON.stringify({ template: t.key }) }).catch(() => {});
 });
 $("dmCopy").addEventListener("click", async () => showCopied(await copyText($("dmText").value)));
 $("dmClose").addEventListener("click", () => $("dmDialog").close());
-$("dmOpen").addEventListener("click", () => setTimeout(() => $("dmDialog").close(), 300));
+$("dmHandle").addEventListener("click", async () => {
+  const ok = await copyText($("dmHandle").dataset.handle);
+  $("dmMsg").textContent = ok ? "✅ ユーザー名をコピーしました。X の検索に貼り付けてください(文面はもう一度「📋 文面をコピー」で)" : "⚠️ コピーできませんでした";
+});
 $("n-add").addEventListener("click", async () => {
   try {
     const d = await api("/api/consign", { method: "POST", body: JSON.stringify({ handle: $("n-handle").value, name: $("n-name").value, game: $("n-game").value, wish: $("n-wish").value, memo: $("n-memo").value, status: "検討中" }) });
