@@ -1,5 +1,5 @@
 {
- "_comment": "config.json にコピーして編集(config.json は git 管理外)。webhook_url と tradovate.* は秘密。qty は docs/336 §4 の導出(50k 口座・×3・各 $50k 名目)",
+ "_comment": "config.json にコピーして編集(config.json は git 管理外)。webhook_url と tradovate.* は秘密。qty は docs/336 §4/§9: 50K=MES2/MNQ1/MYM2(計5)、100K=4/2/4(10)、150K=6/3/6(15)。max_contracts_total を同じ合計に",
  "transport": "dry",
  "webhook_url": "https://webhooks.traderspost.io/trading/webhook/<uuid>/<password>",
  "symbols": {"MES": {"qty": 2, "cfd": "US500"}, "MNQ": {"qty": 1, "cfd": "NAS100"}, "MYM": {"qty": 2, "cfd": "US30"}},
