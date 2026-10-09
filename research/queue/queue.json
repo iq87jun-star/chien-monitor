@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9631,
+ "cumulative_cells": 9635,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1643,17 +1643,19 @@
    "slug": "mon_index_intraday",
    "title": "Mon 指数の日中版(改良系・4 セル): 月曜 13 UTC 建て → 同日 20 UTC 決済 vs 配備形 24h",
    "cells": 4,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
     "docs/322_improvement_program_2026-11.md",
-    "docs/332_q113_futures_prop_fit.md"
+    "docs/332_q113_futures_prop_fit.md",
+    "docs/333_q114_mon_index_intraday.md"
    ],
    "note": "docs/332 §2 の副産物。US500 / NAS100 / US30 / JP225 の h13 について、日中版(→ 20 UTC)が 24h 版を改良系基準(IS・OOS 両方で Sharpe 改善 かつ 最悪月が悪化しない)で上回るか。h14 は参照のみ。通過 → 紙上候補(CFD でも使える)・11 月改訂案の Mon 指数レグ(11988011 G案)の出口候補。先物口座の購入とは独立",
    "registered": "2026-10-09",
    "program": "docs/322",
-   "order": 32
+   "order": 32,
+   "result": "改良 2/4: US30(Sharpe +0.06/+0.20)・JP225(IS 0.64→0.98・OOS −0.56→1.52・最悪月改善)で成立。US500/NAS100 は OOS 改善だが IS 悪化で不成立 → 11988011 の出口は不変。US30/JP225 を紙上候補 MonIdxIntra に追加"
   }
  ],
  "runs": [
@@ -2616,6 +2618,13 @@
    "cells": 0,
    "cumulative": 9631,
    "summary": "ユーザー「登録」: Q114(Mon 指数の日中版・改良系・4 セル)を order 32 で追加(docs/322 §5c)"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q114",
+   "cells": 4,
+   "cumulative": 9635,
+   "summary": "Mon 指数の日中版: US30・JP225 で改良系通過(紙上候補)、US500/NAS100 不成立(docs/333)。ユーザー「Q114 を先に」で前倒し"
   }
  ]
 }
