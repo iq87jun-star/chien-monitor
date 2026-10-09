@@ -1,0 +1,83 @@
+# ポケカ 国内→海外 価格差リスト(arbitrage/)
+# 毎朝、海外相場(Cardmarket・toreca の取得処理を流用)を取り直し、高いカードを楽天で1枚ずつ検索して
+# 手残りを計算する。結果は arbitrage/report.md と arbitrage/data/latest.json にコミットし、
+# Discord のウェブフックがあれば上位10枚を送る。
+#
+# Secrets:
+#   RAKUTEN_APP_ID             … 楽天アプリID(必須。pokeca/ 等と共用。未設定の間は何もせず終わる)
+#   RAKUTEN_AFFILIATE_ID       … 楽天アフィリエイトID(任意。出品リンクがアフィリエイトリンクになる)
+#   ARBITRAGE_DISCORD_WEBHOOK  … 通知先の Discord ウェブフックURL(任意)
+
+name: arbitrage
+
+on:
+  schedule:
+    - cron: "13 22 * * *" # 毎日 7:13(日本時間)。Cardmarket の価格更新(8時UTC頃)の後
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "arbitrage/**"
+      - "extension/src/matcher.js"
+      - ".github/workflows/arbitrage.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: arbitrage
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: cd arbitrage && npm test
+
+  update:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    env:
+      RAKUTEN_APP_ID: ${{ secrets.RAKUTEN_APP_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Warn if Rakuten app ID is missing
+        if: env.RAKUTEN_APP_ID == ''
+        run: echo "::warning::RAKUTEN_APP_ID が未設定のため価格差リストを作れません(LAUNCH-CHECKLIST.md のフェーズ2)"
+
+      - name: Refresh overseas prices
+        if: env.RAKUTEN_APP_ID != ''
+        run: node toreca/pipeline/fetch-data.mjs
+
+      - name: Build list
+        if: env.RAKUTEN_APP_ID != ''
+        env:
+          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+          ARBITRAGE_DISCORD_WEBHOOK: ${{ secrets.ARBITRAGE_DISCORD_WEBHOOK }}
+        run: node arbitrage/run.mjs
+
+      - name: Commit list
+        if: env.RAKUTEN_APP_ID != ''
+        run: |
+          git config user.name "market-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          # 海外相場の取り直し分(toreca/data/raw)はコミットしない(toreca の更新はそちらのワークフローに任せる)
+          git add arbitrage/data arbitrage/report.md
+          if git diff --cached --quiet; then
+            echo "no changes"
+          else
+            git commit -m "chore: update arbitrage list [skip ci]"
+            git stash --include-untracked || true
+            for i in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
+              sleep $((i * 5))
+            done
+          fi
