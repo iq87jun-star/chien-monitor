@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9639,
+ "cumulative_cells": 9640,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1674,6 +1674,24 @@
    "program": "docs/322",
    "order": 33,
    "result": "週次リターン相関 0.99・符号一致 97〜100%・先物が +1.4〜3.5 bps/回(コスト差)。CFD の Mon 指数結果は先物でそのまま成立。標準通過 0(IS 8 か月で判定不能)。NKD は米ドル建てで長期は円建て JP225 と乖離 → NIY 要確認"
+  },
+  {
+   "id": "Q116",
+   "slug": "niy_vs_jp225",
+   "title": "円建て日経先物 NIY=F で Mon JP225 13→20 UTC を再現し JP225 CFD・NKD と比較(1 セル + 参照)",
+   "cells": 1,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/335_q116_niy_vs_jp225.md"
+   ],
+   "note": "ユーザー「NIY も登録して直ぐに進めてください」(docs/334 §4 の要確認)。Yahoo の NIY 日足は清算値のみのバーが多く、日足参照は清算→清算に変更。コスト 1.5 bps",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 34,
+   "result": "H1 13→20: NIY vs JP225 CFD 相関 1.000・符号一致 99%・差 +1.8 bps(コスト差)。NIY vs NKD 0.999。日足清算→清算は 0.90〜0.95。日経系は先物(円建て/ドル建て)に流用可。先物口座ではサイズ過大(NIY 1 枚 ≈ 2,000 万円)→ 日経は CFD 側に残す"
   }
  ],
  "runs": [
@@ -2650,6 +2668,13 @@
    "cells": 4,
    "cumulative": 9639,
    "summary": "先物 vs CFD: 相関 0.99、先物はコスト差分だけ有利。CFD 研究の先物流用に根拠(docs/334)。ユーザー指示で登録即実行"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q116",
+   "cells": 1,
+   "cumulative": 9640,
+   "summary": "NIY(円建て)vs JP225 CFD: 相関 1.000、NKD とも 0.999。docs/334 の要確認を解消(docs/335)。ユーザー指示で登録即実行"
   }
  ]
 }
