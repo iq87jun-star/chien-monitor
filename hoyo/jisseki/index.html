@@ -52,7 +52,7 @@
 </nav>
 <main>
   <h1>🌸 メルルの取引実績</h1>
-  <p class="lead">原神・崩壊スターレイルのアカウント取引の実績です。すべて <b>Discord の第三者仲介サービス</b>を通して成立した取引を載せています(分割払いは支払い中のものを含みます)。お相手のお名前は伏せています。</p>
+  <p class="lead">原神・崩壊スターレイルのアカウント取引の実績です。ほとんどが <b>Discord の第三者仲介サービス</b>を通して成立した取引です(分割払いは支払い中のものを含みます)。お相手のお名前は伏せています。</p>
 
   <div class="stats">
     <div class="stat"><span>累計の取引額</span><b>300<small>万円超</small></b></div>
@@ -80,9 +80,11 @@
   <a href="/hoyo/">原神・スタレ ツール</a> ・ <a href="/privacy.html">プライバシーポリシー</a>
 </footer>
 <script>
-// 取引の記録(Discord の仲介チャンネルの記録から。金額は千円単位、game は genshin / starrail / null=記録に無し)
+// 取引の記録(Discord の仲介チャンネル・DM の記録から。金額は千円単位、game は genshin / starrail / null=記録に無し、
+// direct = 仲介を通さない直接取引)
 const TRADES = [
   { d: "2026-09", game: "genshin", k: 100, split: true },
+  { d: "2026-02", game: "genshin", k: 220, split: false, direct: true },
   { d: "2026-02", game: "starrail", k: 150, split: true },
   { d: "2026-01", game: "genshin", k: 120, split: true },
   { d: "2026-01", game: "starrail", k: 100, split: true },
@@ -115,7 +117,7 @@ document.getElementById("list").innerHTML = TRADES.map((t) => {
   const [y, m] = t.d.split("-");
   const g = GAME[t.game];
   return `<div class="row"><span class="d">${y}年${Number(m)}月</span>
-    <span class="g">${g ? `<span class="tag ${g[1]}">${g[0]}</span>` : `<span class="tag">アカウント</span>`}<span class="tag">${t.split ? "分割払い" : "一括"}</span><span class="tag ok">✓ 仲介で成立</span></span>
+    <span class="g">${g ? `<span class="tag ${g[1]}">${g[0]}</span>` : `<span class="tag">アカウント</span>`}<span class="tag">${t.split ? "分割払い" : "一括"}</span>${t.direct ? `<span class="tag">直接取引</span>` : `<span class="tag ok">✓ 仲介で成立</span>`}</span>
     <span class="p">${yen(t.k)}</span></div>`;
 }).join("");
 </script>
