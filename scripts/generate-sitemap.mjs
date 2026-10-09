@@ -8,7 +8,7 @@ const urls = [{ loc: `${BASE}/`, changefreq: "daily", priority: "1.0" }];
 
 // 原神・スタレ ツール(hoyo/)
 urls.push({ loc: `${BASE}/hoyo/`, changefreq: "weekly", priority: "0.9" });
-for (const page of ["souba", "satei", "theater"]) urls.push({ loc: `${BASE}/hoyo/${page}/`, changefreq: "weekly", priority: "0.8" });
+for (const page of ["souba", "satei", "jisseki", "theater"]) urls.push({ loc: `${BASE}/hoyo/${page}/`, changefreq: "weekly", priority: "0.8" });
 
 for (const site of SITES) {
   urls.push({ loc: `${BASE}/${site}/`, changefreq: "daily", priority: "0.9" });
