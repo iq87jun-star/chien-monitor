@@ -81,7 +81,7 @@
 </footer>
 <script>
 // 取引の記録(Discord の仲介チャンネル・DM の記録から。金額は千円単位、game は genshin / starrail / null=記録に無し、
-// direct = 仲介を通さない直接取引)
+// direct = 仲介を通さない直接取引、buy = メルルが買い取った取引)
 const TRADES = [
   { d: "2026-09", game: "genshin", k: 100, split: true },
   { d: "2026-06", game: "genshin", k: 160, split: true, direct: true },
@@ -109,7 +109,11 @@ const TRADES = [
   { d: "2025-02", game: "genshin", k: 80, split: true },
   { d: "2025-01", game: null, k: 54, split: false },
   { d: "2025-01", game: "genshin", k: 120, split: true },
+  { d: "2024-12", game: "genshin", k: 80, split: false, buy: true },
+  { d: "2024-11", game: "genshin", k: 100, split: true },
   { d: "2024-11", game: "genshin", k: 80, split: false },
+  { d: "2024-11", game: "genshin", k: 140, split: false },
+  { d: "2024-09", game: "genshin", k: 50, split: true },
 ];
 const GAME = { genshin: ["原神", "gs"], starrail: ["スタレ", "sr"] };
 const yen = (k) => `${(k / 10).toLocaleString("ja-JP", { maximumFractionDigits: 2 })}万円`;
@@ -121,7 +125,7 @@ document.getElementById("list").innerHTML = TRADES.map((t) => {
   const [y, m] = t.d.split("-");
   const g = GAME[t.game];
   return `<div class="row"><span class="d">${y}年${Number(m)}月</span>
-    <span class="g">${g ? `<span class="tag ${g[1]}">${g[0]}</span>` : `<span class="tag">アカウント</span>`}<span class="tag">${t.split ? "分割払い" : "一括"}</span>${t.direct ? `<span class="tag">直接取引</span>` : `<span class="tag ok">✓ 仲介で成立</span>`}</span>
+    <span class="g">${g ? `<span class="tag ${g[1]}">${g[0]}</span>` : `<span class="tag">アカウント</span>`}${t.buy ? `<span class="tag">メルルが買取</span>` : ""}<span class="tag">${t.split ? "分割払い" : "一括"}</span>${t.direct ? `<span class="tag">直接取引</span>` : `<span class="tag ok">✓ 仲介で成立</span>`}</span>
     <span class="p">${yen(t.k)}</span></div>`;
 }).join("");
 </script>
