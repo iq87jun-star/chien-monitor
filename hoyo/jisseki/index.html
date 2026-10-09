@@ -65,11 +65,11 @@
   <ul class="points">
     <li><b>第三者の仲介</b> … 仲介人がアカウントと代金を預かり、双方の確認が済んでから受け渡します。</li>
     <li><b>取り返し対策</b> … 仲介サービスの手順で、メール・連携の取り返し対策まで行います。</li>
-    <li><b>分割払いにも対応</b> … これまでの取引の半分以上が分割払いです(仲介人がアカウントを預かる形)。</li>
+    <li><b>分割払いにも対応</b> … これまでの取引の半分以上が分割払いです。</li>
   </ul>
 
   <h2>取引の一覧</h2>
-  <p class="note">日付は仲介を始めた日です。金額は取引額(仲介手数料を除く)です。</p>
+  <p class="note">日付は取引を決めた月です。金額は取引額(仲介手数料を除く)です。</p>
   <div class="list" id="list"></div>
 
   <a class="cta" href="https://x.com/Meruru_Genshin" target="_blank" rel="noopener">X(@Meruru_Genshin)で相談する</a>
@@ -84,6 +84,10 @@
 // direct = 仲介を通さない直接取引)
 const TRADES = [
   { d: "2026-09", game: "genshin", k: 100, split: true },
+  { d: "2026-06", game: "genshin", k: 160, split: true, direct: true },
+  { d: "2026-04", game: "genshin", k: 120, split: true, direct: true },
+  { d: "2026-04", game: null, k: 150, split: true, direct: true },
+  { d: "2026-04", game: null, k: 100, split: true, direct: true },
   { d: "2026-02", game: "genshin", k: 220, split: false, direct: true },
   { d: "2026-02", game: "starrail", k: 150, split: true },
   { d: "2026-01", game: "genshin", k: 120, split: true },
