@@ -5,10 +5,11 @@
   entry : 月曜 13:00 UTC(= 22:00 JST)。CME 休場・HALT ファイル・当日既建ての場合は何もしない。
   exit  : 月曜 20:00 UTC(= 火 05:00 JST)。当日建てた分を flat にする(sentiment=flat)。
   check : 20:30 UTC。state に未決済が残っていれば exit を再送(16:10 ET の強制清算より前の最後の保険)。
+  keepalive: 火曜 13:00 UTC(= 22:00 JST)。前日の月曜が休場等で建てなかった週だけ、最小 1 枚を建てて 60 秒後に決済する(sim 本口座の「7 日無取引で閉鎖」を避ける保守取引)。
   status: 設定・次回の限月・枚数を印字。
 秘密(webhook URL・API キー)は config.json(git 管理外)にだけ置く。公開リポジトリには config.example.json のみ。"""
 import argparse, csv, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.1"
+VERSION = "0.2"
 HERE = os.path.dirname(os.path.abspath(__file__))
 MONTH_CODES = {3: "H", 6: "M", 9: "U", 12: "Z"}
 DEFAULT_SYMBOLS = {"MES": {"qty": 2, "cfd": "US500"}, "MNQ": {"qty": 1, "cfd": "NAS100"}, "MYM": {"qty": 2, "cfd": "US30"}}
@@ -132,10 +133,21 @@ def run(cfg, action, day, transport):
             res = transport.send(dict(ticker=l["contract"], action="sell", sentiment="flat", time=dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), extras={"bot": f"chien-mffu-{VERSION}", "why": action}))
             log_row(cfg, action=action, contract=l["contract"], qty=l["qty"], transport=transport.name, result=res)
         rec["exited"] = True; st.save(); return
+    if action == "keepalive":
+        mon = day - dt.timedelta(days=day.weekday())
+        if day.weekday() != 1: print("keepalive: not tuesday"); return
+        if st.d.get(mon.isoformat(), {}).get("entered"): print("keepalive: traded this week"); return
+        if st.d.get(key, {}).get("keepalive"): print("keepalive: already done"); return
+        if not legs: print("keepalive: no legs"); return
+        root = cfg.get("keepalive_symbol", legs[0]["root"]); c = front_contract(root, day); wait = int(cfg.get("keepalive_wait_sec", 60))
+        r1 = transport.send(dict(ticker=c, action="buy", quantity=1, extras={"bot": f"chien-mffu-{VERSION}", "why": "keepalive"}))
+        time.sleep(wait if transport.name != "dry" else 0)
+        r2 = transport.send(dict(ticker=c, action="sell", sentiment="flat", extras={"bot": f"chien-mffu-{VERSION}", "why": "keepalive"}))
+        st.d.setdefault(key, {})["keepalive"] = True; st.save(); log_row(cfg, action="keepalive", contract=c, qty=1, transport=transport.name, result=f"{r1} / {r2}"); return
     raise SystemExit(f"unknown action {action}")
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument("--config", default=os.path.join(HERE, "config.json")); ap.add_argument("--action", required=True, choices=["entry", "exit", "check", "status"])
+    ap = argparse.ArgumentParser(); ap.add_argument("--config", default=os.path.join(HERE, "config.json")); ap.add_argument("--action", required=True, choices=["entry", "exit", "check", "keepalive", "status"])
     ap.add_argument("--date", default=None, help="判断日(UTC)。既定は今日"); ap.add_argument("--dry", action="store_true", help="transport を dry に強制"); a = ap.parse_args()
     cfg = json.load(open(a.config, encoding="utf-8")) if os.path.exists(a.config) else {}
     day = dt.date.fromisoformat(a.date) if a.date else dt.datetime.utcnow().date()

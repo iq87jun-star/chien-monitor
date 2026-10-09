@@ -45,3 +45,11 @@ def test_check_resends_when_not_exited():
     with tempfile.TemporaryDirectory() as tmp:
         cfg = _cfg(tmp); tr = Rec(); day = dt.date(2026, 10, 12)
         B.run(cfg, "entry", day, tr); B.run(cfg, "check", day, tr); assert len(tr.sent) == 6 and tr.sent[-1]["extras"]["why"] == "check"
+
+def test_keepalive_only_after_missed_monday():
+    with tempfile.TemporaryDirectory() as tmp:
+        cfg = _cfg(tmp); tr = Rec()
+        B.run(cfg, "keepalive", dt.date(2026, 9, 8), tr); assert len(tr.sent) == 2 and tr.sent[0]["quantity"] == 1 and tr.sent[1]["sentiment"] == "flat"   # 9/7 Labor Day の翌火曜
+        B.run(cfg, "keepalive", dt.date(2026, 9, 8), tr); assert len(tr.sent) == 2                                   # 二重にしない
+        B.run(cfg, "entry", dt.date(2026, 10, 12), tr); n = len(tr.sent); B.run(cfg, "keepalive", dt.date(2026, 10, 13), tr); assert len(tr.sent) == n   # 月曜に建てた週は不要
+        B.run(cfg, "keepalive", dt.date(2026, 10, 14), tr); assert len(tr.sent) == n                                 # 火曜以外は何もしない
