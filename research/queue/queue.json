@@ -1625,16 +1625,18 @@
    "slug": "futures_prop_fit",
    "title": "先物プロップの適合性(診断): CME ミクロ 10 銘柄に族を写像し、17:00 ET 前フラット制約下で残るセルを数える",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/332_q113_futures_prop_fit.md"
    ],
    "note": "診断(セル 0・探索しない)。MES/MNQ/M2K/MYM/MGC/SIL/MCL/MNG/6J/MBT に Mon 指数・Hold・Roll5・v4 を写像し、『日次クローズ前にフラット・週末不可・EOD トレーリング DD・一貫性ルール』の下で既存セル(H1 データの日中版)が IS/OOS で符号を保つかを数える。残るセルがあれば次キューの探索候補として事前登録案を書く(基準は docs/244 §1 のまま)。残らなければ撤退を提案",
    "registered": "2026-10-09",
    "program": "docs/322",
-   "order": 31
+   "order": 31,
+   "result": "保留: 先物プロップは全社フラット 16:10〜16:59 ET・持ち越し不可(Elite Diamond Hands のみ例外)。使えるのは日中版 Mon 指数 1 族(7/8 セルで符号維持・標準基準は 0・JP225 は日中版が OOS 1.52)。50k MC ×3 で到達 74%/失格 22%・年率 +9.6%。自動化可で VPS 可は MFFU と Tradeify。実験するなら MFFU Rapid 50k。次キュー候補: 日中版 Mon 指数 4 セル(改良系)"
   }
  ],
  "runs": [
@@ -2583,6 +2585,13 @@
    "cells": 0,
    "cumulative": 9631,
    "summary": "暗号資産プロップ適合(診断): 見送り(docs/331)。ユーザー「直ぐに進められますか」で前倒し"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q113",
+   "cells": 0,
+   "cumulative": 9631,
+   "summary": "先物プロップ適合(診断): 保留(docs/332)。日中版 Mon 指数は符号維持・MFFU Rapid 50k が唯一の候補。ユーザー「直ぐに進められますか」で前倒し"
   }
  ]
 }
