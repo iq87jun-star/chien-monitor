@@ -1637,6 +1637,23 @@
    "program": "docs/322",
    "order": 31,
    "result": "保留: 先物プロップは全社フラット 16:10〜16:59 ET・持ち越し不可(Elite Diamond Hands のみ例外)。使えるのは日中版 Mon 指数 1 族(7/8 セルで符号維持・標準基準は 0・JP225 は日中版が OOS 1.52)。50k MC ×3 で到達 74%/失格 22%・年率 +9.6%。自動化可で VPS 可は MFFU と Tradeify。実験するなら MFFU Rapid 50k。次キュー候補: 日中版 Mon 指数 4 セル(改良系)"
+  },
+  {
+   "id": "Q114",
+   "slug": "mon_index_intraday",
+   "title": "Mon 指数の日中版(改良系・4 セル): 月曜 13 UTC 建て → 同日 20 UTC 決済 vs 配備形 24h",
+   "cells": 4,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/332_q113_futures_prop_fit.md"
+   ],
+   "note": "docs/332 §2 の副産物。US500 / NAS100 / US30 / JP225 の h13 について、日中版(→ 20 UTC)が 24h 版を改良系基準(IS・OOS 両方で Sharpe 改善 かつ 最悪月が悪化しない)で上回るか。h14 は参照のみ。通過 → 紙上候補(CFD でも使える)・11 月改訂案の Mon 指数レグ(11988011 G案)の出口候補。先物口座の購入とは独立",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 32
   }
  ],
  "runs": [
@@ -2592,6 +2609,13 @@
    "cells": 0,
    "cumulative": 9631,
    "summary": "先物プロップ適合(診断): 保留(docs/332)。日中版 Mon 指数は符号維持・MFFU Rapid 50k が唯一の候補。ユーザー「直ぐに進められますか」で前倒し"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "登録",
+   "cells": 0,
+   "cumulative": 9631,
+   "summary": "ユーザー「登録」: Q114(Mon 指数の日中版・改良系・4 セル)を order 32 で追加(docs/322 §5c)"
   }
  ]
 }
