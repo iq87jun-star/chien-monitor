@@ -1692,6 +1692,24 @@
    "program": "docs/322",
    "order": 34,
    "result": "H1 13→20: NIY vs JP225 CFD 相関 1.000・符号一致 99%・差 +1.8 bps(コスト差)。NIY vs NKD 0.999。日足清算→清算は 0.90〜0.95。日経系は先物(円建て/ドル建て)に流用可。先物口座ではサイズ過大(NIY 1 枚 ≈ 2,000 万円)→ 日経は CFD 側に残す"
+  },
+  {
+   "id": "Q117",
+   "slug": "mffu_tradovate_bot",
+   "title": "MFFU(Tradovate)向け先物ボット: Mon 指数 日中版(MES/MNQ/MYM・13→20 UTC)の発注ボット実装と紙上パリティ",
+   "cells": 0,
+   "status": "in_progress",
+   "sessions_planned": 3,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/336_q117_mffu_tradovate_bot.md"
+   ],
+   "note": "ユーザー「MFFU の Tradovate ボット実装を登録して進めてください」。判断と発注を分離(transport = dry / webhook(TradersPost)/ tradovate REST 未検証)。プロップ口座には Tradovate API キーが出ないため送信は Webhook 橋渡しが前提。MFFU の自動化規約(監視なし完全自律の可否)は購入前に書面確認。秘密は config.json(git 管理外)のみ",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 35,
+   "result": "v0.1: ops/futures/mffu_bot.py(限月ロール・休場/HALT/冪等・3 実行 entry/exit/check)+ テスト 5 本通過 + タスク登録 ps1 + 設計 docs/336。次: MFFU 規約確認 → 購入 → TradersPost 紙口座で 4 週パリティ → 切替"
   }
  ],
  "runs": [
@@ -2675,6 +2693,13 @@
    "cells": 1,
    "cumulative": 9640,
    "summary": "NIY(円建て)vs JP225 CFD: 相関 1.000、NKD とも 0.999。docs/334 の要確認を解消(docs/335)。ユーザー指示で登録即実行"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q117",
+   "cells": 0,
+   "cumulative": 9640,
+   "summary": "先物ボット v0.1 実装(オフライン検証済み)。Tradovate 直接 API はプロップ口座で不可と判明 → Webhook 橋渡し(TradersPost)を推奨(docs/336)"
   }
  ]
 }

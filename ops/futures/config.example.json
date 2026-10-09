@@ -1,0 +1,11 @@
+{
+ "_comment": "config.json にコピーして編集(config.json は git 管理外)。webhook_url と tradovate.* は秘密。qty は docs/336 §4 の導出(50k 口座・×3・各 $50k 名目)",
+ "transport": "dry",
+ "webhook_url": "https://webhooks.traderspost.io/trading/webhook/<uuid>/<password>",
+ "symbols": {"MES": {"qty": 2, "cfd": "US500"}, "MNQ": {"qty": 1, "cfd": "NAS100"}, "MYM": {"qty": 2, "cfd": "US30"}},
+ "max_contracts_total": 5,
+ "holidays_csv": "C:\\chien\\research\\data_ext\\holidays_us_uk_au_nz_2016_2027.csv",
+ "log_csv": "G:\\マイドライブ\\chien_ops\\futures\\mffu_log.csv",
+ "state_json": "C:\\chien\\ops\\futures\\out\\state.json",
+ "tradovate": {"host": "https://demo.tradovateapi.com/v1", "user": "", "password": "", "cid": "", "sec": "", "device_id": "chien-vps"}
+}
