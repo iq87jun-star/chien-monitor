@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9635,
+ "cumulative_cells": 9639,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1656,6 +1656,24 @@
    "program": "docs/322",
    "order": 32,
    "result": "改良 2/4: US30(Sharpe +0.06/+0.20)・JP225(IS 0.64→0.98・OOS −0.56→1.52・最悪月改善)で成立。US500/NAS100 は OOS 改善だが IS 悪化で不成立 → 11988011 の出口は不変。US30/JP225 を紙上候補 MonIdxIntra に追加"
+  },
+  {
+   "id": "Q115",
+   "slug": "futures_vs_cfd",
+   "title": "先物 vs 現物 CFD(4 セル + 参照): Q114 の Mon 指数 13→20 UTC を CME 先物連続限月(Yahoo ES/NQ/YM/NKD)で再現し同一期間の CFD と比較",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/334_q115_futures_vs_cfd.md"
+   ],
+   "note": "ユーザー「先物と現物で比較できますか」→「登録して直ぐに進めてください」。H1 は 2024-05〜(Yahoo 730 日制限)、日足 2016〜は月曜セッション形で参照。先物コスト ES 0.6/NQ 0.3/YM 0.5/NKD 1.5 bps。先物データは data_yahoo_fut/ にキャッシュ(git 管理外)",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 33,
+   "result": "週次リターン相関 0.99・符号一致 97〜100%・先物が +1.4〜3.5 bps/回(コスト差)。CFD の Mon 指数結果は先物でそのまま成立。標準通過 0(IS 8 か月で判定不能)。NKD は米ドル建てで長期は円建て JP225 と乖離 → NIY 要確認"
   }
  ],
  "runs": [
@@ -2625,6 +2643,13 @@
    "cells": 4,
    "cumulative": 9635,
    "summary": "Mon 指数の日中版: US30・JP225 で改良系通過(紙上候補)、US500/NAS100 不成立(docs/333)。ユーザー「Q114 を先に」で前倒し"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q115",
+   "cells": 4,
+   "cumulative": 9639,
+   "summary": "先物 vs CFD: 相関 0.99、先物はコスト差分だけ有利。CFD 研究の先物流用に根拠(docs/334)。ユーザー指示で登録即実行"
   }
  ]
 }
