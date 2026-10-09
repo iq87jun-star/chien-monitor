@@ -1607,16 +1607,18 @@
    "slug": "crypto_prop_fit",
    "title": "暗号資産プロップの規約照合と ETHUSD Mon / BTC v4 / Hold BTC の適合(診断)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/331_q112_crypto_prop_fit.md"
    ],
    "note": "診断(セル 0)。業者 3〜4 社の規約(DD の型・日次上限・週末保有・最小取引日数・出金条件)・費用・出金実績を照合し、研究系列(ETHUSD Mon4 / v4 BTCUSD / Hold BTCUSD)の MC を各規約に当てて到達率・失格率を出す。提案は「候補業者と 1 口座目の構成 / 見送り」。購入はユーザー判断",
    "registered": "2026-10-09",
    "program": "docs/322",
-   "order": 30
+   "order": 30,
+   "result": "見送り: 暗号資産 3 レグは 5 年で Sharpe −0.1〜0.2(Mon ETH 年率 +1.9%・DD −42%)。MC 到達 40〜70% はボラ由来で失格 25〜60%。規約は Hyro(自前ボット可)・Breakout(信用最高・自動売買未確認)。再検討は標準基準通過か暗号資産のみの RecentFit 校正で失格 <10%"
   },
   {
    "id": "Q113",
@@ -2574,6 +2576,13 @@
    "cells": 0,
    "cumulative": 9631,
    "summary": "ユーザー「登録」: Q112(暗号資産プロップ適合・診断)・Q113(先物プロップ適合・診断)を order 30・31 で追加(docs/322 §5b)"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q112",
+   "cells": 0,
+   "cumulative": 9631,
+   "summary": "暗号資産プロップ適合(診断): 見送り(docs/331)。ユーザー「直ぐに進められますか」で前倒し"
   }
  ]
 }
