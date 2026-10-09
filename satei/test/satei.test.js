@@ -117,6 +117,8 @@ test("代理出品: 査定ページからの相談と集計画面の更新を確
   const named = validLead({ game: "genshin-impact", handle: "じゃるぎ" }, games);
   assert.equal(named.handle, null);
   assert.equal(named.name, "じゃるぎ");
+  // 全角の「＠」付きでもユーザー名として読む
+  assert.equal(validLead({ game: "genshin-impact", handle: "＠Abc_1" }, games).handle, "Abc_1");
   assert.equal(validLead({ game: "x" }, games), null);
   assert.equal(validLead({ game: "houkaistarrail" }, games).handle, null);
   assert.deepEqual(validPatch({ status: "出品中", wish: "70000", next_at: "2026-10-10", post_url: "https://evil.example/", handle: "", memo: " m " }), {

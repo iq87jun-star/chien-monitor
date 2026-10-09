@@ -70,7 +70,8 @@ export const DEFAULT_TEMPLATES = [
 
 const clean = (s, max) => (typeof s === "string" ? s.trim().slice(0, max) : "");
 export const normHandle = (h) => {
-  const s = clean(h, 20).replace(/^@/, "");
+  // 全角の「＠」や英数字も読めるように半角にそろえる
+  const s = clean(h, 20).normalize("NFKC").replace(/^@/, "");
   return /^[A-Za-z0-9_]{1,15}$/.test(s) ? s : null;
 };
 const yen = (v) => (Number.isInteger(v) && v >= 0 && v < 100_000_000 ? v : null);
