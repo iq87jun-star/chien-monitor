@@ -1601,6 +1601,38 @@
    "program": "docs/322 第2期",
    "order": 29,
    "result": "記録版 10 本生成(別ファイル・版 +0.01)+ Apps Script 受け口 + ops_ingest 取り込み。配備は不変。切替(manifest 更新・許可 URL・再移行)はユーザーの「切替」後 → 完了で done"
+  },
+  {
+   "id": "Q112",
+   "slug": "crypto_prop_fit",
+   "title": "暗号資産プロップの規約照合と ETHUSD Mon / BTC v4 / Hold BTC の適合(診断)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "診断(セル 0)。業者 3〜4 社の規約(DD の型・日次上限・週末保有・最小取引日数・出金条件)・費用・出金実績を照合し、研究系列(ETHUSD Mon4 / v4 BTCUSD / Hold BTCUSD)の MC を各規約に当てて到達率・失格率を出す。提案は「候補業者と 1 口座目の構成 / 見送り」。購入はユーザー判断",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 30
+  },
+  {
+   "id": "Q113",
+   "slug": "futures_prop_fit",
+   "title": "先物プロップの適合性(診断): CME ミクロ 10 銘柄に族を写像し、17:00 ET 前フラット制約下で残るセルを数える",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "診断(セル 0・探索しない)。MES/MNQ/M2K/MYM/MGC/SIL/MCL/MNG/6J/MBT に Mon 指数・Hold・Roll5・v4 を写像し、『日次クローズ前にフラット・週末不可・EOD トレーリング DD・一貫性ルール』の下で既存セル(H1 データの日中版)が IS/OOS で符号を保つかを数える。残るセルがあれば次キューの探索候補として事前登録案を書く(基準は docs/244 §1 のまま)。残らなければ撤退を提案",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 31
   }
  ],
  "runs": [
@@ -2535,6 +2567,13 @@
    "cells": 6,
    "cumulative": 9631,
    "summary": "Hold 災害 SL 水準: 現行 15% 維持。BTCUSD 10% のみ僅差で改良系通過 → 紙上候補(docs/330)。次回 Q91"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "登録",
+   "cells": 0,
+   "cumulative": 9631,
+   "summary": "ユーザー「登録」: Q112(暗号資産プロップ適合・診断)・Q113(先物プロップ適合・診断)を order 30・31 で追加(docs/322 §5b)"
   }
  ]
 }
