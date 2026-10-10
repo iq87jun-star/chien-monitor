@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9640,
+ "cumulative_cells": 9644,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1710,6 +1710,24 @@
    "program": "docs/322",
    "order": 35,
    "result": "v0.1: ops/futures/mffu_bot.py(限月ロール・休場/HALT/冪等・3 実行 entry/exit/check)+ テスト 5 本通過 + タスク登録 ps1 + 設計 docs/336。次: MFFU 規約確認 → 購入 → TradersPost 紙口座で 4 週パリティ → 切替"
+  },
+  {
+   "id": "Q118",
+   "slug": "roll5_dayshift",
+   "title": "Roll5 の引け前シフト(新規 4 セル): 水曜 USDJPY SHORT を 12/14/16/18 → 20 UTC に移して符号を保つか",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/337_q118_roll5_dayshift.md"
+   ],
+   "note": "ユーザー「ロール系は該当しないですか」→「登録」。配備形 Roll5(20→00 UTC)は先物プロップ不可のため、引け前に移した形を標準基準で検証。参照: 5 クロス等ウェイト・配備形",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 36,
+   "result": "4 セル全て全窓で負(IS Sharpe −0.3〜−0.9・OOS −1.3〜−3.1)。水曜 JPY 効果は 20〜00 UTC に局在。棄却・先物口座には Roll 系を載せない"
   }
  ],
  "runs": [
@@ -2700,6 +2718,13 @@
    "cells": 0,
    "cumulative": 9640,
    "summary": "先物ボット v0.1 実装(オフライン検証済み)。Tradovate 直接 API はプロップ口座で不可と判明 → Webhook 橋渡し(TradersPost)を推奨(docs/336)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q118",
+   "cells": 4,
+   "cumulative": 9644,
+   "summary": "Roll5 引け前シフト: 全窓で負・棄却(docs/337)。ユーザー「登録」で即実行"
   }
  ]
 }
