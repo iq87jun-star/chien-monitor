@@ -144,3 +144,4 @@ Builder の価格(第三者レビューの 2026-10-04 検証値・定価 / 50% �
 - `scaling: {rule: A, mll: 4500, lock_at: 100, phase: eval|sim|live, equity_override}`: 推定残高(建値・決済値は Yahoo 価格、`equity_est / hi_est` を state に保持)から残余 MLL 比を出し、< 50% で半分・< 25% で休み。phase=eval では固定(Q120)。sim 移行時にユーザーが phase を sim に、Live で live に変更。`equity_override` に MFFU ダッシュボードの残高を入れると推定を上書き。
 - ログに `vix_gate` / `scale` / `pnl_est` 行を追加。テスト 9 本通過。
 - 稼働前の設定(ユーザー「切替」待ち): config.json に vix_gate と scaling(phase=eval)を追加。評価段階は枚数固定のまま、VIX 門のみ効く。
+- 2026-10-11 切替記録(ユーザー「承認」): VPS の config.json を v0.5 用に更新(MES 5 / MNQ 2 / MYM 5・max 12・vix_gate 25 [MES, MNQ]・scaling 規則 A phase=eval)。status 確認済み: `mffu_bot 0.5 transport=webhook … scale=1.0`。10/12 22:00 JST から稼働。
