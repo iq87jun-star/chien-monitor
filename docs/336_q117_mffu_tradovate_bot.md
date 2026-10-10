@@ -138,3 +138,9 @@ Builder の価格(第三者レビューの 2026-10-04 検証値・定価 / 50% �
 - **訂正**: §4/§9 の枚数は 2026 年前半の参照価格(MES 6,000 / MNQ 21,000 / MYM 42,000)で導出していた。2026-10-11 の実勢は MES 7,860 / MNQ 31,110 / MYM 51,930 / NIY 69,085 で、6/3/6 では名目 $578k(×3.9)になる。×3 に合わせて **150K = MES 5 / MNQ 2 / MYM 5(計 12・名目 ≈ $451k)** に変更。50K = 2/1/1、100K = 3/1/3。§14 の試算は名目 $432k 前提なので、5/2/5(≈$451k)でほぼそのまま成り立つ。
 - **NIY は保留**: 1 枚 = ¥500 × 69,085 ≈ ¥3,450 万 ≈ $218k で、4 本目に足すと ×4.5 になり過大。加えて TradersPost の Allowed tickers に NIY が入力できず(対応銘柄リストに無い可能性)、サポートに確認中。対応していれば MES/MYM を減らして NIY 1 枚を入れる構成(例: MES 3 / MNQ 2 / MYM 3 / NIY 1 ≈ $460k)を docs/338 の次段で再試算する。
 - **v0.4**: TradersPost + Tradovate は相場データを持たず「シグナルに価格を含めること」が要件のため、買いシグナルに `signalPrice`(Yahoo 1 分足の最終価格・取れなければ省略)を付けた。決済(sentiment=flat)には不要。config `send_signal_price`(既定 true)。テスト 7 本通過。
+
+## 17.【2026-10-11 追記】v0.5: VIX 門と枚数の動的化(docs/339・340)
+- `vix_gate: {threshold: 25, symbols: [MES, MNQ]}`: 月曜 13 UTC に Yahoo ^VIX の前日終値を見て、25 超なら MES/MNQ を見送り(MYM は建てる)。Q121 で改良成立。取れなければ門なし。
+- `scaling: {rule: A, mll: 4500, lock_at: 100, phase: eval|sim|live, equity_override}`: 推定残高(建値・決済値は Yahoo 価格、`equity_est / hi_est` を state に保持)から残余 MLL 比を出し、< 50% で半分・< 25% で休み。phase=eval では固定(Q120)。sim 移行時にユーザーが phase を sim に、Live で live に変更。`equity_override` に MFFU ダッシュボードの残高を入れると推定を上書き。
+- ログに `vix_gate` / `scale` / `pnl_est` 行を追加。テスト 9 本通過。
+- 稼働前の設定(ユーザー「切替」待ち): config.json に vix_gate と scaling(phase=eval)を追加。評価段階は枚数固定のまま、VIX 門のみ効く。

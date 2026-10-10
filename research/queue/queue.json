@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9644,
+ "cumulative_cells": 9660,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1746,6 +1746,96 @@
    "program": "docs/322",
    "order": 37,
    "result": "NIY は米国時間に 1,400 枚/H1(NKD の 4 倍)・ゼロ出来高 0.2%・コスト 8 bps でも Sharpe 1.04 → NIY 1 枚を 4 本目に追加(ユーザー設定待ち)。6J 日中版は紙上候補 MonJpyIntra6J"
+  },
+  {
+   "id": "Q120",
+   "slug": "dynamic_contracts",
+   "title": "先物口座の枚数の動的化(工学・セル 0): 残余 MLL 連動の縮小規則 A/B/C を MC で固定と比較",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/339_q120_dynamic_contracts.md"
+   ],
+   "note": "ユーザー「新しい手法を立案してください」→「おすすめで進めてください」で Q120〜Q124 を一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 38,
+   "result": "規則 A(残余 < 50% 半分・< 25% 休み)で sim 失格 44→18%・Live 32→14%、手取り −15〜20%。評価段階は固定、sim/Live で A を採用(v0.5 scaling)"
+  },
+  {
+   "id": "Q121",
+   "slug": "vix_gate_intraday",
+   "title": "VIX 門 × Mon 指数日中版(改良系 4 セル): 前金曜 VIX > 20/25 の月曜見送り(US500/NAS100)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/340_q121_vix_gate_intraday.md"
+   ],
+   "note": "ユーザー「新しい手法を立案してください」→「おすすめで進めてください」で Q120〜Q124 を一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 39,
+   "result": "3/4 成立。VIX > 25 見送りが両指数で IS・OOS 改善・最悪月不変 → 先物ボット vix_gate(MES/MNQ)に採用"
+  },
+  {
+   "id": "Q122",
+   "slug": "exit_grid_intraday",
+   "title": "Mon 指数日中版の出口格子(改良系 6 セル): 20 UTC → 18/19 UTC",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/341_q122_exit_grid_intraday.md"
+   ],
+   "note": "ユーザー「新しい手法を立案してください」→「おすすめで進めてください」で Q120〜Q124 を一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 40,
+   "result": "0/6。最終 1 時間が利益の大部分 → 20 UTC 維持"
+  },
+  {
+   "id": "Q123",
+   "slug": "thu_xau_intraday",
+   "title": "木曜 XAU の日中版(新規 1 セル): 13→20 UTC(MGC 向け)",
+   "cells": 1,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/342_q123_thu_xau_intraday.md"
+   ],
+   "note": "ユーザー「新しい手法を立案してください」→「おすすめで進めてください」で Q120〜Q124 を一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 41,
+   "result": "棄却(IS −0.37・前窓 −1.40)。木曜効果は夜間に局在"
+  },
+  {
+   "id": "Q124",
+   "slug": "wti_weekday_intraday",
+   "title": "原油の曜日×日中格子(新規 5 セル): WTI 月〜金 13→20 UTC LONG(MCL 向け)",
+   "cells": 5,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/343_q124_wti_weekday_intraday.md"
+   ],
+   "note": "ユーザー「新しい手法を立案してください」→「おすすめで進めてください」で Q120〜Q124 を一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 42,
+   "result": "0/5。月曜 IS 0.86 だが OOS −0.73、水曜 IS −1.41 → 棄却"
   }
  ],
  "runs": [
@@ -2750,6 +2840,41 @@
    "cells": 0,
    "cumulative": 9644,
    "summary": "NIY 流動性 OK・コスト耐性あり → 先物口座 4 本目に NIY 1 枚(docs/338)。6J は紙上候補"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q120",
+   "cells": 0,
+   "cumulative": 9644,
+   "summary": "規則 A(残余 < 50% 半分・< 25% 休み)で sim 失格 44→18%・Live 32→14%、手取り −15〜20%。評価段階は固定、sim/Li(docs/339)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q121",
+   "cells": 4,
+   "cumulative": 9648,
+   "summary": "3/4 成立。VIX > 25 見送りが両指数で IS・OOS 改善・最悪月不変 → 先物ボット vix_gate(MES/MNQ)に採用(docs/340)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q122",
+   "cells": 6,
+   "cumulative": 9654,
+   "summary": "0/6。最終 1 時間が利益の大部分 → 20 UTC 維持(docs/341)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q123",
+   "cells": 1,
+   "cumulative": 9655,
+   "summary": "棄却(IS −0.37・前窓 −1.40)。木曜効果は夜間に局在(docs/342)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q124",
+   "cells": 5,
+   "cumulative": 9660,
+   "summary": "0/5。月曜 IS 0.86 だが OOS −0.73、水曜 IS −1.41 → 棄却(docs/343)"
   }
  ]
 }

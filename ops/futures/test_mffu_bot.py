@@ -45,7 +45,7 @@ def test_entry_exit_idempotent():
         B.run(cfg, "entry", day, tr); B.run(cfg, "entry", day, tr); assert len(tr.sent) == 3 and all(p["action"] == "buy" for p in tr.sent)
         B.run(cfg, "exit", day, tr); assert len(tr.sent) == 6 and all(p["sentiment"] == "flat" for p in tr.sent[3:])
         B.run(cfg, "check", day, tr); assert len(tr.sent) == 6                   # 決済済みなら再送しない
-        rows = open(cfg["log_csv"]).read().splitlines(); assert len(rows) == 1 + 1 + 3 + 3   # ヘッダ + nothing_to_exit + 建て 3 + 決済 3
+        rows = open(cfg["log_csv"]).read().splitlines(); assert len(rows) == 1 + 1 + 3 + 3 + 1   # ヘッダ + nothing_to_exit + 建て 3 + 決済 3 + pnl_est
         st = json.load(open(cfg["state_json"])); assert st["2026-10-12"]["exited"] is True
 
 def test_check_resends_when_not_exited():
@@ -63,3 +63,33 @@ def test_keepalive_only_after_missed_monday():
         B.run(cfg, "keepalive", dt.date(2026, 10, 15), tr); assert len(tr.sent) == n + 2                             # 木曜は毎週
         B.run(cfg, "keepalive", dt.date(2026, 10, 15), tr); assert len(tr.sent) == n + 2                             # 二重にしない
         B.run(cfg, "test", dt.date(2026, 10, 10), tr); assert len(tr.sent) == n + 4 and tr.sent[-2]["extras"]["why"] == "test"   # test は曜日不問
+
+def test_vix_gate_and_scaling():
+    with tempfile.TemporaryDirectory() as tmp:
+        cfg = _cfg(tmp); cfg["vix_gate"] = {"threshold": 25, "symbols": ["MES", "MNQ"]}; tr = Rec()
+        B.vix_prev_close = lambda timeout=6: 30.0
+        B.run(cfg, "entry", dt.date(2026, 10, 12), tr); assert [p["ticker"] for p in tr.sent] == ["MYMZ2026"]      # VIX 30 → MES/MNQ 見送り
+        B.vix_prev_close = lambda timeout=6: 18.0; tr2 = Rec(); cfg2 = _cfg(tmp); cfg2["vix_gate"] = cfg["vix_gate"]; cfg2["state_json"] = os.path.join(tmp, "s2.json"); cfg2["log_csv"] = os.path.join(tmp, "l2.csv")
+        B.run(cfg2, "entry", dt.date(2026, 10, 12), tr2); assert len(tr2.sent) == 3                                  # VIX 18 → 全部
+        # 規則 A: sim 段階で残余 40% → 半分、qty 1 の MNQ は 0 枚になり送らない
+        cfg3 = _cfg(tmp); cfg3["state_json"] = os.path.join(tmp, "s3.json"); cfg3["log_csv"] = os.path.join(tmp, "l3.csv")
+        cfg3["scaling"] = {"rule": "A", "mll": 4500, "lock_at": 100, "phase": "sim", "equity_override": 2800}      # hi 0 → floor -4500 → rem = 7300/4500 > 1 → 1.0
+        assert B.scale_factor(cfg3, B.State(cfg3["state_json"]))[0] == 1.0
+        st = B.State(cfg3["state_json"]); st.d["hi_est"] = 6000; st.save()                                          # locked: floor 100, eq 2800 → rem 0.6 → 1.0
+        assert B.scale_factor(cfg3, st)[0] == 1.0
+        cfg3["scaling"]["equity_override"] = 2000                                                                   # rem 0.42 → 0.5
+        assert B.scale_factor(cfg3, st)[0] == 0.5
+        tr3 = Rec(); B.run(cfg3, "entry", dt.date(2026, 10, 12), tr3); assert [(p["ticker"], p["quantity"]) for p in tr3.sent] == [("MESZ2026", 1), ("MYMZ2026", 1)]
+        cfg3["scaling"]["equity_override"] = 800                                                                    # rem 0.16 → 0 → 何も送らず exited
+        tr4 = Rec(); cfg3["state_json"] = os.path.join(tmp, "s4.json"); st4 = B.State(cfg3["state_json"]); st4.d["hi_est"] = 6000; st4.save()
+        B.run(cfg3, "entry", dt.date(2026, 10, 12), tr4); assert tr4.sent == [] and json.load(open(cfg3["state_json"]))["2026-10-12"]["exited"] is True
+        cfg3["scaling"]["phase"] = "eval"; assert B.scale_factor(cfg3, st4)[0] == 1.0                                # 評価段階は固定
+
+def test_pnl_estimate_on_exit():
+    with tempfile.TemporaryDirectory() as tmp:
+        cfg = _cfg(tmp); cfg["send_signal_price"] = True; tr = Rec(); day = dt.date(2026, 10, 12)
+        B.last_price = lambda root, timeout=6: {"MES": 7000.0, "MNQ": 30000.0, "MYM": 50000.0}[root]
+        B.run(cfg, "entry", day, tr)
+        B.last_price = lambda root, timeout=6: {"MES": 7010.0, "MNQ": 30050.0, "MYM": 49900.0}[root]
+        B.run(cfg, "exit", day, tr); st = json.load(open(cfg["state_json"]))
+        assert st["2026-10-12"]["pnl_est"] == 2*10*5 + 1*50*2 + 2*(-100)*0.5 and st["equity_est"] == 100.0 and st["hi_est"] == 100.0

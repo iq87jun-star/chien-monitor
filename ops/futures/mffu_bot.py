@@ -9,9 +9,13 @@
              MFFU の「7 暦日無取引で閉鎖」は評価段階にも適用され、月曜→月曜はちょうど 7 日で危険なため、木曜に必ず 1 回挟む(費用 ≈ 1 ティック + 手数料)。
   test     : 曜日・状態に関係なく、最小 1 枚を建てて 60 秒後に決済する(接続確認用。TradersPost の紙口座で約定を確かめる)。
   status: 設定・次回の限月・枚数を印字。
+v0.5(docs/339〜343): (1) vix_gate = 前営業日の VIX 終値が閾値超なら対象銘柄を見送る(Q121・US500/NAS100 で改良成立)。
+  (2) 推定残高に応じた枚数の縮小(Q120 規則 A: 残余 MLL < 50% で半分・< 25% で休み)。残高は Yahoo 価格で推定し state に持つ。
+  config: "vix_gate": {"threshold": 25, "symbols": ["MES", "MNQ"]}, "scaling": {"rule": "A", "mll": 4500, "lock_at": 100, "phase": "eval"|"sim"|"live", "equity_override": null}
+  phase=eval では縮小しない(Q120: 評価は固定が速い)。equity_override を入れると MFFU ダッシュボードの値で推定を上書きできる。
 秘密(webhook URL・API キー)は config.json(git 管理外)にだけ置く。公開リポジトリには config.example.json のみ。"""
 import argparse, csv, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.4"
+VERSION = "0.5"
 HERE = os.path.dirname(os.path.abspath(__file__))
 MONTH_CODES = {3: "H", 6: "M", 9: "U", 12: "Z"}
 YAHOO = {"MES": "MES=F", "MNQ": "MNQ=F", "MYM": "MYM=F", "NIY": "NIY=F", "M2K": "M2K=F", "MGC": "MGC=F"}
@@ -27,6 +31,30 @@ def last_price(root, timeout=6):
         return float(c[-1]) if c else float(d["meta"].get("regularMarketPrice"))
     except Exception:
         return None
+
+MULT = {"MES": 5.0, "MNQ": 2.0, "MYM": 0.5, "M2K": 5.0, "MGC": 10.0, "MCL": 100.0}   # USD/ポイント(NIY は円建てのため未対応)
+
+def vix_prev_close(timeout=6):
+    try:
+        u = "https://query2.finance.yahoo.com/v8/finance/chart/%5EVIX?interval=1d&range=10d"
+        d = json.load(urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"}), timeout=timeout))["chart"]["result"][0]
+        today = dt.datetime.utcnow().date(); out = None
+        for ts, c in zip(d["timestamp"], d["indicators"]["quote"][0]["close"]):
+            if c is not None and dt.datetime.utcfromtimestamp(ts).date() < today: out = float(c)
+        return out
+    except Exception:
+        return None
+
+def scale_factor(cfg, st):
+    """Q120 規則 A。state の推定残高(equity_est・hi_est)から残余 MLL 比を出す。eval 段階・設定なしは 1.0。"""
+    sc = cfg.get("scaling") or {}
+    if not sc or sc.get("phase", "eval") == "eval" or sc.get("rule", "A") != "A": return 1.0, None
+    mll = float(sc.get("mll", 4500)); lock = float(sc.get("lock_at", 100))
+    eq = sc.get("equity_override"); eq = float(eq) if eq is not None else float(st.d.get("equity_est", 0.0))
+    hi = max(float(st.d.get("hi_est", 0.0)), eq)
+    floor = min(hi - mll, lock) if sc.get("phase") == "sim" else min(hi - mll, 0.0)
+    rem = (eq - floor) / mll
+    return (0.0 if rem < 0.25 else 0.5 if rem < 0.5 else 1.0), round(rem, 3)
 
 def with_price(payload, root, cfg):
     if cfg.get("send_signal_price", True) and payload.get("action") == "buy":
@@ -136,24 +164,40 @@ def run(cfg, action, day, transport):
     st = State(cfg.get("state_json") or os.path.join(HERE, "out", "state.json")); key = day.isoformat()
     legs, reasons = plan(cfg, day)
     if action == "status":
-        print(f"mffu_bot {VERSION} transport={transport.name} day={key} legs={legs} reasons={reasons}"); return
+        sf, rem = scale_factor(cfg, st)
+        print(f"mffu_bot {VERSION} transport={transport.name} day={key} legs={legs} reasons={reasons} vix_gate={cfg.get('vix_gate')} scale={sf} rem={rem} equity_est={st.d.get('equity_est')} hi_est={st.d.get('hi_est')}"); return
     if action == "entry":
         if reasons: print("skip entry:", reasons); log_row(cfg, action="entry", transport=transport.name, result="skip", note=",".join(reasons)); return
         if st.d.get(key, {}).get("entered"): print("already entered today"); return
-        st.d[key] = {"entered": True, "open": [], "exited": False}
+        vg = cfg.get("vix_gate") or {}; vix = vix_prev_close() if vg else None
+        gated = set(vg.get("symbols", [])) if (vg and vix is not None and vix > float(vg.get("threshold", 25))) else set()
+        sf, rem = scale_factor(cfg, st)
+        if gated: log_row(cfg, action="entry", transport=transport.name, result="vix_gate", note=f"VIX {vix} > {vg.get('threshold', 25)}: skip {sorted(gated)}")
+        if sf < 1.0: log_row(cfg, action="entry", transport=transport.name, result="scale", note=f"rule A x{sf} (rem {rem})")
+        st.d[key] = {"entered": True, "open": [], "exited": False, "vix": vix, "scale": sf}
         for l in legs:
-            res = transport.send(with_price(dict(ticker=l["contract"], action="buy", quantity=l["qty"], time=dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), extras={"bot": f"chien-mffu-{VERSION}", "leg": "MonIdxIntra"}), l["root"], cfg))
-            st.d[key]["open"].append(l); st.save(); log_row(cfg, action="entry", contract=l["contract"], qty=l["qty"], transport=transport.name, result=res)
+            if l["root"] in gated: continue
+            q = int(l["qty"] * sf)
+            if q <= 0: continue
+            pay = with_price(dict(ticker=l["contract"], action="buy", quantity=q, time=dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), extras={"bot": f"chien-mffu-{VERSION}", "leg": "MonIdxIntra"}), l["root"], cfg)
+            res = transport.send(pay); l2 = dict(l, qty=q, px_in=pay.get("signalPrice"))
+            st.d[key]["open"].append(l2); st.save(); log_row(cfg, action="entry", contract=l["contract"], qty=q, transport=transport.name, result=res)
+        if not st.d[key]["open"]: st.d[key]["exited"] = True; st.save()
         return
     if action in ("exit", "check"):
         rec = st.d.get(key) or {}
         if not rec.get("entered") or rec.get("exited"):
             if action == "exit": log_row(cfg, action=action, transport=transport.name, result="nothing_to_exit")
             print("nothing to exit"); return
+        pnl = 0.0
         for l in rec["open"]:
             res = transport.send(dict(ticker=l["contract"], action="sell", sentiment="flat", time=dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), extras={"bot": f"chien-mffu-{VERSION}", "why": action}))
-            log_row(cfg, action=action, contract=l["contract"], qty=l["qty"], transport=transport.name, result=res)
-        rec["exited"] = True; st.save(); return
+            px_out = last_price(l["root"]) if cfg.get("send_signal_price", True) else None
+            if l.get("px_in") and px_out and l["root"] in MULT: pnl += (px_out - l["px_in"]) * MULT[l["root"]] * l["qty"]
+            log_row(cfg, action=action, contract=l["contract"], qty=l["qty"], transport=transport.name, result=res, note=f"px_out {px_out}")
+        rec["exited"] = True; rec["pnl_est"] = round(pnl, 2)
+        st.d["equity_est"] = round(float(st.d.get("equity_est", 0.0)) + pnl, 2); st.d["hi_est"] = round(max(float(st.d.get("hi_est", 0.0)), st.d["equity_est"]), 2); st.save()
+        log_row(cfg, action="pnl_est", transport=transport.name, result=round(pnl, 2), note=f"equity_est {st.d['equity_est']} hi_est {st.d['hi_est']}"); return
     if action in ("keepalive", "test"):
         mon = day - dt.timedelta(days=day.weekday())
         if action == "keepalive":
