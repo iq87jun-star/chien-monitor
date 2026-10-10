@@ -52,4 +52,7 @@ def test_keepalive_only_after_missed_monday():
         B.run(cfg, "keepalive", dt.date(2026, 9, 8), tr); assert len(tr.sent) == 2 and tr.sent[0]["quantity"] == 1 and tr.sent[1]["sentiment"] == "flat"   # 9/7 Labor Day の翌火曜
         B.run(cfg, "keepalive", dt.date(2026, 9, 8), tr); assert len(tr.sent) == 2                                   # 二重にしない
         B.run(cfg, "entry", dt.date(2026, 10, 12), tr); n = len(tr.sent); B.run(cfg, "keepalive", dt.date(2026, 10, 13), tr); assert len(tr.sent) == n   # 月曜に建てた週は不要
-        B.run(cfg, "keepalive", dt.date(2026, 10, 14), tr); assert len(tr.sent) == n                                 # 火曜以外は何もしない
+        B.run(cfg, "keepalive", dt.date(2026, 10, 14), tr); assert len(tr.sent) == n                                 # 水曜は何もしない
+        B.run(cfg, "keepalive", dt.date(2026, 10, 15), tr); assert len(tr.sent) == n + 2                             # 木曜は毎週
+        B.run(cfg, "keepalive", dt.date(2026, 10, 15), tr); assert len(tr.sent) == n + 2                             # 二重にしない
+        B.run(cfg, "test", dt.date(2026, 10, 10), tr); assert len(tr.sent) == n + 4 and tr.sent[-2]["extras"]["why"] == "test"   # test は曜日不問
