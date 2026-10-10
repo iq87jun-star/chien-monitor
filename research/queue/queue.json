@@ -1908,6 +1908,24 @@
    "program": "docs/322 第3期",
    "order": 46,
    "result": "0/3。USDJPY 月曜セッションは IS p 1.5e-4・OOS 11/20 だが前窓 45% → 紙上候補 MonJpySession6J"
+  },
+  {
+   "id": "Q129",
+   "slug": "cfd_prop_expansion",
+   "title": "CFD プロップの 4 社目候補(診断・セル 0): 11 社の規約照合 × 3 帳簿 MC",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/348_q129_cfd_prop_expansion.md"
+   ],
+   "note": "ユーザー「業者を広げた場合に別手法の活用など出来るものは」→「登録」。規約調査は副エージェント(2026-10-10)。結果は 11/1 の Q88 購入候補へ",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 47,
+   "result": "候補 3 社: The5ers High Stakes(A 型帳簿・信用最大)、E8 One DD10%(Hold/Roll・swap-free 要確認)、CTI 2-Step(残高基準 DD)。Alpha/Maven/Goat は EA・VPS 規約で不可、BG/FTUK は含み損 2% ガードで不可。新手法は増えず Hold/Roll の枠が増える"
   }
  ],
  "runs": [
@@ -2975,6 +2993,13 @@
    "cells": 3,
    "cumulative": 9688,
    "summary": "0/3。USDJPY 月曜セッションは IS p 1.5e-4・OOS 11/20 だが前窓 45% → 紙上候補 MonJpySession6J(docs/347)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q129",
+   "cells": 0,
+   "cumulative": 9688,
+   "summary": "CFD 4 社目候補: The5ers HS / E8 One / CTI(docs/348)。Q88(11/1)へ"
   }
  ]
 }
