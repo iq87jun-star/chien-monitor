@@ -103,3 +103,10 @@ Builder の価格(第三者レビューの 2026-10-04 検証値・定価 / 50% �
 ## 11.【2026-10-10 追記】購入(ユーザー「購入しました」)
 - MFFU Builder 150K(MLL $4,500・EOD・日次ソフト停止 $2,500・一貫性なし・最大 9 契約・非活動 7 暦日)、プラットフォーム Tradovate、コード CLUB 適用(定価 $398 → $199)。
 - 次: TradersPost 登録 → Tradovate 接続(MFFU の Tradovate ログイン)→ 戦略(先物)と Webhook URL → VPS の config.json(transport は dry から)→ 10/12(月)に印字確認 → 10/19 から評価口座。
+
+## 12.【2026-10-10 追記】配置完了・月曜からの運用
+- 判明: 購入で評価口座が 2 つ発生(#69204445 10/9 = 「合計 $0」画面の注文が通っていた、#69207025 10/10)。請求 2 件 → #69204445 はサポートに取消・返金依頼(チャージバック不可)。運用は #69207025(Tradovate MFFUEVBLDR727653001)の 1 本。
+- 判明: 非活動 7 暦日は評価段階にも適用(ダッシュボードにカウントダウン)。→ v0.3 で木曜 22:00 JST の定期 keepalive(1 ミクロ・60 秒)を追加し、「初回は dry」を取りやめて 10/12(月)から本番。
+- TradersPost: Tradovate 接続(MFFU)→ 口座 69207025 を Enabled、戦略 chien-mffu(Futures・Allowed tickers MES/MNQ/MYM・Only Failed Signals 通知)。Webhook URL は一度チャットに出たため再生成し、新しい方を VPS の config.json にのみ保存。
+- VPS(VPS 側セッションが配置): `C:\chien\ops\futures\` に v0.3、config.json(150K: MES 6 / MNQ 3 / MYM 6・max 15・transport=webhook)、タスク 5 本登録、テスト通過、dry 検証済み。
+- 10/12 の手順: 07:00 JST 以降に `--action test`(紙口座の Subscription のみ Enable)→ 約定確認 → MFFU 口座の Subscription を Enable → 22:00 JST entry、火 05:00 exit。
