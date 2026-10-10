@@ -110,3 +110,9 @@ Builder の価格(第三者レビューの 2026-10-04 検証値・定価 / 50% �
 - TradersPost: Tradovate 接続(MFFU)→ 口座 69207025 を Enabled、戦略 chien-mffu(Futures・Allowed tickers MES/MNQ/MYM・Only Failed Signals 通知)。Webhook URL は一度チャットに出たため再生成し、新しい方を VPS の config.json にのみ保存。
 - VPS(VPS 側セッションが配置): `C:\chien\ops\futures\` に v0.3、config.json(150K: MES 6 / MNQ 3 / MYM 6・max 15・transport=webhook)、タスク 5 本登録、テスト通過、dry 検証済み。
 - 10/12 の手順: 07:00 JST 以降に `--action test`(紙口座の Subscription のみ Enable)→ 約定確認 → MFFU 口座の Subscription を Enable → 22:00 JST entry、火 05:00 exit。
+
+## 13.【2026-10-11 追記】重複口座は 2 本目として使う(ユーザー「2本目として使います」)
+- MFFU 公式ヘルプ「Copy Trading at MyFundedFutures」: コピートレードは全口座タイプで可・外部コピーツール可。自分名義の 2 口座(#69207025・#69204445)に TradersPost が同じシグナルを配る形は規約内(禁止は他人との協調・他人のコピー)。返金依頼は行わない。
+- 期待: 通過率は 2 口座で連動。通れば sim 出金枠がもう 1 本分(サイクル $2,000 × 最大 5 回)。Live は 1 口座のみなので 2 本目は 5 回出金で終了。
+- 設定: TradersPost で My Funded Futures 2(69204445)を Enable → Subscription 作成(Auto Submit)→ 10/12 の Paper テスト後に 2 本とも Enable。ボット側の変更なし(各口座 MES 6 / MNQ 3 / MYM 6)。#69204445 は非活動残り約 5 日のため 10/12 の取引に必ず乗せる。
+- ダイジェスト: 10/12 22:20 JST の確認は両口座分(TradersPost 側の約定は Drive ログには出ないため、ログの応答コードで判定)。
