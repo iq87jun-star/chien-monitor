@@ -144,9 +144,9 @@ def run(cfg, action, day, transport):
             if st.d.get(key, {}).get("keepalive"): print("keepalive: already done"); return
         if not legs: legs = [dict(root=r) for r in (cfg.get("symbols") or DEFAULT_SYMBOLS)]
         root = cfg.get("keepalive_symbol", legs[0]["root"]); c = front_contract(root, day); wait = int(cfg.get("keepalive_wait_sec", 60))
-        r1 = transport.send(dict(ticker=c, action="buy", quantity=1, extras={"bot": f"chien-mffu-{VERSION}", "why": "keepalive"}))
+        r1 = transport.send(dict(ticker=c, action="buy", quantity=1, extras={"bot": f"chien-mffu-{VERSION}", "why": action}))
         time.sleep(wait if transport.name != "dry" else 0)
-        r2 = transport.send(dict(ticker=c, action="sell", sentiment="flat", extras={"bot": f"chien-mffu-{VERSION}", "why": "keepalive"}))
+        r2 = transport.send(dict(ticker=c, action="sell", sentiment="flat", extras={"bot": f"chien-mffu-{VERSION}", "why": action}))
         if action == "keepalive": st.d.setdefault(key, {})["keepalive"] = True; st.save()
         log_row(cfg, action=action, contract=c, qty=1, transport=transport.name, result=f"{r1} / {r2}"); return
     raise SystemExit(f"unknown action {action}")
