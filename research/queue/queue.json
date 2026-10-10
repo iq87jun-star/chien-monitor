@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9660,
+ "cumulative_cells": 9688,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1836,6 +1836,78 @@
    "program": "docs/322",
    "order": 42,
    "result": "0/5。月曜 IS 0.86 だが OOS −0.73、水曜 IS −1.41 → 棄却"
+  },
+  {
+   "id": "Q125",
+   "slug": "index_session_mon",
+   "title": "Mon 指数のセッション版(新規 9 セル): 日曜 22 / 月曜 0 / 7 UTC 建て → 20 UTC(US500/NAS100/US30)",
+   "cells": 9,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/344_q125_index_session_mon.md"
+   ],
+   "note": "第 3 期(先物向け・セッション版)。ユーザー「先物の方がコスパ良いので手法開拓が出来れば進めて欲しい」を登録指示として一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322 第3期",
+   "order": 43,
+   "result": "0/9 通過。OOS 2.1〜2.8 だが IS 0.1〜0.5。月曜 0 UTC 建ては全窓正で符号安定 → 紙上候補 MonIdxSession0"
+  },
+  {
+   "id": "Q126",
+   "slug": "index_session_weekdays",
+   "title": "指数セッション版の曜日格子(新規 12 セル): 火〜金 前日 22 UTC → 20 UTC",
+   "cells": 12,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/345_q126_index_session_weekdays.md"
+   ],
+   "note": "第 3 期(先物向け・セッション版)。ユーザー「先物の方がコスパ良いので手法開拓が出来れば進めて欲しい」を登録指示として一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322 第3期",
+   "order": 44,
+   "result": "0/12。月曜以外にセッション・ドリフト無し"
+  },
+  {
+   "id": "Q127",
+   "slug": "crypto_session_mon",
+   "title": "暗号資産の月曜セッション版(新規 4 セル・MBT/MET): ETH/BTC × {open→20, 13→20}",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/346_q127_crypto_session_mon.md"
+   ],
+   "note": "第 3 期(先物向け・セッション版)。ユーザー「先物の方がコスパ良いので手法開拓が出来れば進めて欲しい」を登録指示として一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322 第3期",
+   "order": 45,
+   "result": "0/4。暗号資産は先物口座の対象外のまま"
+  },
+  {
+   "id": "Q128",
+   "slug": "gold_fx_session",
+   "title": "金・円のセッション版(新規 3 セル): XAU 木/月 open→20、USDJPY 月曜 open→20 LONG(6J)",
+   "cells": 3,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/347_q128_gold_fx_session.md"
+   ],
+   "note": "第 3 期(先物向け・セッション版)。ユーザー「先物の方がコスパ良いので手法開拓が出来れば進めて欲しい」を登録指示として一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322 第3期",
+   "order": 46,
+   "result": "0/3。USDJPY 月曜セッションは IS p 1.5e-4・OOS 11/20 だが前窓 45% → 紙上候補 MonJpySession6J"
   }
  ],
  "runs": [
@@ -2875,6 +2947,34 @@
    "cells": 5,
    "cumulative": 9660,
    "summary": "0/5。月曜 IS 0.86 だが OOS −0.73、水曜 IS −1.41 → 棄却(docs/343)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q125",
+   "cells": 9,
+   "cumulative": 9669,
+   "summary": "0/9 通過。OOS 2.1〜2.8 だが IS 0.1〜0.5。月曜 0 UTC 建ては全窓正で符号安定 → 紙上候補 MonIdxSession0(docs/344)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q126",
+   "cells": 12,
+   "cumulative": 9681,
+   "summary": "0/12。月曜以外にセッション・ドリフト無し(docs/345)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q127",
+   "cells": 4,
+   "cumulative": 9685,
+   "summary": "0/4。暗号資産は先物口座の対象外のまま(docs/346)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q128",
+   "cells": 3,
+   "cumulative": 9688,
+   "summary": "0/3。USDJPY 月曜セッションは IS p 1.5e-4・OOS 11/20 だが前窓 45% → 紙上候補 MonJpySession6J(docs/347)"
   }
  ]
 }
