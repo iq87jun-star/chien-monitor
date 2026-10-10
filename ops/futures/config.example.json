@@ -1,8 +1,8 @@
 {
- "_comment": "config.json にコピーして編集(config.json は git 管理外)。webhook_url と tradovate.* は秘密。qty は docs/336 §4/§9: 50K=MES2/MNQ1/MYM2(計5)、100K=4/2/4(10)、150K=6/3/6(15)。max_contracts_total を同じ合計に",
+ "_comment": "config.json にコピーして編集(config.json は git 管理外)。webhook_url と tradovate.* は秘密。qty は docs/336 §4/§9: 50K=MES2/MNQ1/MYM2(計5)、100K=4/2/4(10)、150K=6/3/6 + NIY 1(16・docs/338)。max_contracts_total を同じ合計に",
  "transport": "dry",
  "webhook_url": "https://webhooks.traderspost.io/trading/webhook/<uuid>/<password>",
- "symbols": {"MES": {"qty": 2, "cfd": "US500"}, "MNQ": {"qty": 1, "cfd": "NAS100"}, "MYM": {"qty": 2, "cfd": "US30"}},
+ "symbols": {"MES": {"qty": 2, "cfd": "US500"}, "MNQ": {"qty": 1, "cfd": "NAS100"}, "MYM": {"qty": 2, "cfd": "US30"}, "NIY": {"qty": 0, "cfd": "JP225"}},
  "max_contracts_total": 5,
  "holidays_csv": "C:\\chien\\research\\data_ext\\holidays_us_uk_au_nz_2016_2027.csv",
  "log_csv": "G:\\マイドライブ\\chien_ops\\futures\\mffu_log.csv",
