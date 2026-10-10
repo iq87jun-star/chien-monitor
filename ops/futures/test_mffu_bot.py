@@ -16,7 +16,14 @@ def test_front_contract_roll():
 
 def _cfg(tmp):
     hol = os.path.join(tmp, "h.csv"); open(hol, "w").write("cal,date,name\nNYSE,2026-09-07,Labor Day\n")
-    return dict(transport="dry", holidays_csv=hol, log_csv=os.path.join(tmp, "log.csv"), state_json=os.path.join(tmp, "state.json"), max_contracts_total=5, keepalive_wait_sec=0)
+    return dict(transport="dry", holidays_csv=hol, log_csv=os.path.join(tmp, "log.csv"), state_json=os.path.join(tmp, "state.json"), max_contracts_total=5, keepalive_wait_sec=0, send_signal_price=False)
+
+def test_with_price_optional(monkeypatch=None):
+    B.last_price = lambda root, timeout=6: 6000.25 if root == "MES" else None
+    assert B.with_price({"action": "buy"}, "MES", {})["signalPrice"] == 6000.25
+    assert "signalPrice" not in B.with_price({"action": "buy"}, "MNQ", {})          # 取れなければ省く
+    assert "signalPrice" not in B.with_price({"action": "sell"}, "MES", {})         # 決済には付けない
+    assert "signalPrice" not in B.with_price({"action": "buy"}, "MES", {"send_signal_price": False})
 
 def test_plan_skips():
     with tempfile.TemporaryDirectory() as tmp:

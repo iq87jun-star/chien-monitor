@@ -11,9 +11,28 @@
   status: 設定・次回の限月・枚数を印字。
 秘密(webhook URL・API キー)は config.json(git 管理外)にだけ置く。公開リポジトリには config.example.json のみ。"""
 import argparse, csv, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.3"
+VERSION = "0.4"
 HERE = os.path.dirname(os.path.abspath(__file__))
 MONTH_CODES = {3: "H", 6: "M", 9: "U", 12: "Z"}
+YAHOO = {"MES": "MES=F", "MNQ": "MNQ=F", "MYM": "MYM=F", "NIY": "NIY=F", "M2K": "M2K=F", "MGC": "MGC=F"}
+
+def last_price(root, timeout=6):
+    """直近価格(Yahoo 1 分足の最終終値)。TradersPost+Tradovate は相場データを持たないため signalPrice を添える(docs/336 §16)。取れなければ None。"""
+    sym = YAHOO.get(root)
+    if not sym: return None
+    try:
+        u = f"https://query2.finance.yahoo.com/v8/finance/chart/{urllib.request.quote(sym, safe='=')}?interval=1m&range=1d"
+        d = json.load(urllib.request.urlopen(urllib.request.Request(u, headers={"User-Agent": "Mozilla/5.0"}), timeout=timeout))["chart"]["result"][0]
+        c = [x for x in d["indicators"]["quote"][0]["close"] if x is not None]
+        return float(c[-1]) if c else float(d["meta"].get("regularMarketPrice"))
+    except Exception:
+        return None
+
+def with_price(payload, root, cfg):
+    if cfg.get("send_signal_price", True) and payload.get("action") == "buy":
+        px = last_price(root)
+        if px: payload["signalPrice"] = round(px, 2)
+    return payload
 DEFAULT_SYMBOLS = {"MES": {"qty": 2, "cfd": "US500"}, "MNQ": {"qty": 1, "cfd": "NAS100"}, "MYM": {"qty": 2, "cfd": "US30"}}
 
 def third_friday(y, m):
@@ -123,7 +142,7 @@ def run(cfg, action, day, transport):
         if st.d.get(key, {}).get("entered"): print("already entered today"); return
         st.d[key] = {"entered": True, "open": [], "exited": False}
         for l in legs:
-            res = transport.send(dict(ticker=l["contract"], action="buy", quantity=l["qty"], time=dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), extras={"bot": f"chien-mffu-{VERSION}", "leg": "MonIdxIntra"}))
+            res = transport.send(with_price(dict(ticker=l["contract"], action="buy", quantity=l["qty"], time=dt.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S"), extras={"bot": f"chien-mffu-{VERSION}", "leg": "MonIdxIntra"}), l["root"], cfg))
             st.d[key]["open"].append(l); st.save(); log_row(cfg, action="entry", contract=l["contract"], qty=l["qty"], transport=transport.name, result=res)
         return
     if action in ("exit", "check"):
@@ -144,7 +163,7 @@ def run(cfg, action, day, transport):
             if st.d.get(key, {}).get("keepalive"): print("keepalive: already done"); return
         if not legs: legs = [dict(root=r) for r in (cfg.get("symbols") or DEFAULT_SYMBOLS)]
         root = cfg.get("keepalive_symbol", legs[0]["root"]); c = front_contract(root, day); wait = int(cfg.get("keepalive_wait_sec", 60))
-        r1 = transport.send(dict(ticker=c, action="buy", quantity=1, extras={"bot": f"chien-mffu-{VERSION}", "why": action}))
+        r1 = transport.send(with_price(dict(ticker=c, action="buy", quantity=1, extras={"bot": f"chien-mffu-{VERSION}", "why": action}), root, cfg))
         time.sleep(wait if transport.name != "dry" else 0)
         r2 = transport.send(dict(ticker=c, action="sell", sentiment="flat", extras={"bot": f"chien-mffu-{VERSION}", "why": action}))
         if action == "keepalive": st.d.setdefault(key, {})["keepalive"] = True; st.save()
