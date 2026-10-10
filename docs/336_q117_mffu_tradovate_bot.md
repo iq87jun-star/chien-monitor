@@ -116,3 +116,4 @@ Builder の価格(第三者レビューの 2026-10-04 検証値・定価 / 50% �
 - 期待: 通過率は 2 口座で連動。通れば sim 出金枠がもう 1 本分(サイクル $2,000 × 最大 5 回)。Live は 1 口座のみなので 2 本目は 5 回出金で終了。
 - 設定: TradersPost で My Funded Futures 2(69204445)を Enable → Subscription 作成(Auto Submit)→ 10/12 の Paper テスト後に 2 本とも Enable。ボット側の変更なし(各口座 MES 6 / MNQ 3 / MYM 6)。#69204445 は非活動残り約 5 日のため 10/12 の取引に必ず乗せる。
 - ダイジェスト: 10/12 22:20 JST の確認は両口座分(TradersPost 側の約定は Drive ログには出ないため、ログの応答コードで判定)。
+- 2026-10-11 追記: TradersPost は Starter(月額 $49・Monthly)に加入(無料枠では 2 口座目を有効化できないため)。Subscription 3 本(Paper Enabled、MFFU 3 / MFFU 2 は Disabled)すべて Auto Submit・Long Only・数量はシグナル値。先物口座の固定費は TradersPost $49/月のみ。
