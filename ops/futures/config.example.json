@@ -4,7 +4,6 @@
  "webhook_url": "https://webhooks.traderspost.io/trading/webhook/<uuid>/<password>",
  "symbols": {"MES": {"qty": 2, "cfd": "US500"}, "MNQ": {"qty": 1, "cfd": "NAS100"}, "MYM": {"qty": 2, "cfd": "US30"}, "NIY": {"qty": 0, "cfd": "JP225"}},
  "max_contracts_total": 5,
- "vix_gate": {"threshold": 25, "symbols": ["MES", "MNQ"]},
  "scaling": {"rule": "A", "mll": 4500, "lock_at": 100, "phase": "eval", "equity_override": null},
  "holidays_csv": "C:\\chien\\research\\data_ext\\holidays_us_uk_au_nz_2016_2027.csv",
  "log_csv": "G:\\マイドライブ\\chien_ops\\futures\\mffu_log.csv",
