@@ -19,6 +19,7 @@
 """
 import os, sys, json, time, glob, argparse, datetime as dt
 import pandas as pd
+RETRY_WAIT_SEC = 30   # 1.7c: initialize が -6 (Authorization failed) のときの再試行待ち秒
 try: sys.stdout.reconfigure(errors="replace")
 except Exception: pass
 try:
@@ -101,9 +102,15 @@ def run_terminal(t, since, out_root, log_days):
     kw = dict(path=t["path"], timeout=60000)
     if t.get("login"): kw.update(login=int(t["login"]), server=t.get("server", ""), password=t.get("password", ""))
     if t.get("portable"): kw["portable"] = True
-    if not mt5.initialize(**kw):
+    ok = mt5.initialize(**kw); retried = False
+    if not ok:
         err = mt5.last_error(); print(f"[{name}] initialize 失敗 {err}")
-        return dict(account=acct, name=name, ok=False, error=str(err), time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat())
+        if isinstance(err, tuple) and err and err[0] == -6:   # 1.7c (Q130・docs/349 §6f): 認証失敗(-6)は一過性があるので 30 秒後に 1 回だけ再試行
+            time.sleep(RETRY_WAIT_SEC); retried = True; ok = mt5.initialize(**kw)
+            if ok: print(f"[{name}] 再試行で接続")
+            else: err = mt5.last_error(); print(f"[{name}] 再試行も失敗 {err}")
+        if not ok:
+            return dict(account=acct, name=name, ok=False, error=str(err), retried=retried, time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat())
     try:
         ai = mt5.account_info(); ti = mt5.terminal_info()
         if ai is None or str(ai.login) != acct:
@@ -274,7 +281,7 @@ class _Tee:
 def main():
     _log = os.path.join(os.path.dirname(os.path.abspath(__file__)), "agent.log")
     sys.stdout = _Tee(sys.stdout, _log); sys.stderr = _Tee(sys.stderr, _log)
-    print(f"\n==== {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()} UTC agent 1.7b ====")
+    print(f"\n==== {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()} UTC agent 1.7c ====")
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "terminals.json"))
     ap.add_argument("--since", default="2026-08-01")
@@ -302,7 +309,7 @@ def main():
         except Exception as e:
             print(f"[{t.get('name')}] 例外 {e!r}"); status.append(dict(account=str(t.get("account")), name=t.get("name"), ok=False, error=repr(e), time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()))
         time.sleep(2)
-    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.7", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.7c", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     ok = sum(1 for s in status if s.get("ok")); print(f"完了 {ok}/{len(status)} 端末 → {out_root}")
     try: write_diag(out_root, os.path.dirname(os.path.abspath(__file__)))
     except Exception as e: print(f"_diag 書き出し失敗 {e!r}")

@@ -180,3 +180,10 @@ order 43〜46。累積 9,660 → 9,688。第 3 期の結論: 先物口座に載�
 | **Q129** | CFD 4 社目候補の規約照合 × 帳簿 MC | 0 | 11 社の EA・週末・DD・swap・費用・信用を照合し、H(Hold/Roll)・M(Mon4)・A(EA9)の 3 帳簿を MC | 候補 The5ers HS(A 型)/ E8 One DD10%(H 型)/ CTI 2-Step。11/1 の Q88 で購入 MC(docs/348) |
 
 order 47。累積不変。
+
+### 5k.【2026-10-11 登録】Q130 VPS 記録エージェントの認証失敗再試行(ユーザー「再試行の対策を登録してください」)
+| # | 項目 | セル | 内容 | 結果 |
+|---|---|---|---|---|
+| **Q130** | `chien_ops_agent.py` 1.7c: `initialize()` が −6(Authorization failed)のときだけ 30 秒後に 1 回再試行 | 0 | docs/349 §6f の 10/10 22:00 UTC の 1 回失敗(一過性と推定)への対策。再試行の有無を status.json の `retried` に記録 | 実装済み。反映は VPS で `C:\chien\chien_setup.bat` を再実行(GitHub から agent を取り直す)。検証: status.json の `agent_version` が 1.7c、以後 −6 の行が出ないこと |
+
+order 48。累積不変。

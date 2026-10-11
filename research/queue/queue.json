@@ -1926,6 +1926,24 @@
    "program": "docs/322",
    "order": 47,
    "result": "候補 3 社: The5ers High Stakes(A 型帳簿・信用最大)、E8 One DD10%(Hold/Roll・swap-free 要確認)、CTI 2-Step(残高基準 DD)。Alpha/Maven/Goat は EA・VPS 規約で不可、BG/FTUK は含み損 2% ガードで不可。新手法は増えず Hold/Roll の枠が増える"
+  },
+  {
+   "id": "Q130",
+   "slug": "vps_agent_auth_retry",
+   "title": "VPS 記録エージェント: initialize −6(Authorization failed)の 1 回再試行(工学・セル 0)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/349_prop_account_register_2026-10-11.md"
+   ],
+   "note": "ユーザー「再試行の対策を登録してください」(2026-10-11)。10/10 22:00 UTC の 531466484 取得失敗(docs/349 §6f)への対策。agent 1.7c: -6 のときだけ 30 秒後に 1 回再試行・status.json に retried を記録。反映は VPS で chien_setup.bat 再実行(エージェントは自己更新しない)",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 48,
+   "result": "実装済み(ops/vps/chien_ops_agent.py 1.7c)。VPS 反映待ち。効果検証: status.json の agent_version=1.7c と、以後の -6 行の有無"
   }
  ],
  "runs": [
