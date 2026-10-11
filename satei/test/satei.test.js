@@ -163,3 +163,50 @@ test("代理出品: 同じ人がもう一度送った相談は前の番号にま
   db.prepare("UPDATE consign SET status = '見送り' WHERE id = 3").run();
   assert.equal((await createLead(env, lead({ sid: "s3" }))).id, 4);
 });
+
+test("分割: 毎月の予定・残り・遅れ・今日やること", async () => {
+  const { monthly, splitState, priceDown, todos } = await import("../public/lib/stock.js");
+  // 1/31 始まりは月末にそろえる
+  assert.deepEqual(monthly("2026-12-31", 3, 7000).map((p) => p.due_on), ["2026-12-31", "2027-01-31", "2027-02-28"]);
+  const pays = monthly("2026-09-26", 15, 7000).map((p, i) => ({ ...p, paid_on: i === 0 ? "2026-09-26" : null }));
+  const sp = { id: 1, buyer: "りょう", total: 105000, status: "支払い中", pays };
+  let st = splitState(sp, pays, "2026-10-25");
+  assert.deepEqual([st.paid, st.remaining, st.count, st.next.due_on, st.late, st.mismatch], [7000, 98000, [1, 15], "2026-10-26", null, false]);
+  assert.match(todos([], [sp], "2026-10-25")[0].text, /支払日です/);
+  st = splitState(sp, pays, "2026-10-29");
+  assert.deepEqual(st.late, { n: 1, days: 3, amount: 7000 });
+  assert.match(todos([], [sp], "2026-10-29")[0].text, /3日遅れています/);
+  // 値下げは7日たってから、千円単位で下限まで
+  const s = { id: 1, status: "出品中", price: 200000, floor: 195000, price_at: "2026-10-01" };
+  assert.equal(priceDown(s, "2026-10-07"), null);
+  assert.deepEqual(priceDown(s, "2026-10-08"), { from: 200000, to: 195000 });
+  assert.equal(priceDown({ ...s, price: 195000 }, "2026-10-20"), null);
+});
+
+test("在庫・分割の API の入力チェックと保存", async () => {
+  const { DatabaseSync } = await import("node:sqlite");
+  const { readFileSync } = await import("node:fs");
+  const st = await import("../src/stock.js");
+  const db = new DatabaseSync(":memory:");
+  db.exec(readFileSync(new URL("../migrations/0005_stock.sql", import.meta.url), "utf8"));
+  const stmt = (q, a = []) => ({
+    first: async () => db.prepare(q).get(...a) ?? null,
+    run: async () => ({ meta: { changes: Number(db.prepare(q).run(...a).changes) } }),
+    all: async () => ({ results: db.prepare(q).all(...a) }),
+  });
+  const env = { DB: { prepare: (q) => ({ ...stmt(q), bind: (...a) => stmt(q, a) }), batch: (list) => Promise.all(list.map((s) => s.all())) } };
+  const games = ["genshin-impact"];
+  assert.equal(st.validStock({ game: "x" }, games), null);
+  assert.equal(st.validStock({ price: -1 }, games), null);
+  const id = await st.createStock(env, st.validStock({ game: "genshin-impact", chars: [{ name: "スカーク", cons: 6 }], listings: [{ site: "ゲームトレード", url: "javascript:x" }] }, games));
+  const [s] = await st.listStock(env);
+  assert.deepEqual([s.id, s.status, s.chars[0].cons, s.listings[0].url], [id, "未出品", 6, ""]);
+  assert.equal(await st.updateStock(env, id, st.validStock({ status: "商談中", price: "" }, games)), true);
+  assert.equal(st.validSplit({ game: "genshin-impact", buyer: "", total: 1 }, games), null);
+  const sid = await st.createSplit(env, st.validSplit({ game: "genshin-impact", buyer: "あお", total: 200000 }, games), [st.validPay({ due_on: "2026-10-20", amount: 10000 })]);
+  const payId = await st.addPay(env, sid, st.validPay({ due_on: "2026-11-20", amount: 20000 }));
+  await st.updatePay(env, payId, st.validPay({ paid_on: "2026-11-19" }));
+  const [sp] = await st.listSplit(env);
+  assert.deepEqual([sp.buyer, sp.status, sp.pays.length, sp.pays[1].paid_on], ["あお", "支払い中", 2, "2026-11-19"]);
+  assert.equal(await st.deletePay(env, payId), true);
+});

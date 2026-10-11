@@ -7,6 +7,7 @@
 //   GET  /api/stats(合言葉が必要)… 利用記録の集計。画面は public/admin.html
 //   POST /api/lead {game, handle?, wish?, chars, low, high, sid} … 査定ページからの相談 → 代理出品の管理に入り、管理番号を返す
 //   /api/consign・/api/templates(合言葉が必要)… 代理出品の一覧・更新・DM の定型文(src/consign.js)
+//   /api/stock・/api/split(合言葉が必要)… 在庫と分割払いの管理(src/stock.js)
 //
 // バインディング:
 //   ANTHROPIC_API_KEY … Secret(未設定なら /api/read は 503。画面は手入力だけで動く)
@@ -17,6 +18,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { CHARS, TERMS } from "../public/lib/chars.js";
 import { validEvent, record, stats } from "./events.js";
+import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay } from "./stock.js";
 import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES } from "./consign.js";
 
 const MODEL = "claude-opus-5-5";
@@ -195,7 +197,7 @@ async function handle(req, env, ctx) {
     return json({ ok: true, no: id, merged });
   }
   // ここから下は集計画面用(合言葉が必要)
-  const admin = pathname === "/api/stats" || pathname.startsWith("/api/consign") || pathname === "/api/templates";
+  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay)/.test(pathname) || pathname === "/api/templates";
   if (admin) {
     const token = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
     if (!env.STATS_TOKEN_SHA256 || (await sha256(token)) !== env.STATS_TOKEN_SHA256) return json({ ok: false, error: "合言葉が違います" }, 401);
@@ -230,6 +232,8 @@ async function handle(req, env, ctx) {
     const n = await saveTemplates(env, (await readJson(req))?.templates);
     return n ? json({ ok: true, saved: n }) : json({ ok: false, error: "定型文が空です" }, 400);
   }
+  const stockRes = await stockApi(env, req, pathname);
+  if (stockRes) return stockRes;
   if (pathname.startsWith("/api/")) return json({ ok: false, error: "not found" }, 404);
   // 公開先は game-souba.com に移った。workers.dev のページは移転先へ(モデルなどのデータはそのまま配る)
   if (url.hostname.endsWith(".workers.dev") && (pathname === "/" || pathname === "/index.html")) {
@@ -238,13 +242,53 @@ async function handle(req, env, ctx) {
   return env.ASSETS.fetch(req);
 }
 
+// 在庫と分割払い(合言葉の確認は済んでいる)。該当しなければ null
+async function stockApi(env, req, pathname) {
+  const games = Object.keys(CHARS);
+  const bad = () => json({ ok: false, error: "入力を確認してください" }, 400);
+  const done = (ok) => json({ ok }, ok ? 200 : 404);
+  if (pathname === "/api/stock" && req.method === "GET") return json({ ok: true, stock: await listStock(env), split: await listSplit(env) });
+  if (pathname === "/api/stock" && req.method === "POST") {
+    const row = validStock(await readJson(req), games);
+    return row?.game ? json({ ok: true, no: await createStock(env, row) }) : bad();
+  }
+  let m = /^\/api\/stock\/(\d+)$/.exec(pathname);
+  if (m && req.method === "PATCH") {
+    const patch = validStock(await readJson(req), games);
+    return patch ? done(await updateStock(env, Number(m[1]), patch)) : bad();
+  }
+  if (pathname === "/api/split" && req.method === "POST") {
+    const body = await readJson(req);
+    const row = validSplit(body, games);
+    const pays = (Array.isArray(body?.pays) ? body.pays : []).slice(0, 60).map(validPay);
+    if (!row?.game || !row.buyer || row.total == null || pays.some((p) => !p?.due_on || p.amount == null)) return bad();
+    return json({ ok: true, no: await createSplit(env, row, pays) });
+  }
+  m = /^\/api\/split\/(\d+)(\/pay)?$/.exec(pathname);
+  if (m && !m[2] && req.method === "PATCH") {
+    const patch = validSplit(await readJson(req), games);
+    return patch ? done(await updateSplit(env, Number(m[1]), patch)) : bad();
+  }
+  if (m && m[2] && req.method === "POST") {
+    const p = validPay(await readJson(req));
+    return p?.due_on && p.amount != null ? json({ ok: true, id: await addPay(env, Number(m[1]), p) }) : bad();
+  }
+  m = /^\/api\/pay\/(\d+)$/.exec(pathname);
+  if (m && req.method === "PATCH") {
+    const patch = validPay(await readJson(req));
+    return patch ? done(await updatePay(env, Number(m[1]), patch)) : bad();
+  }
+  if (m && req.method === "DELETE") return done(await deletePay(env, Number(m[1])));
+  return null;
+}
+
 export default {
   async fetch(req, env, ctx) {
     const cors = corsHeaders(req);
     if (req.method === "OPTIONS" && new URL(req.url).pathname.startsWith("/api/")) {
       return new Response(null, {
         status: 204,
-        headers: { ...cors, "access-control-allow-methods": "GET, POST, PATCH, PUT", "access-control-allow-headers": "content-type, authorization", "access-control-max-age": "86400" },
+        headers: { ...cors, "access-control-allow-methods": "GET, POST, PATCH, PUT, DELETE", "access-control-allow-headers": "content-type, authorization", "access-control-max-age": "86400" },
       });
     }
     const res = await handle(req, env, ctx);
