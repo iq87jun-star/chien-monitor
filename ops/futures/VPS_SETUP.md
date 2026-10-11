@@ -17,8 +17,8 @@ Copy-Item config.example.json config.json
 ```
 `config.json` を編集(`notepad config.json`):
 - `"transport": "dry"`(URL を貼った後に `"webhook"` へ)
-- `"symbols": {"MES": {"qty": 6, "cfd": "US500"}, "MNQ": {"qty": 3, "cfd": "NAS100"}, "MYM": {"qty": 6, "cfd": "US30"}}`(Builder 150K・docs/336 §9)
-- `"max_contracts_total": 15`
+- `"symbols": {"MES": {"qty": 7, "cfd": "US500"}, "MNQ": {"qty": 3, "cfd": "NAS100"}, "MYM": {"qty": 7, "cfd": "US30"}}`(Builder 150K・×1.5・docs/336 §19。基準 5/2/5 は docs/336 §16)
+- `"max_contracts_total": 17`
 - `"holidays_csv": "C:\\chien\\ops\\futures\\holidays_us_uk_au_nz_2016_2027.csv"`
 - `"log_csv": "G:\\マイドライブ\\chien_ops\\futures\\mffu_log.csv"`(G: が無ければ `"C:\\chien\\ops\\futures\\out\\mffu_log.csv"`)
 - `"state_json": "C:\\chien\\ops\\futures\\out\\state.json"`

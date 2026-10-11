@@ -16,7 +16,7 @@
 //|   Magic 944700(FTMO 既存 943xxx / 944100 / 944200 / 944500 と別)。期限 2027-03-31             |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.02"   // v1.02(2026-10-11・docs/241 §1v・docs/349 §6): ユーザー「切替」で InpMult 1.5 → 2.2(EOD トレーリング床 −9% 下の MC: 資金化 83% / 失格 17%・+2σ 到達 2027-06-28)。ロジック不変。v1.01(2026-10-07・Q111 docs/327): VPS ログ送信(InpLogUrl・Apps Script)を追加。取引ロジックは v1.00 と同一   // EA9 (2026-09-27): EA6 の 1-Step ガード + Instant G の指数 Mon レッグ + Hold XAUUSD。災害SL 3.0×ATR(docs/313)
+#property version   "1.03"   // v1.03(2026-10-11 ユーザー「全て切り替え」(docs/349 §6c・docs/241 §1w): +2σ を 2027-06 までに入れる倍率。ロジック・ガード・Magic 不変。) ← v1.02(2026-10-11・docs/241 §1v・docs/349 §6): ユーザー「切替」で InpMult 1.5 → 2.2(EOD トレーリング床 −9% 下の MC: 資金化 83% / 失格 17%・+2σ 到達 2027-06-28)。ロジック不変。v1.01(2026-10-07・Q111 docs/327): VPS ログ送信(InpLogUrl・Apps Script)を追加。取引ロジックは v1.00 と同一   // EA9 (2026-09-27): EA6 の 1-Step ガード + Instant G の指数 Mon レッグ + Hold XAUUSD。災害SL 3.0×ATR(docs/313)
 #property strict
 #property description "[EA9 FTMO 1-Step] Hold XAUUSD 0.12 + Mon GBPJPY 0.63 + Mon NAS100 0.25, mult 1.5 (docs/301 A). Daily guard -2.4 (rule 3), EOD-trailing floor -9 (rule 10), lock 9.9/10.05. Expiry 2027-03-31."
 
@@ -130,7 +130,7 @@ input group "=== 構成(銘柄:重み CSV。docs/301 §1 A案) ==="
 input string InpMonLegs  = "GBPJPY:0.63,NAS100:0.25";   // Mon: 月曜o2o LONG(FX=4 ショット / 指数=現物寄り単発)
 input string InpV4Legs   = "";                          // v4: 未使用
 input string InpHoldLegs = "XAUUSD:0.12";               // Hold: 連続 LONG(InpHoldEnable=true で有効)
-input double InpMult     = 2.2;   // 倍率(2026-10-11 切替: 2.2 = トレーリング床 MC 資金化 83% / 失格 17%・docs/349 §6。旧 1.5 = docs/301 §4a 資金化 5y 97.6%・失格 0.3%)
+input double InpMult     = 2.5;   // 倍率(2026-10-11 全切替: 2.5 = トレーリング床 MC 資金化 81% / 失格 19%・+2σ 2027-05-19・docs/349 §6c。旧 1.5 = docs/301 §4a 資金化 5y 97.6%・失格 0.3%)
 
 input group "=== 有効期限(直近特化=賞味期限つき。docs/174停止規則) ==="
 input datetime InpExpiry = D'2027.03.31 23:59';  // 6ヶ月判定
@@ -458,7 +458,7 @@ int OnInit()
    double wsum=0; for(int i=0;i<g_nMon;i++) wsum+=g_monW[i];
    for(int i=0;i<g_nV4;i++) wsum+=g_v4W[i];
    for(int i=0;i<g_nHold;i++) wsum+=g_holdW[i];
-   ChienLog(StringFormat("[INIT EA9 v1.02] initBal=%.0f mult=%.1f Σw=%.3f (グロス想定≈%.2fx) expiry=%s Magic=%I64d/%I64d/%I64d",
+   ChienLog(StringFormat("[INIT EA9 v1.03] initBal=%.0f mult=%.1f Σw=%.3f (グロス想定≈%.2fx) expiry=%s Magic=%I64d/%I64d/%I64d",
       g_initBal,InpMult,wsum,wsum*InpMult,TimeToString(InpExpiry,TIME_DATE),g_mMon,g_mV4,g_mHold));
    for(int i=0;i<g_nMon;i++){
       double nt=g_initBal*g_monW[i]*InpMult/(IsIdx(g_monSym[i])?1:MathMax(nh,1));
