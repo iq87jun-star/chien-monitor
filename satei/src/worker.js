@@ -7,7 +7,7 @@
 //   GET  /api/stats(合言葉が必要)… 利用記録の集計。画面は public/admin.html
 //   POST /api/lead {game, handle?, wish?, chars, low, high, sid} … 査定ページからの相談 → 代理出品の管理に入り、管理番号を返す
 //   /api/consign・/api/templates(合言葉が必要)… 代理出品の一覧・更新・DM の定型文(src/consign.js)
-//   /api/stock・/api/split(合言葉が必要)… 在庫と分割払いの管理(src/stock.js)
+//   /api/stock・/api/split・/api/image(合言葉が必要)… 在庫と分割払いの管理と、そのスクショ(src/stock.js)
 //
 // バインディング:
 //   ANTHROPIC_API_KEY … Secret(未設定なら /api/read は 503。画面は手入力だけで動く)
@@ -18,7 +18,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { CHARS, TERMS } from "../public/lib/chars.js";
 import { validEvent, record, stats } from "./events.js";
-import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay } from "./stock.js";
+import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay, validImage, addImage, listImages, getImage, replaceImage, deleteImage } from "./stock.js";
 import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES } from "./consign.js";
 
 const MODEL = "claude-opus-5-5";
@@ -197,7 +197,7 @@ async function handle(req, env, ctx) {
     return json({ ok: true, no: id, merged });
   }
   // ここから下は集計画面用(合言葉が必要)
-  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay)/.test(pathname) || pathname === "/api/templates";
+  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay|image)/.test(pathname) || pathname === "/api/templates";
   if (admin) {
     const token = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
     if (!env.STATS_TOKEN_SHA256 || (await sha256(token)) !== env.STATS_TOKEN_SHA256) return json({ ok: false, error: "合言葉が違います" }, 401);
@@ -247,7 +247,7 @@ async function stockApi(env, req, pathname) {
   const games = Object.keys(CHARS);
   const bad = () => json({ ok: false, error: "入力を確認してください" }, 400);
   const done = (ok) => json({ ok }, ok ? 200 : 404);
-  if (pathname === "/api/stock" && req.method === "GET") return json({ ok: true, stock: await listStock(env), split: await listSplit(env) });
+  if (pathname === "/api/stock" && req.method === "GET") return json({ ok: true, stock: await listStock(env), split: await listSplit(env), images: await listImages(env) });
   if (pathname === "/api/stock" && req.method === "POST") {
     const row = validStock(await readJson(req), games);
     return row?.game ? json({ ok: true, no: await createStock(env, row) }) : bad();
@@ -279,6 +279,25 @@ async function stockApi(env, req, pathname) {
     return patch ? done(await updatePay(env, Number(m[1]), patch)) : bad();
   }
   if (m && req.method === "DELETE") return done(await deletePay(env, Number(m[1])));
+  // 画像(合言葉の付いた fetch で取り、画面で blob にして表示する)
+  if (pathname === "/api/image" && req.method === "POST") {
+    const img = validImage(await readJson(req, 1_500_000));
+    if (!img) return bad();
+    const id = await addImage(env, img);
+    return id ? json({ ok: true, id }) : json({ ok: false, error: "1件に付けられる画像の上限です" }, 400);
+  }
+  m = /^\/api\/image\/(\d+)$/.exec(pathname);
+  if (m && req.method === "GET") {
+    const img = await getImage(env, Number(m[1]));
+    if (!img) return done(false);
+    const bin = Uint8Array.from(atob(img.data), (c) => c.charCodeAt(0));
+    return new Response(bin, { headers: { "content-type": img.mime, "cache-control": "private, no-store" } });
+  }
+  if (m && req.method === "PUT") {
+    const img = validImage({ owner: "stock", owner_id: 0, ...(await readJson(req, 1_500_000)) });
+    return img ? done(await replaceImage(env, Number(m[1]), img)) : bad();
+  }
+  if (m && req.method === "DELETE") return done(await deleteImage(env, Number(m[1])));
   return null;
 }
 

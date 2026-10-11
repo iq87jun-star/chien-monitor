@@ -210,3 +210,14 @@ test("在庫・分割の API の入力チェックと保存", async () => {
   assert.deepEqual([sp.buyer, sp.status, sp.pays.length, sp.pays[1].paid_on], ["あお", "支払い中", 2, "2026-11-19"]);
   assert.equal(await st.deletePay(env, payId), true);
 });
+
+test("画像は形と大きさを確かめてから受け取る", async () => {
+  const { validImage, MAX_IMAGE_B64 } = await import("../src/stock.js");
+  const ok = { owner: "stock", owner_id: 1, mime: "image/jpeg", data: "QUJD", w: 10, h: 20 };
+  assert.deepEqual(validImage(ok), ok);
+  assert.equal(validImage({ ...ok, owner: "consign" }), null);
+  assert.equal(validImage({ ...ok, owner_id: "1" }), null);
+  assert.equal(validImage({ ...ok, mime: "text/html" }), null);
+  assert.equal(validImage({ ...ok, data: "<script>" }), null);
+  assert.equal(validImage({ ...ok, data: "A".repeat(MAX_IMAGE_B64 + 4) }), null);
+});
