@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9688,
+ "cumulative_cells": 9692,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -1235,16 +1235,18 @@
    "slug": "mon_eth_exit",
    "title": "Mon ETHUSD の出口(改良系・{12h,36h,翌日 NY 引け,24h+トレイル})",
    "cells": 4,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/350_q91_mon_eth_exit.md"
    ],
    "note": "改良系基準。通過 → 14166201 G案・EA11 の ETHUSD レグ",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 7
+   "order": 7,
+   "result": "4 変種とも棄却(IS/OOS で 24h を上回らない)。基準自体が弱く(OOS Sharpe −0.06)、11 月改訂で ETHUSD Mon レグの継続判定(Q92 と同規則)を提案"
   },
   {
    "id": "Q92",
@@ -3018,6 +3020,13 @@
    "cells": 0,
    "cumulative": 9688,
    "summary": "CFD 4 社目候補: The5ers HS / E8 One / CTI(docs/348)。Q88(11/1)へ"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q91",
+   "cells": 4,
+   "cumulative": 9692,
+   "summary": "Mon ETHUSD 出口 4 変種とも棄却(docs/350)。レグ継続の判定を 11 月改訂へ"
   }
  ]
 }

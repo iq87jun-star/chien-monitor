@@ -120,3 +120,8 @@ P4 観察運転は 10/7 15:41 UTC から継続中(10 端末・毎時)。4 日間
 | ④ 検証 | 私 | Drive `chien_ops/<口座>/ea_log_extract.csv` の `[INIT …]`(新版・mult)、`status.json` の `attached_eas`、`open_positions.csv` の建玉が同 Magic で残っていること。失敗した口座は apply を戻し、MQL5 VPS 再移行を案内 | 月曜 06:00 JST まで。22:00 JST の Mon 建てで最終確認 |
 | ⑤ 失効 | ユーザー | MQL5 VPS は更新しない(月払い)。戻すときは docs/317 の手順 | 月末 |
 保険: ④で 1 口座でも不安があれば、その口座だけ MQL5 VPS に戻す(ログイン → プロファイル → VPS→移行・3 操作)。全体の中止は「apply を全 false に戻す + MQL5 VPS 再移行」で、建玉はどちらでも同 Magic で引き継がれる。
+
+### 9a.【2026-10-12 06:20 JST】時刻の訂正と状況
+- §9 の見出し「16:15 UTC(日曜 01:15 JST)」は誤りで、正しくは **月曜 01:15 JST**(10/11 は日曜)。「日曜中に一括」と書いた時点で市場再開(月曜 06:00 JST)まで 5 時間しか無かった。ユーザーからの「停止完了」は無く、MQL5 VPS の EA は止めていない前提で月曜の市場再開を迎えた(= 安全側)。
+- VPS 側は ①のコードが入り agent **1.8** で 16:43 UTC に手動実行成功(全 10 端末 ok・新 EA 5 本コンパイル OK・プロファイル生成済み)。ただし **その後の毎時実行の記録が Drive に無い**(status.json / equity_log とも 16:43 UTC のまま 4 時間以上更新なし)。`_diag/task.txt` の登録内容は `Task To Run = C:\Users\iq87jun\...\Python311\python.exe` で、手動実行の python は `C:\Program Files\Python312\python.exe`(host.txt)。install_task.ps1 を PATH に python の無いシェルから実行したため、存在しない Python311 のパスで毎時タスクが登録し直された可能性が高い → 毎時タスクが静かに失敗。対処: install_task.ps1 v3.1(実在する python.exe を探す・無ければ中止)をプッシュ。VPS 側では install_task.ps1 だけを取り直して再実行(chien_setup.bat は agent 1.8 を上書きするので使わない)。
+- 次の一括切替は、毎時記録の復旧を確認した上で、平日日中(火〜木)に口座ごと、または次の週末に §9 の手順で。
