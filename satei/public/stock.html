@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>在庫と分割の管理</title>
+<style>
+  :root { --bg:#fff8fb; --card:#fff; --ink:#2b2230; --sub:#6d6075; --line:#f0dbe6; --accent:#e8568f; --warn:#d93a3a; --ok:#2f9e6a; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1b1520; --card:#251d2b; --ink:#f4ecf7; --sub:#b9aac2; --line:#3b2f44; --accent:#ff7aab; --warn:#ff6b6b; --ok:#4fd39a; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.6 system-ui,"Hiragino Sans","Noto Sans JP",sans-serif; }
+  main { max-width:900px; margin:0 auto; padding:20px 16px 60px; }
+  h1 { font-size:20px; margin:0 0 12px; } h2 { font-size:16px; margin:20px 0 8px; }
+  a { color:var(--accent); }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px; margin-top:10px; }
+  form, .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .row { margin-top:8px; }
+  input, select, button, textarea { font:inherit; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--ink); }
+  button { background:var(--accent); color:#fff; border:0; font-weight:700; cursor:pointer; }
+  button.sub { background:var(--bg); color:var(--ink); border:1px solid var(--line); font-weight:600; }
+  .muted { color:var(--sub); font-size:13px; }
+  .tag { display:inline-block; font-size:11px; padding:1px 8px; border-radius:999px; background:var(--line); }
+  .tag.warn { background:var(--warn); color:#fff; } .tag.ok { background:var(--ok); color:#fff; }
+  .tabs { display:flex; gap:6px; margin:16px 0 4px; flex-wrap:wrap; }
+  .tabs button { background:var(--card); color:var(--ink); border:1px solid var(--line); }
+  .tabs button[aria-pressed="true"] { background:var(--accent); color:#fff; border-color:var(--accent); }
+  header { display:flex; gap:8px; align-items:center; flex-wrap:wrap; } header b { font-size:17px; }
+  .grid2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:8px; margin-top:8px; }
+  .grid2 label { font-size:12px; color:var(--sub); display:block; }
+  .grid2 input, .grid2 select, .grid2 textarea, textarea { width:100%; margin-top:2px; }
+  textarea { min-height:60px; }
+  .todo { border-left:4px solid var(--accent); } .todo li { margin:4px 0; } .todo li.l3 { color:var(--warn); font-weight:700; }
+  .bar { height:8px; background:var(--line); border-radius:99px; overflow:hidden; margin-top:6px; } .bar i { display:block; height:100%; background:var(--ok); }
+  table { width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums; }
+  th, td { padding:5px 6px; border-bottom:1px solid var(--line); text-align:left; }
+  td.late { color:var(--warn); font-weight:700; }
+  .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
+  .kpis b { display:block; font-size:22px; font-variant-numeric:tabular-nums; } .kpis span { color:var(--sub); font-size:12px; }
+  .wrap { overflow-x:auto; }
+  .toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:10px; font-size:14px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>📦 在庫と分割の管理</h1>
+  <div class="card">
+    <form id="f">
+      <input id="token" type="password" placeholder="合言葉" autocomplete="current-password" required />
+      <button>表示</button>
+      <a href="admin.html" class="muted">← 代理出品・利用記録</a>
+    </form>
+    <p class="muted" id="msg">ログイン用のメールアドレス・パスワードはここに書かないでください。</p>
+  </div>
+
+  <div id="app" hidden>
+    <div class="card todo"><b>今日やること</b><ul id="todo"></ul></div>
+    <div class="kpis" style="margin-top:10px">
+      <div class="card"><span>在庫(売却済み以外)</span><b id="k-stock">0</b></div>
+      <div class="card"><span>分割の残り</span><b id="k-remain">0</b></div>
+      <div class="card"><span>今月入る予定</span><b id="k-month">0</b></div>
+      <div class="card"><span>今月入った</span><b id="k-got">0</b></div>
+    </div>
+    <div class="tabs">
+      <button type="button" data-tab="stockTab" aria-pressed="true">在庫</button>
+      <button type="button" data-tab="splitTab" aria-pressed="false">分割</button>
+    </div>
+
+    <section id="stockTab">
+      <div id="stockList"></div>
+      <details class="card"><summary>+ 在庫を追加</summary>
+        <div class="grid2">
+          <label>ゲーム<select id="s-game"></select></label>
+          <label>仕入れ値(円)<input id="s-cost" type="number" min="0" step="1000" /></label>
+          <label>仕入れ元<input id="s-source" placeholder="X / Discord / gameclub" /></label>
+          <label>仕入れ日<input id="s-bought" type="date" /></label>
+        </div>
+        <label class="muted">キャラ(例: 黄泉完凸 鏡流2凸 花火)<textarea id="s-chars"></textarea></label>
+        <label class="muted">資産・メモ<input id="s-assets" style="width:100%" placeholder="原石 3,225 / モラ 1,960万 / 星5武器35本" /></label>
+        <div class="row"><button type="button" id="s-add">追加</button></div>
+      </details>
+    </section>
+
+    <section id="splitTab" hidden>
+      <div id="splitList"></div>
+      <details class="card"><summary>+ 分割を追加</summary>
+        <div class="grid2">
+          <label>ゲーム<select id="p-game"></select></label>
+          <label>購入者(呼び名)<input id="p-buyer" /></label>
+          <label>連絡先<input id="p-contact" placeholder="Discord: xxx / X: @xxx" /></label>
+          <label>仲介・間に入る人<input id="p-middle" /></label>
+          <label>総額(円)<input id="p-total" type="number" min="0" step="1000" /></label>
+          <label>月々(円)<input id="p-amount" type="number" min="0" step="1000" /></label>
+          <label>回数<input id="p-n" type="number" min="1" max="60" /></label>
+          <label>1回目の支払日<input id="p-first" type="date" /></label>
+        </div>
+        <label class="muted">キャラ<textarea id="p-chars"></textarea></label>
+        <p class="muted">頭金など、月々と違う支払いは追加したあとで「+ 予定を追加」から足せます。引き渡しは完済してから行います。</p>
+        <div class="row"><button type="button" id="p-add">追加</button></div>
+      </details>
+    </section>
+  </div>
+</main>
+<script type="module">
+import { parseRoster } from "./lib/features.js";
+import { estimate } from "./lib/estimate.js";
+import { STOCK_STATUSES, SPLIT_STATUSES, SITES, HANDOVER, RULES, monthly, splitState, priceDown, staleListings, todos, days } from "./lib/stock.js";
+const $ = (id) => document.getElementById(id);
+const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
+const GAME = { "genshin-impact": "原神", houkaistarrail: "スタレ", zzz: "ゼンゼロ", wutheringwaves: "鳴潮" };
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const man = (v) => (v == null ? "—" : `${(v / 10000).toFixed(1).replace(/\.0$/, "")}万`);
+const yen = (v) => `${(v ?? 0).toLocaleString()}円`;
+const md = (d) => (d ? `${Number(d.slice(5, 7))}/${Number(d.slice(8, 10))}` : "—");
+const today = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+const charsText = (cs) => cs.map((c) => `${c.name}${c.cons === 6 ? "完凸" : c.cons ? c.cons + "凸" : ""}`).join(" ");
+const rosterOf = (text, game) => Object.entries(parseRoster(text, game)).map(([name, v]) => ({ name, ...v }));
+let token = "", data = null, model = null;
+try { $("token").value = localStorage.getItem("satei:admin") ?? ""; } catch {}
+for (const id of ["s-game", "p-game"]) $(id).innerHTML = Object.entries(GAME).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+
+async function api(path, init = {}) {
+  const res = await fetch(`${API}${path}`, { ...init, headers: { authorization: `Bearer ${token}`, "content-type": "application/json" } });
+  const d = await res.json();
+  if (!d.ok) throw new Error(d.error || res.status);
+  return d;
+}
+function toast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  document.body.append(t);
+  setTimeout(() => t.remove(), 2500);
+}
+const satei = (game, cs) => {
+  try {
+    const r = estimate(model, game, cs);
+    return r.capped ? `買取 ${man(r.low)}以上(相場 ${man(r.low / model.buyRate)}以上)` : `買取 ${man(r.low)}〜${man(r.high)}(相場 ${man(r.low / model.buyRate)}〜${man(r.high / model.buyRate)})`;
+  } catch { return ""; }
+};
+
+for (const b of document.querySelectorAll("[data-tab]"))
+  b.addEventListener("click", () => {
+    for (const x of document.querySelectorAll("[data-tab]")) x.setAttribute("aria-pressed", String(x === b));
+    for (const id of ["stockTab", "splitTab"]) $(id).hidden = id !== b.dataset.tab;
+  });
+
+function render() {
+  const t = todos(data.stock, data.split, today);
+  $("todo").innerHTML = t.map((x) => `<li class="l${x.level}">${esc(x.text)}</li>`).join("") || `<li class="muted">今日やることはありません</li>`;
+  const live = data.split.filter((s) => s.status === "支払い中");
+  const ym = today.slice(0, 7);
+  const month = data.split.flatMap((s) => s.pays).filter((p) => p.due_on.startsWith(ym));
+  $("k-stock").textContent = `${data.stock.filter((s) => s.status !== "売却済み").length}件`;
+  $("k-remain").textContent = yen(live.reduce((n, s) => n + splitState(s, s.pays, today).remaining, 0));
+  $("k-month").textContent = yen(month.reduce((n, p) => n + p.amount, 0));
+  $("k-got").textContent = yen(month.filter((p) => p.paid_on).reduce((n, p) => n + p.amount, 0));
+  renderStock();
+  renderSplit();
+}
+
+function renderStock() {
+  $("stockList").innerHTML = data.stock.map((s) => {
+    const pd = priceDown(s, today);
+    const stale = new Set(staleListings(s, today).map((l) => l.site));
+    return `<article class="card" data-stock="${s.id}">
+      <header><b>在庫 No.${s.id}</b><span class="tag">${GAME[s.game] ?? esc(s.game)}</span><span class="tag">${esc(s.status)}</span>${pd ? `<span class="tag warn">値下げ ${man(pd.from)}→${man(pd.to)}</span>` : ""}
+        <span class="muted">★5 ${s.chars.length}体 ・ ${esc(satei(s.game, s.chars))}</span></header>
+      <p class="muted" style="margin:6px 0 0">${esc(charsText(s.chars))}</p>
+      <p class="muted" style="margin:2px 0 0">${esc(s.assets)}</p>
+      <div class="grid2">
+        <label>状態<select data-f="status">${STOCK_STATUSES.map((x) => `<option${x === s.status ? " selected" : ""}>${x}</option>`).join("")}</select></label>
+        <label>出品価格(円)<input data-f="price" type="number" step="1000" value="${s.price ?? ""}" /></label>
+        <label>下限(円)<input data-f="floor" type="number" step="1000" value="${s.floor ?? ""}" /></label>
+        <label>価格を決めた日<input data-f="price_at" type="date" value="${esc(s.price_at)}" /></label>
+        <label>仕入れ値(円)<input data-f="cost" type="number" step="1000" value="${s.cost ?? ""}" /></label>
+        <label>仕入れ元<input data-f="source" value="${esc(s.source)}" /></label>
+        <label>仕入れ日<input data-f="bought_at" type="date" value="${esc(s.bought_at)}" /></label>
+        <label>売れた金額(円)<input data-f="sold_price" type="number" step="1000" value="${s.sold_price ?? ""}" /></label>
+      </div>
+      <label class="muted">メモ<textarea data-f="memo">${esc(s.memo)}</textarea></label>
+      <div class="muted" style="margin-top:8px">出品先(🔍 確認したら「確認済み」を押す。${RULES.checkDays}日見ていないと「今日やること」に出ます)</div>
+      <div data-listings>${s.listings.map((l, i) => `<div class="row" data-i="${i}">
+        <select data-l="site">${SITES.map((x) => `<option${x === l.site ? " selected" : ""}>${x}</option>`).join("")}</select>
+        <input data-l="url" value="${esc(l.url)}" placeholder="出品ページのURL(任意)" style="flex:1;min-width:160px" />
+        <input data-l="checked_on" type="hidden" value="${esc(l.checked_on)}" />
+        ${l.url ? `<a href="${esc(l.url)}" target="_blank" rel="noopener">開く</a>` : ""}
+        <span class="muted">${l.checked_on ? `確認 ${md(l.checked_on)}` : "未確認"}${stale.has(l.site) ? " ⚠️" : ""}</span>
+        <button type="button" class="sub" data-act="checked">確認済み</button><button type="button" class="sub" data-act="unlist">外す</button></div>`).join("")}</div>
+      <div class="row"><button type="button" class="sub" data-act="list">+ 出品先</button>${pd ? `<button type="button" class="sub" data-act="down">${man(pd.to)}に下げた</button>` : ""}<button type="button" data-act="save">保存</button></div>
+    </article>`;
+  }).join("") || `<p class="muted">在庫はまだありません</p>`;
+}
+
+// 入金済みと、この先3回分だけを表に出す(残りは折りたたむ)
+const shown = (pays) => Math.min(pays.length, pays.filter((p) => p.paid_on).length + 3);
+const payTable = (pays) => `<div class="wrap"><table><thead><tr><th>予定日</th><th>金額</th><th>入金</th><th></th></tr></thead><tbody>${pays.map((p) => `<tr data-pay="${p.id}">
+        <td class="${!p.paid_on && p.due_on < today ? "late" : ""}">${md(p.due_on)}</td><td>${yen(p.amount)}</td><td>${p.paid_on ? `✅ ${md(p.paid_on)}` : "—"}${p.memo ? ` <span class="muted">${esc(p.memo)}</span>` : ""}</td>
+        <td>${p.paid_on ? `<button type="button" class="sub" data-act="unpay">取り消し</button>` : `<button type="button" data-act="pay">入金あり</button>`} <button type="button" class="sub" data-act="delpay">削除</button></td></tr>`).join("")}</tbody></table></div>`;
+
+function renderSplit() {
+  $("splitList").innerHTML = data.split.map((s) => {
+    const st = splitState(s, s.pays, today);
+    const pct = Math.min(100, Math.round((st.paid / s.total) * 100));
+    return `<article class="card" data-split="${s.id}">
+      <header><b>分割 No.${s.id}</b><b>${esc(s.buyer)}さん</b><span class="tag">${GAME[s.game] ?? esc(s.game)}</span><span class="tag${st.late ? " warn" : s.status === "完済" ? " ok" : ""}">${st.late ? `${st.late.days}日遅れ` : esc(s.status)}</span>
+        <span class="muted">${esc(s.contact)}${s.middle ? ` ・ 間: ${esc(s.middle)}` : ""}</span></header>
+      <p style="margin:6px 0 0"><b>${yen(st.paid)}</b> / ${yen(s.total)} ・ 残り ${yen(st.remaining)} ・ ${st.count[0]} / ${st.count[1]}回 ${st.next ? `・ 次は <b>${md(st.next.due_on)} ${yen(st.next.amount)}</b>` : ""}${st.mismatch ? ` <span class="tag warn">予定の合計が総額と違います</span>` : ""}</p>
+      <div class="bar"><i style="width:${pct}%"></i></div>
+      <p class="muted" style="margin:6px 0 0">${esc(charsText(s.chars)).slice(0, 200)}</p>
+      ${payTable(s.pays.slice(0, shown(s.pays)))}${s.pays.length > shown(s.pays) ? `<details><summary class="muted">この先の予定 ${s.pays.length - shown(s.pays)}回を表示</summary>${payTable(s.pays.slice(shown(s.pays)))}</details>` : ""}
+      <details style="margin-top:6px"><summary class="muted">+ 予定を追加 / 詳細を編集</summary>
+        <div class="row"><input type="date" data-n="due_on" /><input type="number" step="1000" placeholder="金額" data-n="amount" /><input placeholder="メモ(頭金など)" data-n="memo" /><button type="button" class="sub" data-act="addpay">予定を追加</button></div>
+        <div class="grid2">
+          <label>状態<select data-f="status">${SPLIT_STATUSES.map((x) => `<option${x === s.status ? " selected" : ""}>${x}</option>`).join("")}</select></label>
+          <label>購入者<input data-f="buyer" value="${esc(s.buyer)}" /></label>
+          <label>連絡先<input data-f="contact" value="${esc(s.contact)}" /></label>
+          <label>仲介・間に入る人<input data-f="middle" value="${esc(s.middle)}" /></label>
+          <label>総額(円)<input data-f="total" type="number" step="1000" value="${s.total}" /></label>
+          <label>毎月の支払日<input data-f="due_day" type="number" min="1" max="31" value="${s.due_day ?? ""}" /></label>
+        </div>
+        <label class="muted">メモ<textarea data-f="memo">${esc(s.memo)}</textarea></label>
+        <div class="row"><button type="button" data-act="save">保存</button></div>
+      </details>
+      <div class="muted" style="margin-top:6px">引き渡し(完済してから)</div>
+      <div class="row">${Object.entries(HANDOVER).map(([k, v]) => `<label><input type="checkbox" data-h="${k}"${s.handover?.[k] ? " checked" : ""}${s.status === "支払い中" ? " disabled" : ""} /> ${v}</label>`).join("")}</div>
+    </article>`;
+  }).join("") || `<p class="muted">分割はまだありません</p>`;
+}
+
+async function load() {
+  [data, model] = await Promise.all([api("/api/stock"), model ?? fetch("./model.json").then((r) => r.json())]);
+  render();
+}
+const run = async (fn, ok) => {
+  try { await fn(); if (ok) toast(ok); await load(); } catch (err) { toast(`できませんでした(${err.message})`); }
+};
+const fields = (el) => Object.fromEntries([...el.querySelectorAll("[data-f]")].filter((x) => !x.closest("[data-listings]")).map((x) => [x.dataset.f, x.value]));
+const listings = (el) => [...el.querySelectorAll("[data-listings] [data-i]")].map((r) => Object.fromEntries([...r.querySelectorAll("[data-l]")].map((x) => [x.dataset.l, x.value])));
+
+$("stockList").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-act]");
+  if (!btn) return;
+  const card = btn.closest("[data-stock]");
+  const id = Number(card.dataset.stock);
+  const s = data.stock.find((x) => x.id === id);
+  let ls = listings(card);
+  const save = (extra = {}, msg = `在庫 No.${id} を保存しました`) => run(() => api(`/api/stock/${id}`, { method: "PATCH", body: JSON.stringify({ ...fields(card), listings: ls, ...extra }) }), msg);
+  const i = Number(btn.closest("[data-i]")?.dataset.i);
+  if (btn.dataset.act === "save") return save();
+  if (btn.dataset.act === "list") return save({ listings: [...ls, { site: SITES[0], url: "", checked_on: null }], status: s.status === "未出品" ? "出品中" : s.status, price_at: s.price_at ?? today });
+  if (btn.dataset.act === "unlist") return save({ listings: ls.filter((_, k) => k !== i) });
+  if (btn.dataset.act === "checked") { ls[i].checked_on = today; return save({}, `${ls[i].site} を確認済みにしました`); }
+  if (btn.dataset.act === "down") return save({ price: priceDown(s, today).to, price_at: today }, "値下げを記録しました");
+});
+
+$("splitList").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-act]");
+  if (!btn) return;
+  const card = btn.closest("[data-split]");
+  const id = Number(card.dataset.split);
+  const pay = Number(btn.closest("[data-pay]")?.dataset.pay);
+  const act = btn.dataset.act;
+  if (act === "pay") return run(() => api(`/api/pay/${pay}`, { method: "PATCH", body: JSON.stringify({ paid_on: today }) }), "入金を記録しました");
+  if (act === "unpay") return run(() => api(`/api/pay/${pay}`, { method: "PATCH", body: JSON.stringify({ paid_on: null }) }), "入金を取り消しました");
+  if (act === "delpay") return confirm("この予定を削除しますか?") && run(() => api(`/api/pay/${pay}`, { method: "DELETE" }), "削除しました");
+  if (act === "addpay") {
+    const n = Object.fromEntries([...card.querySelectorAll("[data-n]")].map((x) => [x.dataset.n, x.value]));
+    return run(() => api(`/api/split/${id}/pay`, { method: "POST", body: JSON.stringify(n) }), "予定を追加しました");
+  }
+  if (act === "save") return run(() => api(`/api/split/${id}`, { method: "PATCH", body: JSON.stringify(fields(card)) }), `分割 No.${id} を保存しました`);
+});
+$("splitList").addEventListener("change", (e) => {
+  if (!e.target.dataset.h) return;
+  const card = e.target.closest("[data-split]");
+  const handover = Object.fromEntries([...card.querySelectorAll("[data-h]")].map((x) => [x.dataset.h, x.checked]));
+  const all = Object.values(handover).every(Boolean);
+  run(() => api(`/api/split/${card.dataset.split}`, { method: "PATCH", body: JSON.stringify({ handover, ...(all ? { status: "引き渡し済み" } : {}) }) }), all ? "引き渡し済みにしました" : "保存しました");
+});
+
+$("s-add").addEventListener("click", () => {
+  const game = $("s-game").value;
+  run(() => api("/api/stock", { method: "POST", body: JSON.stringify({ game, chars: rosterOf($("s-chars").value, game), cost: $("s-cost").value, source: $("s-source").value, bought_at: $("s-bought").value, assets: $("s-assets").value }) }), "在庫を追加しました");
+});
+$("p-add").addEventListener("click", () => {
+  const game = $("p-game").value;
+  const first = $("p-first").value;
+  const pays = first ? monthly(first, Number($("p-n").value) || 1, Number($("p-amount").value) || 0) : [];
+  run(() => api("/api/split", { method: "POST", body: JSON.stringify({ game, chars: rosterOf($("p-chars").value, game), buyer: $("p-buyer").value, contact: $("p-contact").value, middle: $("p-middle").value, total: $("p-total").value, due_day: first ? Number(first.slice(8)) : null, pays }) }), "分割を追加しました");
+});
+
+$("f").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  token = $("token").value;
+  $("msg").textContent = "読み込み中…";
+  try {
+    await load();
+    try { localStorage.setItem("satei:admin", token); } catch {}
+    $("app").hidden = false;
+    $("msg").textContent = `値下げの目安: 出品中で価格を決めてから${RULES.priceDays}日たったら${RULES.priceRate * 100}%下げる(下限まで)。ログイン情報はここに書かないでください。`;
+  } catch (err) { $("msg").textContent = `表示できませんでした(${err.message})`; }
+});
+</script>
+</body>
+</html>
