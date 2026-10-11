@@ -109,3 +109,14 @@ P4 観察運転は 10/7 15:41 UTC から継続中(10 端末・毎時)。4 日間
 6. MQL5 VPS は口座ごとに「更新しない」で自然失効(月払い)。緊急時は docs/317 の手順で MQL5 VPS に戻せる。
 
 **二重稼働の禁止**(§4): 必ず「MQL5 VPS 停止 → apply」の順。逆にすると Mon ショットが二重に建つ。
+
+## 9.【2026-10-11 16:15 UTC(日曜 01:15 JST)】ユーザー「全て(日曜)で進めてください」— 10 口座を日曜中に VPS 端末へ一括切替
+窓: 月曜 06:00 JST(市場再開)まで。順序は必ず **①受け側の準備 → ②MQL5 VPS 全停止 → ③manifest apply:true(私) → ④市場再開前に検証**。③は②の完了報告(ユーザー「停止完了」)の後にだけ行う(二重稼働の禁止・§4)。
+| 手順 | 担当 | 内容 | 確認 |
+|---|---|---|---|
+| ① コード | ユーザー(VPS セッション) | §6/§8 の 3 点: (a) `chien_deploy.start_terminal` をポータブル判定(`MQL5` フォルダ同居)で `/portable` 付き起動にし、装着時は起動 ini(`/config:<端末フォルダ>\chien_start.ini`・`[Experts] Enabled=1 AllowLiveTrading=1 AllowDllImport=0`)で自動売買 ON、(b) agent 1.8: `initialize` 失敗時(1.7c の −6 再試行の後)に端末を `start_terminal` で起動し直して 60 秒待って再試行・status.json に `restarted`、(c) `install_task.ps1` に端末 10 本のログオン時起動タスク `chien_mt5_<口座>`(`/portable`)。変更は `C:\chien\ops\` の実ファイルに入れ、`chien_setup.bat` は実行しない(GitHub の旧版で上書きされる)。リポジトリへの反映は後日 | `python chien_ops_agent.py --config terminals.json` を手動 1 回実行して status.json の `agent_version` が 1.8 |
+| ② 停止 | ユーザー | 各口座の MT5 → VPS タブ → MQL5 VPS の **EA を停止**(移行の同期を切る)。9 口座(511030 を含む稼働中すべて)。建玉は触らない | 10 口座分終わったら私に「停止完了」 |
+| ③ apply | 私 | manifest の 10 口座を `apply: true` にしてプッシュ(`algo_on` 既定 true)。毎時エージェントが端末停止 → Default プロファイルに EA 装着 → `/portable` + 自動売買 ON で再起動 | 次の毎時実行(各正時 UTC) |
+| ④ 検証 | 私 | Drive `chien_ops/<口座>/ea_log_extract.csv` の `[INIT …]`(新版・mult)、`status.json` の `attached_eas`、`open_positions.csv` の建玉が同 Magic で残っていること。失敗した口座は apply を戻し、MQL5 VPS 再移行を案内 | 月曜 06:00 JST まで。22:00 JST の Mon 建てで最終確認 |
+| ⑤ 失効 | ユーザー | MQL5 VPS は更新しない(月払い)。戻すときは docs/317 の手順 | 月末 |
+保険: ④で 1 口座でも不安があれば、その口座だけ MQL5 VPS に戻す(ログイン → プロファイル → VPS→移行・3 操作)。全体の中止は「apply を全 false に戻す + MQL5 VPS 再移行」で、建玉はどちらでも同 Magic で引き継がれる。
