@@ -123,3 +123,34 @@ export async function listSplit(env) {
   ]);
   return splits.map((s) => ({ ...s, chars: json(s.chars, []), handover: json(s.handover, {}), pays: pays.filter((p) => p.split_id === s.id) }));
 }
+
+// ── 画像 ──
+export const MAX_IMAGE_B64 = 1_400_000; // D1 の1つの値の上限(2MB)より小さく
+export const MAX_IMAGES = 30; // 1件あたり
+const MIMES = ["image/jpeg", "image/png", "image/webp"];
+
+export function validImage(body) {
+  if (!body || !["stock", "split"].includes(body.owner) || !Number.isInteger(body.owner_id) || !MIMES.includes(body.mime)) return null;
+  if (typeof body.data !== "string" || !body.data || body.data.length > MAX_IMAGE_B64 || !/^[A-Za-z0-9+/=]+$/.test(body.data)) return null;
+  const n = (v) => (Number.isInteger(v) && v > 0 && v < 20000 ? v : null);
+  return { owner: body.owner, owner_id: body.owner_id, mime: body.mime, data: body.data, w: n(body.w), h: n(body.h) };
+}
+
+export async function addImage(env, img) {
+  const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM image WHERE owner = ? AND owner_id = ?").bind(img.owner, img.owner_id).first();
+  if ((r?.n ?? 0) >= MAX_IMAGES) return null;
+  return insert(env, "image", { ...img, created_at: now() });
+}
+export async function listImages(env) {
+  const { results } = await env.DB.prepare("SELECT id, owner, owner_id, w, h, created_at FROM image ORDER BY id").all();
+  return results;
+}
+export const getImage = (env, id) => env.DB.prepare("SELECT mime, data FROM image WHERE id = ?").bind(id).first();
+// 黒塗りした画像で上書きする
+export async function replaceImage(env, id, { mime, data, w, h }) {
+  const r = await env.DB.prepare("UPDATE image SET mime = ?, data = ?, w = ?, h = ? WHERE id = ?").bind(mime, data, w, h, id).run();
+  return r.meta.changes > 0;
+}
+export async function deleteImage(env, id) {
+  return (await env.DB.prepare("DELETE FROM image WHERE id = ?").bind(id).run()).meta.changes > 0;
+}
