@@ -38,6 +38,13 @@
   .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; }
   .kpis b { display:block; font-size:22px; font-variant-numeric:tabular-nums; } .kpis span { color:var(--sub); font-size:12px; }
   .wrap { overflow-x:auto; }
+  .thumbs { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
+  .thumbs img { width:84px; height:120px; object-fit:cover; border-radius:8px; border:1px solid var(--line); cursor:pointer; background:var(--line); }
+  .addimg { display:inline-block; margin-top:6px; padding:6px 12px; border-radius:8px; border:1px dashed var(--accent); color:var(--accent); font-size:13px; cursor:pointer; }
+  dialog.view { width:min(720px, calc(100% - 16px)); max-height:calc(100% - 16px); overflow:auto; border:1px solid var(--line); border-radius:14px; background:var(--card); color:var(--ink); padding:10px; }
+  dialog.view::backdrop { background:rgba(0,0,0,.6); }
+  dialog.view canvas { width:100%; height:auto; display:block; touch-action:none; border-radius:8px; }
+  dialog.view canvas.mask { cursor:crosshair; outline:3px solid var(--warn); }
   .toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:10px; font-size:14px; }
 </style>
 </head>
@@ -101,6 +108,18 @@
     </section>
   </div>
 </main>
+<dialog class="view" id="view">
+  <div class="row" style="margin-top:0">
+    <button type="button" id="v-mask" class="sub">⬛ 黒塗り</button>
+    <button type="button" id="v-reset" class="sub">元に戻す</button>
+    <button type="button" id="v-save">上書き保存</button>
+    <button type="button" id="v-dl" class="sub">📥 スマホに保存</button>
+    <button type="button" id="v-del" class="sub">削除</button>
+    <button type="button" id="v-close" class="sub">閉じる</button>
+  </div>
+  <p class="muted" id="v-msg" style="margin:6px 0">「黒塗り」を押してから、UID などを指でなぞって囲むと黒く塗れます。</p>
+  <canvas id="v-canvas"></canvas>
+</dialog>
 <script type="module">
 import { parseRoster } from "./lib/features.js";
 import { estimate } from "./lib/estimate.js";
@@ -155,9 +174,142 @@ function render() {
   $("k-remain").textContent = yen(live.reduce((n, s) => n + splitState(s, s.pays, today).remaining, 0));
   $("k-month").textContent = yen(month.reduce((n, p) => n + p.amount, 0));
   $("k-got").textContent = yen(month.filter((p) => p.paid_on).reduce((n, p) => n + p.amount, 0));
+  const open = [...document.querySelectorAll("[data-imgs][open]")].map((d) => d.dataset.imgs);
   renderStock();
   renderSplit();
+  for (const k of open) { const d = document.querySelector(`[data-imgs="${k}"]`); if (d) { d.open = true; fillThumbs(d); } }
 }
+
+// ── 画像 ──
+const blobs = new Map(); // 画像 id → blob URL
+const imgsOf = (owner, id) => data.images.filter((x) => x.owner === owner && x.owner_id === id);
+const imgSection = (owner, id) => {
+  const n = imgsOf(owner, id).length;
+  return `<details data-imgs="${owner}:${id}" style="margin-top:8px"><summary>🖼 画像(${n}枚)</summary><div class="thumbs"></div>
+    <label class="addimg">+ 画像を追加<input type="file" accept="image/*" multiple hidden /></label></details>`;
+};
+async function blobUrl(id) {
+  if (!blobs.has(id)) {
+    const res = await fetch(`${API}/api/image/${id}`, { headers: { authorization: `Bearer ${token}` } });
+    if (!res.ok) throw new Error(res.status);
+    blobs.set(id, URL.createObjectURL(await res.blob()));
+  }
+  return blobs.get(id);
+}
+async function fillThumbs(det) {
+  const [owner, id] = det.dataset.imgs.split(":");
+  const box = det.querySelector(".thumbs");
+  const list = imgsOf(owner, Number(id));
+  box.innerHTML = list.map((x) => `<img data-img="${x.id}" alt="" />`).join("") || `<span class="muted">まだありません</span>`;
+  for (const x of list) blobUrl(x.id).then((u) => { const el = box.querySelector(`[data-img="${x.id}"]`); if (el) el.src = u; }).catch(() => {});
+}
+// スマホの中で縮めて JPEG にする(長い辺 2000px まで)
+function shrink(file, max = 2000) {
+  return new Promise((ok, ng) => {
+    const im = new Image();
+    im.onload = () => {
+      const r = Math.min(1, max / Math.max(im.width, im.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(im.width * r);
+      c.height = Math.round(im.height * r);
+      c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(im.src);
+      ok(c);
+    };
+    im.onerror = () => ng(new Error("画像を読めませんでした"));
+    im.src = URL.createObjectURL(file);
+  });
+}
+const canvasBody = (c) => ({ mime: "image/jpeg", data: c.toDataURL("image/jpeg", 0.82).split(",")[1], w: c.width, h: c.height });
+async function upload(det, files) {
+  const [owner, id] = det.dataset.imgs.split(":");
+  let n = 0;
+  for (const f of files) {
+    try {
+      await api("/api/image", { method: "POST", body: JSON.stringify({ owner, owner_id: Number(id), ...canvasBody(await shrink(f)) }) });
+      n++;
+    } catch (err) { toast(`${f.name}: ${err.message}`); }
+  }
+  if (n) { toast(`${n}枚追加しました`); await load(); }
+}
+document.addEventListener("toggle", (e) => { if (e.target.dataset?.imgs && e.target.open) fillThumbs(e.target); }, true);
+document.addEventListener("change", (e) => {
+  const det = e.target.closest?.("[data-imgs]");
+  if (det && e.target.type === "file" && e.target.files.length) upload(det, [...e.target.files]);
+});
+
+// 拡大表示・黒塗り
+let view = null; // { id, img }
+const cv = $("v-canvas"), ctx = cv.getContext("2d");
+async function openView(id) {
+  const im = new Image();
+  im.src = await blobUrl(id);
+  await im.decode();
+  view = { id, img: im };
+  drawOriginal();
+  cv.classList.remove("mask");
+  $("view").showModal();
+}
+function drawOriginal() {
+  cv.width = view.img.naturalWidth;
+  cv.height = view.img.naturalHeight;
+  ctx.drawImage(view.img, 0, 0);
+  view.dirty = false;
+}
+document.addEventListener("click", (e) => { const t = e.target.closest?.("[data-img]"); if (t) openView(Number(t.dataset.img)); });
+$("v-mask").addEventListener("click", () => { cv.classList.toggle("mask"); $("v-mask").textContent = cv.classList.contains("mask") ? "✋ 塗り終わり" : "⬛ 黒塗り"; });
+$("v-reset").addEventListener("click", drawOriginal);
+$("v-close").addEventListener("click", () => $("view").close());
+let start = null, snap = null;
+const pos = (e) => { const r = cv.getBoundingClientRect(); return [((e.clientX - r.left) * cv.width) / r.width, ((e.clientY - r.top) * cv.height) / r.height]; };
+cv.addEventListener("pointerdown", (e) => {
+  if (!cv.classList.contains("mask")) return;
+  start = pos(e);
+  snap = ctx.getImageData(0, 0, cv.width, cv.height);
+  cv.setPointerCapture(e.pointerId);
+});
+cv.addEventListener("pointermove", (e) => {
+  if (!start) return;
+  const [x, y] = pos(e);
+  ctx.putImageData(snap, 0, 0);
+  ctx.fillStyle = "rgba(0,0,0,.6)";
+  ctx.fillRect(start[0], start[1], x - start[0], y - start[1]);
+});
+cv.addEventListener("pointerup", (e) => {
+  if (!start) return;
+  const [x, y] = pos(e);
+  ctx.putImageData(snap, 0, 0);
+  ctx.fillStyle = "#000";
+  ctx.fillRect(start[0], start[1], x - start[0], y - start[1]);
+  start = null;
+  view.dirty = true;
+});
+$("v-save").addEventListener("click", async () => {
+  if (!view.dirty) return toast("変更はありません");
+  try {
+    await api(`/api/image/${view.id}`, { method: "PUT", body: JSON.stringify(canvasBody(cv)) });
+    blobs.delete(view.id);
+    toast("黒塗りして保存しました");
+    $("view").close();
+    await load();
+  } catch (err) { toast(`保存できませんでした(${err.message})`); }
+});
+$("v-dl").addEventListener("click", () => {
+  const a = document.createElement("a");
+  a.href = cv.toDataURL("image/jpeg", 0.9);
+  a.download = `meruru-${view.id}.jpg`;
+  a.click();
+});
+$("v-del").addEventListener("click", async () => {
+  if (!confirm("この画像を削除しますか?")) return;
+  try {
+    await api(`/api/image/${view.id}`, { method: "DELETE" });
+    blobs.delete(view.id);
+    $("view").close();
+    toast("削除しました");
+    await load();
+  } catch (err) { toast(`削除できませんでした(${err.message})`); }
+});
 
 function renderStock() {
   $("stockList").innerHTML = data.stock.map((s) => {
@@ -187,6 +339,7 @@ function renderStock() {
         ${l.url ? `<a href="${esc(l.url)}" target="_blank" rel="noopener">開く</a>` : ""}
         <span class="muted">${l.checked_on ? `確認 ${md(l.checked_on)}` : "未確認"}${stale.has(l.site) ? " ⚠️" : ""}</span>
         <button type="button" class="sub" data-act="checked">確認済み</button><button type="button" class="sub" data-act="unlist">外す</button></div>`).join("")}</div>
+      ${imgSection("stock", s.id)}
       <div class="row"><button type="button" class="sub" data-act="list">+ 出品先</button>${pd ? `<button type="button" class="sub" data-act="down">${man(pd.to)}に下げた</button>` : ""}<button type="button" data-act="save">保存</button></div>
     </article>`;
   }).join("") || `<p class="muted">在庫はまだありません</p>`;
@@ -222,6 +375,7 @@ function renderSplit() {
         <label class="muted">メモ<textarea data-f="memo">${esc(s.memo)}</textarea></label>
         <div class="row"><button type="button" data-act="save">保存</button></div>
       </details>
+      ${imgSection("split", s.id)}
       <div class="muted" style="margin-top:6px">引き渡し(完済してから)</div>
       <div class="row">${Object.entries(HANDOVER).map(([k, v]) => `<label><input type="checkbox" data-h="${k}"${s.handover?.[k] ? " checked" : ""}${s.status === "支払い中" ? " disabled" : ""} /> ${v}</label>`).join("")}</div>
     </article>`;
