@@ -93,7 +93,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_3.3倍+GER40ブレイク_2.0倍+HoldXAU0.3_v1.02.mq5",
+     "ea": "【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_6.6倍+GER40ブレイク_4.0倍+HoldXAU0.6_v1.03.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -101,7 +101,7 @@
    "remove": [
     "RecentFit5_目標10パーセント"
    ],
-   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_3.3倍+GER40ブレイク_2.0倍+HoldXAU0.3.mq5。 旧 EA10 v1.00 が 9/28 22:47 JST から VPS で稼働中(Hold XAU 0.07・944803)。EA10L v1.01 は床 −9.5% 版(Magic は 944800 で建玉を引き継ぐ)。再移行は任意",
+   "note": "2026-10-11 ユーザー「切替」: EA10L v1.03(InpMult 3.3 → 6.6・InpBrkMult 2.0 → 4.0・InpHoldMult 1.0 → 2.0・ロジック不変・同 Magic。docs/241 §1v・docs/349 §6)。MQL5 VPS 側は手動で再アタッチ。旧: …_v1.02.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_3.3倍+GER40ブレイク_2.0倍+HoldXAU0.3.mq5。 旧 EA10 v1.00 が 9/28 22:47 JST から VPS で稼働中(Hold XAU 0.07・944803)。EA10L v1.01 は床 −9.5% 版(Magic は 944800 で建玉を引き継ぐ)。再移行は任意",
    "terminal": "FTMO",
    "prepare_profile": true
   },
@@ -109,7 +109,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍_v1.01.mq5",
+     "ea": "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_2.2倍_v1.02.mq5",
      "symbol": "XAUUSD",
      "period": "H1"
     }
@@ -117,7 +117,7 @@
    "remove": [
     "EA6_Sess8_8.0倍"
    ],
-   "note": "2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍.mq5。 旧 EA9 v1.00(docs/316)。EA6 は外す",
+   "note": "2026-10-11 ユーザー「切替」: EA9 v1.02(InpMult 1.5 → 2.2・ロジック不変・同 Magic。docs/241 §1v・docs/349 §6)。MQL5 VPS 側は手動で再アタッチ(入力 InpMult=2.2)。旧: …_1.5倍_v1.01.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_1.5倍.mq5。 旧 EA9 v1.00(docs/316)。EA6 は外す",
    "terminal": "FTMO",
    "prepare_profile": true
   },
