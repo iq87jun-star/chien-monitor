@@ -76,7 +76,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FN100k_口座14166201】RecentFit_NonFX_2.22倍+Roll5_4.5倍_v1.33.mq5",
+     "ea": "【FN100k_口座14166201】RecentFit_NonFX_2.22倍_ETHなし+Roll5_4.5倍_v1.34.mq5",
      "symbol": "UK100",
      "period": "H1"
     }
@@ -85,7 +85,7 @@
     "RecentFit_NonFX_1.48倍_Sess4.8倍",
     "Sess上位5_4.8倍"
    ],
-   "note": "2026-10-11 ユーザー「全て切り替え」(docs/349 §6c・docs/241 §1w): v1.33: InpMult 2.22・InpSessMult 4.5(×1.5)。ロジック・ガード・Magic 不変。MQL5 VPS 側は手動で再アタッチ(または入力値の書き換え)。旧: 【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍_v1.32.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍.mq5。 旧 v1.31",
+   "note": "2026-10-12 ユーザー「ETHUSD(Mon)だけ外す」: v1.34: InpMonLegs 空(ETHUSD Mon を外す)(未配備の前版を置換)。旧: 【FN100k_口座14166201】RecentFit_NonFX_2.22倍+Roll5_4.5倍_v1.33.mq5。 2026-10-11 ユーザー「全て切り替え」(docs/349 §6c・docs/241 §1w): v1.33: InpMult 2.22・InpSessMult 4.5(×1.5)。ロジック・ガード・Magic 不変。MQL5 VPS 側は手動で再アタッチ(または入力値の書き換え)。旧: 【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍_v1.32.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍.mq5。 旧 v1.31",
    "terminal": "FundedNext",
    "prepare_profile": true
   },
@@ -169,7 +169,7 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x6.0+Roll5x3.0+NonFX1.5_v1.13.mq5",
+     "ea": "【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x6.0+Roll5x3.0+NonFX1.5_ETHなし_v1.14.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -177,11 +177,10 @@
    "remove": [
     "RecentFit_NonFX_1.48倍+Roll5_1.0倍"
    ],
-   "note": "2026-10-11 ユーザー「全て切り替え」(docs/349 §6c・docs/241 §1w): EA11 v1.13: InpMult 6.0・InpSessMult 3.0。ロジック・ガード・Magic 不変。MQL5 VPS 側は手動で再アタッチ(または入力値の書き換え)。旧: 【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x2.0+Roll5x1.0+NonFX0.5_v1.12.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x2.0+Roll5x1.0+NonFX0.5.mq5。 Q93 のロット経路修正(docs/324)も同梱。 旧 EA11 v1.10(Mon4 ×2.0 + Roll ×1.0 + 非FX ×0.5・docs/320 §8)。v1.00 の Hold 建玉(943623)を手動決済してから移行",
+   "note": "2026-10-12 ユーザー「ETHUSD(Mon)だけ外す」: EA11 v1.14: InpMonLegs から ETHUSD:0.036 を外す(未配備の前版を置換)。旧: 【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x6.0+Roll5x3.0+NonFX1.5_v1.13.mq5。 2026-10-11 ユーザー「全て切り替え」(docs/349 §6c・docs/241 §1w): EA11 v1.13: InpMult 6.0・InpSessMult 3.0。ロジック・ガード・Magic 不変。MQL5 VPS 側は手動で再アタッチ(または入力値の書き換え)。旧: 【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x2.0+Roll5x1.0+NonFX0.5_v1.12.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x2.0+Roll5x1.0+NonFX0.5.mq5。 Q93 のロット経路修正(docs/324)も同梱。 旧 EA11 v1.10(Mon4 ×2.0 + Roll ×1.0 + 非FX ×0.5・docs/320 §8)。v1.00 の Hold 建玉(943623)を手動決済してから移行",
    "terminal": "Fintokei",
    "prepare_profile": true
   }
  },
  "_retired_6078225": "2026-09-28 Fintokei から挑戦終了通知(docs/241 §1q)。プロファイル生成対象から外す"
-
 }
