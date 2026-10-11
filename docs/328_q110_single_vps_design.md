@@ -90,3 +90,22 @@ Sources: [MetaQuotes VPS 価格](https://www.metatrader5.com/en/news/2300.md) / 
 - Drive の新規フォルダ ID: 521100397 `1rFJ5TL_Tbe4A0LpG8wx73QjxQ4Zy-L7K` / 531407058 `11gUePK80zY54r9asy104Bwk6H25QcpHt` / 531466484 `1lkLf00rNBlWmonO-4V5DvjI-DLxTf_0Q` / 6071612 `1TGibINorzKW52I3OoFz23Iz1zQOEl7mD` / 14074882 `1fsAo_b2lMpg1FdwEDXZIvdx8OxDl0wry`(既存: 11988011 / 14166201 / 531343523 / 6104736 / 6104739 は従来の ID)。朝の取り込みはこれで 10 口座分を読める。
 - 手元 PC の毎時タスクは VPS と同じフォルダに書くため**無効化**する(`schtasks /change /tn chien_ops_agent /disable`)。ユーザーに依頼済み。
 - 次: P4 観察運転(10/8 いっぱい・EA なし・自動売買 OFF)→ 10/9(木)以降の日中に P5 の口座ごと切替。P5 前にリポジトリ側の変更(§6: manifest `apply: true`・端末のログオン時起動タスク・agent 1.8 の端末再起動)を入れる。
+
+## 8.【2026-10-11】P5(口座ごとの切替)の前提と進め方 — ユーザー「VPS に切り替えたいですね」
+P4 観察運転は 10/7 15:41 UTC から継続中(10 端末・毎時)。4 日間で取得失敗は 10/10 22:00 UTC の 1 回(1 端末・翌時に自動復旧・docs/349 §6f)。agent は 1.7c(−6 の 1 回再試行・Q130)。
+
+**§6 のリポジトリ側変更のうち、このセッションでは書けなかったもの**(auto モードの分類器が「本番配備」として拒否。理由は妥当で、取引機の端末を自動で起動・自動売買 ON にするコードは人の承認の下で入れるべき):
+1. `chien_deploy.start_terminal` をポータブル対応(`/portable`)にし、装着時に自動売買 ON を起動 ini(`/config:` の `[Experts] Enabled=1 AllowLiveTrading=1`)で渡す。
+2. agent 1.8: `initialize` 失敗時に端末を起動し直して 60 秒待つ(§6)。
+3. `install_task.ps1` v4: 端末 10 本のログオン時起動タスク `chien_mt5_<口座>`。
+これらはユーザーが通常モードのセッションで入れるか、手で入れる(各 10〜20 行)。入れずに P5 を始めることも可能で、その場合は端末の再起動と自動売買 ON がユーザーの手作業になる(VPS 再起動時のみ)。
+
+**P5 の手順(口座ごと・火〜木の日中 JST・月曜 13〜20 JST と水曜 05 JST 前後は避ける)**
+1. ユーザー: その口座の MT5 で VPS タブ → MQL5 VPS の EA を**停止**(同期を切る)。これで MQL5 VPS 側の建玉管理が止まる(建玉自体はサーバーに残る)。
+2. ユーザー → 私に「切替 <口座>」。私は manifest の該当口座を `apply: true` にしてプッシュ。
+3. VPS の毎時エージェントが端末を止め、Default プロファイルの chart.chr に新 EA を装着し、端末を再起動(ポータブル対応が無い間は、起動引数 `/portable` を付けた再起動と自動売買 ON の確認をユーザーが行う)。
+4. 検証: Drive `chien_ops/<口座>/ea_log_extract.csv` に `[INIT …]`(新版・mult)が出る・`open_positions.csv` の建玉が同 Magic で引き継がれている・status.json の `attached_eas`。私が次の毎時で確認して報告。
+5. 1 口座目(推奨: 失格コストが最小の FTMO 100k 531343523 宝くじ)で 1 週間問題なければ、残りを 2〜3 口座ずつ。
+6. MQL5 VPS は口座ごとに「更新しない」で自然失効(月払い)。緊急時は docs/317 の手順で MQL5 VPS に戻せる。
+
+**二重稼働の禁止**(§4): 必ず「MQL5 VPS 停止 → apply」の順。逆にすると Mon ショットが二重に建つ。
