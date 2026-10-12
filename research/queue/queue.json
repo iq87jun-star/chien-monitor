@@ -1253,16 +1253,18 @@
    "slug": "index_mon_stop_rule",
    "title": "指数 Mon(6 本)の継続判定(docs/276 停止規則・研究系列と実口座)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/358_q92_index_mon_continuation.md"
    ],
    "note": "診断。外す/残すを 11 月 EA 改訂案に出す",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 8
+   "order": 8,
+   "result": "NAS100/US500/GER40 残す(研究系列の 5〜7 月 3 連続負は 8〜10 月で解消・実口座は未発動)。JP225/UK100/FR40 は外す(未配備)。トパーズ v1.15 はそのまま"
   },
   {
    "id": "Q86",
@@ -3216,6 +3218,13 @@
    "cells": 18,
    "cumulative": 9710,
    "summary": "日本の暦 0/18(docs/357)。SQ 週前半 L は前窓で消える、権利取り L は n=17・t 1.69 で観測のみ"
+  },
+  {
+   "date": "2026-10-13",
+   "item": "Q92",
+   "cells": 0,
+   "cumulative": 9710,
+   "summary": "指数 Mon 継続判定: NAS100/US500 残す・JP225/UK100/FR40 外す(docs/358)"
   }
  ]
 }
