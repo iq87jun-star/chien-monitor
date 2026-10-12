@@ -1971,16 +1971,18 @@
    "slug": "mffu_contracts_x2",
    "title": "MFFU 枚数 ×2.0(10/4/10)の経路 MC(診断・セル 0): 日中ソフト停止 $2,500 を 1 分足で実装し ×1.5 と比較",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/353_q132_mffu_contracts_x2.md"
    ],
    "note": "ユーザー「優先順位で行ってください」(2026-10-12)。初回出金 60 → 62%・Live 48 → 53% の見込み(docs/349 §8a)。判定: Live 到達・初回出金の確率と sim 手取り期待が ×1.5 を上回り、失格が +5pt 以内 → config の qty 変更を提案(「切替」で)",
    "registered": "2026-10-12",
    "program": "docs/322",
-   "order": 7.3
+   "order": 7.3,
+   "result": "日中停止を入れると Live 到達 36 → 18〜21%(枚数に依らず)。増やすと Live 後の失格だけ増える。5/2/5 のまま・7/3/7 取り下げ。docs/336 §18 の Live 42% は過大"
   },
   {
    "id": "Q133",
@@ -3149,6 +3151,13 @@
    "cells": 0,
    "cumulative": 9692,
    "summary": "出金・緩衝の最適化: 保持 5%(固定)/ 10%(Q131)・月次(docs/352)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q132",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "MFFU 枚数: 日中停止込みで Live 約 20%・枚数は 5/2/5 のまま(docs/353)"
   }
  ]
 }
