@@ -2025,16 +2025,18 @@
    "slug": "target_proximity_boost",
    "title": "評価段階の目標直前ブースト(改良系・セル 0): P1/P2 の目標まで残り {1,2}% で倍率を {×0.5,×1.5,×2} にする規則の 10.6 年 MC",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/356_q135_target_proximity_boost.md"
    ],
    "note": "ユーザー「優先順位で行ってください」(2026-10-12)。目標到達の取りこぼし(目標直前で反転して失格)を減らせるか。判定: 到達率 +2pt 以上かつ失格率が悪化しない",
    "registered": "2026-10-12",
    "program": "docs/322",
-   "order": 7.6
+   "order": 7.6,
+   "result": "棄却: 残り 1〜2% の倍率変更は到達 ±1pt・失格 ±1pt"
   },
   {
    "id": "Q136",
@@ -3176,6 +3178,13 @@
    "cells": 0,
    "cumulative": 9692,
    "summary": "トパーズ Mon4 ×8 + 指数 Mon 各 1.0 が有望(docs/355)。Q92 待ち"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q135",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "目標直前ブースト 棄却(docs/356)"
   }
  ]
 }
