@@ -2055,6 +2055,22 @@
    "program": "docs/322",
    "order": 7.5,
    "result": "最悪 5 日は全部月曜・10 口座同時。1 年内 3 本以上同時失格 29%(独立 25%)・5 本以上 12%(独立 2.6%)・0 本 29%(独立 14%)"
+  },
+  {
+   "id": "Q137",
+   "slug": "jp_calendar",
+   "title": "日本固有の暦: SQ(第 2 金曜)・配当権利取り/権利落ち・期初の資金フロー(JP225・USDJPY・新規 18 セル)",
+   "cells": 18,
+   "status": "in_progress",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/357_q137_jp_calendar_sq_dividend_fiscal.md"
+   ],
+   "note": "ユーザー「登録して進めてください」(2026-10-12)。日本系で 10 年エッジの候補を探す。B・C は年 2 回で設計上判定不能(イベント単位の参照のみ)",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 48.1
   }
  ],
  "runs": [
@@ -3185,6 +3201,13 @@
    "cells": 0,
    "cumulative": 9692,
    "summary": "目標直前ブースト 棄却(docs/356)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "登録",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "ユーザー「登録して進めてください」: Q137(日本の暦 18 セル)を事前登録(docs/357 §1)"
   }
  ]
 }
