@@ -34,3 +34,13 @@ Mon4 ×3.3 新規 2-Step: k=0 15 / 7% → k=2 25 / 9%。ルビー ×10: 76 / 16 
 
 ## 6. 提案(朝 2 = EA 実装)
 EA 共通部に `InpDynK`(既定 0)と `InpKeepPct`(既定 0・出金推奨額のログのみ)を追加し、ロット計算の名目に f を掛ける。f の基準残高は EA の g_initBal(InpBaselineReset で段階更新)・床は InpMaxLossLimitPct。対象は本口座 4 本(EA8 / EA3 / パール v1.08 / 14074882 v1.10)の新版(別ファイル・版 +0.01)。1-Step は資金化後に適用。配備は「切替」の後(docs/241 は朝 2 では触らない)。
+
+## 7.【朝 2・同日】EA 実装(別ファイル・版 +0.01・既定値では v 旧 と同一の取引)
+| 口座 | 新版 | 追加 |
+|---|---|---|
+| FTMO 50k 531407058 | `mql5/【FTMO50k_口座531407058】EA3_Mon4_3.3倍_v1.18.mq5` | `InpDynK`(既定 0)・`InpKeepPct`(既定 0)・`DynFactor()`・`DynPayoutLog()` |
+| FTMO 50k 521100397 | `mql5/【FTMO50k_口座521100397】EA8_Mon4_3.3倍+GER40ブレイク_2.0倍_v1.36.mq5` | 同(GER40 ブレイクの名目にも f) |
+| Fintokei パール | `mql5/【Fintokeiパール500万】RecentFit_4.0倍_v1.09.mq5` | 同 |
+| FN 14074882 | `mql5/【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.11.mq5` | 同(対象外だが同じ共通部なので揃えた・InpDynK は 0 のまま) |
+実装: `DynFactor()` = min(1 + K × (余裕 − mdd) / mdd, 1 + K)、余裕 = (equity − 基準残高 × (1 − mdd)) / 基準残高、mdd = `InpMaxLossLimitPct`。Mon / Sess / v4 / Hold / ブレイクの名目(`g_initBal × 重み × 倍率`)に乗算。初回呼び出しで `[INIT Q131]` 行、毎月 1 日の最初のティックで `[PAYOUT] 推奨出金=…` 行(出金は手動)。既定 0 / 0 のとき f = 1・ログなしで旧版と同一。
+配備は「切替」の後(manifest・docs/241 は未変更)。推奨入力: 本口座 3 本(FTMO 50k × 2・パール)に `InpDynK=1.0`・`InpKeepPct=10`。14074882 は 0 のまま。VPS 側でコンパイルして `[INIT Q131]` 行で f を確認してから本番。

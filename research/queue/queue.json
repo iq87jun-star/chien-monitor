@@ -1952,9 +1952,9 @@
    "slug": "buffer_scaled_sizing",
    "title": "余裕比例サイジング(工学+改良系): 静的床の口座で緩衝に比例して倍率を上げ、月末に初期残高 +保持率 超を出金する規則の EA 実装と検証",
    "cells": 0,
-   "status": "in_progress",
+   "status": "done",
    "sessions_planned": 2,
-   "sessions_done": 1,
+   "sessions_done": 2,
    "docs": [
     "docs/322_improvement_program_2026-11.md",
     "docs/349_prop_account_register_2026-10-11.md",
@@ -1964,7 +1964,7 @@
    "registered": "2026-10-12",
    "program": "docs/322",
    "order": 7.1,
-   "result": "朝 1: 本口座で出金 2〜4 倍・失格 +1〜3pt(ガード無しでも 2〜3 倍・+2〜5pt)。評価段階は効かない。推奨 k=1・保持 10%・月次。朝 2 = EA 実装"
+   "result": "朝 1: 本口座で出金 2〜4 倍・失格 +1〜3pt(ガード無しでも 2〜3 倍・+2〜5pt)。評価段階は効かない。推奨 k=1・保持 10%・月次。朝 2: EA3 v1.18 / EA8 v1.36 / パール v1.09 / 14074882 v1.11 に InpDynK・InpKeepPct を実装(既定 0)。配備は「切替」待ち"
   },
   {
    "id": "Q132",
@@ -3133,6 +3133,13 @@
    "cells": 0,
    "cumulative": 9692,
    "summary": "余裕比例サイジング 朝 1: 本口座 4 本で通過(docs/351)。朝 2 で EA 実装"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q131",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "余裕比例サイジング 朝 2: EA 4 本の新版(docs/351 §7)。切替待ち"
   }
  ]
 }
