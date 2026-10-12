@@ -1959,10 +1959,90 @@
     "docs/322_improvement_program_2026-11.md",
     "docs/349_prop_account_register_2026-10-11.md"
    ],
-   "note": "ユーザー「登録」(2026-10-12)。docs/349 §8f: FTMO 50k Mon4 ×5 基準・k=1(余裕 20% で ×10)・10% 保持 → 1 年失格 7 → 10%・出金 2 倍(月 5 → 11 万)。範囲: (1) 評価段階(P1/P2 の静的床)と資金化後の両方で k ∈ {0.5,1,2}・保持率 {5,10,15}%・出金頻度 {2 週, 月} の 10.6 年 MC(5 口座型 Mon4 / B案 / EA9 / Mon3+Hold / 非FX+Roll)。(2) EA 共通部に InpDynK・InpKeepPct(既定 0 = 現行どおり)を追加した新版(別ファイル・版 +0.01)。判定: docs/244 §1 改良系(IS・OOS で Sharpe 改善・最悪月悪化なし)+ 失格率が固定倍率比で +5pt 以内。トレーリング床の口座(1-Step・MFFU・FN Instant)は余裕が動くので対象外",
+   "note": "ユーザー「登録」(2026-10-12)。docs/349 §8f: FTMO 50k Mon4 ×5 基準・k=1(余裕 20% で ×10)・10% 保持 → 1 年失格 7 → 10%・出金 2 倍(月 5 → 11 万)。範囲: (1) 評価段階(P1/P2 の静的床)と資金化後の両方で k ∈ {0.5,1,2}・保持率 {5,10,15}%・出金頻度 {2 週, 月} の 10.6 年 MC(5 口座型 Mon4 / B案 / EA9 / Mon3+Hold / 非FX+Roll)。(2) EA 共通部に InpDynK・InpKeepPct(既定 0 = 現行どおり)を追加した新版(別ファイル・版 +0.01)。判定: docs/244 §1 改良系(IS・OOS で Sharpe 改善・最悪月悪化なし)+ 失格率が固定倍率比で +5pt 以内。トレーリング床の口座(1-Step・MFFU・FN Instant)は余裕が動くので対象外。2026-10-12 ユーザー「優先順位で行ってください」→ 最優先(order 7.1)",
    "registered": "2026-10-12",
    "program": "docs/322",
-   "order": 49
+   "order": 7.1
+  },
+  {
+   "id": "Q132",
+   "slug": "mffu_contracts_x2",
+   "title": "MFFU 枚数 ×2.0(10/4/10)の経路 MC(診断・セル 0): 日中ソフト停止 $2,500 を 1 分足で実装し ×1.5 と比較",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "ユーザー「優先順位で行ってください」(2026-10-12)。初回出金 60 → 62%・Live 48 → 53% の見込み(docs/349 §8a)。判定: Live 到達・初回出金の確率と sim 手取り期待が ×1.5 を上回り、失格が +5pt 以内 → config の qty 変更を提案(「切替」で)",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.3
+  },
+  {
+   "id": "Q133",
+   "slug": "topaz_mon4_plus_index",
+   "title": "トパーズ Mon4 ×8 + 指数 Mon(NAS100 / US500)帳簿(診断・セル 0): 2.8% ガード MC で §8e の Mon4 のみ案と比較",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "ユーザー「優先順位で行ってください」(2026-10-12)。Instant G と同型の指数 Mon を Fintokei スイングに載せる。判定: 5 月末までの到達率と資金化後の月収が Mon4 のみ案を上回り、失格が +3pt 以内。証拠金も確認",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.4
+  },
+  {
+   "id": "Q134",
+   "slug": "payout_buffer_policy",
+   "title": "出金・緩衝の最適化(診断・セル 0): 固定倍率のまま 保持率 {0,5,10,15}% × 出金頻度 {2 週,月} の 1 年出金額と失格率(本口座 5 本・10.6 年 MC)",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 0.5,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "ユーザー「優先順位で行ってください」(2026-10-12)。EA 変更なし・運用ルールだけ。全額出金(失格 12%)と 10% 保持(2%)の間の最適点を出し、11/1 改正案の出金規則にする",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.2
+  },
+  {
+   "id": "Q135",
+   "slug": "target_proximity_boost",
+   "title": "評価段階の目標直前ブースト(改良系・セル 0): P1/P2 の目標まで残り {1,2}% で倍率を {×0.5,×1.5,×2} にする規則の 10.6 年 MC",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "ユーザー「優先順位で行ってください」(2026-10-12)。目標到達の取りこぼし(目標直前で反転して失格)を減らせるか。判定: 到達率 +2pt 以上かつ失格率が悪化しない",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.6
+  },
+  {
+   "id": "Q136",
+   "slug": "mon4_concentration_dd",
+   "title": "Mon4 集中の同時ドローダウン実測(診断・セル 0): 全口座が同じ月曜に負ける確率と大きさ・§8e/§8f を全部採ったときの同時失格確率",
+   "cells": 0,
+   "status": "pending",
+   "sessions_planned": 0.5,
+   "sessions_done": 0,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md"
+   ],
+   "note": "ユーザー「優先順位で行ってください」(2026-10-12)。収益ではなくリスクの把握。10.6 年の月曜ごとの帳簿合算損益の分布・最悪 5 日・同時失格の確率を docs に",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.5
   }
  ],
  "runs": [
