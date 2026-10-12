@@ -2072,6 +2072,22 @@
    "program": "docs/322",
    "order": 48.1,
    "result": "0/18 通過。A1(SQ 週前半 L)は 2021 年以降のみ、B1(権利取り L)は 3 窓同符号だが n=17・t 1.69"
+  },
+  {
+   "id": "Q138",
+   "slug": "local_calendar",
+   "title": "Q137 の型を銘柄別に: 各市場の先物満期週(前半・満期後)8 指数 + 春節(HK50)・豪会計年度末(AUS200)(新規 40 セル)",
+   "cells": 40,
+   "status": "in_progress",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/358_q138_local_calendar_by_index.md"
+   ],
+   "note": "ユーザー「同じ様に銘柄別で試作できますか」(2026-10-12)。Q8 の満期当日とは重複させない。S 族は年 1 回で設計上判定不能(参照のみ)",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 48.2
   }
  ],
  "runs": [
@@ -3216,6 +3232,13 @@
    "cells": 18,
    "cumulative": 9710,
    "summary": "日本の暦 0/18(docs/357)。SQ 週前半 L は前窓で消える、権利取り L は n=17・t 1.69 で観測のみ"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "登録",
+   "cells": 0,
+   "cumulative": 9710,
+   "summary": "ユーザー「同じ様に銘柄別で」: Q138(各市場の暦 40 セル)を事前登録(docs/358 §1)"
   }
  ]
 }
