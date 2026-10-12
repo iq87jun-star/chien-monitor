@@ -1952,17 +1952,19 @@
    "slug": "buffer_scaled_sizing",
    "title": "余裕比例サイジング(工学+改良系): 静的床の口座で緩衝に比例して倍率を上げ、月末に初期残高 +保持率 超を出金する規則の EA 実装と検証",
    "cells": 0,
-   "status": "pending",
+   "status": "in_progress",
    "sessions_planned": 2,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
     "docs/322_improvement_program_2026-11.md",
-    "docs/349_prop_account_register_2026-10-11.md"
+    "docs/349_prop_account_register_2026-10-11.md",
+    "docs/351_q131_buffer_scaled_sizing.md"
    ],
    "note": "ユーザー「登録」(2026-10-12)。docs/349 §8f: FTMO 50k Mon4 ×5 基準・k=1(余裕 20% で ×10)・10% 保持 → 1 年失格 7 → 10%・出金 2 倍(月 5 → 11 万)。範囲: (1) 評価段階(P1/P2 の静的床)と資金化後の両方で k ∈ {0.5,1,2}・保持率 {5,10,15}%・出金頻度 {2 週, 月} の 10.6 年 MC(5 口座型 Mon4 / B案 / EA9 / Mon3+Hold / 非FX+Roll)。(2) EA 共通部に InpDynK・InpKeepPct(既定 0 = 現行どおり)を追加した新版(別ファイル・版 +0.01)。判定: docs/244 §1 改良系(IS・OOS で Sharpe 改善・最悪月悪化なし)+ 失格率が固定倍率比で +5pt 以内。トレーリング床の口座(1-Step・MFFU・FN Instant)は余裕が動くので対象外。2026-10-12 ユーザー「優先順位で行ってください」→ 最優先(order 7.1)",
    "registered": "2026-10-12",
    "program": "docs/322",
-   "order": 7.1
+   "order": 7.1,
+   "result": "朝 1: 本口座で出金 2〜4 倍・失格 +1〜3pt(ガード無しでも 2〜3 倍・+2〜5pt)。評価段階は効かない。推奨 k=1・保持 10%・月次。朝 2 = EA 実装"
   },
   {
    "id": "Q132",
@@ -3124,6 +3126,13 @@
    "cells": 4,
    "cumulative": 9692,
    "summary": "Mon ETHUSD 出口 4 変種とも棄却(docs/350)。レグ継続の判定を 11 月改訂へ"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q131",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "余裕比例サイジング 朝 1: 本口座 4 本で通過(docs/351)。朝 2 で EA 実装"
   }
  ]
 }
