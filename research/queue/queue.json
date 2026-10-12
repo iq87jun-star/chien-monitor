@@ -1253,16 +1253,18 @@
    "slug": "index_mon_stop_rule",
    "title": "指数 Mon(6 本)の継続判定(docs/276 停止規則・研究系列と実口座)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/358_q92_index_mon_continuation.md"
    ],
    "note": "診断。外す/残すを 11 月 EA 改訂案に出す",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 8
+   "order": 8,
+   "result": "NAS100/US500/GER40 残す(研究系列の 5〜7 月 3 連続負は 8〜10 月で解消・実口座は未発動)。JP225/UK100/FR40 は外す(未配備)。トパーズ v1.15 はそのまま"
   },
   {
    "id": "Q86",
@@ -2082,7 +2084,7 @@
    "sessions_planned": 1,
    "sessions_done": 1,
    "docs": [
-    "docs/358_q138_local_calendar_by_index.md"
+    "docs/359_q138_local_calendar_by_index.md"
    ],
    "note": "ユーザー「同じ様に銘柄別で試作できますか」(2026-10-12)。Q8 の満期当日とは重複させない。S 族は年 1 回で設計上判定不能(参照のみ)",
    "registered": "2026-10-12",
@@ -3239,14 +3241,21 @@
    "item": "登録",
    "cells": 0,
    "cumulative": 9710,
-   "summary": "ユーザー「同じ様に銘柄別で」: Q138(各市場の暦 40 セル)を事前登録(docs/358 §1)"
+   "summary": "ユーザー「同じ様に銘柄別で」: Q138(各市場の暦 40 セル)を事前登録(docs/359 §1)"
   },
   {
    "date": "2026-10-12",
    "item": "Q138",
    "cells": 40,
    "cumulative": 9750,
-   "summary": "各市場の暦 0/40(docs/358)。NAS100 満期後 L は他の米指数に出ない、HK50 春節明け L は n=8 で観測のみ"
+   "summary": "各市場の暦 0/40(docs/359)。NAS100 満期後 L は他の米指数に出ない、HK50 春節明け L は n=8 で観測のみ"
+  },
+  {
+   "date": "2026-10-13",
+   "item": "Q92",
+   "cells": 0,
+   "cumulative": 9710,
+   "summary": "指数 Mon 継続判定: NAS100/US500 残す・JP225/UK100/FR40 外す(docs/358)"
   }
  ]
 }
