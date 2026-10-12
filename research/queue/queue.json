@@ -2003,16 +2003,18 @@
    "slug": "payout_buffer_policy",
    "title": "出金・緩衝の最適化(診断・セル 0): 固定倍率のまま 保持率 {0,5,10,15}% × 出金頻度 {2 週,月} の 1 年出金額と失格率(本口座 5 本・10.6 年 MC)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 0.5,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/352_q134_payout_buffer_policy.md"
    ],
    "note": "ユーザー「優先順位で行ってください」(2026-10-12)。EA 変更なし・運用ルールだけ。全額出金(失格 12%)と 10% 保持(2%)の間の最適点を出し、11/1 改正案の出金規則にする",
    "registered": "2026-10-12",
    "program": "docs/322",
-   "order": 7.2
+   "order": 7.2,
+   "result": "全額出金は失格 4〜5 倍。固定倍率は保持 5%・月次が膝(失格 +1pt で出金 1.8 倍)。Q131 導入後は 10%。11/1 改正案の出金規則へ"
   },
   {
    "id": "Q135",
@@ -3140,6 +3142,13 @@
    "cells": 0,
    "cumulative": 9692,
    "summary": "余裕比例サイジング 朝 2: EA 4 本の新版(docs/351 §7)。切替待ち"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q134",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "出金・緩衝の最適化: 保持 5%(固定)/ 10%(Q131)・月次(docs/352)"
   }
  ]
 }
