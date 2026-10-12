@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9692,
+ "cumulative_cells": 9710,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2061,16 +2061,17 @@
    "slug": "jp_calendar",
    "title": "日本固有の暦: SQ(第 2 金曜)・配当権利取り/権利落ち・期初の資金フロー(JP225・USDJPY・新規 18 セル)",
    "cells": 18,
-   "status": "in_progress",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
     "docs/357_q137_jp_calendar_sq_dividend_fiscal.md"
    ],
    "note": "ユーザー「登録して進めてください」(2026-10-12)。日本系で 10 年エッジの候補を探す。B・C は年 2 回で設計上判定不能(イベント単位の参照のみ)",
    "registered": "2026-10-12",
    "program": "docs/322",
-   "order": 48.1
+   "order": 48.1,
+   "result": "0/18 通過。A1(SQ 週前半 L)は 2021 年以降のみ、B1(権利取り L)は 3 窓同符号だが n=17・t 1.69"
   }
  ],
  "runs": [
@@ -3208,6 +3209,13 @@
    "cells": 0,
    "cumulative": 9692,
    "summary": "ユーザー「登録して進めてください」: Q137(日本の暦 18 セル)を事前登録(docs/357 §1)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q137",
+   "cells": 18,
+   "cumulative": 9710,
+   "summary": "日本の暦 0/18(docs/357)。SQ 週前半 L は前窓で消える、権利取り L は n=17・t 1.69 で観測のみ"
   }
  ]
 }
