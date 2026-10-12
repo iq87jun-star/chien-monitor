@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9710,
+ "cumulative_cells": 9750,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2078,16 +2078,17 @@
    "slug": "local_calendar",
    "title": "Q137 の型を銘柄別に: 各市場の先物満期週(前半・満期後)8 指数 + 春節(HK50)・豪会計年度末(AUS200)(新規 40 セル)",
    "cells": 40,
-   "status": "in_progress",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
     "docs/358_q138_local_calendar_by_index.md"
    ],
    "note": "ユーザー「同じ様に銘柄別で試作できますか」(2026-10-12)。Q8 の満期当日とは重複させない。S 族は年 1 回で設計上判定不能(参照のみ)",
    "registered": "2026-10-12",
    "program": "docs/322",
-   "order": 48.2
+   "order": 48.2,
+   "result": "0/40 通過。満期週は銘柄間で不一致、HK50 春節明け L は 3 窓とも対照超だが n=8 で観測のみ"
   }
  ],
  "runs": [
@@ -3239,6 +3240,13 @@
    "cells": 0,
    "cumulative": 9710,
    "summary": "ユーザー「同じ様に銘柄別で」: Q138(各市場の暦 40 セル)を事前登録(docs/358 §1)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q138",
+   "cells": 40,
+   "cumulative": 9750,
+   "summary": "各市場の暦 0/40(docs/358)。NAS100 満期後 L は他の米指数に出ない、HK50 春節明け L は n=8 で観測のみ"
   }
  ]
 }
