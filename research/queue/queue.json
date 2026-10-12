@@ -2039,16 +2039,18 @@
    "slug": "mon4_concentration_dd",
    "title": "Mon4 集中の同時ドローダウン実測(診断・セル 0): 全口座が同じ月曜に負ける確率と大きさ・§8e/§8f を全部採ったときの同時失格確率",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 0.5,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/354_q136_mon4_concentration_dd.md"
    ],
    "note": "ユーザー「優先順位で行ってください」(2026-10-12)。収益ではなくリスクの把握。10.6 年の月曜ごとの帳簿合算損益の分布・最悪 5 日・同時失格の確率を docs に",
    "registered": "2026-10-12",
    "program": "docs/322",
-   "order": 7.5
+   "order": 7.5,
+   "result": "最悪 5 日は全部月曜・10 口座同時。1 年内 3 本以上同時失格 29%(独立 25%)・5 本以上 12%(独立 2.6%)・0 本 29%(独立 14%)"
   }
  ],
  "runs": [
@@ -3158,6 +3160,13 @@
    "cells": 0,
    "cumulative": 9692,
    "summary": "MFFU 枚数: 日中停止込みで Live 約 20%・枚数は 5/2/5 のまま(docs/353)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q136",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "Mon4 集中: 同時失格 5 本以上 12%(docs/354)"
   }
  ]
 }
