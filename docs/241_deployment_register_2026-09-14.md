@@ -195,3 +195,17 @@ MC(docs/349 §6c): 1-Step 81 / 19%・+2σ 2027-05-19、宝くじ 48 / 52%・2027
 | FN 100k 14166201 | v1.33 → `【FN100k_口座14166201】RecentFit_NonFX_2.22倍_ETHなし+Roll5_4.5倍_v1.34.mq5` | `InpMonLegs` "" (ETHUSD:0.145 を外す)・`InpMonSpreadCaps` "" |
 | Fintokei トパーズ 6104739 | EA11 v1.13 → `…EA11_Mon4x6.0+Roll5x3.0+NonFX1.5_ETHなし_v1.14.mq5` | `InpMonLegs` から ETHUSD:0.036 を外す |
 根拠: docs/350(Q91)— ETHUSD Mon は IS Sharpe 0.23 / OOS −0.03 / 前窓 0.03。v4 BTCUSD(IS −0.77 / OOS 0.83)は残す。帳簿 MC への影響(docs/350 §4a): トパーズ ×6 到達 86 → 84% / 失格 14 → 16%、FN ×1.5 到達 73 → 70%(いずれも乱数誤差 ±2〜3pt の範囲)。manifest の ensure を更新(apply は false のまま)。他レグ・ガード・Magic 不変。反映は docs/328 §9 の切替で。
+
+### 1y.【2026-10-12】「1 番高くなる形」— 10/17〜18 の一括切替に載せる最終版(docs/349 §9)。§1w・§1x の版は未配備のまま置換
+| 口座 | 新版(manifest ensure) | 主な入力値 |
+|---|---|---|
+| FTMO 1-Step 531466484 | `…EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.04.mq5` | InpMult 3.0・InpMonLegs に EURJPY/AUDJPY/USDJPY 各 0.167(Mon4 ×2 相当) |
+| FTMO 宝くじ 531343523 | `…EA10L_Mon4_10.0倍+GER40ブレイク_6.0倍+HoldXAU0.9_v1.05.mq5` | InpMult 10・InpBrkMult 6・InpHoldMult 3 |
+| FN 14166201 | `…RecentFit_Hold_UK100WTI_2.22倍+Roll5_4.5倍_v1.35.mq5` | InpV4Legs ""(BTC 停止) |
+| Fintokei ルビー | `…RecentFit_B案_12.0倍_v1.04.mq5` | InpMult 12 |
+| Fintokei トパーズ | `…EA11_Mon4x8.0+IdxMon1.0_v1.15.mq5` | InpMult 8・InpMonLegs + NAS100/US500 各 0.125・Roll/Hold/v4 停止 |
+| FTMO 50k 521100397 | `…EA8_Mon4_6.0倍+GER40ブレイク_2.0倍_dyn1_v1.37.mq5` | InpMult 6・InpDynK 1・InpKeepPct 10 |
+| FTMO 50k 531407058 | `…EA3_Mon4_6.0倍_dyn1_v1.19.mq5` | 同 |
+| Fintokei パール | `…RecentFit_8.0倍_dyn1_v1.10.mq5` | InpMult 8・InpDynK 1・InpKeepPct 10 |
+| FN 14074882 / Instant / MFFU | 変更なし(14074882 は v1.11・k=0 のまま) | — |
+本口座 3 本(FTMO 50k × 2・パール)は MQL5 VPS で稼働中のため、切替は他と同じ週末に行う(停止 → apply)。Q92 の結果でトパーズが v1.16 に変わる可能性あり。手順は docs/328 §9。
