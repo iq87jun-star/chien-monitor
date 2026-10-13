@@ -209,3 +209,5 @@ MC(docs/349 §6c): 1-Step 81 / 19%・+2σ 2027-05-19、宝くじ 48 / 52%・2027
 | Fintokei パール | `…RecentFit_8.0倍_dyn1_v1.10.mq5` | InpMult 8・InpDynK 1・InpKeepPct 10 |
 | FN 14074882 / Instant / MFFU | 変更なし(14074882 は v1.11・k=0 のまま) | — |
 本口座 3 本(FTMO 50k × 2・パール)は MQL5 VPS で稼働中のため、切替は他と同じ週末に行う(停止 → apply)。Q92 の結果でトパーズが v1.16 に変わる可能性あり。手順は docs/328 §9。
+
+### 1z.【2026-10-13】§1y の本口座 3 本の既定入力を変更(docs/349 §9c): EA8 v1.37・EA3 v1.19 → `InpDynK=1.5`・`InpKeepPct=20`、パール v1.10 → `InpDynK=1.0`・`InpKeepPct=20`(ファイルは同じ・未配備)

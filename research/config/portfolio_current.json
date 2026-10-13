@@ -1,0 +1,192 @@
+{
+ "_comment": "docs/349 §9〜§9c の現行設定。eval/funded は forward/portfolio_sim.legs() のレグ名と重み(口座残高比の名目)。balance_jpy は 158 円換算。keep は出金時に残す緩衝(初期残高比)。 2026-10-13 ユーザー「1 番数値が良い手段で」: k=2(口座ごとに名目 ≤16 倍の上限 → FTMO 50k 1.5・パール 1.0・ルビー 1.5)・保持 20%(docs/349 §9c)。",
+ "global": {
+  "start": "2026-10-19",
+  "income_from": "2027-06-01",
+  "k": 2.0,
+  "keep": 0.2,
+  "pay_frac": 1.0
+ },
+ "accounts": [
+  {
+   "name": "1-Step 531466484",
+   "eval": {
+    "a9": 3.0,
+    "mon4": 2.0
+   },
+   "funded": {
+    "a9": 2.0,
+    "mon4": 1.3
+   },
+   "e0": 1.003,
+   "targets": [
+    0.1
+   ],
+   "mdd": 0.1,
+   "dll": 0.024,
+   "trail": true,
+   "balance_jpy": 15800000,
+   "k": 2.0
+  },
+  {
+   "name": "宝くじ 531343523",
+   "eval": {
+    "mon4": 10.0,
+    "holdxau": 0.9
+   },
+   "funded": {
+    "mon4": 5.0,
+    "holdxau": 0.45
+   },
+   "e0": 0.927,
+   "targets": [
+    0.1,
+    0.05
+   ],
+   "mdd": 0.095,
+   "dll": 0.04,
+   "balance_jpy": 15800000,
+   "k": 2.0
+  },
+  {
+   "name": "FN 14166201",
+   "eval": {
+    "hold_uw": 2.22,
+    "roll": 4.5
+   },
+   "funded": {
+    "hold_uw": 2.22,
+    "roll": 4.5
+   },
+   "e0": 1.044,
+   "targets": [
+    0.08,
+    0.05
+   ],
+   "mdd": 0.1,
+   "dll": 0.04,
+   "k": 0.0,
+   "balance_jpy": 15800000
+  },
+  {
+   "name": "ルビー 6104736",
+   "eval": {
+    "bplan": 12.0
+   },
+   "funded": {
+    "bplan": 6.0
+   },
+   "e0": 1.003,
+   "targets": [
+    0.08,
+    0.06
+   ],
+   "mdd": 0.1,
+   "dll": 0.028,
+   "balance_jpy": 10000000,
+   "k": 1.5
+  },
+  {
+   "name": "トパーズ 6104739",
+   "eval": {
+    "mon4": 8.0,
+    "idx": 1.0
+   },
+   "funded": {
+    "mon4": 4.0,
+    "idx": 0.5
+   },
+   "e0": 0.989,
+   "targets": [
+    0.08,
+    0.06
+   ],
+   "mdd": 0.1,
+   "dll": 0.028,
+   "balance_jpy": 35000000,
+   "k": 2.0
+  },
+  {
+   "name": "FTMO 50k 521100397",
+   "eval": {
+    "mon4": 6.0
+   },
+   "funded": {
+    "mon4": 6.0
+   },
+   "e0": 1.044,
+   "targets": [],
+   "mdd": 0.1,
+   "dll": 0.04,
+   "funded_now": true,
+   "balance_jpy": 7900000,
+   "k": 1.5
+  },
+  {
+   "name": "FTMO 50k 531407058",
+   "eval": {
+    "mon4": 6.0
+   },
+   "funded": {
+    "mon4": 6.0
+   },
+   "e0": 1.034,
+   "targets": [],
+   "mdd": 0.1,
+   "dll": 0.04,
+   "funded_now": true,
+   "balance_jpy": 7900000,
+   "k": 1.5
+  },
+  {
+   "name": "パール 6071612",
+   "eval": {
+    "bplan": 8.0
+   },
+   "funded": {
+    "bplan": 8.0
+   },
+   "e0": 1.029,
+   "targets": [],
+   "mdd": 0.1,
+   "dll": 0.028,
+   "funded_now": true,
+   "balance_jpy": 5000000,
+   "k": 1.0
+  },
+  {
+   "name": "FN 14074882",
+   "eval": {
+    "mon3": 4.0,
+    "holdxau": 0.4
+   },
+   "funded": {
+    "mon3": 4.0,
+    "holdxau": 0.4
+   },
+   "e0": 0.947,
+   "targets": [],
+   "mdd": 0.1,
+   "dll": 0.04,
+   "funded_now": true,
+   "k": 0.0,
+   "balance_jpy": 15800000
+  },
+  {
+   "name": "FN Instant 11988011",
+   "eval": {
+    "instG": 1.0
+   },
+   "funded": {
+    "instG": 1.0
+   },
+   "e0": 0.993,
+   "targets": [],
+   "mdd": 0.06,
+   "dll": 0.04,
+   "funded_now": true,
+   "k": 0.0,
+   "balance_jpy": 3160000
+  }
+ ]
+}

@@ -156,7 +156,7 @@ input group "=== 口座/ガード ==="
 input double InpInitialBalance   = 0.0;   // 0=自動(初回アタッチ時の残高を端末に永続保存)
 input bool   InpBaselineReset    = false; // 新フェーズ開始時のみtrue=基準残高を取り直す
 input double InpDynK             = 1.0;   // Q131 余裕比例サイジング(docs/351): 名目に f = min(1 + K×(余裕−mdd)/mdd, 1+K) を掛ける。余裕 = (equity − 床)/基準残高、mdd = InpMaxLossLimitPct。0 = 現行どおり。推奨 1.0(資金化後の口座のみ)
-input double InpKeepPct          = 10.0;   // Q131 出金推奨(ログのみ・出金は手動): 毎月 1 日に equity − 基準残高×(1+この%) を [PAYOUT] 行で出す。0 = 出さない。推奨 10
+input double InpKeepPct          = 20.0;   // Q131 出金推奨(ログのみ・出金は手動): 毎月 1 日に equity − 基準残高×(1+この%) を [PAYOUT] 行で出す。0 = 出さない。推奨 10
 input double InpMaxLossLimitPct  = 10.0;  // 失格ライン%(FN Stellar=静的10%)
 input double InpAccountFloorDDPct= 9.0;   // 全停止ライン%(-10%枠の手前)
 input double InpDailyStopPct     = 4.0;   // 日次equity−この%で当日新規停止(規約−5%手前)
