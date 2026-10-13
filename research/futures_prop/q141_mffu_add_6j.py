@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Q141(診断・セル 0): MFFU に 6J(USDJPY 月曜セッション LONG = 6J 売り・日曜 22 UTC → 月曜 20 UTC)を足すと評価・出金が改善するか。
+"""Q141(v2: 建ては Globex 再開時刻)(診断・セル 0): MFFU に 6J(USDJPY 月曜セッション LONG = 6J 売り・日曜 22 UTC → 月曜 20 UTC)を足すと評価・出金が改善するか。
 指数(13→20 UTC)と 6J を同じ日の時間足経路に重ね、q139 の経路 MC(日中の含み損で判定)に通す。6J の名目は指数と同リスク(週次 σ 一致)を基準に配分。"""
 import json, sys
 sys.argv = ["q139"]
@@ -9,9 +9,13 @@ o = load("USDJPY")["open"]
 hrs = list(range(22, 24)) + list(range(0, 21))     # 日曜 22 UTC 〜 月曜 20 UTC
 J = {}
 for t in o.index[(o.index.dayofweek == 6) & (o.index.hour == 22)]:
-    base = o[t]; row = []
+    # 先物で建てられるのは Globex 再開(日曜 17:00 CT = 夏 22 UTC・冬 23 UTC)。冬は 23 UTC の値を基準に、それまでの 1 時間は 0
+    t0 = t if t.tz_localize("UTC").tz_convert("America/Chicago").hour == 17 else t + pd.Timedelta(hours=1)
+    base = o.get(t0); row = []
+    if base is None: continue
     for k in range(1, 23):
-        x = o.get(t + pd.Timedelta(hours=k)); row.append(np.nan if x is None else x / base - 1)
+        tt = t + pd.Timedelta(hours=k); x = o.get(tt)
+        row.append(0.0 if tt <= t0 else (np.nan if x is None else x / base - 1))
     J[(t + pd.Timedelta(hours=2)).normalize()] = row
 idx_days = list(M.PD)
 Pidx = M.P.copy()                                   # (週, 7) = 月曜 14..20 UTC
