@@ -9,6 +9,7 @@ N150 = sum(PX[k] * Q[k] for k in PX); COST = 2.5e-4
 H = {k: load(k)["open"] for k in PX}
 days = sorted(set.intersection(*[set(H[k].index[(H[k].index.dayofweek == 0) & (H[k].index.hour == 13)].normalize()) for k in PX]))
 days = [d for d in days if d >= pd.Timestamp("2018-01-01")]
+PD = []         # P の各行の月曜
 P = []          # 週ごとの時間足 累積損益(名目比): [h14..h20]
 for d in days:
     row = []; ok = True
@@ -20,7 +21,7 @@ for d in days:
             v += PX[k] * Q[k] * (oh / o13 - 1.0)
         if not ok: break
         row.append(v / N150)
-    if ok: row[-1] -= COST; P.append(row)
+    if ok: row[-1] -= COST; P.append(row); PD.append(d)
 P = np.array(P)                      # (週, 7)
 rng = np.random.default_rng(139)
 
