@@ -1,0 +1,17 @@
+[
+ {"name":"MFFU Builder 150K(現行)","size":150000,"eval_price":199,"activation":0,"split":0.8,
+  "eval":{"type":"eod","amt":4500,"lock":100,"daily":2500,"daily_hard":false,"target":9000},
+  "funded":{"type":"eod","amt":4500,"lock":100,"daily":2500,"daily_hard":false,"buffer":4600,"pmin":4500,"pmax":4500,"cycle_days":2,"consistency":0.5,"npay_live":5}},
+ {"name":"MFFU Builder 150K(出金 $1,500 都度)","size":150000,"eval_price":199,"activation":0,"split":0.8,
+  "eval":{"type":"eod","amt":4500,"lock":100,"daily":2500,"daily_hard":false,"target":9000},
+  "funded":{"type":"eod","amt":4500,"lock":100,"daily":2500,"daily_hard":false,"buffer":4600,"pmin":1500,"pmax":4500,"cycle_days":2,"consistency":0.5,"npay_live":5}},
+ {"name":"Tradeify Select Flex 150K","size":150000,"eval_price":369,"activation":0,"split":0.9,
+  "eval":{"type":"eod","amt":4500,"lock":100,"target":9000,"consistency":0.4,"min_days":3},
+  "funded":{"type":"eod","amt":4500,"lock":100,"buffer":0,"pmin":250,"pmax":4500,"pfrac":0.5,"win_day":250,"win_days":5}},
+ {"name":"Lucid Flex 150K","size":150000,"eval_price":407,"activation":0,"split":0.9,
+  "eval":{"type":"eod","amt":4500,"lock":100,"target":9000,"consistency":0.5,"min_days":2},
+  "funded":{"type":"eod","amt":4500,"lock":100,"buffer":0,"pmin":500,"pmax":3000,"pfrac":0.5,"win_day":250,"win_days":5,"lock_after_pay":100,"npay_live":5}},
+ {"name":"Bulenox Opt2 150K(30 日期限)","size":150000,"eval_price":325,"activation":498,"split":1.0,
+  "eval":{"type":"eod","amt":4500,"daily":3300,"daily_hard":false,"target":9000,"max_weeks":4},
+  "funded":{"type":"eod","amt":4500,"lock":100,"daily":3300,"daily_hard":false,"dll_until_lock":true,"buffer":4600,"pmin":1000,"pmax":1e9,"pmax_first":[2000,2000,2000],"cycle_days":10,"consistency":0.4}}
+]
