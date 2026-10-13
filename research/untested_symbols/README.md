@@ -74,3 +74,8 @@ C3L は金利込みで +3 / −39 / −90(しきい値 +3〜+10% のどれでも
 - Sharpe: NAS100 1.18・**ITA40 1.16**・NLD25 0.72・ESP35 0.67・US2000 0.56・GER40 0.45・US500 0.40・FRA40 0.39。
 - 2020 年(コロナ後の月曜反発)が全銘柄で +26〜+42% と突出。2024 年は候補 5 本中 4 本が負(FRA40 −11.1・ESP35 −10.4)。
 - 既存 3 本合成と候補 5 本合成の週次相関 0.85。8 本を合成しても Sharpe は 0.85 → 0.80 で改善しない。
+
+## ITA40(FTSE MIB)の取扱業者(2026-10-13 調査)
+- 現在の 3 社: **FTMO・FundedNext・Fintokei はいずれも無し**(FTMO 公式 `/wp-json/ftmo/symbols`・FN 公式ヘルプ・Fintokei 公式一覧をブラウザで全表示)。代替のオランダは FTMO `N25.cash`(1:30 / Swing 1:9)・FN `NTH25` にあり。
+- 取扱あり: **Lux Trading Firm**(`ITA40`・1:30・自作 EA 可・週末可。公式の銘柄 PDF は 2024-10 版で要再確認)/ Maven(`ITA40`・EA 全面禁止 → 不可)/ Top One Trader(TradeLocker で「近日」・MT5 に無し)。PipFarm・Equity Edge は第三者情報のみ。
+- 取扱なし(公式確認): E8・FundingPips・CTI・The5ers・Audacity・Darwinex Zero(一部)。未確認: FXIFY・Goat・Blue Guardian・Blueberry(銘柄非公開)。
