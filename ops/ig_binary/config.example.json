@@ -1,5 +1,5 @@
 {
- "_comment": "config.json にコピーして編集(config.json は git 管理外)。webhook_url は秘密。stake は 1 通貨ペアあたりの購入額(円)。breakeven は仮想損益の損益分岐(IG の実購入価格 ÷ 1,000。実値が分かったら差し替える)。min_gap_pips は 0 = 下窓なら全部。",
+ "_comment": "config.json にコピーして編集(config.json は git 管理外)。webhook_url は秘密。stake は 1 通貨ペアあたりの購入額(円)。breakeven は仮想損益の損益分岐(IG の実購入価格 ÷ 1,000。実値が分かったら差し替える)。min_gap_pips は 0 = 下窓なら全部。max_filled は 07:00 までに窓をこの割合以上埋めたペアを見送る(null で無効)。",
  "transport": "dry",
  "webhook_url": "https://hooks.slack.com/services/XXX/YYY/ZZZ",
  "notify_format": "slack",
@@ -7,6 +7,7 @@
  "stake": 1000,
  "breakeven": 0.55,
  "min_gap_pips": 0,
+ "max_filled": 0.5,
  "price_sources": ["dukascopy", "yahoo"],
  "retries": 4,
  "log_csv": "G:\\マイドライブ\\chien_ops\\ig_binary\\ig_gap_log.csv",

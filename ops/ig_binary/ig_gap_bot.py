@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-"""chien IG バイナリー 窓埋めボット v0.1(research/ig_binary/README.md)。
+"""chien IG バイナリー 窓埋めボット v0.2(research/ig_binary/README.md)。
 規則: 月曜 07:00 JST の時点で「金曜終値 → 月曜最初の値」が下に窓を開けた通貨ペアだけ、IG 第 4 回号(07:00→09:00 判定)を HIGH で買う。
+      v0.2: 07:00 までに窓を半分以上埋めていたペアは見送る(max_filled。夏時間だけ効く・冬時間は 07:00 が開場直後)。
 検証(Dukascopy H1・中値・損益分岐 55%): 全 7 ペア合算の上昇率 2016-21 61.1% / 2022-26.5 65.6% / 2026.6-10(未使用)64.0%。
 
 IG 証券の国内バイナリーは API 発注の可否が未確認のため、このボットは「判定・通知・結果記録」までを行い、発注は手で行う。
@@ -12,7 +13,7 @@ IG 証券の国内バイナリーは API 発注の可否が未確認のため、
 価格: Dukascopy 1 分足の中値(dukascopy-python)。取れなければ Yahoo 1 分足(単一価格)に落とす。
 秘密(webhook URL)は config.json(git 管理外)にだけ置く。"""
 import argparse, csv, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.1"
+VERSION = "0.2"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -40,10 +41,18 @@ def price_at(bars, t_utc, within_min=59):
         if t_utc <= b[0] <= t_utc + dt.timedelta(minutes=within_min): return b[1]
     return None
 
-def decide(pair, fri_close, mon_first, cfg):
-    """下窓(月曜最初の値 < 金曜終値)で、窓の大きさが min_gap_pips 以上なら HIGH。"""
+def filled_ratio(fri_close, mon_first, entry):
+    """07:00 までに窓をどれだけ埋めたか(0 = 月曜最初の値のまま・1 = 金曜終値まで戻った・負 = さらに広げた)。"""
+    return (entry - mon_first) / (fri_close - mon_first) if fri_close != mon_first else 0.0
+
+def decide(pair, fri_close, mon_first, cfg, entry=None):
+    """下窓(月曜最初の値 < 金曜終値)で、窓の大きさが min_gap_pips 以上なら HIGH。
+    max_filled(既定 0.5): 07:00 時点で窓を max_filled 以上埋めていたら見送る(research/ig_binary/README.md「フィルター」)。"""
     gap = (mon_first - fri_close) / pip(pair)
-    return ("HIGH" if gap <= -float(cfg.get("min_gap_pips", 0.0)) and gap < 0 else None), round(gap, 1)
+    sig = "HIGH" if gap < 0 and gap <= -float(cfg.get("min_gap_pips", 0.0)) else None
+    mf = cfg.get("max_filled", 0.5)
+    if sig and entry is not None and mf is not None and filled_ratio(fri_close, mon_first, entry) >= float(mf): sig = None
+    return sig, round(gap, 1)
 
 def outcome(entry, exit_, direction="HIGH"):
     if entry is None or exit_ is None: return None
@@ -138,8 +147,8 @@ def do_signal(cfg, monday, st, dry=False, sources=None):
         g = weekend_gap(bars, entry); px = price_at(bars, entry)
         if not g or px is None:
             rec["pairs"][pair] = {"signal": None, "note": "no_price"}; continue
-        sig, gap = decide(pair, g[0], g[1], cfg)
-        rec["pairs"][pair] = {"signal": sig, "gap_pips": gap, "fri_close": g[0], "mon_first": g[1], "entry_mid": px, "source": src}
+        sig, gap = decide(pair, g[0], g[1], cfg, px)
+        rec["pairs"][pair] = {"signal": sig, "gap_pips": gap, "filled": round(filled_ratio(g[0], g[1], px), 2), "fri_close": g[0], "mon_first": g[1], "entry_mid": px, "source": src}
     st.d[key] = rec; st.save()
     buys = [(p, v) for p, v in rec["pairs"].items() if v.get("signal")]
     stake = int(cfg.get("stake", 1000))

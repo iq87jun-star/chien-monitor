@@ -18,6 +18,13 @@ def test_decide_gap_down_only():
     assert B.decide("EURUSD", 1.1000, 1.0998, {"min_gap_pips": 3})[0] is None      # 2 pips < 3
     assert B.decide("EURUSD", 1.1000, 1.0995, {"min_gap_pips": 3}) == ("HIGH", -5.0)
 
+def test_max_filled():
+    assert abs(B.filled_ratio(150.0, 149.8, 149.9) - 0.5) < 1e-9 and abs(B.filled_ratio(150.0, 149.8, 149.7) + 0.5) < 1e-9
+    assert B.decide("USDJPY", 150.0, 149.8, {}, 149.85)[0] == "HIGH"                  # 25% 埋め → 買う
+    assert B.decide("USDJPY", 150.0, 149.8, {}, 149.92)[0] is None                    # 60% 埋め → 見送り
+    assert B.decide("USDJPY", 150.0, 149.8, {}, 149.70)[0] == "HIGH"                  # さらに広げた → 買う
+    assert B.decide("USDJPY", 150.0, 149.8, {"max_filled": None}, 149.92)[0] == "HIGH" # 無効化
+
 def test_outcome_and_pnl():
     assert B.outcome(1.0, 1.1) == "win" and B.outcome(1.0, 0.9) == "lose" and B.outcome(1.0, 1.0) == "draw" and B.outcome(1.0, None) is None
     assert B.pnl_virtual("win", 20000, 0.55) == 16364 and B.pnl_virtual("lose", 20000, 0.55) == -20000 and B.pnl_virtual("draw", 20000, 0.55) == 0
