@@ -1271,16 +1271,24 @@
    "slug": "funded_mult_payout",
    "title": "資金化後の倍率逓減と出金最大化(12 か月 MC)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/360_q86_funded_mult_payout.md"
    ],
    "note": "Mon4 ×3.3 維持 vs ×2.0/×1.5、出金 2 週/4 週。提案: InpFundedMult の要否",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 9
+   "order": 9,
+   "result": "逓減は不利(失格 −0〜2pt で出金 −3〜4 割、低い固定倍率に劣る)。2 週出金は +10〜15%(保持 ≥10% で失格 +0.3pt 以内・Q108 で規約確認)。Q131 採用設定が固定倍率の全格子に優越(×6 で出金 3 倍・失格同じ)。InpFundedMult は追加しない(資金化口座は別ログイン・InpMult + InpDynK で足りる)",
+   "runs": [
+    {
+     "date": "2026-10-14",
+     "summary": "10.6 年 MC・倍率 9 × 保持 4 × 頻度 2 × 口座 2 型 → docs/360。InpFundedMult 不要"
+    }
+   ]
   },
   {
    "id": "Q87",
