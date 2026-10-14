@@ -1,5 +1,5 @@
 // 在庫(メルルが持っているアカウント)と分割払いの管理。計算は public/lib/stock.js と共通
-import { STOCK_STATUSES, SPLIT_STATUSES, SITES, HANDOVER } from "../public/lib/stock.js";
+import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER } from "../public/lib/stock.js";
 
 const clean = (s, max) => (typeof s === "string" ? s.trim().slice(0, max) : "");
 const yen = (v) => (v === "" || v == null ? null : Number.isInteger(Number(v)) && Number(v) >= 0 && Number(v) < 100_000_000 ? Number(v) : undefined);
@@ -153,4 +153,26 @@ export async function replaceImage(env, id, { mime, data, w, h }) {
 }
 export async function deleteImage(env, id) {
   return (await env.DB.prepare("DELETE FROM image WHERE id = ?").bind(id).run()).meta.changes > 0;
+}
+
+// ── 購入希望 ──
+export function validWant(body, games) {
+  return pick(body, {
+    name: (v) => clean(v ?? "", 40) || undefined,
+    contact: text(60),
+    game: oneOf(games),
+    wants: (v) => JSON.stringify(chars(v).map(({ name, cons }) => ({ name, cons }))),
+    budget: yen,
+    split: (v) => (v ? 1 : 0),
+    status: oneOf(WANT_STATUSES),
+    proposed: text(200),
+    next_at: date,
+    memo: text(2000),
+  });
+}
+export const createWant = (env, row) => insert(env, "want", { status: "希望中", ...row, created_at: now(), updated_at: now() });
+export const updateWant = (env, id, patch) => update(env, "want", id, patch);
+export async function listWants(env) {
+  const { results } = await env.DB.prepare("SELECT * FROM want ORDER BY CASE status WHEN '成約' THEN 2 WHEN '見送り' THEN 3 ELSE 1 END, id DESC").all();
+  return results.map((r) => ({ ...r, wants: json(r.wants, []), split: Boolean(r.split) }));
 }

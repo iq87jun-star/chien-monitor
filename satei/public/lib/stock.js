@@ -1,6 +1,7 @@
 // 在庫と分割払いの計算(管理画面と Worker で共通)。日付はすべて日本時間の YYYY-MM-DD
 export const STOCK_STATUSES = ["未出品", "出品中", "商談中", "売却済み"];
 export const SPLIT_STATUSES = ["支払い中", "完済", "引き渡し済み", "中止"];
+export const WANT_STATUSES = ["希望中", "提案済み", "成約", "見送り"];
 export const SITES = ["ゲームトレード", "ゲームクラブ", "ならむ鯖", "ぱるる鯖", "X", "その他"];
 // 引き渡しのチェック(分割は完済してから引き渡す)
 export const HANDOVER = { mail: "メールアドレスの変更", link: "連携(SNS など)の解除", pass: "パスワードの変更" };
@@ -52,8 +53,33 @@ export const staleListings = (s, today, r = RULES) =>
   s.status === "出品中" || s.status === "商談中" ? (s.listings ?? []).filter((l) => !l.checked_on || days(l.checked_on, today) >= r.checkDays) : [];
 
 // 今日やること(管理画面の一番上に出す)
-export function todos(stocks, splits, today, r = RULES) {
+// 購入希望と在庫(または代理出品)の合い具合。want.wants: [{name, cons}](cons は下限)、chars: [{name, cons}]
+export function matchOf(want, chars, price = null) {
+  const list = want.wants ?? [];
+  const have = new Map((chars ?? []).map((c) => [c.name, c.cons ?? 0]));
+  const hits = list.filter((w) => have.has(w.name));
+  const full = hits.filter((w) => have.get(w.name) >= (w.cons ?? 0));
+  const inBudget = !want.budget || !price || price <= want.budget;
+  return { hits: hits.map((w) => ({ name: w.name, cons: have.get(w.name), need: w.cons ?? 0 })), total: list.length, full: full.length, inBudget, score: list.length ? full.length / list.length : 0 };
+}
+// 希望中・提案済みの人に、同じゲームで半分以上の条件を満たす在庫(売却済み以外)を、合う順に
+export function matchesFor(want, stocks) {
+  if (!["希望中", "提案済み"].includes(want.status)) return [];
+  return stocks
+    .filter((s) => s.game === want.game && s.status !== "売却済み")
+    .map((s) => ({ stock: s, ...matchOf(want, s.chars, s.price) }))
+    .filter((m) => m.total && m.score >= 0.5)
+    .sort((a, b) => b.score - a.score || Number(b.inBudget) - Number(a.inBudget));
+}
+
+export function todos(stocks, splits, today, r = RULES, wants = []) {
   const out = [];
+  for (const w of wants) {
+    if (["成約", "見送り"].includes(w.status)) continue;
+    if (w.next_at && w.next_at <= today) out.push({ kind: "want", id: w.id, level: 2, text: `購入希望 No.${w.id} ${w.name}さんに連絡する日です` });
+    const best = matchesFor(w, stocks).filter((m) => m.score === 1 && m.inBudget && !(w.proposed ?? "").includes(String(m.stock.id)));
+    if (w.status === "希望中" && best.length) out.push({ kind: "want", id: w.id, level: 1, text: `購入希望 No.${w.id} ${w.name}さんに合う在庫があります(在庫 No.${best.map((m) => m.stock.id).join("・")})` });
+  }
   for (const sp of splits) {
     if (sp.status !== "支払い中") {
       if (sp.status === "完済") out.push({ kind: "split", id: sp.id, level: 2, text: `分割 No.${sp.id} ${sp.buyer}さんが完済しました。引き渡しを進めてください` });

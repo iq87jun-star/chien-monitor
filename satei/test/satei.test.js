@@ -221,3 +221,40 @@ test("画像は形と大きさを確かめてから受け取る", async () => {
   assert.equal(validImage({ ...ok, data: "<script>" }), null);
   assert.equal(validImage({ ...ok, data: "A".repeat(MAX_IMAGE_B64 + 4) }), null);
 });
+
+test("購入希望: 欲しいキャラと凸数・予算で在庫を探す", async () => {
+  const { matchOf, matchesFor, todos } = await import("../public/lib/stock.js");
+  const want = { id: 1, name: "YURI", game: "genshin-impact", status: "希望中", budget: 120000, wants: [{ name: "マーヴィカ", cons: 2 }, { name: "フリーナ", cons: 0 }] };
+  const a = { id: 3, game: "genshin-impact", status: "出品中", price: 110000, chars: [{ name: "マーヴィカ", cons: 6 }, { name: "フリーナ", cons: 1 }] };
+  const b = { id: 4, game: "genshin-impact", status: "出品中", price: 130000, chars: [{ name: "マーヴィカ", cons: 1 }, { name: "フリーナ", cons: 0 }] };
+  const c = { id: 9, game: "houkaistarrail", status: "出品中", price: 1, chars: [{ name: "フリーナ", cons: 6 }] };
+  assert.deepEqual([matchOf(want, a.chars, a.price).full, matchOf(want, a.chars, a.price).inBudget], [2, true]);
+  // 凸数が足りないキャラは数えない・予算オーバーは印を付ける
+  assert.deepEqual([matchOf(want, b.chars, b.price).full, matchOf(want, b.chars, b.price).inBudget], [1, false]);
+  assert.deepEqual(matchesFor(want, [b, c, a]).map((m) => m.stock.id), [3, 4]);
+  assert.deepEqual(matchesFor({ ...want, status: "成約" }, [a]), []);
+  const t = todos([a, b], [], "2026-10-14", undefined, [{ ...want, next_at: "2026-10-14" }]);
+  assert.deepEqual(t.map((x) => x.kind), ["want", "want"]);
+  assert.match(t[1].text, /在庫 No\.3/);
+  // 提案済みの在庫は知らせない
+  assert.equal(todos([a], [], "2026-10-14", undefined, [{ ...want, proposed: "在庫3" }]).length, 0);
+});
+
+test("購入希望の保存", async () => {
+  const { DatabaseSync } = await import("node:sqlite");
+  const { readFileSync } = await import("node:fs");
+  const st = await import("../src/stock.js");
+  const db = new DatabaseSync(":memory:");
+  db.exec(readFileSync(new URL("../migrations/0007_wants.sql", import.meta.url), "utf8"));
+  const stmt = (q, a = []) => ({
+    first: async () => db.prepare(q).get(...a) ?? null,
+    run: async () => ({ meta: { changes: Number(db.prepare(q).run(...a).changes) } }),
+    all: async () => ({ results: db.prepare(q).all(...a) }),
+  });
+  const env = { DB: { prepare: (q) => ({ ...stmt(q), bind: (...a) => stmt(q, a) }) } };
+  assert.equal(st.validWant({ name: "x", game: "zzz" }, ["genshin-impact"]), null);
+  const id = await st.createWant(env, st.validWant({ name: "YURI", game: "genshin-impact", wants: [{ name: "フリーナ", cons: 2 }], budget: "100000", split: "1" }, ["genshin-impact"]));
+  await st.updateWant(env, id, st.validWant({ status: "提案済み", proposed: "在庫3,4" }, ["genshin-impact"]));
+  const [w] = await st.listWants(env);
+  assert.deepEqual([w.name, w.status, w.wants[0].cons, w.budget, w.split, w.proposed], ["YURI", "提案済み", 2, 100000, true, "在庫3,4"]);
+});
