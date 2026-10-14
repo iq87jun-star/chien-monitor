@@ -8,6 +8,7 @@ HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE);
 from forward.portfolio_sim import run_portfolio, summarize, legs
 import numpy as np
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 3000; MAX_GROSS = 16.0
+import datetime as _dt; SEED = int(_dt.date.today().strftime("%Y%m%d"))  # 日替わりの乱数種(同じ朝の近傍比較は共通乱数)。固定種だと毎朝同じ結果になり再現の意味が無い
 cfg = json.load(open("config/portfolio_current.json", encoding="utf-8"))
 def gross(spec): return sum(spec.values())
 def variants(cfg):
@@ -31,10 +32,10 @@ def variants(cfg):
             if gross(a["funded"]) * (1 + k1) > MAX_GROSS: continue
             c = copy.deepcopy(cfg); c["accounts"][i]["k"] = k1; out.append((f"{a['name']} k {k0} → {k1}", c))
     return out
-base_s = summarize(run_portfolio(cfg, N=N), "current"); rows = [base_s]
+base_s = summarize(run_portfolio(cfg, N=N, seed=SEED), "current"); rows = [base_s]
 print(f"現行: 期待 {base_s['mean']:.0f} 万 | −1σ {base_s['p16']:.0f} | 中央 {base_s['p50']:.0f} | 0 の確率 {base_s['p0']*100:.0f}%   (N={N}・近傍 {len(variants(cfg))} 件)")
 for nm, c in variants(cfg):
-    s = summarize(run_portfolio(c, N=N), nm); s["improved"] = bool(s["mean"] >= base_s["mean"] * 1.05 and s["p16"] >= base_s["p16"] - 2); rows.append(s)
+    s = summarize(run_portfolio(c, N=N, seed=SEED), nm); s["improved"] = bool(s["mean"] >= base_s["mean"] * 1.05 and s["p16"] >= base_s["p16"] - 2); rows.append(s)
     if s["improved"]: print(f"  ○ {nm:<34} 期待 {s['mean']:.0f} 万(+{(s['mean']/base_s['mean']-1)*100:.0f}%) | −1σ {s['p16']:.0f} | 中央 {s['p50']:.0f}")
 imp = [r for r in rows[1:] if r["improved"]]
 print("改善候補: " + (", ".join(r["label"] for r in sorted(imp, key=lambda r: -r["mean"])[:5]) if imp else "なし(現行が近傍で最適)"))
