@@ -71,6 +71,7 @@
     <div class="tabs">
       <button type="button" data-tab="stockTab" aria-pressed="true">在庫</button>
       <button type="button" data-tab="splitTab" aria-pressed="false">分割</button>
+      <button type="button" data-tab="wantTab" aria-pressed="false">購入希望</button>
     </div>
 
     <section id="stockTab">
@@ -106,6 +107,23 @@
         <div class="row"><button type="button" id="p-add">追加</button></div>
       </details>
     </section>
+    <section id="wantTab" hidden>
+      <div class="row"><select id="w-filter"><option value="">すべて(成約・見送り以外)</option></select><span class="muted" id="w-count"></span></div>
+      <div id="wantList"></div>
+      <details class="card"><summary>+ 購入希望者を追加</summary>
+        <div class="grid2">
+          <label>呼び名<input id="w-name" /></label>
+          <label>連絡先<input id="w-contact" placeholder="X: @xxx / Discord: xxx" /></label>
+          <label>ゲーム<select id="w-game"></select></label>
+          <label>予算の上限(円)<input id="w-budget" type="number" min="0" step="1000" /></label>
+          <label>分割を希望<select id="w-split"><option value="">いいえ</option><option value="1">はい</option></select></label>
+          <label>次の連絡日<input id="w-next" type="date" /></label>
+        </div>
+        <label class="muted">欲しいキャラ(例: フリーナ マーヴィカ2凸 ヌヴィレット完凸 … 凸数は「この凸数以上」)<textarea id="w-wants"></textarea></label>
+        <label class="muted">メモ<input id="w-memo" style="width:100%" /></label>
+        <div class="row"><button type="button" id="w-add">追加</button></div>
+      </details>
+    </section>
   </div>
 </main>
 <dialog class="view" id="view">
@@ -123,7 +141,7 @@
 <script type="module">
 import { parseRoster } from "./lib/features.js";
 import { estimate } from "./lib/estimate.js";
-import { STOCK_STATUSES, SPLIT_STATUSES, SITES, HANDOVER, RULES, monthly, splitState, priceDown, staleListings, todos, days } from "./lib/stock.js";
+import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER, RULES, monthly, splitState, priceDown, staleListings, todos, days, matchOf, matchesFor } from "./lib/stock.js";
 const $ = (id) => document.getElementById(id);
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
 const GAME = { "genshin-impact": "原神", houkaistarrail: "スタレ", zzz: "ゼンゼロ", wutheringwaves: "鳴潮" };
@@ -134,9 +152,9 @@ const md = (d) => (d ? `${Number(d.slice(5, 7))}/${Number(d.slice(8, 10))}` : "�
 const today = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
 const charsText = (cs) => cs.map((c) => `${c.name}${c.cons === 6 ? "完凸" : c.cons ? c.cons + "凸" : ""}`).join(" ");
 const rosterOf = (text, game) => Object.entries(parseRoster(text, game)).map(([name, v]) => ({ name, ...v }));
-let token = "", data = null, model = null;
+let token = "", data = null, model = null, consign = [];
 try { $("token").value = localStorage.getItem("satei:admin") ?? ""; } catch {}
-for (const id of ["s-game", "p-game"]) $(id).innerHTML = Object.entries(GAME).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+for (const id of ["s-game", "p-game", "w-game"]) $(id).innerHTML = Object.entries(GAME).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
 
 async function api(path, init = {}) {
   const res = await fetch(`${API}${path}`, { ...init, headers: { authorization: `Bearer ${token}`, "content-type": "application/json" } });
@@ -161,11 +179,11 @@ const satei = (game, cs) => {
 for (const b of document.querySelectorAll("[data-tab]"))
   b.addEventListener("click", () => {
     for (const x of document.querySelectorAll("[data-tab]")) x.setAttribute("aria-pressed", String(x === b));
-    for (const id of ["stockTab", "splitTab"]) $(id).hidden = id !== b.dataset.tab;
+    for (const id of ["stockTab", "splitTab", "wantTab"]) $(id).hidden = id !== b.dataset.tab;
   });
 
 function render() {
-  const t = todos(data.stock, data.split, today);
+  const t = todos(data.stock, data.split, today, RULES, data.wants);
   $("todo").innerHTML = t.map((x) => `<li class="l${x.level}">${esc(x.text)}</li>`).join("") || `<li class="muted">今日やることはありません</li>`;
   const live = data.split.filter((s) => s.status === "支払い中");
   const ym = today.slice(0, 7);
@@ -177,6 +195,7 @@ function render() {
   const open = [...document.querySelectorAll("[data-imgs][open]")].map((d) => d.dataset.imgs);
   renderStock();
   renderSplit();
+  renderWants();
   for (const k of open) { const d = document.querySelector(`[data-imgs="${k}"]`); if (d) { d.open = true; fillThumbs(d); } }
 }
 
@@ -311,6 +330,91 @@ $("v-del").addEventListener("click", async () => {
   } catch (err) { toast(`削除できませんでした(${err.message})`); }
 });
 
+// ── 購入希望 ──
+const consText = (c) => (c >= 6 ? "完凸" : c ? `${c}凸` : "");
+const wantText = (ws) => ws.map((w) => `${w.name}${w.cons ? (w.cons >= 6 ? "完凸" : `${w.cons}凸以上`) : ""}`).join(" ");
+const matchTag = (m) => `${m.full}/${m.total}${m.inBudget ? "" : " ・ 予算オーバー"}`;
+function wantsForStock(s) {
+  const hit = (data.wants ?? []).map((w) => ({ w, m: matchesFor(w, [s])[0] })).filter((x) => x.m);
+  return hit.length ? `<p style="margin:4px 0 0">🙋 合う購入希望: ${hit.map(({ w, m }) => `<span class="tag${m.score === 1 && m.inBudget ? " ok" : ""}">No.${w.id} ${esc(w.name)}さん ${matchTag(m)}</span>`).join(" ")}</p>` : "";
+}
+// 代理出品(終わっていないもの)のうち合うもの
+function consignFor(w) {
+  if (!["希望中", "提案済み"].includes(w.status)) return [];
+  return consign
+    .filter((c) => c.game === w.game && !["成約", "見送り", "重複"].includes(c.status))
+    .map((c) => ({ c, ...matchOf(w, c.chars, c.wish) }))
+    .filter((m) => m.total && m.score >= 0.5)
+    .sort((a, b) => b.score - a.score);
+}
+// 提案の文面
+function proposal(w, s) {
+  const m = matchOf(w, s.chars, s.price);
+  const hit = m.hits.map((h) => `${h.name}${consText(h.cons)}`).join("/");
+  return `${w.name}様
+ご希望に合いそうなアカウントをご紹介します🌸
+
+【在庫 No.${s.id}】${GAME[s.game] ?? ""} ★5キャラ${s.chars.length}体
+${hit ? `・ご希望のキャラ:${hit}\n` : ""}${s.price ? `・価格:${man(s.price)}円${w.split ? "(分割1万円〜OK・完済後にお引き渡し)" : ""}\n` : ""}
+キャラ一覧などの画像をお送りしますので、気になる点があればお気軽にご返信ください📩`;
+}
+function renderWants() {
+  const f = $("w-filter").value;
+  const list = (data.wants ?? []).filter((w) => (f ? w.status === f : !["成約", "見送り"].includes(w.status)));
+  $("w-count").textContent = `${list.length}人`;
+  $("wantList").innerHTML = list.map((w) => {
+    const ms = matchesFor(w, data.stock);
+    const cs = consignFor(w);
+    const due = w.next_at && w.next_at <= today;
+    return `<article class="card" data-want="${w.id}">
+      <header><b>希望 No.${w.id}</b><b>${esc(w.name)}さん</b><span class="tag">${GAME[w.game] ?? esc(w.game)}</span><span class="tag">${esc(w.status)}</span>${due ? `<span class="tag warn">連絡日</span>` : ""}
+        <span class="muted">${esc(w.contact)}${w.budget ? ` ・ 予算 ${man(w.budget)}` : ""}${w.split ? " ・ 分割希望" : ""}</span></header>
+      <p style="margin:6px 0 0">欲しいキャラ:${esc(wantText(w.wants)) || "<span class=muted>未入力</span>"}</p>
+      <div style="margin-top:6px">${ms.length ? ms.map((m) => `<div class="row" style="margin-top:4px"><span class="tag${m.score === 1 && m.inBudget ? " ok" : ""}">在庫 No.${m.stock.id} ${matchTag(m)}</span>
+        <span class="muted">${esc(m.hits.map((h) => `${h.name}${consText(h.cons)}`).join(" "))}${m.stock.price ? ` ・ ${man(m.stock.price)}` : ""}</span>
+        <button type="button" class="sub" data-act="copy" data-stock="${m.stock.id}">📋 提案文</button></div>`).join("") : `<span class="muted">合う在庫はまだありません</span>`}
+        ${cs.length ? `<div class="muted" style="margin-top:6px">合う代理出品:${cs.map((x) => `No.${x.c.id}(${x.full}/${x.total})`).join(" ")}</div>` : ""}</div>
+      <details style="margin-top:6px"><summary class="muted">編集</summary>
+        <div class="grid2">
+          <label>状態<select data-f="status">${WANT_STATUSES.map((x) => `<option${x === w.status ? " selected" : ""}>${x}</option>`).join("")}</select></label>
+          <label>呼び名<input data-f="name" value="${esc(w.name)}" /></label>
+          <label>連絡先<input data-f="contact" value="${esc(w.contact)}" /></label>
+          <label>予算の上限(円)<input data-f="budget" type="number" step="1000" value="${w.budget ?? ""}" /></label>
+          <label>分割を希望<select data-f="split"><option value="">いいえ</option><option value="1"${w.split ? " selected" : ""}>はい</option></select></label>
+          <label>次の連絡日<input data-f="next_at" type="date" value="${esc(w.next_at)}" /></label>
+          <label>提案した在庫など<input data-f="proposed" value="${esc(w.proposed)}" placeholder="在庫3,4" /></label>
+        </div>
+        <label class="muted">欲しいキャラ<textarea data-f="wants">${esc(wantText(w.wants))}</textarea></label>
+        <label class="muted">メモ<textarea data-f="memo">${esc(w.memo)}</textarea></label>
+        <div class="row"><button type="button" data-act="save">保存</button></div>
+      </details>
+    </article>`;
+  }).join("") || `<p class="muted">該当する人はいません</p>`;
+}
+// 「欲しいキャラ」の文を [{name, cons}] に(凸数の書いていないキャラは 0 = 持っていればよい)
+const wantsOf = (text, game) => rosterOf(text, game).map(({ name, cons }) => ({ name, cons }));
+$("w-filter").innerHTML += WANT_STATUSES.map((x) => `<option>${x}</option>`).join("");
+$("w-filter").addEventListener("change", renderWants);
+$("w-add").addEventListener("click", () => {
+  const game = $("w-game").value;
+  run(() => api("/api/want", { method: "POST", body: JSON.stringify({ name: $("w-name").value, contact: $("w-contact").value, game, wants: wantsOf($("w-wants").value, game), budget: $("w-budget").value, split: $("w-split").value, next_at: $("w-next").value, memo: $("w-memo").value }) }), "購入希望者を追加しました");
+});
+$("wantList").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-act]");
+  if (!btn) return;
+  const card = btn.closest("[data-want]");
+  const id = Number(card.dataset.want);
+  const w = data.wants.find((x) => x.id === id);
+  if (btn.dataset.act === "copy") {
+    const s = data.stock.find((x) => x.id === Number(btn.dataset.stock));
+    try { await navigator.clipboard.writeText(proposal(w, s)); toast("提案文をコピーしました"); } catch { prompt("コピーしてください", proposal(w, s)); }
+    return;
+  }
+  const f = Object.fromEntries([...card.querySelectorAll("[data-f]")].map((x) => [x.dataset.f, x.value]));
+  f.wants = wantsOf(f.wants, w.game);
+  run(() => api(`/api/want/${id}`, { method: "PATCH", body: JSON.stringify(f) }), `希望 No.${id} を保存しました`);
+});
+
 function renderStock() {
   $("stockList").innerHTML = data.stock.map((s) => {
     const pd = priceDown(s, today);
@@ -320,6 +424,7 @@ function renderStock() {
         <span class="muted">★5 ${s.chars.length}体 ・ ${esc(satei(s.game, s.chars))}</span></header>
       <p class="muted" style="margin:6px 0 0">${esc(charsText(s.chars))}</p>
       <p class="muted" style="margin:2px 0 0">${esc(s.assets)}</p>
+      ${wantsForStock(s)}
       <div class="grid2">
         <label>状態<select data-f="status">${STOCK_STATUSES.map((x) => `<option${x === s.status ? " selected" : ""}>${x}</option>`).join("")}</select></label>
         <label>出品価格(円)<input data-f="price" type="number" step="1000" value="${s.price ?? ""}" /></label>
@@ -383,7 +488,11 @@ function renderSplit() {
 }
 
 async function load() {
-  [data, model] = await Promise.all([api("/api/stock"), model ?? fetch("./model.json").then((r) => r.json())]);
+  [data, model, consign] = await Promise.all([
+    api("/api/stock"),
+    model ?? fetch("./model.json").then((r) => r.json()),
+    api("/api/consign").then((d) => d.items).catch(() => []),
+  ]);
   render();
 }
 const run = async (fn, ok) => {
