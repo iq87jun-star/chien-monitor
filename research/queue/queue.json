@@ -1295,16 +1295,24 @@
    "slug": "book_mix_auto",
    "title": "帳簿リスク寄与の自動計算(forward/book_mix.py・毎月 1 日)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/361_q87_book_mix_auto.md"
    ],
    "note": "docs/318 §3/§8a を自動化。目標からの乖離 ±10pt 超を改正案に",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 10
+   "order": 10,
+   "result": "forward/book_mix.py(共分散法 + 単位 vol 法・建玉の族判定)。現行 Mon 78% / その他 11 / Roll 0 / Hold 11(資金化後 73 / 9 / 0 / 18)。Mon は目標 40–50 を +28pt 超だが期待値最大の編成として採用済み(docs/349 §9c)→ 今は変更しない。毎月 1 日に運用ダイジェストから実行し月次改正案へ",
+   "runs": [
+    {
+     "date": "2026-10-15",
+     "summary": "book_mix.py 作成・初回実行 → docs/361。Mon 78% 目標超(変更しない・11/1 で再判定)"
+    }
+   ]
   },
   {
    "id": "Q94",
