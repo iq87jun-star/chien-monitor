@@ -1447,3 +1447,59 @@
   font-size: 18px;
   color: var(--k-washiDim);
 }
+
+/* ---- 設定 ---- */
+.app-gear {
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+}
+.setting {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-sp-md);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--k-urushiLine);
+  position: relative;
+  z-index: 2;
+}
+.setting__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 14px;
+}
+.k-switch {
+  flex: none;
+  position: relative;
+  width: 46px;
+  height: 26px;
+  border-radius: var(--k-rad-pill);
+  border: 1px solid var(--k-urushiLine);
+  background: var(--k-sumi);
+  cursor: pointer;
+  transition: background var(--k-m-fast);
+}
+.k-switch span {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--k-washiFaint);
+  transition: transform var(--k-m-fast) var(--k-m-ease), background var(--k-m-fast);
+}
+.k-switch.is-on {
+  background: var(--k-kinDeep);
+  border-color: var(--k-kin);
+}
+.k-switch.is-on span {
+  transform: translateX(20px);
+  background: var(--k-kinLight);
+}
+.setting .k-tabs {
+  flex: none;
+  overflow: visible;
+}

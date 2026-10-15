@@ -8,6 +8,7 @@ import { CharDetail } from "./screens/CharDetail";
 import { Gacha } from "./screens/Gacha";
 import { Quest } from "./screens/Quest";
 import { Battle } from "./screens/Battle";
+import { Settings } from "./screens/Settings";
 import "./theme/components.css";
 import "./theme/screens.css";
 
@@ -20,12 +21,17 @@ const TABS: { id: Tab; label: string; glyph: string }[] = [
 ];
 
 export function App() {
-  const { tab, overlay, go } = useNav();
+  const { tab, overlay, go, open } = useNav();
   return (
     <div className="app-frame">
       <header className="app-head">
         <div className="app-logo brush">剣華録</div>
-        <ResourceBar />
+        <div className="app-head__right">
+          <ResourceBar />
+          <button className="k-icon-btn app-gear" onClick={() => open({ kind: "settings" })} aria-label="設定">
+            ⚙
+          </button>
+        </div>
       </header>
       <main className="app-main">
         {tab === "home" && <Home />}
@@ -44,6 +50,7 @@ export function App() {
       </nav>
       {overlay?.kind === "char" && <CharDetail id={overlay.id} />}
       {overlay?.kind === "battle" && <Battle view={overlay.view} />}
+      {overlay?.kind === "settings" && <Settings />}
       <Toast />
     </div>
   );

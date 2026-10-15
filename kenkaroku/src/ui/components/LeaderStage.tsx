@@ -43,7 +43,7 @@ export function LeaderStage() {
           setTapKey((k) => k + 1);
         }}
       >
-        <Portrait id={leader} crop="full" frame={false} className={tapKey ? "leader__bounce" : ""} key={tapKey} />
+        <Portrait id={leader} crop="full" frame={false} background={false} className={tapKey ? "leader__bounce" : ""} key={tapKey} />
       </button>
       <div className="leader__bubble" key={`b${tapKey}`}>
         <b>{c.given}</b>

@@ -28,12 +28,15 @@ export function Portrait({
   className = "",
   dim = false,
   frame = crop === "full",
+  background = true,
 }: {
   id: string;
   crop?: PortraitCrop;
   className?: string;
   dim?: boolean;
   frame?: boolean;
+  /** false にすると和柄の背景を描かない（ホームの情景に立たせるとき） */
+  background?: boolean;
 }) {
   const c = CHAR_BY_ID[id];
   if (!c) return null;
@@ -43,12 +46,12 @@ export function Portrait({
   }
   return (
     <svg className={`k-portrait ${className}`} viewBox={VIEWBOX[crop]} preserveAspectRatio="xMidYMid slice" role="img" aria-label={c.given} style={style}>
-      <PortraitLayers c={c} frame={frame} />
+      <PortraitLayers c={c} frame={frame} background={background} />
     </svg>
   );
 }
 
-function PortraitLayers({ c, frame }: { c: CharacterDef; frame: boolean }) {
+function PortraitLayers({ c, frame, background }: { c: CharacterDef; frame: boolean; background: boolean }) {
   const uid = useId().replace(/:/g, "");
   const el = elementColor(c.element);
   const h = hair(c.hair, c.colorSub);
@@ -68,8 +71,12 @@ function PortraitLayers({ c, frame }: { c: CharacterDef; frame: boolean }) {
       </defs>
 
       {/* 1. 背景：属性色の和柄 */}
-      <rect width="300" height="400" fill={`url(#bg${uid})`} />
-      <rect width="300" height="400" fill={`url(#pt${uid})`} />
+      {background && (
+        <>
+          <rect width="300" height="400" fill={`url(#bg${uid})`} />
+          <rect width="300" height="400" fill={`url(#pt${uid})`} />
+        </>
+      )}
       <circle cx="150" cy="150" r="112" fill={c.color} opacity=".22" />
       <circle cx="150" cy="150" r="112" fill="none" stroke={c.color} strokeWidth="1.5" opacity=".6" />
       <g transform="translate(176 18) scale(1.15)" opacity=".28">
@@ -99,7 +106,7 @@ function PortraitLayers({ c, frame }: { c: CharacterDef; frame: boolean }) {
         </g>
       </g>
 
-      <rect width="300" height="400" fill={`url(#fade${uid})`} />
+      {background && <rect width="300" height="400" fill={`url(#fade${uid})`} />}
       {/* 4. レア枠 */}
       {frame && <RarityFrame rarity={c.rarity} color={rarityColor(c.rarity)} />}
     </>
