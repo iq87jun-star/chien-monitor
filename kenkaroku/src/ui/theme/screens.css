@@ -965,3 +965,485 @@
   font-size: 11px;
   color: var(--cc);
 }
+
+/* ---- スキルカットイン ---- */
+.cutin {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  pointer-events: none;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.35);
+  animation: cutin-bg var(--dur) linear both;
+}
+.cutin__band {
+  position: relative;
+  width: 140%;
+  height: 128px;
+  transform: rotate(-12deg);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 calc(20% + 16px);
+  background:
+    linear-gradient(90deg, transparent, color-mix(in srgb, var(--cc) 92%, #000) 18%, var(--cc) 50%, color-mix(in srgb, var(--cc) 92%, #000) 82%, transparent);
+  border-top: 2px solid var(--k-kinLight);
+  border-bottom: 2px solid var(--k-kinLight);
+  box-shadow: 0 0 40px color-mix(in srgb, var(--cc) 70%, transparent);
+  animation: cutin-band var(--dur) cubic-bezier(.2, .8, .2, 1) both;
+}
+.cutin__art {
+  flex: none;
+  width: 116px;
+  height: 116px;
+  transform: rotate(12deg);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid var(--cs);
+  animation: cutin-art var(--dur) ease-out both;
+}
+.cutin__text {
+  transform: rotate(12deg);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  min-width: 0;
+}
+.cutin__epithet {
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  color: var(--cs);
+}
+.cutin__skill {
+  font-size: 34px;
+  line-height: 1.15;
+  color: #fff;
+}
+.cutin__line {
+  font-size: 12px;
+  color: var(--k-washi);
+  max-width: 220px;
+}
+@keyframes cutin-band {
+  0% {
+    transform: rotate(-12deg) translateX(-100%);
+  }
+  22%,
+  80% {
+    transform: rotate(-12deg) translateX(0);
+  }
+  100% {
+    transform: rotate(-12deg) translateX(100%);
+    opacity: 0;
+  }
+}
+@keyframes cutin-art {
+  0%,
+  15% {
+    transform: rotate(12deg) scale(1.4);
+    opacity: 0;
+  }
+  35% {
+    transform: rotate(12deg) scale(1);
+    opacity: 1;
+  }
+}
+@keyframes cutin-bg {
+  0%,
+  100% {
+    background: rgba(0, 0, 0, 0);
+  }
+  20%,
+  80% {
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+/* 動きを減らす設定：帯は走らせず、その場でフェード */
+.cutin.is-reduced .cutin__band,
+.cutin.is-reduced .cutin__art {
+  animation: none;
+}
+.cutin.is-reduced {
+  animation: none;
+  background: rgba(0, 0, 0, 0.4);
+}
+.k-chip.is-off {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+/* ---- 開花演出 ---- */
+.grow__bloom {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.bloom-flower__grow {
+  animation: bloom-grow 900ms cubic-bezier(.2, 1.4, .3, 1) both;
+  transform-box: view-box;
+}
+@keyframes bloom-grow {
+  from {
+    opacity: 0;
+    scale: 0.2;
+  }
+}
+.bloomc {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--k-sp-lg);
+  background:
+    radial-gradient(60% 50% at 50% 35%, color-mix(in srgb, var(--cc) 30%, transparent), transparent),
+    rgba(8, 6, 5, 0.96);
+  animation: k-toast-in var(--k-m-slow);
+  overflow: hidden;
+}
+.bloomc__box {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--k-sp-md);
+  text-align: center;
+}
+.bloomc__flower {
+  filter: drop-shadow(0 0 24px color-mix(in srgb, var(--cc) 70%, transparent));
+  animation: bloomc-spin 6s linear infinite;
+}
+@keyframes bloomc-spin {
+  to {
+    rotate: 360deg;
+  }
+}
+.bloomc__stage {
+  display: flex;
+  align-items: baseline;
+  gap: var(--k-sp-md);
+  font-size: 15px;
+}
+.bloomc__new {
+  font-size: 36px;
+  color: var(--k-kinLight);
+  text-shadow: 0 0 16px rgba(214, 178, 94, 0.6);
+  animation: bloom-grow 700ms 300ms both;
+}
+.bloomc__arrow {
+  color: var(--k-kin);
+}
+.bloomc__voice {
+  display: flex;
+  align-items: center;
+  gap: var(--k-sp-md);
+  text-align: left;
+  padding: var(--k-sp-md);
+  border-radius: var(--k-rad-md);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--k-kinDeep);
+}
+.bloomc__voice p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.bloomc__face {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--cc);
+}
+.bloomc__petals span {
+  position: absolute;
+  top: -20px;
+  width: 12px;
+  height: 16px;
+  border-radius: 80% 0 80% 0;
+  background: var(--cc);
+  opacity: 0.8;
+  animation: petal-fall 3.2s linear infinite;
+}
+@keyframes petal-fall {
+  to {
+    transform: translate(-60px, 110vh) rotate(540deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bloomc__petals,
+  .gr__petals {
+    display: none;
+  }
+  .bloomc__flower {
+    animation: none;
+  }
+}
+
+/* ---- 花結び演出 ---- */
+.pull-item {
+  animation: pull-in 360ms var(--k-m-ease) both;
+}
+@keyframes pull-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+  }
+}
+.gr {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--k-sp-lg);
+  background: radial-gradient(70% 50% at 50% 45%, color-mix(in srgb, var(--gc) 0%, #1a1210), #050404);
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+}
+.gr__skip {
+  position: absolute;
+  top: calc(12px + env(safe-area-inset-top));
+  right: 16px;
+  z-index: 3;
+}
+.gr__flower {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+.gr__flower--bud svg {
+  animation: gr-wobble 1.3s ease-in-out both;
+}
+@keyframes gr-wobble {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  45%,
+  65%,
+  85% {
+    transform: rotate(-5deg);
+  }
+  55%,
+  75%,
+  95% {
+    transform: rotate(5deg);
+  }
+}
+.gr__flower--bloom svg {
+  animation: gr-open 900ms cubic-bezier(.2, 1.3, .3, 1) both;
+  filter: drop-shadow(0 0 30px var(--gc));
+}
+@keyframes gr-open {
+  from {
+    transform: scale(0.3) rotate(-90deg);
+    opacity: 0;
+  }
+}
+.gr__burst {
+  position: absolute;
+  inset: -60%;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--gc) 60%, transparent), transparent 60%);
+  animation: gr-burst 1.2s ease-out both;
+  pointer-events: none;
+}
+@keyframes gr-burst {
+  from {
+    transform: scale(0.2);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+.gr__hint {
+  font-size: 22px;
+  color: var(--k-washi);
+  margin: 0;
+}
+.gr__rarity {
+  color: var(--gc);
+  text-shadow: 0 0 16px var(--gc);
+}
+.gr__petals span {
+  position: absolute;
+  top: -20px;
+  width: 14px;
+  height: 18px;
+  border-radius: 80% 0 80% 0;
+  background: linear-gradient(135deg, var(--k-kinLight), var(--k-r-UR));
+  animation: petal-fall 2.6s linear infinite;
+  pointer-events: none;
+}
+.gr__ur {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 420px;
+  padding: 0 var(--k-sp-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.gr__ur-art {
+  width: min(70vw, 300px);
+  aspect-ratio: 3 / 4;
+  filter: drop-shadow(0 0 30px color-mix(in srgb, var(--cc) 70%, transparent));
+}
+.gr__ur.is-anim .gr__ur-art {
+  animation: gr-ur-in 900ms cubic-bezier(.2, .9, .2, 1) both;
+}
+.gr__ur.is-anim .gr__ur-text {
+  animation: k-toast-in 600ms 500ms both;
+}
+@keyframes gr-ur-in {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(1.08);
+    filter: brightness(3) drop-shadow(0 0 30px var(--cc));
+  }
+}
+.gr__ur-epithet {
+  margin-top: var(--k-sp-md);
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  color: var(--cc);
+}
+.gr__ur-name {
+  font-size: 34px;
+  color: var(--k-kinLight);
+}
+.gr__ur-line {
+  margin: 6px 0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* ---- ホームの立ち絵 ---- */
+.leader {
+  position: relative;
+  height: min(58vh, 460px);
+  overflow: hidden;
+  background: linear-gradient(180deg, var(--top), var(--bottom));
+  border-bottom: 1px solid var(--k-kinDeep);
+  transition: background var(--k-m-slow);
+}
+.leader::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 40%;
+  background: linear-gradient(transparent, var(--k-sumi2));
+  pointer-events: none;
+}
+.leader__sky {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.leader__moon,
+.leader__sun {
+  position: absolute;
+  top: 28px;
+  right: 34px;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+}
+.leader__moon {
+  background: radial-gradient(circle at 35% 35%, #fff8e0, #e9d9a8 60%, #b8a070);
+  box-shadow: 0 0 40px rgba(255, 240, 200, 0.45);
+}
+.leader__sun {
+  background: radial-gradient(circle, #ffe2b0, #f2a05c 70%);
+  box-shadow: 0 0 60px rgba(255, 190, 120, 0.6);
+  top: 60px;
+}
+/* 提灯の灯り（夜の城下町） */
+.leader__lanterns {
+  position: absolute;
+  inset: auto 0 22% 0;
+  height: 30px;
+  background:
+    radial-gradient(circle at 8% 50%, var(--glow) 0 4px, transparent 12px),
+    radial-gradient(circle at 22% 30%, var(--glow) 0 3px, transparent 10px),
+    radial-gradient(circle at 78% 40%, var(--glow) 0 4px, transparent 12px),
+    radial-gradient(circle at 92% 60%, var(--glow) 0 3px, transparent 10px);
+  opacity: 0.5;
+}
+.leader--night .leader__lanterns {
+  opacity: 0.9;
+  animation: lantern 3s ease-in-out infinite alternate;
+}
+@keyframes lantern {
+  to {
+    opacity: 0.6;
+  }
+}
+.leader__art {
+  position: absolute;
+  inset: 0 12% 0 12%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.leader__art .k-portrait {
+  height: 100%;
+  filter: drop-shadow(0 0 30px color-mix(in srgb, var(--cc) 40%, transparent));
+}
+.leader__bounce {
+  animation: leader-bounce 420ms var(--k-m-ease);
+}
+@keyframes leader-bounce {
+  40% {
+    transform: translateY(-8px) scale(1.015);
+  }
+}
+.leader__bubble {
+  position: absolute;
+  left: var(--k-sp-lg);
+  right: var(--k-sp-lg);
+  bottom: 48px;
+  z-index: 2;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: rgba(14, 11, 10, 0.82);
+  border: 1px solid color-mix(in srgb, var(--cc) 70%, transparent);
+  font-size: 13px;
+  line-height: 1.6;
+  animation: k-toast-in var(--k-m-base) var(--k-m-ease);
+}
+.leader__bubble b {
+  display: block;
+  font-size: 11px;
+  color: var(--cc);
+}
+.leader__meta {
+  position: absolute;
+  left: var(--k-sp-lg);
+  right: var(--k-sp-lg);
+  bottom: 12px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.leader__tod {
+  font-size: 18px;
+  color: var(--k-washiDim);
+}

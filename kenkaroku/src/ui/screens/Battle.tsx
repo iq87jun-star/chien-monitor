@@ -10,6 +10,8 @@ import { EnemyPortrait, Portrait } from "../components/Portrait";
 import { Button } from "../components/Button";
 import { GemIcon, GoldIcon, ShardIcon } from "../components/Resources";
 import { elementColor } from "../theme/tokens";
+import { Cutin, cutinDuration } from "../components/Cutin";
+import { usePrefersReducedMotion } from "../hooks";
 
 interface View {
   hp: number;
@@ -89,6 +91,10 @@ export function Battle({ view }: { view: BattleView }) {
   const [done, setDone] = useState(false);
   const popKey = useRef(0);
   const speed = settings.speed;
+  const reduced = usePrefersReducedMotion();
+  // カットインを出し終えたイベント番号
+  const [cutinDone, setCutinDone] = useState(-1);
+  const [cutin, setCutin] = useState<string | null>(null);
 
   const nameOf = useCallback((uid: string) => units[uid]?.setup.name ?? uid, [units]);
 
@@ -99,6 +105,7 @@ export function Battle({ view }: { view: BattleView }) {
     setIdx(result.events.length);
     setActor(null);
     setPopups([]);
+    setCutin(null);
     setDone(true);
   }, [result]);
 
@@ -109,6 +116,17 @@ export function Battle({ view }: { view: BattleView }) {
       return;
     }
     const e = result.events[idx];
+    // 味方のスキルは先にカットインを出す
+    if (e.t === "action" && e.kind === "skill" && e.actor.startsWith("ally") && settings.cutin && cutinDone !== idx) {
+      const d = reduced ? 400 : cutinDuration(speed);
+      setCutin(units[e.actor].setup.refId);
+      setActor(e.actor);
+      const t = setTimeout(() => {
+        setCutin(null);
+        setCutinDone(idx);
+      }, d);
+      return () => clearTimeout(t);
+    }
     setState((s) => reduceView(s, e));
     const pops: Popup[] = [];
     if (e.t === "round") {
@@ -137,7 +155,7 @@ export function Battle({ view }: { view: BattleView }) {
     if (pops.length) setPopups(pops);
     const t = setTimeout(() => setIdx((i) => i + 1), DURATION[e.t] / speed);
     return () => clearTimeout(t);
-  }, [idx, done, result, speed, nameOf]);
+  }, [idx, done, result, speed, nameOf, settings.cutin, cutinDone, reduced, units]);
 
   const row = (side: "ally" | "enemy", slots: number[]) => (
     <div className={`bt-row bt-row--${slots.length}`}>
@@ -196,6 +214,14 @@ export function Battle({ view }: { view: BattleView }) {
           >
             ×{speed}
           </button>
+          <button
+            className={`k-chip ${settings.cutin ? "" : "is-off"}`}
+            onClick={() => updateSettings({ cutin: !settings.cutin })}
+            aria-pressed={settings.cutin}
+            title="スキル演出"
+          >
+            演出
+          </button>
           {!done && (
             <button className="k-chip" onClick={finish}>
               飛ばす
@@ -216,6 +242,7 @@ export function Battle({ view }: { view: BattleView }) {
           {row("ally", [2, 3, 4])}
         </div>
       </div>
+      {cutin && <Cutin charId={cutin} durationMs={reduced ? 400 : cutinDuration(speed)} reduced={reduced} />}
       <div className="bt-log">{log}</div>
       {done && <BattleEnd view={view} onClose={close} />}
     </div>

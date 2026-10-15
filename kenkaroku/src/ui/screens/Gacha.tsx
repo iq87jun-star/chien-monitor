@@ -9,17 +9,22 @@ import { Button } from "../components/Button";
 import { Portrait } from "../components/Portrait";
 import { GemIcon, ShardIcon } from "../components/Resources";
 import { Modal } from "../components/Modal";
+import { GachaReveal } from "../components/GachaReveal";
 import { rarityColor } from "../theme/tokens";
 
 export function Gacha() {
   const save = useGame((s) => s.save);
   const pull = useGame((s) => s.pull);
   const [results, setResults] = useState<ResolvedPull[] | null>(null);
+  const [revealing, setRevealing] = useState(false);
   const pickup = CHAR_BY_ID[CURRENT_BANNER.pickup];
 
   const doPull = (n: 1 | 10) => {
     const r = pull(n);
-    if (r) setResults(r);
+    if (r) {
+      setResults(r);
+      setRevealing(save.settings.gachaAnim);
+    }
   };
 
   return (
@@ -66,7 +71,8 @@ export function Gacha() {
         </ul>
         <p className="k-dim">※ 課金は未実装です（花玉は遊んで貯まります）。</p>
       </Panel>
-      {results && <PullResults results={results} onClose={() => setResults(null)} />}
+      {results && revealing && <GachaReveal results={results} onDone={() => setRevealing(false)} />}
+      {results && !revealing && <PullResults results={results} onClose={() => setResults(null)} />}
     </div>
   );
 }
@@ -78,7 +84,7 @@ export function PullResults({ results, onClose }: { results: ResolvedPull[]; onC
         {results.map((r, i) => {
           const c = CHAR_BY_ID[r.charId];
           return (
-            <div key={i} className={`pull-item rarity-${r.rarity}`} style={{ ["--rc" as string]: rarityColor(r.rarity) }}>
+            <div key={i} className={`pull-item rarity-${r.rarity}`} style={{ ["--rc" as string]: rarityColor(r.rarity), animationDelay: `${i * 60}ms` }}>
               <Portrait id={r.charId} crop="bust" />
               <span className="pull-item__r">{r.rarity}</span>
               {r.isNew ? <span className="pull-item__new">NEW</span> : (

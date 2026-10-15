@@ -12,6 +12,7 @@ import { GemIcon, GoldIcon } from "../components/Resources";
 import { Sheet } from "../components/Modal";
 import { EnemyPortrait } from "../components/Portrait";
 import { BanterPanel } from "../components/BanterPanel";
+import { LeaderStage } from "../components/LeaderStage";
 
 export function Home() {
   const save = useGame((s) => s.save);
@@ -23,10 +24,13 @@ export function Home() {
   const [listOpen, setListOpen] = useState(false);
 
   return (
-    <div className="screen home">
+    <div className="home">
+      <LeaderStage />
+      <div className="screen">
       <IdlePanel hours={idle.hours} gold={idle.gold} gems={idle.gems} fastLeft={fastLeft} />
       <StagePanel index={nextIndex} allClear={allClear} power={teamPower(save)} onList={() => setListOpen(true)} />
       <BanterPanel />
+      </div>
       {listOpen && <StageList onClose={() => setListOpen(false)} />}
     </div>
   );

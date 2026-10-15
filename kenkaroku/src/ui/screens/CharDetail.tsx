@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { CHAR_BY_ID, fullName } from "../../data/characters";
+import { BloomCeremony } from "../components/BloomCeremony";
+import { BloomFlower } from "../../art/BloomFlower";
 import { allyUnit } from "../../core/battle/setup";
 import { bloomCost, bloomStageName, levelCap, levelUpCost, MAX_STAR } from "../../core/economy";
 import { power } from "../../core/stats";
@@ -19,6 +22,7 @@ export function CharDetail({ id }: { id: string }) {
   const levelUp = useGame((s) => s.levelUp);
   const bloom = useGame((s) => s.bloom);
   const close = useNav((s) => s.close);
+  const [ceremony, setCeremony] = useState<number | null>(null);
   const open = useNav((s) => s.open);
   const roster = useGame((s) => s.save.roster);
   const v = VOICES[id];
@@ -82,8 +86,11 @@ export function CharDetail({ id }: { id: string }) {
             </div>
             <div className="k-divider" />
             <div className="grow__row">
-              <span>
-                開花：<b>{bloomStageName(owned.star)}</b>
+              <span className="grow__bloom">
+                <BloomFlower star={owned.star} color={c.color} size={40} />
+                <span>
+                  開花：<b>{bloomStageName(owned.star)}</b>
+                </span>
               </span>
               <BloomPips star={owned.star} />
             </div>
@@ -95,7 +102,10 @@ export function CharDetail({ id }: { id: string }) {
                 variant="gold"
                 size="sm"
                 disabled={bCost === null || owned.shards < bCost || owned.star >= MAX_STAR}
-                onClick={() => bloom(id)}
+                onClick={() => {
+                  const star = bloom(id);
+                  if (star) setCeremony(star);
+                }}
               >
                 {owned.star >= MAX_STAR ? "満開" : "開花する"}
               </Button>
@@ -176,6 +186,7 @@ export function CharDetail({ id }: { id: string }) {
           </div>
         </Panel>
       </div>
+      {ceremony && <BloomCeremony charId={id} star={ceremony} onClose={() => setCeremony(null)} />}
     </div>
   );
 }
