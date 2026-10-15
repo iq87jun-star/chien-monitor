@@ -270,28 +270,32 @@ $("estBtn").addEventListener("click", async () => {
     $("leadForm").hidden = false;
     $("leadForm").scrollIntoView({ behavior: "smooth", block: "center" });
   };
-  // 相談番号を発行 → 番号入りの文面をコピーして、メルルの X を開く
+  // 相談番号を発行 → 番号入りの文面を表示してコピー。X は案内のリンクから開いてもらう
+  // (X アプリ内のブラウザでは、先に新しいタブを開くと元の画面が止まり、番号を受け取れないことがあった)
   $("leadBtn").onclick = async () => {
-    const tab = window.open("", "_blank"); // 非同期の後だとポップアップが止められるので先に開く
     $("leadBtn").disabled = true;
+    $("leadDone").hidden = false;
+    $("leadDone").textContent = "発行しています…";
     try {
-      const wish = Number($("leadWish").value);
+      const wish = Number(String($("leadWish").value).normalize("NFKC"));
       const res = await fetch(`${API}/api/lead`, {
         method: "POST",
         headers: { "content-type": "text/plain" },
         body: JSON.stringify({ game, sid: SID, handle: $("leadHandle").value.trim() || undefined, wish: wish > 0 ? Math.round(wish * 10000) : undefined, chars: roster(), low: r.low, high: r.high }),
       });
-      const out = await res.json();
+      const out = await res.json().catch(() => ({ ok: false, error: `通信エラー(${res.status})` }));
       if (!out.ok) throw new Error(out.error);
       const msg = `【No.${out.no}】査定ツールから買取の相談です(査定額 ${range(r)}${r.capped ? "・個別査定希望" : ""})`;
-      try { await navigator.clipboard.writeText(msg); } catch {}
-      $("leadDone").hidden = false;
-      $("leadDone").innerHTML = `相談番号は <b>No.${out.no}</b> です。XのDMで次の文面を送ってください(コピー済み):<br>「${msg}」`;
-      if (tab) tab.location = X_URL; else location.href = X_URL;
+      let copied = false;
+      try { await navigator.clipboard.writeText(msg); copied = true; } catch {}
+      $("leadDone").innerHTML = `相談番号は <b>No.${out.no}</b> です。<br>XのDMで次の文面を送ってください${copied ? "(コピー済み)" : ""}:<br>「<span id="leadMsg">${msg}</span>」
+        <div class="row"><button class="btn sub" id="leadCopy" type="button">📋 文面をコピー</button><a class="btn" href="${X_URL}" target="_blank" rel="noopener">メルルのXを開く</a></div>`;
+      $("leadCopy").onclick = async () => {
+        try { await navigator.clipboard.writeText(msg); $("leadCopy").textContent = "✅ コピーしました"; }
+        catch { getSelection().selectAllChildren($("leadMsg")); $("leadCopy").textContent = "文面を長押しでコピーしてください"; }
+      };
     } catch (err) {
-      if (tab) tab.close();
-      $("leadDone").hidden = false;
-      $("leadDone").textContent = `${err.message || "送信できませんでした"}。お手数ですが、XのDMで直接ご相談ください。`;
+      $("leadDone").textContent = `${err.message || "送信できませんでした"}。お手数ですが、この画面のスクショを添えて XのDM(@Meruru_Genshin)で直接ご相談ください。`;
     } finally {
       $("leadBtn").disabled = false;
     }
