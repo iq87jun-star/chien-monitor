@@ -1319,16 +1319,24 @@
    "slug": "tester_automation",
    "title": "ストラテジーテスターの自動化(terminal64 /config:tester.ini → Drive _tester/)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/362_q94_tester_automation.md"
    ],
    "note": "chien_deploy に run_tester()。Q1 の B 段パリティを人手なしで回す",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 11
+   "order": 11,
+   "result": "ops/vps/chien_tester.py 1.0(テスター専用ポータブル端末で /config:tester.ini → Drive _tester/)+ forward/tester_parity.py(htm 約定表 → 月次・取引数比・損益差・判定)。実行は VPS 側でテスター端末の準備後(切替 10/17–18 の後)。Q1 B 段と Q95 の受け入れに使う",
+   "runs": [
+    {
+     "date": "2026-10-16",
+     "summary": "実装 + 自己検査 → docs/362。VPS での実行はテスター端末準備後"
+    }
+   ]
   },
   {
    "id": "Q95",
