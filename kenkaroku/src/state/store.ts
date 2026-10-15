@@ -31,6 +31,7 @@ interface GameStore {
   levelUp(id: string, times?: number): boolean;
   bloom(id: string): number | null;
   setTeamSlot(slot: number, id: string | null): void;
+  setTeam(team: (string | null)[]): void;
   pull(count: 1 | 10): ResolvedPull[] | null;
   claimIdle(): G.Outcome<{ reward: IdleReward }>;
   fastIdle(): G.Outcome<{ reward: IdleReward }>;
@@ -72,6 +73,9 @@ export const useGame = create<GameStore>((set, get) => ({
   },
   setTeamSlot(slot, id) {
     get().apply({ ok: true, save: G.setTeamSlot(get().save, slot, id) });
+  },
+  setTeam(team) {
+    get().apply({ ok: true, save: { ...get().save, team: team.slice(0, 5) } });
   },
   pull(count) {
     const r = get().apply(G.gachaPull(get().save, CURRENT_BANNER, count, randomSeed()));

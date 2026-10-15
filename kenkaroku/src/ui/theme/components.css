@@ -1,0 +1,411 @@
+/* 共通コンポーネント。色・余白は --k-* のみ参照する */
+
+.k-dim {
+  color: var(--k-washiDim);
+  font-size: 12px;
+}
+.k-warn {
+  color: var(--k-danger);
+}
+.k-link {
+  background: none;
+  border: 0;
+  color: var(--k-kin);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---- ボタン ---- */
+.k-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--k-rad-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: transform var(--k-m-fast) var(--k-m-ease), filter var(--k-m-fast);
+  white-space: nowrap;
+}
+.k-btn:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+.k-btn:disabled {
+  cursor: not-allowed;
+  filter: grayscale(0.8) brightness(0.6);
+}
+.k-btn__label {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  line-height: 1.2;
+}
+.k-btn__label small {
+  font-size: 11px;
+  opacity: 0.9;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.k-btn--sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+.k-btn--md {
+  padding: 10px 18px;
+  font-size: 14px;
+}
+.k-btn--lg {
+  padding: 12px 22px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.k-btn--primary {
+  background: linear-gradient(180deg, var(--k-shu), var(--k-shuDeep));
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+}
+.k-btn--ghost {
+  background: transparent;
+  border-color: var(--k-urushiLine);
+  color: var(--k-washi);
+}
+.k-btn--gold {
+  background: linear-gradient(180deg, var(--k-kinLight), var(--k-kin) 45%, var(--k-kinDeep));
+  color: var(--k-sumi);
+  border-color: var(--k-kinLight);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5), 0 0 14px rgba(214, 178, 94, 0.3);
+}
+/* 金継ぎの線をボタンにも一筋 */
+.k-btn--gold::after,
+.k-btn--primary::after {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 55%;
+  top: 0;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 48%, rgba(255, 240, 200, 0.55) 49%, rgba(255, 240, 200, 0.55) 51%, transparent 52%);
+  opacity: 0.6;
+}
+
+.k-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--k-rad-pill);
+  border: 1px solid var(--k-urushiLine);
+  background: var(--k-urushi);
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.k-chip {
+  padding: 4px 10px;
+  border-radius: var(--k-rad-pill);
+  border: 1px solid var(--k-urushiLine);
+  background: var(--k-urushi);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* ---- パネル ---- */
+.k-panel {
+  background: linear-gradient(180deg, var(--k-urushiHi), var(--k-urushi));
+  border: 1px solid var(--k-urushiLine);
+  border-radius: var(--k-rad-lg);
+  padding: var(--k-sp-lg);
+  box-shadow: var(--k-sh-panel);
+}
+.k-panel + .k-panel {
+  margin-top: var(--k-sp-md);
+}
+.k-panel__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--k-sp-sm);
+  margin-bottom: var(--k-sp-md);
+  position: relative;
+  z-index: 2;
+}
+.k-panel__title {
+  margin: 0;
+  font-size: 18px;
+  color: var(--k-kinLight);
+}
+
+/* ---- バー ---- */
+.k-bar {
+  position: relative;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: var(--k-rad-pill);
+  overflow: hidden;
+}
+.k-bar__fill,
+.k-bar__extra {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  transition: width var(--k-m-base) var(--k-m-ease);
+}
+.k-bar__extra {
+  opacity: 0.75;
+}
+
+/* ---- バッジ ---- */
+.k-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  font-size: 11px;
+  border-radius: 4px;
+  line-height: 1;
+}
+.k-badge--rarity {
+  border: 1px solid;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+.k-badge--el {
+  color: #fff;
+  font-weight: 700;
+  text-shadow: var(--k-sh-text);
+}
+.k-badge--role {
+  background: var(--k-washi);
+  color: var(--k-sumi);
+  font-weight: 700;
+}
+.k-bloom {
+  display: inline-flex;
+  gap: 1px;
+}
+
+/* ---- 資源 ---- */
+.k-res {
+  display: flex;
+  gap: var(--k-sp-sm);
+}
+.k-res__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px 3px 8px;
+  border-radius: var(--k-rad-pill);
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--k-urushiLine);
+  font-size: 13px;
+}
+
+/* ---- タブ ---- */
+.k-tabs {
+  display: flex;
+  gap: var(--k-sp-xs);
+  margin-bottom: var(--k-sp-md);
+  overflow-x: auto;
+}
+.k-tabs--wide .k-tab {
+  flex: 1;
+  font-size: 14px;
+  padding: 10px;
+}
+.k-tab {
+  padding: 6px 12px;
+  border-radius: var(--k-rad-md);
+  border: 1px solid var(--k-urushiLine);
+  background: transparent;
+  color: var(--k-washiDim);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.k-tab.is-active {
+  color: var(--k-sumi);
+  background: var(--k-kin);
+  border-color: var(--k-kinLight);
+  font-weight: 700;
+}
+.k-tab:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* ---- 立ち絵 ---- */
+.k-portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---- キャラカード ---- */
+.k-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border-radius: var(--k-rad-md);
+  border: 1px solid var(--rc);
+  background: var(--k-sumi2);
+  overflow: hidden;
+  cursor: pointer;
+  text-align: left;
+  transition: transform var(--k-m-fast);
+}
+.k-card:active {
+  transform: scale(0.97);
+}
+.k-card.is-selected {
+  box-shadow: var(--k-sh-glow);
+}
+.k-card.is-locked {
+  border-color: var(--k-urushiLine);
+}
+.k-card__art {
+  position: relative;
+  aspect-ratio: 1;
+}
+.k-card__rarity {
+  position: absolute;
+  left: 4px;
+  top: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--rc);
+  text-shadow: var(--k-sh-text), 0 0 4px #000;
+}
+.k-card__note {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  font-size: 10px;
+  padding: 1px 4px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.7);
+}
+.k-card__meta {
+  padding: 4px 6px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.k-card__name {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.k-card__badges {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+}
+.k-card__lv {
+  margin-left: auto;
+  font-size: 11px;
+  color: var(--k-washiDim);
+}
+
+.card-grid,
+.pick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--k-sp-sm);
+}
+@media (min-width: 420px) {
+  .card-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* ---- トースト ---- */
+.k-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--k-nav-h) + 16px);
+  transform: translateX(-50%);
+  max-width: min(480px, calc(100vw - 32px));
+  padding: 10px 16px;
+  border-radius: var(--k-rad-md);
+  background: rgba(14, 11, 10, 0.95);
+  border: 1px solid var(--k-kinDeep);
+  font-size: 13px;
+  z-index: 100;
+  animation: k-toast-in var(--k-m-base) var(--k-m-ease);
+}
+@keyframes k-toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+}
+
+/* ---- モーダル・シート ---- */
+.k-modal,
+.k-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+}
+.k-modal {
+  align-items: center;
+  padding: var(--k-sp-lg);
+}
+.k-modal__box {
+  width: 100%;
+  max-width: 480px;
+  max-height: 90dvh;
+  overflow: auto;
+  background: var(--k-urushi);
+  border: 1px solid var(--k-kinDeep);
+  border-radius: var(--k-rad-lg);
+  padding: var(--k-sp-lg);
+}
+.k-modal__title {
+  margin: 0 0 var(--k-sp-md);
+  text-align: center;
+  color: var(--k-kinLight);
+}
+.k-sheet {
+  align-items: flex-end;
+}
+.k-sheet__box {
+  width: 100%;
+  max-width: var(--k-max-w);
+  max-height: 80dvh;
+  overflow: auto;
+  background: var(--k-urushi);
+  border-top: 1px solid var(--k-kinDeep);
+  border-radius: var(--k-rad-lg) var(--k-rad-lg) 0 0;
+  padding: var(--k-sp-md) var(--k-sp-lg) var(--k-sp-xl);
+  animation: k-sheet-in var(--k-m-base) var(--k-m-ease);
+}
+.k-sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--k-sp-md);
+}
+.k-sheet__head h2 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--k-kinLight);
+}
+@keyframes k-sheet-in {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+}
