@@ -11,6 +11,7 @@ import { Bar } from "../components/Bar";
 import { GemIcon, GoldIcon } from "../components/Resources";
 import { Sheet } from "../components/Modal";
 import { EnemyPortrait } from "../components/Portrait";
+import { BanterPanel } from "../components/BanterPanel";
 
 export function Home() {
   const save = useGame((s) => s.save);
@@ -25,6 +26,7 @@ export function Home() {
     <div className="screen home">
       <IdlePanel hours={idle.hours} gold={idle.gold} gems={idle.gems} fastLeft={fastLeft} />
       <StagePanel index={nextIndex} allClear={allClear} power={teamPower(save)} onList={() => setListOpen(true)} />
+      <BanterPanel />
       {listOpen && <StageList onClose={() => setListOpen(false)} />}
     </div>
   );

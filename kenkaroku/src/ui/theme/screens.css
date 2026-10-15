@@ -830,3 +830,138 @@
   align-items: center;
   gap: 4px;
 }
+
+/* ---- 人物・縁・台詞 ---- */
+.profile__text {
+  margin: 0 0 var(--k-sp-md);
+  line-height: 1.8;
+  font-size: 14px;
+}
+.profile {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+.profile div {
+  display: grid;
+  grid-template-columns: 6.5em 1fr;
+  gap: var(--k-sp-sm);
+  font-size: 13px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--k-urushiLine);
+}
+.profile dt {
+  color: var(--k-washiDim);
+}
+.profile dd {
+  margin: 0;
+}
+.profile__quote {
+  margin: var(--k-sp-md) 0 0;
+  padding: var(--k-sp-md);
+  border-left: 3px solid var(--cc);
+  background: rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  line-height: 1.7;
+}
+.relations,
+.voices {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.relation {
+  display: flex;
+  align-items: center;
+  gap: var(--k-sp-md);
+  width: 100%;
+  padding: 8px 0;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--k-urushiLine);
+  text-align: left;
+  cursor: pointer;
+}
+.relation__face {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--k-kinDeep);
+}
+.relation__text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.relation__go {
+  color: var(--k-kin);
+  font-size: 20px;
+}
+.voice {
+  display: grid;
+  grid-template-columns: 28px 4.5em 1fr;
+  align-items: start;
+  gap: var(--k-sp-sm);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--k-urushiLine);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.voice__play {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--k-urushiLine);
+  background: transparent;
+  color: var(--k-washiFaint);
+  font-size: 10px;
+}
+.voice__label {
+  color: var(--cc);
+  font-size: 12px;
+  padding-top: 3px;
+}
+
+/* ---- 掛け合い ---- */
+.banter {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-sp-sm);
+}
+.banter__line {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--k-sp-sm);
+  animation: k-toast-in var(--k-m-slow) var(--k-m-ease) both;
+}
+.banter__line.is-right {
+  flex-direction: row-reverse;
+}
+.banter__face {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--cc);
+}
+.banter__bubble {
+  max-width: 78%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid color-mix(in srgb, var(--cc) 55%, transparent);
+  font-size: 13px;
+  line-height: 1.6;
+}
+.banter__bubble b {
+  display: block;
+  font-size: 11px;
+  color: var(--cc);
+}
