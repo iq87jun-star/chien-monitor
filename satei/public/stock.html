@@ -120,6 +120,12 @@
       </details>
       <div class="row no-print"><select id="f-filter"><option value="todo">今日やること(候補・確認)</option><option value="フォロー済み">フォロー済み(待ち)</option><option value="返ってこない">外す候補</option><option value="all">すべて</option></select>
         <button type="button" class="sub" id="f-print">🖨 PDFにする</button><span class="muted" id="f-count"></span></div>
+      <details class="card no-print" id="f-checkbox"><summary>🔍 フォローバックをまとめて確認(Chrome の Claude)</summary>
+        <p class="muted">① 下の文をコピーして Chrome の Claude に送る → ② 返ってきた表を貼る → ③「反映する」。「返ってきた/返ってこない」が自動で付きます。</p>
+        <div class="row"><select id="f-ctarget"><option value="due">14日たった人</option><option value="all">フォロー済みの全員</option></select><button type="button" class="sub" id="f-ccopy">📋 確認を頼む文をコピー</button><span class="muted" id="f-cn"></span></div>
+        <textarea id="f-cresult" placeholder="ここに結果を貼り付け" style="min-height:100px"></textarea>
+        <div class="row"><button type="button" id="f-capply">反映する</button><span class="muted" id="f-cmsg"></span></div>
+      </details>
       <div id="followList"></div>
     </section>
 
@@ -411,12 +417,14 @@ function renderFollow() {
     html += fTable("すべて", all.map((f) => ({ ...f, reason: `${f.status} ・ ${f.reason}` })), () => "");
   }
   $("followList").innerHTML = html || `<p class="muted">該当する人はいません</p>`;
+  $("f-cn").textContent = `対象 ${checkTargets().length}人`;
   $("f-count").textContent = `フォロー済み ${all.filter((f) => f.status === "フォロー済み").length}人 ・ 返ってきた ${all.filter((f) => f.status === "返ってきた").length}人`;
 }
 $("f-prompt").value = FPROMPT($("f-query").value);
 $("f-query").addEventListener("change", () => ($("f-prompt").value = FPROMPT($("f-query").value)));
 $("f-copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("f-prompt").value); toast("コピーしました"); } catch { $("f-prompt").select(); } });
 $("f-filter").addEventListener("change", renderFollow);
+$("f-ctarget").addEventListener("change", renderFollow);
 $("f-print").addEventListener("click", () => window.print());
 $("f-import").addEventListener("click", async () => {
   try {
@@ -427,6 +435,35 @@ $("f-import").addEventListener("click", async () => {
     await load();
   } catch (err) { toast(`取り込めませんでした(${err.message})`); }
 });
+// フォローバックの確認: Chrome の Claude に各プロフィールの「フォローされています」を見てもらう
+const checkTargets = () => ($("f-ctarget").value === "due" ? dueForCheck(data.follow ?? [], today) : (data.follow ?? []).filter((f) => f.status === "フォロー済み"));
+const CPROMPT = (list) => `次のXアカウントのプロフィールを1つずつ開いて、名前の近くに「フォローされています」と表示されているかだけを確認してください。
+フォローやいいねなど、ボタンは何も押さないでください。結果は「@ID[タブ]はい/いいえ」の形で1行ずつ返してください。
+${list.map((f) => "@" + f.handle).join("\n")}`;
+$("f-ccopy").addEventListener("click", async () => {
+  const list = checkTargets();
+  if (!list.length) return toast("確認する人はいません");
+  try { await navigator.clipboard.writeText(CPROMPT(list)); toast(`${list.length}人分の文をコピーしました`); } catch { prompt("コピーしてください", CPROMPT(list)); }
+});
+$("f-capply").addEventListener("click", async () => {
+  const byHandle = new Map((data.follow ?? []).filter((f) => f.status === "フォロー済み").map((f) => [f.handle.toLowerCase(), f]));
+  const done = { yes: 0, no: 0 };
+  for (const line of $("f-cresult").value.split(/\r?\n/)) {
+    const m = /@([A-Za-z0-9_]{1,15})/.exec(line);
+    const f = m && byHandle.get(m[1].toLowerCase());
+    if (!f) continue;
+    const rest = line.slice(m.index + m[0].length);
+    const yes = /はい|されています|yes|○|✅|返って(き|来)た/i.test(rest) && !/いいえ|されていない|no\b|×|❌/i.test(rest);
+    const no = /いいえ|されていない|no\b|×|❌|なし/i.test(rest);
+    if (!yes && !no) continue;
+    await api(`/api/follow/${f.id}`, { method: "PATCH", body: JSON.stringify({ status: yes ? "返ってきた" : "返ってこない" }) });
+    done[yes ? "yes" : "no"]++;
+  }
+  $("f-cmsg").textContent = `返ってきた ${done.yes}人 ・ 返ってこない ${done.no}人 を反映しました`;
+  $("f-cresult").value = "";
+  await load();
+});
+
 $("followList").addEventListener("click", (e) => {
   const b = e.target.closest("button[data-fs]");
   if (!b) return;
