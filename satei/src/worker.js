@@ -7,7 +7,7 @@
 //   GET  /api/stats(合言葉が必要)… 利用記録の集計。画面は public/admin.html
 //   POST /api/lead {game, handle?, wish?, chars, low, high, sid} … 査定ページからの相談 → 代理出品の管理に入り、管理番号を返す
 //   /api/consign・/api/templates(合言葉が必要)… 代理出品の一覧・更新・DM の定型文(src/consign.js)
-//   /api/stock・/api/split・/api/image・/api/want(合言葉が必要)… 在庫・分割払い・スクショ・購入希望者の管理(src/stock.js)
+//   /api/stock・/api/split・/api/image・/api/want・/api/follow(合言葉が必要)… 在庫・分割払い・スクショ・購入希望者・フォロー候補の管理(src/stock.js, src/follow.js)
 //
 // バインディング:
 //   ANTHROPIC_API_KEY … Secret(未設定なら /api/read は 503。画面は手入力だけで動く)
@@ -19,6 +19,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { CHARS, TERMS } from "../public/lib/chars.js";
 import { validEvent, record, stats } from "./events.js";
 import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay, validImage, addImage, listImages, getImage, replaceImage, deleteImage, validWant, createWant, updateWant, listWants } from "./stock.js";
+import { listFollow, importFollow, setFollowStatus } from "./follow.js";
 import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES } from "./consign.js";
 
 const MODEL = "claude-opus-5-5";
@@ -197,7 +198,7 @@ async function handle(req, env, ctx) {
     return json({ ok: true, no: id, merged });
   }
   // ここから下は集計画面用(合言葉が必要)
-  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay|image|want)/.test(pathname) || pathname === "/api/templates";
+  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay|image|want|follow)/.test(pathname) || pathname === "/api/templates";
   if (admin) {
     const token = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
     if (!env.STATS_TOKEN_SHA256 || (await sha256(token)) !== env.STATS_TOKEN_SHA256) return json({ ok: false, error: "合言葉が違います" }, 401);
@@ -247,7 +248,7 @@ async function stockApi(env, req, pathname) {
   const games = Object.keys(CHARS);
   const bad = () => json({ ok: false, error: "入力を確認してください" }, 400);
   const done = (ok) => json({ ok }, ok ? 200 : 404);
-  if (pathname === "/api/stock" && req.method === "GET") return json({ ok: true, stock: await listStock(env), split: await listSplit(env), images: await listImages(env), wants: await listWants(env) });
+  if (pathname === "/api/stock" && req.method === "GET") return json({ ok: true, stock: await listStock(env), split: await listSplit(env), images: await listImages(env), wants: await listWants(env), follow: await listFollow(env) });
   if (pathname === "/api/stock" && req.method === "POST") {
     const row = validStock(await readJson(req), games);
     return row?.game ? json({ ok: true, no: await createStock(env, row) }) : bad();
@@ -279,6 +280,14 @@ async function stockApi(env, req, pathname) {
     return patch ? done(await updatePay(env, Number(m[1]), patch)) : bad();
   }
   if (m && req.method === "DELETE") return done(await deletePay(env, Number(m[1])));
+  // フォロー候補(表を取り込み・状態を変える)
+  if (pathname === "/api/follow/import" && req.method === "POST") {
+    const body = await readJson(req, 60_000);
+    if (typeof body?.text !== "string") return bad();
+    return json({ ok: true, ...(await importFollow(env, body.text)) });
+  }
+  m = /^\/api\/follow\/(\d+)$/.exec(pathname);
+  if (m && req.method === "PATCH") return done(await setFollowStatus(env, Number(m[1]), (await readJson(req))?.status));
   // 購入希望
   if (pathname === "/api/want" && req.method === "POST") {
     const row = validWant(await readJson(req), games);

@@ -258,3 +258,49 @@ test("購入希望の保存", async () => {
   const [w] = await st.listWants(env);
   assert.deepEqual([w.name, w.status, w.wants[0].cons, w.budget, w.split, w.proposed], ["YURI", "提案済み", 2, 100000, true, "在庫3,4"]);
 });
+
+test("フォロー候補: 表の読み取りと判定(ボット・業者を外し、○以上を20人まで)", async () => {
+  const { parseTable, gradeRow, pickForToday, dueForCheck } = await import("../public/lib/follow.js");
+  const text = `#\t@ID\tフォロー\tフォロワー\t作成年月\t投稿内容（一言）
+1\t@hoimu_ir\t92\t50\t2025年7月\t別ゲーを引退し、モンストや原神をもっと楽しむ
+3\t@zeroo013847361\t1\t27\t2025年4月\t原神石垢・引退垢の販売（業者）
+6\t@Kan3Mei1Tetudou\t2,787\t1,596\t2017年8月\t原神とDBDを完全に引退
+| 7 | @chomochocomo | 213 | 136 | 2015年1月 | 原神引退するしかない |
+12\t@AKA_SB_Razor\t914\t435\t2019年1月\t原神引退しようかしら
+x\t@FinleyDaviehnq\t91\t54\t2026年7月\t無言フォローすみません
+y\t@m__811_\t13\t12\t2024年1月\tFF20⬇️
+z\t@ae__n123\t101\t71\t2023年5月\t仕事と家事が忙しいので原神引退`;
+  const rows = parseTable(text);
+  assert.equal(rows.length, 8);
+  assert.deepEqual(rows[2], { handle: "Kan3Mei1Tetudou", following: 2787, followers: 1596, joined: "2017年8月", note: "原神とDBDを完全に引退" });
+  assert.equal(rows[3].handle, "chomochocomo");
+  const g = Object.fromEntries(rows.map((r) => [r.handle, gradeRow(r, "2026-10-18").grade]));
+  assert.deepEqual(g, { hoimu_ir: "○", zeroo013847361: "×", Kan3Mei1Tetudou: "◎", chomochocomo: "◎", AKA_SB_Razor: "△", FinleyDaviehnq: "×", m__811_: "×", ae__n123: "○" });
+  const { take } = pickForToday(rows, "2026-10-18", new Set(["ae__n123"]));
+  assert.deepEqual(take.map((x) => x.handle), ["Kan3Mei1Tetudou", "chomochocomo", "hoimu_ir"]);
+  const list = [{ status: "フォロー済み", followed_on: "2026-10-04" }, { status: "フォロー済み", followed_on: "2026-10-05" }, { status: "候補" }];
+  assert.equal(dueForCheck(list, "2026-10-18").length, 1);
+});
+
+test("フォロー候補の保存と状態", async () => {
+  const { DatabaseSync } = await import("node:sqlite");
+  const { readFileSync } = await import("node:fs");
+  const fl = await import("../src/follow.js");
+  const db = new DatabaseSync(":memory:");
+  db.exec(readFileSync(new URL("../migrations/0008_follow.sql", import.meta.url), "utf8"));
+  const stmt = (q, a = []) => ({
+    first: async () => db.prepare(q).get(...a) ?? null,
+    run: async () => ({ meta: { changes: Number(db.prepare(q).run(...a).changes) } }),
+    all: async () => ({ results: db.prepare(q).all(...a) }),
+  });
+  const env = { DB: { prepare: (q) => ({ ...stmt(q), bind: (...a) => stmt(q, a) }) } };
+  const t = "1\t@aaa\t10\t10\t2020年1月\t原神を完全に引退\n2\t@bbb\t10\t10\t2020年1月\t原神引退垢の販売";
+  const r1 = await fl.importFollow(env, t);
+  assert.deepEqual(r1.added, ["aaa"]);
+  assert.equal((await fl.importFollow(env, t)).added.length, 0);
+  const [f] = await fl.listFollow(env);
+  assert.equal(await fl.setFollowStatus(env, f.id, "フォロー済み"), true);
+  assert.equal(await fl.setFollowStatus(env, f.id, "勝手な状態"), false);
+  const [g] = await fl.listFollow(env);
+  assert.deepEqual([g.status, Boolean(g.followed_on)], ["フォロー済み", true]);
+});
