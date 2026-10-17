@@ -138,3 +138,9 @@ P4 観察運転は 10/7 15:41 UTC から継続中(10 端末・毎時)。4 日間
 ### 9d.【2026-10-13】ユーザー「では切替で VPS は土曜日に切ります」— 10/17(土)に MQL5 VPS を全停止することで確定
 手順(§9 のまま): ①平日のうちに受け側(自前 VPS)の前提 = 毎時記録の復旧(install_task.ps1 v3.1 の再登録)・10 端末のアルゴ取引 ON・MFFU 設定 5/2/5 を確認 → ②10/17(土)ユーザーが MQL5 VPS の EA を全口座で停止 → 「停止完了」 → ③manifest の apply を true に切り替え、agent が 10 端末に docs/349 §9 の EA(EA8 v1.37・EA3 v1.19・パール v1.10・EA9 v1.04・EA10L v1.05・FN v1.35・B 案 v1.04・EA11 v1.15・FN 14074882 v1.11)を配備 → ④10/18(日)に 10 端末の `[INIT]`/`[INIT Q131]` 行と口座・倍率・DynK を照合し、10/19(月)06:00 JST の市場再開前に報告。
 土曜に止める前は MQL5 VPS 側を動かしたまま(二重稼働を避けるため apply は「停止完了」の後)。日曜の検証で不一致があれば manifest を false に戻して月曜は MQL5 VPS で続行(後退手順)。
+
+### 9f.【2026-10-17 23:xx JST】ユーザー「停止完了」— MQL5 VPS 全停止 → manifest apply:true(手順③)
+- manifest v2: 10 口座の `apply` を true(`ftmo_std100k_new` は未購入のため false のまま)。自前 VPS 端末に付いたままの旧版(10/12 時点の status.json: EA8 v1.35・EA3 v1.17・FN v1.33・EA10L v1.04・EA9 v1.03・パール v1.08・B 案 v1.03・EA11 v1.13)を `remove` に正確な名前で追加(無いと新旧 2 本が同じ端末に乗る)。Instant v1.16 と 14074882 v1.10 は既存の remove パターンで消える。
+- 配備される EA(docs/349 §9・docs/241 §1y〜§1z): EA8 v1.37・EA3 v1.19・パール v1.10・EA9 v1.04・EA10L v1.05・FN 14166201 v1.35・B 案 v1.04・EA11 v1.15・14074882 v1.11・Instant G v1.16(不変)。
+- 前提①(毎時タスクの再登録)が未達のため、配備は agent の次回実行(再登録後の毎時、または VPS 側での手動 1 回実行)で走る。走れば status.json の `deploy.compiled` に新版、`actions` に remove / attach、各端末の `[INIT]` 行に新版が出る。
+- 10/18(日)の検証: status.json の更新時刻・10 端末の compiled ok・`[INIT]`/`[INIT Q131]` の倍率・DynK(EA8/EA3 1.5・パール 1.0・他 0)・自動売買 ON を照合し、月曜 06:00 JST 前に報告。不一致なら apply:false に戻す(後退: MQL5 VPS の「スタート」で復帰)。
