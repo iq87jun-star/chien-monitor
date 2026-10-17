@@ -144,3 +144,9 @@ P4 観察運転は 10/7 15:41 UTC から継続中(10 端末・毎時)。4 日間
 - 配備される EA(docs/349 §9・docs/241 §1y〜§1z): EA8 v1.37・EA3 v1.19・パール v1.10・EA9 v1.04・EA10L v1.05・FN 14166201 v1.35・B 案 v1.04・EA11 v1.15・14074882 v1.11・Instant G v1.16(不変)。
 - 前提①(毎時タスクの再登録)が未達のため、配備は agent の次回実行(再登録後の毎時、または VPS 側での手動 1 回実行)で走る。走れば status.json の `deploy.compiled` に新版、`actions` に remove / attach、各端末の `[INIT]` 行に新版が出る。
 - 10/18(日)の検証: status.json の更新時刻・10 端末の compiled ok・`[INIT]`/`[INIT Q131]` の倍率・DynK(EA8/EA3 1.5・パール 1.0・他 0)・自動売買 ON を照合し、月曜 06:00 JST 前に報告。不一致なら apply:false に戻す(後退: MQL5 VPS の「スタート」で復帰)。
+
+### 9g.【2026-10-18 05:06 JST】配備実行の確認 — 10 端末すべて新版をコンパイル(0 errors)・chart01 に装着・再起動。毎時タスクは Python312 で再登録済み(次回 06:00)
+- 経緯: ユーザーが 04:09 JST に install_task.ps1 v3.1 で再登録 → `schtasks /run`。agent 1.8 は 05:00 JST に走り(task.txt: Task To Run = Program Files\Python312、前回の実行 05:00:01、状態 実行中)、05:06 JST に status.json を更新。04:09 の手動実行は反映されず(原因未特定・毎時トリガの 05:00 で実行)。
+- status.json(generated 20:06 UTC): 10 端末 ok・失敗 0・HALT 0。`deploy.compiled`: EA8 v1.37・EA10L v1.05・パール v1.10・EA3 v1.19・EA9 v1.04・FN 14166201 v1.35・B 案 v1.04・EA11 v1.15 が「0 errors, 0 warnings」、Instant G v1.16・14074882 v1.10 は up to date。`apply.actions`: 10 端末とも「attach <新版> to chart01.chr (expertmode=5)」、error なし、chart01.chr のバックアップを `chien_backup/20261018_05xxxx/` に保存。remove 行は出ていないが、装着後の棚卸し(agent_tail の `chart01.chr = …`)は各端末とも新版 1 本のみで、旧版の残存なし。
+- 残高・建玉(MQL5 VPS 停止前の最終状態): 521100397 52,214 / 531407058 51,724 / 531343523 92,704(建玉 1)/ 531466484 99,991(建玉 1・equity 99,863)/ 11988011 19,756 / 14074882 94,687(建玉 1)/ 14166201 104,103(建玉 2・equity 105,710)/ 6071612 5,147,178 / 6104736 10,033,220 / 6104739 34,611,653(建玉 2・equity 34,921,513)。先週の決済: Instant +2・14166201 +9・トパーズ +5・1-Step +1(MQL5 VPS 側での取引)。
+- 未確認(07:50 JST のダイジェストと月曜 05:00 JST の最終検証で): 各端末の `[INIT]`/`[INIT Q131]`(倍率・DynK)と自動売買 ON(status.json の `last_init` は再起動直後で空)。
