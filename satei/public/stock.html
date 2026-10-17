@@ -45,6 +45,8 @@
   dialog.view::backdrop { background:rgba(0,0,0,.6); }
   dialog.view canvas { width:100%; height:auto; display:block; touch-action:none; border-radius:8px; }
   dialog.view canvas.mask { cursor:crosshair; outline:3px solid var(--warn); }
+  td.r { font-size:16px; font-weight:900; width:24px; }
+  @media print { body { background:#fff; } .no-print, .tabs, .todo, .kpis, #f, form, header, .toast, section:not(#followTab), main > h1, main > .card:first-of-type { display:none !important; } #app, #followTab { display:block !important; } .card { box-shadow:none; border:1px solid #ddd; break-inside:avoid; } a { color:#4352c4; } }
   .toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:10px; font-size:14px; }
 </style>
 </head>
@@ -72,6 +74,7 @@
       <button type="button" data-tab="stockTab" aria-pressed="true">在庫</button>
       <button type="button" data-tab="splitTab" aria-pressed="false">分割</button>
       <button type="button" data-tab="wantTab" aria-pressed="false">購入希望</button>
+      <button type="button" data-tab="followTab" aria-pressed="false">フォロー</button>
     </div>
 
     <section id="stockTab">
@@ -107,6 +110,19 @@
         <div class="row"><button type="button" id="p-add">追加</button></div>
       </details>
     </section>
+    <section id="followTab" hidden>
+      <details class="card no-print"><summary>📋 毎朝の取り込み</summary>
+        <p class="muted">① Chrome の Claude に下の文を送る → ② 返ってきた表をそのまま貼る → ③「取り込む」。○以上の人が1日20人まで、リンク付きで並びます。</p>
+        <textarea id="f-prompt" readonly style="min-height:110px"></textarea>
+        <div class="row"><select id="f-query"><option>原神 引退</option><option>スタレ 引退</option><option>#原神好きさんと繋がりたい</option></select><button type="button" class="sub" id="f-copy">📋 頼む文をコピー</button></div>
+        <textarea id="f-text" placeholder="ここに表を貼り付け" style="min-height:120px"></textarea>
+        <div class="row"><button type="button" id="f-import">取り込む</button><span class="muted" id="f-msg"></span></div>
+      </details>
+      <div class="row no-print"><select id="f-filter"><option value="todo">今日やること(候補・確認)</option><option value="フォロー済み">フォロー済み(待ち)</option><option value="返ってこない">外す候補</option><option value="all">すべて</option></select>
+        <button type="button" class="sub" id="f-print">🖨 PDFにする</button><span class="muted" id="f-count"></span></div>
+      <div id="followList"></div>
+    </section>
+
     <section id="wantTab" hidden>
       <div class="row"><select id="w-filter"><option value="">すべて(成約・見送り以外)</option></select><span class="muted" id="w-count"></span></div>
       <div id="wantList"></div>
@@ -140,6 +156,7 @@
 </dialog>
 <script type="module">
 import { parseRoster } from "./lib/features.js";
+import { FOLLOW_RULES, dueForCheck } from "./lib/follow.js";
 import { estimate } from "./lib/estimate.js";
 import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER, RULES, monthly, splitState, priceDown, staleListings, todos, days, matchOf, matchesFor } from "./lib/stock.js";
 const $ = (id) => document.getElementById(id);
@@ -179,11 +196,15 @@ const satei = (game, cs) => {
 for (const b of document.querySelectorAll("[data-tab]"))
   b.addEventListener("click", () => {
     for (const x of document.querySelectorAll("[data-tab]")) x.setAttribute("aria-pressed", String(x === b));
-    for (const id of ["stockTab", "splitTab", "wantTab"]) $(id).hidden = id !== b.dataset.tab;
+    for (const id of ["stockTab", "splitTab", "wantTab", "followTab"]) $(id).hidden = id !== b.dataset.tab;
   });
 
 function render() {
   const t = todos(data.stock, data.split, today, RULES, data.wants);
+  const fDue = dueForCheck(data.follow ?? [], today).length;
+  const fNew = (data.follow ?? []).filter((f) => f.status === "候補").length;
+  if (fDue) t.push({ level: 1, text: `フォロー:14日たった ${fDue}人のフォローバックを確認してください` });
+  if (fNew) t.push({ level: 1, text: `フォロー:候補 ${fNew}人をフォローしてください` });
   $("todo").innerHTML = t.map((x) => `<li class="l${x.level}">${esc(x.text)}</li>`).join("") || `<li class="muted">今日やることはありません</li>`;
   const live = data.split.filter((s) => s.status === "支払い中");
   const ym = today.slice(0, 7);
@@ -196,6 +217,7 @@ function render() {
   renderStock();
   renderSplit();
   renderWants();
+  renderFollow();
   for (const k of open) { const d = document.querySelector(`[data-imgs="${k}"]`); if (d) { d.open = true; fillThumbs(d); } }
 }
 
@@ -358,6 +380,60 @@ function proposal(w, s) {
 ${hit ? `・ご希望のキャラ:${hit}\n` : ""}${s.price ? `・価格:${man(s.price)}円${w.split ? "(分割1万円〜OK・完済後にお引き渡し)" : ""}\n` : ""}
 キャラ一覧などの画像をお送りしますので、気になる点があればお気軽にご返信ください📩`;
 }
+// ── フォロー候補 ──
+const FPROMPT = (q) => `今開いているXで「${q}」を検索して、「最新」タブの投稿者を上から20人まで、次の列の表(タブ区切り)にしてください。
+#\t@ID\tフォロー\tフォロワー\t作成年月\t投稿内容・自己紹介(一言)
+自己紹介に「フォロバ100」「無言フォロー」「FF○以下」「フォローご遠慮」などがあれば一言に含めてください。
+フォローやいいねは押さないでください。`;
+const fRow = (f, acts) => `<tr data-follow="${f.id}"><td class="r">${esc(f.grade)}</td>
+  <td><a href="https://x.com/${esc(f.handle)}" target="_blank" rel="noopener"><b>@${esc(f.handle)}</b></a><div class="muted">${esc(f.kind ?? "")}${f.kind ? " ・ " : ""}${esc(f.reason)}</div></td>
+  <td class="muted">${f.following ?? "—"} / ${f.followers ?? "—"}</td><td class="muted">${esc(f.note)}</td>
+  <td class="no-print">${acts}</td></tr>`;
+const fBtn = (s, label, cls = "sub") => `<button type="button" class="${cls}" data-fs="${s}" style="font-size:12px;padding:5px 8px;margin:2px 0;white-space:nowrap">${label}</button>`;
+function fTable(title, rows, acts) {
+  if (!rows.length) return "";
+  return `<div class="card"><b>${title}(${rows.length}人)</b><div class="wrap"><table><thead><tr><th></th><th>アカウント</th><th>フォロー/フォロワー</th><th>投稿・自己紹介</th><th class="no-print"></th></tr></thead><tbody>${rows.map((f) => fRow(f, acts(f))).join("")}</tbody></table></div></div>`;
+}
+function renderFollow() {
+  const all = data.follow ?? [];
+  const v = $("f-filter").value;
+  const due = dueForCheck(all, today);
+  const days = (f) => Math.round((Date.parse(today) - Date.parse(f.followed_on)) / 86400_000);
+  let html = "";
+  if (v === "todo") {
+    html += fTable("✅ 14日たった人:フォローバックを確認", due, () => fBtn("返ってきた", "返ってきた", "") + fBtn("返ってこない", "返ってこない"));
+    html += fTable("🆕 フォローする人", all.filter((f) => f.status === "候補"), () => fBtn("フォロー済み", "フォローした", "") + fBtn("除外", "見送る"));
+  } else if (v === "フォロー済み") {
+    html += fTable("⏳ フォロー済み(14日待ち)", all.filter((f) => f.status === "フォロー済み").map((f) => ({ ...f, reason: `${f.reason} ・ フォローから${days(f)}日` })), () => fBtn("返ってきた", "返ってきた"));
+  } else if (v === "返ってこない") {
+    html += fTable("🧹 外す候補(14日たっても返ってこない)", all.filter((f) => f.status === "返ってこない"), () => fBtn("外した", "外した", ""));
+  } else {
+    html += fTable("すべて", all.map((f) => ({ ...f, reason: `${f.status} ・ ${f.reason}` })), () => "");
+  }
+  $("followList").innerHTML = html || `<p class="muted">該当する人はいません</p>`;
+  $("f-count").textContent = `フォロー済み ${all.filter((f) => f.status === "フォロー済み").length}人 ・ 返ってきた ${all.filter((f) => f.status === "返ってきた").length}人`;
+}
+$("f-prompt").value = FPROMPT($("f-query").value);
+$("f-query").addEventListener("change", () => ($("f-prompt").value = FPROMPT($("f-query").value)));
+$("f-copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText($("f-prompt").value); toast("コピーしました"); } catch { $("f-prompt").select(); } });
+$("f-filter").addEventListener("change", renderFollow);
+$("f-print").addEventListener("click", () => window.print());
+$("f-import").addEventListener("click", async () => {
+  try {
+    const d = await api("/api/follow/import", { method: "POST", body: JSON.stringify({ text: $("f-text").value }) });
+    $("f-msg").textContent = `${d.added.length}人を追加しました(外した人 ${d.skipped.length}人:${d.skipped.slice(0, 8).map((x) => `@${x.handle} ${x.grade} ${x.reason}`).join(" / ")}${d.skipped.length > 8 ? " ほか" : ""})`;
+    $("f-text").value = "";
+    $("f-filter").value = "todo";
+    await load();
+  } catch (err) { toast(`取り込めませんでした(${err.message})`); }
+});
+$("followList").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-fs]");
+  if (!b) return;
+  const id = b.closest("[data-follow]").dataset.follow;
+  run(() => api(`/api/follow/${id}`, { method: "PATCH", body: JSON.stringify({ status: b.dataset.fs }) }), `「${b.dataset.fs}」にしました`);
+});
+
 function renderWants() {
   const f = $("w-filter").value;
   const list = (data.wants ?? []).filter((w) => (f ? w.status === f : !["成約", "見送り"].includes(w.status)));
