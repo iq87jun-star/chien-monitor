@@ -1343,16 +1343,24 @@
    "slug": "ea_core_include",
    "title": "EA 共通部の include 化(mql5/include/chien_core.mqh)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/363_q95_ea_core_include.md"
    ],
    "note": "Q94 のパリティで include 版 = 現行版を確認してから切替",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 12
+   "order": 12,
+   "result": "10 本で本体一致の 28 関数(243 行)を mql5/include/chien_core.mqh に分離。試作 EA3 v1.20_inc は include 展開で v1.19 と同一(関数集合・本文・関数外テキスト一致)。分岐 13 関数(MoneyPerUnit/PipOf/ResolveSymbol 等)は第 2 段。コンパイル・Q94 パリティ・deploy の include 取り込みは 11/1 改訂で",
+   "runs": [
+    {
+     "date": "2026-10-19",
+     "summary": "chien_core.mqh 1.0 + EA3 v1.20_inc(未配備・未コンパイル)→ docs/363"
+    }
+   ]
   },
   {
    "id": "Q96",
