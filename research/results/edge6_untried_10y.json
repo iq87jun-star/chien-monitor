@@ -1,0 +1,206 @@
+{
+  "meta": {
+    "n": 6,
+    "bonferroni_alpha": 0.0083,
+    "lookbacks": [
+      1,
+      3,
+      6,
+      12
+    ]
+  },
+  "candidates": {
+    "E1_VOLREGIME_TREND": {
+      "net_pct": 19.2,
+      "win_pct": 60.0,
+      "maxDD_pct": -22.5,
+      "n": 53,
+      "perm_p": 0.2033,
+      "perm_p_daily": 0.2033,
+      "jackknife_max_p": 0.591,
+      "IS_net": -9.6,
+      "OOS_net": 31.9,
+      "corr_to_v7": 0.06,
+      "placebo_net": -0.0,
+      "placebo_p": 0.453,
+      "cost": {
+        "2bps": 21.1,
+        "5bps": 19.2,
+        "10bps": 16.1,
+        "20bps": 10.1
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "False",
+        "indep": true,
+        "placebo": "True",
+        "cost": true
+      },
+      "gates_passed": "3/6",
+      "grade": "REJECT"
+    },
+    "E2_LEADLAG_EQ2JPY": {
+      "net_pct": 30.6,
+      "win_pct": 59.0,
+      "maxDD_pct": -12.6,
+      "n": 80,
+      "perm_p": 0.064,
+      "perm_p_daily": 0.064,
+      "jackknife_max_p": 0.179,
+      "IS_net": 0.7,
+      "OOS_net": 29.7,
+      "corr_to_v7": 0.06,
+      "placebo_net": 15.5,
+      "placebo_p": 0.191,
+      "cost": {
+        "2bps": 30.6,
+        "5bps": 30.6,
+        "10bps": 30.6,
+        "20bps": 30.6
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "True",
+        "indep": true,
+        "placebo": "True",
+        "cost": true
+      },
+      "gates_passed": "4/6",
+      "grade": "LEAD"
+    },
+    "E3_LEADLAG_GOLD2CHF": {
+      "net_pct": -11.4,
+      "win_pct": 43.0,
+      "maxDD_pct": -28.7,
+      "n": 118,
+      "perm_p": 0.6617,
+      "perm_p_daily": 0.6617,
+      "jackknife_max_p": 0.808,
+      "IS_net": -1.4,
+      "OOS_net": -10.2,
+      "corr_to_v7": -0.03,
+      "placebo_net": -7.0,
+      "placebo_p": 0.581,
+      "cost": {
+        "2bps": -11.4,
+        "5bps": -11.4,
+        "10bps": -11.4,
+        "20bps": -11.4
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "False",
+        "indep": true,
+        "placebo": "False",
+        "cost": false
+      },
+      "gates_passed": "1/6",
+      "grade": "REJECT"
+    },
+    "E4_MULTIASSET_MR": {
+      "net_pct": -27.6,
+      "win_pct": 31.0,
+      "maxDD_pct": -32.7,
+      "n": 35,
+      "perm_p": 0.83,
+      "perm_p_daily": 0.83,
+      "jackknife_max_p": 0.885,
+      "IS_net": -4.8,
+      "OOS_net": -24.0,
+      "corr_to_v7": null,
+      "placebo_net": -19.4,
+      "placebo_p": 0.776,
+      "cost": {
+        "2bps": -26.9,
+        "5bps": -27.6,
+        "10bps": -28.9,
+        "20bps": -31.4
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "False",
+        "indep": true,
+        "placebo": "False",
+        "cost": false
+      },
+      "gates_passed": "1/6",
+      "grade": "REJECT"
+    },
+    "E5_RP_TREND": {
+      "net_pct": 70.9,
+      "win_pct": 66.0,
+      "maxDD_pct": -17.8,
+      "n": 108,
+      "perm_p": 0.0417,
+      "perm_p_daily": 0.0417,
+      "jackknife_max_p": 0.171,
+      "IS_net": 32.3,
+      "OOS_net": 29.1,
+      "corr_to_v7": 0.07,
+      "placebo_net": -3.5,
+      "placebo_p": 0.492,
+      "cost": {
+        "2bps": 70.9,
+        "5bps": 70.9,
+        "10bps": 70.9,
+        "20bps": 70.9
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "True",
+        "indep": true,
+        "placebo": "True",
+        "cost": true
+      },
+      "gates_passed": "4/6",
+      "grade": "LEAD"
+    },
+    "E6_RS_ROTATION": {
+      "net_pct": 3178.7,
+      "win_pct": 55.0,
+      "maxDD_pct": -66.4,
+      "n": 109,
+      "perm_p": 0.004,
+      "perm_p_daily": 0.004,
+      "jackknife_max_p": 0.072,
+      "IS_net": 1860.6,
+      "OOS_net": 67.2,
+      "corr_to_v7": -0.14,
+      "placebo_net": 328.0,
+      "placebo_p": 0.042,
+      "cost": {
+        "2bps": 3345.7,
+        "5bps": 3178.7,
+        "10bps": 2918.0,
+        "20bps": 2456.5
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": true,
+        "jk": true,
+        "oos": "True",
+        "indep": true,
+        "placebo": false,
+        "cost": true
+      },
+      "gates_passed": "5/6",
+      "grade": "LEAD"
+    }
+  },
+  "adopted": [],
+  "leads": [
+    "E2_LEADLAG_EQ2JPY",
+    "E5_RP_TREND",
+    "E6_RS_ROTATION"
+  ]
+}

@@ -1,0 +1,16 @@
+; 並行ポートフォリオ Chien_Parallel_AllInOne_PROP — プロップ気長確実 1.5x(守り寄り)
+; PARA_MANUAL: E-Mon週次1.50 / E5 0.75。静的-10%/全停止フロア-8%。資金化前の安全運用。
+InpScenario=2
+InpAcknowledgeLEAD=true
+InpEMonWeeklyPct=1.50
+InpE5LegRiskPct=0.75
+InpEMonSymbols=NAS100,US500,GER40
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpInitialBalance=100000.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=8.0
+InpEntryWeekday=1
+InpEntryHoursUTC=9,14
+InpShotsPerWeek=6
+InpHoldHours=24
+InpMagicBase=950720

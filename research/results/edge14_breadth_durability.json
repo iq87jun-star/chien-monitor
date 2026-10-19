@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "alpha": 0.0125,
+    "end": "2026-06-01",
+    "n_fomc_pre": 176,
+    "inputs": {
+      "EURUSD": "a02c4ffb262199b7",
+      "GBPUSD": "30cb55e78698c65c",
+      "USDJPY": "e5854e388acd348c",
+      "AUDUSD": "0cc90bf3feb73408",
+      "USDCHF": "70555bc8b5e2d5bf",
+      "USDCAD": "d5b4fc453e95574b",
+      "NZDUSD": "b0ee312df01a96f3",
+      "EURJPY": "67441cf97241bfa9",
+      "GBPJPY": "45a6c23128fe22fc",
+      "AUDJPY": "54004e35ea3c91c5",
+      "NZDJPY": "4a0434fd87bb33f3",
+      "CADJPY": "6f1579a461f4fb09",
+      "CHFJPY": "d3f7dd8b5ef07ee1",
+      "US500": "d8512ab05991a9ec",
+      "JP225": "1d36f53b52e2517f",
+      "UK100": "288708cb039528d5",
+      "FR40": "78cd300cd466b924"
+    }
+  },
+  "H14a_v4_durability": {
+    "net_pct": 5.9,
+    "win_pct": 48.0,
+    "maxDD_pct": -52.7,
+    "n": 578,
+    "perm_p": 0.3253,
+    "passed": false,
+    "blocks5y": {
+      "1995-1999": 3.1,
+      "2000-2004": 2.5,
+      "2005-2009": -8.8,
+      "2010-2014": 20.3,
+      "2015-2019": -8.8
+    },
+    "span": [
+      "1997-01-10",
+      "2015-12-31"
+    ],
+    "sanity_2016plus_net": 80.2
+  },
+  "H14b_g3_durability": {
+    "net_pct": 17.3,
+    "win_pct": 52.0,
+    "maxDD_pct": -13.2,
+    "n": 176,
+    "perm_p": 0.1843,
+    "passed": false,
+    "blocks5y": {
+      "1995-1999": 14.1,
+      "2000-2004": 1.6,
+      "2005-2009": 8.7,
+      "2010-2014": -8.1
+    },
+    "span": [
+      "1994-02-02",
+      "2015-12-14"
+    ],
+    "sanity_2016plus_net": 3.6
+  },
+  "H14c_v7_breadth": {
+    "net_pct": 26.8,
+    "win_pct": 54.0,
+    "maxDD_pct": -7.3,
+    "n": 542,
+    "perm_p": 0.0083,
+    "passed": true,
+    "blocks5y": {
+      "2015-2019": -1.7,
+      "2020-2024": 23.7,
+      "2025-2029": 4.3
+    },
+    "span": [
+      "2016-01-04",
+      "2026-05-25"
+    ]
+  },
+  "H14d_emon_breadth": {
+    "net_pct": 37.8,
+    "win_pct": 54.0,
+    "maxDD_pct": -8.6,
+    "n": 541,
+    "perm_p": 0.063,
+    "passed": false,
+    "blocks5y": {
+      "2015-2019": -2.0,
+      "2020-2024": 34.3,
+      "2025-2029": 4.6
+    },
+    "span": [
+      "2016-01-04",
+      "2026-05-25"
+    ]
+  }
+}

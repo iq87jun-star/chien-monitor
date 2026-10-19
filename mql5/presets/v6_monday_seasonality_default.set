@@ -1,0 +1,33 @@
+; FundedNext Stellar EA v6 — 月曜シーズナリティ(週明けJPYクロス) 既定プリセット
+; MT5: EAを右クリック→読み込み で適用。H4等どのTFでも可(判定はUTC時刻)。
+; 検証: 本番10年(USDJPY/EURJPY/GBPJPY)で全11フィルタ通過。
+;   月曜08UTC LONG/24h時間決済: 純益+27.6% 勝率58% maxDD-4.6% 順列p=0.012 / OOS+24.2%
+; 重要: USDJPY単体は非有意(主力EUR/GBPJPY)。タイトSL厳禁(時間決済が本質)。
+;       低リスク必須(高レバ即失格)。まずデモ・少額で前進検証すること。
+; 各ペアのチャートに1つずつアタッチして3ペア同時運用を推奨。
+InpInitialBalance=100000.0
+InpProfitTargetPct=8.0
+InpMaxLossLimitPct=10.0
+InpDailyStopPct=4.0
+InpEquityFloorDDPct=8.0
+InpCloseAllOnGuard=true
+InpEntryWeekday=1
+InpEntryHourUTC=8
+InpHoldHours=24
+InpLongOnly=true
+InpSkipFirstWeek=false
+InpRiskPerTradePct=0.4
+InpMaxOpenPositions=3
+InpMinLot=0.01
+InpMaxLot=5.0
+InpAtrPeriodH1=24
+InpCatastropheATR=2.5
+InpMinStopPips=10.0
+InpMaxStopPips=400.0
+InpMaxSpreadPips=3.0
+InpUseNewsFilter=true
+InpNewsBeforeMin=30
+InpNewsAfterMin=15
+InpMagic=920560
+InpSlippagePoints=20
+InpVerboseLog=true

@@ -1,0 +1,260 @@
+{
+  "R0_meta": {
+    "span": "2017-06-30..2026-05-31",
+    "months": 108,
+    "assets": [
+      "XAUUSD",
+      "US500",
+      "NAS100",
+      "GER40"
+    ],
+    "missing": [],
+    "note": "Yahoo指数=配当抜き価格指数。R1キャリー/R3 TR補正で誤差を挟む。実CFD条件は業者確認"
+  },
+  "R1_friction": {
+    "none": {
+      "net": 24.9,
+      "CAGR": 2.5,
+      "Sharpe": 0.44,
+      "maxDD": -10.0,
+      "Calmar": 0.25,
+      "n": 108,
+      "friction": {
+        "idx_long": 0.0,
+        "idx_short": 0.0,
+        "gold_long": 0.0,
+        "gold_short": 0.0
+      }
+    },
+    "base": {
+      "net": 10.1,
+      "CAGR": 1.1,
+      "Sharpe": 0.21,
+      "maxDD": -15.9,
+      "Calmar": 0.07,
+      "n": 108,
+      "friction": {
+        "idx_long": -3.0,
+        "idx_short": -1.5,
+        "gold_long": -4.0,
+        "gold_short": -1.5
+      }
+    },
+    "pess": {
+      "net": 2.1,
+      "CAGR": 0.2,
+      "Sharpe": 0.07,
+      "maxDD": -19.2,
+      "Calmar": 0.01,
+      "n": 108,
+      "friction": {
+        "idx_long": -5.0,
+        "idx_short": -2.5,
+        "gold_long": -5.5,
+        "gold_short": -2.5
+      }
+    }
+  },
+  "R2_legrisk": {
+    "none": {
+      "0.30": {
+        "hist_net": 13.4,
+        "hist_maxDD": -5.5,
+        "pass_rate": 84.0,
+        "fail_rate": 9.7,
+        "timeout_rate": 6.3,
+        "median_months": 42.0,
+        "p95_maxDD_pct": -10.5,
+        "median_maxDD_pct": -4.2
+      },
+      "0.46": {
+        "hist_net": 20.7,
+        "hist_maxDD": -8.4,
+        "pass_rate": 80.7,
+        "fail_rate": 19.0,
+        "timeout_rate": 0.4,
+        "median_months": 23.0,
+        "p95_maxDD_pct": -11.4,
+        "median_maxDD_pct": -4.6
+      },
+      "0.55": {
+        "hist_net": 24.9,
+        "hist_maxDD": -10.0,
+        "pass_rate": 76.3,
+        "fail_rate": 23.7,
+        "timeout_rate": 0.0,
+        "median_months": 17.0,
+        "p95_maxDD_pct": -11.7,
+        "median_maxDD_pct": -4.7
+      },
+      "0.75": {
+        "hist_net": 34.3,
+        "hist_maxDD": -13.7,
+        "pass_rate": 74.4,
+        "fail_rate": 25.6,
+        "timeout_rate": 0.0,
+        "median_months": 11.0,
+        "p95_maxDD_pct": -13.6,
+        "median_maxDD_pct": -4.7
+      },
+      "1.00": {
+        "hist_net": 46.0,
+        "hist_maxDD": -18.5,
+        "pass_rate": 72.4,
+        "fail_rate": 27.7,
+        "timeout_rate": 0.0,
+        "median_months": 7.0,
+        "p95_maxDD_pct": -14.9,
+        "median_maxDD_pct": -5.0
+      },
+      "1.23": {
+        "hist_net": 56.8,
+        "hist_maxDD": -22.9,
+        "pass_rate": 70.1,
+        "fail_rate": 29.9,
+        "timeout_rate": 0.0,
+        "median_months": 5.0,
+        "p95_maxDD_pct": -13.3,
+        "median_maxDD_pct": -4.1
+      }
+    },
+    "none_safe_legRisk": null,
+    "base": {
+      "0.30": {
+        "hist_net": 5.8,
+        "hist_maxDD": -8.8,
+        "pass_rate": 63.0,
+        "fail_rate": 22.3,
+        "timeout_rate": 14.8,
+        "median_months": 49.0,
+        "p95_maxDD_pct": -11.0,
+        "median_maxDD_pct": -5.9
+      },
+      "0.46": {
+        "hist_net": 8.6,
+        "hist_maxDD": -13.4,
+        "pass_rate": 66.0,
+        "fail_rate": 33.1,
+        "timeout_rate": 0.9,
+        "median_months": 27.0,
+        "p95_maxDD_pct": -12.1,
+        "median_maxDD_pct": -6.5
+      },
+      "0.55": {
+        "hist_net": 10.1,
+        "hist_maxDD": -15.9,
+        "pass_rate": 64.1,
+        "fail_rate": 35.8,
+        "timeout_rate": 0.1,
+        "median_months": 20.0,
+        "p95_maxDD_pct": -12.5,
+        "median_maxDD_pct": -6.4
+      },
+      "0.75": {
+        "hist_net": 13.0,
+        "hist_maxDD": -21.4,
+        "pass_rate": 64.6,
+        "fail_rate": 35.4,
+        "timeout_rate": 0.0,
+        "median_months": 12.0,
+        "p95_maxDD_pct": -13.9,
+        "median_maxDD_pct": -6.2
+      },
+      "1.00": {
+        "hist_net": 16.1,
+        "hist_maxDD": -28.0,
+        "pass_rate": 63.3,
+        "fail_rate": 36.7,
+        "timeout_rate": 0.0,
+        "median_months": 8.0,
+        "p95_maxDD_pct": -15.5,
+        "median_maxDD_pct": -6.1
+      },
+      "1.23": {
+        "hist_net": 18.3,
+        "hist_maxDD": -33.8,
+        "pass_rate": 63.2,
+        "fail_rate": 36.8,
+        "timeout_rate": 0.0,
+        "median_months": 6.0,
+        "p95_maxDD_pct": -13.9,
+        "median_maxDD_pct": -6.3
+      }
+    },
+    "base_safe_legRisk": null,
+    "pess": {
+      "0.30": {
+        "hist_net": 1.6,
+        "hist_maxDD": -10.8,
+        "pass_rate": 46.6,
+        "fail_rate": 33.8,
+        "timeout_rate": 19.6,
+        "median_months": 52.0,
+        "p95_maxDD_pct": -11.3,
+        "median_maxDD_pct": -7.6
+      },
+      "0.46": {
+        "hist_net": 2.0,
+        "hist_maxDD": -16.2,
+        "pass_rate": 54.9,
+        "fail_rate": 44.0,
+        "timeout_rate": 1.2,
+        "median_months": 29.0,
+        "p95_maxDD_pct": -12.4,
+        "median_maxDD_pct": -8.7
+      },
+      "0.55": {
+        "hist_net": 2.1,
+        "hist_maxDD": -19.2,
+        "pass_rate": 54.3,
+        "fail_rate": 45.5,
+        "timeout_rate": 0.2,
+        "median_months": 21.0,
+        "p95_maxDD_pct": -12.8,
+        "median_maxDD_pct": -8.5
+      },
+      "0.75": {
+        "hist_net": 2.1,
+        "hist_maxDD": -25.6,
+        "pass_rate": 57.4,
+        "fail_rate": 42.6,
+        "timeout_rate": 0.0,
+        "median_months": 12.0,
+        "p95_maxDD_pct": -14.1,
+        "median_maxDD_pct": -7.7
+      },
+      "1.00": {
+        "hist_net": 1.4,
+        "hist_maxDD": -33.1,
+        "pass_rate": 57.6,
+        "fail_rate": 42.4,
+        "timeout_rate": 0.0,
+        "median_months": 8.0,
+        "p95_maxDD_pct": -16.0,
+        "median_maxDD_pct": -7.3
+      },
+      "1.23": {
+        "hist_net": 0.1,
+        "hist_maxDD": -39.5,
+        "pass_rate": 58.4,
+        "fail_rate": 41.6,
+        "timeout_rate": 0.0,
+        "median_months": 6.0,
+        "p95_maxDD_pct": -14.3,
+        "median_maxDD_pct": -6.9
+      }
+    },
+    "pess_safe_legRisk": null
+  },
+  "R3_TR_bound": {
+    "price_index_net": 10.1,
+    "tr_adjusted_net": 14.7,
+    "note": "価格指数(配当抜き) vs TR概算(ロング指数月に配当足し戻し)。真値はこの間"
+  },
+  "R4_corr_v9_monthly": 0.114,
+  "verdict": {
+    "edge_survives_friction": true,
+    "base_safe_legRisk": null,
+    "summary": "pessで純益消失 or 安全legRisk無し → 本資金不可・要再設計/デモ厳守"
+  }
+}

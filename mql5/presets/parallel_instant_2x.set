@@ -1,0 +1,14 @@
+; 並行ポートフォリオ Chien_Parallel_AllInOne_INSTANT — Blueberry等 即時資金化 攻め2.0x
+; E-Mon週次1.20 / E5 0.60(≈67:33)。-10%トレーリング/無目標/全停止フロア-9%。毎サイクル出金前提。
+InpScenario=0
+InpAcknowledgeLEAD=true
+InpEMonSymbols=NAS100,US500,GER40
+InpE5Symbols=XAUUSD,US500,NAS100,GER40
+InpInitialBalance=50000.0
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpEntryWeekday=1
+InpEntryHoursUTC=9,14
+InpShotsPerWeek=6
+InpHoldHours=24
+InpMagicBase=950710

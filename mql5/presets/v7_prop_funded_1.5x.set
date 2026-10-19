@@ -1,0 +1,15 @@
+; v7 v8_dualfirm — ②プロップ資金化後 FundedNext $100k 1.5倍 静的-10%/無目標 (E5側75:25)
+InpFirmPreset=2
+InpInitialBalance=100000.0
+InpWeeklyRiskPct=1.5
+InpUseProfitStop=false
+InpUseTrailingDD=false
+InpUseDailyStop=true
+InpDailyStopPct=4.0
+InpMaxLossLimitPct=10.0
+InpEquityFloorBufPct=2.0
+InpShotsPerWeek=12
+InpEntryWeekday=1
+InpEntryHoursUTC=4,6,8,10
+InpHoldHours=24
+InpMagic=920580

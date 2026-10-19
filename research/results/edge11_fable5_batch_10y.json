@@ -1,0 +1,255 @@
+{
+  "meta": {
+    "n": 5,
+    "bonferroni_alpha": 0.01,
+    "base_bps": 5.0,
+    "span": [
+      "2016-01-01",
+      "2026-06-01"
+    ],
+    "f2_flips": 128,
+    "f2_on_frac": 0.923,
+    "inputs": {
+      "XAUUSD": "50c8e8aaa094d56c",
+      "US500": "485ad71bbdb83e7d",
+      "NAS100": "42fcb18819cd3370",
+      "GER40": "ff83984bf09e5af8",
+      "VIX": "0c13a9f06a463c84",
+      "VIX3M": "f9d54ab6461fe3cf",
+      "UST10Y": "4788955ba6ae1bff",
+      "USDJPY": "cf3f3250369acb33",
+      "EURJPY": "4957f85cbf405afa",
+      "GBPJPY": "e43d998b53d9539d"
+    }
+  },
+  "candidates": {
+    "F1_EQ_TOM": {
+      "net_pct": 33.3,
+      "win_pct": 57.0,
+      "maxDD_pct": -9.6,
+      "n": 137,
+      "perm_p": 0.106,
+      "jackknife_max_p": 0.222,
+      "jackknife": {
+        "2016": 0.063,
+        "2017": 0.162,
+        "2018": 0.097,
+        "2019": 0.095,
+        "2020": 0.222,
+        "2021": 0.107,
+        "2022": 0.065,
+        "2023": 0.129,
+        "2024": 0.099,
+        "2025": 0.114,
+        "2026": 0.134
+      },
+      "IS_net": 21.8,
+      "OOS_net": 9.5,
+      "corr_to_v7": -0.03,
+      "placebo_net": 28.9,
+      "placebo_p": 0.244,
+      "cost": {
+        "2bps": 38.9,
+        "5bps": 33.3,
+        "10bps": 24.5,
+        "20bps": 8.6
+      },
+      "dd_within_10pct": "True",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "True",
+        "indep": true,
+        "placebo": "True",
+        "cost": true
+      },
+      "gates_passed": "4/6",
+      "grade": "REJECT"
+    },
+    "F2_VIX_TS_GATE": {
+      "net_pct": 199.3,
+      "win_pct": 51.0,
+      "maxDD_pct": -30.0,
+      "n": 2615,
+      "perm_p": 0.0023,
+      "jackknife_max_p": 0.015,
+      "jackknife": {
+        "2016": 0.005,
+        "2017": 0.011,
+        "2018": 0.001,
+        "2019": 0.008,
+        "2020": 0.011,
+        "2021": 0.015,
+        "2022": 0.0,
+        "2023": 0.01,
+        "2024": 0.009,
+        "2025": 0.009,
+        "2026": 0.004
+      },
+      "IS_net": 80.3,
+      "OOS_net": 66.0,
+      "corr_to_v7": 0.17,
+      "placebo_net": 171.1,
+      "placebo_p": 0.009,
+      "cost": {
+        "2bps": 205.1,
+        "5bps": 199.3,
+        "10bps": 189.8,
+        "20bps": 171.9
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": true,
+        "jk": true,
+        "oos": "True",
+        "indep": true,
+        "placebo": false,
+        "cost": true
+      },
+      "gates_passed": "5/6",
+      "grade": "LEAD"
+    },
+    "F3_UST2JPY": {
+      "net_pct": -30.0,
+      "win_pct": 43.0,
+      "maxDD_pct": -35.3,
+      "n": 123,
+      "perm_p": 0.851,
+      "jackknife_max_p": 0.911,
+      "jackknife": {
+        "2016": 0.904,
+        "2017": 0.859,
+        "2018": 0.831,
+        "2019": 0.797,
+        "2020": 0.861,
+        "2021": 0.903,
+        "2022": 0.911,
+        "2023": 0.822,
+        "2024": 0.844,
+        "2025": 0.717,
+        "2026": 0.849
+      },
+      "IS_net": -4.6,
+      "OOS_net": -26.6,
+      "corr_to_v7": -0.2,
+      "placebo_net": -12.1,
+      "placebo_p": 0.616,
+      "cost": {
+        "2bps": -30.0,
+        "5bps": -30.0,
+        "10bps": -30.0,
+        "20bps": -30.0
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "False",
+        "indep": true,
+        "placebo": "False",
+        "cost": false
+      },
+      "gates_passed": "1/6",
+      "grade": "REJECT"
+    },
+    "F4_JPY_FISCAL": {
+      "net_pct": -4.3,
+      "win_pct": 27.0,
+      "maxDD_pct": -7.4,
+      "n": 11,
+      "perm_p": 0.7497,
+      "jackknife_max_p": 0.876,
+      "jackknife": {
+        "2016": 0.769,
+        "2017": 0.849,
+        "2018": 0.73,
+        "2019": 0.876,
+        "2020": 0.701,
+        "2021": 0.738,
+        "2022": 0.492,
+        "2023": 0.732,
+        "2024": 0.644,
+        "2025": 0.722,
+        "2026": 0.748
+      },
+      "IS_net": 2.4,
+      "OOS_net": -6.6,
+      "corr_to_v7": null,
+      "placebo_net": 2.6,
+      "placebo_p": 0.398,
+      "cost": {
+        "2bps": -4.3,
+        "5bps": -4.3,
+        "10bps": -4.3,
+        "20bps": -4.3
+      },
+      "dd_within_10pct": "True",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "False",
+        "indep": true,
+        "placebo": "False",
+        "cost": false
+      },
+      "gates_passed": "1/6",
+      "grade": "REJECT"
+    },
+    "F5_GOLD_WEEKEND": {
+      "net_pct": -9.0,
+      "win_pct": 50.0,
+      "maxDD_pct": -30.9,
+      "n": 526,
+      "perm_p": 0.6033,
+      "jackknife_max_p": 0.825,
+      "jackknife": {
+        "2016": 0.639,
+        "2017": 0.624,
+        "2018": 0.473,
+        "2019": 0.593,
+        "2020": 0.752,
+        "2021": 0.582,
+        "2022": 0.422,
+        "2023": 0.556,
+        "2024": 0.507,
+        "2025": 0.825,
+        "2026": 0.638
+      },
+      "IS_net": 5.2,
+      "OOS_net": -13.5,
+      "corr_to_v7": -0.19,
+      "placebo_net": -11.7,
+      "placebo_p": 0.68,
+      "cost": {
+        "2bps": 6.5,
+        "5bps": -9.0,
+        "10bps": -30.1,
+        "20bps": -58.7
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "False",
+        "indep": true,
+        "placebo": "True",
+        "cost": false
+      },
+      "gates_passed": "2/6",
+      "grade": "REJECT"
+    }
+  },
+  "f2_diagnostics_posthoc": {
+    "bh_net": 276.6,
+    "bh_maxDD": -33.9,
+    "on_day_mean_bps": 5.07,
+    "off_day_mean_bps": 13.36,
+    "n_on": 2413,
+    "n_off": 202,
+    "off_neg_perm_p": 0.771
+  },
+  "adopted": [],
+  "leads": [
+    "F2_VIX_TS_GATE"
+  ]
+}
