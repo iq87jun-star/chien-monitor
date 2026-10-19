@@ -355,7 +355,15 @@ test("チェック式査定(グラブル・ウマ娘・第五人格): 学習モ�
   const safe = { login: "id", mail: "yes", origin: "self", receipt: "yes" };
   for (const game of Object.keys(CHECK)) {
     const m = model.games[game];
-    assert.deepEqual(m.features, checkFeatureNames(game));
+    assert.deepEqual(m.features, checkFeatureNames(game, m.terms));
+    // 「持っているもの」の候補は学習した語の中から。選ぶと金額が上がる
+    assert.ok(m.pick.length > 0 && m.pick.every((t) => m.terms.includes(t)));
+    const base = checkEstimate(model, game, {}, safe);
+    const withPick = checkEstimate(model, game, {}, safe, [m.pick[0]]);
+    assert.deepEqual(withPick.has, [m.pick[0]]);
+    assert.ok(withPick.market.high > base.market.high, `${game} ${m.pick[0]}`);
+    // 自由に書いた文も語に切って使う
+    assert.deepEqual(checkEstimate(model, game, {}, safe, [`${m.pick[0]}・${m.pick[1]}`]).has.sort(), [m.pick[0], m.pick[1]].sort());
     // 項目の重みは 0 以上(数が多いほど安くなる査定にしない)
     m.features.forEach((f, i) => f.startsWith("log:") && assert.ok(m.weights[i] >= 0, `${game} ${f}`));
     const r = checkEstimate(model, game, {}, safe);
@@ -400,7 +408,14 @@ test("チェック式査定: 売れた出品から項目の数を読む(学習�
 });
 
 test("チェック式査定: スクショ読み取りの依頼文と結果の扱い", async () => {
-  const { CHECK, checkSchema, checkPrompt, checkValues } = await import("../public/lib/check.js");
+  const { CHECK, checkSchema, checkPrompt, checkValues, textTerms } = await import("../public/lib/check.js");
+  assert.deepEqual([...textTerms("UR衣装:フリーレン・ヒンメル【限定】JOKER 2点")], ["ur衣装", "フリーレン", "ヒンメル", "限定", "joker"]);
+  // 候補の名前は、写っているものだけを選んでもらう(enum)
+  const s = checkSchema("identityv", ["剪燭", "joker"]);
+  assert.deepEqual(s.properties.has.items.enum, ["剪燭", "joker"]);
+  assert.ok(s.required.includes("has"));
+  assert.match(checkPrompt("identityv", ["剪燭", "joker"]), /has: [\s\S]*剪燭、joker/);
+  assert.equal(checkSchema("identityv").properties.has, undefined);
   for (const game of Object.keys(CHECK)) {
     const schema = checkSchema(game);
     assert.deepEqual(schema.required, [...CHECK[game].fields.map((f) => f.k), "id_visible"]);

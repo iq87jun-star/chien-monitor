@@ -22,6 +22,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { CHARS, TERMS } from "../public/lib/chars.js";
 import { GAMES, ACCOUNTS, gamesOf } from "../public/lib/games.js";
 import { CHECK, checkSchema, checkPrompt, checkValues } from "../public/lib/check.js";
+import checkModel from "../public/check-model.json" with { type: "json" };
 import { validEvent, record, stats } from "./events.js";
 import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay, validImage, addImage, listImages, getImage, replaceImage, deleteImage, validWant, createWant, updateWant, listWants, handoverMissing, listCaution, addCaution, deleteCaution, findCaution } from "./stock.js";
 import { listFollow, importFollow, setFollowStatus } from "./follow.js";
@@ -115,6 +116,8 @@ async function read(env, body, ip, ctx) {
   const game = body?.game;
   // グラブル・ウマ娘・第五人格は、チェック式査定の項目(数)を読む
   const check = Boolean(CHECK[game]);
+  // 値段に効く名前(学習で決まる)。写っていれば has で返してもらう
+  const pick = check ? (checkModel.games[game]?.pick ?? []) : [];
   if (!CHARS[game] && !check) return json({ ok: false, error: "game が不正です" }, 400);
   const images = Array.isArray(body.images) ? body.images : [];
   if (!images.length || images.length > MAX_IMAGES) return json({ ok: false, error: `画像は1〜${MAX_IMAGES}枚にしてください` }, 400);
@@ -133,13 +136,13 @@ async function read(env, body, ip, ctx) {
       max_tokens: 16000,
       betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default",
-      output_config: { effort: "medium", format: { type: "json_schema", schema: check ? checkSchema(game) : SCHEMA } },
+      output_config: { effort: "medium", format: { type: "json_schema", schema: check ? checkSchema(game, pick) : SCHEMA } },
       messages: [
         {
           role: "user",
           content: [
             ...images.map((im) => ({ type: "image", source: { type: "base64", media_type: im.media_type, data: im.data } })),
-            { type: "text", text: check ? checkPrompt(game) : prompt(game) },
+            { type: "text", text: check ? checkPrompt(game, pick) : prompt(game) },
           ],
         },
       ],
@@ -162,7 +165,8 @@ async function read(env, body, ip, ctx) {
   if (check) {
     const ev = validEvent({ kind: "read", game, sid: body.sid, chars: [] }, Object.keys(GAMES));
     if (ev) ctx.waitUntil(record(env, ev).catch(() => {}));
-    return json({ ok: true, values: checkValues(game, out), uid_visible: Boolean(out.id_visible) });
+    const has = (Array.isArray(out.has) ? out.has : []).filter((h) => pick.includes(h));
+    return json({ ok: true, values: checkValues(game, out), has, uid_visible: Boolean(out.id_visible) });
   }
   // 辞書にあるキャラを先に、凸数の大きい順
   const known = new Set(Object.keys(CHARS[game]));

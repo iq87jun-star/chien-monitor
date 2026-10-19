@@ -56,6 +56,10 @@
   .result .price { font-size: 34px; font-weight: 800; color: var(--accent); margin: 4px 0; letter-spacing: .02em; }
   .result .keys { color: var(--sub); font-size: 14px; margin: 0; }
   select { display: block; width: 100%; margin-top: 4px; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; }
+  .picks { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .picks button { padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; }
+  .picks button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  textarea { display: block; width: 100%; margin-top: 4px; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; }
   .badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 15px; }
   .badge.ok { background: var(--ok-bg); color: var(--ok); } .badge.check { background: var(--warn-bg); color: var(--warn); } .badge.ng { background: var(--ng-bg); color: var(--ng); }
   .notes { text-align: left; font-size: 14px; color: var(--sub); margin: 8px 0 0; padding-left: 20px; }
@@ -92,6 +96,9 @@
   <section class="card">
     <h2>① アカウントの内容</h2>
     <div class="fields" id="fields"></div>
+    <p class="hint" style="margin-top:14px"><b>持っているもの</b>(当てはまるものを押してください。実際に高く売れた垢によく出てくる名前です)</p>
+    <div class="picks" id="picks"></div>
+    <label style="display:block;font-size:14px;margin-top:10px">そのほかに持っているキャラ・衣装・カードなど(任意・自由に)<textarea id="freeText" rows="3" placeholder="例: 限定UR 夢の魔女 ・ コナンコラボ"></textarea></label>
     <p class="hint">読み取った数が違うところは直してください。分からない項目は空欄で大丈夫です。</p>
   </section>
 
@@ -173,6 +180,7 @@ function setGame(g) {
     )
     .join("");
   $("shotHint").textContent = CHECK[g].shots;
+  renderPicks();
   $("readMsg").textContent = "";
   $("result").hidden = true;
 }
@@ -209,8 +217,9 @@ $("readBtn").addEventListener("click", async () => {
     // 読めた項目だけ入れる(読めなかった項目は、入力済みの値をそのまま残す)
     const got = CHECK[game].fields.filter((f) => out.values[f.k] != null);
     for (const f of got) document.querySelector(`[data-k="${f.k}"]`).value = out.values[f.k];
-    $("readMsg").textContent = got.length
-      ? `${got.length}項目を読み取りました(${got.map((f) => f.label.replace(/\(.*\)/, "")).join("・")})。①で確認してください。` + (out.uid_visible ? " ※画像にIDや名前が写っていました。" : "")
+    for (const h of out.has ?? []) document.querySelector(`[data-pick="${CSS.escape(h)}"]`)?.setAttribute("aria-pressed", "true");
+    $("readMsg").textContent = got.length || out.has?.length
+      ? `${got.length}項目を読み取りました(${got.map((f) => f.label.replace(/\(.*\)/, "")).join("・")})${out.has?.length ? `。持っているもの: ${out.has.join("・")}` : ""}。①で確認してください。` + (out.uid_visible ? " ※画像にIDや名前が写っていました。" : "")
       : "数を読み取れませんでした。おすすめの画面のスクショで試すか、手入力してください。";
   } catch (err) {
     const m = err.message || "読み取りに失敗しました";
@@ -229,18 +238,30 @@ for (const b of document.querySelectorAll("[data-game]")) b.addEventListener("cl
 const values = () => Object.fromEntries([...document.querySelectorAll("[data-k]")].map((x) => [x.dataset.k, x.value]));
 const answers = () => Object.fromEntries(SAFETY_Q.map((q) => [q.k, document.querySelector(`input[name="${q.k}"]:checked`)?.value]));
 
-// 値付けモデル(売れたアカウントから学習。satei/scripts/train-check.mjs)
+// 値付けモデル(売れたアカウントから学習。satei/scripts/train-check.mjs)。「持っているもの」の候補もここから出す
 let model = null;
+const loadModel = async () => (model ??= await (await fetch("./check-model.json")).json());
+function renderPicks() {
+  const pick = model?.games[game]?.pick ?? [];
+  $("picks").innerHTML = pick.map((t) => `<button type="button" aria-pressed="false" data-pick="${esc(t)}">${esc(t)}</button>`).join("");
+  $("freeText").value = "";
+}
+$("picks").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-pick]");
+  if (b) b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true"));
+});
+const owned = () => [...document.querySelectorAll('[data-pick][aria-pressed="true"]')].map((b) => b.dataset.pick).concat($("freeText").value.trim() ? [$("freeText").value] : []);
+loadModel().then(renderPicks).catch(() => {});
 $("estBtn").addEventListener("click", async () => {
   const a = answers();
   try {
-    model ??= await (await fetch("./check-model.json")).json();
+    await loadModel();
   } catch {
     $("result").hidden = false;
     $("price").textContent = "読み込めませんでした。もう一度お試しください";
     return;
   }
-  const r = checkEstimate(model, game, values(), a);
+  const r = checkEstimate(model, game, values(), a, owned());
   const text = r.low == null ? "DMで個別に確認します" : r.capped ? `${man(r.low)}円以上(個別査定)` : `約${man(r.low)}〜${man(r.high)}円`;
   $("market").textContent = r.market ? `代理出品なら 相場 約${man(r.market.low)}〜${man(r.market.high)}円${r.capped ? "以上" : ""}で紹介できます` : "";
   $("badge").className = `badge ${r.safety.level}`;
