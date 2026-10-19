@@ -224,12 +224,15 @@ function renderConsign() {
   items.sort((a, b) => Number(due(b)) - Number(due(a)));
   $("ccount").textContent = `${items.length}件` + (items.some(due) ? `(連絡日が来た人 ${items.filter(due).length}件)` : "");
   $("items").innerHTML = items
-    .map(
-      (c) => `<article class="card item${due(c) ? " due" : ""}" data-id="${c.id}">
+    .map((c) => {
+      // チェック式査定(グラブル・ウマ娘・第五人格)の回答はメモの先頭に入っている。カードに全部見せる
+      const check = /\[チェック査定\]/.test(c.memo ?? "") ? c.memo : "";
+      return `<article class="card item${due(c) ? " due" : ""}" data-id="${c.id}">
       <header><b>No.${c.id}</b>${c.name ? `<b>${esc(c.name)}</b>` : ""}${c.handle ? `<a href="https://x.com/${esc(c.handle)}" target="_blank" rel="noopener">@${esc(c.handle)}</a>` : `<span class="muted">ユーザー名なし</span>`}
         <span class="tag">${GAME[c.game] ?? esc(c.game)}</span><span class="tag">${esc(c.status)}</span>${due(c) ? `<span class="tag dm">連絡日</span>` : ""}${cautionHit(cautions, c.handle) ? `<span class="tag warn">⚠️ 要注意リスト</span>` : ""}
         <span class="muted">${jst(c.created_at)} ${c.source === "tool" ? "査定ページから" : "手動"}${c.last_dm ? ` ・ 最後のDM ${jst(c.last_dm)}` : ""}</span></header>
-      <p class="muted" style="margin:6px 0 0">査定 ${c.low == null ? "—" : `${man(c.low)}〜${man(c.high)}`} ・ ${esc(charsText(c.chars).slice(0, 120)) || "キャラ情報なし"}</p>
+      ${check ? `<p class="muted" style="margin:6px 0 0;white-space:pre-wrap">査定 ${c.low == null ? "—(取引しやすさ × のため金額なし)" : `${man(c.low)}〜${man(c.high)}`}${c.wish ? ` ・ 希望 ${man(c.wish)}` : ""}\n${esc(check)}</p>`
+        : `<p class="muted" style="margin:6px 0 0">査定 ${c.low == null ? "—" : `${man(c.low)}〜${man(c.high)}`} ・ ${esc(charsText(c.chars).slice(0, 120)) || "キャラ情報なし"}</p>`}
       <div class="grid2">
         <label>状態<select data-f="status">${data.statuses.map((s) => `<option${s === c.status ? " selected" : ""}>${s}</option>`).join("")}</select></label>
         <label>Xのユーザー名<input data-f="handle" value="${esc(c.handle)}" placeholder="@user" /></label>
@@ -237,13 +240,13 @@ function renderConsign() {
         <label>希望額(円)<input data-f="wish" type="number" min="0" step="1000" value="${c.wish ?? ""}" /></label>
         <label>次の連絡日<input data-f="next_at" type="date" value="${esc(c.next_at)}" /></label>
         <label>紹介した投稿のURL<input data-f="post_url" value="${esc(c.post_url)}" placeholder="https://x.com/${xOf(c.game)}/status/..." /></label>
-        <label>メモ<input data-f="memo" value="${esc(c.memo)}" /></label>
+        <label>メモ<textarea data-f="memo" rows="3">${esc(c.memo)}</textarea></label>
       </div>
       <div class="row"><button type="button" data-act="save">保存</button></div>
       ${c.status === "成約" || c.handed_on ? safeBlock(c) : ""}
       <div class="dms">${data.templates.map((t) => `<button type="button" data-act="dm" data-key="${esc(t.key)}">✉️ ${esc(t.title)}</button>`).join("")}</div>
-    </article>`,
-    )
+    </article>`;
+    })
     .join("") || `<p class="muted">該当する人はいません</p>`;
 }
 // 引き渡し前の詐欺対策チェックと、引き渡し後の見守り(在庫の管理画面と同じ)
