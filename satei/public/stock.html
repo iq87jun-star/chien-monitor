@@ -49,12 +49,14 @@
   @media print { body { background:#fff; } .no-print, .tabs, .todo, .kpis, #f, form, header, .toast, section:not(#followTab), main > h1, main > .card:first-of-type { display:none !important; } #app, #followTab { display:block !important; } .card { box-shadow:none; border:1px solid #ddd; break-inside:avoid; } a { color:#4352c4; } }
   .safe { margin-top:8px; padding:8px 10px; border:1px dashed var(--line); border-radius:10px; } .safe label { font-size:13px; display:block; margin:2px 0; }
   .todo li button { margin-left:6px; padding:2px 10px; font-size:12px; }
+  .acct { display:inline-flex; gap:6px; align-items:center; font-size:13px; color:var(--sub); margin:0 0 8px; } .acct select { width:auto; }
   .toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:10px; font-size:14px; }
 </style>
 </head>
 <body>
 <main>
   <h1>📦 在庫と分割の管理</h1>
+  <label class="acct">表示するアカウント <select id="acct"><option value="">すべて</option></select></label>
   <div class="card">
     <form id="f">
       <input id="token" type="password" placeholder="合言葉" autocomplete="current-password" required />
@@ -176,7 +178,7 @@ import { parseRoster } from "./lib/features.js";
 import { FOLLOW_RULES, dueForCheck } from "./lib/follow.js";
 import { estimate } from "./lib/estimate.js";
 import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER, WATCH_DAYS, handoverLeft, cautionHit, RULES, monthly, splitState, priceDown, staleListings, todos, days, matchOf, matchesFor } from "./lib/stock.js";
-import { GAMES as GAME } from "./lib/games.js";
+import { GAMES as GAME, ACCOUNTS, accountOf, gamesOf } from "./lib/games.js";
 import { CHARS } from "./lib/chars.js";
 const $ = (id) => document.getElementById(id);
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
@@ -190,7 +192,30 @@ const charsText = (cs) => cs.map((c) => `${c.name}${c.cons === 6 ? "完凸" : c.
 const rosterOf = (text, game) => (CHARS[game] ? Object.entries(parseRoster(text, game)).map(([name, v]) => ({ name, ...v })) : []);
 let token = "", data = null, model = null, consign = [];
 try { $("token").value = localStorage.getItem("satei:admin") ?? ""; } catch {}
-for (const id of ["s-game", "p-game", "w-game"]) $(id).innerHTML = Object.entries(GAME).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+// 表示するアカウント(?acct=genshin|prop、無ければ前回の選択)。2つの管理画面で共通
+const ACCT_KEY = "satei:acct";
+let acct = new URLSearchParams(location.search).get("acct") ?? (() => { try { return localStorage.getItem(ACCT_KEY) ?? ""; } catch { return ""; } })();
+if (!Object.hasOwn(ACCOUNTS, acct)) acct = "";
+$("acct").innerHTML += Object.entries(ACCOUNTS).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
+$("acct").value = acct;
+const inAcct = (game) => !acct || accountOf(game) === acct;
+const gameOptions = () => gamesOf(acct).map((k) => `<option value="${k}">${GAME[k]}</option>`).join("");
+const setGameOptions = () => { for (const id of ["s-game", "p-game", "w-game"]) $(id).innerHTML = gameOptions(); };
+setGameOptions();
+// 読み込んだ全件(all)から、選んだアカウントの分だけを data・consign にする(フォロー・要注意は共通)
+let all = null, allConsign = [];
+function applyAcct() {
+  data = { ...all, stock: all.stock.filter((s) => inAcct(s.game)), split: all.split.filter((s) => inAcct(s.game)), wants: all.wants.filter((w) => inAcct(w.game)) };
+  consign = allConsign.filter((c) => inAcct(c.game));
+}
+$("acct").addEventListener("change", () => {
+  acct = $("acct").value;
+  try { localStorage.setItem(ACCT_KEY, acct); } catch {}
+  setGameOptions();
+  if (!all) return;
+  applyAcct();
+  render();
+});
 
 async function api(path, init = {}) {
   const res = await fetch(`${API}${path}`, { ...init, headers: { authorization: `Bearer ${token}`, "content-type": "application/json" } });
@@ -628,11 +653,12 @@ function renderSplit() {
 }
 
 async function load() {
-  [data, model, consign] = await Promise.all([
+  [all, model, allConsign] = await Promise.all([
     api("/api/stock"),
     model ?? fetch("./model.json").then((r) => r.json()),
     api("/api/consign").then((d) => d.items).catch(() => []),
   ]);
+  applyAcct();
   render();
 }
 const run = async (fn, ok) => {

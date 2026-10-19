@@ -20,7 +20,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { CHARS, TERMS } from "../public/lib/chars.js";
-import { GAMES } from "../public/lib/games.js";
+import { GAMES, ACCOUNTS, gamesOf } from "../public/lib/games.js";
 import { CHECK, checkSchema, checkPrompt, checkValues } from "../public/lib/check.js";
 import { validEvent, record, stats } from "./events.js";
 import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay, validImage, addImage, listImages, getImage, replaceImage, deleteImage, validWant, createWant, updateWant, listWants, handoverMissing, listCaution, addCaution, deleteCaution, findCaution } from "./stock.js";
@@ -219,7 +219,10 @@ async function handle(req, env, ctx) {
     if (!env.STATS_TOKEN_SHA256 || (await sha256(token)) !== env.STATS_TOKEN_SHA256) return json({ ok: false, error: "合言葉が違います" }, 401);
   }
   if (pathname === "/api/stats" && req.method === "GET") {
-    return json({ ok: true, ...(await stats(env, Math.min(Number(url.searchParams.get("days")) || 30, 365))) });
+    // ?account=genshin|prop で、そのアカウントのゲームだけにする
+    const acct = url.searchParams.get("account");
+    const games = Object.hasOwn(ACCOUNTS, acct ?? "") ? gamesOf(acct) : null;
+    return json({ ok: true, ...(await stats(env, Math.min(Number(url.searchParams.get("days")) || 30, 365), games)) });
   }
   if (pathname === "/api/consign" && req.method === "GET") {
     return json({ ok: true, statuses: STATUSES, items: await listConsign(env), templates: await getTemplates(env) });
