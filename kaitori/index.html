@@ -57,6 +57,9 @@
   .badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 15px; }
   .badge.ok { background: var(--ok-bg); color: var(--ok); } .badge.check { background: var(--warn-bg); color: var(--warn); } .badge.ng { background: var(--ng-bg); color: var(--ng); }
   .notes { text-align: left; font-size: 14px; color: var(--sub); margin: 8px 0 0; padding-left: 20px; }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 12px; }
+  .thumbs img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+  input[type=file] { max-width: 100%; }
   .steps { margin: 0; padding-left: 20px; font-size: 15px; }
   .steps li { margin: 4px 0; }
   footer { color: var(--sub); font-size: 13px; margin-top: 24px; }
@@ -75,9 +78,19 @@
   </div>
 
   <section class="card">
+    <h2>📷 スクショで自動入力(おすすめ)</h2>
+    <input id="files" type="file" accept="image/*" multiple />
+    <p class="hint" id="shotHint"></p>
+    <div class="thumbs" id="thumbs"></div>
+    <div class="row"><button class="btn" id="readBtn" type="button" disabled>AIで読み取る</button></div>
+    <p class="notice">プレイヤーIDや名前が写っている場合は、隠してから選んでください。画像は読み取りにだけ使い、保存しません。</p>
+    <p class="hint" id="readMsg" role="status"></p>
+  </section>
+
+  <section class="card">
     <h2>① アカウントの内容</h2>
     <div class="fields" id="fields"></div>
-    <p class="hint">分からない項目は空欄で大丈夫です。</p>
+    <p class="hint">読み取った数が違うところは直してください。分からない項目は空欄で大丈夫です。</p>
   </section>
 
   <section class="card">
@@ -133,6 +146,7 @@ const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "
 const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
 const man = (v) => `${(v / 10000).toFixed(1).replace(/\.0$/, "")}万`;
 const LEVEL = { ok: "◎ 安心して取引できます", check: "○ いくつか確認が要ります", ng: "× このままでは取引できません" };
+let images = [];
 let game = CHECK[store.get("check:game")] ? store.get("check:game") : "granblue";
 // 利用記録用。画面を開くたびに作るランダムな ID(個人は特定しない)
 const SID = (crypto.randomUUID?.() ?? String(Math.random()).slice(2) + Date.now()).replace(/[^A-Za-z0-9_-]/g, "");
@@ -151,8 +165,53 @@ function setGame(g) {
   $("fields").innerHTML = CHECK[g].fields
     .map((f) => `<label>${esc(f.label)}<input type="number" min="0" inputmode="numeric" data-k="${f.k}" placeholder="${esc(f.hint)}" /></label>`)
     .join("");
+  $("shotHint").textContent = CHECK[g].shots;
+  $("readMsg").textContent = "";
   $("result").hidden = true;
 }
+
+// 長辺 1568px の JPEG に縮めて base64 にする(送る量と読み取りの費用を抑える)
+async function shrink(file) {
+  const bmp = await createImageBitmap(file);
+  const scale = Math.min(1, 1568 / Math.max(bmp.width, bmp.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bmp.width * scale);
+  canvas.height = Math.round(bmp.height * scale);
+  canvas.getContext("2d").drawImage(bmp, 0, 0, canvas.width, canvas.height);
+  const url = canvas.toDataURL("image/jpeg", 0.85);
+  return { media_type: "image/jpeg", data: url.split(",")[1], url };
+}
+$("files").addEventListener("change", async (e) => {
+  const files = [...e.target.files].slice(0, 6);
+  $("readMsg").textContent = e.target.files.length > 6 ? "6枚までにしました。" : "";
+  images = await Promise.all(files.map(shrink));
+  $("thumbs").innerHTML = images.map((im) => `<img src="${im.url}" alt="">`).join("");
+  $("readBtn").disabled = images.length === 0;
+});
+$("readBtn").addEventListener("click", async () => {
+  $("readBtn").disabled = true;
+  $("readMsg").textContent = "読み取り中です…(30秒〜1分ほどかかります)";
+  try {
+    const res = await fetch(`${API}/api/read`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ game, sid: SID, images: images.map(({ media_type, data }) => ({ media_type, data })) }),
+    });
+    const out = await res.json().catch(() => ({ ok: false, error: `通信エラー(${res.status})` }));
+    if (!out.ok) throw new Error(out.error);
+    // 読めた項目だけ入れる(読めなかった項目は、入力済みの値をそのまま残す)
+    const got = CHECK[game].fields.filter((f) => out.values[f.k] != null);
+    for (const f of got) document.querySelector(`[data-k="${f.k}"]`).value = out.values[f.k];
+    $("readMsg").textContent = got.length
+      ? `${got.length}項目を読み取りました(${got.map((f) => f.label.replace(/\(.*\)/, "")).join("・")})。①で確認してください。` + (out.uid_visible ? " ※画像にIDや名前が写っていました。" : "")
+      : "数を読み取れませんでした。おすすめの画面のスクショで試すか、手入力してください。";
+  } catch (err) {
+    const m = err.message || "読み取りに失敗しました";
+    $("readMsg").textContent = m.includes("手入力") ? m : `${m}。手入力でも査定できます。`;
+  } finally {
+    $("readBtn").disabled = images.length === 0;
+  }
+});
 $("questions").innerHTML = SAFETY_Q.map(
   (q) => `<fieldset><legend>${esc(q.label)}</legend>${q.options
     .map(([v, label]) => `<label class="opt"><input type="radio" name="${q.k}" value="${v}" /> ${esc(label)}</label>`)
