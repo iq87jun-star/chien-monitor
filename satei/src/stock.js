@@ -1,9 +1,11 @@
 // 在庫(メルルが持っているアカウント)と分割払いの管理。計算は public/lib/stock.js と共通
-import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER } from "../public/lib/stock.js";
+import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER, handoverLeft } from "../public/lib/stock.js";
 
 const clean = (s, max) => (typeof s === "string" ? s.trim().slice(0, max) : "");
 const yen = (v) => (v === "" || v == null ? null : Number.isInteger(Number(v)) && Number(v) >= 0 && Number(v) < 100_000_000 ? Number(v) : undefined);
 const date = (v) => (!v ? null : typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : undefined);
+const handover = (v) => JSON.stringify(Object.fromEntries(Object.keys(HANDOVER).map((k) => [k, Boolean(v?.[k])])));
+const watch = (v) => (Number.isInteger(Number(v)) && Number(v) >= 0 && Number(v) <= 10 ? Number(v) : undefined);
 const chars = (list) =>
   (Array.isArray(list) ? list : [])
     .slice(0, 80)
@@ -45,6 +47,9 @@ export function validStock(body, games) {
       ),
     sold_price: yen,
     sold_at: date,
+    handover,
+    handed_on: date,
+    watch,
     memo: text(2000),
   });
 }
@@ -60,7 +65,9 @@ export function validSplit(body, games) {
     total: (v) => yen(v) ?? undefined,
     due_day: (v) => (v === "" || v == null ? null : Number(v) >= 1 && Number(v) <= 31 ? Number(v) : undefined),
     status: oneOf(SPLIT_STATUSES),
-    handover: (v) => JSON.stringify(Object.fromEntries(Object.keys(HANDOVER).map((k) => [k, Boolean(v?.[k])]))),
+    handover,
+    handed_on: date,
+    watch,
     memo: text(2000),
   });
 }
@@ -100,7 +107,7 @@ export const updateStock = (env, id, patch) => update(env, "stock", id, patch);
 
 export async function listStock(env) {
   const { results } = await env.DB.prepare("SELECT * FROM stock ORDER BY CASE status WHEN '売却済み' THEN 2 ELSE 1 END, id").all();
-  return results.map((r) => ({ ...r, chars: json(r.chars, []), listings: json(r.listings, []) }));
+  return results.map((r) => ({ ...r, chars: json(r.chars, []), listings: json(r.listings, []), handover: json(r.handover, {}) }));
 }
 
 // pays: [{due_on, amount, paid_on?}](分割の予定。作る時にまとめて入れる)
@@ -175,4 +182,32 @@ export const updateWant = (env, id, patch) => update(env, "want", id, patch);
 export async function listWants(env) {
   const { results } = await env.DB.prepare("SELECT * FROM want ORDER BY CASE status WHEN '成約' THEN 2 WHEN '見送り' THEN 3 ELSE 1 END, id DESC").all();
   return results.map((r) => ({ ...r, wants: json(r.wants, []), split: Boolean(r.split) }));
+}
+
+// ── 引き渡しの確認 ──
+// 引き渡し完了(handed_on を入れる・分割を「引き渡し済み」にする)は、詐欺対策のチェックが全部そろってから。
+// 今のチェックに patch のチェックを重ねて、足りない項目の名前を返す(問題なければ空)
+export async function handoverMissing(env, table, id, patch) {
+  const finishing = patch.handed_on || (table === "split" && patch.status === "引き渡し済み");
+  if (!finishing) return [];
+  const row = await env.DB.prepare(`SELECT handover FROM ${table} WHERE id = ?`).bind(id).first();
+  const h = { ...json(row?.handover, {}), ...json(patch.handover, {}) };
+  return handoverLeft(h).map((k) => HANDOVER[k]);
+}
+
+// ── 要注意リスト ──
+export async function listCaution(env) {
+  const { results } = await env.DB.prepare("SELECT * FROM caution ORDER BY id DESC").all();
+  return results;
+}
+export async function addCaution(env, handle, reason) {
+  await env.DB.prepare("INSERT INTO caution (created_at, handle, reason) VALUES (?, ?, ?) ON CONFLICT(handle) DO UPDATE SET reason = excluded.reason")
+    .bind(now(), handle.toLowerCase(), clean(reason ?? "", 200) || null)
+    .run();
+}
+export async function deleteCaution(env, id) {
+  return (await env.DB.prepare("DELETE FROM caution WHERE id = ?").bind(id).run()).meta.changes > 0;
+}
+export async function findCaution(env, handle) {
+  return handle ? env.DB.prepare("SELECT handle, reason FROM caution WHERE handle = ?").bind(handle.toLowerCase()).first() : null;
 }

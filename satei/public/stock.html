@@ -47,6 +47,8 @@
   dialog.view canvas.mask { cursor:crosshair; outline:3px solid var(--warn); }
   td.r { font-size:16px; font-weight:900; width:24px; }
   @media print { body { background:#fff; } .no-print, .tabs, .todo, .kpis, #f, form, header, .toast, section:not(#followTab), main > h1, main > .card:first-of-type { display:none !important; } #app, #followTab { display:block !important; } .card { box-shadow:none; border:1px solid #ddd; break-inside:avoid; } a { color:#4352c4; } }
+  .safe { margin-top:8px; padding:8px 10px; border:1px dashed var(--line); border-radius:10px; } .safe label { font-size:13px; display:block; margin:2px 0; }
+  .todo li button { margin-left:6px; padding:2px 10px; font-size:12px; }
   .toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:10px; font-size:14px; }
 </style>
 </head>
@@ -75,7 +77,16 @@
       <button type="button" data-tab="splitTab" aria-pressed="false">分割</button>
       <button type="button" data-tab="wantTab" aria-pressed="false">購入希望</button>
       <button type="button" data-tab="followTab" aria-pressed="false">フォロー</button>
+      <button type="button" data-tab="cautionTab" aria-pressed="false">⚠️ 要注意</button>
     </div>
+
+    <section id="cautionTab" hidden>
+      <div class="card">
+        <p class="muted" style="margin:0">過去にトラブルがあった人(引き戻し・未払い・なりすましなど)の X の @ID を入れておくと、代理出品・購入希望・分割で同じ人が来た時に「今日やること」で知らせます。査定ページからの相談にも印が付きます。</p>
+        <div class="row"><input id="c-handle" placeholder="@user" style="flex:1;min-width:140px" /><input id="c-reason" placeholder="理由(例: 引き渡し後に引き戻し)" style="flex:2;min-width:180px" /><button type="button" id="c-add">追加</button></div>
+      </div>
+      <div class="card"><table><thead><tr><th>@ID</th><th>理由</th><th>追加日</th><th></th></tr></thead><tbody id="cautionList"></tbody></table></div>
+    </section>
 
     <section id="stockTab">
       <div id="stockList"></div>
@@ -87,7 +98,7 @@
           <label>仕入れ日<input id="s-bought" type="date" /></label>
         </div>
         <label class="muted">キャラ(例: 黄泉完凸 鏡流2凸 花火)<textarea id="s-chars"></textarea></label>
-        <label class="muted">資産・メモ<input id="s-assets" style="width:100%" placeholder="原石 3,225 / モラ 1,960万 / 星5武器35本" /></label>
+        <label class="muted">資産・メモ<input id="s-assets" style="width:100%" placeholder="原石 3,225 / モラ 1,960万(グラブル: ランク250 十天衆10 ヒヒイロ3 など)" /></label>
         <div class="row"><button type="button" id="s-add">追加</button></div>
       </details>
     </section>
@@ -164,17 +175,19 @@
 import { parseRoster } from "./lib/features.js";
 import { FOLLOW_RULES, dueForCheck } from "./lib/follow.js";
 import { estimate } from "./lib/estimate.js";
-import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER, RULES, monthly, splitState, priceDown, staleListings, todos, days, matchOf, matchesFor } from "./lib/stock.js";
+import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER, WATCH_DAYS, handoverLeft, cautionHit, RULES, monthly, splitState, priceDown, staleListings, todos, days, matchOf, matchesFor } from "./lib/stock.js";
+import { GAMES as GAME } from "./lib/games.js";
+import { CHARS } from "./lib/chars.js";
 const $ = (id) => document.getElementById(id);
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
-const GAME = { "genshin-impact": "原神", houkaistarrail: "スタレ", zzz: "ゼンゼロ", wutheringwaves: "鳴潮" };
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const man = (v) => (v == null ? "—" : `${(v / 10000).toFixed(1).replace(/\.0$/, "")}万`);
 const yen = (v) => `${(v ?? 0).toLocaleString()}円`;
 const md = (d) => (d ? `${Number(d.slice(5, 7))}/${Number(d.slice(8, 10))}` : "—");
 const today = new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
 const charsText = (cs) => cs.map((c) => `${c.name}${c.cons === 6 ? "完凸" : c.cons ? c.cons + "凸" : ""}`).join(" ");
-const rosterOf = (text, game) => Object.entries(parseRoster(text, game)).map(([name, v]) => ({ name, ...v }));
+// キャラを読むのは HoYo の4作品だけ(グラブル・ウマ娘は「資産・メモ」に書く)
+const rosterOf = (text, game) => (CHARS[game] ? Object.entries(parseRoster(text, game)).map(([name, v]) => ({ name, ...v })) : []);
 let token = "", data = null, model = null, consign = [];
 try { $("token").value = localStorage.getItem("satei:admin") ?? ""; } catch {}
 for (const id of ["s-game", "p-game", "w-game"]) $(id).innerHTML = Object.entries(GAME).map(([k, v]) => `<option value="${k}">${v}</option>`).join("");
@@ -202,16 +215,16 @@ const satei = (game, cs) => {
 for (const b of document.querySelectorAll("[data-tab]"))
   b.addEventListener("click", () => {
     for (const x of document.querySelectorAll("[data-tab]")) x.setAttribute("aria-pressed", String(x === b));
-    for (const id of ["stockTab", "splitTab", "wantTab", "followTab"]) $(id).hidden = id !== b.dataset.tab;
+    for (const id of ["stockTab", "splitTab", "wantTab", "followTab", "cautionTab"]) $(id).hidden = id !== b.dataset.tab;
   });
 
 function render() {
-  const t = todos(data.stock, data.split, today, RULES, data.wants);
+  const t = todos(data.stock, data.split, today, RULES, data.wants, consign, data.caution);
   const fDue = dueForCheck(data.follow ?? [], today).length;
   const fNew = (data.follow ?? []).filter((f) => f.status === "候補").length;
   if (fDue) t.push({ level: 1, text: `フォロー:14日たった ${fDue}人のフォローバックを確認してください` });
   if (fNew) t.push({ level: 1, text: `フォロー:候補 ${fNew}人をフォローしてください` });
-  $("todo").innerHTML = t.map((x) => `<li class="l${x.level}">${esc(x.text)}</li>`).join("") || `<li class="muted">今日やることはありません</li>`;
+  $("todo").innerHTML = t.map((x) => `<li class="l${x.level}">${esc(x.text)}${x.watch ? `<button type="button" data-watch="${x.watch}" data-kind="${x.kind}" data-id="${x.id}">確認した</button>` : ""}</li>`).join("") || `<li class="muted">今日やることはありません</li>`;
   const live = data.split.filter((s) => s.status === "支払い中");
   const ym = today.slice(0, 7);
   const month = data.split.flatMap((s) => s.pays).filter((p) => p.due_on.startsWith(ym));
@@ -224,6 +237,7 @@ function render() {
   renderSplit();
   renderWants();
   renderFollow();
+  renderCaution();
   for (const k of open) { const d = document.querySelector(`[data-imgs="${k}"]`); if (d) { d.open = true; fillThumbs(d); } }
 }
 
@@ -481,7 +495,7 @@ function renderWants() {
     const due = w.next_at && w.next_at <= today;
     return `<article class="card" data-want="${w.id}">
       <header><b>希望 No.${w.id}</b><b>${esc(w.name)}さん</b><span class="tag">${GAME[w.game] ?? esc(w.game)}</span><span class="tag">${esc(w.status)}</span>${due ? `<span class="tag warn">連絡日</span>` : ""}
-        <span class="muted">${esc(w.contact)}${w.budget ? ` ・ 予算 ${man(w.budget)}` : ""}${w.split ? " ・ 分割希望" : ""}</span></header>
+        <span class="muted">${esc(w.contact)}${w.budget ? ` ・ 予算 ${man(w.budget)}` : ""}${w.split ? " ・ 分割希望" : ""}</span>${cautionHit(data.caution, w.contact) ? `<span class="tag warn">⚠️ 要注意リスト</span>` : ""}</header>
       <p style="margin:6px 0 0">欲しいキャラ:${esc(wantText(w.wants)) || "<span class=muted>未入力</span>"}</p>
       <div style="margin-top:6px">${ms.length ? ms.map((m) => `<div class="row" style="margin-top:4px"><span class="tag${m.score === 1 && m.inBudget ? " ok" : ""}">在庫 No.${m.stock.id} ${matchTag(m)}</span>
         <span class="muted">${esc(m.hits.map((h) => `${h.name}${consText(h.cons)}`).join(" "))}${m.stock.price ? ` ・ ${man(m.stock.price)}` : ""}</span>
@@ -528,6 +542,19 @@ $("wantList").addEventListener("click", async (e) => {
   run(() => api(`/api/want/${id}`, { method: "PATCH", body: JSON.stringify(f) }), `希望 No.${id} を保存しました`);
 });
 
+// 引き渡し前の詐欺対策チェックと、引き渡し後の見守り(在庫・分割で共通の見た目)
+function safeBlock(item, canHand = true) {
+  const left = handoverLeft(item.handover);
+  const n = Object.keys(HANDOVER).length;
+  return `<div class="safe"><div class="muted">🛡 詐欺対策(引き渡し前に全部チェック) ${n - left.length}/${n}</div>
+    ${Object.entries(HANDOVER).map(([k, v]) => `<label><input type="checkbox" data-h="${k}"${item.handover?.[k] ? " checked" : ""}${item.handed_on ? " disabled" : ""} /> ${v}</label>`).join("")}
+    ${item.handed_on
+      ? `<p style="margin:4px 0 0">✅ 引き渡し ${md(item.handed_on)} ・ 見守り ${item.watch ?? 0}/${WATCH_DAYS.length}(${WATCH_DAYS.join("・")}日後にログインを確認)</p>`
+      : `<div class="row"><button type="button" data-act="handed"${left.length || !canHand ? " disabled" : ""}>引き渡し完了</button><span class="muted">${!canHand ? "完済してから引き渡します" : left.length ? `残り ${left.length}つ` : "全部そろいました"}</span></div>`}
+  </div>`;
+}
+const handoverOf = (card) => Object.fromEntries([...card.querySelectorAll("[data-h]")].map((x) => [x.dataset.h, x.checked]));
+
 function renderStock() {
   $("stockList").innerHTML = data.stock.map((s) => {
     const pd = priceDown(s, today);
@@ -557,6 +584,7 @@ function renderStock() {
         ${l.url ? `<a href="${esc(l.url)}" target="_blank" rel="noopener">開く</a>` : ""}
         <span class="muted">${l.checked_on ? `確認 ${md(l.checked_on)}` : "未確認"}${stale.has(l.site) ? " ⚠️" : ""}</span>
         <button type="button" class="sub" data-act="checked">確認済み</button><button type="button" class="sub" data-act="unlist">外す</button></div>`).join("")}</div>
+      ${s.status === "商談中" || s.status === "売却済み" || s.handed_on ? safeBlock(s) : ""}
       ${imgSection("stock", s.id)}
       <div class="row"><button type="button" class="sub" data-act="list">+ 出品先</button>${pd ? `<button type="button" class="sub" data-act="down">${man(pd.to)}に下げた</button>` : ""}<button type="button" data-act="save">保存</button></div>
     </article>`;
@@ -575,7 +603,7 @@ function renderSplit() {
     const pct = Math.min(100, Math.round((st.paid / s.total) * 100));
     return `<article class="card" data-split="${s.id}">
       <header><b>分割 No.${s.id}</b><b>${esc(s.buyer)}さん</b><span class="tag">${GAME[s.game] ?? esc(s.game)}</span><span class="tag${st.late ? " warn" : s.status === "完済" ? " ok" : ""}">${st.late ? `${st.late.days}日遅れ` : esc(s.status)}</span>
-        <span class="muted">${esc(s.contact)}${s.middle ? ` ・ 間: ${esc(s.middle)}` : ""}</span></header>
+        <span class="muted">${esc(s.contact)}${s.middle ? ` ・ 間: ${esc(s.middle)}` : ""}</span>${cautionHit(data.caution, s.contact) ? `<span class="tag warn">⚠️ 要注意リスト</span>` : ""}</header>
       <p style="margin:6px 0 0"><b>${yen(st.paid)}</b> / ${yen(s.total)} ・ 残り ${yen(st.remaining)} ・ ${st.count[0]} / ${st.count[1]}回 ${st.next ? `・ 次は <b>${md(st.next.due_on)} ${yen(st.next.amount)}</b>` : ""}${st.mismatch ? ` <span class="tag warn">予定の合計が総額と違います</span>` : ""}</p>
       <div class="bar"><i style="width:${pct}%"></i></div>
       <p class="muted" style="margin:6px 0 0">${esc(charsText(s.chars)).slice(0, 200)}</p>
@@ -594,8 +622,7 @@ function renderSplit() {
         <div class="row"><button type="button" data-act="save">保存</button></div>
       </details>
       ${imgSection("split", s.id)}
-      <div class="muted" style="margin-top:6px">引き渡し(完済してから)</div>
-      <div class="row">${Object.entries(HANDOVER).map(([k, v]) => `<label><input type="checkbox" data-h="${k}"${s.handover?.[k] ? " checked" : ""}${s.status === "支払い中" ? " disabled" : ""} /> ${v}</label>`).join("")}</div>
+      ${safeBlock(s, s.status !== "支払い中")}
     </article>`;
   }).join("") || `<p class="muted">分割はまだありません</p>`;
 }
@@ -628,6 +655,7 @@ $("stockList").addEventListener("click", (e) => {
   if (btn.dataset.act === "unlist") return save({ listings: ls.filter((_, k) => k !== i) });
   if (btn.dataset.act === "checked") { ls[i].checked_on = today; return save({}, `${ls[i].site} を確認済みにしました`); }
   if (btn.dataset.act === "down") return save({ price: priceDown(s, today).to, price_at: today }, "値下げを記録しました");
+  if (btn.dataset.act === "handed") return confirm("引き渡し完了にしますか?(売却済みにして、見守りを始めます)") && save({ handover: handoverOf(card), handed_on: today, status: "売却済み", sold_at: s.sold_at ?? today }, "引き渡し完了。1・3・7日後に見守りを出します");
 });
 
 $("splitList").addEventListener("click", (e) => {
@@ -645,13 +673,34 @@ $("splitList").addEventListener("click", (e) => {
     return run(() => api(`/api/split/${id}/pay`, { method: "POST", body: JSON.stringify(n) }), "予定を追加しました");
   }
   if (act === "save") return run(() => api(`/api/split/${id}`, { method: "PATCH", body: JSON.stringify(fields(card)) }), `分割 No.${id} を保存しました`);
+  if (act === "handed") return confirm("引き渡し完了にしますか?") && run(() => api(`/api/split/${id}`, { method: "PATCH", body: JSON.stringify({ handover: handoverOf(card), handed_on: today, status: "引き渡し済み" }) }), "引き渡し完了。1・3・7日後に見守りを出します");
 });
 $("splitList").addEventListener("change", (e) => {
   if (!e.target.dataset.h) return;
   const card = e.target.closest("[data-split]");
-  const handover = Object.fromEntries([...card.querySelectorAll("[data-h]")].map((x) => [x.dataset.h, x.checked]));
-  const all = Object.values(handover).every(Boolean);
-  run(() => api(`/api/split/${card.dataset.split}`, { method: "PATCH", body: JSON.stringify({ handover, ...(all ? { status: "引き渡し済み" } : {}) }) }), all ? "引き渡し済みにしました" : "保存しました");
+  run(() => api(`/api/split/${card.dataset.split}`, { method: "PATCH", body: JSON.stringify({ handover: handoverOf(card) }) }), "チェックを保存しました");
+});
+$("stockList").addEventListener("change", (e) => {
+  if (!e.target.dataset.h) return;
+  const card = e.target.closest("[data-stock]");
+  run(() => api(`/api/stock/${card.dataset.stock}`, { method: "PATCH", body: JSON.stringify({ handover: handoverOf(card) }) }), "チェックを保存しました");
+});
+// 見守り(引き渡し後にログインできているか)を確認した
+$("todo").addEventListener("click", (e) => {
+  const b = e.target.closest("button[data-watch]");
+  if (!b) return;
+  const path = { stock: "stock", split: "split", consign: "consign" }[b.dataset.kind];
+  run(() => api(`/api/${path}/${b.dataset.id}`, { method: "PATCH", body: JSON.stringify({ watch: Number(b.dataset.watch) }) }), "見守りの確認を記録しました");
+});
+
+// ── 要注意リスト ──
+function renderCaution() {
+  $("cautionList").innerHTML = (data.caution ?? []).map((c) => `<tr><td><a href="https://x.com/${esc(c.handle)}" target="_blank" rel="noopener">@${esc(c.handle)}</a></td><td>${esc(c.reason)}</td><td>${md(c.created_at.slice(0, 10))}</td><td><button type="button" class="sub" data-del="${c.id}">外す</button></td></tr>`).join("") || `<tr><td colspan="4" class="muted">まだいません</td></tr>`;
+}
+$("c-add").addEventListener("click", () => run(() => api("/api/caution", { method: "POST", body: JSON.stringify({ handle: $("c-handle").value, reason: $("c-reason").value }) }).then(() => { $("c-handle").value = ""; $("c-reason").value = ""; }), "要注意リストに追加しました"));
+$("cautionList").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-del]");
+  if (b && confirm("リストから外しますか?")) run(() => api(`/api/caution/${b.dataset.del}`, { method: "DELETE" }), "外しました");
 });
 
 $("s-add").addEventListener("click", () => {
