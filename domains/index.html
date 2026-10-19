@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>中古ドメイン発掘ダッシュボード</title>
+<style>
+  :root {
+    --bg: #0f1420; --panel: #171e2e; --border: #263049;
+    --text: #dce3f0; --dim: #8b96ad; --accent: #5eead4; --warn: #f6a04d; --bad: #f47174;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Hiragino Sans", "Noto Sans JP", sans-serif; font-size: 14px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 15px; margin: 32px 0 8px; color: var(--accent); }
+  .updated { color: var(--dim); font-size: 12px; margin-bottom: 16px; }
+  .stats { display: flex; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+  .stat { background: var(--panel); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 16px; min-width: 110px; }
+  .stat b { display: block; font-size: 22px; }
+  .stat span { color: var(--dim); font-size: 12px; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  input[type=search], select { background: var(--panel); color: var(--text);
+    border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px; font-size: 13px; }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border);
+    white-space: nowrap; }
+  th { color: var(--dim); font-weight: normal; font-size: 12px; position: sticky; top: 0;
+    background: var(--bg); }
+  td.num, th.num { text-align: right; }
+  .domain { font-weight: bold; font-size: 15px; }
+  .score { color: var(--accent); font-weight: bold; }
+  .flag { display: inline-block; background: #3a2530; color: var(--bad); border-radius: 4px;
+    padding: 1px 6px; font-size: 11px; margin-left: 6px; }
+  .drop { display: inline-block; background: #1e3a34; color: var(--accent); border-radius: 4px;
+    padding: 1px 6px; font-size: 11px; margin-left: 6px; }
+  .st-available { color: var(--accent); font-weight: bold; }
+  .st-registered { color: var(--dim); }
+  .st-unknown { color: var(--warn); }
+  a { color: #7ab8f5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .dim { color: var(--dim); }
+  .note { color: var(--dim); font-size: 12px; line-height: 1.7; margin-top: 24px;
+    border-top: 1px solid var(--border); padding-top: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>中古ドメイン発掘ダッシュボード</h1>
+  <div class="updated" id="updated">データ未生成 — 先に <code>npm run pipeline</code> を実行</div>
+  <div class="stats" id="stats"></div>
+
+  <h2>ウォッチリスト(ドロップ待ち)</h2>
+  <div class="scroll"><table id="watch">
+    <thead><tr><th>ドメイン</th><th>状態</th><th>最終チェック</th></tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <h2>取得可能なドメイン(スコア順)</h2>
+  <div class="controls">
+    <input type="search" id="q" placeholder="絞り込み(文字列)">
+    <select id="genre"><option value="">全ジャンル</option></select>
+    <select id="tld"><option value="">全TLD</option></select>
+    <label class="dim"><input type="checkbox" id="hideRisk"> 要注意フラグを隠す</label>
+  </div>
+  <div class="scroll"><table id="list">
+    <thead><tr>
+      <th>ドメイン</th><th>ジャンル</th><th class="num">スコア</th><th class="num">運用歴</th>
+      <th class="num">被リンク</th><th class="num">名前</th><th>アーカイブ期間</th>
+      <th class="num">OPR</th><th>出所</th><th>調査</th>
+    </tr></thead>
+    <tbody></tbody>
+  </table></div>
+
+  <p class="note">
+    スコア = 運用歴(Waybackスナップショット月数・最終年の近さ・歴史の長さ、最大35)
+    + 被リンク(Open PageRank×3、最大30)+ 名前の質(TLD・長さ・記号なし、最大25)
+    + ニッチ一致(+10)− リスク減点。<br>
+    「商標」フラグはブランド語のヒューリスティック検知。取得前に必ず商標・過去コンテンツ
+    (Waybackで実際の画面)を目視確認すること。空き判定は取得時点のもので、
+    レジストラでの最終確認が必要。
+  </p>
+</div>
+<script src="data/site/report.js"></script>
+<script>
+  const R = window.DOMAIN_REPORT;
+  if (R) {
+    document.getElementById("updated").textContent =
+      "最終更新: " + new Date(R.updatedAt).toLocaleString("ja-JP") +
+      (R.oprEnabled ? "(Open PageRank有効)" : "(Open PageRank未設定 — 被リンク評価なし)");
+
+    const stats = [
+      ["候補総数", R.counts.candidates],
+      ["取得可能", R.counts.available],
+      ["登録済み", R.counts.registered],
+      ["判定不能", R.counts.unknown],
+      ["ウォッチ", R.counts.watchlist],
+    ];
+    document.getElementById("stats").innerHTML = stats
+      .map(([k, v]) => `<div class="stat"><b>${v}</b><span>${k}</span></div>`).join("");
+
+    const stLabel = { available: "空き", registered: "登録済み", unknown: "判定不能" };
+    document.querySelector("#watch tbody").innerHTML = R.watchlist.length
+      ? R.watchlist.map((w) => `<tr>
+          <td class="domain">${w.domain}${w.droppedAt ? '<span class="drop">DROP検知</span>' : ""}</td>
+          <td class="st-${w.status}">${stLabel[w.status] ?? w.status}</td>
+          <td class="dim">${w.checkedAt ? new Date(w.checkedAt).toLocaleString("ja-JP") : "-"}</td>
+        </tr>`).join("")
+      : '<tr><td colspan="3" class="dim">未設定(input/watchlist.txt に追加)</td></tr>';
+
+    const tlds = [...new Set(R.available.map((d) => d.domain.split(".").slice(1).join(".")))].sort();
+    const tldSel = document.getElementById("tld");
+    tldSel.innerHTML += tlds.map((t) => `<option>${t}</option>`).join("");
+    const genres = [...new Set(R.available.map((d) => d.genreLabel).filter(Boolean))].sort();
+    const genreSel = document.getElementById("genre");
+    genreSel.innerHTML += genres.map((g) => `<option>${g}</option>`).join("");
+
+    function render() {
+      const q = document.getElementById("q").value.toLowerCase();
+      const tld = tldSel.value;
+      const genre = genreSel.value;
+      const hideRisk = document.getElementById("hideRisk").checked;
+      const rows = R.available.filter((d) =>
+        d.domain.includes(q) &&
+        (!tld || d.domain.endsWith("." + tld)) &&
+        (!genre || d.genreLabel === genre) &&
+        (!hideRisk || d.flags.length === 0));
+      document.querySelector("#list tbody").innerHTML = rows.length
+        ? rows.map((d) => `<tr>
+            <td class="domain">${d.domain}
+              ${d.droppedAt ? '<span class="drop">DROP検知</span>' : ""}
+              ${d.flags.map((f) => `<span class="flag">${f}</span>`).join("")}</td>
+            <td class="dim">${d.genreLabel ?? "-"}</td>
+            <td class="num score">${d.score}</td>
+            <td class="num">${d.parts.history}</td>
+            <td class="num">${d.parts.backlink}</td>
+            <td class="num">${d.parts.name + d.parts.niche}</td>
+            <td class="dim">${d.firstYear ? `${d.firstYear}〜${d.lastYear}(${d.months}ヶ月)` : "履歴なし"}</td>
+            <td class="num">${d.opr ?? "-"}</td>
+            <td class="dim">${d.source === "manual" ? "手動" : "シード"}</td>
+            <td><a href="https://web.archive.org/web/*/${d.domain}" target="_blank" rel="noopener">Wayback</a></td>
+          </tr>`).join("")
+        : '<tr><td colspan="10" class="dim">該当なし</td></tr>';
+    }
+    for (const id of ["q", "genre", "tld", "hideRisk"]) {
+      document.getElementById(id).addEventListener("input", render);
+    }
+    render();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+# 中古ドメイン発掘パイプライン 自動実行
+# 1日1回、候補ドメインの空き状況チェック・運用歴評価・スコアリングを行い、
+# 結果(data/)をコミットする。ウォッチリストのドロップ検知もここで走る。
+#
+# Secrets(任意・未設定の機能は自動スキップ):
+#   OPR_API_KEY … Open PageRank(被リンク由来のドメインランク評価。無料キー)
+
+name: domains-auto-update
+
+on:
+  schedule:
+    - cron: "23 2 * * *" # 1日1回 11:23 JST。他サイトのワークフローと時間をずらす
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: domains-auto-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run pipeline
+        env:
+          OPR_API_KEY: ${{ secrets.OPR_API_KEY }}
+        run: |
+          set -e
+          cd domains
+          npm run pipeline
+
+      - name: Commit updated data
+        run: |
+          git config user.name "market-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add domains/data
+          if git diff --cached --quiet; then
+            echo "no data changes"
+          else
+            git commit -m "chore: auto-update domain scout data [skip ci]"
+            # 他サイトの自動更新ワークフローと同時に走った場合に備えてrebaseしつつプッシュ
+            for i in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
+              sleep $((i * 5))
+            done
+          fi
