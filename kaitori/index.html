@@ -54,6 +54,8 @@
   .result { text-align: center; }
   .result .label { color: var(--sub); margin: 0; }
   .result .price { font-size: 34px; font-weight: 800; color: var(--accent); margin: 4px 0; letter-spacing: .02em; }
+  .result .keys { color: var(--sub); font-size: 14px; margin: 0; }
+  select { display: block; width: 100%; margin-top: 4px; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; }
   .badge { display: inline-block; padding: 4px 12px; border-radius: 999px; font-weight: 700; font-size: 15px; }
   .badge.ok { background: var(--ok-bg); color: var(--ok); } .badge.check { background: var(--warn-bg); color: var(--warn); } .badge.ng { background: var(--ng-bg); color: var(--ng); }
   .notes { text-align: left; font-size: 14px; color: var(--sub); margin: 8px 0 0; padding-left: 20px; }
@@ -106,8 +108,9 @@
       <p class="label">取引しやすさ</p>
       <p><span class="badge" id="badge"></span></p>
       <ul class="notes" id="notes"></ul>
-      <p class="label" style="margin-top:12px">買取・代理出品の目安</p>
+      <p class="label" style="margin-top:12px">メルルの買取額の目安</p>
       <p class="price" id="price"></p>
+      <p class="keys" id="market"></p>
       <div class="row"><button class="btn" id="dmBtn" type="button">この内容で相談する(XでDM)</button></div>
       <div class="lead-form" id="leadForm" hidden>
         <p class="hint">相談番号を発行します。XのDMでこの番号を送っていただくと、答えた内容を見ながらご案内できます。</p>
@@ -116,7 +119,7 @@
         <div class="row"><button class="btn" id="leadBtn" type="button">相談番号を発行する</button></div>
         <div class="notice" id="leadDone" hidden></div>
       </div>
-      <p class="hint">項目ごとの目安額を足した、おおよその金額です。正式な金額は、アカウントを確認してDMでお伝えします。</p>
+      <p class="hint">ゲームトレードで実際に売れたアカウント(1万円以上)の価格から出した目安です。限定衣装・人気キャラなど、ここにない内容で大きく上下するため、正式な金額はアカウントを確認してDMでお伝えします。</p>
     </div>
   </section>
 
@@ -163,7 +166,11 @@ function setGame(g) {
   store.set("check:game", g);
   for (const b of document.querySelectorAll("[data-game]")) b.setAttribute("aria-pressed", String(b.dataset.game === g));
   $("fields").innerHTML = CHECK[g].fields
-    .map((f) => `<label>${esc(f.label)}<input type="number" min="0" inputmode="numeric" data-k="${f.k}" placeholder="${esc(f.hint)}" /></label>`)
+    .map((f) =>
+      f.options
+        ? `<label>${esc(f.label)}<select data-k="${f.k}">${f.options.map(([v, t]) => `<option value="${v}">${esc(t)}</option>`).join("")}</select></label>`
+        : `<label>${esc(f.label)}<input type="number" min="0" inputmode="numeric" data-k="${f.k}" placeholder="${esc(f.hint)}" /></label>`,
+    )
     .join("");
   $("shotHint").textContent = CHECK[g].shots;
   $("readMsg").textContent = "";
@@ -222,10 +229,20 @@ for (const b of document.querySelectorAll("[data-game]")) b.addEventListener("cl
 const values = () => Object.fromEntries([...document.querySelectorAll("[data-k]")].map((x) => [x.dataset.k, x.value]));
 const answers = () => Object.fromEntries(SAFETY_Q.map((q) => [q.k, document.querySelector(`input[name="${q.k}"]:checked`)?.value]));
 
-$("estBtn").addEventListener("click", () => {
+// 値付けモデル(売れたアカウントから学習。satei/scripts/train-check.mjs)
+let model = null;
+$("estBtn").addEventListener("click", async () => {
   const a = answers();
-  const r = checkEstimate(game, values(), a);
-  const text = r.low == null ? "DMで個別に確認します" : `約${man(r.low)}〜${man(r.high)}円`;
+  try {
+    model ??= await (await fetch("./check-model.json")).json();
+  } catch {
+    $("result").hidden = false;
+    $("price").textContent = "読み込めませんでした。もう一度お試しください";
+    return;
+  }
+  const r = checkEstimate(model, game, values(), a);
+  const text = r.low == null ? "DMで個別に確認します" : r.capped ? `${man(r.low)}円以上(個別査定)` : `約${man(r.low)}〜${man(r.high)}円`;
+  $("market").textContent = r.market ? `代理出品なら 相場 約${man(r.market.low)}〜${man(r.market.high)}円${r.capped ? "以上" : ""}で紹介できます` : "";
   $("badge").className = `badge ${r.safety.level}`;
   $("badge").textContent = LEVEL[r.safety.level];
   $("notes").innerHTML = r.safety.notes.map((n) => `<li>${esc(n)}</li>`).join("") + (SAFETY_Q.some((q) => !a[q.k]) ? "<li>答えていない質問があります</li>" : "");
