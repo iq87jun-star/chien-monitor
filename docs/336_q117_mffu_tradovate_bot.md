@@ -172,3 +172,7 @@ Drive `chien_ops/futures/mffu_log.csv`: 13:00:03〜04 UTC に MESZ2026 ×7(signa
 
 ## 22.【2026-10-13 07:50 JST 自動確認】初回ラウンド完了 — exit 3 本とも 200(20:00 UTC)・推定損益 −$587 / 口座(7/3/7)
 `mffu_log.csv`: exit MES 7,857.5(建て 7,863.75 → −6.25 pt × $5 × 7 = −$219)、MNQ 30,905.25(31,061.75 → −156.5 × $2 × 3 = −$939)、MYM 52,103(51,940 → +163 × $0.5 × 7 = +$570)。`pnl_est` −587.25・`equity_est` −587.25・`hi_est` 0(2 口座とも同額)。日次ソフト停止 $2,500 には届かず。来週(10/19)から 5/2/5(§20)。
+
+## 23.【2026-10-19 22:30 JST 自動確認】第 2 回エントリー成功 — ただし枚数は 7/3/7 のまま(§20 の 5/2/5 への戻しが VPS config.json に未反映)
+`mffu_log.csv`: 10/15(木)13:01 UTC に keepalive(MES 1 枚 建て→決済、応答 200×2)。10/19(月)13:00:03〜04 UTC に entry MESZ2026 ×7(signalPrice 7,738)・MNQZ2026 ×3(29,755)・MYMZ2026 ×7(52,085)、3 本とも 200 `{"success":true}`。名目 ≈ $632k(日次ソフト停止 $2,500 の 0.40%)。exit は 20:00 UTC(10/20 05:00 JST)、check 20:30 UTC。
+§20・docs/353 の結論は「10/19 から 5/2/5」だったが、VPS の `C:\chien\ops\futures\config.json` が 7/3/7 のままで実行された。建玉中は変えない(§21 と同じ扱い)。**10/20 05:00 JST の exit 後〜10/26 22:00 JST の次回エントリー前**に `symbols.MES.qty` 5・`MNQ.qty` 2・`MYM.qty` 5・`max_contracts_total` 12 に戻し、`python mffu_bot.py --action status` で `qty` を確認する。Tradovate 側の約定・損益は TradersPost の Subscriptions 画面で確認(この記録は webhook 応答のみ)。
