@@ -1,0 +1,11 @@
+; PortfolioE「耐久」挑戦上限(v1・4資産) — E5単独 0.84x(docs/130、換算はdocs/133 §3で訂正済み)
+; ⚠ 推奨は v2(2資産)= portfolioE2_durable_x15.set(docs/133)
+; legRisk = 0.84 × legσ1x(4資産=1.0) = 0.84%/レッグ
+InpScenario=2
+InpAcknowledgeLEAD=true
+InpLegMonthlyRiskPct=0.84
+InpAccountFloorDDPct=8.0
+InpInitialBalance=0.0
+InpCloseAllOnGuard=true
+InpAllowShort=true
+InpMagic=930610

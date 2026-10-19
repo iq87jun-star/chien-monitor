@@ -1,0 +1,47 @@
+; FundedNext_Stellar_EA - EURUSD default preset (FundedNext Stellar 2-Step $100K)
+; MetaTrader 5 Strategy Tester / live preset. Load via Inputs tab > Load.
+; Values reflect docs/02_strategy_spec.md. Adjust InpInitialBalance/targets per phase.
+InpInitialBalance=100000.0
+InpProfitTargetPct=8.0
+InpDailyLossLimitPct=5.0
+InpMaxLossLimitPct=10.0
+InpDailyStopPct=4.0
+InpDailyNoNewPct=3.0
+InpEquityFloorDDPct=8.0
+InpCloseAllOnGuard=true
+InpRiskPerTradePct=0.4
+InpMaxDailyRiskPct=1.2
+InpMaxTradesPerDay=3
+InpMaxOpenPositions=1
+InpMinLot=0.01
+InpMaxLot=5.0
+InpTrendTF=16388
+InpEntryTF=16385
+InpEmaFastTrend=50
+InpEmaSlowTrend=200
+InpEmaPullback=20
+InpRsiPeriod=14
+InpRsiLongDip=45.0
+InpRsiShortPop=55.0
+InpAtrPeriod=14
+InpAtrSLMult=1.5
+InpRR=1.8
+InpMinStopPips=12.0
+InpMaxStopPips=80.0
+InpUseBreakeven=true
+InpBreakevenAtR=1.0
+InpUseTrailing=true
+InpTrailAtrMult=2.0
+InpMaxSpreadPips=2.0
+InpUseSession=true
+InpSessionStartHour=7
+InpSessionEndHour=20
+InpMinHoldSeconds=150
+InpUseNewsFilter=true
+InpNewsBeforeMin=30
+InpNewsAfterMin=15
+InpNewsCloseBefore=false
+InpManualBlackout=
+InpMagic=920530
+InpSlippagePoints=20
+InpVerboseLog=true

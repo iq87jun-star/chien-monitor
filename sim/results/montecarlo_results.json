@@ -1,0 +1,190 @@
+{
+  "config": {
+    "INITIAL_BALANCE": 100000.0,
+    "PROFIT_TARGET": 108000.0,
+    "RISK_PCT": 0.004,
+    "RR": 1.8,
+    "SL_PIPS": 28.0,
+    "MAX_TRADES_PER_DAY": 3,
+    "EA_DAILY_STOP": 4000.0,
+    "EA_EQUITY_FLOOR": 92000.0,
+    "N_SIMS": 50000,
+    "TAIL": {
+      "p": 0.03,
+      "mult": 2.0
+    }
+  },
+  "scenarios": [
+    {
+      "label": "現実コスト $7/lot 往復 / SL28pips",
+      "comm_rt": 7.0,
+      "sl_pips": 28.0,
+      "grid": [
+        {
+          "win_rate": 0.35,
+          "rr": 1.8,
+          "expectancy_R": -0.02,
+          "pass_pct": 7.91,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 92.09,
+          "avg_days_to_pass": 50.6
+        },
+        {
+          "win_rate": 0.4,
+          "rr": 1.8,
+          "expectancy_R": 0.12,
+          "pass_pct": 39.37,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 60.63,
+          "avg_days_to_pass": 51.3
+        },
+        {
+          "win_rate": 0.45,
+          "rr": 1.8,
+          "expectancy_R": 0.26,
+          "pass_pct": 81.15,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 18.85,
+          "avg_days_to_pass": 45.5
+        },
+        {
+          "win_rate": 0.5,
+          "rr": 1.8,
+          "expectancy_R": 0.4,
+          "pass_pct": 97.82,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 2.18,
+          "avg_days_to_pass": 34.9
+        },
+        {
+          "win_rate": 0.55,
+          "rr": 1.8,
+          "expectancy_R": 0.54,
+          "pass_pct": 99.92,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 0.08,
+          "avg_days_to_pass": 25.8
+        }
+      ]
+    },
+    {
+      "label": "保守コスト $105/lot 往復 / SL28pips",
+      "comm_rt": 105.0,
+      "sl_pips": 28.0,
+      "grid": [
+        {
+          "win_rate": 0.35,
+          "rr": 1.8,
+          "expectancy_R": -0.02,
+          "pass_pct": 0.01,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 99.99,
+          "avg_days_to_pass": 32.0
+        },
+        {
+          "win_rate": 0.4,
+          "rr": 1.8,
+          "expectancy_R": 0.12,
+          "pass_pct": 0.25,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 99.75,
+          "avg_days_to_pass": 38.2
+        },
+        {
+          "win_rate": 0.45,
+          "rr": 1.8,
+          "expectancy_R": 0.26,
+          "pass_pct": 3.36,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 96.64,
+          "avg_days_to_pass": 48.0
+        },
+        {
+          "win_rate": 0.5,
+          "rr": 1.8,
+          "expectancy_R": 0.4,
+          "pass_pct": 21.9,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 78.1,
+          "avg_days_to_pass": 51.9
+        },
+        {
+          "win_rate": 0.55,
+          "rr": 1.8,
+          "expectancy_R": 0.54,
+          "pass_pct": 63.34,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 36.66,
+          "avg_days_to_pass": 49.0
+        }
+      ]
+    },
+    {
+      "label": "保守コスト $105/lot 往復 / SL60pips(スイング化で緩和)",
+      "comm_rt": 105.0,
+      "sl_pips": 60.0,
+      "grid": [
+        {
+          "win_rate": 0.35,
+          "rr": 1.8,
+          "expectancy_R": -0.02,
+          "pass_pct": 0.79,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 99.21,
+          "avg_days_to_pass": 43.7
+        },
+        {
+          "win_rate": 0.4,
+          "rr": 1.8,
+          "expectancy_R": 0.12,
+          "pass_pct": 8.49,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 91.51,
+          "avg_days_to_pass": 50.8
+        },
+        {
+          "win_rate": 0.45,
+          "rr": 1.8,
+          "expectancy_R": 0.26,
+          "pass_pct": 40.04,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 59.96,
+          "avg_days_to_pass": 51.0
+        },
+        {
+          "win_rate": 0.5,
+          "rr": 1.8,
+          "expectancy_R": 0.4,
+          "pass_pct": 81.5,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 18.5,
+          "avg_days_to_pass": 45.0
+        },
+        {
+          "win_rate": 0.55,
+          "rr": 1.8,
+          "expectancy_R": 0.54,
+          "pass_pct": 97.94,
+          "fail_daily_pct": 0.0,
+          "fail_maxloss_pct": 0.0,
+          "timeout_pct": 2.06,
+          "avg_days_to_pass": 34.7
+        }
+      ]
+    }
+  ]
+}

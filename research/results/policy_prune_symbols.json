@@ -1,0 +1,348 @@
+{
+ "meta": {
+  "prereg": "docs/131",
+  "window": "2016-01..2025-12",
+  "folds": [
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "inputs": {
+   "EURUSD": "113537c4663290cf",
+   "GBPUSD": "81191342a95492d6",
+   "USDJPY": "44493d72ca3da454",
+   "AUDUSD": "b9a00386562810e3",
+   "USDCHF": "608f80dc30102b06",
+   "USDCAD": "e7d7d32b5ef89a96",
+   "NZDUSD": "89b1bad88a04566f",
+   "EURJPY": "841334444b0857d9",
+   "GBPJPY": "728315254a4f47bf",
+   "AUDJPY": "98ade6818bbd7995",
+   "NZDJPY": "341c655370e601b5",
+   "CADJPY": "71dafae63b484892",
+   "CHFJPY": "69850c932f42ab0d",
+   "XAUUSD": "069fde17d31617ee",
+   "US500": "bff1db8e8620b8c5",
+   "NAS100": "86ddb5dbb579dc02",
+   "GER40": "2f506d58458bfe58",
+   "JP225": "d4903278f071a23a",
+   "UK100": "f979a26e46c6fb79",
+   "FR40": "231bf96be49c76de"
+  }
+ },
+ "H24a_v4": {
+  "full": {
+   "sharpe": 0.48,
+   "net": 63.9
+  },
+  "loyo_pruned": {
+   "sharpe": 0.62,
+   "net_raw": 64.5,
+   "net_volmatched": 93.4
+  },
+  "fixed_posthoc_drop": [
+   "EURUSD",
+   "GBPUSD",
+   "USDJPY"
+  ],
+  "fold_drops": {
+   "2016": [
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY"
+   ],
+   "2017": [
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY"
+   ],
+   "2018": [
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY"
+   ],
+   "2019": [
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY"
+   ],
+   "2020": [
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY"
+   ],
+   "2021": [
+    "EURUSD",
+    "GBPUSD",
+    "NZDUSD"
+   ],
+   "2022": [
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY"
+   ],
+   "2023": [
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY"
+   ],
+   "2024": [
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY"
+   ],
+   "2025": [
+    "EURUSD",
+    "GBPUSD",
+    "USDJPY"
+   ]
+  },
+  "stability": "9/10",
+  "placebo": {
+   "n": 84,
+   "p80_sharpe": 0.55,
+   "dist": [
+    0.12,
+    0.17,
+    0.18,
+    0.19,
+    0.2,
+    0.22,
+    0.22,
+    0.25,
+    0.25,
+    0.25,
+    0.27,
+    0.28,
+    0.28,
+    0.29,
+    0.29,
+    0.29,
+    0.31,
+    0.31,
+    0.31,
+    0.32,
+    0.33,
+    0.33,
+    0.33,
+    0.34,
+    0.35,
+    0.36,
+    0.37,
+    0.38,
+    0.38,
+    0.38,
+    0.39,
+    0.39,
+    0.39,
+    0.4,
+    0.4,
+    0.4,
+    0.4,
+    0.4,
+    0.4,
+    0.41,
+    0.41,
+    0.43,
+    0.44,
+    0.44,
+    0.44,
+    0.44,
+    0.45,
+    0.45,
+    0.45,
+    0.46,
+    0.46,
+    0.47,
+    0.47,
+    0.47,
+    0.47,
+    0.48,
+    0.48,
+    0.5,
+    0.5,
+    0.51,
+    0.52,
+    0.52,
+    0.53,
+    0.53,
+    0.54,
+    0.54,
+    0.55,
+    0.56,
+    0.56,
+    0.57,
+    0.59,
+    0.6,
+    0.61,
+    0.61,
+    0.63,
+    0.63,
+    0.64,
+    0.65,
+    0.66,
+    0.68,
+    0.68,
+    0.71,
+    0.71,
+    0.75
+   ]
+  },
+  "gates": {
+   "c1_oos": true,
+   "c2_placebo": true,
+   "c3_stability": true
+  },
+  "verdict": "採用候補(Dukascopy再確認+デモへ)"
+ },
+ "H24b_v7": {
+  "full": {
+   "sharpe": 0.65,
+   "net": 21.2
+  },
+  "loyo_pruned": {
+   "sharpe": 0.73,
+   "net_raw": 26.6,
+   "net_volmatched": 24.1
+  },
+  "fixed_posthoc_drop": [
+   "USDJPY"
+  ],
+  "fold_drops": {
+   "2016": [
+    "USDJPY"
+   ],
+   "2017": [
+    "USDJPY"
+   ],
+   "2018": [
+    "USDJPY"
+   ],
+   "2019": [
+    "USDJPY"
+   ],
+   "2020": [
+    "USDJPY"
+   ],
+   "2021": [
+    "USDJPY"
+   ],
+   "2022": [
+    "USDJPY"
+   ],
+   "2023": [
+    "USDJPY"
+   ],
+   "2024": [
+    "USDJPY"
+   ],
+   "2025": [
+    "USDJPY"
+   ]
+  },
+  "stability": "10/10",
+  "placebo": {
+   "n": 3,
+   "p80_sharpe": 0.68,
+   "dist": [
+    0.56,
+    0.59,
+    0.73
+   ]
+  },
+  "gates": {
+   "c1_oos": true,
+   "c2_placebo": true,
+   "c3_stability": true
+  },
+  "verdict": "採用候補(Dukascopy再確認+デモへ)"
+ },
+ "H24c_E5": {
+  "full": {
+   "sharpe": 0.56,
+   "net": 58.9
+  },
+  "loyo_pruned": {
+   "sharpe": 0.88,
+   "net_raw": 118.6,
+   "net_volmatched": 111.6
+  },
+  "fixed_posthoc_drop": [
+   "GER40",
+   "US500"
+  ],
+  "fold_drops": {
+   "2016": [
+    "GER40",
+    "US500"
+   ],
+   "2017": [
+    "GER40",
+    "US500"
+   ],
+   "2018": [
+    "GER40",
+    "US500"
+   ],
+   "2019": [
+    "GER40",
+    "US500"
+   ],
+   "2020": [
+    "GER40",
+    "US500"
+   ],
+   "2021": [
+    "GER40",
+    "US500"
+   ],
+   "2022": [
+    "GER40",
+    "US500"
+   ],
+   "2023": [
+    "GER40",
+    "US500"
+   ],
+   "2024": [
+    "GER40",
+    "US500"
+   ],
+   "2025": [
+    "GER40",
+    "US500"
+   ]
+  },
+  "stability": "10/10",
+  "placebo": {
+   "n": 6,
+   "p80_sharpe": 0.65,
+   "dist": [
+    0.08,
+    0.29,
+    0.31,
+    0.46,
+    0.65,
+    0.88
+   ]
+  },
+  "gates": {
+   "c1_oos": true,
+   "c2_placebo": true,
+   "c3_stability": true,
+   "c4_corr": true
+  },
+  "c4_rho": {
+   "vs_v7": 0.06,
+   "vs_EMon": 0.09
+  },
+  "verdict": "採用候補(Dukascopy再確認+デモへ)"
+ }
+}

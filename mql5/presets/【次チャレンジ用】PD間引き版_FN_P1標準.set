@@ -1,0 +1,40 @@
+; ==============================================================
+; 【次のチャレンジ口座用】PortfolioD 間引き版(FN P1 +8%・標準)
+; 適用EA: Chien_PortfolioD_Prop3 v1.30
+; 構成変更(docs/134-135): v7=EURJPY+GBPJPY(USDJPY除外・Dukascopy合格)
+;                         E5=XAUUSD+NAS100(US500/GER40除外・26年耐久合格)
+;                         v4/E-Monは現行のまま(v4間引きはDukascopyで見送り)
+; 校正: 中央3ヶ月・倍率比0.951(docs/135)。同速度で失格 25.4→19.6%(楽観)/31.2→26.7%(悲観)
+; 換算: v7はShotsPerWeek=8(4時刻×2ペア)で総週次リスク維持。E5は2レッグ化補償でlegRisk×2
+; 防御フィルタ(docs/148・v1.31): 休日窓12/20-1/3新規停止+ペア別スプレッド上限(edge20 §3)。EV主張なし
+; ⚠ デモ必須。走行中の口座には適用しない(次のチャレンジ/資金化後から)
+; ==============================================================
+InpAcknowledgeLEAD=true
+InpYenSymbols=EURJPY,GBPJPY
+InpV4Symbols=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Symbols=XAUUSD,NAS100
+InpEMonSymbols=NAS100,US500,GER40
+InpV7ShotsPerWeek=8
+InpHolidayFilterEnable=true
+InpV7SpreadCapsPips=EURJPY:2.8,GBPJPY:2.9
+InpInitialBalance=0.0
+InpBaselineReset=false
+InpMaxLossLimitPct=10.0
+InpAccountFloorDDPct=9.0
+InpNotifyEnable=true
+InpNotifyEntries=true
+InpNotifyRefPct=3.5
+InpNotifyDayWarnPct=3.0
+InpReenterManualClose=true
+InpMTrailEnable=false
+InpWeeklyRiskPct=1.85
+InpV4RiskPerTradePct=0.55
+InpEMonWeeklyPct=1.85
+InpE5LegRiskPct=2.97
+InpProfitStopPct=8.0
+InpDailyStopPct=4.0
+InpProfitLockEnable=true
+InpLockArmPct=7.0
+InpLockClosePct=7.5
+InpSwapLogEnable=true
+InpMagicBase=760720

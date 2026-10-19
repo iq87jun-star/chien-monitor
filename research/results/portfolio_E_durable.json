@@ -1,0 +1,146 @@
+{
+ "meta": {
+  "prereg": "docs/129",
+  "window": "2016-01..2026-06(clip)",
+  "seed": 7,
+  "n_paths": 20000,
+  "g3_note": "G3は日足プロキシ=実測H1の約2割(docs/86 H14b)・控えめ側",
+  "inputs": {
+   "EURUSD": "113537c4663290cf",
+   "GBPUSD": "81191342a95492d6",
+   "USDJPY": "44493d72ca3da454",
+   "AUDUSD": "b9a00386562810e3",
+   "USDCHF": "608f80dc30102b06",
+   "USDCAD": "e7d7d32b5ef89a96",
+   "NZDUSD": "89b1bad88a04566f",
+   "EURJPY": "841334444b0857d9",
+   "GBPJPY": "728315254a4f47bf",
+   "AUDJPY": "98ade6818bbd7995",
+   "NZDJPY": "341c655370e601b5",
+   "CADJPY": "71dafae63b484892",
+   "CHFJPY": "69850c932f42ab0d",
+   "XAUUSD": "069fde17d31617ee",
+   "US500": "bff1db8e8620b8c5",
+   "NAS100": "86ddb5dbb579dc02",
+   "GER40": "2f506d58458bfe58",
+   "JP225": "d4903278f071a23a",
+   "UK100": "f979a26e46c6fb79",
+   "FR40": "231bf96be49c76de"
+  }
+ },
+ "variants": {
+  "PE0_E5only": {
+   "mean_month": 0.19,
+   "cagr": 2.2,
+   "sharpe": 0.43,
+   "maxDD": -8.7,
+   "worst_month": -4.81,
+   "worst_day": -2.8,
+   "p_pass_JulAug": 0.0,
+   "months": 126,
+   "mult": 0.56,
+   "worst_intramonth_DD": -6.2
+  },
+  "PE1_E5+G3_1pct": {
+   "mean_month": 0.25,
+   "cagr": 2.9,
+   "sharpe": 0.5,
+   "maxDD": -9.6,
+   "worst_month": -5.56,
+   "worst_day": -3.0,
+   "p_pass_JulAug": 0.0,
+   "months": 126,
+   "mult": 0.6,
+   "worst_intramonth_DD": -6.4
+  },
+  "PE2_E5+G3_2pct": {
+   "mean_month": 0.29,
+   "cagr": 3.3,
+   "sharpe": 0.52,
+   "maxDD": -9.7,
+   "worst_month": -5.85,
+   "worst_day": -3.41,
+   "p_pass_JulAug": 0.0,
+   "months": 126,
+   "mult": 0.6,
+   "worst_intramonth_DD": -6.4
+  }
+ },
+ "decision": {
+  "D1_gates": {
+   "c1_mean_month": true,
+   "c2_maxDD": false,
+   "c3_worst_day": true
+  },
+  "D1_pass": false,
+  "chosen": "PE0_E5only",
+  "D2": {
+   "applicable": false,
+   "improves": false
+  },
+  "D4_rho": {
+   "vs_PortfolioD": 0.45,
+   "vs_SeasonalM3": 0.1
+  },
+  "D4_diversification_limited": false,
+  "D5": "本資金投入なし・デモ必須(docs/53 §5)"
+ },
+ "challenge_mc": {
+  "FN_p1_8pct": {
+   "x1.0": {
+    "mult": 0.56,
+    "median_months": 15.0,
+    "pass_pct": 65.9,
+    "fail_pct_optimistic": 17.2,
+    "fail_pct_raw": 17.2,
+    "undone_pct": 17.0
+   },
+   "x1.5": {
+    "mult": 0.84,
+    "median_months": 9.0,
+    "pass_pct": 71.2,
+    "fail_pct_optimistic": 27.0,
+    "fail_pct_raw": 27.0,
+    "undone_pct": 1.7
+   },
+   "x2.0": {
+    "mult": 1.12,
+    "median_months": 5.0,
+    "pass_pct": 69.8,
+    "fail_pct_optimistic": 30.1,
+    "fail_pct_raw": 34.7,
+    "undone_pct": 0.1
+   }
+  },
+  "FTMO_10pct": {
+   "x1.0": {
+    "mult": 0.56,
+    "median_months": 18.0,
+    "pass_pct": 56.8,
+    "fail_pct_optimistic": 10.8,
+    "fail_pct_raw": 10.8,
+    "undone_pct": 32.5
+   },
+   "x1.5": {
+    "mult": 0.84,
+    "median_months": 12.0,
+    "pass_pct": 70.1,
+    "fail_pct_optimistic": 22.4,
+    "fail_pct_raw": 22.4,
+    "undone_pct": 7.5
+   },
+   "x2.0": {
+    "mult": 1.12,
+    "median_months": 8.0,
+    "pass_pct": 71.7,
+    "fail_pct_optimistic": 27.4,
+    "fail_pct_raw": 33.8,
+    "undone_pct": 0.9
+   }
+  },
+  "note": "楽観=日次-4%ガード完全執行/悲観(fail_pct_raw)=素の日次-5%踏抜き含む。同月pass&failはfail優先"
+ },
+ "reference": {
+  "PortfolioD": "median-3標準: 中央3ヶ月/失格4.9%(Drive確定, docs/76)"
+ }
+}

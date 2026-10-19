@@ -1,0 +1,119 @@
+{
+ "meta": {
+  "prereg": "docs/127",
+  "alpha": 0.01,
+  "rt_pips": 2.0,
+  "seed_perm": 13,
+  "seed_placebo": 123,
+  "cot_span": [
+   "1999-01-05",
+   "2026-07-07"
+  ],
+  "cot_n": 1436,
+  "inputs": {
+   "cot": "4ff9b1c45f0400e8",
+   "USDJPY": "4138fe635f49435f",
+   "EURJPY": "e1b261a30a5a58a3",
+   "GBPJPY": "7426af9a655e0fce",
+   "US500": "684b541e5a45dc91",
+   "NAS100": "6467933038d93104",
+   "GER40": "f89e5d8be1c02c46",
+   "XAUUSD": "16cb8aea0f37d5ee"
+  }
+ },
+ "H23a": {
+  "main": {
+   "net_pct": -4.1,
+   "win_pct": 45.0,
+   "maxDD_pct": -15.9,
+   "n": 22,
+   "cagr_pct": -0.5,
+   "sharpe": -0.21,
+   "perm_p": 0.609,
+   "jk_max": 0.787,
+   "is_net": -4.4,
+   "oos_net": 0.3
+  },
+  "pre_1999_2015": {
+   "net_pct": 14.6,
+   "n": 21,
+   "durability": "長期構造"
+  },
+  "ref_2026H1_net": 3.0,
+  "placebo_p95": 20.1,
+  "cost2_net": -4.5,
+  "rho_v7": null,
+  "rho_e5": null,
+  "gates": {
+   "G1_econ": false,
+   "G2_perm": false,
+   "G3_jk": false,
+   "G4_isoos": false,
+   "G5_placebo": false,
+   "G6_cost2": false,
+   "G8_indep": true
+  },
+  "verdict": "REJECT",
+  "n_trades_main": 22,
+  "sens(記録のみ・昇格不可)": {
+   "z1.5_h5": -0.2,
+   "z1.5_h10": 5.2,
+   "z2.5_h5": 4.0,
+   "z2.5_h10": 8.6
+  }
+ },
+ "H23b": {
+  "main": {
+   "net_pct": -1.0,
+   "win_pct": 45.0,
+   "maxDD_pct": -18.4,
+   "n": 522,
+   "cagr_pct": -0.1,
+   "sharpe": 0.04,
+   "perm_p": 0.4403,
+   "jk_max": 0.698,
+   "is_net": -0.7,
+   "oos_net": -0.4
+  },
+  "pre_1999_2015": {
+   "net_pct": -42.9,
+   "n": 879,
+   "durability": "現行レジーム"
+  },
+  "ref_2026H1_net": -9.6,
+  "placebo_p95": 43.4,
+  "cost2_net": -2.8,
+  "rho_v7": -0.07,
+  "rho_e5": -0.02,
+  "gates": {
+   "G1_econ": false,
+   "G2_perm": false,
+   "G3_jk": false,
+   "G4_isoos": false,
+   "G5_placebo": false,
+   "G6_cost2": false,
+   "G8_indep": true
+  },
+  "verdict": "REJECT",
+  "sens(記録のみ・昇格不可)": {
+   "d1w": 9.7,
+   "d13w": -22.1
+  }
+ },
+ "H23c": {
+  "on_weeks": 345,
+  "off_weeks": 176,
+  "on_mean_bps": 3.5,
+  "off_mean_bps": 3.81,
+  "diff_perm_p": 0.525,
+  "on_net_pct": 12.1,
+  "uncond_net_pct": 18.8,
+  "placebo_p95_pct": 19.6,
+  "gates": {
+   "c1_perm": false,
+   "c2_placebo": false,
+   "c3_retain80": false
+  },
+  "verdict": "現行v7無条件を維持"
+ }
+}

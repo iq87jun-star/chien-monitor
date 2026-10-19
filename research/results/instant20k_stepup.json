@@ -1,0 +1,115 @@
+{
+ "meta": {
+  "method": "日次ブロックMC(月単位BS)。昇格=+10%初到達(日次close)、失格=フロア(HWM−6%・建値ロック)以下。同月内両成立は日次先着・同日fail優先。中間出金なし想定。",
+  "rule": "FN Stellar Instant(docs/154 §5・公式Help 2026-07-15確認)",
+  "window": "2016-01..2026-06",
+  "n_paths": 20000,
+  "horizon_months": 36,
+  "composition": "季節R4+G3(WR4月別表・G3は倍率非適用)",
+  "inputs": {
+   "EURUSD": "00a08caf63207544",
+   "GBPUSD": "355a845799847d7b",
+   "USDJPY": "1f50f40b5e89f556",
+   "AUDUSD": "ad5549358e8fd8b5",
+   "USDCHF": "b4ef97cc2e91e4f1",
+   "USDCAD": "af173cc8d1fbe954",
+   "NZDUSD": "6bf23b76836db9af",
+   "EURJPY": "3b80d917753db76e",
+   "GBPJPY": "ddc66473ebd30273",
+   "AUDJPY": "98ade6818bbd7995",
+   "NZDJPY": "341c655370e601b5",
+   "CADJPY": "71dafae63b484892",
+   "CHFJPY": "69850c932f42ab0d",
+   "XAUUSD": "f63f13f5ac377f11",
+   "US500": "cf9623ed096f81dd",
+   "NAS100": "f0710910c39fd0d3",
+   "GER40": "1bd9ee8d1aaebc6f",
+   "JP225": "d4903278f071a23a",
+   "UK100": "f979a26e46c6fb79",
+   "FR40": "231bf96be49c76de"
+  },
+  "caveat": "Yahoo日足=保守側(docs/138)。日次close解像度=失格はやや高い側。"
+ },
+ "variants": {
+  "x0.5": {
+   "stepup_pct": 98.1,
+   "breach_first_pct": 1.8,
+   "undone_36m_pct": 0.1,
+   "median_stepup_month": 11.0,
+   "p25_stepup_month": 8.0,
+   "p75_stepup_month": 15.0,
+   "stepup_within_6m_pct": 10.7,
+   "stepup_within_12m_pct": 56.6
+  },
+  "x0.75": {
+   "stepup_pct": 89.4,
+   "breach_first_pct": 10.6,
+   "undone_36m_pct": 0.0,
+   "median_stepup_month": 8.0,
+   "p25_stepup_month": 5.0,
+   "p75_stepup_month": 10.0,
+   "stepup_within_6m_pct": 33.1,
+   "stepup_within_12m_pct": 76.5
+  },
+  "x1.0": {
+   "stepup_pct": 79.4,
+   "breach_first_pct": 20.6,
+   "undone_36m_pct": 0.0,
+   "median_stepup_month": 6.0,
+   "p25_stepup_month": 4.0,
+   "p75_stepup_month": 8.0,
+   "stepup_within_6m_pct": 49.4,
+   "stepup_within_12m_pct": 76.0
+  },
+  "x1.25": {
+   "stepup_pct": 73.3,
+   "breach_first_pct": 26.7,
+   "undone_36m_pct": 0.0,
+   "median_stepup_month": 4.0,
+   "p25_stepup_month": 3.0,
+   "p75_stepup_month": 6.0,
+   "stepup_within_6m_pct": 57.9,
+   "stepup_within_12m_pct": 72.4
+  },
+  "x1.5": {
+   "stepup_pct": 70.3,
+   "breach_first_pct": 29.7,
+   "undone_36m_pct": 0.0,
+   "median_stepup_month": 4.0,
+   "p25_stepup_month": 2.0,
+   "p75_stepup_month": 5.0,
+   "stepup_within_6m_pct": 62.2,
+   "stepup_within_12m_pct": 70.1
+  },
+  "x2.0": {
+   "stepup_pct": 66.0,
+   "breach_first_pct": 34.0,
+   "undone_36m_pct": 0.0,
+   "median_stepup_month": 3.0,
+   "p25_stepup_month": 2.0,
+   "p75_stepup_month": 4.0,
+   "stepup_within_6m_pct": 64.1,
+   "stepup_within_12m_pct": 66.0
+  },
+  "x2.5": {
+   "stepup_pct": 59.9,
+   "breach_first_pct": 40.1,
+   "undone_36m_pct": 0.0,
+   "median_stepup_month": 2.0,
+   "p25_stepup_month": 1.0,
+   "p75_stepup_month": 3.0,
+   "stepup_within_6m_pct": 59.6,
+   "stepup_within_12m_pct": 59.9
+  },
+  "x3.0": {
+   "stepup_pct": 59.9,
+   "breach_first_pct": 40.1,
+   "undone_36m_pct": 0.0,
+   "median_stepup_month": 2.0,
+   "p25_stepup_month": 1.0,
+   "p75_stepup_month": 3.0,
+   "stepup_within_6m_pct": 59.9,
+   "stepup_within_12m_pct": 59.9
+  }
+ }
+}

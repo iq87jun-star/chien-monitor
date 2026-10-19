@@ -1,0 +1,43 @@
+; ==============================================================
+; 【FTMO100k 口座531343523】季節EA(R4+G3)・FTMO 2-Step P1対応
+; 適用EA: Chien_Seasonal_R4G3_Prop v1.30
+; 用途: FTMO P1(目標+10% / 日次-5% / 静的-10%)を季節R4で走る
+; FTMO対応点: ARM9.0 / PASS_LOCK9.5(FNの7.0/7.5から変更・残差はロック後に確定)
+;             日次-4%/フロア-8%ガードはFTMO規約の内側で共通。倍率1.5x=docs/111校正のまま
+; 注意1: InpInitialBalance=100000 を明示済み(現残高100,901のため自動取得不可)
+; 注意2: 銘柄名はFTMO表記。Nasdaqは「US100」を仮設定(気配値ウィンドウで要確認)
+; 注意3: G3はFOMC声明5分前に手仕舞う設計=ニュース±2分窓の外(Challenge中は制限なし)
+; ==============================================================
+InpAcknowledgeDemo=true
+InpMultOverride=1.5
+InpDailyStopPct=4.0
+InpAccountFloorDDPct=8.0
+InpInitialBalance=100000.0
+InpBaselineReset=false
+InpProfitLockEnable=true
+InpLockArmPct=9.0
+InpLockClosePct=9.5
+InpMaxOpenRiskPct=3.0
+InpNoSLRiskAssumePct=10.0
+InpV4Pairs=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Assets=XAUUSD,US500,US100,GER40
+InpEMon=US500,US100,GER40
+InpEMonX=JP225,UK100,FR40
+InpV7X=AUDJPY,NZDJPY,CADJPY,CHFJPY
+InpV7=EURJPY,GBPJPY,USDJPY
+InpSJul=US500,US100
+InpSwapLogEnable=true
+InpReenterManualClose=true
+InpG3Enable=true
+InpG3Symbol=US500
+InpG3Dates=2026.01.28,2026.03.18,2026.04.29,2026.06.17,2026.07.29,2026.09.16,2026.10.28,2026.12.09
+InpG3RiskPct=1.0
+InpG3CatATR=2.5
+InpG3EntryHourET=14
+InpG3ExitMinBefore=5
+InpNotifyEnable=true
+InpNotifyEntries=true
+InpNotifyRefPct=8.0
+InpNotifyDayWarnPct=3.0
+InpNotifyWidth=true
+InpHoldHoursMonday=24

@@ -1,0 +1,198 @@
+{
+  "meta": {
+    "n": 6,
+    "bonferroni_alpha": 0.0083,
+    "span": "2023-08-14..2026-05-29 (17215本)",
+    "drive": false
+  },
+  "candidates": {
+    "I1_LONDON_ORB": {
+      "net_pct": 4.8,
+      "win_pct": 51.0,
+      "maxDD_pct": -5.2,
+      "n": 680,
+      "perm_p": 0.1757,
+      "perm_p_daily": 0.2393,
+      "jackknife_max_p": 0.28,
+      "IS_net": 2.5,
+      "OOS_net": 2.3,
+      "corr_to_v7": -0.15,
+      "placebo_net": -10.0,
+      "placebo_p": 0.946,
+      "cost": {
+        "1pip": 10.6,
+        "2pip": 4.8,
+        "3pip": -0.7,
+        "4pip": -5.9
+      },
+      "dd_within_10pct": "True",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "True",
+        "indep": true,
+        "placebo": "True",
+        "cost": false
+      },
+      "gates_passed": "3/6",
+      "grade": "REJECT"
+    },
+    "I2_NY_ORB": {
+      "net_pct": -16.3,
+      "win_pct": 45.0,
+      "maxDD_pct": -16.5,
+      "n": 643,
+      "perm_p": 0.996,
+      "perm_p_daily": 0.998,
+      "jackknife_max_p": 0.998,
+      "IS_net": -9.6,
+      "OOS_net": -7.5,
+      "corr_to_v7": -0.04,
+      "placebo_net": -17.5,
+      "placebo_p": 1.0,
+      "cost": {
+        "1pip": -12.0,
+        "2pip": -16.3,
+        "3pip": -20.4,
+        "4pip": -24.3
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "False",
+        "indep": true,
+        "placebo": "True",
+        "cost": false
+      },
+      "gates_passed": "2/6",
+      "grade": "REJECT"
+    },
+    "I3_LONDON_FADE": {
+      "net_pct": -23.4,
+      "win_pct": 44.0,
+      "maxDD_pct": -24.4,
+      "n": 680,
+      "perm_p": 1.0,
+      "perm_p_daily": 1.0,
+      "jackknife_max_p": 1.0,
+      "IS_net": -12.8,
+      "OOS_net": -12.2,
+      "corr_to_v7": 0.14,
+      "placebo_net": -10.0,
+      "placebo_p": 0.946,
+      "cost": {
+        "1pip": -19.2,
+        "2pip": -23.4,
+        "3pip": -27.5,
+        "4pip": -31.3
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "False",
+        "indep": true,
+        "placebo": "False",
+        "cost": false
+      },
+      "gates_passed": "1/6",
+      "grade": "REJECT"
+    },
+    "I4_FIRSTHOUR_CONT": {
+      "net_pct": 1.4,
+      "win_pct": 48.0,
+      "maxDD_pct": -5.4,
+      "n": 720,
+      "perm_p": 0.3893,
+      "perm_p_daily": 0.404,
+      "jackknife_max_p": 0.655,
+      "IS_net": 0.2,
+      "OOS_net": 1.2,
+      "corr_to_v7": -0.28,
+      "placebo_net": -14.6,
+      "placebo_p": 1.0,
+      "cost": {
+        "1pip": 7.2,
+        "2pip": 1.4,
+        "3pip": -4.1,
+        "4pip": -9.3
+      },
+      "dd_within_10pct": "True",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "True",
+        "indep": true,
+        "placebo": "True",
+        "cost": false
+      },
+      "gates_passed": "3/6",
+      "grade": "REJECT"
+    },
+    "I5_OVERNIGHT": {
+      "net_pct": -39.8,
+      "win_pct": 37.0,
+      "maxDD_pct": -40.1,
+      "n": 727,
+      "perm_p": 1.0,
+      "perm_p_daily": 1.0,
+      "jackknife_max_p": 1.0,
+      "IS_net": -23.3,
+      "OOS_net": -21.4,
+      "corr_to_v7": -0.31,
+      "placebo_net": -9.8,
+      "placebo_p": 0.982,
+      "cost": {
+        "1pip": -36.3,
+        "2pip": -39.8,
+        "3pip": -43.1,
+        "4pip": -46.3
+      },
+      "dd_within_10pct": "False",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "False",
+        "indep": true,
+        "placebo": "False",
+        "cost": false
+      },
+      "gates_passed": "1/6",
+      "grade": "REJECT"
+    },
+    "I6_TOKYO_BREAK_JPY": {
+      "net_pct": 1.8,
+      "win_pct": 49.0,
+      "maxDD_pct": -5.2,
+      "n": 592,
+      "perm_p": 0.385,
+      "perm_p_daily": 0.4013,
+      "jackknife_max_p": 0.549,
+      "IS_net": 0.9,
+      "OOS_net": 1.0,
+      "corr_to_v7": 0.12,
+      "placebo_net": -5.2,
+      "placebo_p": 0.863,
+      "cost": {
+        "1pip": 5.4,
+        "2pip": 1.8,
+        "3pip": -1.6,
+        "4pip": -5.0
+      },
+      "dd_within_10pct": "True",
+      "gates": {
+        "perm": false,
+        "jk": false,
+        "oos": "True",
+        "indep": true,
+        "placebo": "True",
+        "cost": false
+      },
+      "gates_passed": "3/6",
+      "grade": "REJECT"
+    }
+  },
+  "adopted": [],
+  "leads": []
+}

@@ -1,0 +1,51 @@
+{
+ "method": "日次ブロックMC(月単位BS・36ヶ月上限)。楽観=日次-4%ガード完全執行/悲観=素の日次。同月pass&failはfail優先。FN P1 +8%/フロア-8%(EA)/日次-5%(FN)",
+ "n_paths": 20000,
+ "variants": {
+  "M3(現行)": {
+   "median_months": 4.0,
+   "pass_pct": 89.5,
+   "fail_pct_optimistic": 10.5,
+   "fail_pct_raw": 14.2,
+   "undone_pct": 0.0,
+   "mult": 1.9,
+   "mean_month_pct": 1.96,
+   "worst_month_pct": -8.6,
+   "worst_day_pct": -9.63
+  },
+  "M3+G3": {
+   "median_months": 3.0,
+   "pass_pct": 89.5,
+   "fail_pct_optimistic": 10.5,
+   "fail_pct_raw": 14.1,
+   "undone_pct": 0.0,
+   "mult": 1.9,
+   "mean_month_pct": 2.0,
+   "worst_month_pct": -7.44,
+   "worst_day_pct": -9.63
+  },
+  "R3a+G3": {
+   "median_months": 4.0,
+   "pass_pct": 86.3,
+   "fail_pct_optimistic": 13.7,
+   "fail_pct_raw": 15.6,
+   "undone_pct": 0.0,
+   "mult": 2.35,
+   "mean_month_pct": 1.75,
+   "worst_month_pct": -8.6,
+   "worst_day_pct": -7.05
+  },
+  "R4+G3": {
+   "median_months": 3.0,
+   "pass_pct": 95.0,
+   "fail_pct_optimistic": 5.0,
+   "fail_pct_raw": 7.8,
+   "undone_pct": 0.0,
+   "mult": 1.5,
+   "mean_month_pct": 2.44,
+   "worst_month_pct": -5.46,
+   "worst_day_pct": -5.35
+  }
+ },
+ "reference": "PortfolioD median-3標準(Drive確定・月次MC): 中央3ヶ月/失格4.9%(docs/76)"
+}

@@ -1,0 +1,155 @@
+{
+ "method": "docs/87 倍率規律: min(日次-4%,フロア-8%)逆算×0.8 / G3=日足プロキシ(実測の~2割・控えめ)",
+ "window": "2016-01-01..2026-06-30",
+ "variants": {
+  "M3(現行)": {
+   "mean_month": 0.62,
+   "cagr": 7.6,
+   "sharpe": 1.73,
+   "maxDD": -4.5,
+   "worst_month": -2.74,
+   "worst_day": -3.04,
+   "p_pass_JulAug": 0.0,
+   "months": 126,
+   "mult": 0.6,
+   "worst_intramonth_DD": -4.4
+  },
+  "M3+G3": {
+   "mean_month": 0.67,
+   "cagr": 8.2,
+   "sharpe": 1.77,
+   "maxDD": -3.3,
+   "worst_month": -2.47,
+   "worst_day": -3.04,
+   "p_pass_JulAug": 0.0,
+   "months": 126,
+   "mult": 0.6,
+   "worst_intramonth_DD": -4.4
+  },
+  "R3a": {
+   "mean_month": 0.61,
+   "cagr": 7.5,
+   "sharpe": 1.77,
+   "maxDD": -3.6,
+   "worst_month": -3.37,
+   "worst_day": -2.52,
+   "p_pass_JulAug": 0.0,
+   "months": 126,
+   "mult": 0.84,
+   "worst_intramonth_DD": -6.4
+  },
+  "R3a+G3": {
+   "mean_month": 0.66,
+   "cagr": 8.0,
+   "sharpe": 1.68,
+   "maxDD": -3.2,
+   "worst_month": -2.71,
+   "worst_day": -2.52,
+   "p_pass_JulAug": 0.0,
+   "months": 126,
+   "mult": 0.84,
+   "worst_intramonth_DD": -6.4
+  },
+  "R4": {
+   "mean_month": 1.08,
+   "cagr": 13.6,
+   "sharpe": 2.27,
+   "maxDD": -2.9,
+   "worst_month": -2.5,
+   "worst_day": -2.43,
+   "p_pass_JulAug": 7.0,
+   "months": 126,
+   "mult": 0.68,
+   "worst_intramonth_DD": -6.1
+  },
+  "R4+G3": {
+   "mean_month": 1.13,
+   "cagr": 14.2,
+   "sharpe": 2.21,
+   "maxDD": -2.9,
+   "worst_month": -2.88,
+   "worst_day": -2.43,
+   "p_pass_JulAug": 4.0,
+   "months": 126,
+   "mult": 0.68,
+   "worst_intramonth_DD": -6.1
+  }
+ },
+ "panelB_challenge_equal_tail": {
+  "note": "現行M3=2.0x基準・校正倍率比で等テール換算。worst_dayが-5%超の行はFN日次規約を踏み抜き得る(=失格テール)",
+  "variants": {
+   "M3(現行)": {
+    "mean_month": 2.06,
+    "cagr": 26.5,
+    "sharpe": 1.69,
+    "maxDD": -14.4,
+    "worst_month": -9.05,
+    "worst_day": -10.13,
+    "p_pass_JulAug": 59.6,
+    "months": 126,
+    "mult": 2.0,
+    "worst_intramonth_DD": -14.0
+   },
+   "M3+G3": {
+    "mean_month": 2.11,
+    "cagr": 27.1,
+    "sharpe": 1.74,
+    "maxDD": -13.4,
+    "worst_month": -7.89,
+    "worst_day": -10.13,
+    "p_pass_JulAug": 58.7,
+    "months": 126,
+    "mult": 2.0,
+    "worst_intramonth_DD": -14.0
+   },
+   "R3a": {
+    "mean_month": 2.02,
+    "cagr": 26.0,
+    "sharpe": 1.75,
+    "maxDD": -11.5,
+    "worst_month": -10.91,
+    "worst_day": -8.4,
+    "p_pass_JulAug": 28.8,
+    "months": 126,
+    "mult": 2.8,
+    "worst_intramonth_DD": -20.1
+   },
+   "R3a+G3": {
+    "mean_month": 2.07,
+    "cagr": 26.6,
+    "sharpe": 1.75,
+    "maxDD": -11.1,
+    "worst_month": -10.3,
+    "worst_day": -8.4,
+    "p_pass_JulAug": 24.9,
+    "months": 126,
+    "mult": 2.8,
+    "worst_intramonth_DD": -20.1
+   },
+   "R4": {
+    "mean_month": 3.62,
+    "cagr": 50.6,
+    "sharpe": 2.21,
+    "maxDD": -9.6,
+    "worst_month": -8.18,
+    "worst_day": -8.1,
+    "p_pass_JulAug": 72.5,
+    "months": 126,
+    "mult": 2.27,
+    "worst_intramonth_DD": -19.2
+   },
+   "R4+G3": {
+    "mean_month": 3.67,
+    "cagr": 51.4,
+    "sharpe": 2.22,
+    "maxDD": -8.8,
+    "worst_month": -8.18,
+    "worst_day": -8.1,
+    "p_pass_JulAug": 69.4,
+    "months": 126,
+    "mult": 2.27,
+    "worst_intramonth_DD": -19.2
+   }
+  }
+ }
+}

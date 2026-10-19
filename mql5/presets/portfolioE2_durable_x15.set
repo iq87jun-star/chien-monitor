@@ -1,0 +1,10 @@
+; PortfolioE v2「耐久」挑戦上限 — E5間引き2資産 1.02x(推奨×1.5, docs/133 §2)
+; FTMO+10%: 中央8ヶ月/通過85.8%/失格12.9%。これ以上(1.36x)は日次規約踏抜きテールのため非推奨
+InpScenario=2
+InpAcknowledgeLEAD=true
+InpLegMonthlyRiskPct=2.00
+InpAccountFloorDDPct=8.0
+InpInitialBalance=0.0
+InpCloseAllOnGuard=true
+InpAllowShort=true
+InpMagic=930610

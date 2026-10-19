@@ -1,0 +1,40 @@
+; 【R4+G3 中央3ヶ月・チャレンジ用】Chien_Seasonal_Top_EA v1.30 に適用(docs/110/111)。
+; 構成: YEARROUND_R4(リスク調整比例・月別) + G3 FOMCオーバーレイ。倍率1.5x(中央3ヶ月校正)。
+; 日次MC(20000パス): 中央3.0ヶ月 / 通過95.0% / 失格5.0〜7.8% / 最悪単日-5.4%(docs/111)。
+; ⚠ デモ必須: R4はLOYO合格だがデモ未了。実口座投入はデモ1ヶ月採点(docs/103)後。
+; ⚠ InpInitialBalance にフェーズ開始残高を必ず明示入力すること(ガード/ロック基準)。
+; ⚠ 資金化後は InpMultOverride=0.68(ガード安全倍率, docs/110 パネルA)へ変更。
+InpScenario=5
+InpAcknowledgeDemo=true
+InpMultOverride=1.5
+InpDailyStopPct=4.0
+InpAccountFloorDDPct=8.0
+InpInitialBalance=0.0
+InpProfitLockEnable=true
+InpLockArmPct=7.0
+InpLockClosePct=7.5
+InpRiskGuardMode=1
+InpMaxOpenRiskPct=3.0
+InpNoSLRiskAssumePct=10.0
+InpSwapLogEnable=true
+InpReenterManualClose=true
+InpG3Enable=true
+InpG3Symbol=US500
+InpG3Dates=2026.01.28,2026.03.18,2026.04.29,2026.06.17,2026.07.29,2026.09.16,2026.10.28,2026.12.09
+InpG3RiskPct=1.0
+InpG3CatATR=2.5
+InpG3EntryHourET=14
+InpG3ExitMinBefore=5
+InpV4Pairs=EURUSD,GBPUSD,USDJPY,AUDUSD,USDCHF,USDCAD,NZDUSD,EURJPY,GBPJPY
+InpE5Assets=XAUUSD,US500,NAS100,GER40
+InpEMon=US500,NAS100,GER40
+InpEMonX=JP225,UK100,FR40
+InpV7X=AUDJPY,NZDJPY,CADJPY,CHFJPY
+InpV7=EURJPY,GBPJPY,USDJPY
+InpSJul=US500,NAS100
+InpHoldHoursMonday=24
+InpV4MaxHoldDays=8
+InpV4MaxConcurrent=4
+InpMaxSpreadBps=10.0
+InpMagicBase=930700
+InpVerboseLog=true
