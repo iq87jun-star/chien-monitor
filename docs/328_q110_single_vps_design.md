@@ -169,3 +169,11 @@ P4 観察運転は 10/7 15:41 UTC から継続中(10 端末・毎時)。4 日間
 ### 9j.【2026-10-19 09:06 JST】照合 — Fintokei 3 端末は 08:13 JST のトパーズ開き直し後も EA 初期化ログ無し(09:00 の記録で ea_log_extract 3 本とも空)。FTMO/FN 7 端末は INIT 保持、月曜の [Mon ENTRY] は 09:00 時点で未発生
 - 原因候補(遠隔では未特定): ① 端末が EA を読み込めていない(チャートの EA が「エキスパート」タブでエラー終了・または EA 無し)、② Fintokei 端末が /portable 無しで別データフォルダ(AppData)を開いていて C:\chien\mt5\<口座>\MQL5\Logs に書いていない、③ 08:13 の Start-Process が未実行(入力行に別コマンドが連結・§9i の画面)。
 - 判定には VPS の端末画面(「エキスパート」タブ・チャート右上の EA 名)が必要。
+
+### 9k.【2026-10-20 05:46 JST】Fintokei 3 端末の EA 初期化を確認 — 10/19 16:31 JST にパール・トパーズ、23:47 JST にルビーが INIT(VPS 上の Claude セッション経由でユーザーが開き直し)。残課題: トパーズの建玉 10 本(EA の記録は 8 本)と NAS100 の銘柄名
+Drive `chien_ops/status.json`(05:00 JST・agent 1.8)と各口座の `ea_log_extract.csv`(端末ログの時刻は VPS ローカル = JST):
+- パール 6071612: `RecentFit_8.0倍_dyn1_v1.10 @AUDUSDp` INIT 16:31:06(initBal=5,147,178・mult 8.0・expiry 2026.10.31)、17:00 の `[INIT Q131] dynK=1.00 keep=20.0%`。月曜 h8/h10 UTC(17:00/19:00 JST)に GBPJPYp 0.18 + AUDJPYp 0.30 ×2 回 → 建玉 4(一致)。残高 5,146,266・評価 5,174,802。
+- ルビー 6104736: `RecentFit_B案_12.0倍_v1.04 @EURUSDp` INIT 23:47:46(initBal=10,000,000・mult 12.0・expiry 2026.10.31)。月曜の建て時刻より後の起動のため今週の Mon は無し。建玉 0・残高 10,033,220。
+- トパーズ 6104739: `EA11_Mon4x8.0+IdxMon1.0_v1.15 @UK100p` INIT 16:31:01(initBal=35,000,000・mult 8.0・Σw=1.124 ≈ 9.0x・expiry 2027.03.31・Sess legs=0)。h4/h6(13:00/15:00 JST)は起動前で欠落、h8/h10 に GBPJPYp 0.86・EURJPYp 1.05・AUDJPYp 1.36・USDJPYp 1.14 ×2 = 8 本。**status.json の建玉は 10 本**で EA の記録より 2 本多い。候補は 10/19 朝に手元ノート PC の Fintokei 端末(パール v1.08・docs/328 §9j の 20261019.log)がトパーズにログインしていた間に建てた分(マジック 9431xx)。その EA は止まっているので自動では閉じない → ユーザーがトパーズ端末の「取引」タブでマジック 94362x 以外(またはコメント `RFMon_*` で 13:00/15:00 JST 建て)の建玉を確認し、建てた時刻の 24 時間後までに手で閉じる。
+- トパーズの `⚠ Mon: 銘柄'NAS100'を解決できず→スキップ`: Fintokei(AXSE)に `NAS100p` が無い。`US500p` は解決。指数 Mon の NAS100 側(重み 0.125)は欠落 = サイズ縮小側で安全。銘柄名(USTEC 系か)を端末の「気配値→銘柄一覧」で確認して `InpMonLegs` を直すのは 11/1 改正案に回す(docs/355 §4 の注記どおり)。
+- FTMO 5・FN 2 は 05:00 JST の INIT を保持(status.json 10 端末 ok・restarted false)。
