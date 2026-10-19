@@ -100,13 +100,24 @@ const num = (v, max) => {
 };
 export const cleanValues = (game, values) => Object.fromEntries(CHECK[game].fields.map((f) => [f.k, num(values?.[f.k], f.max)]));
 
-// 特徴量: 切片・項目ごとの log(1+数)・出品だけにある印(初期垢など。査定では 0)。
-// 項目の重みは 0 以上に限る(数が多いほど安くなる、という査定にしない)
+// 特徴量: 切片・項目ごとの log(1+数)・出品だけにある印(初期垢など。査定では 0)・語(キャラ名・衣装名など)があるか。
+// 項目の重みは 0 以上に限る(数が多いほど安くなる、という査定にしない)。語の一覧は学習で決まり、モデル(terms)に入る
 export const EXTRA = ["starter"];
-export const checkFeatureNames = (game) => ["bias", ...CHECK[game].fields.map((f) => `log:${f.k}`), ...EXTRA];
-export function checkFeatures(game, values, extra = {}) {
+export const checkFeatureNames = (game, terms = []) => ["bias", ...CHECK[game].fields.map((f) => `log:${f.k}`), ...EXTRA, ...terms.map((t) => `term:${t}`)];
+export function checkFeatures(game, values, extra = {}, terms = [], has = new Set()) {
   const v = cleanValues(game, values);
-  return [1, ...CHECK[game].fields.map((f) => Math.log1p(v[f.k])), ...EXTRA.map((k) => (extra[k] ? 1 : 0))];
+  return [1, ...CHECK[game].fields.map((f) => Math.log1p(v[f.k])), ...EXTRA.map((k) => (extra[k] ? 1 : 0)), ...terms.map((t) => (has.has(t) ? 1 : 0))];
+}
+
+// 文章を語に切る(学習の出品説明文と、画面で書かれた文・チェックした名前で同じ切り方にする)
+const SPLIT = /[\s・、,，/／|｜()（）【】\[\]「」『』<>＜＞!！?？♪☆★◆◇■□●○◎※→←↑↓⭐✨🌸🔽:：;；=＝+＋&＆#＃~〜…]+/u;
+export function textTerms(text) {
+  const out = new Set();
+  for (let w of String(text ?? "").normalize("NFKC").split(SPLIT)) {
+    w = w.replace(/^[\d\-.x×]+|[\d\-.x×体個枚着]+$/g, "");
+    if (w.length >= 2 && w.length <= 12 && !/^[\d\p{P}\p{S}_]+$/u.test(w)) out.add(w.toLowerCase());
+  }
+  return out;
 }
 
 // ── 学習用: 出品(ゲームトレードの売れた記録)から項目の数を読む ──
@@ -140,8 +151,11 @@ const DAN = (s) => (/最高峰/.test(s) ? 8 : Number(/(\d)段/.exec(s)?.[1] ?? 0
 export const NOT_ACCOUNT = /特典|シリアル|コード|チケット|パック|グッズ|アクスタ|来場者|Relink|GBVS/i;
 
 export function listingValues(game, row) {
-  const t = String(row.name ?? "").normalize("NFKC");
-  const extra = { starter: /初期|リセマラ/.test(t) };
+  const title = String(row.name ?? "").normalize("NFKC");
+  // 数はタイトルと説明文から読む(項目欄に数があればそちらを優先)
+  const t = `${title}\n${String(row.description ?? "").normalize("NFKC")}`;
+  const extra = { starter: /初期|リセマラ/.test(title) };
+  const terms = textTerms(t);
   if (game === "granblue") {
     return {
       values: {
@@ -154,6 +168,7 @@ export function listingValues(game, row) {
         kongo: first(t, /金剛(?:晶)?\s*[x×]?\s*(\d{1,3})/),
       },
       extra,
+      terms,
     };
   }
   if (game === "umamusume") {
@@ -167,6 +182,7 @@ export function listingValues(game, row) {
         jewel: info(row, /ジュエルの数:(\d+)/) || first(t, /(?:石|ジュエル)\s*(\d+(?:\.\d+)?)\s*万/) * 10000,
       },
       extra,
+      terms,
     };
   }
   if (game === "identityv") {
@@ -180,6 +196,7 @@ export function listingValues(game, row) {
         collab: first(t, /コラボ(?:衣装)?\s*[x×]?\s*(\d{1,3})/) || (/コラボ/.test(t) ? (/コンプ/.test(t) ? 5 : 1) : 0),
       },
       extra,
+      terms,
     };
   }
   throw new Error(`unknown game: ${game}`);
@@ -206,21 +223,26 @@ export function safetyOf(answers) {
 const yen = (x, round) => Math.max(1000, round(x / 1000) * 1000);
 // 金額の目安。model は public/check-model.json の中身。
 // 返り値: market = 代理出品の相場(売値の幅)、low/high = 買取額の幅。安全面が ng なら金額は出さない
-export function checkEstimate(model, game, values, answers) {
+// has: 持っているものとしてチェックした名前と、自由に書いた文(textTerms で語にする)
+export function checkEstimate(model, game, values, answers, has = []) {
   const g = CHECK[game];
   if (!g) throw new Error(`unknown game: ${game}`);
   const m = model.games[game];
-  if (!m || m.features.join() !== checkFeatureNames(game).join()) throw new Error("モデルと項目が合っていません");
+  const terms = m?.terms ?? [];
+  if (!m || m.features.join() !== checkFeatureNames(game, terms).join()) throw new Error("モデルと項目が合っていません");
+  const hasSet = new Set([...has].flatMap((h) => [...textTerms(h)]));
   const v = cleanValues(game, values);
   const safety = safetyOf(answers);
   if (safety.level === "ng") return { values: v, safety, low: null, high: null, market: null };
-  const mid = Math.exp(m.weights.reduce((s, w, i) => s + w * checkFeatures(game, v)[i], 0));
+  const x = checkFeatures(game, v, {}, terms, hasSet);
+  const mid = Math.exp(m.weights.reduce((s, w, i) => s + w * x[i], 0));
   // 学習データの上限を超える時は、上限で止めて個別査定にする
   const capped = mid * Math.exp(m.band[1]) > m.cap;
   const lo = Math.min(mid * Math.exp(m.band[0]), m.cap);
   const hi = Math.min(mid * Math.exp(m.band[1]), m.cap);
   return {
     values: v,
+    has: terms.filter((t) => hasSet.has(t)),
     safety,
     capped,
     market: { low: yen(lo, Math.floor), high: yen(hi, Math.ceil) },
@@ -236,26 +258,34 @@ export function checkDetail(game, r, answers) {
   const vals = g.fields.filter((f) => r.values[f.k]).map((f) => `${f.label} ${show(f)}`);
   const ans = SAFETY_Q.map((q) => `${q.short}: ${q.options.find(([v]) => v === answers?.[q.k])?.[1] ?? "未回答"}`);
   const level = { ok: "◎ 安心", check: "○ 確認が要る", ng: "× そのままでは扱えない" }[r.safety.level];
+  if (r.has?.length) vals.push(`持っているもの: ${r.has.join("・")}`);
   const price = r.market ? ` / 相場 ${r.market.low.toLocaleString()}〜${r.market.high.toLocaleString()}円` : "";
   return `[チェック査定] ${vals.join(" / ") || "入力なし"}${price}\n[取引しやすさ] ${level} … ${ans.join(" / ")}`;
 }
 
 // スクショの読み取り(Worker の /api/read)。読めない項目は -1 で返してもらう
-export function checkSchema(game) {
+// pick: 値段に効く名前(モデルの pick)。画像に写っているものを has で返してもらう
+export function checkSchema(game, pick = []) {
   const keys = CHECK[game].fields.map((f) => f.k);
   return {
     type: "object",
     additionalProperties: false,
-    required: [...keys, "id_visible"],
-    properties: { ...Object.fromEntries(keys.map((k) => [k, { type: "integer" }])), id_visible: { type: "boolean" } },
+    required: [...keys, "id_visible", ...(pick.length ? ["has"] : [])],
+    properties: {
+      ...Object.fromEntries(keys.map((k) => [k, { type: "integer" }])),
+      id_visible: { type: "boolean" },
+      ...(pick.length ? { has: { type: "array", items: { type: "string", enum: pick } } } : {}),
+    },
   };
 }
-export function checkPrompt(game) {
+export function checkPrompt(game, pick = []) {
   const g = CHECK[game];
   return `${g.full}のアカウントのスクリーンショットです。次の項目の数を読み取ってください。
 
 ${g.fields.map((f) => `- ${f.k}: ${f.read}`).join("\n")}
-- id_visible: プレイヤーID・ユーザーID・プレイヤー名などアカウントを特定できる情報が写っていれば true。
+- id_visible: プレイヤーID・ユーザーID・プレイヤー名などアカウントを特定できる情報が写っていれば true。${pick.length ? `
+- has: 次の名前(キャラ・衣装・カード・アイテムなど)のうち、画像の中で所持しているとはっきり分かるもの。写っていないものは入れない。
+  ${pick.join("、")}` : ""}
 
 画面に写っていない・読み取れない項目は -1 にしてください。推測で数を作らないでください。
 同じ項目が複数の画像に出ていたら、大きい方(新しい方)を使ってください。`;
