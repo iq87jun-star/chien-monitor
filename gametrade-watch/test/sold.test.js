@@ -53,3 +53,15 @@ test("Worker は形の正しい記録だけを受け付ける", () => {
   assert.deepEqual(validRecords([ok, { ...ok, id: "x" }, { ...ok, price: "1000" }, { ...ok, info: [1] }, null]), [ok]);
   assert.deepEqual(validRecords("x"), []);
 });
+
+test("売れた記録のキーワード検索: 語ごとに AND、% と _ はそのまま探す", async () => {
+  const { searchQuery } = await import("../src/sold.js");
+  const q = searchQuery({ game: "genshin-impact", q: " フリーナ　完凸 100%_ ", low: "10000", high: "" });
+  assert.deepEqual(q.words, ["フリーナ", "完凸", "100%_"]);
+  assert.equal((q.sql.match(/LIKE \?/g) ?? []).length, 6);
+  assert.deepEqual(q.binds, ["genshin-impact", "%フリーナ%", "%フリーナ%", "%完凸%", "%完凸%", "%100\\%\\_%", "%100\\%\\_%", 10000, 300]);
+  assert.match(q.sql, /price >= \?/);
+  assert.doesNotMatch(q.sql, /price <= \?/);
+  assert.deepEqual(searchQuery({ q: "   " }).words, []);
+  assert.equal(searchQuery({ q: "a", limit: 99999 }).binds.at(-1), 1000);
+});
