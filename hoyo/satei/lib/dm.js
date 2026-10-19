@@ -2,7 +2,7 @@
 export const STATUSES = ["新規", "検討中", "代理出品OK", "出品中", "成約", "見送り", "重複"];
 // 一覧の「すべて」に出さない(終わった・まとめた)状態
 export const CLOSED = ["成約", "見送り", "重複"];
-const GAMES = { "genshin-impact": "原神", houkaistarrail: "スタレ", zzz: "ゼンゼロ", wutheringwaves: "鳴潮" };
+import { GAMES, xOf } from "./games.js";
 
 // 定型文の {番号} などを、対象者の情報で置き換える
 export function fillTemplate(body, c) {
@@ -22,7 +22,9 @@ export function fillTemplate(body, c) {
     希望額: man(c.wish),
     投稿URL: c.post_url ?? "",
     期限: y ? `${Number(m)}月${Number(d)}日` : "数日後",
+    // 紹介するメルルの X(グラブル・ウマ娘は @meruru_prop)
+    X: `@${xOf(c.game)}`,
   };
-  return body.replace(/\{(番号|名前|ゲーム|キャラ|査定額|希望額|投稿URL|期限)\}/g, (_, k) => values[k]);
+  return body.replace(/\{(番号|名前|ゲーム|キャラ|査定額|希望額|投稿URL|期限|X)\}/g, (_, k) => values[k]);
 }
 
