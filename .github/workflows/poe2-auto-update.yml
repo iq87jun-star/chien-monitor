@@ -82,6 +82,7 @@ jobs:
           # グラブル・ウマ娘・第五人格のチェック式査定(@meruru_prop の窓口)。game-souba.com/kaitori/
           mkdir -p site-dist/kaitori
           cp satei/public/check.html site-dist/kaitori/index.html
+          cp satei/public/check-model.json site-dist/kaitori/
           cp -r satei/public/lib site-dist/kaitori/lib
 
       - name: Deploy to gh-pages branch

@@ -348,32 +348,55 @@ test("詐欺対策: チェックが残っていると引き渡し完了にでき
   assert.equal((await handoverMissing(env, "split", 1, { status: "引き渡し済み" })).length, Object.keys(HANDOVER).length);
 });
 
-test("チェック式査定(グラブル・ウマ娘): 目安額と取引しやすさ", async () => {
-  const { checkEstimate, checkDetail } = await import("../public/lib/check.js");
+test("チェック式査定(グラブル・ウマ娘・第五人格): 学習モデルの目安額と取引しやすさ", async () => {
+  const { CHECK, checkEstimate, checkDetail, checkFeatureNames } = await import("../public/lib/check.js");
   const { fillTemplate } = await import("../public/lib/dm.js");
+  const model = JSON.parse(readFileSync(new URL("../public/check-model.json", import.meta.url), "utf8"));
   const safe = { login: "id", mail: "yes", origin: "self", receipt: "yes" };
-  const r = checkEstimate("granblue", { rank: "250", limited: "80", eternals: "10", evokers: "6", hihi: "3", kongo: "2", crystal: "30,000" }, safe);
+  for (const game of Object.keys(CHECK)) {
+    const m = model.games[game];
+    assert.deepEqual(m.features, checkFeatureNames(game));
+    // 項目の重みは 0 以上(数が多いほど安くなる査定にしない)
+    m.features.forEach((f, i) => f.startsWith("log:") && assert.ok(m.weights[i] >= 0, `${game} ${f}`));
+    const r = checkEstimate(model, game, {}, safe);
+    assert.ok(r.low > 0 && r.low < r.high && r.low % 1000 === 0);
+    // 買取額は相場より低い
+    assert.ok(r.high < r.market.high);
+  }
+  const r = checkEstimate(model, "granblue", { rank: "250", ssr: "400", crystal: "30,000", eternals: "10", evokers: "6", hihi: "3", kongo: "2" }, safe);
   assert.equal(r.safety.level, "ok");
-  assert.ok(r.low < r.high && r.low % 1000 === 0);
-  // 項目が多いほど高い・上限を超える入力は上限にそろえる
-  assert.ok(checkEstimate("granblue", { eternals: 10 }, safe).high > checkEstimate("granblue", { eternals: 1 }, safe).high);
-  assert.equal(checkEstimate("granblue", { eternals: 99 }, safe).values.eternals, 10);
+  assert.ok(r.high >= checkEstimate(model, "granblue", { rank: "100" }, safe).high);
+  assert.equal(checkEstimate(model, "granblue", { eternals: 99 }, safe).values.eternals, 10);
   // SNS 連携だけ・買ったアカウントは金額を出さない
-  const ng = checkEstimate("umamusume", { ssr_lb: 15 }, { ...safe, login: "sns" });
+  const ng = checkEstimate(model, "umamusume", { ssr_lb: 15 }, { ...safe, login: "sns" });
   assert.equal(ng.safety.level, "ng");
   assert.equal(ng.low, null);
-  assert.equal(checkEstimate("umamusume", {}, { ...safe, origin: "bought" }).low, null);
+  assert.equal(checkEstimate(model, "umamusume", {}, { ...safe, origin: "bought" }).low, null);
   // 未回答・レシートなしは「確認が要る」
-  assert.equal(checkEstimate("umamusume", {}, { ...safe, receipt: "no" }).safety.level, "check");
-  assert.equal(checkEstimate("umamusume", {}, {}).safety.level, "check");
-  assert.throws(() => checkEstimate("x", {}, {}));
-  const iv = checkEstimate("identityv", { ssr: "8", collab: "10", s: "60", acc: "20", echo: "5000" }, safe);
-  assert.ok(iv.low > 0 && iv.low < iv.high);
-  assert.equal(fillTemplate("{X}", { id: 1, game: "identityv" }), "@meruru_prop");
-  assert.match(checkDetail("granblue", r, safe), /十天衆の最終上限解放\(人\) 10[\s\S]*◎ 安心[\s\S]*引き継ぎ: ゲーム会社のID/);
+  assert.equal(checkEstimate(model, "umamusume", {}, { ...safe, receipt: "no" }).safety.level, "check");
+  assert.equal(checkEstimate(model, "umamusume", {}, {}).safety.level, "check");
+  assert.throws(() => checkEstimate(model, "x", {}, {}));
+  assert.match(checkDetail("granblue", r, safe), /十天衆の最終上限解放\(人\) 10[\s\S]*相場[\s\S]*◎ 安心[\s\S]*引き継ぎ: ゲーム会社のID/);
+  assert.match(checkDetail("identityv", checkEstimate(model, "identityv", { survivor: 8 }, safe), safe), /サバイバーの段位 最高峰7段/);
   // 定型文の {X} は、ゲームごとの窓口の X
   assert.equal(fillTemplate("{X}", { id: 1, game: "granblue" }), "@meruru_prop");
+  assert.equal(fillTemplate("{X}", { id: 1, game: "identityv" }), "@meruru_prop");
   assert.equal(fillTemplate("{X}", { id: 1, game: "genshin-impact" }), "@Meruru_Genshin");
+});
+
+test("チェック式査定: 売れた出品から項目の数を読む(学習用)", async () => {
+  const { listingValues, NOT_ACCOUNT } = await import("../public/lib/check.js");
+  const g = listingValues("granblue", { name: "初期垢 宝晶石換算74万↑SSR計580↑ 十天輝 ヒヒ80↑ 終賢10", info: ["ランク：1", "SSRキャラクターの数：0体", "宝晶石の数：0個"] });
+  assert.deepEqual(g.values, { rank: 0, ssr: 580, crystal: 740000, eternals: 10, evokers: 10, hihi: 80, kongo: 0 });
+  assert.equal(g.extra.starter, true);
+  // 項目欄に数があればそちらを使う
+  assert.equal(listingValues("granblue", { name: "x", info: ["ランク：201", "SSRキャラクターの数：316体"] }).values.ssr, 316);
+  const u = listingValues("umamusume", { name: "【画像の所持5体完凸】+120000石", info: ["チームランク：SS", "SSRサポートカードの数：60枚", "ジュエルの数：0個"] });
+  assert.deepEqual(u.values, { teamss: 1, ssr: 60, ssr_lb: 5, star3: 0, jewel: 0 });
+  const i = listingValues("identityv", { name: "フリーレンコラボコンプ垢 UR3", info: ["サバイバーランク：最高峰7段", "ハンターランク：3段"] });
+  assert.deepEqual(i.values, { survivor: 8, hunter: 3, ur: 3, ssr: 0, collab: 5 });
+  assert.ok(NOT_ACCOUNT.test("グラブルフェス2024 来場者特典 金剛晶"));
+  assert.ok(!NOT_ACCOUNT.test("引退垢 十天最終"));
 });
 
 test("チェック式査定: スクショ読み取りの依頼文と結果の扱い", async () => {
@@ -385,5 +408,5 @@ test("チェック式査定: スクショ読み取りの依頼文と結果の扱
     for (const f of CHECK[game].fields) assert.ok(f.read && checkPrompt(game).includes(`- ${f.k}: ${f.read}`), `${game}.${f.k}`);
   }
   // -1(読めない)・小数・範囲外は null か上限にそろえる
-  assert.deepEqual(checkValues("granblue", { rank: 250, limited: -1, eternals: 12, evokers: 1.5, hihi: 0 }), { rank: 250, limited: null, eternals: 10, evokers: null, hihi: 0, kongo: null, crystal: null });
+  assert.deepEqual(checkValues("granblue", { rank: 250, ssr: -1, eternals: 12, evokers: 1.5, hihi: 0 }), { rank: 250, ssr: null, crystal: null, eternals: 10, evokers: null, hihi: 0, kongo: null });
 });
