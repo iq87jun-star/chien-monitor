@@ -13,9 +13,15 @@ v0.5(docs/339〜343): (1) vix_gate = 前営業日の VIX 終値が閾値超な�
   (2) 推定残高に応じた枚数の縮小(Q120 規則 A: 残余 MLL < 50% で半分・< 25% で休み)。残高は Yahoo 価格で推定し state に持つ。
   config: "vix_gate": {"threshold": 25, "symbols": ["MES", "MNQ"]}, "scaling": {"rule": "A", "mll": 4500, "lock_at": 100, "phase": "eval"|"sim"|"live", "equity_override": null}
   phase=eval では縮小しない(Q120: 評価は固定が速い)。equity_override を入れると MFFU ダッシュボードの値で推定を上書きできる。
+v0.6(docs/336 §24): 枚数は git 管理の ops/futures/sizing.json(公開・秘密なし)を entry/status の直前に raw.githubusercontent から取得して config.json の symbols.*.qty / max_contracts_total に上書きする。
+  これで枚数の変更は VPS を触らずリポジトリの commit だけで反映される。effective_from(UTC 日付)より前の判断日には適用しない。取得失敗時は out/sizing_cache.json(前回取得分)→ config.json の順に使う。
+  config: "sizing": "git"(既定)| "local"(上書きしない)、"sizing_url"(既定は branch の ops/futures/sizing.json)、"branch"(既定 claude/prop-trading-new-methods-a8y3l1)。
+  適用した枚数と出所は mffu_log.csv に sizing 行として残す(Drive から監査できる)。
 秘密(webhook URL・API キー)は config.json(git 管理外)にだけ置く。公開リポジトリには config.example.json のみ。"""
 import argparse, csv, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.5"
+VERSION = "0.6"
+DEFAULT_BRANCH = "claude/prop-trading-new-methods-a8y3l1"
+SIZING_RAW = "https://raw.githubusercontent.com/iq87jun-star/chien-monitor/{branch}/ops/futures/sizing.json"
 HERE = os.path.dirname(os.path.abspath(__file__))
 MONTH_CODES = {3: "H", 6: "M", 9: "U", 12: "Z"}
 YAHOO = {"MES": "MES=F", "MNQ": "MNQ=F", "MYM": "MYM=F", "NIY": "NIY=F", "M2K": "M2K=F", "MGC": "MGC=F"}
@@ -147,6 +153,37 @@ class Tradovate:
 
 TRANSPORTS = {"dry": Dry, "webhook": Webhook, "tradovate": Tradovate}
 
+# ---------------- sizing (git) ----------------
+def fetch_json(url, timeout=10):
+    return json.load(urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "chien-mffu", "Cache-Control": "no-cache"}), timeout=timeout))
+
+def apply_sizing(cfg, day):
+    """git 管理の sizing.json で枚数を上書きした cfg のコピーと出所の文字列を返す。sizing="local" なら素通し。"""
+    if str(cfg.get("sizing", "git")).lower() == "local": return cfg, "local(config.json)"
+    url = cfg.get("sizing_url") or SIZING_RAW.format(branch=cfg.get("branch", DEFAULT_BRANCH))
+    cache = os.path.join(os.path.dirname(cfg.get("state_json") or os.path.join(HERE, "out", "state.json")) or ".", "sizing_cache.json")
+    sz, src = None, ""
+    try:
+        sz = fetch_json(url); src = "git"
+        os.makedirs(os.path.dirname(cache) or ".", exist_ok=True); json.dump(sz, open(cache, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    except Exception as ex:
+        if os.path.exists(cache):
+            try: sz = json.load(open(cache, encoding="utf-8")); src = f"cache(fetch failed {type(ex).__name__})"
+            except Exception: sz = None
+        if sz is None: return cfg, f"local(fetch failed {type(ex).__name__})"
+    try:
+        qty = {str(k): int(v) for k, v in (sz.get("qty") or {}).items()}
+        eff = sz.get("effective_from")
+        if eff and day < dt.date.fromisoformat(str(eff)): return cfg, f"local(sizing v{sz.get('version')} effective_from {eff} > {day})"
+        out = json.loads(json.dumps(cfg)); syms = out.setdefault("symbols", json.loads(json.dumps(DEFAULT_SYMBOLS)))
+        for r, q in qty.items():
+            if q < 0: raise ValueError("negative qty")
+            syms.setdefault(r, {"qty": 0})["qty"] = q
+        if sz.get("max_contracts_total") is not None: out["max_contracts_total"] = int(sz["max_contracts_total"])
+        return out, f"{src} v{sz.get('version')} eff {eff} qty {qty} max {out.get('max_contracts_total')}"
+    except Exception as ex:
+        return cfg, f"local(sizing invalid {type(ex).__name__})"
+
 # ---------------- decisions ----------------
 def plan(cfg, day):
     """その日に建てる契約と枚数。月曜以外・休場・HALT は空。"""
@@ -162,13 +199,16 @@ def plan(cfg, day):
 
 def run(cfg, action, day, transport):
     st = State(cfg.get("state_json") or os.path.join(HERE, "out", "state.json")); key = day.isoformat()
+    sizing_src = "local(not needed)"
+    if action in ("entry", "status"): cfg, sizing_src = apply_sizing(cfg, day)
     legs, reasons = plan(cfg, day)
     if action == "status":
         sf, rem = scale_factor(cfg, st)
-        print(f"mffu_bot {VERSION} transport={transport.name} day={key} legs={legs} reasons={reasons} vix_gate={cfg.get('vix_gate')} scale={sf} rem={rem} equity_est={st.d.get('equity_est')} hi_est={st.d.get('hi_est')}"); return
+        print(f"mffu_bot {VERSION} transport={transport.name} day={key} legs={legs} reasons={reasons} sizing={sizing_src} vix_gate={cfg.get('vix_gate')} scale={sf} rem={rem} equity_est={st.d.get('equity_est')} hi_est={st.d.get('hi_est')}"); return
     if action == "entry":
         if reasons: print("skip entry:", reasons); log_row(cfg, action="entry", transport=transport.name, result="skip", note=",".join(reasons)); return
         if st.d.get(key, {}).get("entered"): print("already entered today"); return
+        log_row(cfg, action="sizing", transport=transport.name, result=sizing_src, note=" ".join(f"{l['root']}{l['qty']}" for l in legs))
         vg = cfg.get("vix_gate") or {}; vix = vix_prev_close() if vg else None
         gated = set(vg.get("symbols", [])) if (vg and vix is not None and vix > float(vg.get("threshold", 25))) else set()
         sf, rem = scale_factor(cfg, st)

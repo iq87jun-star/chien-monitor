@@ -16,7 +16,7 @@ def test_front_contract_roll():
 
 def _cfg(tmp):
     hol = os.path.join(tmp, "h.csv"); open(hol, "w").write("cal,date,name\nNYSE,2026-09-07,Labor Day\n")
-    return dict(transport="dry", holidays_csv=hol, log_csv=os.path.join(tmp, "log.csv"), state_json=os.path.join(tmp, "state.json"), max_contracts_total=5, keepalive_wait_sec=0, send_signal_price=False)
+    return dict(transport="dry", holidays_csv=hol, log_csv=os.path.join(tmp, "log.csv"), state_json=os.path.join(tmp, "state.json"), max_contracts_total=5, keepalive_wait_sec=0, send_signal_price=False, sizing="local")
 
 def test_with_price_optional(monkeypatch=None):
     B.last_price = lambda root, timeout=6: 6000.25 if root == "MES" else None
@@ -93,3 +93,35 @@ def test_pnl_estimate_on_exit():
         B.last_price = lambda root, timeout=6: {"MES": 7010.0, "MNQ": 30050.0, "MYM": 49900.0}[root]
         B.run(cfg, "exit", day, tr); st = json.load(open(cfg["state_json"]))
         assert st["2026-10-12"]["pnl_est"] == 2*10*5 + 1*50*2 + 2*(-100)*0.5 and st["equity_est"] == 100.0 and st["hi_est"] == 100.0
+
+def test_sizing_overlay_from_git():
+    cfg = {"symbols": {"MES": {"qty": 7, "cfd": "US500"}, "MNQ": {"qty": 3, "cfd": "NAS100"}, "MYM": {"qty": 7, "cfd": "US30"}}, "max_contracts_total": 17}
+    with tempfile.TemporaryDirectory() as d:
+        cfg["state_json"] = os.path.join(d, "state.json")
+        sz = {"version": 1, "effective_from": "2026-10-20", "qty": {"MES": 5, "MNQ": 2, "MYM": 5}, "max_contracts_total": 12}
+        orig = B.fetch_json; B.fetch_json = lambda url, timeout=10: sz
+        try:
+            c2, src = B.apply_sizing(cfg, dt.date(2026, 10, 26))
+            assert src.startswith("git v1") and [c2["symbols"][r]["qty"] for r in ("MES", "MNQ", "MYM")] == [5, 2, 5] and c2["max_contracts_total"] == 12
+            assert cfg["symbols"]["MES"]["qty"] == 7                                   # 元の cfg は変えない
+            legs, why = B.plan(c2, dt.date(2026, 10, 26)); assert why == [] and sum(l["qty"] for l in legs) == 12
+            c3, src3 = B.apply_sizing(cfg, dt.date(2026, 10, 19)); assert c3 is cfg and src3.startswith("local(sizing v1 effective_from")   # 発効前は上書きしない
+            assert os.path.exists(os.path.join(d, "sizing_cache.json"))
+            def boom(url, timeout=10): raise OSError("offline")
+            B.fetch_json = boom
+            c4, src4 = B.apply_sizing(cfg, dt.date(2026, 10, 26)); assert src4.startswith("cache(") and c4["symbols"]["MYM"]["qty"] == 5   # 取得失敗 → 前回取得分
+            os.remove(os.path.join(d, "sizing_cache.json"))
+            c5, src5 = B.apply_sizing(cfg, dt.date(2026, 10, 26)); assert c5 is cfg and src5.startswith("local(fetch failed")             # キャッシュもなければ config.json
+            B.fetch_json = lambda url, timeout=10: {"version": 2, "qty": {"MES": "x"}}
+            c6, src6 = B.apply_sizing(cfg, dt.date(2026, 10, 26)); assert c6 is cfg and "invalid" in src6
+            assert B.apply_sizing(dict(cfg, sizing="local"), dt.date(2026, 10, 26))[1] == "local(config.json)"
+        finally: B.fetch_json = orig
+
+def test_entry_logs_sizing_row():
+    with tempfile.TemporaryDirectory() as tmp:
+        cfg = _cfg(tmp); cfg["sizing"] = "git"; tr = Rec()
+        orig = B.fetch_json; B.fetch_json = lambda url, timeout=10: {"version": 1, "effective_from": "2026-10-20", "qty": {"MES": 2, "MNQ": 1, "MYM": 2}, "max_contracts_total": 5}
+        try: B.run(cfg, "entry", dt.date(2026, 10, 26), tr)
+        finally: B.fetch_json = orig
+        rows = open(cfg["log_csv"], encoding="utf-8").read().splitlines()
+        assert len(tr.sent) == 3 and any(r.split(",")[1] == "sizing" and "git v1" in r for r in rows)

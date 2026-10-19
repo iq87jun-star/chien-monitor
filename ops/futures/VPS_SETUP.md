@@ -19,6 +19,7 @@ Copy-Item config.example.json config.json
 - `"transport": "dry"`(URL を貼った後に `"webhook"` へ)
 - `"symbols": {"MES": {"qty": 5, "cfd": "US500"}, "MNQ": {"qty": 2, "cfd": "NAS100"}, "MYM": {"qty": 5, "cfd": "US30"}}`(Builder 150K・docs/336 §16。7/3/7 案は Q132 docs/353 で取り下げ)
 - `"max_contracts_total": 12`
+- **v0.6 以降は枚数を git が決める**: `"sizing": "git"`(既定)なら entry/status の直前に `ops/futures/sizing.json`(このリポジトリ)を取得して `symbols.*.qty` と `max_contracts_total` を上書きする(docs/336 §24)。枚数変更は VPS を触らず commit で反映。取得失敗時は前回取得分(`out\sizing_cache.json`)→ config.json の順。`python mffu_bot.py --config config.json --action status` の `sizing=` に出所が出る
 - `"holidays_csv": "C:\\chien\\ops\\futures\\holidays_us_uk_au_nz_2016_2027.csv"`
 - `"log_csv": "G:\\マイドライブ\\chien_ops\\futures\\mffu_log.csv"`(G: が無ければ `"C:\\chien\\ops\\futures\\out\\mffu_log.csv"`)
 - `"state_json": "C:\\chien\\ops\\futures\\out\\state.json"`
