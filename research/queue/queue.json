@@ -1367,16 +1367,24 @@
    "slug": "p1_p2_lock_switch",
    "title": "P1 通過 → P2 のロック自動切替(設計)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/364_q96_p1_p2_lock_switch.md"
    ],
    "note": "設計書のみ。実装は 11 月の EA 改訂で",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 13
+   "order": 13,
+   "result": "B 案(manifest の段階切替)を採用: ensure[].inputs でチャートの <inputs> に P1/P2 のロック値を注入・successor で後継口座(新ログイン)に P2 値を自動適用・3 条件(残高±0.5%・前任の PROFIT LOCK・同一業者)で照合。EA 側は InpExpectedInitBal の照合ガードとロック永続化のみ(v+0.01)。A 案(EA 自動検知)は段階を安全に知る手段が無く不採用。実装は 11/1(deploy → EA → agent 1.9)",
+   "runs": [
+    {
+     "date": "2026-10-20",
+     "summary": "設計書 docs/364(B 案採用・セル 0)"
+    }
+   ]
   },
   {
    "id": "Q88",
