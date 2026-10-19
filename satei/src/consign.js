@@ -88,7 +88,7 @@ export function validLead(body, games) {
     .slice(0, 60)
     .map((c) => ({ name: clean(c?.name, 30), cons: Math.min(6, Math.max(0, Number(c?.cons) | 0)), mochi: Boolean(c?.mochi) }))
     .filter((c) => c.name);
-  // チェック式の査定(グラブル・ウマ娘)は、答えた内容を文字にしてメモに残す
+  // チェック式の査定(グラブル・ウマ娘・第五人格)は、答えた内容を文字にしてメモに残す
   const memo = clean(body.detail, 800) || null;
   return { game: body.game, handle, name, chars, low: yen(body.low), high: yen(body.high), wish: yen(body.wish), sid: clean(body.sid, 40), memo };
 }

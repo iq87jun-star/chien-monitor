@@ -1,4 +1,4 @@
-// チェック式の査定(グラブル・ウマ娘)。HoYo のような成約データの学習モデルはまだ無いので、
+// チェック式の査定(グラブル・ウマ娘・第五人格)。HoYo のような成約データの学習モデルはまだ無いので、
 // 項目ごとの目安額を足し上げて幅を出す。金額は運用しながら PRICE を直す(実際の成約を見て合わせる)
 //
 // 合わせて「取引しやすさ」(引き戻し・なりすましの心配が少ないか)を見る。
@@ -32,6 +32,19 @@ export const CHECK = {
       { k: "uma", label: "育成ウマ娘の所持数", hint: "例: 70", unit: 400, max: 300 },
       { k: "limited", label: "期間限定ウマ娘の数(水着・新衣装など)", hint: "例: 10", unit: 1000, max: 200 },
       { k: "jewel", label: "ジュエル", hint: "例: 30000", unit: 400 / 1500, max: 10_000_000, cap: 40000 },
+    ],
+    adjust: () => 1,
+  },
+  identityv: {
+    label: "第五人格",
+    full: "Identity V 第五人格",
+    base: 3000,
+    fields: [
+      { k: "ssr", label: "SSR以上の衣装の数(UR含む)", hint: "例: 8", unit: 2500, max: 300 },
+      { k: "collab", label: "コラボ衣装の数", hint: "例: 10", unit: 1500, max: 200 },
+      { k: "s", label: "S衣装の数", hint: "例: 60", unit: 300, max: 1000 },
+      { k: "acc", label: "S以上の携帯品の数", hint: "例: 20", unit: 300, max: 500 },
+      { k: "echo", label: "エコー", hint: "例: 5000", unit: 0.15, max: 10_000_000, cap: 30000 },
     ],
     adjust: () => 1,
   },

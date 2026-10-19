@@ -367,6 +367,9 @@ test("チェック式査定(グラブル・ウマ娘): 目安額と取引しや�
   assert.equal(checkEstimate("umamusume", {}, { ...safe, receipt: "no" }).safety.level, "check");
   assert.equal(checkEstimate("umamusume", {}, {}).safety.level, "check");
   assert.throws(() => checkEstimate("x", {}, {}));
+  const iv = checkEstimate("identityv", { ssr: "8", collab: "10", s: "60", acc: "20", echo: "5000" }, safe);
+  assert.ok(iv.low > 0 && iv.low < iv.high);
+  assert.equal(fillTemplate("{X}", { id: 1, game: "identityv" }), "@meruru_prop");
   assert.match(checkDetail("granblue", r, safe), /十天衆の最終上限解放\(人\) 10[\s\S]*◎ 安心[\s\S]*引き継ぎ: ゲーム会社のID/);
   // 定型文の {X} は、ゲームごとの窓口の X
   assert.equal(fillTemplate("{X}", { id: 1, game: "granblue" }), "@meruru_prop");
