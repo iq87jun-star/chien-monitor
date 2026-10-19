@@ -111,7 +111,7 @@ test("代理出品: 査定ページからの相談と集計画面の更新を確
   const { validLead, validPatch } = await import("../src/consign.js");
   const games = ["genshin-impact", "houkaistarrail"];
   assert.deepEqual(validLead({ game: "genshin-impact", handle: "@Abc_1", wish: 50000, chars: [{ name: "夜蘭", cons: 9 }], low: 1, high: 2, sid: "x" }, games), {
-    game: "genshin-impact", handle: "Abc_1", name: null, chars: [{ name: "夜蘭", cons: 6, mochi: false }], low: 1, high: 2, wish: 50000, sid: "x",
+    game: "genshin-impact", handle: "Abc_1", name: null, chars: [{ name: "夜蘭", cons: 6, mochi: false }], low: 1, high: 2, wish: 50000, sid: "x", memo: null,
   });
   // @ID として読めない入力は断らず、呼び名にする
   const named = validLead({ game: "genshin-impact", handle: "じゃるぎ" }, games);
@@ -303,4 +303,72 @@ test("フォロー候補の保存と状態", async () => {
   assert.equal(await fl.setFollowStatus(env, f.id, "勝手な状態"), false);
   const [g] = await fl.listFollow(env);
   assert.deepEqual([g.status, Boolean(g.followed_on)], ["フォロー済み", true]);
+});
+
+test("詐欺対策: 引き渡し前のチェック・見守り・要注意リスト", async () => {
+  const { HANDOVER, handoverLeft, watchDue, cautionHit, todos } = await import("../public/lib/stock.js");
+  assert.equal(handoverLeft({}).length, Object.keys(HANDOVER).length);
+  assert.deepEqual(handoverLeft(Object.fromEntries(Object.keys(HANDOVER).map((k) => [k, true]))), []);
+  // 見守りは 1・3・7 日後。確認した回数(watch)より予定が多い時だけ出す
+  const s = { id: 3, handed_on: "2026-10-10", watch: 0 };
+  assert.equal(watchDue(s, "2026-10-10"), null);
+  assert.deepEqual(watchDue(s, "2026-10-11"), { n: 1, day: 1 });
+  assert.equal(watchDue({ ...s, watch: 1 }, "2026-10-12"), null);
+  assert.deepEqual(watchDue({ ...s, watch: 1 }, "2026-10-13"), { n: 2, day: 3 });
+  assert.equal(watchDue({ ...s, watch: 3 }, "2026-11-30"), null);
+  // @ID は前後が区切られている時だけ当てる(abc は abcd に当てない)
+  const cs = [{ handle: "bad_guy", reason: "引き戻し" }];
+  assert.equal(cautionHit(cs, "X: @Bad_Guy")?.reason, "引き戻し");
+  assert.equal(cautionHit(cs, "bad_guy2"), null);
+  assert.equal(cautionHit(cs, null), null);
+  const t = todos([{ ...s, status: "売却済み", listings: [] }], [], "2026-10-11", undefined, [{ id: 1, name: "a", contact: "@bad_guy", status: "希望中", wants: [] }], [{ id: 9, handle: "bad_guy", status: "新規" }], cs);
+  assert.ok(t.some((x) => x.kind === "stock" && x.watch === 1 && /引き渡しから1日/.test(x.text)));
+  assert.ok(t.some((x) => x.kind === "want" && x.level === 3 && /要注意/.test(x.text)));
+  assert.ok(t.some((x) => x.kind === "consign" && /No\.9 は要注意/.test(x.text)));
+});
+
+test("詐欺対策: チェックが残っていると引き渡し完了にできない", async () => {
+  const { DatabaseSync } = await import("node:sqlite");
+  const { handoverMissing, validStock } = await import("../src/stock.js");
+  const { HANDOVER } = await import("../public/lib/stock.js");
+  const db = new DatabaseSync(":memory:");
+  for (const f of ["0003_consign.sql", "0004_consign_name.sql", "0005_stock.sql", "0009_safety.sql"]) db.exec(readFileSync(new URL(`../migrations/${f}`, import.meta.url), "utf8"));
+  const env = { DB: { prepare: (q) => ({ bind: (...a) => ({ first: async () => db.prepare(q).get(...a) ?? null }) }) } };
+  db.prepare("INSERT INTO stock (created_at, updated_at, game, status, handover) VALUES ('', '', 'granblue', '商談中', ?)").run(JSON.stringify({ proof: true }));
+  // 引き渡し以外の変更は止めない
+  assert.deepEqual(await handoverMissing(env, "stock", 1, { price: 1000 }), []);
+  // チェックを送らない時は保存済みのチェックで、送った時はそのチェック(画面の全部の状態)で確かめる
+  assert.equal((await handoverMissing(env, "stock", 1, { handed_on: "2026-10-19" })).length, Object.keys(HANDOVER).length - 1);
+  const patch = validStock({ handed_on: "2026-10-19", handover: { proof: true, pay: true, link: true, mail: true } }, ["granblue"]);
+  assert.deepEqual(await handoverMissing(env, "stock", 1, patch), [HANDOVER.pass, HANDOVER.receipt]);
+  const all = validStock({ handed_on: "2026-10-19", handover: Object.fromEntries(Object.keys(HANDOVER).map((k) => [k, true])) }, ["granblue"]);
+  assert.deepEqual(await handoverMissing(env, "stock", 1, all), []);
+  // 分割は「引き渡し済み」にする時も確かめる
+  db.prepare("INSERT INTO split (created_at, updated_at, game, buyer, total, status) VALUES ('', '', 'granblue', 'a', 1, '完済')").run();
+  assert.equal((await handoverMissing(env, "split", 1, { status: "引き渡し済み" })).length, Object.keys(HANDOVER).length);
+});
+
+test("チェック式査定(グラブル・ウマ娘): 目安額と取引しやすさ", async () => {
+  const { checkEstimate, checkDetail } = await import("../public/lib/check.js");
+  const { fillTemplate } = await import("../public/lib/dm.js");
+  const safe = { login: "id", mail: "yes", origin: "self", receipt: "yes" };
+  const r = checkEstimate("granblue", { rank: "250", limited: "80", eternals: "10", evokers: "6", hihi: "3", kongo: "2", crystal: "30,000" }, safe);
+  assert.equal(r.safety.level, "ok");
+  assert.ok(r.low < r.high && r.low % 1000 === 0);
+  // 項目が多いほど高い・上限を超える入力は上限にそろえる
+  assert.ok(checkEstimate("granblue", { eternals: 10 }, safe).high > checkEstimate("granblue", { eternals: 1 }, safe).high);
+  assert.equal(checkEstimate("granblue", { eternals: 99 }, safe).values.eternals, 10);
+  // SNS 連携だけ・買ったアカウントは金額を出さない
+  const ng = checkEstimate("umamusume", { ssr_lb: 15 }, { ...safe, login: "sns" });
+  assert.equal(ng.safety.level, "ng");
+  assert.equal(ng.low, null);
+  assert.equal(checkEstimate("umamusume", {}, { ...safe, origin: "bought" }).low, null);
+  // 未回答・レシートなしは「確認が要る」
+  assert.equal(checkEstimate("umamusume", {}, { ...safe, receipt: "no" }).safety.level, "check");
+  assert.equal(checkEstimate("umamusume", {}, {}).safety.level, "check");
+  assert.throws(() => checkEstimate("x", {}, {}));
+  assert.match(checkDetail("granblue", r, safe), /十天衆の最終上限解放\(人\) 10[\s\S]*◎ 安心[\s\S]*引き継ぎ: ゲーム会社のID/);
+  // 定型文の {X} は、ゲームごとの窓口の X
+  assert.equal(fillTemplate("{X}", { id: 1, game: "granblue" }), "@meruru_prop");
+  assert.equal(fillTemplate("{X}", { id: 1, game: "genshin-impact" }), "@Meruru_Genshin");
 });

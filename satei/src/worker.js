@@ -5,9 +5,11 @@
 //       画像は読み取りにだけ使い、保存しない
 //   POST /api/event {kind: estimate|dm, game, sid, chars, low, high} … 利用記録(src/events.js)
 //   GET  /api/stats(合言葉が必要)… 利用記録の集計。画面は public/admin.html
-//   POST /api/lead {game, handle?, wish?, chars, low, high, sid} … 査定ページからの相談 → 代理出品の管理に入り、管理番号を返す
+//   POST /api/lead {game, handle?, wish?, chars, low, high, sid, detail?} … 査定ページからの相談 → 代理出品の管理に入り、管理番号を返す
+//     (detail はチェック式の査定 check.html で答えた内容。メモに残す)
 //   /api/consign・/api/templates(合言葉が必要)… 代理出品の一覧・更新・DM の定型文(src/consign.js)
 //   /api/stock・/api/split・/api/image・/api/want・/api/follow(合言葉が必要)… 在庫・分割払い・スクショ・購入希望者・フォロー候補の管理(src/stock.js, src/follow.js)
+//   /api/caution(合言葉が必要)… 要注意リスト。引き渡し完了は詐欺対策のチェックが全部そろってから(409 で断る)
 //
 // バインディング:
 //   ANTHROPIC_API_KEY … Secret(未設定なら /api/read は 503。画面は手入力だけで動く)
@@ -17,8 +19,9 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { CHARS, TERMS } from "../public/lib/chars.js";
+import { GAMES } from "../public/lib/games.js";
 import { validEvent, record, stats } from "./events.js";
-import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay, validImage, addImage, listImages, getImage, replaceImage, deleteImage, validWant, createWant, updateWant, listWants } from "./stock.js";
+import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay, validImage, addImage, listImages, getImage, replaceImage, deleteImage, validWant, createWant, updateWant, listWants, handoverMissing, listCaution, addCaution, deleteCaution, findCaution } from "./stock.js";
 import { listFollow, importFollow, setFollowStatus } from "./follow.js";
 import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES } from "./consign.js";
 
@@ -181,15 +184,18 @@ async function handle(req, env, ctx) {
     try {
       body = JSON.parse(text);
     } catch {}
-    const ev = validEvent(body, Object.keys(CHARS));
+    const ev = validEvent(body, Object.keys(GAMES));
     if (!ev || ev.kind === "read") return json({ ok: false }, 400);
     await record(env, ev);
     return json({ ok: true });
   }
   // 査定ページの「この金額で売りたい」からの相談(誰でも送れるので、1日の件数に上限を置く)
   if (pathname === "/api/lead" && req.method === "POST") {
-    const lead = validLead(await readJson(req), Object.keys(CHARS));
+    const lead = validLead(await readJson(req), Object.keys(GAMES));
     if (!lead) return json({ ok: false, error: "入力を確認してください" }, 400);
+    // 要注意リストの人は、メモの先頭に印を付ける(相談は普段どおり受け付ける)
+    const hit = await findCaution(env, lead.handle);
+    if (hit) lead.memo = `⚠️要注意リスト(${hit.reason ?? "理由なし"}) ${lead.memo ?? ""}`.trim();
     const today = await env.DB.prepare("SELECT COUNT(*) AS n FROM consign WHERE source = 'tool' AND created_at >= ?")
       .bind(new Date(Date.now() - 86400_000).toISOString())
       .first();
@@ -198,7 +204,7 @@ async function handle(req, env, ctx) {
     return json({ ok: true, no: id, merged });
   }
   // ここから下は集計画面用(合言葉が必要)
-  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay|image|want|follow)/.test(pathname) || pathname === "/api/templates";
+  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay|image|want|follow|caution)/.test(pathname) || pathname === "/api/templates";
   if (admin) {
     const token = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
     if (!env.STATS_TOKEN_SHA256 || (await sha256(token)) !== env.STATS_TOKEN_SHA256) return json({ ok: false, error: "合言葉が違います" }, 401);
@@ -213,7 +219,7 @@ async function handle(req, env, ctx) {
     const body = await readJson(req);
     const handle = body?.handle ? normHandle(body.handle) : null;
     // ユーザー名か呼び名のどちらかは要る
-    if ((!handle && !body?.name?.trim()) || (body?.handle && !handle) || !CHARS[body.game]) {
+    if ((!handle && !body?.name?.trim()) || (body?.handle && !handle) || !GAMES[body.game]) {
       return json({ ok: false, error: "ユーザー名(または呼び名)とゲームを確認してください" }, 400);
     }
     const { id } = await createLead(env, { handle, game: body.game, chars: [], low: null, high: null, wish: null, sid: "" }, "manual");
@@ -222,7 +228,10 @@ async function handle(req, env, ctx) {
   }
   const m = /^\/api\/consign\/(\d+)(\/dm)?$/.exec(pathname);
   if (m && req.method === "PATCH" && !m[2]) {
-    const ok = await updateConsign(env, Number(m[1]), validPatch(await readJson(req)));
+    const patch = validPatch(await readJson(req));
+    const missing = await handoverMissing(env, "consign", Number(m[1]), patch);
+    if (missing.length) return notYet(missing);
+    const ok = await updateConsign(env, Number(m[1]), patch);
     return json({ ok }, ok ? 200 : 404);
   }
   if (m && req.method === "POST" && m[2]) {
@@ -244,11 +253,14 @@ async function handle(req, env, ctx) {
 }
 
 // 在庫と分割払い(合言葉の確認は済んでいる)。該当しなければ null
+// 詐欺対策のチェックが残っている時の返事
+const notYet = (missing) => json({ ok: false, error: `詐欺対策のチェックが残っています: ${missing.join("、")}` }, 409);
+
 async function stockApi(env, req, pathname) {
-  const games = Object.keys(CHARS);
+  const games = Object.keys(GAMES);
   const bad = () => json({ ok: false, error: "入力を確認してください" }, 400);
   const done = (ok) => json({ ok }, ok ? 200 : 404);
-  if (pathname === "/api/stock" && req.method === "GET") return json({ ok: true, stock: await listStock(env), split: await listSplit(env), images: await listImages(env), wants: await listWants(env), follow: await listFollow(env) });
+  if (pathname === "/api/stock" && req.method === "GET") return json({ ok: true, stock: await listStock(env), split: await listSplit(env), images: await listImages(env), wants: await listWants(env), follow: await listFollow(env), caution: await listCaution(env) });
   if (pathname === "/api/stock" && req.method === "POST") {
     const row = validStock(await readJson(req), games);
     return row?.game ? json({ ok: true, no: await createStock(env, row) }) : bad();
@@ -256,7 +268,9 @@ async function stockApi(env, req, pathname) {
   let m = /^\/api\/stock\/(\d+)$/.exec(pathname);
   if (m && req.method === "PATCH") {
     const patch = validStock(await readJson(req), games);
-    return patch ? done(await updateStock(env, Number(m[1]), patch)) : bad();
+    if (!patch) return bad();
+    const missing = await handoverMissing(env, "stock", Number(m[1]), patch);
+    return missing.length ? notYet(missing) : done(await updateStock(env, Number(m[1]), patch));
   }
   if (pathname === "/api/split" && req.method === "POST") {
     const body = await readJson(req);
@@ -268,7 +282,9 @@ async function stockApi(env, req, pathname) {
   m = /^\/api\/split\/(\d+)(\/pay)?$/.exec(pathname);
   if (m && !m[2] && req.method === "PATCH") {
     const patch = validSplit(await readJson(req), games);
-    return patch ? done(await updateSplit(env, Number(m[1]), patch)) : bad();
+    if (!patch) return bad();
+    const missing = await handoverMissing(env, "split", Number(m[1]), patch);
+    return missing.length ? notYet(missing) : done(await updateSplit(env, Number(m[1]), patch));
   }
   if (m && m[2] && req.method === "POST") {
     const p = validPay(await readJson(req));
@@ -288,6 +304,17 @@ async function stockApi(env, req, pathname) {
   }
   m = /^\/api\/follow\/(\d+)$/.exec(pathname);
   if (m && req.method === "PATCH") return done(await setFollowStatus(env, Number(m[1]), (await readJson(req))?.status));
+  // 要注意リスト
+  if (pathname === "/api/caution" && req.method === "GET") return json({ ok: true, items: await listCaution(env) });
+  if (pathname === "/api/caution" && req.method === "POST") {
+    const body = await readJson(req);
+    const handle = normHandle(body?.handle ?? "");
+    if (!handle) return json({ ok: false, error: "X の @ID を確認してください" }, 400);
+    await addCaution(env, handle, body.reason);
+    return json({ ok: true });
+  }
+  m = /^\/api\/caution\/(\d+)$/.exec(pathname);
+  if (m && req.method === "DELETE") return done(await deleteCaution(env, Number(m[1])));
   // 購入希望
   if (pathname === "/api/want" && req.method === "POST") {
     const row = validWant(await readJson(req), games);

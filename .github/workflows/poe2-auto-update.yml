@@ -79,6 +79,10 @@ jobs:
           # 原神・スタレ ツール。査定は satei/public(画像の読み取りだけ Worker の /api/read に送る)
           cp -r hoyo site-dist/hoyo
           cp -r satei/public site-dist/hoyo/satei
+          # グラブル・ウマ娘のチェック式査定(@meruru_prop の窓口)。game-souba.com/kaitori/
+          mkdir -p site-dist/kaitori
+          cp satei/public/check.html site-dist/kaitori/index.html
+          cp -r satei/public/lib site-dist/kaitori/lib
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4

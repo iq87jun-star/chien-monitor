@@ -7,6 +7,7 @@
 
 export { STATUSES, fillTemplate } from "../public/lib/dm.js";
 import { STATUSES } from "../public/lib/dm.js";
+import { HANDOVER } from "../public/lib/stock.js";
 
 // 定型文の初期値。{番号} などは送る時に置き換える(fillTemplate)
 export const DEFAULT_TEMPLATES = [
@@ -28,7 +29,7 @@ export const DEFAULT_TEMPLATES = [
     body: `【No.{番号}】{名前}様
 お待たせいたしました。大変申し訳ないのですが、今回のアカウントは私の方での直接買取を見送らせていただくことになりました。
 
-その代わりに、私のX(@Meruru_Genshin)で「No.{番号}」としてアカウントを紹介し、購入希望の方をお探しするお手伝いをさせていただけないでしょうか。
+その代わりに、私のX({X})で「No.{番号}」としてアカウントを紹介し、購入希望の方をお探しするお手伝いをさせていただけないでしょうか。
 
 ▼お願いしたいこと
 ・UIDを隠したキャラ一覧などのスクショ
@@ -87,7 +88,9 @@ export function validLead(body, games) {
     .slice(0, 60)
     .map((c) => ({ name: clean(c?.name, 30), cons: Math.min(6, Math.max(0, Number(c?.cons) | 0)), mochi: Boolean(c?.mochi) }))
     .filter((c) => c.name);
-  return { game: body.game, handle, name, chars, low: yen(body.low), high: yen(body.high), wish: yen(body.wish), sid: clean(body.sid, 40) };
+  // チェック式の査定(グラブル・ウマ娘)は、答えた内容を文字にしてメモに残す
+  const memo = clean(body.detail, 800) || null;
+  return { game: body.game, handle, name, chars, low: yen(body.low), high: yen(body.high), wish: yen(body.wish), sid: clean(body.sid, 40), memo };
 }
 
 // 集計画面からの更新。渡された項目だけ変える
@@ -101,10 +104,13 @@ export function validPatch(body) {
   if ("next_at" in body) out.next_at = body.next_at ? date(body.next_at) : null;
   if ("memo" in body) out.memo = clean(body.memo ?? "", 2000);
   if ("post_url" in body) out.post_url = /^https:\/\/(x|twitter)\.com\//.test(body.post_url ?? "") ? clean(body.post_url, 300) : null;
+  if ("handover" in body) out.handover = JSON.stringify(Object.fromEntries(Object.keys(HANDOVER).map((k) => [k, Boolean(body.handover?.[k])])));
+  if ("handed_on" in body) out.handed_on = body.handed_on ? date(body.handed_on) : null;
+  if ("watch" in body && Number.isInteger(body.watch) && body.watch >= 0 && body.watch <= 10) out.watch = body.watch;
   return out;
 }
 
-const parse = (r) => ({ ...r, chars: JSON.parse(r.chars ?? "[]") });
+const parse = (r) => ({ ...r, chars: JSON.parse(r.chars ?? "[]"), handover: JSON.parse(r.handover ?? "{}") });
 
 // 同じ人がもう一度送った相談は、新しい番号を作らず前の番号にまとめる。
 // 同じゲームで、同じ画面(sid)か同じユーザー名から、この日数のうちに来た進行中の相談を同じ人とみなす
@@ -129,16 +135,16 @@ export async function createLead(env, lead, source = "tool") {
   if (same) {
     // キャラと査定額は新しい方にする。ユーザー名・希望額は、新しく書かれた時だけ上書きする
     await env.DB.prepare(
-      "UPDATE consign SET updated_at = ?, chars = ?, low = ?, high = ?, handle = COALESCE(?, handle), name = COALESCE(?, name), wish = COALESCE(?, wish) WHERE id = ?",
+      "UPDATE consign SET updated_at = ?, chars = ?, low = ?, high = ?, handle = COALESCE(?, handle), name = COALESCE(?, name), wish = COALESCE(?, wish), memo = COALESCE(?, memo) WHERE id = ?",
     )
-      .bind(now, JSON.stringify(lead.chars), lead.low, lead.high, lead.handle, lead.name ?? null, lead.wish, same.id)
+      .bind(now, JSON.stringify(lead.chars), lead.low, lead.high, lead.handle, lead.name ?? null, lead.wish, lead.memo ?? null, same.id)
       .run();
     return { id: same.id, merged: true };
   }
   const r = await env.DB.prepare(
-    "INSERT INTO consign (created_at, updated_at, handle, name, game, chars, low, high, wish, status, sid, source) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '新規', ?, ?) RETURNING id",
+    "INSERT INTO consign (created_at, updated_at, handle, name, game, chars, low, high, wish, status, sid, source, memo) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, '新規', ?, ?, ?) RETURNING id",
   )
-    .bind(now, now, lead.handle, lead.name ?? null, lead.game, JSON.stringify(lead.chars), lead.low, lead.high, lead.wish, lead.sid ?? "", source)
+    .bind(now, now, lead.handle, lead.name ?? null, lead.game, JSON.stringify(lead.chars), lead.low, lead.high, lead.wish, lead.sid ?? "", source, lead.memo ?? null)
     .first();
   return { id: r.id, merged: false };
 }
