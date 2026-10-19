@@ -59,3 +59,30 @@ export function validRecords(items) {
       (it.info == null || (Array.isArray(it.info) && it.info.every((x) => typeof x === "string"))),
   );
 }
+
+// 売れた記録のキーワード検索(仕入れの相場確認用)。空白で区切った語をすべて含むもの(タイトルか説明文)
+// 返り値: D1 に渡す SQL と値。語は 5 つまで、1 語 30 文字まで
+export function searchQuery({ game, q, low, high, limit = 300 }) {
+  const words = String(q ?? "")
+    .normalize("NFKC")
+    .split(/[\s　]+/)
+    .map((w) => w.trim().slice(0, 30))
+    .filter(Boolean)
+    .slice(0, 5);
+  const where = ["site = 'gametrade'", "name NOT LIKE '%専用%'"];
+  const binds = [];
+  if (game) where.push("game = ?"), binds.push(game);
+  for (const w of words) {
+    where.push("(name LIKE ? ESCAPE '\\' OR description LIKE ? ESCAPE '\\')");
+    const like = `%${w.replace(/[\\%_]/g, (c) => `\\${c}`)}%`;
+    binds.push(like, like);
+  }
+  if (Number(low) > 0) where.push("price >= ?"), binds.push(Number(low));
+  if (Number(high) > 0) where.push("price <= ?"), binds.push(Number(high));
+  const n = Math.min(Math.max(Number(limit) || 300, 1), 1000);
+  return {
+    words,
+    sql: `SELECT id, game, name, price, url, first_seen FROM sold WHERE ${where.join(" AND ")} ORDER BY first_seen DESC, CAST(id AS INTEGER) DESC LIMIT ?`,
+    binds: [...binds, n],
+  };
+}

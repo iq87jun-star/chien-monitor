@@ -9,14 +9,14 @@
 // 売れたアカウント(査定ツールの学習用。sold-relay.mjs が送る):
 //   POST /sold {game, items}・GET /sold/missing・POST /sold/details {details}・GET /sold/export(合言葉が必要)
 //   自宅 PC から(読み取りは Worker 側): POST /sold/pages {game, pages: [一覧の HTML]}・POST /sold/detail-html {id, html}
-//   GET /sold/stats で件数を確認できる
+//   GET /sold/stats で件数を確認できる。GET /sold/search?game=&q=&low=&high=(合言葉が必要)は仕入れ検索
 // GET /status(?site=gameclub / gametrade-zzz など)で最後の実行結果を確認できる。/sample は新しいサイトの下調べ用(合言葉が必要)。POST /ingest に {"test": true} でテスト投稿。
 
 import gametrade from "../config.json";
 import gameclub from "../config.gameclub.json";
 import targets from "../config.targets.json";
 import { runCheck } from "./core.js";
-import { validRecords, parseSold, parseDetail, soldRecord } from "./sold.js";
+import { validRecords, parseSold, parseDetail, soldRecord, searchQuery } from "./sold.js";
 
 // 監視先。キー(id)は /ingest・/status の site。原神の2つは最初からの id のまま、ほかのゲームは config.targets.json
 // (各要素の site は解析の種類 gametrade / gameclub)
@@ -156,6 +156,13 @@ async function sold(req, env, pathname, params) {
       .slice(0, 200);
     return json({ ok: true, updated: await saveDetails(details) });
   }
+  // 仕入れ検索(在庫と分割の管理画面から): ?game=&q=キーワード&low=&high=
+  if (pathname === "/sold/search") {
+    const { words, sql, binds } = searchQuery(Object.fromEntries(params));
+    if (!words.length) return json({ ok: false, error: "キーワードを入れてください" }, 400);
+    const { results } = await env.DB.prepare(sql).bind(...binds).all();
+    return json({ ok: true, words, items: results });
+  }
   // 学習用の書き出し: ?game=genshin-impact&after=<id>&limit=500(id の昇順。続きは最後の id を after に)
   if (pathname === "/sold/export") {
     const limit = Math.min(Number(params.get("limit")) || 500, 2000);
@@ -173,6 +180,18 @@ async function sold(req, env, pathname, params) {
 export default {
   async fetch(req, env) {
     const { pathname, searchParams } = new URL(req.url);
+    // 仕入れ検索だけは管理画面(game-souba.com)から呼ぶので CORS を付ける
+    if (pathname === "/sold/search") {
+      const origin = req.headers.get("origin");
+      const cors = ["https://game-souba.com", "https://www.game-souba.com"].includes(origin)
+        ? { "access-control-allow-origin": origin, "access-control-allow-headers": "authorization", vary: "origin" }
+        : {};
+      if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: { ...cors, "access-control-allow-methods": "GET", "access-control-max-age": "86400" } });
+      const res = await sold(req, env, pathname, searchParams);
+      const out = new Response(res.body, res);
+      for (const [k, v] of Object.entries(cors)) out.headers.set(k, v);
+      return out;
+    }
     if (pathname === "/sold" || pathname.startsWith("/sold/")) return sold(req, env, pathname, searchParams);
     if (pathname === "/status") {
       const site = new URL(req.url).searchParams.get("site") ?? "gametrade";

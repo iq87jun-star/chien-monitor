@@ -80,7 +80,26 @@
       <button type="button" data-tab="wantTab" aria-pressed="false">購入希望</button>
       <button type="button" data-tab="followTab" aria-pressed="false">フォロー</button>
       <button type="button" data-tab="cautionTab" aria-pressed="false">⚠️ 要注意</button>
+      <button type="button" data-tab="searchTab" aria-pressed="false">🔍 仕入れ検索</button>
     </div>
+
+    <section id="searchTab" hidden>
+      <div class="card">
+        <p class="muted" style="margin:0">キーワード(空白で区切ると全部を含むもの)で、各サイトの出品を開きます。下には、同じキーワードの垢が実際にいくらで売れたか(ゲームトレードの記録)を出すので、安い出品かどうかの目安にしてください。</p>
+        <div class="grid2">
+          <label>ゲーム<select id="q-game"></select></label>
+          <label>キーワード<input id="q-word" placeholder="例: フリーナ 完凸" /></label>
+          <label>価格の下限(円)<input id="q-low" type="number" step="1000" /></label>
+          <label>価格の上限(円)<input id="q-high" type="number" step="1000" /></label>
+        </div>
+        <div class="row"><button type="button" id="q-go">検索</button></div>
+        <div class="row" id="q-links"></div>
+      </div>
+      <div class="card" id="q-result" hidden>
+        <b>同じキーワードで売れた垢</b> <span class="muted" id="q-sum"></span>
+        <div class="wrap"><table><thead><tr><th>売れた値段</th><th>タイトル</th><th>記録日</th></tr></thead><tbody id="q-list"></tbody></table></div>
+      </div>
+    </section>
 
     <section id="cautionTab" hidden>
       <div class="card">
@@ -200,7 +219,7 @@ $("acct").innerHTML += Object.entries(ACCOUNTS).map(([k, v]) => `<option value="
 $("acct").value = acct;
 const inAcct = (game) => !acct || accountOf(game) === acct;
 const gameOptions = () => gamesOf(acct).map((k) => `<option value="${k}">${GAME[k]}</option>`).join("");
-const setGameOptions = () => { for (const id of ["s-game", "p-game", "w-game"]) $(id).innerHTML = gameOptions(); };
+const setGameOptions = () => { for (const id of ["s-game", "p-game", "w-game", "q-game"]) $(id).innerHTML = gameOptions(); };
 setGameOptions();
 // 読み込んだ全件(all)から、選んだアカウントの分だけを data・consign にする(フォロー・要注意は共通)
 let all = null, allConsign = [];
@@ -240,7 +259,7 @@ const satei = (game, cs) => {
 for (const b of document.querySelectorAll("[data-tab]"))
   b.addEventListener("click", () => {
     for (const x of document.querySelectorAll("[data-tab]")) x.setAttribute("aria-pressed", String(x === b));
-    for (const id of ["stockTab", "splitTab", "wantTab", "followTab", "cautionTab"]) $(id).hidden = id !== b.dataset.tab;
+    for (const id of ["stockTab", "splitTab", "wantTab", "followTab", "cautionTab", "searchTab"]) $(id).hidden = id !== b.dataset.tab;
   });
 
 function render() {
@@ -718,6 +737,46 @@ $("todo").addEventListener("click", (e) => {
   const path = { stock: "stock", split: "split", consign: "consign" }[b.dataset.kind];
   run(() => api(`/api/${path}/${b.dataset.id}`, { method: "PATCH", body: JSON.stringify({ watch: Number(b.dataset.watch) }) }), "見守りの確認を記録しました");
 });
+
+// ── 仕入れ検索 ──
+// 各サイトの検索ページ(開くだけ。ゲームトレードのゲーム名は satei と少し違う)
+const GT = "https://gametrade-watch.iq87jun.workers.dev";
+const GT_SLUG = { identityv: "identity-v" };
+function searchLinks(game, word, low, high) {
+  const slug = GT_SLUG[game] ?? game;
+  const gt = new URL(`https://gametrade.jp/${slug}/exhibits`);
+  for (const [k, v] of Object.entries({ keyword: word, filter: "purchasable", sort: "new", low_price: low, high_price: high })) if (v) gt.searchParams.set(k, v);
+  const links = [["ゲームトレード", gt.href]];
+  // ゲームクラブは原神の URL だけ確認済み
+  if (game === "genshin-impact") {
+    const gc = new URL("https://gameclub.jp/genshin-impact");
+    for (const [k, v] of Object.entries({ "search[keyword]": word, "search[type][1]": "1", "search[priceMin]": low, "search[priceMax]": high })) if (v) gc.searchParams.set(k, v);
+    links.push(["ゲームクラブ", gc.href]);
+  }
+  const q = `${GAME[game]} ${word} (垢 OR アカウント) (譲渡 OR 販売 OR 売ります)`;
+  links.push(["X(新しい順)", `https://x.com/search?q=${encodeURIComponent(q)}&f=live`]);
+  return links;
+}
+const quart = (a, q) => a[Math.min(a.length - 1, Math.floor(q * a.length))];
+$("q-go").addEventListener("click", async () => {
+  const game = $("q-game").value, word = $("q-word").value.trim(), low = $("q-low").value, high = $("q-high").value;
+  if (!word) return toast("キーワードを入れてください");
+  $("q-links").innerHTML = searchLinks(game, word, low, high).map(([t, u]) => `<a class="sub" href="${esc(u)}" target="_blank" rel="noopener" style="padding:8px 12px;border:1px solid var(--line);border-radius:8px;text-decoration:none">${esc(t)}で探す ↗</a>`).join("");
+  $("q-result").hidden = false;
+  $("q-sum").textContent = "読み込み中…";
+  $("q-list").innerHTML = "";
+  try {
+    const u = new URL(`${GT}/sold/search`);
+    for (const [k, v] of Object.entries({ game: GT_SLUG[game] ?? game, q: word, low, high })) if (v) u.searchParams.set(k, v);
+    const res = await fetch(u, { headers: { authorization: `Bearer ${token}` } });
+    const d = await res.json();
+    if (!d.ok) throw new Error(d.error || res.status);
+    const ps = d.items.map((x) => x.price).sort((a, b) => a - b);
+    $("q-sum").textContent = ps.length ? `${ps.length}件 ・ 真ん中 ${yen(quart(ps, 0.5))}(下から25% ${yen(quart(ps, 0.25))} 〜 上から25% ${yen(quart(ps, 0.75))})${ps.length >= 300 ? " ・ 新しい300件まで" : ""}` : "見つかりませんでした(キーワードを減らしてみてください)";
+    $("q-list").innerHTML = d.items.slice(0, 60).map((x) => `<tr><td>${yen(x.price)}</td><td>${x.url ? `<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.name)}</a>` : esc(x.name)}</td><td>${md(x.first_seen.slice(0, 10))}</td></tr>`).join("");
+  } catch (err) { $("q-sum").textContent = `読み込めませんでした(${err.message})`; }
+});
+$("q-word").addEventListener("keydown", (e) => { if (e.key === "Enter") $("q-go").click(); });
 
 // ── 要注意リスト ──
 function renderCaution() {
