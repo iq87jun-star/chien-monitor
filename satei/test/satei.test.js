@@ -375,3 +375,15 @@ test("チェック式査定(グラブル・ウマ娘): 目安額と取引しや�
   assert.equal(fillTemplate("{X}", { id: 1, game: "granblue" }), "@meruru_prop");
   assert.equal(fillTemplate("{X}", { id: 1, game: "genshin-impact" }), "@Meruru_Genshin");
 });
+
+test("チェック式査定: スクショ読み取りの依頼文と結果の扱い", async () => {
+  const { CHECK, checkSchema, checkPrompt, checkValues } = await import("../public/lib/check.js");
+  for (const game of Object.keys(CHECK)) {
+    const schema = checkSchema(game);
+    assert.deepEqual(schema.required, [...CHECK[game].fields.map((f) => f.k), "id_visible"]);
+    assert.doesNotMatch(JSON.stringify(schema), /"(minimum|maximum|multipleOf|minLength|maxLength)"/);
+    for (const f of CHECK[game].fields) assert.ok(f.read && checkPrompt(game).includes(`- ${f.k}: ${f.read}`), `${game}.${f.k}`);
+  }
+  // -1(読めない)・小数・範囲外は null か上限にそろえる
+  assert.deepEqual(checkValues("granblue", { rank: 250, limited: -1, eternals: 12, evokers: 1.5, hihi: 0 }), { rank: 250, limited: null, eternals: 10, evokers: null, hihi: 0, kongo: null, crystal: null });
+});
