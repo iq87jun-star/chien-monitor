@@ -161,7 +161,7 @@ let game = CHECK[store.get("check:game")] ? store.get("check:game") : "granblue"
 // 利用記録用。画面を開くたびに作るランダムな ID(個人は特定しない)
 const SID = (crypto.randomUUID?.() ?? String(Math.random()).slice(2) + Date.now()).replace(/[^A-Za-z0-9_-]/g, "");
 function logEvent(ev, beacon = false) {
-  const body = JSON.stringify({ ...ev, sid: SID, chars: [] });
+  const body = JSON.stringify({ chars: [], ...ev, sid: SID });
   try {
     if (beacon && navigator.sendBeacon) return navigator.sendBeacon(`${API}/api/event`, new Blob([body], { type: "text/plain" }));
     fetch(`${API}/api/event`, { method: "POST", headers: { "content-type": "text/plain" }, body, keepalive: true }).catch(() => {});
@@ -238,6 +238,13 @@ for (const b of document.querySelectorAll("[data-game]")) b.addEventListener("cl
 const values = () => Object.fromEntries([...document.querySelectorAll("[data-k]")].map((x) => [x.dataset.k, x.value]));
 const answers = () => Object.fromEntries(SAFETY_Q.map((q) => [q.k, document.querySelector(`input[name="${q.k}"]:checked`)?.value]));
 
+// 取引しやすさに問題がない時の答え(参考の金額を出す時だけ使う)
+const SAFE = { login: "id", mail: "yes", origin: "self", receipt: "yes" };
+// 利用記録の「キャラ」欄に入れるもの: 入力した数(「UR・LR衣装の数 47」)と、持っているもの
+function eventChars(r) {
+  const fields = CHECK[game].fields.filter((f) => r.values[f.k]).map((f) => ({ name: `${f.label.replace(/\(.*\)/, "")} ${f.options ? f.options.find(([v]) => v === String(r.values[f.k]))?.[1] ?? r.values[f.k] : r.values[f.k]}`.slice(0, 30), cons: 0 }));
+  return [...fields, ...(r.has ?? []).map((name) => ({ name: name.slice(0, 30), cons: 0 }))].slice(0, 60);
+}
 // 値付けモデル(売れたアカウントから学習。satei/scripts/train-check.mjs)。「持っているもの」の候補もここから出す
 let model = null;
 const loadModel = async () => (model ??= await (await fetch("./check-model.json")).json());
@@ -262,17 +269,20 @@ $("estBtn").addEventListener("click", async () => {
     return;
   }
   const r = checkEstimate(model, game, values(), a, owned());
+  // 利用記録と相談には、取引しやすさに関係なく出した金額(参考)と、入力した数・持っているものを残す
+  const ref = r.low == null ? checkEstimate(model, game, values(), SAFE, owned()) : r;
+  const logged = { low: ref.low, high: ref.high, chars: eventChars(ref) };
   const text = r.low == null ? "DMで個別に確認します" : r.capped ? `${man(r.low)}円以上(個別査定)` : `約${man(r.low)}〜${man(r.high)}円`;
   $("market").textContent = r.market ? `代理出品なら 相場 約${man(r.market.low)}〜${man(r.market.high)}円${r.capped ? "以上" : ""}で紹介できます` : "";
   $("badge").className = `badge ${r.safety.level}`;
   $("badge").textContent = LEVEL[r.safety.level];
   $("notes").innerHTML = r.safety.notes.map((n) => `<li>${esc(n)}</li>`).join("") + (SAFETY_Q.some((q) => !a[q.k]) ? "<li>答えていない質問があります</li>" : "");
   $("price").textContent = text;
-  logEvent({ kind: "estimate", game, low: r.low, high: r.high });
+  logEvent({ kind: "estimate", game, ...logged });
   $("leadForm").hidden = true;
   $("leadDone").hidden = true;
   $("dmBtn").onclick = () => {
-    logEvent({ kind: "dm", game, low: r.low, high: r.high }, true);
+    logEvent({ kind: "dm", game, ...logged }, true);
     $("leadForm").hidden = false;
     $("leadForm").scrollIntoView({ behavior: "smooth", block: "center" });
   };
@@ -288,7 +298,7 @@ $("estBtn").addEventListener("click", async () => {
       const res = await fetch(`${API}/api/lead`, {
         method: "POST",
         headers: { "content-type": "text/plain" },
-        body: JSON.stringify({ game, sid: SID, handle: $("leadHandle").value.trim() || undefined, wish: wish > 0 ? Math.round(wish * 10000) : undefined, chars: [], low: r.low, high: r.high, detail: checkDetail(game, r, a) }),
+        body: JSON.stringify({ game, sid: SID, handle: $("leadHandle").value.trim() || undefined, wish: wish > 0 ? Math.round(wish * 10000) : undefined, chars: logged.chars, low: ref.low, high: ref.high, detail: checkDetail(game, r, a) + (ref === r ? "" : `\n[参考] 取引しやすさを除いた買取の目安 ${ref.low.toLocaleString()}〜${ref.high.toLocaleString()}円`) }),
       });
       const out = await res.json().catch(() => ({ ok: false, error: `通信エラー(${res.status})` }));
       if (!out.ok) throw new Error(out.error);
