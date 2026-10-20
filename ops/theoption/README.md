@@ -8,6 +8,7 @@
 |---|---|---|
 | 1 | 月曜に `通貨|FD|1H|HIGHLOW|…` が Opened で出る時刻(JST) | 開場(夏 06:00 / 冬 07:00)から **20 分以内** |
 | 2 | 払い戻し倍率(契約 JSON の欄。名前が分からないので全欄を記録) | 1.8 倍なら損益分岐 55.6%、1.7 倍なら 58.8% |
+| 2' | 22H / 23H(② Mon4 の形)と木曜朝の 1H(③ 水曜夜の円買い)も同じく初出・倍率を記録 | ② ③ は倍率 1.85 倍以上が目安 |
 | 3 | 開場直後の判定価格(`contract_data` の値・取れれば) | 中値から大きくずれていないこと |
 
 API の仕様は 2026-10 のクイックスタート(ユーザー提供の PDF)による。契約名は `資産|FE or FD|期間|商品|HIGH/LOW`、期間は 15S〜1H・22H・23H、商品は HighLow / Spread / Touch。最低 1,000 円、買いは 1 秒に 1 回まで。**developers.theoption.com と api.theoption.com は日本以外から遮断されている**ため、プローブは日本の PC / VPS で動かす。
@@ -22,7 +23,7 @@ API の仕様は 2026-10 のクイックスタート(ユーザー提供の PDF)�
    - キーは Windows のユーザー環境変数 `THEOPTION_API_KEY` にだけ保存(ファイルには書かない)
    - 記録先を Google Drive の `chien_ops\theoption\` に設定(既存のエージェントと同じ Drive)
    - その場で 60 秒の接続確認 → 結果を画面に表示
-   - タスク登録: `chien_theoption_monday`(月曜 05:25〜09:30 記録)・`chien_theoption_check`(火〜金 12:00 に 60 秒の接続確認)
+   - タスク登録: `chien_theoption_monday`(月曜 05:25〜09:30 記録)・`chien_theoption_thursday`(木曜 04:55〜09:30 = 水曜 20〜24 UTC の記録・v0.3。設定済みの VPS には次回の実行時に自動で追加)・`chien_theoption_check`(火〜金 12:00 に 60 秒の接続確認)
 4. チャットに「theoption 設定完了」と一言。以後は Drive の `chien_ops/theoption/` の要約(`*.summary.txt`・`_diag/last_run.txt`)をチャット側から読む。**手作業は無し。**
 - 実行のたびに GitHub から最新の `to_probe.py` / `to_summarize.py` を取り直す(`to_run.ps1`)。書式の修正などはこちらで push すれば次回から反映。
 - キーを替えるとき: コマンドプロンプトで `to_setup.bat run -NewKey`。止めるとき: タスクスケジューラで `chien_theoption_*` を無効化。

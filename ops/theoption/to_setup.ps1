@@ -44,7 +44,7 @@ Get-Content (Join-Path $here "run.log") -Tail 40
 Step "5. タスク登録"
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Hours 5) -MultipleInstances IgnoreNew
 $ps = "-NoProfile -ExecutionPolicy Bypass -File `"$(Join-Path $here 'to_run.ps1')`""
-foreach ($t in @(@("monday", "Monday", "05:25"), @("check", @("Tuesday","Wednesday","Thursday","Friday"), "12:00"))) {
+foreach ($t in @(@("monday", "Monday", "05:25"), @("thursday", "Thursday", "04:55"), @("check", @("Tuesday","Wednesday","Thursday","Friday"), "12:00"))) {
   $action  = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "$ps -Mode $($t[0])" -WorkingDirectory $here
   $trigger = New-ScheduledTaskTrigger -Weekly -DaysOfWeek $t[1] -At $t[2]
   Register-ScheduledTask -TaskName "chien_theoption_$($t[0])" -Action $action -Trigger $trigger -Settings $settings -Force | Out-Null

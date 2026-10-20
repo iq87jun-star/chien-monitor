@@ -12,7 +12,7 @@ def test_parse_name():
     d = P.parse_name("BTCJPY|FE|15M|HIGHLOW|HIGH|2026_08_10_14_05_00")
     assert (d["asset"], d["exp"], d["dur"], d["product"], d["sel"], d["stamp"]) == ("BTCJPY", "FE", "15M", "HIGHLOW", "HIGH", "2026_08_10_14_05_00")
     assert P.parse_name("USDJPY|FD|30S|TOUCH|LOW")["sel"] == "LOW"
-    assert P.is_target("USDJPY|FD|1H|HIGHLOW|HIGH") and not P.is_target("USDJPY|FE|1H|HIGHLOW|HIGH") and not P.is_target("BTCJPY|FD|1H|HIGHLOW|HIGH")
+    assert P.is_target("USDJPY|FD|1H|HIGHLOW|HIGH") and P.is_target("EURJPY|FD|22H|HIGHLOW|HIGH") and not P.is_target("EURJPY|FD|5M|HIGHLOW|HIGH") and not P.is_target("USDJPY|FE|1H|HIGHLOW|HIGH") and not P.is_target("BTCJPY|FD|1H|HIGHLOW|HIGH")
 
 def test_recorder_and_summary(capsys):
     with tempfile.TemporaryDirectory() as tmp:
@@ -61,3 +61,6 @@ def test_write_summary_files():
         P.write_summary(r.path, r)
         assert "USDJPY|FD|1H|HIGHLOW|HIGH" in open(os.path.join(tmp, "probe_demo_20261026_0525.summary.txt"), encoding="utf-8").read()
         assert "targets=1" in open(os.path.join(tmp, "_diag", "last_run.txt"), encoding="utf-8").read()
+
+def test_ensure_tasks_noop_off_windows():
+    assert P.ensure_tasks() == [] or os.name == "nt"
