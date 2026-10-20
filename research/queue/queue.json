@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9776,
+ "cumulative_cells": 9784,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2137,16 +2137,24 @@
    "slug": "mon_sun22_shot",
    "title": "Mon4 → Mon5: 週明け 日曜 22 UTC(東京オープン)ショットの追加/置換(20 UTC 決済)",
    "cells": 8,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/365_ext_tokyo_open_basket_check.md"
+    "docs/365_ext_tokyo_open_basket_check.md",
+    "docs/366_q139_mon_sun22_shot.md"
    ],
    "note": "外部提案(claude/zaption-check-m776m7)の照合 docs/365 から登録。改良系: 4 通貨 × {h4 置換, 5 本目追加}・ベース Mon4(h4/6/8/10・24h)。合格なら紙上フォワード(paper_forward MonSun22・登録時に追加済み)+ デモ端末で 22:00〜22:25 UTC の実スプレッドと取り逃しを計測 → 実コスト 10pip 以内なら 11/1 改正案で EA の InpMonHoursUTC に日曜 22 を足す版(v+0.01)。相手ブランチの EA は現行口座に載せない 2026-10-20 ユーザー「明日の検証結果を報告してください」→ order 14.5(10/21 朝の 1 本に前倒し)",
    "registered": "2026-10-20",
    "program": "docs/365",
-   "order": 14.5
+   "order": 14.5,
+   "result": "改良成立 8/8(4 通貨 × 置換/追加・IS/OOS とも Sharpe 改善・最悪月悪化なし)。実装は B(5 本目追加)優先。紙上フォワード MonSun22 ×4 は登録時に追加済み。採用は 22:00〜22:25 UTC の実スプレッド実測(往復 10pip 以内)後・11/1 改正案で EA v+0.01(InpMonSunShot)",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "8 セル・改良成立 8/8 → docs/366・累積 9,784"
+    }
+   ]
   }
  ],
  "runs": [
