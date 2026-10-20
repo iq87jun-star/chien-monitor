@@ -1,5 +1,5 @@
 //+------------------------------------------------------------------+
-//| chien_core.mqh 1.0 — docs/322 Q95(docs/363): RecentFit 系 EA の共通コア       |
+//| chien_core.mqh 1.1 — docs/322 Q95(docs/363): RecentFit 系 EA の共通コア       |
 //| 10 本の配備 EA(EA3 v1.19・EA8 v1.37・EA9 v1.04・EA10L v1.05・EA11 v1.15・パール v1.10・B 案 v1.04・FN v1.35・14074882 v1.11・Instant G v1.16)で本体が完全一致する 28 関数(ChienLog は 2 つの多重定義)を EA3 v1.19 の原文のまま収めた。 |
 //| 使い方: EA の input・グローバル(Inp*・g_*)の宣言の後に  #include "chien_core.mqh"  を置く(同じフォルダ MQL5\Experts\chien\ に置く)。 |
 //| 依存: EA 側に ResolveSymbol / MoneyPerUnit / PipOf / IsMine / ResetDay / FlushNotify(EA ごとに異なる 13 関数)が必要。 |
@@ -200,6 +200,7 @@ bool BalGuardActive(){
 
 void BalGuardCheck()
 {
+   if(AccountInfoDouble(ACCOUNT_EQUITY)<=0.0 || !TerminalInfoInteger(TERMINAL_CONNECTED)) return;   // docs/328 §9m: 未接続時は判定しない
    if(InpBalGuardPct<=0.0 || g_halted || g_passLocked) return;
    datetime now=TimeCurrent();
    if(DayStart(now)!=g_curDay) ResetDay(now);
