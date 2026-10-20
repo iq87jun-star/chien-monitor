@@ -18,7 +18,7 @@
 //|  ⚠ 本資金前にデモ必須。週明けのスプレッド拡大はcap+再試行で防御。    |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.00"
+#property version   "1.01"
 #property strict
 #property description "Monday Tokyo-open basket (spot port of validated binary anomalies). Entry Sun 22:00 GMT, time-based exits (23h cross-JPY / 1h GBPJPY). ATR catastrophe SL, daily/floor guards, push notify."
 
@@ -84,6 +84,20 @@ void Notify(string msg)
    if(InpNotifyEnable)
       if(!SendNotification("MondayTokyo: " + msg))
          PrintFormat("[NOTIFY失敗 err=%d] %s (ツール→オプション→通知のMetaQuotes ID設定を確認)", GetLastError(), msg);
+}
+
+//--- 実行ログCSV(共有Files: 週次突合の自動回収用。列: 時刻GMT,イベント,銘柄,ロット,SLpips,スプレッドpips,equity)
+void LogCsv(string ev, string sym, double lot, double slp, double spr)
+{
+   string fn = "ChienMT_log_" + (string)AccountInfoInteger(ACCOUNT_LOGIN) + ".csv";
+   int h = FileOpen(fn, FILE_COMMON | FILE_READ | FILE_WRITE | FILE_TXT | FILE_ANSI);
+   if(h == INVALID_HANDLE) return;
+   FileSeek(h, 0, SEEK_END);
+   if(FileTell(h) == 0) FileWriteString(h, "time_gmt,event,symbol,lot,sl_pips,spread_pips,equity\n");
+   FileWriteString(h, StringFormat("%s,%s,%s,%.2f,%.1f,%.2f,%.0f\n",
+      TimeToString(TimeGMT(), TIME_DATE | TIME_SECONDS), ev, sym, lot, slp, spr,
+      AccountInfoDouble(ACCOUNT_EQUITY)));
+   FileClose(h);
 }
 
 //--- 業者の実銘柄名に解決(サフィックス対応: 既存EA群と同方式)
@@ -185,7 +199,7 @@ int OnInit()
    gTrade.SetExpertMagicNumber(InpMagic);
    gTrade.SetDeviationInPoints(30);
    EventSetTimer(15);
-   Notify(StringFormat("起動 v1.00 基準残高=%.0f", BaseBalance()));
+   Notify(StringFormat("起動 v1.01 基準残高=%.0f", BaseBalance()));
    return INIT_SUCCEEDED;
 }
 void OnDeinit(const int reason){ EventKillTimer(); }
@@ -198,7 +212,7 @@ void CloseAllBasket(string reason)
       if(PositionSelectByTicket(t) && PositionGetInteger(POSITION_MAGIC) == InpMagic)
          gTrade.PositionClose(t);
    }
-   if(reason != "") Notify("全決済: " + reason);
+   if(reason != ""){ Notify("全決済: " + reason); LogCsv("guard", reason, 0, 0, 0); }
 }
 
 void OnTimer()
@@ -236,7 +250,7 @@ void OnTimer()
             ulong t = PositionGetTicket(k);
             if(PositionSelectByTicket(t) && PositionGetInteger(POSITION_MAGIC) == InpMagic
                && PositionGetString(POSITION_SYMBOL) == sym)
-               if(gTrade.PositionClose(t)) Notify(sym + " 時間決済");
+               if(gTrade.PositionClose(t)){ Notify(sym + " 時間決済"); LogCsv("exit", sym, 0, 0, SpreadPips(sym)); }
          }
       }
    }
@@ -250,7 +264,11 @@ void OnTimer()
       string base_s = SYMS[i];
       string sym = Resolve(base_s);
       if(sym == "" || HasPosition(sym) || DoneThisWeek(base_s, gmt)) continue;
-      if(SpreadPips(sym) > SpreadCapPips(base_s)) continue;   // 窓内の次のタイマーで再試行
+      if(SpreadPips(sym) > SpreadCapPips(base_s))
+      {
+         if(g.min >= InpEntryWindowMin - 1){ LogCsv("skip_spread", sym, 0, 0, SpreadPips(sym)); MarkDone(base_s, gmt); Notify(sym + " スプレッド超過で今週見送り"); }
+         continue;   // 窓内の次のタイマーで再試行
+      }
       double slp = StopPips(sym);
       double lot = CalcLot(sym, LegRisk(i), slp);
       if(lot <= 0) continue;
@@ -260,6 +278,7 @@ void OnTimer()
       {
          MarkDone(base_s, gmt);
          Notify(StringFormat("%s 買い %.2flot SL=%.1fpips", sym, lot, slp));
+         LogCsv("entry", sym, lot, slp, SpreadPips(sym));
       }
    }
 }

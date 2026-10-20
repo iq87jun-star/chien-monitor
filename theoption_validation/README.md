@@ -208,3 +208,14 @@ VPSプローブの記録(probe_*.jsonl, Drive chien_ops/theoption)とバック�
   InpLegEURJPY/InpLegGBPJPY=false にしてAUDJPY/NZDJPY(v7未使用銘柄)のみ追加するか別口座へ
 - 手順: MetaEditorでコンパイル(本環境ではコンパイル不可・未検証)→デモで最低2週間→
   週明けの約定スプレッド実測をentry_historyに記録→本番ロット
+
+## 追補14 (2026-10-20): 監視の完全自動化
+
+- **EA v1.01**: 実行ログCSVを自動記録(共有Files/ChienMT_log_<口座>.csv)。entry/exit/skip_spread(窓末尾で
+  見送り確定+通知)/guard の4イベント。スプレッド見送りは「今週見送り」を明示通知
+- **取引記録の置き場**: Drive chien_ops/theoption/entry_history.csv (id:1uXpME1bNSgqG7Bdjz5p-ZzLLmCu_kvvJ)。
+  スマホのDriveアプリから1行追記するだけで週次突合の対象になる
+- **週次自動突合(常設)**: 毎週火曜7:10 JSTに自動実行 — 月曜プローブ記録+EAログ+実取引を回収し
+  forward_reconcile.pyで検証値と突合、BE割れ/3ヶ月連続マイナスの停止提案まで自動。記録なし週は一行報告
+- 残る手動: (a)バイナリー実取引の結果1行記録(自動化は発注API利用が必要なため対象外・プローブは読み取り専用を維持)、
+  (b)EAログのDrive同期(デモをプローブVPSと同じマシンで回す場合はVPS側タスクに1行追加で自動化可)
