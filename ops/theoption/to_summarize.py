@@ -3,7 +3,7 @@
 出すもの: (1) 期間・商品の組み合わせごとの初出時刻(JST)、(2) FD|1H|HIGHLOW の通貨ペア別初出と払い戻し関連の欄、
 (3) 契約 JSON に含まれる欄名の一覧(払い戻し倍率がどの欄か探すため)、(4) contract_data への応答の例、(5) エラー。"""
 import json, sys, datetime as dt, collections
-from to_probe import parse_name, contract_json, is_target
+from to_probe import parse_name, contract_json, is_target, is_open
 JST = dt.timezone(dt.timedelta(hours=9))
 PAYKEYS = ("payout", "return", "profit", "multiplier", "rate", "percent", "odds")
 
@@ -30,7 +30,7 @@ def report(*paths):
                 if len(data_resp) < 5: data_resp.append((t, json.dumps(fr, ensure_ascii=False)[:400]))
                 continue
             fields.update(c.keys()); name = c.get("name") or fr.get("key", ""); d = parse_name(name)
-            if c.get("status", "Opened") != "Opened": continue
+            if not is_open(c): continue
             ck = (d["exp"], d["dur"], d["product"]); combo.setdefault(ck, t)
             if is_target(name):
                 target.setdefault(name, t)
@@ -38,7 +38,7 @@ def report(*paths):
                 if pv and name not in paysamp: paysamp[name] = (t, pv)
     print("\n(1) 組み合わせ(満期種別・期間・商品)の初出 JST")
     for ck, t in sorted(combo.items(), key=lambda x: x[1]): print(f"  {jst(t)}  {'|'.join(ck)}")
-    print("\n(2) FD|1H|HIGHLOW の初出 JST(月曜の開場は 夏 06:00 / 冬 07:00。開場 +20 分以内に出るかが要点)")
+    print("\n(2) FD/FE|1H・22H・23H|HIGHLOW の初出 JST(月曜の開場は 夏 06:00 / 冬 07:00。開場 +20 分以内に出るかが要点)")
     if not target: print("  (無し)")
     for n, t in sorted(target.items(), key=lambda x: x[1]): print(f"  {jst(t)}  {n}  払い戻し関連: {paysamp.get(n, ('', '-'))[1]}")
     print("\n(3) 契約 JSON の欄名:", ", ".join(f"{k}({v})" for k, v in fields.most_common()))

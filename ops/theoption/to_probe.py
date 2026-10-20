@@ -13,7 +13,7 @@
   python to_summarize.py out\\probe_YYYYMMDD.jsonl   # 記録の要約
 既定はお試し環境(apidemo / gatewaydemo)。--env live は本番ホスト(キーも本番用が要る)。"""
 import argparse, asyncio, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.3"
+VERSION = "0.4"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -31,9 +31,16 @@ def parse_name(name):
     return d
 
 TARGET_DURS = ("1H", "22H", "23H")   # ① 月曜窓埋め 1H・② Mon4 → 22H/23H・③ 水曜夜の円買い 1H
+# v0.4: 実測(2026-10-20 demo)で 1H/22H/23H は FE(満期時刻固定)にしか無く、FD は 15S〜5M のみ → FE も対象にする
+TARGET_EXPS = ("FD", "FE")
+# v0.4: 実測の status は "Open" / "Cut Off"("Opened" ではない)。旧表記も受ける
+OPEN_STATUSES = ("Open", "Opened")
+
+def is_open(c):
+    return (c or {}).get("status", "Open") in OPEN_STATUSES
 
 def is_target(name):
-    d = parse_name(name); return d["exp"] == "FD" and d["dur"].upper() in TARGET_DURS and d["product"] == "HIGHLOW" and d["asset"] in TARGET_ASSETS
+    d = parse_name(name); return d["exp"] in TARGET_EXPS and d["dur"].upper() in TARGET_DURS and d["product"] == "HIGHLOW" and d["asset"] in TARGET_ASSETS
 
 # v0.3: 木曜朝(= 水曜 20〜24 UTC・③ 水曜夜の円買い)も記録する。設定済みの VPS にもタスクを足すため、実行のたびに無ければ登録する。
 EXTRA_TASKS = [("chien_theoption_thursday", "THU", "04:55", "thursday")]
@@ -82,7 +89,7 @@ class Recorder:
         if fr.get("type") == "update":
             key = fr.get("key", ""); c = contract_json(fr.get("values")) or {}
             name = c.get("name") or key.split("|20")[0]
-            if is_target(name) and c.get("status", "Opened") == "Opened" and name not in self.first_seen:
+            if is_target(name) and is_open(c) and name not in self.first_seen:
                 self.first_seen[name] = dt.datetime.now(UTC); new.append(name)
         return new
 
