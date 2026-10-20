@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9750,
+ "cumulative_cells": 9776,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -3296,6 +3296,15 @@
    "cells": 0,
    "cumulative": 9710,
    "summary": "指数 Mon 継続判定: NAS100/US500 残す・JP225/UK100/FR40 外す(docs/358)"
+  }
+ ],
+ "external_checks": [
+  {
+   "date": "2026-10-20",
+   "source": "claude/zaption-check-m776m7",
+   "cells": 26,
+   "docs": "docs/365_ext_tokyo_open_basket_check.md",
+   "verdict": "新規としては不合格(Bonferroni 未達)・改良系(Mon の週明けショット)としては IS/OOS とも Sharpe 改善・採用は「登録」後に紙上フォワード+実スプレッド計測"
   }
  ]
 }
