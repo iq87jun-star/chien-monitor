@@ -4,6 +4,7 @@
 役割(chien_ops_agent.py から端末ごとに呼ばれる):
   1) inventory: 端末のプロファイル(MQL5\\Profiles\\Charts\\<profile>\\chart*.chr)を読み、どのチャートにどの EA が付いているかを一覧にする
   2) compile : manifest の ensure にある .mq5 を GitHub(公開)から取得し、その端末の MetaEditor でコンパイル(.ex5 は MQL5\\Experts\\chien\\ に置く)
+  1.9(2026-10-21・docs/328 §9m): 装着済み判定を path で行う(端末が name= を切り詰めても誤認しない)・同一 EA の重複装着を除去・manifest の restart_token で 1 回だけ再起動。
   3) apply   : manifest で apply=true の口座だけ、端末を止めて chart*.chr の <expert> ブロックを書き換え(remove を外し、ensure を付け)、端末を再起動する
      - .chr はバックアップ(chien_backup\\<時刻>\\)してから書き換える。チャートは削除しない。
      - expertmode(アルゴ取引許可などのフラグ)は同じ端末の既存 <expert> ブロックから学習して使う。無ければ manifest の expertmode か既定 5。
@@ -142,6 +143,12 @@ def start_terminal(terminal_path):
     subprocess.Popen([terminal_path], cwd=os.path.dirname(terminal_path), creationflags=getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
 
 
+def _ea_file(e):
+    """<expert> の path(無ければ name)からファイル名だけを返す(切り詰められた name に頼らない)。"""
+    q = (e.get("path") or e.get("name") or "").replace("/", "\\")
+    return q.split("\\")[-1]
+
+
 def expert_block(name_noext, rel_path, expertmode, eol):
     return f"<expert>{eol}name={name_noext}{eol}path={rel_path}{eol}expertmode={expertmode}{eol}<inputs>{eol}</inputs>{eol}</expert>{eol}"
 
@@ -163,7 +170,7 @@ def apply(terminal_path, data_path, acct_cfg, inv, compiled, backup_root):
                     s = s[:e["span"][0]] + s[e["span"][1]:]; rec[1] = s; rec[3] = True
                     actions.append(f"remove {e['name'].split(chr(92))[-1]} from {c['file']}")
             if rec[3]:
-                c2, _, _ = parse_chart_text(rec[1]); rec[0] = c2
+                c2, _, _ = parse_chart_text(rec[1]); c2["file"] = os.path.basename(p); rec[0] = c2
     # 2) ensure
     modes = inv.get("expertmode_seen") or []
     mode = str(acct_cfg.get("expertmode") or (modes[0] if modes else 5))
@@ -172,8 +179,18 @@ def apply(terminal_path, data_path, acct_cfg, inv, compiled, backup_root):
         comp = compiled.get(ea, {})
         if not comp.get("ok"):
             actions.append(f"skip ensure {base}: not compiled"); continue
-        present = any(e.get("name", "").replace("/", "\\").split("\\")[-1] == base for rec in files.values() for e in rec[0]["experts"])
-        if present:
+        # 1.9(docs/328 §9m): 端末が chart*.chr を保存し直すと name= が 63 字前後で切り詰められるため、判定は path(ex5 ファイル名)で行う。
+        hits = [(p, e) for p, rec in files.items() for e in rec[0]["experts"] if _ea_file(e) == base + ".ex5" or _ea_file(e) == base]
+        if len(hits) > 1:   # 同じ EA が複数チャートに付いている(二重建ての原因)→ 最初の 1 枚だけ残す
+            keep = sorted(hits, key=lambda h: h[0])[0]
+            for p, e in sorted(hits, key=lambda h: -h[1]["span"][0]):
+                if (p, e["span"]) == (keep[0], keep[1]["span"]): continue
+                rec = files[p]; rec[1] = rec[1][:e["span"][0]] + rec[1][e["span"][1]:]; rec[3] = True
+                actions.append(f"dedupe {base} from {os.path.basename(p)}")
+                rec[0] = parse_chart_text(rec[1])[0]; rec[0]["file"] = os.path.basename(p)
+            # span がずれるので hits を取り直す
+            hits = [(p, e) for p, rec in files.items() for e in rec[0]["experts"] if _ea_file(e) == base + ".ex5" or _ea_file(e) == base]
+        if hits:
             continue
         rel = "Experts\\chien\\" + base + ".ex5"; name = "chien\\" + base
         sym = want.get("symbol", ""); per = want.get("period", "H1")
@@ -205,15 +222,25 @@ def apply(terminal_path, data_path, acct_cfg, inv, compiled, backup_root):
         rec[1] = s; rec[3] = True; rec[0] = parse_chart_text(s)[0]
         actions.append(f"attach {base} to {os.path.basename(target)} (expertmode={mode})")
     changed = [p for p, rec in files.items() if rec[3]]
-    if not changed: return dict(changed=False, actions=actions, error=None)
+    # 1.9: manifest の restart_token が前回適用した値と違えば、チャート変更が無くても 1 回だけ端末を再起動(equity 0 の誤 HALT 解除・docs/328 §9m)
+    tok = str(acct_cfg.get("restart_token") or ""); tok_file = os.path.join(data_path, "chien_restart_token.txt")
+    prev_tok = open(tok_file, encoding="utf-8").read().strip() if os.path.exists(tok_file) else ""
+    force = bool(tok) and tok != prev_tok
+    if force: actions.append(f"restart_token {tok} (prev {prev_tok or '-'})")
+    if not changed and not force: return dict(changed=False, actions=actions, error=None)
     # 3) stop terminal → backup → write → start
     if not stop_terminal(terminal_path): return dict(changed=False, actions=actions, error="terminal did not stop")
-    bdir = os.path.join(backup_root, dt.datetime.now().strftime("%Y%m%d_%H%M%S")); os.makedirs(bdir, exist_ok=True)
-    for p in changed:
-        if os.path.exists(p): shutil.copy2(p, bdir)
-        write_text(p, files[p][1], files[p][2])
+    bdir = None
+    if changed:
+        bdir = os.path.join(backup_root, dt.datetime.now().strftime("%Y%m%d_%H%M%S")); os.makedirs(bdir, exist_ok=True)
+        for p in changed:
+            if os.path.exists(p): shutil.copy2(p, bdir)
+            write_text(p, files[p][1], files[p][2])
     start_terminal(terminal_path); time.sleep(15)
-    return dict(changed=True, actions=actions, error=None, backup=bdir)
+    if force:
+        try: open(tok_file, "w", encoding="utf-8").write(tok)
+        except Exception: pass
+    return dict(changed=bool(changed), restarted=True, actions=actions, error=None, backup=bdir)
 
 
 def parse_chart_text(s):
