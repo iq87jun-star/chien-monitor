@@ -25,6 +25,10 @@ def report(*paths):
             if ty == "subscribed": subs[fr.get("reqId")] = fr.get("sid")
             if ty in ("error", "fail", "rejected") or fr.get("errors"): errors.append((t, json.dumps(fr, ensure_ascii=False)[:300]))
             if ty != "update": continue
+            if fr.get("stream") == "contract_data":   # v0.5: 判定価格(values.asset.rate / barrier_strikes)。契約一覧とは分けて例だけ出す
+                v = fr.get("values") or {}; a = contract_json({"contract": v.get("asset")}) or {}
+                if len(data_resp) < 5: data_resp.append((t, f"{fr.get('key', '')} rate={a.get('rate')} strikes={str(v.get('barrier_strikes'))[:200]}"))
+                continue
             c = contract_json(fr.get("values"))
             if c is None:   # contracts 以外(contract_data など)
                 if len(data_resp) < 5: data_resp.append((t, json.dumps(fr, ensure_ascii=False)[:400]))

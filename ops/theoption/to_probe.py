@@ -13,7 +13,7 @@
   python to_summarize.py out\\probe_YYYYMMDD.jsonl   # 記録の要約
 既定はお試し環境(apidemo / gatewaydemo)。--env live は本番ホスト(キーも本番用が要る)。"""
 import argparse, asyncio, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.4"
+VERSION = "0.5"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -35,6 +35,8 @@ TARGET_DURS = ("1H", "22H", "23H")   # ① 月曜窓埋め 1H・② Mon4 → 22H
 TARGET_EXPS = ("FD", "FE")
 # v0.4: 実測の status は "Open" / "Cut Off"("Opened" ではない)。旧表記も受ける
 OPEN_STATUSES = ("Open", "Opened")
+
+CD_EVERY_SECS = 15   # v0.5: contract_data(判定価格)の記録間隔(契約ごと)
 
 def is_open(c):
     return (c or {}).get("status", "Open") in OPEN_STATUSES
@@ -78,14 +80,20 @@ def rest(base, path, key, timeout=15):
 class Recorder:
     """フレームを JSONL に保存し、対象契約の初出を数える。テストからも使う(ネットワーク不要)。"""
     def __init__(self, path):
-        self.path = path; self.first_seen = {}; self.n = 0; self.data_subs = {}
+        self.path = path; self.first_seen = {}; self.n = 0; self.data_subs = {}; self.cd_last = {}; self.cd_skipped = 0
         os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     def write(self, kind, obj):
         with open(self.path, "a", encoding="utf-8") as f:
             f.write(json.dumps({"recv_utc": dt.datetime.now(UTC).isoformat(), "kind": kind, "frame": obj}, ensure_ascii=False) + "\n")
     def on_frame(self, fr):
         """戻り値: 新しく見つかった対象契約名のリスト(contract_data の購読候補)。"""
-        self.n += 1; self.write("ws", fr); new = []
+        self.n += 1; new = []
+        if fr.get("stream") == "contract_data" and fr.get("type") == "update":
+            # v0.5: 判定価格は 20 契約で毎分 ~2400 件届く → 契約(sid)ごとに CD_EVERY_SECS に 1 件だけ残す(月曜 4 時間で ~20MB)
+            sid = fr.get("sid", ""); now = time.time()
+            if now - self.cd_last.get(sid, 0) < CD_EVERY_SECS: self.cd_skipped += 1; return new
+            self.cd_last[sid] = now; self.write("ws", fr); return new
+        self.write("ws", fr)
         if fr.get("type") == "update":
             key = fr.get("key", ""); c = contract_json(fr.get("values")) or {}
             name = c.get("name") or key.split("|20")[0]
@@ -112,8 +120,9 @@ async def ws_session(ws_url, key, rec, until_utc, want_data, check_secs):
             for name in rec.on_frame(fr):
                 print(dt.datetime.now(JST).strftime("%m/%d %H:%M:%S"), "初出", name, flush=True)
                 if want_data and len(rec.data_subs) < 20:   # 判定価格を見るため。購読の書式は公開資料が要約のみ → 応答(エラー含む)も記録
+                    # v0.5: 欄名は "contract"(v0.4 の "key" は missing_field で拒否)。2026-10-20 実測で name・満期付き key の両方が通る → name を使う
                     rid += 1; rec.data_subs[name] = rid
-                    await ws.send(json.dumps({"type": "subscribe", "reqId": str(rid), "stream": "contract_data", "key": name}))
+                    await ws.send(json.dumps({"type": "subscribe", "reqId": str(rid), "stream": "contract_data", "contract": name}))
 
 def main(argv=None):
     ap = argparse.ArgumentParser(); ap.add_argument("--env", choices=list(HOSTS), default="demo")
@@ -140,7 +149,7 @@ def main(argv=None):
             if a.check: break
         except Exception as e:
             rec.write("error", repr(e)); print("WS 切断:", repr(e), f"{backoff}s 後に再接続", flush=True); time.sleep(backoff); backoff = min(backoff * 2, 120)
-    print(f"フレーム {rec.n} 件・対象契約の初出 {len(rec.first_seen)} 件")
+    print(f"フレーム {rec.n} 件・対象契約の初出 {len(rec.first_seen)} 件・判定価格の間引き {rec.cd_skipped} 件")
     write_summary(path, rec)
     return 0
 
