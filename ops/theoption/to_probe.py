@@ -12,7 +12,7 @@
   python to_summarize.py out\\probe_YYYYMMDD.jsonl   # 記録の要約
 既定はお試し環境(apidemo / gatewaydemo)。--env live は本番ホスト(キーも本番用が要る)。"""
 import argparse, asyncio, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.1"
+VERSION = "0.2"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -94,14 +94,14 @@ def main(argv=None):
     ap = argparse.ArgumentParser(); ap.add_argument("--env", choices=list(HOSTS), default="demo")
     ap.add_argument("--until", default="09:30", help="JST の終了時刻 HH:MM(当日。過ぎていれば翌日)")
     ap.add_argument("--check", action="store_true", help="60 秒だけ集めて要約して終了"); ap.add_argument("--no-data", action="store_true")
-    ap.add_argument("--out", default=os.path.join(HERE, "out")); a = ap.parse_args(argv)
+    ap.add_argument("--out", default=os.environ.get("THEOPTION_OUT") or os.path.join(HERE, "out")); a = ap.parse_args(argv)
     key = os.environ.get("THEOPTION_API_KEY", "").strip()
     if not key: print("環境変数 THEOPTION_API_KEY が無い(お試し用キーを入れる)"); return 2
     base, wss = HOSTS[a.env]; now = dt.datetime.now(JST)
     path = os.path.join(a.out, f"probe_{a.env}_{now:%Y%m%d_%H%M}.jsonl"); rec = Recorder(path)
     st, h = rest(base, "/trading/health", key); rec.write("health", {"http": st, "body": h}); print("health:", st, json.dumps(h, ensure_ascii=False)[:300])
     if st != 200 or h.get("status") == "fail":
-        print("health 失敗。エラー 13 ならキーと環境(demo/live)の組み合わせを確認"); return 1
+        print("health 失敗。エラー 13 ならキーと環境(demo/live)の組み合わせを確認"); write_summary(path, rec); return 1
     st, b = rest(base, "/wallet/balance", key); rec.write("balance", {"http": st, "body": b}); print("balance:", st, json.dumps(b, ensure_ascii=False)[:300])
     hh, mm = map(int, a.until.split(":")); until = now.replace(hour=hh, minute=mm, second=0, microsecond=0)
     if until <= now: until += dt.timedelta(days=1)
@@ -114,7 +114,18 @@ def main(argv=None):
         except Exception as e:
             rec.write("error", repr(e)); print("WS 切断:", repr(e), f"{backoff}s 後に再接続", flush=True); time.sleep(backoff); backoff = min(backoff * 2, 120)
     print(f"フレーム {rec.n} 件・対象契約の初出 {len(rec.first_seen)} 件")
-    import to_summarize; to_summarize.report(path)
+    write_summary(path, rec)
     return 0
+
+def write_summary(path, rec):
+    """要約を <記録>.summary.txt に、実行状況を <out>/_diag/last_run.txt に書く(Drive 同期先に置けばチャット側から読める)。"""
+    import io, contextlib, to_summarize
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf): to_summarize.report(path)
+    txt = buf.getvalue(); print(txt)
+    with open(path[:-6] + ".summary.txt", "w", encoding="utf-8") as f: f.write(txt)
+    d = os.path.join(os.path.dirname(path), "_diag"); os.makedirs(d, exist_ok=True)
+    with open(os.path.join(d, "last_run.txt"), "w", encoding="utf-8") as f:
+        f.write(f"version={VERSION}\nfinished_jst={dt.datetime.now(JST):%Y-%m-%d %H:%M:%S}\nfile={os.path.basename(path)}\nframes={rec.n}\ntargets={len(rec.first_seen)}\npython={sys.executable}\n")
 
 if __name__ == "__main__": sys.exit(main())

@@ -54,3 +54,10 @@ def test_ws_roundtrip_with_fake_gateway():
 def test_never_trades():
     src = open(P.__file__, encoding="utf-8").read()
     assert "/trading/buy" not in src and "/trading/sell" not in src
+
+def test_write_summary_files():
+    with tempfile.TemporaryDirectory() as tmp:
+        r = P.Recorder(os.path.join(tmp, "probe_demo_20261026_0525.jsonl")); r.on_frame(upd("USDJPY|FD|1H|HIGHLOW|HIGH"))
+        P.write_summary(r.path, r)
+        assert "USDJPY|FD|1H|HIGHLOW|HIGH" in open(os.path.join(tmp, "probe_demo_20261026_0525.summary.txt"), encoding="utf-8").read()
+        assert "targets=1" in open(os.path.join(tmp, "_diag", "last_run.txt"), encoding="utf-8").read()
