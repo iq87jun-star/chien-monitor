@@ -2131,6 +2131,22 @@
    "program": "docs/322",
    "order": 48.2,
    "result": "0/40 通過。満期週は銘柄間で不一致、HK50 春節明け L は 3 窓とも対照超だが n=8 で観測のみ"
+  },
+  {
+   "id": "Q139",
+   "slug": "mon_sun22_shot",
+   "title": "Mon4 → Mon5: 週明け 日曜 22 UTC(東京オープン)ショットの追加/置換(20 UTC 決済)",
+   "cells": 8,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/365_ext_tokyo_open_basket_check.md"
+   ],
+   "note": "外部提案(claude/zaption-check-m776m7)の照合 docs/365 から登録。改良系: 4 通貨 × {h4 置換, 5 本目追加}・ベース Mon4(h4/6/8/10・24h)。合格なら紙上フォワード(paper_forward MonSun22・登録時に追加済み)+ デモ端末で 22:00〜22:25 UTC の実スプレッドと取り逃しを計測 → 実コスト 10pip 以内なら 11/1 改正案で EA の InpMonHoursUTC に日曜 22 を足す版(v+0.01)。相手ブランチの EA は現行口座に載せない",
+   "registered": "2026-10-20",
+   "program": "docs/365",
+   "order": 16.5
   }
  ],
  "runs": [
