@@ -20,7 +20,9 @@ Write-Host "pip: websockets 導入済み"
 Step "2. お試し用 API キー"
 $cur = [Environment]::GetEnvironmentVariable("THEOPTION_API_KEY", "User")
 if ($cur) { Write-Host "登録済み(末尾 ...$($cur.Substring([Math]::Max(0,$cur.Length-4))))。変えるときは to_setup.bat を -NewKey 付きで" }
-if (-not $cur -or $args -contains "-NewKey") {
+if (-not $cur -and $args -contains "-NoKeyPrompt") {
+  Write-Host "キー未登録のまま続行(-NoKeyPrompt)。あとで to_setkey.bat をダブルクリックして入力。それまで記録は「キー無し」で止まる" -ForegroundColor Yellow
+} elseif (-not $cur -or $args -contains "-NewKey") {
   Write-Host "theoption → 自動売買用API →「お試し」タブ →「APIキーをリクエスト」で出たキーを貼り付けて Enter(画面には表示されない)"
   $sec = Read-Host "APIキー" -AsSecureString
   $key = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($sec)).Trim()
@@ -38,8 +40,7 @@ New-Item -ItemType Directory -Force -Path $out | Out-Null
 @{ out = $out } | ConvertTo-Json | Set-Content (Join-Path $here "to_config.json") -Encoding UTF8
 
 Step "4. 接続確認(60 秒・取引しない)"
-& (Join-Path $here "to_run.ps1") -Mode check
-Get-Content (Join-Path $here "run.log") -Tail 40
+if ($cur) { & (Join-Path $here "to_run.ps1") -Mode check; Get-Content (Join-Path $here "run.log") -Tail 40 } else { Write-Host "キーが無いので接続確認は省略" }
 
 Step "5. タスク登録"
 $settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Hours 5) -MultipleInstances IgnoreNew
