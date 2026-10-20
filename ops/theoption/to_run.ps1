@@ -9,6 +9,12 @@ foreach ($f in 'to_probe.py','to_summarize.py','to_setup.ps1','to_run.ps1') {   
   catch { Add-Content -Encoding UTF8 (Join-Path $here "run.log") "$(Get-Date -Format s) update failed $f : $_" }
 }
 $cfg = Get-Content (Join-Path $here "to_config.json") -Raw -Encoding UTF8 | ConvertFrom-Json
+if ($Mode -eq "mtlogsync") {   # v0.6: MT5共有FilesのEAログ(ChienMT_log_*.csv)をDrive同期フォルダへ冪等コピーして終了
+  $src = Join-Path $env:APPDATA "MetaQuotes\Terminal\Common\Files"
+  Get-ChildItem -Path $src -Filter "ChienMT_log_*.csv" -ErrorAction SilentlyContinue | Copy-Item -Destination $cfg.out -Force
+  Add-Content -Encoding UTF8 (Join-Path $here "run.log") "$(Get-Date -Format s) mtlogsync done"
+  exit 0
+}
 $env:THEOPTION_OUT = $cfg.out; $env:PYTHONUTF8 = "1"
 if (-not $env:THEOPTION_API_KEY) { $env:THEOPTION_API_KEY = [Environment]::GetEnvironmentVariable("THEOPTION_API_KEY", "User") }
 $args2 = @(if ($Mode -eq "check") { "--check" } else { "--until", "09:30" })   # @() で包む: PS 5.1 は 1 要素配列を文字列に崩し、@args2 が 1 文字ずつに展開される

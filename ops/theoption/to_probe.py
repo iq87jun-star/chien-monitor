@@ -13,7 +13,7 @@
   python to_summarize.py out\\probe_YYYYMMDD.jsonl   # 記録の要約
 既定はお試し環境(apidemo / gatewaydemo)。--env live は本番ホスト(キーも本番用が要る)。"""
 import argparse, asyncio, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.5"
+VERSION = "0.6"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -45,7 +45,8 @@ def is_target(name):
     d = parse_name(name); return d["exp"] in TARGET_EXPS and d["dur"].upper() in TARGET_DURS and d["product"] == "HIGHLOW" and d["asset"] in TARGET_ASSETS
 
 # v0.3: 木曜朝(= 水曜 20〜24 UTC・③ 水曜夜の円買い)も記録する。設定済みの VPS にもタスクを足すため、実行のたびに無ければ登録する。
-EXTRA_TASKS = [("chien_theoption_thursday", "THU", "04:55", "thursday")]
+EXTRA_TASKS = [("chien_theoption_thursday", "THU", "04:55", "thursday"),
+               ("chien_mtlog_sync", None, "06:40", "mtlogsync")]   # v0.6: day=None は毎日。MT5デモEAのログをDriveへ写す
 
 def ensure_tasks():
     if os.name != "nt": return []
@@ -55,7 +56,8 @@ def ensure_tasks():
     for name, day, at, mode in EXTRA_TASKS:
         if subprocess.run(["schtasks", "/Query", "/TN", name], capture_output=True).returncode == 0: continue
         tr = f'powershell.exe -NoProfile -ExecutionPolicy Bypass -File "{runner}" -Mode {mode}'
-        r = subprocess.run(["schtasks", "/Create", "/SC", "WEEKLY", "/D", day, "/ST", at, "/TN", name, "/TR", tr, "/F"], capture_output=True, text=True)
+        sc = ["/SC", "DAILY"] if day is None else ["/SC", "WEEKLY", "/D", day]   # v0.6
+        r = subprocess.run(["schtasks", "/Create"] + sc + ["/ST", at, "/TN", name, "/TR", tr, "/F"], capture_output=True, text=True)
         made.append((name, r.returncode)); print("タスク登録:", name, day, at, "ok" if r.returncode == 0 else r.stderr.strip())
     return made
 
