@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9908,
+ "cumulative_cells": 9909,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2229,6 +2229,30 @@
     {
      "date": "2026-10-21",
      "summary": "12 セル・棄却(家族プール Q143 を提案)→ docs/368 §2・累積 9,908"
+    }
+   ]
+  },
+  {
+   "id": "Q143",
+   "slug": "bin_roll_family_pool",
+   "title": "バイナリー Roll: 水曜 20〜00 UTC(木曜 05〜09 JST)円クロス LOW の家族プール(1 セル)+ 商品の有無",
+   "cells": 1,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/368_q141_q142_bin_session_open_and_ports.md",
+    "docs/369_q143_bin_roll_family_pool.md"
+   ],
+   "note": "docs/368 §3 の提案を登録(ユーザー「登録」2026-10-21)。5 本の勝敗を連結して §1b で判定(探索 WR−BE ≥ +3pp・二項 p < 0.05/累積・OOS と前窓で WR > BE)+ ロールオーバー帯なのでミッド(2024〜)でも edge ≥ +3pp かつ p < 閾値。商品: ザオプションに木曜 05:00 JST 建て → 09:00 JST 判定があるかは別ブランチの記録で確認(無ければ 1H ×4 の各時間を別途検証)。",
+   "registered": "2026-10-21",
+   "program": "docs/244 §1b(バイナリー)",
+   "order": 16.9,
+   "result": "棄却(前窓 51.3% < BE 52.6%)。探索 63.3%(p 2.4e-10)・OOS 69.1%・ミッド 68.0%(p 1.8e-15)は通過だが、2016〜17・2021 は逆向きで局面依存(金利差仮説)。CFD の Roll5(14166201 ×4.5)にも同じ注意 → Q97/11/1 で停止条件の仮説登録を検討",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "1 セル・棄却(前窓不合格)→ docs/369・累積 9,909"
     }
    ]
   }
