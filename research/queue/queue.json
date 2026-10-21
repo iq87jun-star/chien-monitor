@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9909,
+ "cumulative_cells": 9925,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2335,14 +2335,22 @@
    "cells": 16,
    "note": "基準の確認(改良系ではなく再判定)。別ブランチの ask 2016〜2023 取得を待つ。受領前に順番が来たら『データ待ち』として次へ送る(status は pending のまま)。往復 3pip の仮定を現実価格に置き換えても §1 の合格が保たれるかを確認し、保たれなければ docs/229 の判定を訂正する。",
    "order": 17.5,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/373_q148_mon4_realprice_recheck.md"
    ],
    "registered": "2026-10-21",
-   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "保たれた: 現実価格(ask 建て・bid 決済)は 16/16 セルで従来仮定(bid−3pip)と同等か良い。実効往復 GBPJPY 3.7〜4.2 / EURJPY 2.0 / AUDJPY 1.6 / USDJPY 1.0 pip。閾値合格は従来どおり 0/16(単一時刻ショットの構造)。訂正なし。USDJPY は ask 2024〜のみ(前窓保留)",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "docs/373(16 セル・劣化なし・累積 9,925)"
+    }
+   ]
   },
   {
    "id": "Q149",
@@ -3531,6 +3539,13 @@
    "item": "Q97",
    "cells": 0,
    "doc": "docs/371_q97_fn_14166201_redesign.md"
+  },
+  {
+   "date": "2026-10-21",
+   "slot": "adhoc",
+   "item": "Q148",
+   "cells": 16,
+   "doc": "docs/373_q148_mon4_realprice_recheck.md"
   }
  ],
  "external_checks": [
