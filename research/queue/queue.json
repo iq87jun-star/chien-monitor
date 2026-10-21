@@ -2255,6 +2255,102 @@
      "summary": "1 セル・棄却(前窓不合格)→ docs/369・累積 9,909"
     }
    ]
+  },
+  {
+   "id": "Q144",
+   "slug": "rollover_short_rescan",
+   "title": "ロールオーバー帯(21〜23 UTC 建て)の売り建て・買い決済セルを現実価格で再走査",
+   "cells": 120,
+   "note": "docs/367 の bid アーティファクトの逆: 21〜23 UTC に売り建て(または買いの決済)するセルは bid 評価で 20pp 前後不利に見えていた。ask データのある 20 銘柄 × 建て {21,22,23} UTC × 保有 {1,2}h の SHORT(=120 セル・月〜金プール)を現実価格で走査。基準 §1(往復 3pip の代わりに現実価格・二項 p < 0.05/累積・前窓 bid で +月率 ≥ 50%・OOS 同符号)。現実価格(買い = ask 始値で建て・bid 始値で決済、売りはその逆)で判定。ask は 2024-01〜のみのため、探索窓の検定は bid−3pip(§1)で行い、2024〜26 の現実価格で符号と大きさを確認する(ask 2016〜 受領後に探索窓も現実価格に置き換える)。",
+   "order": 17.1,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
+  },
+  {
+   "id": "Q145",
+   "slug": "tokyo_fix_usdjpy",
+   "title": "仲値(9:55 JST)前後の USDJPY: 00:00→00:55 UTC 買い・00:55→01:30 UTC 売り(ゴトー日 / 全営業日)",
+   "cells": 4,
+   "note": "仕組み: 輸入企業のドル買い需要が仲値に集中し、仲値後に戻る。H1 のため 00→01 UTC 買い(仲値前)・01→02 UTC 売り(仲値後)で近似。セル: {全営業日, ゴトー日} × {前 LONG, 後 SHORT} = 4。コスト往復 3pip。前窓・OOS・累積 Bonferroni は §1 どおり。",
+   "order": 17.2,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
+  },
+  {
+   "id": "Q146",
+   "slug": "month_end_london_fix",
+   "title": "月末ロンドンフィックス(16:00 GMT)前後の GBPUSD / EURUSD(前日 15 UTC → 当日 16 UTC・当日 16 → 20 UTC)",
+   "cells": 8,
+   "note": "仕組み: 月末の株式・債券リバランスに伴う通貨フロー。月末営業日の前日 15 UTC → 当日 16 UTC の LONG/SHORT(方向は事前に決めない=両方をセルに数える)× GBPUSD/EURUSD = 4、当日 16 → 20 UTC の反転 LONG/SHORT × 2 = 4。n が少ない(年 12 回)ので 2016〜 の全期間を前窓なしで扱い、二項 p は累積 Bonferroni。",
+   "order": 17.3,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
+  },
+  {
+   "id": "Q147",
+   "slug": "roll_rate_diff_gate",
+   "title": "Roll(水曜 20→00 UTC 円クロス売り)の停止条件: 日米 2 年金利差の閾値(改良系)",
+   "cells": 6,
+   "note": "docs/369: Roll の勝率は 2016〜17・2021 で逆向き、2018〜19・2022〜 で強い(金利差仮説)。金利差データ(FRED DGS2 と日本 2 年国債・Yahoo/FRED から取得、無ければ US 2 年のみ)で閾値 {1.0, 1.5, 2.0}% × {5 本等分, 本数別} = 6 セル。基準は改良系(IS・OOS 両方で Sharpe 改善 かつ 最悪月が悪化しない)。合格なら 11/1 改正案で 14166201 の Roll に停止条件を提案(EA の InpRollGate は別版)。",
+   "order": 17.4,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
+  },
+  {
+   "id": "Q148",
+   "slug": "mon4_realprice_recheck",
+   "title": "Mon4 全セル(4 通貨 × h4/6/8/10・24h)の現実価格での再判定(ask 2016〜 受領後)",
+   "cells": 16,
+   "note": "基準の確認(改良系ではなく再判定)。別ブランチの ask 2016〜2023 取得を待つ。受領前に順番が来たら『データ待ち』として次へ送る(status は pending のまま)。往復 3pip の仮定を現実価格に置き換えても §1 の合格が保たれるかを確認し、保たれなければ docs/229 の判定を訂正する。",
+   "order": 17.5,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
+  },
+  {
+   "id": "Q149",
+   "slug": "mffu_alloc_by_corr",
+   "title": "先物ボット: 月曜 13→20 UTC の 3 指数(MES/MNQ/MYM)の配分を相関で見直す(5/2/5 対 相関調整)",
+   "cells": 3,
+   "note": "新パターンではなく配分。US500/NAS100/US30 の月曜日中リターンの相関行列(2021-10〜)から、等名目・リスクパリティ・最小分散の 3 配分を 5/2/5 と比べる(日次ソフト停止 $2,500 の到達率と到達日 MC・docs/353 の枠組み)。合格基準は改良系(到達率が下がらず失格率が下がる)。採用は「切替」後に sizing.json。",
+   "order": 17.6,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
   }
  ],
  "runs": [
