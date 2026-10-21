@@ -2155,6 +2155,54 @@
      "summary": "8 セル・改良成立 8/8 → docs/366・累積 9,784"
     }
    ]
+  },
+  {
+   "id": "Q140",
+   "slug": "bin_horizon_ladder",
+   "title": "バイナリー: 既知アノマリーの判定時刻の階段(月曜 7 時 JST 円クロス・毎日 7 時の 1H 家族 × 保有 2〜8h/23h)",
+   "cells": 48,
+   "note": "別ブランチ(theoption_validation)は 1H と 22/23H のみ検証。間の保有時間で WR が最大になる判定時刻を探す。セル: 月曜 7 時 JST(=日曜 22 UTC)HIGH の EURJPY/AUDJPY/NZDJPY/GBPJPY/CADJPY/CHFJPY × 保有 {2,3,4,6,8,23}h = 36 + 毎日 7 時 JST の EURGBP/CHFJPY/EURJPY/USDCHF HIGH × 保有 {2,3,4}h = 12。バイナリー向け判定(docs/244 §1b・2026-10-21 登録): 判定はトレード単位の勝率 WR を損益分岐 BE(1/ペイアウト: 1H 1.90→52.63%・22/23H 1.95→51.28%・不明は 1.90)と比べる。合格 = 探索窓(2021-10〜2024-12)で WR−BE ≥ +3pp かつ 二項 p(n 勝/N 回・BE 基準)< 0.05/累積セル数、OOS(2025-01〜)で WR > BE、前窓(2016-01〜2021-09)で WR > BE。Dukascopy H1 の始値→始値(ミッド)。HIGH/LOW は別セル。合格は紙上フォワード(別ブランチの probe 記録と突合)へ、実取引はユーザー判断。",
+   "order": 16.6,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 §1b(バイナリー)"
+  },
+  {
+   "id": "Q141",
+   "slug": "bin_session_open_1h",
+   "title": "バイナリー: 他市場オープン直後 1 時間の方向(フランクフルト 15 時・ロンドン 16 時・NY 22/23 時 JST)",
+   "cells": 64,
+   "note": "東京 7 時で効いた『開場直後の方向性』を他の開場に当てる。セル: 8 ペア(EURUSD/GBPUSD/EURGBP/USDCHF/EURCHF/USDJPY/EURJPY/GBPJPY)× 建て {06,07,13,14} UTC × {HIGH,LOW}、保有 1h、月〜金プール。EURCHF のデータが無ければ AUDUSD で代替。バイナリー向け判定(docs/244 §1b・2026-10-21 登録): 判定はトレード単位の勝率 WR を損益分岐 BE(1/ペイアウト: 1H 1.90→52.63%・22/23H 1.95→51.28%・不明は 1.90)と比べる。合格 = 探索窓(2021-10〜2024-12)で WR−BE ≥ +3pp かつ 二項 p(n 勝/N 回・BE 基準)< 0.05/累積セル数、OOS(2025-01〜)で WR > BE、前窓(2016-01〜2021-09)で WR > BE。Dukascopy H1 の始値→始値(ミッド)。HIGH/LOW は別セル。合格は紙上フォワード(別ブランチの probe 記録と突合)へ、実取引はユーザー判断。",
+   "order": 16.7,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 §1b(バイナリー)"
+  },
+  {
+   "id": "Q142",
+   "slug": "bin_port_known_families",
+   "title": "バイナリー: こちらで検証済みの家族の移植(木曜 XAU HIGH・月曜 米国指数 HIGH・水曜夜 円クロス LOW(Roll))",
+   "cells": 12,
+   "note": "新規探索ではなく既存家族の移植(多重性の負担が小さい)。セル: XAUUSD 木曜 07 JST→翌 06 JST(23h)HIGH = 1、US500/NAS100/US30 の月曜 07 JST→翌 06 JST HIGH と 22:30 JST→05 JST HIGH(H1 では 13→20 UTC)= 6、Roll: USDJPY/EURJPY/GBPJPY/AUDJPY/CADJPY の水曜 20→00 UTC(木曜 05→09 JST)LOW = 5。ザオプションに該当銘柄・判定時刻の商品があるかは別ブランチの fe_products_final.csv と 10/22・10/26 の記録で確認(無ければ『商品なし』と記録して終了)。バイナリー向け判定(docs/244 §1b・2026-10-21 登録): 判定はトレード単位の勝率 WR を損益分岐 BE(1/ペイアウト: 1H 1.90→52.63%・22/23H 1.95→51.28%・不明は 1.90)と比べる。合格 = 探索窓(2021-10〜2024-12)で WR−BE ≥ +3pp かつ 二項 p(n 勝/N 回・BE 基準)< 0.05/累積セル数、OOS(2025-01〜)で WR > BE、前窓(2016-01〜2021-09)で WR > BE。Dukascopy H1 の始値→始値(ミッド)。HIGH/LOW は別セル。合格は紙上フォワード(別ブランチの probe 記録と突合)へ、実取引はユーザー判断。",
+   "order": 16.8,
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 §1b(バイナリー)"
   }
  ],
  "runs": [
