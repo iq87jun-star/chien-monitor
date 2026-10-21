@@ -13,7 +13,7 @@
   python to_summarize.py out\\probe_YYYYMMDD.jsonl   # 記録の要約
 既定はお試し環境(apidemo / gatewaydemo)。--env live は本番ホスト(キーも本番用が要る)。"""
 import argparse, asyncio, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.6"
+VERSION = "0.7"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -41,8 +41,11 @@ CD_EVERY_SECS = 15   # v0.5: contract_data(判定価格)の記録間隔(契約�
 def is_open(c):
     return (c or {}).get("status", "Open") in OPEN_STATUSES
 
+# v0.7: SPREAD(ストライクオフセット型・2.0倍)も記録対象に追加。barrier_strikesのオフセット実測が目的(購読枠20は共有)
+TARGET_PRODUCTS = ("HIGHLOW", "SPREAD")
+
 def is_target(name):
-    d = parse_name(name); return d["exp"] in TARGET_EXPS and d["dur"].upper() in TARGET_DURS and d["product"] == "HIGHLOW" and d["asset"] in TARGET_ASSETS
+    d = parse_name(name); return d["exp"] in TARGET_EXPS and d["dur"].upper() in TARGET_DURS and d["product"] in TARGET_PRODUCTS and d["asset"] in TARGET_ASSETS
 
 # v0.3: 木曜朝(= 水曜 20〜24 UTC・③ 水曜夜の円買い)も記録する。設定済みの VPS にもタスクを足すため、実行のたびに無ければ登録する。
 EXTRA_TASKS = [("chien_theoption_thursday", "THU", "04:55", "thursday"),
