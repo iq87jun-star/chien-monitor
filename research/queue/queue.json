@@ -1431,16 +1431,24 @@
    "slug": "ea10_mult2_variant",
    "title": "EA10 ×2.0 版の作成(新規 FTMO Std 用)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/374_q98_ea10s_x2_new_ftmo_std.md"
    ],
    "note": "Q85 の採用点(×2.0・日次 5%・床 10%)。EA10 の InpMult/ガード既定値を変えた別ファイル。manifest の ftmo_std100k_new は変更しない(購入時にユーザー判断)",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 16
+   "order": 16,
+   "result": "EA10S v1.07 を別ファイルで作成(mql5/【FTMO100k_新規Std】EA10S_…_v1.07.mq5): Mon4 ×2.0・Brk ×1.2・Hold 0.18・日次 4.8%・床 −9.8%・Magic 944820。コードは EA10L v1.06 と同一。manifest 不変(購入時に「切替」)。Q88 で EA10 ×3.3 と比較",
+   "runs": [
+    {
+     "date": "2026-10-22",
+     "summary": "docs/374(工学・セル 0・EA10S v1.07 作成)"
+    }
+   ]
   },
   {
    "id": "Q99",
@@ -3546,6 +3554,13 @@
    "item": "Q148",
    "cells": 16,
    "doc": "docs/373_q148_mon4_realprice_recheck.md"
+  },
+  {
+   "date": "2026-10-22",
+   "slot": "morning",
+   "item": "Q98",
+   "cells": 0,
+   "doc": "docs/374_q98_ea10s_x2_new_ftmo_std.md"
   }
  ],
  "external_checks": [
