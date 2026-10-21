@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9832,
+ "cumulative_cells": 9908,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2191,14 +2191,22 @@
    "cells": 64,
    "note": "東京 7 時で効いた『開場直後の方向性』を他の開場に当てる。セル: 8 ペア(EURUSD/GBPUSD/EURGBP/USDCHF/EURCHF/USDJPY/EURJPY/GBPJPY)× 建て {06,07,13,14} UTC × {HIGH,LOW}、保有 1h、月〜金プール。EURCHF のデータが無ければ AUDUSD で代替。バイナリー向け判定(docs/244 §1b・2026-10-21 登録): 判定はトレード単位の勝率 WR を損益分岐 BE(1/ペイアウト: 1H 1.90→52.63%・22/23H 1.95→51.28%・不明は 1.90)と比べる。合格 = 探索窓(2021-10〜2024-12)で WR−BE ≥ +3pp かつ 二項 p(n 勝/N 回・BE 基準)< 0.05/累積セル数、OOS(2025-01〜)で WR > BE、前窓(2016-01〜2021-09)で WR > BE。Dukascopy H1 の始値→始値(ミッド)。HIGH/LOW は別セル。合格は紙上フォワード(別ブランチの probe 記録と突合)へ、実取引はユーザー判断。 【10/21 docs/367 §4】20〜23 UTC 建てのセルはミッド(bid+ask)/2 で判定し、2024〜26 で WR > BE+3pp を追加条件にする。",
    "order": 16.7,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/368_q141_q142_bin_session_open_and_ports.md"
    ],
    "registered": "2026-10-21",
-   "program": "docs/244 §1b(バイナリー)"
+   "program": "docs/244 §1b(バイナリー)",
+   "result": "棄却 0/64。探索窓で edge ≥ +3pp のセルも 0。他の市場開場には東京 7 時型の方向性は無い",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "64 セル・棄却 → docs/368 §1・累積 9,896"
+    }
+   ]
   },
   {
    "id": "Q142",
@@ -2207,14 +2215,22 @@
    "cells": 12,
    "note": "新規探索ではなく既存家族の移植(多重性の負担が小さい)。セル: XAUUSD 木曜 07 JST→翌 06 JST(23h)HIGH = 1、US500/NAS100/US30 の月曜 07 JST→翌 06 JST HIGH と 22:30 JST→05 JST HIGH(H1 では 13→20 UTC)= 6、Roll: USDJPY/EURJPY/GBPJPY/AUDJPY/CADJPY の水曜 20→00 UTC(木曜 05→09 JST)LOW = 5。ザオプションに該当銘柄・判定時刻の商品があるかは別ブランチの fe_products_final.csv と 10/22・10/26 の記録で確認(無ければ『商品なし』と記録して終了)。バイナリー向け判定(docs/244 §1b・2026-10-21 登録): 判定はトレード単位の勝率 WR を損益分岐 BE(1/ペイアウト: 1H 1.90→52.63%・22/23H 1.95→51.28%・不明は 1.90)と比べる。合格 = 探索窓(2021-10〜2024-12)で WR−BE ≥ +3pp かつ 二項 p(n 勝/N 回・BE 基準)< 0.05/累積セル数、OOS(2025-01〜)で WR > BE、前窓(2016-01〜2021-09)で WR > BE。Dukascopy H1 の始値→始値(ミッド)。HIGH/LOW は別セル。合格は紙上フォワード(別ブランチの probe 記録と突合)へ、実取引はユーザー判断。 【10/21 docs/367 §4】20〜23 UTC 建てのセルはミッド(bid+ask)/2 で判定し、2024〜26 で WR > BE+3pp を追加条件にする。",
    "order": 16.8,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/368_q141_q142_bin_session_open_and_ports.md"
    ],
    "registered": "2026-10-21",
-   "program": "docs/244 §1b(バイナリー)"
+   "program": "docs/244 §1b(バイナリー)",
+   "result": "登録基準(セル単位)では棄却 0/12。Roll(水曜 20→00 UTC 円クロス LOW)は 5 本とも探索 +9〜13pp・OOS +11〜23pp・ミッド +10〜20pp で一貫(USDJPY/GBPJPY はミッド単独で閾値通過)→ 家族プール 1 セル(Q143)の登録を提案。指数月曜日中は +7pp、23h と金は弱い。US500/US30 の日曜 22 UTC はバー無しで無効",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "12 セル・棄却(家族プール Q143 を提案)→ docs/368 §2・累積 9,908"
+    }
+   ]
   }
  ],
  "runs": [

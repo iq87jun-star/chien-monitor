@@ -38,3 +38,25 @@ def finish(qid, cum, rows, out):
     print(f"{qid}: cells={n} cum_before={cum} cum_after={cum+n} alpha={alpha:.2e} passed={int(R.passed.sum())} edge>=3pp(IS)={int((R.edge_is_pp>=3).sum())}")
     print(R.head(15).to_string(index=False)); print("\n-- passed --"); print(R[R.passed].to_string(index=False) if R.passed.any() else "(none)")
     return R
+
+# ---- docs/367 §4: 20〜23 UTC 建て(ロールオーバー帯)はミッド判定を必須に。ask データは 2024-01〜 ----
+def load_ask(sym):
+    a = pd.read_csv(f"data_dukascopy/{sym}_hour_ask.csv.gz"); a["t"] = pd.to_datetime(a["timestamp"]); a = a.set_index("t").sort_index()
+    return a[(a.high > a.low) | (a.volume > 0)]
+
+def outcomes_mid(sym, dow_utc, h_utc, hold_h, high=True, dows=None):
+    """ミッド((bid+ask)/2)始値→始値の勝敗(2024-01〜)。ask ファイルが無ければ None。"""
+    if not os.path.exists(f"data_dukascopy/{sym}_hour_ask.csv.gz"): return None
+    b = load(sym)["open"]; a = load_ask(sym)["open"]; j = pd.concat([b.rename("bid"), a.rename("ask")], axis=1).dropna(); j = j[j.index >= "2024-01-01"]
+    mid = (j.bid + j.ask) / 2
+    sel = (mid.index.hour == h_utc) & (mid.index.dayofweek.isin(dows) if dows is not None else (mid.index.dayofweek == dow_utc))
+    t = mid.index[sel]; p_in = mid.reindex(t).values; p_out = mid.reindex(t + pd.Timedelta(hours=hold_h)).values
+    ok = ~np.isnan(p_in) & ~np.isnan(p_out); w = (p_out[ok] > p_in[ok]) if high else (p_out[ok] < p_in[ok])
+    return pd.Series(w.astype(int), index=t[ok])
+
+def judge_mid(wm, hold_h, alpha):
+    """ミッド列(2024-01〜)の WR・edge・二項 p。passed_mid = edge ≥ +3pp かつ p < alpha(n が小さいと到達しない: 仕様)。"""
+    b = be(hold_h)
+    if wm is None or len(wm) == 0: return dict(n_mid=0, wr_mid=float("nan"), edge_mid_pp=float("nan"), p_mid=1.0, passed_mid=False)
+    n = int(len(wm)); k = int(wm.sum()); wr = k / n; p = p_binom(k, n, b)
+    return dict(n_mid=n, wr_mid=round(wr * 100, 1), edge_mid_pp=round((wr - b) * 100, 1), p_mid=p, passed_mid=bool(wr - b >= 0.03 and p < alpha))
