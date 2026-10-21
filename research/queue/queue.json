@@ -1407,16 +1407,24 @@
    "slug": "fn_14166201_redesign",
    "title": "FN 14166201 の構成見直し(Mon4 核の候補 MC・FN 規則)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/371_q97_fn_14166201_redesign.md"
    ],
    "note": "Q85 で非FX+Roll は全格子不可。FN Stellar 規則(目標 8%・床 10%・日次 5%)で Mon4 核の候補を Q85 と同じ格子で比較し、Q87 の家族配分目標と整合させる。EA は別ファイル(版 +0.01)で用意、配備は「切替」後",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 15
+   "order": 15,
+   "result": "現行(非FX+Roll ×3)と BTC/ETH 外しは全格子で不可行(最悪年失格 29〜53%・Hold UK100/WTI の 2022/2024 が原因)。FN 内で空いている Mon CADJPY/CHFJPY + Mon GER40 ×0.5 + Roll ×1(C6)が可行: 規則上 ×4.0/日次 3%(到達 96.1・失格 3.2・最悪年 10.0 境界)、推奨 ×3.0/日次 3%(到達 93.8・失格 3.2・最悪年 8.5・中央 62 日)。11/1 改正案(P2 から・「切替」後)。FN 書面で異銘柄指数の同日同方向を要確認",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "docs/371(診断・セル 0・7 候補 170 行・C6 ×3.0 推奨)"
+    }
+   ]
   },
   {
    "id": "Q98",
@@ -3516,6 +3524,13 @@
    "cells": 0,
    "cumulative": 9710,
    "summary": "指数 Mon 継続判定: NAS100/US500 残す・JP225/UK100/FR40 外す(docs/358)"
+  },
+  {
+   "date": "2026-10-21",
+   "slot": "evening",
+   "item": "Q97",
+   "cells": 0,
+   "doc": "docs/371_q97_fn_14166201_redesign.md"
   }
  ],
  "external_checks": [
