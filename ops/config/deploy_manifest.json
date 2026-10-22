@@ -148,13 +148,13 @@
    "apply": false,
    "ensure": [
     {
-     "ea": "【FTMO100k_口座531343523】EA10_Mon4_3.3倍+GER40ブレイク_2.0倍+HoldXAU0.3.mq5",
+     "ea": "【FTMO100k_新規Std】EA10S_Mon4_2.0倍+GER40ブレイク_1.2倍+HoldXAU0.18_v1.07.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
    ],
    "remove": [],
-   "note": "FTMO 残枠は Standard 100k + EA10(Swing は 25k のみでコスパ劣後・docs/320 §6)。購入後にキーを口座番号へ",
+   "note": "2026-10-22 ユーザー「1 をお願いします」(docs/349 §9f・docs/374 Q98): EA10S v1.07(Q85 採用点 ×2.0)に差し替え。apply:false のまま(購入後にキーを口座番号へ)。 FTMO 残枠は Standard 100k + EA10(Swing は 25k のみでコスパ劣後・docs/320 §6)。購入後にキーを口座番号へ",
    "terminal": "FTMO",
    "prepare_profile": true
   },
