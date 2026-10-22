@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 10039,
+ "cumulative_cells": 10043,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2303,14 +2303,22 @@
    "cells": 4,
    "note": "仕組み: 輸入企業のドル買い需要が仲値に集中し、仲値後に戻る。H1 のため 00→01 UTC 買い(仲値前)・01→02 UTC 売り(仲値後)で近似。セル: {全営業日, ゴトー日} × {前 LONG, 後 SHORT} = 4。コスト往復 3pip。前窓・OOS・累積 Bonferroni は §1 どおり。",
    "order": 17.2,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/376_q145_tokyo_fix_usdjpy.md"
    ],
    "registered": "2026-10-21",
-   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "棄却: 4 セル合格 0。IS +月率 26〜41%・1 取引平均 −0.4〜−3.1 bps・前窓 14〜35%。Q14 と合わせて仲値家族は閉じる",
+   "runs": [
+    {
+     "date": "2026-10-23",
+     "summary": "docs/376(4 セル・合格 0・累積 10,043)"
+    }
+   ]
   },
   {
    "id": "Q146",
@@ -3576,6 +3584,13 @@
    "item": "Q144",
    "cells": 114,
    "doc": "docs/375_q144_rollover_short_rescan.md"
+  },
+  {
+   "date": "2026-10-23",
+   "slot": "morning",
+   "item": "Q145",
+   "cells": 4,
+   "doc": "docs/376_q145_tokyo_fix_usdjpy.md"
   }
  ],
  "external_checks": [
