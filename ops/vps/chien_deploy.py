@@ -5,6 +5,7 @@
   1) inventory: 端末のプロファイル(MQL5\\Profiles\\Charts\\<profile>\\chart*.chr)を読み、どのチャートにどの EA が付いているかを一覧にする
   2) compile : manifest の ensure にある .mq5 を GitHub(公開)から取得し、その端末の MetaEditor でコンパイル(.ex5 は MQL5\\Experts\\chien\\ に置く)
   1.9(2026-10-21・docs/328 §9m): 装着済み判定を path で行う(端末が name= を切り詰めても誤認しない)・同一 EA の重複装着を除去・manifest の restart_token で 1 回だけ再起動。
+  1.9a(2026-10-22・docs/328 §9p 自宅 PC): ポータブル配置の端末は再起動時に /portable を付ける(付けないと AppData 側のデータで起動し、装着した EA が読まれない)。
   3) apply   : manifest で apply=true の口座だけ、端末を止めて chart*.chr の <expert> ブロックを書き換え(remove を外し、ensure を付け)、端末を再起動する
      - .chr はバックアップ(chien_backup\\<時刻>\\)してから書き換える。チャートは削除しない。
      - expertmode(アルゴ取引許可などのフラグ)は同じ端末の既存 <expert> ブロックから学習して使う。無ければ manifest の expertmode か既定 5。
@@ -140,7 +141,9 @@ def stop_terminal(terminal_path):
 
 
 def start_terminal(terminal_path):
-    subprocess.Popen([terminal_path], cwd=os.path.dirname(terminal_path), creationflags=getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
+    # PC 版: インストール先に MQL5 がある = ポータブル配置(C:\chien\mt5\<口座>)→ /portable を付けないと AppData 側のデータで起動してしまう
+    args = [terminal_path] + (["/portable"] if os.path.isdir(os.path.join(os.path.dirname(terminal_path), "MQL5")) else [])
+    subprocess.Popen(args, cwd=os.path.dirname(terminal_path), creationflags=getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
 
 
 def _ea_file(e):

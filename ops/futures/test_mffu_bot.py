@@ -45,7 +45,7 @@ def test_entry_exit_idempotent():
         B.run(cfg, "entry", day, tr); B.run(cfg, "entry", day, tr); assert len(tr.sent) == 3 and all(p["action"] == "buy" for p in tr.sent)
         B.run(cfg, "exit", day, tr); assert len(tr.sent) == 6 and all(p["sentiment"] == "flat" for p in tr.sent[3:])
         B.run(cfg, "check", day, tr); assert len(tr.sent) == 6                   # 決済済みなら再送しない
-        rows = open(cfg["log_csv"]).read().splitlines(); assert len(rows) == 1 + 1 + 3 + 3 + 1   # ヘッダ + nothing_to_exit + 建て 3 + 決済 3 + pnl_est
+        rows = open(cfg["log_csv"]).read().splitlines(); assert len(rows) == 1 + 1 + 1 + 3 + 3 + 1   # ヘッダ + nothing_to_exit + sizing(v0.6) + 建て 3 + 決済 3 + pnl_est
         st = json.load(open(cfg["state_json"])); assert st["2026-10-12"]["exited"] is True
 
 def test_check_resends_when_not_exited():

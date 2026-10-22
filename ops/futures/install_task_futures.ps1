@@ -1,4 +1,4 @@
-# chien 先物ボット(docs/336 Q117)を Windows タスクスケジューラに登録する。VPS は JST(夏時間なし)なので UTC 固定の時刻をそのまま JST に直す。
+﻿# chien 先物ボット(docs/336 Q117)を Windows タスクスケジューラに登録する。VPS は JST(夏時間なし)なので UTC 固定の時刻をそのまま JST に直す。
 #   entry: 月曜 13:00 UTC = 月曜 22:00 JST / exit: 月曜 20:00 UTC = 火曜 05:00 JST / check: 20:30 UTC = 火曜 05:30 JST / keepalive: 火曜 22:00 JST(月曜に建てなかった週のみ)+ 木曜 22:00 JST(毎週・非活動 7 日対策)
 # 実行: powershell -ExecutionPolicy Bypass -File install_task_futures.ps1   (config.json を先に用意。transport=dry のまま登録すれば発注は印字のみ)
 $here   = Split-Path -Parent $MyInvocation.MyCommand.Path
