@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 9925,
+ "cumulative_cells": 10039,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2276,17 +2276,25 @@
    "id": "Q144",
    "slug": "rollover_short_rescan",
    "title": "ロールオーバー帯(21〜23 UTC 建て)の売り建て・買い決済セルを現実価格で再走査",
-   "cells": 120,
+   "cells": 114,
    "note": "docs/367 の bid アーティファクトの逆: 21〜23 UTC に売り建て(または買いの決済)するセルは bid 評価で 20pp 前後不利に見えていた。ask データのある 20 銘柄 × 建て {21,22,23} UTC × 保有 {1,2}h の SHORT(=120 セル・月〜金プール)を現実価格で走査。基準 §1(往復 3pip の代わりに現実価格・二項 p < 0.05/累積・前窓 bid で +月率 ≥ 50%・OOS 同符号)。現実価格(買い = ask 始値で建て・bid 始値で決済、売りはその逆)で判定。ask は 2024-01〜のみのため、探索窓の検定は bid−3pip(§1)で行い、2024〜26 の現実価格で符号と大きさを確認する(ask 2016〜 受領後に探索窓も現実価格に置き換える)。",
    "order": 17.1,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/375_q144_rollover_short_rescan.md"
    ],
    "registered": "2026-10-21",
-   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "棄却: 114 セル(19 銘柄・USDTRY/USDMXN/USDZAR 除外)で合格 0・p<0.05 も 0。現実価格 2024〜26 で 1 取引平均が正のセルも 0(最良 EURUSD h23 2h −0.24 bps)。bid アーティファクトの逆は取れない",
+   "runs": [
+    {
+     "date": "2026-10-22",
+     "summary": "docs/375(114 セル・合格 0・累積 10,039)"
+    }
+   ]
   },
   {
    "id": "Q145",
@@ -3561,6 +3569,13 @@
    "item": "Q98",
    "cells": 0,
    "doc": "docs/374_q98_ea10s_x2_new_ftmo_std.md"
+  },
+  {
+   "date": "2026-10-22",
+   "slot": "evening",
+   "item": "Q144",
+   "cells": 114,
+   "doc": "docs/375_q144_rollover_short_rescan.md"
   }
  ],
  "external_checks": [
