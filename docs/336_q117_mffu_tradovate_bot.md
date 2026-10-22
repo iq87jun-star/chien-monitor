@@ -187,3 +187,11 @@ VPS 側は bot 本体の 1 回限りの差し替えが要る(10/20 05:30 JST の
 
 ### 24a.【2026-10-20 10:15 JST】VPS の差し替え完了(ユーザー「出来ました」)
 ユーザーが VPS 上の Claude セッション(remote-control)に手順を貼って実行。同セッションの記録(10/20 09:51 JST): `mffu_bot.py` 0.6 配置・`mffu_bot_0.5.bak` 作成・SHA256 一致・`--action status` 正常(建玉なし)。このセッションからの直接検証は 10/26 13:00 UTC の entry で `mffu_log.csv` に `sizing` 行(`git v1 … qty {'MES': 5, 'MNQ': 2, 'MYM': 5} max 12`)が出ることで行う(10/26 22:06 JST に自動確認)。以後の枚数変更は「切替」後に `ops/futures/sizing.json` の commit のみ。
+
+### 25.【2026-10-23 08:15 JST】MFFU から Builder 2 口座とも「Breach Detected — Inactivity Rule Breach」(ユーザー「先物に動きが有りそうなので、メールを確認してください」)
+メール(support@myfundedfutures.com・23:15 / 23:16 UTC 10/22): 口座 ID `MFFUEVBLDR727653001` と `…002` が非活動規則(7 暦日)で失格。Tradovate 側の口座番号(69207025 / 69204445)との対応はダッシュボードで要確認。
+- ボットの記録(`mffu_log.csv`)では 10/12 entry/exit・10/15 keepalive・10/19 entry/exit・10/22 keepalive が全て TradersPost 応答 200 `{"success":true}`。**TradersPost が受け取った = Tradovate で約定した、ではない**。両口座が 7 暦日無取引と判定されたのは、少なくとも 10/15 以降(あるいは 10/12 以降)の信号が Tradovate の口座に届いていない(Subscription 未 Enable / Auto Submit 無効 / 10/21 の Webhook URL 再生成で戦略と口座の紐付けが外れた / 2 口座目は最初から未 Enable)ことを示す。10/12 の −587・10/19 の +590 は Yahoo 価格による推定で、実約定の確認は取れていない。
+- 設計上の欠陥: ボットは TradersPost の応答しか見ておらず、約定の有無(Tradovate の fill)を確認していない。keepalive が「送った」だけで満足する形になっていた。
+- 対応(ユーザー): (1) MFFU トレーダーエリアで 2 口座の取引履歴(10/12・10/19 の MES/MNQ/MYM の fill の有無)と失格日時を確認、(2) TradersPost の戦略ページで Subscription の状態(Enable・Auto Submit)と、紐付く Tradovate 口座を確認。この 2 点のスクリーンショットをチャットへ。
+- 対応(ボット): 次版 0.7 で TradersPost の注文状態 API(または Tradovate の fills)を entry/keepalive 後に照会し、fill が無ければ通知(`alerts`)と再送を行う。再購入は fill 確認の手順(VPS_SETUP §5 の `--action test` を Paper と本口座の両方で実施)を通してから。
+- 費用: 評価 2 口座 $199 × 2 が失効。再購入は同額(割引コード適用時)。
