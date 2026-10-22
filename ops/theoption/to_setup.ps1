@@ -43,7 +43,7 @@ Step "4. 接続確認(60 秒・取引しない)"
 if ($cur) { & (Join-Path $here "to_run.ps1") -Mode check; Get-Content (Join-Path $here "run.log") -Tail 40 } else { Write-Host "キーが無いので接続確認は省略" }
 
 Step "5. タスク登録"
-$settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Hours 5) -MultipleInstances IgnoreNew
+$settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -WakeToRun -ExecutionTimeLimit (New-TimeSpan -Hours 5) -MultipleInstances IgnoreNew   # v0.8: 自宅PC向けにスリープ解除で起動
 $ps = "-NoProfile -ExecutionPolicy Bypass -File `"$(Join-Path $here 'to_run.ps1')`""
 foreach ($t in @(@("monday", "Monday", "05:25"), @("thursday", "Thursday", "04:55"), @("check", @("Tuesday","Wednesday","Thursday","Friday"), "12:00"))) {
   $action  = New-ScheduledTaskAction -Execute "powershell.exe" -Argument "$ps -Mode $($t[0])" -WorkingDirectory $here
