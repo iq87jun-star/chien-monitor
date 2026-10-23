@@ -1,0 +1,5 @@
+{
+  "permissions": { "allow": ["Edit(ops/theoption/**)", "Bash(python3.13 -m pytest *)"] },
+  "autoMode": { "allow": ["$defaults",
+    "ops/theoption 配下の theoption デモ取引プローブ(お試し口座・仮想資金のみで /trading/buy /trading/sell を呼ぶ)の作成・テスト・プッシュはユーザーが明示的に承認済み"] }
+}
