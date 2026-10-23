@@ -4,7 +4,7 @@ param([string]$Mode = "monday")   # monday / thursday = 09:30 JST まで記録�
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path; Set-Location $here
 $raw = "https://raw.githubusercontent.com/iq87jun-star/chien-monitor/ccr-dbb29a98-7cflzp/ops/theoption"
 [Net.ServicePointManager]::SecurityProtocol = 'Tls12'
-foreach ($f in 'to_probe.py','to_summarize.py','to_setup.ps1','to_run.ps1') {   # v0.4: 自分自身も取り直す(PS は起動時に全体を読み込むので実行中の上書きは次回から効く)
+foreach ($f in 'to_probe.py','to_summarize.py','to_setup.ps1','to_run.ps1','to_tenbai.py') {   # v0.9: 転売情報の記録プローブも更新   # v0.4: 自分自身も取り直す(PS は起動時に全体を読み込むので実行中の上書きは次回から効く)
   try { Invoke-WebRequest ("$raw/$f" + "?t=" + (Get-Date).Ticks) -OutFile (Join-Path $here ($f + ".new")) -UseBasicParsing -TimeoutSec 60; Move-Item -Force (Join-Path $here ($f + ".new")) (Join-Path $here $f) }
   catch { Add-Content -Encoding UTF8 (Join-Path $here "run.log") "$(Get-Date -Format s) update failed $f : $_" }
 }
@@ -16,6 +16,14 @@ if ($Mode -eq "mtlogsync") {   # v0.6: MT5共有FilesのEAログ(ChienMT_log_*.c
   exit 0
 }
 $env:THEOPTION_OUT = $cfg.out; $env:PYTHONUTF8 = "1"
+if ($Mode -eq "tenbai" -or $Mode -eq "tenbai_once") {   # v0.9: 実行中のデモ取引の転売情報を翌06:10まで30分ごとに記録(発注も転売もしない)
+  if (-not $env:THEOPTION_API_KEY) { $env:THEOPTION_API_KEY = [Environment]::GetEnvironmentVariable("THEOPTION_API_KEY", "User") }
+  $a3 = @(if ($Mode -eq "tenbai_once") { "--once" } else { "--out" })   # PS 5.1 の 1 要素配列対策で @() で包む
+  if ($Mode -eq "tenbai_once") { & python (Join-Path $here "to_tenbai.py") @a3 2>&1 | Out-File -Append -Encoding utf8 (Join-Path $here "run.log") }
+  else { & python (Join-Path $here "to_tenbai.py") 2>&1 | Out-File -Append -Encoding utf8 (Join-Path $here "run.log") }
+  Add-Content -Encoding UTF8 (Join-Path $here "run.log") "$(Get-Date -Format s) mode=$Mode exit=$LASTEXITCODE"
+  exit 0
+}
 if (-not $env:THEOPTION_API_KEY) { $env:THEOPTION_API_KEY = [Environment]::GetEnvironmentVariable("THEOPTION_API_KEY", "User") }
 $args2 = @(if ($Mode -eq "check") { "--check" } else { "--until", "09:30" })   # @() で包む: PS 5.1 は 1 要素配列を文字列に崩し、@args2 が 1 文字ずつに展開される
 & python (Join-Path $here "to_probe.py") @args2 2>&1 | Out-File -Append -Encoding utf8 (Join-Path $here "run.log")

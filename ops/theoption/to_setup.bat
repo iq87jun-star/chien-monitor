@@ -8,7 +8,7 @@ set "ROOT=C:\chien\ops\theoption"
 set "RAW=https://raw.githubusercontent.com/iq87jun-star/chien-monitor/ccr-dbb29a98-7cflzp/ops/theoption"
 if not exist "%ROOT%" mkdir "%ROOT%"
 echo [1/2] download scripts from GitHub ...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol='Tls12'; foreach($f in 'to_probe.py','to_summarize.py','to_run.ps1','to_setup.ps1','to_setkey.ps1','to_setkey.bat'){ Invoke-WebRequest ('%RAW%/'+$f+'?t='+(Get-Date).Ticks) -OutFile (Join-Path '%ROOT%' $f) -UseBasicParsing; Write-Host ('  ok '+$f) }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol='Tls12'; foreach($f in 'to_probe.py','to_summarize.py','to_run.ps1','to_setup.ps1','to_setkey.ps1','to_setkey.bat','to_tenbai.py'){ Invoke-WebRequest ('%RAW%/'+$f+'?t='+(Get-Date).Ticks) -OutFile (Join-Path '%ROOT%' $f) -UseBasicParsing; Write-Host ('  ok '+$f) }"
 if errorlevel 1 (
   echo DOWNLOAD FAILED. Check internet access from this VPS.
   goto :end

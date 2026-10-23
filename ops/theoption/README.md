@@ -38,3 +38,15 @@ API の仕様は 2026-10 のクイックスタート(ユーザー提供の PDF)�
 - `to_summarize.py` — 記録の要約。
 - `to_setup.bat` / `to_setup.ps1` — VPS のワンクリック設定。`to_run.ps1` — タスクから呼ぶ実行ラッパー(自己更新)。
 - `test_to_probe.py` — `python -m pytest -q`(偽ゲートウェイで往復を確認・5 passed)。
+
+## v0.9 (2026-10-23): 転売情報の記録プローブ `to_tenbai.py`(記録のみ・発注も転売もしない)
+- 目的: `theoption_validation/README.md` 追補21・21補足の「転売価格 vs 公正値(含み損の深さ別)」の実測。
+- 前提: **お試し(API)口座に実行中の取引があること**。取引はユーザーが置く(例: 月曜 07:00 JST に EURJPY / AUDJPY / NZDJPY の
+  `FE|23H|HIGHLOW|HIGH` を ¥1,000 ずつ。開発者サンドボックスか curl で `/trading/buy`。本プローブは発注しない)。
+- 動作: 月曜 07:05 JST のタスク `chien_theoption_tenbai`(初回実行時に自動登録)で起動 → 30 分ごとに WS を開いて
+  `trades`(can_sell / sell = 転売情報)と、その取引の契約の `contract_data`(判定価格)を 15 秒だけ集めて記録 → 翌 06:10 JST に
+  `/history/trades` で結果を取って `tenbai_demo_<日時>.summary.txt` を out(Drive)に書く。
+- ガード: キーの JWT 発行者が `TheOptionDemo` でなければ終了。接続先は apidemo / gatewaydemo 固定。`/trading/buy`・`/trading/sell` は
+  ソースに含まない(`test_to_tenbai.py` で保証)。
+- 動作確認: コマンドプロンプトで `powershell -NoProfile -ExecutionPolicy Bypass -File C:\chien\ops\theoption\to_run.ps1 -Mode tenbai_once`
+  (1 回だけ収集して終了。実行中の取引が無ければ「実行中の取引なし」と出る)。
