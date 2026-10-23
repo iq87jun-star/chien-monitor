@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 10043,
+ "cumulative_cells": 10051,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2327,14 +2327,22 @@
    "cells": 8,
    "note": "仕組み: 月末の株式・債券リバランスに伴う通貨フロー。月末営業日の前日 15 UTC → 当日 16 UTC の LONG/SHORT(方向は事前に決めない=両方をセルに数える)× GBPUSD/EURUSD = 4、当日 16 → 20 UTC の反転 LONG/SHORT × 2 = 4。n が少ない(年 12 回)ので 2016〜 の全期間を前窓なしで扱い、二項 p は累積 Bonferroni。",
    "order": 17.3,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/377_q146_month_end_london_fix.md"
    ],
    "registered": "2026-10-21",
-   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "棄却: 8 セル合格 0・p<0.05 は 1(GBPUSD fix 後 4h SHORT 75/128・平均 +2.1 bps・IS/OOS 負)。Q24 と合わせて月末フィックス家族は閉じる",
+   "runs": [
+    {
+     "date": "2026-10-23",
+     "summary": "docs/377(8 セル・合格 0・累積 10,051)"
+    }
+   ]
   },
   {
    "id": "Q147",
@@ -3592,6 +3600,13 @@
    "item": "Q145",
    "cells": 4,
    "doc": "docs/376_q145_tokyo_fix_usdjpy.md"
+  },
+  {
+   "date": "2026-10-23",
+   "slot": "evening",
+   "item": "Q146",
+   "cells": 8,
+   "doc": "docs/377_q146_month_end_london_fix.md"
   }
  ],
  "external_checks": [
