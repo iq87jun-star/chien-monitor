@@ -16,11 +16,10 @@ if ($Mode -eq "mtlogsync") {   # v0.6: MT5共有FilesのEAログ(ChienMT_log_*.c
   exit 0
 }
 $env:THEOPTION_OUT = $cfg.out; $env:PYTHONUTF8 = "1"
-if ($Mode -eq "tenbai" -or $Mode -eq "tenbai_once") {   # v0.9: 実行中のデモ取引の転売情報を翌06:10まで30分ごとに記録(発注も転売もしない)
+if ($Mode -eq "tenbai" -or $Mode -eq "tenbai_once") {   # v0.9: 月曜 07:00 に ¥1,000×3 本を置き、転売情報を翌06:10まで30分ごとに記録、翌03:00 に 1 本転売(お試し口座)
   if (-not $env:THEOPTION_API_KEY) { $env:THEOPTION_API_KEY = [Environment]::GetEnvironmentVariable("THEOPTION_API_KEY", "User") }
-  $a3 = @(if ($Mode -eq "tenbai_once") { "--once" } else { "--out" })   # PS 5.1 の 1 要素配列対策で @() で包む
-  if ($Mode -eq "tenbai_once") { & python (Join-Path $here "to_tenbai.py") @a3 2>&1 | Out-File -Append -Encoding utf8 (Join-Path $here "run.log") }
-  else { & python (Join-Path $here "to_tenbai.py") 2>&1 | Out-File -Append -Encoding utf8 (Join-Path $here "run.log") }
+  $a3 = @(if ($Mode -eq "tenbai_once") { "--once" } else { "--live-demo" })   # PS 5.1 の 1 要素配列対策で @() で包む。tenbai = 発注+転売の実測(お試し口座)
+  & python (Join-Path $here "to_tenbai.py") @a3 2>&1 | Out-File -Append -Encoding utf8 (Join-Path $here "run.log")
   Add-Content -Encoding UTF8 (Join-Path $here "run.log") "$(Get-Date -Format s) mode=$Mode exit=$LASTEXITCODE"
   exit 0
 }

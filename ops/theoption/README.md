@@ -39,14 +39,15 @@ API の仕様は 2026-10 のクイックスタート(ユーザー提供の PDF)�
 - `to_setup.bat` / `to_setup.ps1` — VPS のワンクリック設定。`to_run.ps1` — タスクから呼ぶ実行ラッパー(自己更新)。
 - `test_to_probe.py` — `python -m pytest -q`(偽ゲートウェイで往復を確認・5 passed)。
 
-## v0.9 (2026-10-23): 転売情報の記録プローブ `to_tenbai.py`(記録のみ・発注も転売もしない)
+## v0.9 (2026-10-23): 転売実測プローブ `to_tenbai.py`(お試し口座で ¥1,000 × 3 本を置き、転売価格を実測)
 - 目的: `theoption_validation/README.md` 追補21・21補足の「転売価格 vs 公正値(含み損の深さ別)」の実測。
-- 前提: **お試し(API)口座に実行中の取引があること**。取引はユーザーが置く(例: 月曜 07:00 JST に EURJPY / AUDJPY / NZDJPY の
-  `FE|23H|HIGHLOW|HIGH` を ¥1,000 ずつ。開発者サンドボックスか curl で `/trading/buy`。本プローブは発注しない)。
-- 動作: 月曜 07:05 JST のタスク `chien_theoption_tenbai`(初回実行時に自動登録)で起動 → 30 分ごとに WS を開いて
-  `trades`(can_sell / sell = 転売情報)と、その取引の契約の `contract_data`(判定価格)を 15 秒だけ集めて記録 → 翌 06:10 JST に
-  `/history/trades` で結果を取って `tenbai_demo_<日時>.summary.txt` を out(Drive)に書く。
-- ガード: キーの JWT 発行者が `TheOptionDemo` でなければ終了。接続先は apidemo / gatewaydemo 固定。`/trading/buy`・`/trading/sell` は
-  ソースに含まない(`test_to_tenbai.py` で保証)。
-- 動作確認: コマンドプロンプトで `powershell -NoProfile -ExecutionPolicy Bypass -File C:\chien\ops\theoption\to_run.ps1 -Mode tenbai_once`
-  (1 回だけ収集して終了。実行中の取引が無ければ「実行中の取引なし」と出る)。
+- 動作(タスク `chien_theoption_tenbai`・月曜 07:05 JST・初回のプローブ実行時に自動登録 → `to_run.ps1 -Mode tenbai` = `--live-demo`):
+  07:00:10 JST に EURJPY / AUDJPY / NZDJPY の `FE|23H|HIGHLOW|HIGH`(翌 06:00 JST 判定)を ¥1,000 ずつ成行で購入(`/trading/buy`、
+  契約名と expiration_time は同時刻の記録プローブの JSONL から。07:05 起動なので実際の発注は起動直後)→ 30 分ごとに `trades`
+  (can_sell / sell)と `contract_data`(判定価格)を 15 秒だけ記録 → 翌 03:00 JST に含み損の取引を 1 本だけ転売(`/trading/sell`、
+  優先 NZDJPY→AUDJPY→EURJPY)→ 翌 06:10 JST に `/history/trades` で結果を取り `tenbai_demo_<日時>.summary.txt` を out(Drive)に書く。
+- 安全: キーの JWT 発行者が `TheOptionDemo` でなければ発注・転売せず終了。接続先は apidemo / gatewaydemo 固定(本番ホストは持たない)。
+  発注は 1 回の実行で最大 3 本・各 ¥1,000、`_diag/tenbai_state.json` で同日の二重発注を防ぐ、残高 < ¥3,000 なら発注しない、
+  07:10 JST 以降の起動は発注を見送る。`--live-demo` 無し(既定)は記録のみ(`test_to_tenbai.py` で保証)。
+- 前提: お試し(API)残高に ¥10,000 以上(仮想資金・API ページの「+チャージ」)。
+- 動作確認: `powershell -NoProfile -ExecutionPolicy Bypass -File C:\chien\ops\theoption\to_run.ps1 -Mode tenbai_once`(発注せず 1 回収集)。
