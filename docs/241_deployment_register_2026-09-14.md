@@ -230,3 +230,4 @@ MC(docs/349 §6c): 1-Step 81 / 19%・+2σ 2027-05-19、宝くじ 48 / 52%・2027
 | Fintokei ルビー 6104736 | B 案 v1.04 → **v1.05** |
 | Fintokei トパーズ 6104739 | EA11 v1.15 → **v1.16** |
 配備先は自宅 PC(docs/328 §9p。10/23 07:00 JST の status.json: 10 端末 ok・各 1 EA・HALT 0・531407058 は建玉 0)。毎時タスクがコンパイル → 装着 → 端末再起動(deploy 1.9a・/portable)で反映。建玉は同 Magic で引き継ぐ。反映確認は次回の status.json の `attached_eas` と `[INIT` で行う。
+【§1ac 反映確認 2026-10-24 07:00 JST】status.json の `attached_eas` が 10 口座とも v+0.01(EA8 v1.38 / EA3 v1.20 / EA10L v1.06 / EA9 v1.05 / Instant G v1.17 / 14074882 v1.11 / 14166201 v1.36 / パール v1.11 / ルビー v1.05 / EA11 v1.16)。521100397 の ea_log_extract に 10/23 08:00:17 JST `[INIT RecentFit] … v1.38 (GBPJPY,H1)` あり = 毎時タスクの初回で再起動・反映。HALT 0。
