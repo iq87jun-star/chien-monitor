@@ -195,3 +195,8 @@ VPS 側は bot 本体の 1 回限りの差し替えが要る(10/20 05:30 JST の
 - 対応(ユーザー): (1) MFFU トレーダーエリアで 2 口座の取引履歴(10/12・10/19 の MES/MNQ/MYM の fill の有無)と失格日時を確認、(2) TradersPost の戦略ページで Subscription の状態(Enable・Auto Submit)と、紐付く Tradovate 口座を確認。この 2 点のスクリーンショットをチャットへ。
 - 対応(ボット): 次版 0.7 で TradersPost の注文状態 API(または Tradovate の fills)を entry/keepalive 後に照会し、fill が無ければ通知(`alerts`)と再送を行う。再購入は fill 確認の手順(VPS_SETUP §5 の `--action test` を Paper と本口座の両方で実施)を通してから。
 - 費用: 評価 2 口座 $199 × 2 が失効。再購入は同額(割引コード適用時)。
+
+### 25a.【2026-10-23 ユーザー決定】「失格は確定しているので、一旦先物からは手を引きます」
+- 先物ボットの運用を停止: 自宅 PC のタスク `chien_futures_*`(5 本)を削除、TradersPost の戦略を無効化(Subscription を Disable・Webhook を使わない)、MFFU の口座は失格のまま(再購入しない)。本セッションの 10/26 確認タスク(MFFU 10/26 entry 枚数確認)は削除済み。
+- リポジトリ側: `ops/futures/` のコードと `sizing.json` は残す(再開時に 0.7 で約定確認を実装してから)。Q149(3 指数の相関配分)は取り消し。`portfolio_current.json` に MFFU は含まれていないので変更なし。
+- 確認事項はチャットの一覧(MFFU トレーダーエリア・TradersPost・Tradovate・PC のタスク)。
