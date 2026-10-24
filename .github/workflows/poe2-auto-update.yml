@@ -87,6 +87,10 @@ jobs:
           # 買取のお取引ガイド(流れ・確認事項・取り戻しへの対応)。game-souba.com/torihiki/
           mkdir -p site-dist/torihiki
           cp satei/public/guide.html site-dist/torihiki/index.html
+          # 引き継ぎ情報フォーム(売主が記入。回答は Worker の /api/form に送る)。game-souba.com/torihiki/form/?t=…
+          mkdir -p site-dist/torihiki/form
+          cp satei/public/form.html site-dist/torihiki/form/index.html
+          cp -r satei/public/lib site-dist/torihiki/form/lib
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4

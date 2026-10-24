@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>引き継ぎ情報シート</title>
+<style>
+  :root { --bg:#fff8fb; --card:#fff; --ink:#2b2230; --sub:#6d6075; --line:#f0dbe6; --accent:#e8568f; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#1b1520; --card:#251d2b; --ink:#f4ecf7; --sub:#b9aac2; --line:#3b2f44; --accent:#ff7aab; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.7 system-ui,"Hiragino Sans","Noto Sans JP",sans-serif; }
+  main { max-width:760px; margin:0 auto; padding:20px 16px 60px; }
+  .bar { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin-bottom:16px; }
+  .bar .row { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .muted { color:var(--sub); font-size:13px; }
+  input, button { font:inherit; padding:8px 10px; border-radius:8px; border:1px solid var(--line); background:var(--bg); color:var(--ink); }
+  button { background:var(--accent); color:#fff; border:0; font-weight:700; cursor:pointer; }
+  .paper { background:#fff; color:#222; border:1px solid var(--line); border-radius:12px; padding:28px 26px; }
+  .paper h1 { font-size:20px; text-align:center; margin:0 0 2px; }
+  .paper .sub { text-align:center; color:#666; font-size:12px; margin:0 0 18px; }
+  .paper h2 { font-size:14px; margin:16px 0 6px; padding-left:8px; border-left:4px solid #e8568f; }
+  .paper table { width:100%; border-collapse:collapse; font-size:13px; }
+  .paper th, .paper td { border:1px solid #ddd; padding:6px 8px; text-align:left; vertical-align:top; }
+  .paper th { width:38%; background:#fbf3f7; font-weight:600; }
+  .paper td { white-space:pre-wrap; word-break:break-all; }
+  .paper .empty { color:#aaa; }
+  .paper .imgs { display:grid; grid-template-columns:repeat(2, 1fr); gap:8px; }
+  .paper .imgs img { width:100%; border:1px solid #ddd; border-radius:4px; }
+  .paper .note { border:1px solid #ccc; border-radius:6px; padding:10px 12px; font-size:12px; margin-top:18px; }
+  .paper .note ol { margin:4px 0 0; padding-left:18px; }
+  .paper .internal h2 { border-left-color:#888; }
+  [hidden] { display:none !important; }
+  @media print {
+    @page { size:A4; margin:14mm; }
+    body { background:#fff; }
+    main { max-width:none; padding:0; }
+    .bar { display:none; }
+    .paper { border:0; padding:0; }
+    .paper h2 { break-after:avoid; }
+    .paper table, .paper .imgs img { break-inside:avoid; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="bar">
+    <form class="row" id="login" hidden>
+      <input id="token" type="password" placeholder="合言葉" autocomplete="current-password" required />
+      <button>表示</button>
+    </form>
+    <div id="tools" hidden>
+      <div class="row">
+        <b id="label"></b>
+        <label class="muted"><input type="checkbox" id="internal" /> 当方の確認用(ご本人の確認)も表示</label>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button type="button" id="print">🖨 印刷・PDFで保存</button>
+        <span class="muted">スマホは共有 →「印刷」→ PDF で保存。売却先には「ご本人の確認」を外したまま渡してください。</span>
+      </div>
+    </div>
+    <p class="muted" id="msg" style="margin:6px 0 0"></p>
+  </div>
+  <div class="paper" id="paper" hidden></div>
+</main>
+<script type="module">
+import { SHEET } from "./lib/sheet.js";
+import { GAMES } from "./lib/games.js";
+const $ = (id) => document.getElementById(id);
+const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const ymd = (iso) => new Date(iso).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo", year: "numeric", month: "long", day: "numeric" });
+const id = Number(new URLSearchParams(location.search).get("id"));
+let token = "";
+try { token = localStorage.getItem("satei:admin") ?? ""; } catch {}
+
+const get = (path) => fetch(`${API}${path}`, { headers: { authorization: `Bearer ${token}` } });
+const table = (fields, data) => `<table>${fields
+  .map((f) => `<tr><th>${esc(f.label)}</th><td>${data[f.key] ? esc(data[f.key]) : `<span class="empty">(記入なし)</span>`}</td></tr>`)
+  .join("")}</table>`;
+
+async function load() {
+  const res = await get(`/api/sheet/${id}`);
+  const d = await res.json();
+  if (!d.ok) throw new Error(d.error || res.status);
+  const s = d.sheet;
+  $("label").textContent = `シート #${s.id}${s.consign_id ? ` ・ No.${s.consign_id}` : ""}${s.label ? ` ・ ${s.label}` : ""}`;
+  $("login").hidden = true;
+  $("tools").hidden = false;
+  if (!s.submitted_at) {
+    $("msg").textContent = "まだ記入されていません。";
+    return;
+  }
+  $("msg").textContent = "";
+  const imgs = await Promise.all(s.images.map(async (i) => URL.createObjectURL(await (await get(`/api/image/${i}`)).blob())));
+  const buyer = SHEET.map((sec) => ({ ...sec, fields: sec.fields.filter((f) => f.buyer) })).filter((sec) => sec.fields.length);
+  const internal = SHEET.map((sec) => ({ ...sec, fields: sec.fields.filter((f) => !f.buyer) })).filter((sec) => sec.fields.length);
+  $("paper").innerHTML = `
+    <h1>アカウント引き継ぎ情報シート</h1>
+    <p class="sub">${esc(GAMES[s.game] ?? "")}${s.game ? " ・ " : ""}前の持ち主の記入日 ${ymd(s.submitted_at)} ・ 発行 メルル</p>
+    ${buyer.map((sec) => `<h2>${esc(sec.title)}</h2>${table(sec.fields, s.data)}`).join("")}
+    ${imgs.length ? `<h2>課金のレシート</h2><div class="imgs">${imgs.map((u) => `<img src="${u}" alt="レシート">`).join("")}</div>` : ""}
+    <div class="internal" id="internalBox" hidden>${internal.map((sec) => `<h2>${esc(sec.title)}(当方の確認用)</h2>${table(sec.fields, s.data)}`).join("")}</div>
+    <div class="note"><b>このシートについて</b><ol>
+      <li>前の持ち主が記入した、アカウントの作成・登録・課金の情報です。運営会社へのお問い合わせ(アカウントの本人確認)で聞かれた際にお使いください。</li>
+      <li>アカウントの保全以外の目的には使わず、第三者に渡さないでください。</li>
+      <li>登録メールアドレスとパスワードは、受け取り後すぐにご自身のものへ変更してください。</li>
+      <li>運営会社から心当たりのない連絡やログインの通知があった場合は、メルルまでご連絡ください。</li>
+    </ol></div>`;
+  $("paper").hidden = false;
+  $("internalBox").hidden = !$("internal").checked;
+}
+
+$("internal").addEventListener("change", () => { if ($("internalBox")) $("internalBox").hidden = !$("internal").checked; });
+$("print").addEventListener("click", () => print());
+$("login").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  token = $("token").value;
+  try {
+    await load();
+    try { localStorage.setItem("satei:admin", token); } catch {}
+  } catch (err) { $("msg").textContent = `表示できませんでした(${err.message})`; }
+});
+if (!id) $("msg").textContent = "シートの番号がありません。管理画面の「引き継ぎ」から開いてください。";
+else if (!token) $("login").hidden = false;
+else load().catch((err) => { $("login").hidden = false; $("msg").textContent = `表示できませんでした(${err.message})`; });
+</script>
+</body>
+</html>
