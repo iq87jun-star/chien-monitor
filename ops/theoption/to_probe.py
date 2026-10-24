@@ -13,7 +13,7 @@
   python to_summarize.py out\\probe_YYYYMMDD.jsonl   # 記録の要約
 既定はお試し環境(apidemo / gatewaydemo)。--env live は本番ホスト(キーも本番用が要る)。"""
 import argparse, asyncio, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "0.9"
+VERSION = "1.0"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -50,7 +50,11 @@ def is_target(name):
 # v0.3: 木曜朝(= 水曜 20〜24 UTC・③ 水曜夜の円買い)も記録する。設定済みの VPS にもタスクを足すため、実行のたびに無ければ登録する。
 EXTRA_TASKS = [("chien_theoption_thursday", "THU", "04:55", "thursday"),
                ("chien_mtlog_sync", None, "06:40", "mtlogsync"),   # v0.6: day=None は毎日。MT5デモEAのログをDriveへ写す
-               ("chien_theoption_tenbai", "MON", "07:05", "tenbai")]   # v0.9: 実行中のデモ取引の転売情報を翌06:10まで記録(to_tenbai.py)
+               ("chien_theoption_tenbai", "MON", "07:05", "tenbai"),   # v0.9: 実行中のデモ取引の転売情報を翌06:10まで記録(to_tenbai.py)
+               ("chien_theoption_live_0700", "MON", "06:58", "live"),   # v1.0: 本番メニュー(追補18)の自動発注。既定はお試し口座(to_live.py)
+               ("chien_theoption_live_1100", "MON", "10:58", "live"),
+               ("chien_theoption_live_2300", None, "22:58", "live"),    # EURGBP 夜(月火水金・対象月)はスクリプト側で判定
+               ("chien_theoption_live_settle", None, "06:45", "live_settle")]   # 前日までの取引結果を live_trades_<口座>.csv へ
 
 def ensure_tasks():
     if os.name != "nt": return []

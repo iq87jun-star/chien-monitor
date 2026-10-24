@@ -51,3 +51,18 @@ API の仕様は 2026-10 のクイックスタート(ユーザー提供の PDF)�
   07:10 JST 以降の起動は発注を見送る。`--live-demo` 無し(既定)は記録のみ(`test_to_tenbai.py` で保証)。
 - 前提: お試し(API)残高に ¥10,000 以上(仮想資金・API ページの「+チャージ」)。
 - 動作確認: `powershell -NoProfile -ExecutionPolicy Bypass -File C:\chien\ops\theoption\to_run.ps1 -Mode tenbai_once`(発注せず 1 回収集)。
+
+## v1.0 (2026-10-24): 本番メニューの自動発注 `to_live.py`(既定はお試し口座で本番同一条件・実口座は二重オプトイン)
+- メニュー: `theoption_validation/README.md` 追補18 の確定 10 本(月曜 07:00 × 8、月曜 11:00 × 1、月火水金 23:00 の EURGBP LOW・対象月のみ)、
+  Edge 比例配分のベット額(週計 103,500 円・月曜朝 83,500 円)。倍率規則(追補17): 1H は 1.85 未満・22H/23H は 1.90 未満で見送り、2.0 以上で 1.5 倍。
+- タスク(初回のプローブ実行時に自動登録): `chien_theoption_live_0700`(月 06:58)・`_1100`(月 10:58)・`_2300`(毎日 22:58、曜日と月はスクリプトが判定)・
+  `_settle`(毎日 06:45、`/history/trades` の結果を `live_trades_<口座>.csv` に追記 = 週次突合の入力)。
+- 契約の選び方: 定刻 +10 秒に contracts を 20 秒集め、「銘柄 | FE | 任意の期間 | HIGHLOW | HIGH/LOW」で**判定時刻が一致する**契約を選ぶ。
+  無ければ「契約なし」で見送り(判定時刻が未確認の GBPJPY→14 時・AUDJPY→翌 10 時はこれで安全に扱う)。
+- 口座: 既定はお試し(キーの iss = TheOptionDemo を要求)。実口座は `to_config.json` に `"live_real": true` **かつ** ユーザー環境変数
+  `THEOPTION_API_KEY_REAL` の両方が揃ったときだけ(本番ホスト・本番キー)。片方だけでは常にお試し。
+- 安全: health 失敗で発注なし、残高 < 必要額で発注なし、日次ベット上限 120,000 円、1 脚 20 万円上限、`_diag/live_state.json` で同日同脚の二重発注防止、
+  購入は 1 秒 1 回、拒否コードは記録して見送り。
+- 記録: `live_<口座>_<日付>.jsonl`、`live_entries_<口座>.csv`(date,strategy_id,pair,direction,payout_actual,stake,trade_id,strike,contract,note)。
+- 予定: 10/26(月)はお試し口座で本番同一条件を実行 → 10/27(火)の週次突合で判定 → 問題なければ 11/2(月)から実口座(設定の切替のみ)。
+- 動作確認: `powershell -NoProfile -ExecutionPolicy Bypass -File C:\chien\ops\theoption\to_run.ps1 -Mode live_plan`(今日の対象脚を表示・発注しない)。

@@ -4,7 +4,7 @@ param([string]$Mode = "monday")   # monday / thursday = 09:30 JST まで記録�
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path; Set-Location $here
 $raw = "https://raw.githubusercontent.com/iq87jun-star/chien-monitor/ccr-dbb29a98-7cflzp/ops/theoption"
 [Net.ServicePointManager]::SecurityProtocol = 'Tls12'
-foreach ($f in 'to_probe.py','to_summarize.py','to_setup.ps1','to_run.ps1','to_tenbai.py') {   # v0.9: 転売情報の記録プローブも更新   # v0.4: 自分自身も取り直す(PS は起動時に全体を読み込むので実行中の上書きは次回から効く)
+foreach ($f in 'to_probe.py','to_summarize.py','to_setup.ps1','to_run.ps1','to_tenbai.py','to_live.py') {   # v0.9: 転売記録 / v1.0: 本番メニュー自動発注 も更新   # v0.4: 自分自身も取り直す(PS は起動時に全体を読み込むので実行中の上書きは次回から効く)
   try { Invoke-WebRequest ("$raw/$f" + "?t=" + (Get-Date).Ticks) -OutFile (Join-Path $here ($f + ".new")) -UseBasicParsing -TimeoutSec 60; Move-Item -Force (Join-Path $here ($f + ".new")) (Join-Path $here $f) }
   catch { Add-Content -Encoding UTF8 (Join-Path $here "run.log") "$(Get-Date -Format s) update failed $f : $_" }
 }
@@ -16,6 +16,15 @@ if ($Mode -eq "mtlogsync") {   # v0.6: MT5共有FilesのEAログ(ChienMT_log_*.c
   exit 0
 }
 $env:THEOPTION_OUT = $cfg.out; $env:PYTHONUTF8 = "1"
+if ($Mode -eq "live" -or $Mode -eq "live_settle" -or $Mode -eq "live_plan") {   # v1.0: 本番メニュー(追補18)の自動発注。既定はお試し口座(to_config.json の live_real=true + THEOPTION_API_KEY_REAL で実口座)
+  if (-not $env:THEOPTION_API_KEY) { $env:THEOPTION_API_KEY = [Environment]::GetEnvironmentVariable("THEOPTION_API_KEY", "User") }
+  if (-not $env:THEOPTION_API_KEY_REAL) { $env:THEOPTION_API_KEY_REAL = [Environment]::GetEnvironmentVariable("THEOPTION_API_KEY_REAL", "User") }
+  $a4 = @(if ($Mode -eq "live_settle") { "--settle" } elseif ($Mode -eq "live_plan") { "--plan" } else { "--out" })
+  if ($Mode -eq "live") { & python (Join-Path $here "to_live.py") 2>&1 | Out-File -Append -Encoding utf8 (Join-Path $here "run.log") }
+  else { & python (Join-Path $here "to_live.py") @a4 2>&1 | Out-File -Append -Encoding utf8 (Join-Path $here "run.log") }
+  Add-Content -Encoding UTF8 (Join-Path $here "run.log") "$(Get-Date -Format s) mode=$Mode exit=$LASTEXITCODE"
+  exit 0
+}
 if ($Mode -eq "tenbai" -or $Mode -eq "tenbai_once") {   # v0.9: 月曜 07:00 に ¥1,000×3 本を置き、転売情報を翌06:10まで30分ごとに記録、翌03:00 に 1 本転売(お試し口座)
   if (-not $env:THEOPTION_API_KEY) { $env:THEOPTION_API_KEY = [Environment]::GetEnvironmentVariable("THEOPTION_API_KEY", "User") }
   $a3 = @(if ($Mode -eq "tenbai_once") { "--once" } else { "--live-demo" })   # PS 5.1 の 1 要素配列対策で @() で包む。tenbai = 発注+転売の実測(お試し口座)
