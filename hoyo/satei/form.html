@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>引き継ぎ情報フォーム|メルル</title>
+<style>
+  :root {
+    --bg: #fff8fb; --card: #ffffff; --ink: #2b2230; --sub: #6d6075; --line: #f0dbe6;
+    --accent: #e8568f; --accent-ink: #ffffff; --soft: #fde8f1; --warn: #a15c00; --warn-bg: #fff4e0;
+    --ok: #1f7a52; --ok-bg: #e5f6ee; --ng: #b42335; --ng-bg: #fde7ea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1520; --card: #251d2b; --ink: #f4ecf7; --sub: #b9aac2; --line: #3b2f44;
+      --accent: #ff7aab; --accent-ink: #1b1520; --soft: #3a2533; --warn: #ffc56b; --warn-bg: #3a2c16;
+      --ok: #6fe0a8; --ok-bg: #173327; --ng: #ff8f9c; --ng-bg: #3a1b21;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.7 system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h2 { font-size: 17px; margin: 0 0 10px; }
+  .lead { color: var(--sub); margin: 0 0 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 16px; margin-bottom: 16px; }
+  label { display: block; font-size: 15px; margin-top: 12px; }
+  label:first-of-type { margin-top: 0; }
+  .hint { color: var(--sub); font-size: 13px; }
+  input[type=text], select, textarea { display: block; width: 100%; margin-top: 4px; padding: 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font: inherit; }
+  textarea { min-height: 80px; }
+  input[type=file] { max-width: 100%; margin-top: 6px; }
+  .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 10px; }
+  .thumbs img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); }
+  .agree { display: flex; gap: 10px; align-items: flex-start; background: var(--soft); border-radius: 10px; padding: 12px; margin: 0; }
+  .agree input { margin-top: 6px; accent-color: var(--accent); }
+  .btn { display: block; width: 100%; padding: 14px; border-radius: 10px; border: 0; background: var(--accent); color: var(--accent-ink); font: inherit; font-weight: 700; cursor: pointer; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .notice { background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+  .done { background: var(--ok-bg); color: var(--ok); border-radius: 10px; padding: 14px; font-weight: 700; text-align: center; }
+  .err { background: var(--ng-bg); color: var(--ng); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-top: 10px; }
+  a { color: var(--accent); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>引き継ぎ情報フォーム🌸</h1>
+  <p class="lead" id="lead">お取引の安全のため、アカウントについて分かる範囲でご記入ください。分からない項目は空欄で大丈夫です。</p>
+
+  <div id="state" class="notice" hidden></div>
+
+  <form id="f" hidden>
+    <div id="sections"></div>
+
+    <section class="card">
+      <h2>課金のレシート(任意・4枚まで)</h2>
+      <p class="hint" style="margin:0">最初の課金と直近の課金のレシートのスクショ(注文番号が見えるもの)をお願いします。お名前やカード番号は隠していただいて大丈夫です。</p>
+      <input type="file" id="files" accept="image/*" multiple />
+      <div class="thumbs" id="thumbs"></div>
+    </section>
+
+    <section class="card">
+      <p class="notice" style="margin:0 0 12px">ご記入いただいた情報は、お取引の確認と、アカウントの保全のためにのみ使用します。アカウントを次の方へお譲りする際は、取り戻しの申請に必要な情報(アカウント・登録情報・課金)だけを引き継ぎます。「ご本人の確認」の内容は引き継ぎません。</p>
+      <label class="agree"><input type="checkbox" id="agree" required /><span><a href="/torihiki/" target="_blank" rel="noopener">お取引ガイド</a>と利用規約(情報の引き継ぎを含む)に同意します</span></label>
+      <p class="hint">送信は1回だけです。送信後に直したい場合は、DM でお知らせください。</p>
+      <button class="btn" id="send">送信する</button>
+      <div class="err" id="err" hidden></div>
+    </section>
+  </form>
+
+  <div id="done" class="done" hidden>✅ 送信しました。ご協力ありがとうございます🌸<br />このあとは DM でご連絡いたします。</div>
+</main>
+
+<script type="module">
+import { SHEET, MAX_RECEIPTS } from "./lib/sheet.js";
+import { GAMES } from "./lib/games.js";
+const $ = (id) => document.getElementById(id);
+const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const token = new URLSearchParams(location.search).get("t") ?? "";
+let receipts = [];
+
+function show(msg) {
+  $("state").textContent = msg;
+  $("state").hidden = false;
+}
+
+$("sections").innerHTML = SHEET.map((s) => `<section class="card"><h2>${esc(s.title)}</h2>${s.fields
+  .map((f) => `<label>${esc(f.label)}${f.hint ? ` <span class="hint">${esc(f.hint)}</span>` : ""}${
+    f.options ? `<select data-k="${f.key}"><option value="">選んでください</option>${f.options.map((o) => `<option>${esc(o)}</option>`).join("")}</select>`
+    : f.long ? `<textarea data-k="${f.key}" maxlength="600"></textarea>`
+    : `<input type="text" data-k="${f.key}" maxlength="200" />`}</label>`)
+  .join("")}</section>`).join("");
+
+async function shrink(file) {
+  const bmp = await createImageBitmap(file);
+  const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.round(bmp.width * scale);
+  canvas.height = Math.round(bmp.height * scale);
+  canvas.getContext("2d").drawImage(bmp, 0, 0, canvas.width, canvas.height);
+  const url = canvas.toDataURL("image/jpeg", 0.85);
+  return { mime: "image/jpeg", data: url.split(",")[1], w: canvas.width, h: canvas.height, url };
+}
+$("files").addEventListener("change", async (e) => {
+  const files = [...e.target.files].slice(0, MAX_RECEIPTS);
+  receipts = await Promise.all(files.map(shrink));
+  $("thumbs").innerHTML = receipts.map((im) => `<img src="${im.url}" alt="">`).join("");
+});
+
+async function init() {
+  if (!/^[0-9a-f]{32}$/.test(token)) return show("リンクが正しくありません。DM でお送りしたリンクを、そのまま開いてください。");
+  try {
+    const d = await (await fetch(`${API}/api/form/${token}`)).json();
+    if (!d.ok) return show(d.error || "リンクが正しくありません");
+    if (d.submitted) return show("このフォームは送信済みです。ご協力ありがとうございました🌸 直したい点があれば DM でお知らせください。");
+    if (d.game) $("lead").textContent = `${GAMES[d.game] ?? ""}のアカウントについて、分かる範囲でご記入ください。分からない項目は空欄で大丈夫です。`;
+    $("f").hidden = false;
+  } catch {
+    show("読み込めませんでした。時間をおいて、もう一度開いてください。");
+  }
+}
+
+$("f").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const answers = { agree: $("agree").checked };
+  for (const el of document.querySelectorAll("[data-k]")) answers[el.dataset.k] = el.value;
+  $("send").disabled = true;
+  $("send").textContent = "送信中…";
+  $("err").hidden = true;
+  try {
+    const res = await fetch(`${API}/api/form/${token}`, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ answers, receipts: receipts.map(({ mime, data, w, h }) => ({ mime, data, w, h })) }),
+    });
+    const d = await res.json();
+    if (!d.ok) throw new Error(d.error || res.status);
+    $("f").hidden = true;
+    $("done").hidden = false;
+    scrollTo(0, 0);
+  } catch (err) {
+    $("err").textContent = `送信できませんでした(${err.message})。もう一度お試しいただくか、DM でお知らせください。`;
+    $("err").hidden = false;
+    $("send").disabled = false;
+    $("send").textContent = "送信する";
+  }
+});
+init();
+</script>
+</body>
+</html>

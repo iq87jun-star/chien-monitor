@@ -69,6 +69,7 @@
     <button type="button" data-tab="consign" aria-pressed="true">代理出品</button>
     <button type="button" data-tab="out" aria-pressed="false">利用記録</button>
     <button type="button" data-tab="tpls" aria-pressed="false">DMの定型文</button>
+    <button type="button" data-tab="sheets" aria-pressed="false">📝 引き継ぎ</button>
   </div>
 
   <section id="consign" hidden>
@@ -89,6 +90,19 @@
       </details>
     </div>
     <div id="items"></div>
+  </section>
+
+  <section id="sheets" hidden>
+    <div class="card">
+      <p class="muted" style="margin:0">売主に記入してもらう「引き継ぎ情報フォーム」のリンクを作ります。記入された内容は「シートを開く」から、売却先に渡す PDF にできます(「ご本人の確認」は載りません)。代理出品のカードの「📝 引き継ぎフォーム」からも作れます。</p>
+      <div class="grid2">
+        <label>メモ(例: 原神 5万で買取)<input id="s-label" /></label>
+        <label>ゲーム<select id="s-game"></select></label>
+        <label>管理番号(あれば)<input id="s-no" type="number" min="1" /></label>
+      </div>
+      <div class="row"><button type="button" id="s-add">リンクを作る</button></div>
+    </div>
+    <div id="sheetList"></div>
   </section>
 
   <section id="tpls" hidden>
@@ -130,6 +144,7 @@
 import { fillTemplate, CLOSED } from "./lib/dm.js";
 import { GAMES as GAME, xOf, ACCOUNTS, accountOf, gamesOf } from "./lib/games.js";
 import { HANDOVER, WATCH_DAYS, handoverLeft, cautionHit } from "./lib/stock.js";
+const FORM_URL = "https://game-souba.com/torihiki/form/?t=";
 const $ = (id) => document.getElementById(id);
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
 const KIND = { read: "読み取り", estimate: "査定", dm: "DM" };
@@ -141,6 +156,7 @@ const charsText = (cs) => cs.map((c) => `${c.name}${c.cons === 6 ? "完凸" : c.
 let token = "";
 let data = null; // { statuses, items, templates }
 let cautions = []; // 要注意リスト
+let sheets = []; // 引き継ぎ情報フォーム
 // 表示するアカウント(?acct=genshin|prop、無ければ前回の選択)。2つの管理画面で共通
 const ACCT_KEY = "satei:acct";
 let acct = new URLSearchParams(location.search).get("acct") ?? (() => { try { return localStorage.getItem(ACCT_KEY) ?? ""; } catch { return ""; } })();
@@ -150,12 +166,15 @@ $("acct").value = acct;
 const inAcct = (game) => !acct || accountOf(game) === acct;
 const gameOptions = () => gamesOf(acct).map((k) => `<option value="${k}">${GAME[k]}</option>`).join("");
 $("n-game").innerHTML = gameOptions();
+$("s-game").innerHTML = gameOptions();
 $("acct").addEventListener("change", async () => {
   acct = $("acct").value;
   try { localStorage.setItem(ACCT_KEY, acct); } catch {}
   $("n-game").innerHTML = gameOptions();
+  $("s-game").innerHTML = gameOptions();
   if (!data) return;
   renderConsign();
+  renderSheets();
   await loadStats().catch(() => {});
 });
 try { $("token").value = localStorage.getItem("satei:admin") ?? ""; } catch {}
@@ -195,7 +214,7 @@ function toast(msg) {
 // ── タブ ──
 function showTab(name) {
   for (const b of document.querySelectorAll("[data-tab]")) b.setAttribute("aria-pressed", String(b.dataset.tab === name));
-  for (const id of ["consign", "out", "tpls"]) $(id).hidden = id !== name;
+  for (const id of ["consign", "out", "tpls", "sheets"]) $(id).hidden = id !== name;
 }
 document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => showTab(b.dataset.tab)));
 
@@ -244,7 +263,7 @@ function renderConsign() {
       </div>
       <div class="row"><button type="button" data-act="save">保存</button></div>
       ${c.status === "成約" || c.handed_on ? safeBlock(c) : ""}
-      <div class="dms">${data.templates.map((t) => `<button type="button" data-act="dm" data-key="${esc(t.key)}">✉️ ${esc(t.title)}</button>`).join("")}</div>
+      <div class="dms"><button type="button" data-act="sheet">📝 引き継ぎフォーム${sheetMark(c.id)}</button>${data.templates.map((t) => `<button type="button" data-act="dm" data-key="${esc(t.key)}">✉️ ${esc(t.title)}</button>`).join("")}</div>
     </article>`;
     })
     .join("") || `<p class="muted">該当する人はいません</p>`;
@@ -271,8 +290,60 @@ $("items").addEventListener("change", async (e) => {
   } catch (err) { toast(`保存できませんでした(${err.message})`); }
 });
 
+// ── 引き継ぎ情報フォーム ──
+const sheetMark = (cid) => {
+  const s = sheets.find((x) => x.consign_id === cid);
+  return !s ? "" : s.submitted_at ? " ✅記入済み" : " (未記入)";
+};
+// DM に貼る文(リンク入り)を出す。記入済みならシートを開く
+function showSheetLink(s, c = null) {
+  if (s.submitted_at) return open(`sheet.html?id=${s.id}`, "_blank");
+  const head = c ? `【No.${c.id}】${c.name || (c.handle ? `@${c.handle}` : "お客")}様\n` : "";
+  $("dmTitle").textContent = `引き継ぎ情報フォーム #${s.id}`;
+  $("dmText").value = `${head}お取引の安全のため、こちらのフォームにアカウントの情報をご記入ください🌸\n分からない項目は空欄で大丈夫です。送信は1回だけです。\n${FORM_URL}${s.token}`;
+  dmTarget = c?.handle ? `@${c.handle}` : "相手";
+  $("dmHandle").hidden = true;
+  $("dmDialog").showModal();
+  copyText($("dmText").value).then(showCopied);
+}
+function renderSheets() {
+  const list = sheets.filter((s) => !s.game || inAcct(s.game));
+  $("sheetList").innerHTML = list
+    .map((s) => `<article class="card item" data-sheet="${s.id}"><header><b>#${s.id}</b>${s.consign_id ? `<span class="tag">No.${s.consign_id}</span>` : ""}${s.game ? `<span class="tag">${GAME[s.game] ?? esc(s.game)}</span>` : ""}<span>${esc(s.label)}</span>
+      <span class="tag${s.submitted_at ? " dm" : ""}">${s.submitted_at ? `記入済み ${jst(s.submitted_at)}` : "未記入"}</span><span class="muted">作成 ${jst(s.created_at)}</span></header>
+      <div class="row">${s.submitted_at ? `<a class="tag dm" style="padding:6px 12px;text-decoration:none" href="sheet.html?id=${s.id}" target="_blank" rel="noopener">📄 シートを開く</a>` : `<button type="button" data-sact="link">📋 リンクをコピー</button>`}
+        <button type="button" data-sact="del" style="background:var(--bg);color:var(--ink);border:1px solid var(--line)">削除</button></div></article>`)
+    .join("") || `<p class="muted">まだありません</p>`;
+}
+async function loadSheets() {
+  sheets = (await api("/api/sheet")).items;
+  renderSheets();
+}
+$("s-add").addEventListener("click", async () => {
+  try {
+    const d = await api("/api/sheet", { method: "POST", body: JSON.stringify({ label: $("s-label").value, game: $("s-game").value, consign_id: $("s-no").value || null }) });
+    $("s-label").value = $("s-no").value = "";
+    await loadSheets();
+    renderConsign();
+    showSheetLink(sheets.find((x) => x.id === d.id), data.items.find((x) => x.id === sheets.find((y) => y.id === d.id)?.consign_id));
+  } catch (err) { toast(`作れませんでした(${err.message})`); }
+});
+$("sheetList").addEventListener("click", async (e) => {
+  const btn = e.target.closest("button[data-sact]");
+  if (!btn) return;
+  const s = sheets.find((x) => x.id === Number(btn.closest("[data-sheet]").dataset.sheet));
+  if (btn.dataset.sact === "link") return showSheetLink(s, data.items.find((x) => x.id === s.consign_id));
+  if (!confirm(`#${s.id} を削除しますか?(記入された内容とレシートも消えます)`)) return;
+  try {
+    await api(`/api/sheet/${s.id}`, { method: "DELETE" });
+    await loadSheets();
+    renderConsign();
+  } catch (err) { toast(`削除できませんでした(${err.message})`); }
+});
+
 async function loadConsign() {
-  [data, cautions] = await Promise.all([api("/api/consign"), api("/api/caution").then((d) => d.items).catch(() => [])]);
+  [data, cautions, sheets] = await Promise.all([api("/api/consign"), api("/api/caution").then((d) => d.items).catch(() => []), api("/api/sheet").then((d) => d.items).catch(() => [])]);
+  renderSheets();
   $("filter").innerHTML = `<option value="">すべて(終わったもの以外)</option>` + data.statuses.map((s) => `<option>${s}</option>`).join("");
   renderConsign();
   renderTemplates();
@@ -291,6 +362,17 @@ $("items").addEventListener("click", async (e) => {
       toast(`No.${id} を引き渡し完了にしました`);
       await loadConsign();
     } catch (err) { toast(`できませんでした(${err.message})`); }
+    return;
+  }
+  if (btn.dataset.act === "sheet") {
+    const s = sheets.find((x) => x.consign_id === id);
+    if (s) return showSheetLink(s, c);
+    try {
+      const d = await api("/api/sheet", { method: "POST", body: JSON.stringify({ consign_id: id, game: c.game, label: c.name || (c.handle ? `@${c.handle}` : "") }) });
+      await loadSheets();
+      renderConsign();
+      showSheetLink(sheets.find((x) => x.id === d.id), c);
+    } catch (err) { toast(`作れませんでした(${err.message})`); }
     return;
   }
   if (btn.dataset.act === "save") {
