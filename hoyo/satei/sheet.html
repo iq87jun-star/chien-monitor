@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex, nofollow" />
 <title>引き継ぎ情報シート</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root { --bg:#fff8fb; --card:#fff; --ink:#2b2230; --sub:#6d6075; --line:#f0dbe6; --accent:#e8568f; }
   @media (prefers-color-scheme: dark) { :root { --bg:#1b1520; --card:#251d2b; --ink:#f4ecf7; --sub:#b9aac2; --line:#3b2f44; --accent:#ff7aab; } }
@@ -55,8 +57,9 @@
         <label class="muted"><input type="checkbox" id="internal" /> 当方の確認用(ご本人の確認)も表示</label>
       </div>
       <div class="row" style="margin-top:8px">
-        <button type="button" id="print">🖨 印刷・PDFで保存</button>
-        <span class="muted">スマホは共有 →「印刷」→ PDF で保存。売却先には「ご本人の確認」を外したまま渡してください。</span>
+        <button type="button" id="share">📤 PDFを作って送る</button>
+        <button type="button" id="print" style="background:var(--bg);color:var(--ink);border:1px solid var(--line)">🖨 印刷</button>
+        <span class="muted">「PDFを作って送る」で、X・LINE などにそのまま添付できます(保存だけの端末ではダウンロードされます)。売却先には「ご本人の確認」を外したまま渡してください。</span>
       </div>
     </div>
     <p class="muted" id="msg" style="margin:6px 0 0"></p>
@@ -84,6 +87,7 @@ async function load() {
   const d = await res.json();
   if (!d.ok) throw new Error(d.error || res.status);
   const s = d.sheet;
+  current = s;
   $("label").textContent = `シート #${s.id}${s.consign_id ? ` ・ No.${s.consign_id}` : ""}${s.label ? ` ・ ${s.label}` : ""}`;
   $("login").hidden = true;
   $("tools").hidden = false;
@@ -113,6 +117,48 @@ async function load() {
 
 $("internal").addEventListener("change", () => { if ($("internalBox")) $("internalBox").hidden = !$("internal").checked; });
 $("print").addEventListener("click", () => print());
+// シートを A4 の PDF にして、共有(スマホ)またはダウンロードする。画像として貼るので文字化けしない
+let current = null;
+async function makePdf() {
+  const paper = $("paper");
+  const canvas = await html2canvas(paper, { scale: 2, backgroundColor: "#ffffff", useCORS: true });
+  const pdf = new jspdf.jsPDF({ unit: "mm", format: "a4" });
+  const margin = 10, w = 210 - margin * 2, pageH = 297 - margin * 2;
+  const pxPerMm = canvas.width / w;
+  const slice = Math.floor(pageH * pxPerMm);
+  for (let y = 0, page = 0; y < canvas.height; y += slice, page++) {
+    const h = Math.min(slice, canvas.height - y);
+    const part = document.createElement("canvas");
+    part.width = canvas.width;
+    part.height = h;
+    part.getContext("2d").drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
+    if (page) pdf.addPage();
+    pdf.addImage(part.toDataURL("image/jpeg", 0.92), "JPEG", margin, margin, w, h / pxPerMm);
+  }
+  return new File([pdf.output("blob")], `引き継ぎ情報シート_${current?.game ? (GAMES[current.game] ?? "") + "_" : ""}${current?.id ?? ""}.pdf`, { type: "application/pdf" });
+}
+$("share").addEventListener("click", async () => {
+  $("share").disabled = true;
+  $("share").textContent = "PDFを作っています…";
+  try {
+    const file = await makePdf();
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({ files: [file], title: "引き継ぎ情報シート" }).catch(() => {});
+    } else {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(file);
+      a.download = file.name;
+      document.body.append(a);
+      a.click();
+      a.remove();
+      $("msg").textContent = "PDFをダウンロードしました。X・LINE などで添付して送ってください。";
+    }
+  } catch (err) {
+    $("msg").textContent = `PDFを作れませんでした(${err.message})。「🖨 印刷」から PDF で保存してください。`;
+  }
+  $("share").disabled = false;
+  $("share").textContent = "📤 PDFを作って送る";
+});
 $("login").addEventListener("submit", async (e) => {
   e.preventDefault();
   token = $("token").value;
