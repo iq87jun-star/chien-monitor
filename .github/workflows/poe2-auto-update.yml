@@ -84,6 +84,9 @@ jobs:
           cp satei/public/check.html site-dist/kaitori/index.html
           cp satei/public/check-model.json site-dist/kaitori/
           cp -r satei/public/lib site-dist/kaitori/lib
+          # 買取のお取引ガイド(流れ・確認事項・取り戻しへの対応)。game-souba.com/torihiki/
+          mkdir -p site-dist/torihiki
+          cp satei/public/guide.html site-dist/torihiki/index.html
 
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
