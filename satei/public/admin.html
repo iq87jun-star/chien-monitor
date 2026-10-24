@@ -100,7 +100,7 @@
         <label>ゲーム<select id="s-game"></select></label>
         <label>管理番号(あれば)<input id="s-no" type="number" min="1" /></label>
       </div>
-      <div class="row"><button type="button" id="s-add">リンクを作る</button></div>
+      <div class="row"><button type="button" id="s-add">リンクを作る</button><button type="button" id="s-kiyaku" style="background:var(--bg);color:var(--ink);border:1px solid var(--accent)">📄 利用規約PDFを送る</button></div>
     </div>
     <div id="sheetList"></div>
   </section>
@@ -145,6 +145,7 @@ import { fillTemplate, CLOSED } from "./lib/dm.js";
 import { GAMES as GAME, xOf, ACCOUNTS, accountOf, gamesOf } from "./lib/games.js";
 import { HANDOVER, WATCH_DAYS, handoverLeft, cautionHit } from "./lib/stock.js";
 const FORM_URL = "https://game-souba.com/torihiki/form/?t=";
+const KIYAKU_URL = "https://game-souba.com/torihiki/kiyaku.pdf";
 const $ = (id) => document.getElementById(id);
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
 const KIND = { read: "読み取り", estimate: "査定", dm: "DM" };
@@ -300,7 +301,7 @@ function showSheetLink(s, c = null) {
   if (s.submitted_at) return open(`sheet.html?id=${s.id}`, "_blank");
   const head = c ? `【No.${c.id}】${c.name || (c.handle ? `@${c.handle}` : "お客")}様\n` : "";
   $("dmTitle").textContent = `引き継ぎ情報フォーム #${s.id}`;
-  $("dmText").value = `${head}お取引の安全のため、こちらのフォームにアカウントの情報をご記入ください🌸\n分からない項目は空欄で大丈夫です。送信は1回だけです。\n${FORM_URL}${s.token}`;
+  $("dmText").value = `${head}お取引の安全のため、こちらのフォームにアカウントの情報をご記入ください🌸\n分からない項目は空欄で大丈夫です。送信は1回だけです。\n${FORM_URL}${s.token}\n\n利用規約はこちらです(PDF)。ご確認のうえ、フォームの同意欄にチェックをお願いします。\n${KIYAKU_URL}`;
   dmTarget = c?.handle ? `@${c.handle}` : "相手";
   $("dmHandle").hidden = true;
   $("dmDialog").showModal();
@@ -327,6 +328,22 @@ $("s-add").addEventListener("click", async () => {
     renderConsign();
     showSheetLink(sheets.find((x) => x.id === d.id), data.items.find((x) => x.id === sheets.find((y) => y.id === d.id)?.consign_id));
   } catch (err) { toast(`作れませんでした(${err.message})`); }
+});
+// 利用規約の PDF: スマホならファイルとして X・LINE などに添付、できなければリンク入りの文をコピー
+$("s-kiyaku").addEventListener("click", async () => {
+  const text = `お取引の利用規約をお送りします。ご確認のうえ、ご同意いただける場合は「利用規約に同意します」とご返信ください🌸\n${KIYAKU_URL}`;
+  try {
+    const file = new File([await (await fetch(KIYAKU_URL)).blob()], "メルル_アカウント買取_利用規約.pdf", { type: "application/pdf" });
+    if (navigator.canShare?.({ files: [file] })) return await navigator.share({ files: [file], text });
+  } catch (err) {
+    if (err?.name === "AbortError") return;
+  }
+  $("dmTitle").textContent = "利用規約PDF";
+  $("dmText").value = text;
+  dmTarget = "相手";
+  $("dmHandle").hidden = true;
+  $("dmDialog").showModal();
+  showCopied(await copyText(text));
 });
 $("sheetList").addEventListener("click", async (e) => {
   const btn = e.target.closest("button[data-sact]");
