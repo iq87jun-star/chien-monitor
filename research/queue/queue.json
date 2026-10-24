@@ -2400,6 +2400,102 @@
    "registered": "2026-10-21",
    "program": "docs/244 週次アイデア束 #1(CFD/先物)",
    "result": "2026-10-23 ユーザー「一旦先物からは手を引きます」(MFFU 2 口座が非活動規則で失格・docs/336 §25)。再開時に再登録"
+  },
+  {
+   "id": "Q150",
+   "slug": "ea11_dynk_sizing",
+   "title": "EA11(トパーズ)に Q131 の余裕比例サイジング(InpDynK・保持 20%)を実装",
+   "cells": 0,
+   "order": 17.51,
+   "note": "docs/349 §9f で採用した k 2.5 の受け皿。EA11 v1.16 を基に別ファイル v+0.01。EA8 v1.37 の dyn1 実装(InpDynK / InpKeepPct・資金化後のみ有効)を移植。既定は InpDynK=0(無効)にし、資金化の「完了」時に 2.5 を入力。Fintokei 規則(残高基準日次 5%・2.8% 全決済ガード)との整合を docs に書く。manifest・docs/241 は変更しない",
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)"
+  },
+  {
+   "id": "Q151",
+   "slug": "fn14166201_c6_ea",
+   "title": "FN 14166201 用 C6 EA(Mon CADJPY/CHFJPY + Mon GER40 ×0.5 + Roll ×1・FN 規則)",
+   "cells": 0,
+   "order": 17.52,
+   "note": "docs/371 Q97 の採用案。EA11 v1.16(指数 Mon の実装あり)を基に FN 用 v+0.01: InpMonLegs=CADJPY:0.5,CHFJPY:0.5・指数 Mon GER40 0.5・Roll(Sess)×1・Hold/BTC/ETH なし・InpMult 3.0・日次 3%・床 10%・P2 目標 5% のロック・FN の銘柄別名(GER40 の FN 表記を ResolveSymbol に)。P1 通過(10/30 見込み)後の「切替」で配備。manifest 不変",
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)"
+  },
+  {
+   "id": "Q152",
+   "slug": "portfolio_sim_c6_legs",
+   "title": "portfolio_sim に Mon CADJPY/CHFJPY・Mon GER40 のレグを追加し C6 を含む帳簿で期待値を再計算",
+   "cells": 0,
+   "order": 17.53,
+   "note": "docs/349 §9f の保留分。legs() に mon2_cadchf・mon_ger40 を追加し、FN 14166201 の funded を C6(mon2 3.0・ger40 1.5・roll 3.0)に置き換えた config で optimizer_daily と同じ MC を回し、現行(hold_uw 2.22・roll 4.5)と比較。config の更新は結果を見てから(「切替」不要・研究側のみ)",
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)"
+  },
+  {
+   "id": "Q153",
+   "slug": "payout_cycle_buffer",
+   "title": "出金サイクル(月次 / 隔週 / 毎日)×「+5% 残し」の失格率と出金額(docs/370 §5 A)",
+   "cells": 3,
+   "order": 17.54,
+   "note": "Q134(docs/352)の拡張。withdrawal_policy_mc.py の枠組みで、出金頻度 {21 営業日, 10, 1} × 残し 5% の 3 セル。指標 = 12 か月の失格率と出金合計(Q131 併用)。改良系ではなく診断(セルは数える)",
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)"
+  },
+  {
+   "id": "Q154",
+   "slug": "profit_split_addon_breakeven",
+   "title": "分配アドオン(FN Lite 95%・Fintokei +10%)の損益分岐(価格はユーザー入力)",
+   "cells": 0,
+   "order": 17.55,
+   "note": "docs/370 §5 B。現行 config の口座別・月次出金分布(portfolio_sim)から、分配 +5pt / +10pt の期待増分を算出し、アドオン価格との損益分岐(何か月で回収)を表にする。価格はユーザーが公式で確認して入力(未入力なら価格の関数で表示)",
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)"
+  },
+  {
+   "id": "Q155",
+   "slug": "ftmo_scaling_reach",
+   "title": "FTMO スケーリング(4 か月連続 +10% で残高 +25%・分配 90%)の到達確率",
+   "cells": 0,
+   "order": 17.56,
+   "note": "docs/370 §5 C。FTMO 50k ×2(本口座・EA8 ×6 dyn1 k1.5・EA3 ×6)の月次系列 MC で「4 か月連続 +10%」の 12 / 24 か月内到達確率と、到達時の期待出金増分。条件は FTMO 公式の文言を docs に転記(未確認なら仮定を明記)",
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)"
   }
  ],
  "runs": [
