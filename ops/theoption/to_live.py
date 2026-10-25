@@ -137,6 +137,13 @@ async def scan_contracts(wss, key, secs):
             except ValueError: pass
     return frames
 
+def keep_awake():
+    """実行中は Windows をスリープさせない(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)。"""
+    if os.name != "nt": return
+    try:
+        import ctypes; ctypes.windll.kernel32.SetThreadExecutionState(0x80000001)
+    except Exception: pass
+
 class Log:
     def __init__(self, path): self.path = path; os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     def write(self, kind, obj):
@@ -255,7 +262,7 @@ def main(argv=None):
         return 0
     if not key: log.say("API キーが無い"); return 2
     if not key_matches_account(account, key): log.say(f"キーが口座種別({account})に合わない → 終了"); log.write("guard", {"account": account, "iss": jwt_iss(key)}); return 3
-    log.say(f"v{VERSION} 口座={account}")
+    log.say(f"v{VERSION} 口座={account}"); keep_awake()
     return run_settle(account, key, a.out, log) if a.settle else run_entries(account, key, a.out, log, now)
 
 if __name__ == "__main__": sys.exit(main())

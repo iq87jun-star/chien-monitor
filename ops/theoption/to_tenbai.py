@@ -166,6 +166,13 @@ def snapshot(frames, known=None):
         except (TypeError, ValueError): t["depth_pip"] = None
     return trades
 
+def keep_awake():
+    """実行中は Windows をスリープさせない(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)。"""
+    if os.name != "nt": return
+    try:
+        import ctypes; ctypes.windll.kernel32.SetThreadExecutionState(0x80000001)
+    except Exception: pass
+
 class Log:
     def __init__(self, path): self.path = path; os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     def write(self, kind, obj):
@@ -228,6 +235,7 @@ def main(argv=None):
     now = dt.datetime.now(JST); log = Log(os.path.join(a.out, f"tenbai_demo_{now:%Y%m%d_%H%M}.jsonl"))
     if not key: log.say("環境変数 THEOPTION_API_KEY が無い"); return 2
     if not is_demo_key(key): log.say("キーがお試し用(iss=TheOptionDemo)ではない → 終了"); log.write("guard", {"iss": jwt_iss(key)}); return 3
+    keep_awake()
     st, h = rest("/trading/health", key); log.write("health", {"http": st, "body": h}); log.say("health:", st)
     if st != 200 or h.get("status") == "fail": log.say("health 失敗。終了"); return 1
     st, b = rest("/wallet/balance", key); log.write("balance", {"http": st, "body": b}); bal = deep_find(b, "balance"); log.say("balance:", bal)

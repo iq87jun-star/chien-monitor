@@ -87,6 +87,13 @@ def rest(base, path, key, timeout=15):
         except ValueError: return e.code, {"raw": body[:500]}
     except Exception as e: return None, {"error": repr(e)}
 
+def keep_awake():
+    """v1.0: 実行中は Windows をスリープさせない(ES_CONTINUOUS | ES_SYSTEM_REQUIRED)。WakeToRun で起きた後に再スリープするのを防ぐ。"""
+    if os.name != "nt": return
+    try:
+        import ctypes; ctypes.windll.kernel32.SetThreadExecutionState(0x80000001)
+    except Exception: pass
+
 class Recorder:
     """フレームを JSONL に保存し、対象契約の初出を数える。テストからも使う(ネットワーク不要)。"""
     def __init__(self, path):
@@ -141,6 +148,7 @@ def main(argv=None):
     ap.add_argument("--out", default=os.environ.get("THEOPTION_OUT") or os.path.join(HERE, "out")); a = ap.parse_args(argv)
     key = os.environ.get("THEOPTION_API_KEY", "").strip()
     if not key: print("環境変数 THEOPTION_API_KEY が無い(お試し用キーを入れる)"); return 2
+    keep_awake()
     try: ensure_tasks()
     except Exception as e: print("タスク確認に失敗(記録は続ける):", repr(e))
     base, wss = HOSTS[a.env]; now = dt.datetime.now(JST)
