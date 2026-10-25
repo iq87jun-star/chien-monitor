@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 10051,
+ "cumulative_cells": 10057,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2351,14 +2351,22 @@
    "cells": 6,
    "note": "docs/369: Roll の勝率は 2016〜17・2021 で逆向き、2018〜19・2022〜 で強い(金利差仮説)。金利差データ(FRED DGS2 と日本 2 年国債・Yahoo/FRED から取得、無ければ US 2 年のみ)で閾値 {1.0, 1.5, 2.0}% × {5 本等分, 本数別} = 6 セル。基準は改良系(IS・OOS 両方で Sharpe 改善 かつ 最悪月が悪化しない)。合格なら 11/1 改正案で 14166201 の Roll に停止条件を提案(EA の InpRollGate は別版)。",
    "order": 17.4,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/378_q147_roll_rate_diff_gate.md"
    ],
    "registered": "2026-10-21",
-   "program": "docs/244 週次アイデア束 #1(CFD/先物)"
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "改良成立 1/6(B 本数別・2.0%): IS Sharpe 1.21→2.02・最悪月 −0.47→−0.27、OOS 1.65→1.66(CADJPY 数週分・僅少)。他 5 セルは OOS 同値で不成立。前窓は全セルで −0.71→+0.0〜0.5。現局面(金利差 3%)では非拘束の保険。紙上 RollGateB2 追加。11/1 改正案: InpRollGatePct 2.0",
+   "runs": [
+    {
+     "date": "2026-10-26",
+     "summary": "docs/378(6 セル・成立 1・累積 10,057)"
+    }
+   ]
   },
   {
    "id": "Q148",
@@ -3703,6 +3711,13 @@
    "item": "Q146",
    "cells": 8,
    "doc": "docs/377_q146_month_end_london_fix.md"
+  },
+  {
+   "date": "2026-10-26",
+   "slot": "morning",
+   "item": "Q147",
+   "cells": 6,
+   "doc": "docs/378_q147_roll_rate_diff_gate.md"
   }
  ],
  "external_checks": [
