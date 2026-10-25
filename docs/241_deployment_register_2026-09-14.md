@@ -231,3 +231,5 @@ MC(docs/349 §6c): 1-Step 81 / 19%・+2σ 2027-05-19、宝くじ 48 / 52%・2027
 | Fintokei トパーズ 6104739 | EA11 v1.15 → **v1.16** |
 配備先は自宅 PC(docs/328 §9p。10/23 07:00 JST の status.json: 10 端末 ok・各 1 EA・HALT 0・531407058 は建玉 0)。毎時タスクがコンパイル → 装着 → 端末再起動(deploy 1.9a・/portable)で反映。建玉は同 Magic で引き継ぐ。反映確認は次回の status.json の `attached_eas` と `[INIT` で行う。
 【§1ac 反映確認 2026-10-24 07:00 JST】status.json の `attached_eas` が 10 口座とも v+0.01(EA8 v1.38 / EA3 v1.20 / EA10L v1.06 / EA9 v1.05 / Instant G v1.17 / 14074882 v1.11 / 14166201 v1.36 / パール v1.11 / ルビー v1.05 / EA11 v1.16)。521100397 の ea_log_extract に 10/23 08:00:17 JST `[INIT RecentFit] … v1.38 (GBPJPY,H1)` あり = 毎時タスクの初回で再起動・反映。HALT 0。
+
+### 1ad.【2026-10-26 ユーザー「切替」】FN 14166201: v1.36 → **v1.37**(Roll 金利差門 `InpRollMinCarryPp` 1.0 → 2.0pp・docs/378 Q147)。ロジック・倍率(Hold ×2.22・Roll ×4.5)・Magic 不変。政策金利表 `InpRollRates` は現行値(USD 3.75 / JPY 0.75 / EUR 2.00 / GBP 3.75 / AUD 3.60 / CAD 2.25)のまま → **CADJPY(差 1.5)は門で止まり、水曜の Roll は 4 本**(各本の名目は不変・docs/378 §2 の B 2.0 と同じ挙動)。manifest ensure を v1.37・remove に v1.36。毎時タスクで反映(次の水曜 10/28 20 UTC が初回)。トパーズ EA11 は Roll 停止中(InpSessEnable=false)のため変更なし。金利表は月次改正(毎月 1 日)で更新する。
