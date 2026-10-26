@@ -2416,14 +2416,22 @@
    "cells": 0,
    "order": 17.51,
    "note": "docs/349 §9f で採用した k 2.5 の受け皿。EA11 v1.16 を基に別ファイル v+0.01。EA8 v1.37 の dyn1 実装(InpDynK / InpKeepPct・資金化後のみ有効)を移植。既定は InpDynK=0(無効)にし、資金化の「完了」時に 2.5 を入力。Fintokei 規則(残高基準日次 5%・2.8% 全決済ガード)との整合を docs に書く。manifest・docs/241 は変更しない",
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/379_q150_ea11_dynk_sizing.md"
    ],
    "registered": "2026-10-25",
-   "program": "docs/244 週次アイデア束 #2(CFD)"
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "EA11 v1.17 dyn1 を別ファイルで作成(InpDynK 既定 0・InpKeepPct 20・4 か所の名目に DynFactor・OnTick に PAYOUT ログ)。EA8 v1.37 と同一実装。配備は「切替」後、k 2.5 は資金化後(Q136 の再計算を添える)",
+   "runs": [
+    {
+     "date": "2026-10-26",
+     "summary": "docs/379(工学・セル 0・v1.17 dyn1)"
+    }
+   ]
   },
   {
    "id": "Q151",
@@ -3718,6 +3726,13 @@
    "item": "Q147",
    "cells": 6,
    "doc": "docs/378_q147_roll_rate_diff_gate.md"
+  },
+  {
+   "date": "2026-10-26",
+   "slot": "evening",
+   "item": "Q150",
+   "cells": 0,
+   "doc": "docs/379_q150_ea11_dynk_sizing.md"
   }
  ],
  "external_checks": [
