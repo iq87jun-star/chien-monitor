@@ -144,6 +144,7 @@
 import { fillTemplate, CLOSED } from "./lib/dm.js";
 import { GAMES as GAME, xOf, ACCOUNTS, accountOf, gamesOf } from "./lib/games.js";
 import { HANDOVER, WATCH_DAYS, handoverLeft, cautionHit } from "./lib/stock.js";
+import { coverField, bindCovers, loadCoverImages } from "./lib/cover.js";
 const FORM_URL = "https://game-souba.com/torihiki/form/?t=";
 const KIYAKU_URL = "https://game-souba.com/torihiki/kiyaku.pdf";
 const $ = (id) => document.getElementById(id);
@@ -158,6 +159,8 @@ let token = "";
 let data = null; // { statuses, items, templates }
 let cautions = []; // 要注意リスト
 let sheets = []; // 引き継ぎ情報フォーム
+let covers = []; // 在庫一覧の表紙
+const authFetch = (path, init = {}) => fetch(`${API}${path}`, { ...init, headers: { authorization: `Bearer ${token}`, "content-type": "application/json" } });
 // 表示するアカウント(?acct=genshin|prop、無ければ前回の選択)。2つの管理画面で共通
 const ACCT_KEY = "satei:acct";
 let acct = new URLSearchParams(location.search).get("acct") ?? (() => { try { return localStorage.getItem(ACCT_KEY) ?? ""; } catch { return ""; } })();
@@ -265,12 +268,14 @@ function renderConsign() {
         <label>🌐 公開する価格(円・空欄なら「お問い合わせ」)<input data-f="pub_price" type="number" min="0" step="1000" value="${c.pub_price ?? ""}" /></label>
         <label>🌐 お客様向けの説明<input data-f="pub_note" value="${esc(c.pub_note)}" maxlength="300" /></label>
       </div>
+      ${coverField("consign", c.id, covers.find((x) => x.owner === "cover_consign" && x.owner_id === c.id)?.id)}
       <div class="row"><button type="button" data-act="save">保存</button></div>
       ${c.status === "成約" || c.handed_on ? safeBlock(c) : ""}
       <div class="dms"><button type="button" data-act="sheet">📝 引き継ぎフォーム${sheetMark(c.id)}</button>${data.templates.map((t) => `<button type="button" data-act="dm" data-key="${esc(t.key)}">✉️ ${esc(t.title)}</button>`).join("")}</div>
     </article>`;
     })
     .join("") || `<p class="muted">該当する人はいません</p>`;
+  loadCoverImages($("items"), authFetch);
 }
 // 引き渡し前の詐欺対策チェックと、引き渡し後の見守り(在庫の管理画面と同じ)
 function safeBlock(c) {
@@ -362,13 +367,14 @@ $("sheetList").addEventListener("click", async (e) => {
 });
 
 async function loadConsign() {
-  [data, cautions, sheets] = await Promise.all([api("/api/consign"), api("/api/caution").then((d) => d.items).catch(() => []), api("/api/sheet").then((d) => d.items).catch(() => [])]);
+  [data, cautions, sheets, covers] = await Promise.all([api("/api/consign"), api("/api/caution").then((d) => d.items).catch(() => []), api("/api/sheet").then((d) => d.items).catch(() => []), api("/api/cover").then((d) => d.items).catch(() => [])]);
   renderSheets();
   $("filter").innerHTML = `<option value="">すべて(終わったもの以外)</option>` + data.statuses.map((s) => `<option>${s}</option>`).join("");
   renderConsign();
   renderTemplates();
 }
 $("filter").addEventListener("change", renderConsign);
+bindCovers($("items"), authFetch, loadConsign, toast);
 $("items").addEventListener("click", async (e) => {
   const btn = e.target.closest("button[data-act]");
   if (!btn) return;
