@@ -2440,14 +2440,22 @@
    "cells": 0,
    "order": 17.52,
    "note": "docs/371 Q97 の採用案。EA11 v1.16(指数 Mon の実装あり)を基に FN 用 v+0.01: InpMonLegs=CADJPY:0.5,CHFJPY:0.5・指数 Mon GER40 0.5・Roll(Sess)×1・Hold/BTC/ETH なし・InpMult 3.0・日次 3%・床 10%・P2 目標 5% のロック・FN の銘柄別名(GER40 の FN 表記を ResolveSymbol に)。P1 通過(10/30 見込み)後の「切替」で配備。manifest 不変",
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/380_q151_fn14166201_c6_ea.md"
    ],
    "registered": "2026-10-25",
-   "program": "docs/244 週次アイデア束 #2(CFD)"
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "EA11C6 v1.00 を別ファイルで作成(EA11 v1.17 dyn1 基・Mon CADJPY/CHFJPY/GER40 ×3.0・Roll ×3.0 門 2.0・日次 3%・床 9.8・P2 ロック 4.9/5.05/5.1・Magic 943600・GER40 別名追加)。配備は P1 通過後の「切替」。GER40 の FN 銘柄名/point と FN 書面の確認が前提",
+   "runs": [
+    {
+     "date": "2026-10-27",
+     "summary": "docs/380(工学・セル 0・EA11C6 v1.00)"
+    }
+   ]
   },
   {
    "id": "Q152",
@@ -3733,6 +3741,13 @@
    "item": "Q150",
    "cells": 0,
    "doc": "docs/379_q150_ea11_dynk_sizing.md"
+  },
+  {
+   "date": "2026-10-27",
+   "slot": "morning",
+   "item": "Q151",
+   "cells": 0,
+   "doc": "docs/380_q151_fn14166201_c6_ea.md"
   }
  ],
  "external_checks": [
