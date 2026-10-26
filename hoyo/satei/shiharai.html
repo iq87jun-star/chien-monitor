@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<meta name="color-scheme" content="light" />
+<title>お支払い状況|メルル</title>
+<style>
+  :root {
+    --bg: #fff9fc; --card: #ffffff; --ink: #2a2230; --sub: #6b5f72; --line: #f3dde8;
+    --accent: #ec4f8c; --accent-ink: #ffffff; --soft: #ffeef5; --ok: #157a4c; --ok-bg: #dff7ea; --warn: #b3261e; --warn-bg: #fde8e7; --next-bg: #fff6d9;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: linear-gradient(180deg, #ffeef6 0, var(--bg) 240px); color: var(--ink); font: 16px/1.7 system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 22px; margin: 0 0 2px; }
+  h2 { font-size: 17px; margin: 0 0 10px; }
+  .lead { color: var(--sub); margin: 0 0 16px; font-size: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(236, 79, 140, .06); }
+  .sum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+  .sum div { background: var(--soft); border-radius: 12px; padding: 10px 4px; }
+  .sum small { display: block; color: var(--sub); font-size: 12px; }
+  .sum b { font-size: 18px; font-variant-numeric: tabular-nums; }
+  .bar { height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; margin-top: 12px; }
+  .bar i { display: block; height: 100%; background: linear-gradient(90deg, #ff8fb8, var(--accent)); }
+  .count { text-align: right; color: var(--sub); font-size: 13px; margin: 4px 0 0; }
+  .next { background: var(--next-bg); border-radius: 12px; padding: 12px 14px; }
+  .next.late { background: var(--warn-bg); color: var(--warn); }
+  .next b { font-size: 20px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  th, td { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { color: var(--sub); font-size: 13px; font-weight: 600; }
+  td.r, th.r { text-align: right; }
+  .st { font-size: 12px; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+  .st.paid { background: var(--ok-bg); color: var(--ok); }
+  .st.late { background: var(--warn-bg); color: var(--warn); }
+  .st.next { background: var(--next-bg); color: #8a5a00; }
+  .st.later { background: #f1edf3; color: var(--sub); }
+  .chat { max-height: 420px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 4px 2px; }
+  .msg { max-width: 85%; display: flex; flex-direction: column; }
+  .msg span { padding: 8px 12px; border-radius: 14px; white-space: pre-wrap; word-break: break-word; }
+  .msg small { font-size: 11px; color: var(--sub); margin-top: 2px; }
+  .msg.me { align-self: flex-start; } .msg.me span { background: var(--soft); }
+  .msg.you { align-self: flex-end; text-align: right; } .msg.you span { background: var(--accent); color: var(--accent-ink); }
+  .send { display: flex; gap: 8px; margin-top: 10px; }
+  textarea { flex: 1; min-height: 48px; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); font: inherit; resize: vertical; }
+  button { padding: 10px 16px; border-radius: 10px; border: 0; background: var(--accent); color: var(--accent-ink); font: inherit; font-weight: 700; cursor: pointer; }
+  button:disabled { opacity: .5; }
+  .muted { color: var(--sub); font-size: 13px; }
+  .err { background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 12px; }
+  .info { font-size: 14px; color: var(--sub); }
+  .info a { color: var(--accent); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>お支払い状況🌸</h1>
+  <p class="lead" id="who">読み込み中…</p>
+  <div id="error" class="err" hidden></div>
+
+  <div id="view" hidden>
+    <section class="card">
+      <div class="sum">
+        <div><small>お支払い済み</small><b id="paid"></b></div>
+        <div><small>残り</small><b id="remaining"></b></div>
+        <div><small>総額</small><b id="total"></b></div>
+      </div>
+      <div class="bar"><i id="bar"></i></div>
+      <p class="count" id="count"></p>
+    </section>
+
+    <section class="card" id="nextBox">
+      <h2>次のお支払い</h2>
+      <div class="next" id="next"></div>
+      <p class="muted" style="margin:8px 0 0">お支払いは PayPay でお願いします。お振り込み後は、下のメッセージ欄か DM でお知らせください。</p>
+    </section>
+
+    <section class="card">
+      <h2>お支払いの予定</h2>
+      <table><thead><tr><th>回</th><th>期日</th><th class="r">金額</th><th class="r">状況</th></tr></thead><tbody id="pays"></tbody></table>
+    </section>
+
+    <section class="card">
+      <h2>💬 メルルへのメッセージ</h2>
+      <div class="chat" id="chat"></div>
+      <div class="send">
+        <textarea id="text" maxlength="1000" placeholder="お支払いのご連絡・ご相談など"></textarea>
+        <button id="sendBtn">送信</button>
+      </div>
+      <p class="muted" id="sendMsg" style="margin:6px 0 0">メルルが確認しだいお返事します。お急ぎの場合は X の DM でもご連絡ください。</p>
+    </section>
+
+    <p class="info">このページはお客様専用です。リンクは他の方に共有しないでください。お取引の流れは <a href="/torihiki/">お取引ガイド</a> をご覧ください。</p>
+  </div>
+</main>
+
+<script type="module">
+import { GAMES } from "./lib/games.js";
+const $ = (id) => document.getElementById(id);
+const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const yen = (v) => `${Number(v ?? 0).toLocaleString("ja-JP")}円`;
+const ymd = (d) => { const [y, m, dd] = d.split("-"); return `${Number(m)}月${Number(dd)}日`; };
+const dayDiff = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 86400_000);
+const token = new URLSearchParams(location.search).get("t") ?? "";
+let lastMsgs = "";
+
+function fail(msg) {
+  $("who").textContent = "";
+  $("error").textContent = msg;
+  $("error").hidden = false;
+  $("view").hidden = true;
+}
+function renderChat(msgs) {
+  const key = JSON.stringify(msgs.map((m) => m.at));
+  if (key === lastMsgs) return;
+  lastMsgs = key;
+  const at = (s) => new Date(s).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  $("chat").innerHTML = msgs.map((m) => `<div class="msg ${m.from_me ? "me" : "you"}"><span>${esc(m.body)}</span><small>${m.from_me ? "メルル" : "あなた"} ・ ${at(m.at)}</small></div>`).join("")
+    || `<p class="muted">まだメッセージはありません。お支払いのご連絡やご質問があればどうぞ。</p>`;
+  $("chat").scrollTop = $("chat").scrollHeight;
+}
+function render(d) {
+  $("who").textContent = `${d.buyer}様 ・ ${GAMES[d.game] ?? ""}アカウントの分割払い`;
+  $("paid").textContent = yen(d.paid);
+  $("remaining").textContent = yen(d.remaining);
+  $("total").textContent = yen(d.total);
+  $("bar").style.width = `${Math.min(100, Math.round((d.paid / d.total) * 100))}%`;
+  $("count").textContent = `${d.count[0]} / ${d.count[1]} 回お支払い済み`;
+  if (d.next) {
+    const left = dayDiff(d.today, d.next.due_on);
+    $("next").className = `next${left < 0 ? " late" : ""}`;
+    $("next").innerHTML = `<b>${ymd(d.next.due_on)}</b> までに <b>${yen(d.next.amount)}</b><br>${left < 0 ? `期日を ${-left}日過ぎています。お早めにお支払いをお願いします。` : left === 0 ? "本日が期日です。" : `あと ${left}日`}`;
+    $("nextBox").hidden = false;
+  } else {
+    $("next").className = "next";
+    $("next").innerHTML = d.remaining > 0 ? "次のお支払い予定はまだ登録されていません。" : "<b>お支払いはすべて完了しています🎉</b><br>ありがとうございました。";
+  }
+  const firstOpen = d.pays.findIndex((p) => !p.paid_on);
+  $("pays").innerHTML = d.pays.map((p, i) => {
+    const st = p.paid_on ? ["paid", `済み ${ymd(p.paid_on)}`] : p.due_on < d.today ? ["late", "期日超過"] : i === firstOpen ? ["next", "次回"] : ["later", "予定"];
+    return `<tr><td>${i + 1}</td><td>${ymd(p.due_on)}</td><td class="r">${yen(p.amount)}</td><td class="r"><span class="st ${st[0]}">${st[1]}</span></td></tr>`;
+  }).join("") || `<tr><td colspan="4" class="muted">予定はまだ登録されていません</td></tr>`;
+  renderChat(d.msgs);
+  $("view").hidden = false;
+}
+async function load() {
+  const res = await fetch(`${API}/api/portal/${token}`);
+  const d = await res.json();
+  if (!d.ok) throw new Error(d.error || res.status);
+  render(d);
+}
+
+$("sendBtn").addEventListener("click", async () => {
+  const body = $("text").value.trim();
+  if (!body) return;
+  $("sendBtn").disabled = true;
+  try {
+    const d = await (await fetch(`${API}/api/portal/${token}/msg`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ body }) })).json();
+    if (!d.ok) throw new Error(d.error);
+    $("text").value = "";
+    $("sendMsg").textContent = "送信しました。メルルが確認しだいお返事します。";
+    await load();
+  } catch (err) {
+    $("sendMsg").textContent = `送れませんでした(${err.message})`;
+  }
+  $("sendBtn").disabled = false;
+});
+
+if (!/^[0-9a-f]{32}$/.test(token)) fail("リンクが正しくありません。メルルからお送りしたリンクを、そのまま開いてください。");
+else {
+  load().catch((err) => fail(`読み込めませんでした(${err.message})。リンクをご確認ください。`));
+  // 開いている間は30秒ごとに新しいメッセージを確認する
+  setInterval(() => { if (document.visibilityState === "visible") load().catch(() => {}); }, 30_000);
+}
+</script>
+</body>
+</html>
