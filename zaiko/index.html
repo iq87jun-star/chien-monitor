@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7LZS5DCBSG"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-7LZS5DCBSG');</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>在庫一覧|メルル</title>
+<meta name="description" content="メルルが販売中のゲームアカウント(原神・スターレイルなど)と、代理出品中のアカウントの一覧です。お問い合わせは X の DM で受け付けています。" />
+<meta property="og:title" content="メルル|販売中のアカウント一覧" />
+<meta property="og:description" content="メルルの在庫と代理出品中のアカウントをまとめています。" />
+<meta name="twitter:card" content="summary" />
+<link rel="canonical" href="https://game-souba.com/zaiko/" />
+<meta property="og:url" content="https://game-souba.com/zaiko/" />
+<style>
+  :root {
+    --bg: #fff8fb; --card: #ffffff; --ink: #2b2230; --sub: #6d6075; --line: #f0dbe6;
+    --accent: #e8568f; --accent-ink: #ffffff; --soft: #fde8f1; --gold: #a86b00; --gold-bg: #fff3d6;
+    --ok: #1f7a52; --ok-bg: #e5f6ee; --warn: #a15c00; --warn-bg: #fff4e0; --mute-bg: #eee8ee;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1520; --card: #251d2b; --ink: #f4ecf7; --sub: #b9aac2; --line: #3b2f44;
+      --accent: #ff7aab; --accent-ink: #1b1520; --soft: #3a2533; --gold: #ffcf6b; --gold-bg: #3a2f16;
+      --ok: #6fe0a8; --ok-bg: #173327; --warn: #ffc56b; --warn-bg: #3a2c16; --mute-bg: #332a38;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.7 system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  .lead { color: var(--sub); margin: 0 0 16px; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+  .tabs button { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; }
+  .tabs button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  .card.sold { opacity: .6; }
+  .head { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .tag { display: inline-block; font-size: 12px; padding: 2px 10px; border-radius: 999px; background: var(--soft); }
+  .tag.kind { background: var(--accent); color: var(--accent-ink); font-weight: 700; }
+  .tag.販売中 { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+  .tag.商談中 { background: var(--warn-bg); color: var(--warn); font-weight: 700; }
+  .tag.売約済み { background: var(--mute-bg); color: var(--sub); font-weight: 700; }
+  .price { font-size: 28px; font-weight: 800; color: var(--accent); margin: 6px 0 2px; letter-spacing: .02em; }
+  .price small { font-size: 14px; color: var(--sub); font-weight: 400; }
+  .chips { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .chip { font-size: 13px; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--line); }
+  .chip.c6 { background: var(--gold-bg); color: var(--gold); border-color: transparent; font-weight: 700; }
+  .more { font-size: 13px; color: var(--accent); background: none; border: 0; padding: 2px 4px; cursor: pointer; font: inherit; }
+  .assets, .note { font-size: 14px; color: var(--sub); margin: 8px 0 0; }
+  .note { color: var(--ink); white-space: pre-wrap; }
+  .imgs { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 6px; margin-top: 10px; }
+  .imgs img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; border: 1px solid var(--line); cursor: zoom-in; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .btn { flex: 1 1 160px; display: inline-block; padding: 10px 14px; border-radius: 10px; border: 0; background: var(--accent); color: var(--accent-ink); font: inherit; font-weight: 700; text-align: center; text-decoration: none; cursor: pointer; }
+  .btn.sub { background: var(--soft); color: var(--ink); }
+  .empty { color: var(--sub); text-align: center; padding: 32px 0; }
+  .info { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; font-size: 14px; color: var(--sub); }
+  .info a, footer a { color: var(--accent); }
+  dialog { border: 0; padding: 0; background: transparent; max-width: 96vw; max-height: 96vh; }
+  dialog::backdrop { background: rgba(0,0,0,.8); }
+  dialog img { max-width: 96vw; max-height: 90vh; display: block; border-radius: 8px; }
+  .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 10px; font-size: 14px; }
+  footer { color: var(--sub); font-size: 13px; margin-top: 24px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>メルルの在庫一覧🌸</h1>
+  <p class="lead">メルルが販売しているアカウントと、代理出品中のアカウントです。気になるものがあれば、番号を添えて X の DM でお問い合わせください。</p>
+
+  <div class="tabs" id="tabs" role="group" aria-label="ゲーム"></div>
+  <div id="list"><p class="empty">読み込み中…</p></div>
+
+  <div class="info">
+    <b>ご購入について</b><br />
+    ・「メルルの在庫」はメルルが買い取ったアカウント、「代理出品」は持ち主の方に代わってメルルが販売するアカウントです。<br />
+    ・お支払い・お引き渡しの流れは <a href="/torihiki/">お取引ガイド</a> をご覧ください。分割払いのご相談も受け付けています。<br />
+    ・価格は変わることがあります。最新の状況は DM でお問い合わせください。
+  </div>
+
+  <footer>当サイトは各ゲームの運営会社とは関係のない非公式サイトです。アカウントの売買は各ゲームの規約で禁止されている場合があります。</footer>
+</main>
+<dialog id="zoom"><img id="zoomImg" alt="" /></dialog>
+
+<script type="module">
+import { GAMES, xOf } from "./lib/games.js";
+const $ = (id) => document.getElementById(id);
+const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+const yen = (v) => `¥${Number(v).toLocaleString("ja-JP")}`;
+const SHOW = 12; // キャラは最初にこの数だけ出す
+// 星5キャラの一覧を持っているゲーム(グラブル・ウマ娘・第五人格は項目の数なので「星5 ○体」を出さない)
+const STAR5 = new Set(["genshin-impact", "houkaistarrail", "zzz", "wutheringwaves"]);
+let items = [];
+let game = new URLSearchParams(location.search).get("game") ?? "";
+
+const label = (it) => `${it.kind === "stock" ? "在庫" : "代理出品"} No.${it.no}`;
+function chip(c) {
+  const cons = c.cons === 6 ? "完凸" : c.cons ? `${c.cons}凸` : "";
+  return `<span class="chip${c.cons === 6 ? " c6" : ""}">${esc(c.name)}${cons ? ` ${cons}` : ""}${c.mochi ? "+餅" : ""}</span>`;
+}
+function card(it) {
+  const cs = [...it.chars].sort((a, b) => b.cons - a.cons || Number(b.mochi) - Number(a.mochi));
+  const c6 = cs.filter((c) => c.cons === 6).length;
+  return `<article class="card${it.state === "売約済み" ? " sold" : ""}" data-key="${it.kind}-${it.no}">
+    <div class="head"><span class="tag kind">${it.kind === "stock" ? "メルルの在庫" : "代理出品"}</span><span class="tag">${esc(GAMES[it.game] ?? it.game)}</span><span class="tag ${esc(it.state)}">${esc(it.state)}</span><span class="tag">No.${it.no}</span></div>
+    <p class="price">${it.price ? `${yen(it.price)}` : `<small>価格はお問い合わせください</small>`}</p>
+    ${cs.length ? `${STAR5.has(it.game) ? `<p class="assets" style="margin-top:2px">星5 ${cs.length}体${c6 ? `・完凸 ${c6}体` : ""}</p>` : ""}
+    <div class="chips">${cs.slice(0, SHOW).map(chip).join("")}${cs.length > SHOW ? `<button class="more" data-more>ほか ${cs.length - SHOW}体を見る</button><span hidden data-rest>${cs.slice(SHOW).map(chip).join("")}</span>` : ""}</div>` : ""}
+    ${it.assets ? `<p class="assets">${esc(it.assets)}</p>` : ""}
+    ${it.note ? `<p class="note">${esc(it.note)}</p>` : ""}
+    ${it.images.length ? `<div class="imgs">${it.images.map((id) => `<img src="${API}/api/catalog/image/${id}" alt="${esc(label(it))} のスクショ" loading="lazy" />`).join("")}</div>` : ""}
+    ${it.state === "売約済み" ? "" : `<div class="row">
+      <button class="btn" data-ask>✉️ DM で問い合わせる</button>
+      ${it.post_url ? `<a class="btn sub" href="${esc(it.post_url)}" target="_blank" rel="noopener">紹介ポストを見る</a>` : ""}
+    </div>`}
+  </article>`;
+}
+function render() {
+  const games = [...new Set(items.map((it) => it.game))];
+  if (game && !games.includes(game)) game = "";
+  $("tabs").innerHTML = [["", "すべて"], ...games.map((g) => [g, GAMES[g] ?? g])]
+    .map(([k, v]) => `<button type="button" data-game="${esc(k)}" aria-pressed="${k === game}">${esc(v)}${k ? ` ${items.filter((it) => it.game === k && it.state !== "売約済み").length}` : ""}</button>`)
+    .join("");
+  const list = items.filter((it) => !game || it.game === game);
+  $("list").innerHTML = list.map(card).join("") || `<p class="empty">いま掲載中のアカウントはありません。ご希望のキャラがあれば DM でご相談ください。</p>`;
+}
+function toast(msg) {
+  const t = document.createElement("div");
+  t.className = "toast";
+  t.textContent = msg;
+  document.body.append(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+$("tabs").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-game]");
+  if (!b) return;
+  game = b.dataset.game;
+  history.replaceState(null, "", game ? `?game=${game}` : location.pathname);
+  render();
+});
+$("list").addEventListener("click", async (e) => {
+  const more = e.target.closest("[data-more]");
+  if (more) {
+    more.nextElementSibling.hidden = false;
+    more.remove();
+    return;
+  }
+  const img = e.target.closest(".imgs img");
+  if (img) {
+    $("zoomImg").src = img.src;
+    $("zoom").showModal();
+    return;
+  }
+  if (!e.target.closest("[data-ask]")) return;
+  // 番号入りの文をコピーして、窓口の X を開く
+  const it = items.find((x) => `${x.kind}-${x.no}` === e.target.closest("[data-key]").dataset.key);
+  const text = `メルルさんの在庫一覧を見ました。${label(it)}(${GAMES[it.game] ?? ""})について詳しく教えてください。`;
+  try { await navigator.clipboard.writeText(text); toast("問い合わせ文をコピーしました。X の DM に貼り付けて送ってください"); } catch {}
+  open(`https://x.com/${xOf(it.game)}`, "_blank", "noopener");
+});
+$("zoom").addEventListener("click", () => $("zoom").close());
+
+try {
+  const d = await (await fetch(`${API}/api/catalog`)).json();
+  if (!d.ok) throw new Error(d.error);
+  items = d.items;
+  render();
+} catch {
+  $("list").innerHTML = `<p class="empty">読み込めませんでした。時間をおいて開き直してください。</p>`;
+}
+</script>
+</body>
+</html>

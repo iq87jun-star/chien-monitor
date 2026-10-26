@@ -1,0 +1,143 @@
+// 在庫と分割払いの計算(管理画面と Worker で共通)。日付はすべて日本時間の YYYY-MM-DD
+export const STOCK_STATUSES = ["未出品", "出品中", "商談中", "売却済み"];
+export const SPLIT_STATUSES = ["支払い中", "完済", "引き渡し済み", "中止"];
+export const WANT_STATUSES = ["希望中", "提案済み", "成約", "見送り"];
+export const SITES = ["ゲームトレード", "ゲームクラブ", "ならむ鯖", "ぱるる鯖", "X", "その他"];
+// 引き渡し前の詐欺対策チェック(在庫・分割・代理出品で共通)。全部そろうまで「引き渡し完了」にできない。
+// 分割は完済してから引き渡す
+export const HANDOVER = {
+  proof: "持ち主の確認(今日の日付と番号を書いた紙と一緒の写真・動画)",
+  pay: "代金の受け取りを確認(仮払い・入金)",
+  link: "外部連携(Apple・Google・X など)の解除",
+  mail: "登録メールを買い手のものに変更",
+  pass: "パスワードの変更",
+  receipt: "初回課金のレシート(メール)を受け取り",
+};
+export const handoverLeft = (h) => Object.keys(HANDOVER).filter((k) => !h?.[k]);
+// 引き渡し後の見守り: この日数たったら、買い手がログインできているか確認する(引き戻し対策)
+export const WATCH_DAYS = [1, 3, 7];
+
+// 値下げと巡回の目安
+export const RULES = { priceDays: 7, priceRate: 0.05, checkDays: 3, remindDays: 1 };
+
+const DAY = 86400_000;
+export const days = (from, to) => Math.round((Date.parse(to) - Date.parse(from)) / DAY);
+export const addDays = (d, n) => new Date(Date.parse(d) + n * DAY).toISOString().slice(0, 10);
+
+// 毎月 day 日の n 回分の予定。start の月から始める(月末を超える日は月末にする)
+export function monthly(start, n, amount, day = Number(start.slice(8, 10))) {
+  const [y, m] = start.split("-").map(Number);
+  return Array.from({ length: n }, (_, i) => {
+    const yy = y + Math.floor((m - 1 + i) / 12);
+    const mm = ((m - 1 + i) % 12) + 1;
+    const last = new Date(Date.UTC(yy, mm, 0)).getUTCDate();
+    return { due_on: `${yy}-${String(mm).padStart(2, "0")}-${String(Math.min(day, last)).padStart(2, "0")}`, amount };
+  });
+}
+
+// 分割1件の状況。pays は [{due_on, amount, paid_on}]
+export function splitState(split, pays, today) {
+  const sorted = [...pays].sort((a, b) => a.due_on.localeCompare(b.due_on));
+  const paid = sorted.filter((p) => p.paid_on).reduce((n, p) => n + p.amount, 0);
+  const open = sorted.filter((p) => !p.paid_on);
+  const late = open.filter((p) => p.due_on < today);
+  return {
+    paid,
+    remaining: Math.max(0, split.total - paid),
+    count: [sorted.length - open.length, sorted.length],
+    next: open[0] ?? null,
+    late: late.length ? { n: late.length, days: days(late[0].due_on, today), amount: late.reduce((n, p) => n + p.amount, 0) } : null,
+    // 予定の合計が総額と合わない時に知らせる
+    mismatch: sorted.reduce((n, p) => n + p.amount, 0) !== split.total,
+  };
+}
+
+// 値下げの目安: 出品中で、価格を決めてから priceDays 日たったら priceRate 下げる(千円単位・下限まで)
+export function priceDown(s, today, r = RULES) {
+  if (s.status !== "出品中" || !s.price || !s.price_at || days(s.price_at, today) < r.priceDays) return null;
+  const to = Math.max(s.floor ?? 0, Math.floor((s.price * (1 - r.priceRate)) / 1000) * 1000);
+  return to < s.price ? { from: s.price, to } : null;
+}
+
+// 出品先で、checkDays 日以上確認していないもの
+export const staleListings = (s, today, r = RULES) =>
+  s.status === "出品中" || s.status === "商談中" ? (s.listings ?? []).filter((l) => !l.checked_on || days(l.checked_on, today) >= r.checkDays) : [];
+
+// 見守りの確認が要るか。watch = 確認した回数。要るなら { n: 何回目, day: 何日目 }
+export function watchDue(item, today) {
+  if (!item.handed_on) return null;
+  const due = WATCH_DAYS.filter((d) => days(item.handed_on, today) >= d).length;
+  const done = item.watch ?? 0;
+  return done < due ? { n: done + 1, day: WATCH_DAYS[due - 1] } : null;
+}
+
+// 要注意リストの人か。texts の中に @ID がそのまま出てくるものを探す(大文字・小文字は区別しない)
+export function cautionHit(cautions, ...texts) {
+  const s = texts.filter(Boolean).join(" ").normalize("NFKC").toLowerCase();
+  if (!s) return null;
+  return (cautions ?? []).find((c) => new RegExp(`(^|[^a-z0-9_])@?${c.handle.toLowerCase()}($|[^a-z0-9_])`).test(s)) ?? null;
+}
+
+// 今日やること(管理画面の一番上に出す)
+// 購入希望と在庫(または代理出品)の合い具合。want.wants: [{name, cons}](cons は下限)、chars: [{name, cons}]
+export function matchOf(want, chars, price = null) {
+  const list = want.wants ?? [];
+  const have = new Map((chars ?? []).map((c) => [c.name, c.cons ?? 0]));
+  const hits = list.filter((w) => have.has(w.name));
+  const full = hits.filter((w) => have.get(w.name) >= (w.cons ?? 0));
+  const inBudget = !want.budget || !price || price <= want.budget;
+  return { hits: hits.map((w) => ({ name: w.name, cons: have.get(w.name), need: w.cons ?? 0 })), total: list.length, full: full.length, inBudget, score: list.length ? full.length / list.length : 0 };
+}
+// 希望中・提案済みの人に、同じゲームで半分以上の条件を満たす在庫(売却済み以外)を、合う順に
+export function matchesFor(want, stocks) {
+  if (!["希望中", "提案済み"].includes(want.status)) return [];
+  return stocks
+    .filter((s) => s.game === want.game && s.status !== "売却済み")
+    .map((s) => ({ stock: s, ...matchOf(want, s.chars, s.price) }))
+    .filter((m) => m.total && m.score >= 0.5)
+    .sort((a, b) => b.score - a.score || Number(b.inBudget) - Number(a.inBudget));
+}
+
+export function todos(stocks, splits, today, r = RULES, wants = [], consigns = [], cautions = []) {
+  const out = [];
+  const watch = (kind, label, item) => {
+    const w = watchDue(item, today);
+    if (w) out.push({ kind, id: item.id, level: 2, watch: w.n, text: `${label} No.${item.id} 引き渡しから${w.day}日です。買い手さんがログインできているか確認してください(見守り ${w.n}/${WATCH_DAYS.length})` });
+  };
+  const warn = (kind, label, item, ...texts) => {
+    const c = cautionHit(cautions, ...texts);
+    if (c) out.push({ kind, id: item.id, level: 3, text: `${label} No.${item.id} は要注意リストの @${c.handle} です(${c.reason || "理由なし"})` });
+  };
+  for (const c of consigns) {
+    watch("consign", "代理出品", c);
+    if (!["成約", "見送り", "重複"].includes(c.status)) warn("consign", "代理出品", c, c.handle);
+  }
+  for (const w of wants) {
+    if (["成約", "見送り"].includes(w.status)) continue;
+    warn("want", "購入希望", w, w.contact);
+    if (w.next_at && w.next_at <= today) out.push({ kind: "want", id: w.id, level: 2, text: `購入希望 No.${w.id} ${w.name}さんに連絡する日です` });
+    const best = matchesFor(w, stocks).filter((m) => m.score === 1 && m.inBudget && !(w.proposed ?? "").includes(String(m.stock.id)));
+    if (w.status === "希望中" && best.length) out.push({ kind: "want", id: w.id, level: 1, text: `購入希望 No.${w.id} ${w.name}さんに合う在庫があります(在庫 No.${best.map((m) => m.stock.id).join("・")})` });
+  }
+  for (const sp of splits) {
+    watch("split", "分割", sp);
+    if (sp.status === "支払い中") warn("split", "分割", sp, sp.contact);
+    if (sp.status !== "支払い中") {
+      if (sp.status === "完済") out.push({ kind: "split", id: sp.id, level: 2, text: `分割 No.${sp.id} ${sp.buyer}さんが完済しました。引き渡しを進めてください` });
+      continue;
+    }
+    const st = splitState(sp, sp.pays ?? [], today);
+    if (st.late) out.push({ kind: "split", id: sp.id, level: 3, text: `分割 No.${sp.id} ${sp.buyer}さんの支払いが ${st.late.days}日遅れています(${st.late.amount.toLocaleString()}円)` });
+    else if (st.next && days(today, st.next.due_on) <= r.remindDays)
+      out.push({ kind: "split", id: sp.id, level: 2, text: `分割 No.${sp.id} ${sp.buyer}さんの支払日です(${st.next.due_on.slice(5).replace("-", "/")} ${st.next.amount.toLocaleString()}円)` });
+    if (!st.next && !st.late) out.push({ kind: "split", id: sp.id, level: 2, text: `分割 No.${sp.id} は予定の入金がすべて済みました。「完済」にしてください` });
+  }
+  for (const s of stocks) {
+    watch("stock", "在庫", s);
+    const pd = priceDown(s, today, r);
+    if (pd) out.push({ kind: "stock", id: s.id, level: 1, text: `在庫 No.${s.id} 値下げの時期です(${(pd.from / 10000).toFixed(1)}万 → ${(pd.to / 10000).toFixed(1)}万)` });
+    const stale = staleListings(s, today, r);
+    if (stale.length) out.push({ kind: "stock", id: s.id, level: 1, text: `在庫 No.${s.id} ${stale.map((l) => l.site).join("・")} を確認してください` });
+  }
+  return out.sort((a, b) => b.level - a.level);
+}
