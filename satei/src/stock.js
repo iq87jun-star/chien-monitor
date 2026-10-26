@@ -25,6 +25,7 @@ function pick(body, spec) {
   return out;
 }
 const text = (max) => (v) => clean(v ?? "", max) || null;
+const flag = (v) => (v === true || v === 1 || v === "1" ? 1 : 0);
 const oneOf = (list) => (v) => (list.includes(v) ? v : undefined);
 
 export function validStock(body, games) {
@@ -51,6 +52,9 @@ export function validStock(body, games) {
     handed_on: date,
     watch,
     memo: text(2000),
+    pub: flag,
+    pub_images: flag,
+    pub_note: text(300),
   });
 }
 

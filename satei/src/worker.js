@@ -12,6 +12,7 @@
 //   /api/stock・/api/split・/api/image・/api/want・/api/follow(合言葉が必要)… 在庫・分割払い・スクショ・購入希望者・フォロー候補の管理(src/stock.js, src/follow.js)
 //   GET/POST /api/form/:token … 引き継ぎ情報フォーム(売主が1回だけ記入。public/form.html)
 //   /api/sheet(合言葉が必要)… 引き継ぎ情報フォームのリンク作成・回答(src/sheet.js。シートは public/sheet.html)
+//   GET /api/catalog・/api/catalog/image/:id … お客様向けの在庫一覧(公開にした在庫・代理出品だけ。public/zaiko.html)
 //   /api/caution(合言葉が必要)… 要注意リスト。引き渡し完了は詐欺対策のチェックが全部そろってから(409 で断る)
 //
 // バインディング:
@@ -28,6 +29,7 @@ import checkModel from "../public/check-model.json" with { type: "json" };
 import { validEvent, record, stats } from "./events.js";
 import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay, validImage, addImage, listImages, getImage, replaceImage, deleteImage, validWant, createWant, updateWant, listWants, handoverMissing, listCaution, addCaution, deleteCaution, findCaution } from "./stock.js";
 import { validSheet, createSheet, listSheets, getSheet, deleteSheet, formInfo, validSubmit, submitSheet } from "./sheet.js";
+import { listCatalog, catalogImage } from "./catalog.js";
 import { listFollow, importFollow, setFollowStatus } from "./follow.js";
 import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES } from "./consign.js";
 
@@ -218,6 +220,17 @@ async function handle(req, env, ctx) {
     if ((today?.n ?? 0) >= (Number(env.DAILY_LIMIT_LEADS) || 100)) return json({ ok: false, error: "混み合っています。XのDMで直接ご相談ください" }, 429);
     const { id, merged } = await createLead(env, lead);
     return json({ ok: true, no: id, merged });
+  }
+  // お客様向けの在庫一覧(公開にしたものだけ)
+  if (pathname === "/api/catalog" && req.method === "GET") {
+    return new Response(JSON.stringify({ ok: true, items: await listCatalog(env) }), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=60" } });
+  }
+  const ci = /^\/api\/catalog\/image\/(\d+)$/.exec(pathname);
+  if (ci && req.method === "GET") {
+    const img = await catalogImage(env, Number(ci[1]));
+    if (!img) return json({ ok: false, error: "not found" }, 404);
+    const bin = Uint8Array.from(atob(img.data), (c) => c.charCodeAt(0));
+    return new Response(bin, { headers: { "content-type": img.mime, "cache-control": "public, max-age=300" } });
   }
   // 引き継ぎ情報フォーム(リンクの token を知っている売主だけが記入できる)
   const form = /^\/api\/form\/([0-9a-f]{32})$/.exec(pathname);

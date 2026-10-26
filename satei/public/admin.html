@@ -54,7 +54,7 @@
 </head>
 <body>
 <main>
-  <h1>🌸 査定ツールの管理 <a href="stock.html" style="font-size:14px;color:var(--accent)">📦 在庫と分割 →</a></h1>
+  <h1>🌸 査定ツールの管理 <a href="stock.html" style="font-size:14px;color:var(--accent)">📦 在庫と分割 →</a> <a href="https://game-souba.com/zaiko/" target="_blank" rel="noopener" style="font-size:14px;color:var(--accent)">🌐 お客様向けの在庫一覧</a></h1>
   <label class="acct">表示するアカウント <select id="acct"><option value="">すべて</option></select></label>
   <div class="card">
     <form id="f">
@@ -261,6 +261,8 @@ function renderConsign() {
         <label>次の連絡日<input data-f="next_at" type="date" value="${esc(c.next_at)}" /></label>
         <label>紹介した投稿のURL<input data-f="post_url" value="${esc(c.post_url)}" placeholder="https://x.com/${xOf(c.game)}/status/..." /></label>
         <label>メモ<textarea data-f="memo" rows="3">${esc(c.memo)}</textarea></label>
+        <label>🌐 在庫一覧(お客様向け)<select data-f="pub"><option value="0">出さない</option><option value="1"${c.pub ? " selected" : ""}>公開する(希望額を価格として表示)</option></select></label>
+        <label>🌐 お客様向けの説明<input data-f="pub_note" value="${esc(c.pub_note)}" maxlength="300" /></label>
       </div>
       <div class="row"><button type="button" data-act="save">保存</button></div>
       ${c.status === "成約" || c.handed_on ? safeBlock(c) : ""}
