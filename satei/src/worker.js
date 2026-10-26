@@ -12,7 +12,8 @@
 //   /api/stock・/api/split・/api/image・/api/want・/api/follow(合言葉が必要)… 在庫・分割払い・スクショ・購入希望者・フォロー候補の管理(src/stock.js, src/follow.js)
 //   GET/POST /api/form/:token … 引き継ぎ情報フォーム(売主が1回だけ記入。public/form.html)
 //   /api/sheet(合言葉が必要)… 引き継ぎ情報フォームのリンク作成・回答(src/sheet.js。シートは public/sheet.html)
-//   GET /api/catalog・/api/catalog/image/:id … お客様向けの在庫一覧(公開にした在庫・代理出品だけ。public/zaiko.html)
+//   GET /api/catalog・/api/catalog/image/:id … お客様向けの在庫一覧(公開にした在庫・代理出品だけ。価格は出さない。public/zaiko.html)
+//   /api/cover(合言葉が必要)… 在庫一覧の表紙画像(在庫・代理出品に1枚ずつ)
 //   /api/caution(合言葉が必要)… 要注意リスト。引き渡し完了は詐欺対策のチェックが全部そろってから(409 で断る)
 //
 // バインディング:
@@ -29,7 +30,7 @@ import checkModel from "../public/check-model.json" with { type: "json" };
 import { validEvent, record, stats } from "./events.js";
 import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay, validImage, addImage, listImages, getImage, replaceImage, deleteImage, validWant, createWant, updateWant, listWants, handoverMissing, listCaution, addCaution, deleteCaution, findCaution } from "./stock.js";
 import { validSheet, createSheet, listSheets, getSheet, deleteSheet, formInfo, validSubmit, submitSheet } from "./sheet.js";
-import { listCatalog, catalogImage } from "./catalog.js";
+import { listCatalog, catalogImage, validCover, setCover, deleteCover, listCovers } from "./catalog.js";
 import { listFollow, importFollow, setFollowStatus } from "./follow.js";
 import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES } from "./consign.js";
 
@@ -244,7 +245,7 @@ async function handle(req, env, ctx) {
     return (await submitSheet(env, form[1], body)) ? json({ ok: true }) : json({ ok: false, error: "記入済み、またはリンクが正しくありません" }, 409);
   }
   // ここから下は集計画面用(合言葉が必要)
-  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay|image|want|follow|caution|sheet)/.test(pathname) || pathname === "/api/templates";
+  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay|image|want|follow|caution|sheet|cover)/.test(pathname) || pathname === "/api/templates";
   if (admin) {
     const token = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
     if (!env.STATS_TOKEN_SHA256 || (await sha256(token)) !== env.STATS_TOKEN_SHA256) return json({ ok: false, error: "合言葉が違います" }, 401);
@@ -281,6 +282,13 @@ async function handle(req, env, ctx) {
     await logDm(env, Number(m[1]), (await readJson(req))?.template);
     return json({ ok: true });
   }
+  if (pathname === "/api/cover" && req.method === "GET") return json({ ok: true, items: await listCovers(env) });
+  const cv = /^\/api\/cover\/(stock|consign)\/(\d+)$/.exec(pathname);
+  if (cv && req.method === "PUT") {
+    const img = validCover(await readJson(req, 1_500_000));
+    return img ? json({ ok: true, id: await setCover(env, cv[1], Number(cv[2]), img) }) : json({ ok: false, error: "画像を確認してください" }, 400);
+  }
+  if (cv && req.method === "DELETE") return json({ ok: await deleteCover(env, cv[1], Number(cv[2])) });
   if (pathname === "/api/sheet" && req.method === "GET") return json({ ok: true, items: await listSheets(env) });
   if (pathname === "/api/sheet" && req.method === "POST") {
     const row = validSheet(await readJson(req), Object.keys(GAMES));

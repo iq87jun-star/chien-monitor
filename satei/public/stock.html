@@ -199,6 +199,7 @@ import { estimate } from "./lib/estimate.js";
 import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER, WATCH_DAYS, handoverLeft, cautionHit, RULES, monthly, splitState, priceDown, staleListings, todos, days, matchOf, matchesFor } from "./lib/stock.js";
 import { GAMES as GAME, ACCOUNTS, accountOf, gamesOf } from "./lib/games.js";
 import { CHARS } from "./lib/chars.js";
+import { coverField, bindCovers, loadCoverImages } from "./lib/cover.js";
 const $ = (id) => document.getElementById(id);
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
@@ -278,6 +279,7 @@ function render() {
   $("k-got").textContent = yen(month.filter((p) => p.paid_on).reduce((n, p) => n + p.amount, 0));
   const open = [...document.querySelectorAll("[data-imgs][open]")].map((d) => d.dataset.imgs);
   renderStock();
+  loadCoverImages($("stockList"), authFetch);
   renderSplit();
   renderWants();
   renderFollow();
@@ -287,6 +289,7 @@ function render() {
 
 // ── 画像 ──
 const blobs = new Map(); // 画像 id → blob URL
+const authFetch = (path, init = {}) => fetch(`${API}${path}`, { ...init, headers: { authorization: `Bearer ${token}`, "content-type": "application/json" } });
 const imgsOf = (owner, id) => data.images.filter((x) => x.owner === owner && x.owner_id === id);
 const imgSection = (owner, id) => {
   const n = imgsOf(owner, id).length;
@@ -619,9 +622,9 @@ function renderStock() {
         <label>仕入れ日<input data-f="bought_at" type="date" value="${esc(s.bought_at)}" /></label>
         <label>売れた金額(円)<input data-f="sold_price" type="number" step="1000" value="${s.sold_price ?? ""}" /></label>
         <label>🌐 在庫一覧(お客様向け)<select data-f="pub"><option value="0">出さない</option><option value="1"${s.pub ? " selected" : ""}>公開する</option></select></label>
-        <label>🌐 スクショも公開<select data-f="pub_images"><option value="0">出さない</option><option value="1"${s.pub_images ? " selected" : ""}>公開する(UIDを黒塗り済み)</option></select></label>
         <label>🌐 お客様向けの説明<input data-f="pub_note" value="${esc(s.pub_note)}" maxlength="300" placeholder="例: 完凸多数・モチーフ武器あり" /></label>
       </div>
+      ${coverField("stock", s.id, imgsOf("cover_stock", s.id)[0]?.id)}
       <label class="muted">メモ<textarea data-f="memo">${esc(s.memo)}</textarea></label>
       <div class="muted" style="margin-top:8px">出品先(🔍 確認したら「確認済み」を押す。${RULES.checkDays}日見ていないと「今日やること」に出ます)</div>
       <div data-listings>${s.listings.map((l, i) => `<div class="row" data-i="${i}">
@@ -689,6 +692,7 @@ const run = async (fn, ok) => {
 const fields = (el) => Object.fromEntries([...el.querySelectorAll("[data-f]")].filter((x) => !x.closest("[data-listings]")).map((x) => [x.dataset.f, x.value]));
 const listings = (el) => [...el.querySelectorAll("[data-listings] [data-i]")].map((r) => Object.fromEntries([...r.querySelectorAll("[data-l]")].map((x) => [x.dataset.l, x.value])));
 
+bindCovers($("stockList"), authFetch, load, toast);
 $("stockList").addEventListener("click", (e) => {
   const btn = e.target.closest("button[data-act]");
   if (!btn) return;
