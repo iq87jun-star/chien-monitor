@@ -14,6 +14,8 @@
 //   /api/sheet(合言葉が必要)… 引き継ぎ情報フォームのリンク作成・回答(src/sheet.js。シートは public/sheet.html)
 //   GET /api/catalog・/api/catalog/image/:id … お客様向けの在庫一覧(公開にした在庫・代理出品だけ。価格は出さない。public/zaiko.html)
 //   /api/cover(合言葉が必要)… 在庫一覧の表紙画像(在庫・代理出品に1枚ずつ)
+//   GET /api/portal/:token・POST /api/portal/:token/msg … 分割払いのお客様ページとチャット(public/shiharai.html)
+//   /api/split/:id/portal・/api/split/:id/msgs・/api/portal-unread(合言葉が必要)… お客様ページのリンク・チャットの返信・未読数
 //   /api/caution(合言葉が必要)… 要注意リスト。引き渡し完了は詐欺対策のチェックが全部そろってから(409 で断る)
 //
 // バインディング:
@@ -30,6 +32,7 @@ import checkModel from "../public/check-model.json" with { type: "json" };
 import { validEvent, record, stats } from "./events.js";
 import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay, validImage, addImage, listImages, getImage, replaceImage, deleteImage, validWant, createWant, updateWant, listWants, handoverMissing, listCaution, addCaution, deleteCaution, findCaution } from "./stock.js";
 import { validSheet, createSheet, listSheets, getSheet, deleteSheet, formInfo, validSubmit, submitSheet } from "./sheet.js";
+import { portalToken, portalView, portalPost, adminMsgs, adminPost, unreadCounts } from "./portal.js";
 import { listCatalog, catalogImage, validCover, setCover, deleteCover, listCovers } from "./catalog.js";
 import { listFollow, importFollow, setFollowStatus } from "./follow.js";
 import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES } from "./consign.js";
@@ -222,6 +225,16 @@ async function handle(req, env, ctx) {
     const { id, merged } = await createLead(env, lead);
     return json({ ok: true, no: id, merged });
   }
+  // 分割払いのお客様ページ(リンクの token を知っているお客様だけ)
+  const pt = /^\/api\/portal\/([0-9a-f]{32})(\/msg)?$/.exec(pathname);
+  if (pt && !pt[2] && req.method === "GET") {
+    const v = await portalView(env, pt[1]);
+    return v ? json({ ok: true, ...v }) : json({ ok: false, error: "リンクが正しくありません" }, 404);
+  }
+  if (pt && pt[2] && req.method === "POST") {
+    const r = await portalPost(env, pt[1], (await readJson(req, 10_000))?.body);
+    return json(r, r.ok ? 200 : 400);
+  }
   // お客様向けの在庫一覧(公開にしたものだけ)
   if (pathname === "/api/catalog" && req.method === "GET") {
     return new Response(JSON.stringify({ ok: true, items: await listCatalog(env) }), { headers: { "content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=60" } });
@@ -245,7 +258,7 @@ async function handle(req, env, ctx) {
     return (await submitSheet(env, form[1], body)) ? json({ ok: true }) : json({ ok: false, error: "記入済み、またはリンクが正しくありません" }, 409);
   }
   // ここから下は集計画面用(合言葉が必要)
-  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay|image|want|follow|caution|sheet|cover)/.test(pathname) || pathname === "/api/templates";
+  const admin = pathname === "/api/stats" || /^\/api\/(consign|stock|split|pay|image|want|follow|caution|sheet|cover|portal-unread)/.test(pathname) || pathname === "/api/templates";
   if (admin) {
     const token = (req.headers.get("authorization") ?? "").replace(/^Bearer /, "");
     if (!env.STATS_TOKEN_SHA256 || (await sha256(token)) !== env.STATS_TOKEN_SHA256) return json({ ok: false, error: "合言葉が違います" }, 401);
@@ -282,6 +295,14 @@ async function handle(req, env, ctx) {
     await logDm(env, Number(m[1]), (await readJson(req))?.template);
     return json({ ok: true });
   }
+  if (pathname === "/api/portal-unread" && req.method === "GET") return json({ ok: true, unread: await unreadCounts(env) });
+  const sp = /^\/api\/split\/(\d+)\/(portal|msgs)$/.exec(pathname);
+  if (sp && sp[2] === "portal" && req.method === "POST") {
+    const token = await portalToken(env, Number(sp[1]));
+    return token ? json({ ok: true, token }) : json({ ok: false, error: "not found" }, 404);
+  }
+  if (sp && sp[2] === "msgs" && req.method === "GET") return json({ ok: true, msgs: await adminMsgs(env, Number(sp[1])) });
+  if (sp && sp[2] === "msgs" && req.method === "POST") return json({ ok: await adminPost(env, Number(sp[1]), (await readJson(req, 10_000))?.body) });
   if (pathname === "/api/cover" && req.method === "GET") return json({ ok: true, items: await listCovers(env) });
   const cv = /^\/api\/cover\/(stock|consign)\/(\d+)$/.exec(pathname);
   if (cv && req.method === "PUT") {
