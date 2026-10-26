@@ -30,6 +30,8 @@
   main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
   h1 { font-size: 24px; margin: 0 0 4px; }
   .lead { color: var(--sub); margin: 0 0 16px; }
+  h2 { font-size: 20px; margin: 24px 0 8px; padding-left: 10px; border-left: 5px solid var(--accent); }
+  h3 { font-size: 15px; color: var(--sub); margin: 14px 0 8px; }
   .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
   .tabs button { padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: inherit; font-size: 14px; cursor: pointer; }
   .tabs button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
@@ -90,6 +92,7 @@ const $ = (id) => document.getElementById(id);
 const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 const yen = (v) => `¥${Number(v).toLocaleString("ja-JP")}`;
+const ORDER = ["genshin-impact", "houkaistarrail", "zzz", "wutheringwaves", "granblue", "umamusume", "identityv"];
 const SHOW = 12; // キャラは最初にこの数だけ出す
 // 星5キャラの一覧を持っているゲーム(グラブル・ウマ娘・第五人格は項目の数なので「星5 ○体」を出さない)
 const STAR5 = new Set(["genshin-impact", "houkaistarrail", "zzz", "wutheringwaves"]);
@@ -124,8 +127,15 @@ function render() {
   $("tabs").innerHTML = [["", "すべて"], ...games.map((g) => [g, GAMES[g] ?? g])]
     .map(([k, v]) => `<button type="button" data-game="${esc(k)}" aria-pressed="${k === game}">${esc(v)}${k ? ` ${items.filter((it) => it.game === k && it.state !== "売約済み").length}` : ""}</button>`)
     .join("");
-  const list = items.filter((it) => !game || it.game === game);
-  $("list").innerHTML = list.map(card).join("") || `<p class="empty">いま掲載中のアカウントはありません。ご希望のキャラがあれば DM でご相談ください。</p>`;
+  // ゲームごとに、メルルの在庫 → 代理出品(お客様のアカウント)の順に並べる
+  const order = (g) => { const i = ORDER.indexOf(g); return i < 0 ? ORDER.length : i; };
+  const shown = games.filter((g) => !game || g === game).sort((a, b) => order(a) - order(b));
+  $("list").innerHTML = shown.map((g) => {
+    const of = (kind) => items.filter((it) => it.game === g && it.kind === kind);
+    return `<section><h2>${esc(GAMES[g] ?? g)}</h2>${[["stock", "🌸 メルルの在庫"], ["consign", "🤝 代理出品(お客様のアカウント)"]]
+      .map(([k, t]) => (of(k).length ? `<h3>${t}</h3>${of(k).map(card).join("")}` : ""))
+      .join("")}</section>`;
+  }).join("") || `<p class="empty">いま掲載中のアカウントはありません。ご希望のキャラがあれば DM でご相談ください。</p>`;
 }
 function toast(msg) {
   const t = document.createElement("div");
