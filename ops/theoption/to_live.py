@@ -14,7 +14,7 @@
         python to_live.py --settle   # 直近 3 日の取引結果を取り込む(毎日 06:40 のタスク)
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
-import argparse, asyncio, base64, csv, datetime as dt, json, os, sys, time, urllib.request, urllib.error
+import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
 VERSION = "1.1"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
@@ -225,7 +225,7 @@ def run_entries(account, key, out_dir, log, now_jst):
             rec["note"] = "buy 拒否 " + str(err_codes(resp)); append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], 0, "", "", c["name"], rec["note"]])
         done[leg["id"]] = rec; state[str(day)] = done
         json.dump(state, open(state_path, "w", encoding="utf-8"), ensure_ascii=False)
-        time.sleep(1.2)
+        time.sleep(random.uniform(4.0, 8.0))   # v1.1a: 発注を数秒ずつ分散(1 秒 1 回の制限より十分広く、開場直後の一斉発注に見えないように)
     state[str(day)] = done; json.dump(state, open(state_path, "w", encoding="utf-8"), ensure_ascii=False)
     return 0
 
