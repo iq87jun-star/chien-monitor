@@ -51,9 +51,8 @@ def is_target(name):
 EXTRA_TASKS = [("chien_theoption_thursday", "THU", "04:55", "thursday"),
                ("chien_mtlog_sync", None, "06:40", "mtlogsync"),   # v0.6: day=None は毎日。MT5デモEAのログをDriveへ写す
                ("chien_theoption_tenbai", "MON", "07:05", "tenbai"),   # v0.9: 実行中のデモ取引の転売情報を翌06:10まで記録(to_tenbai.py)
-               ("chien_theoption_live_0700", "MON", "06:58", "live"),   # v1.0: 本番メニュー(追補18)の自動発注。既定はお試し口座(to_live.py)
-               ("chien_theoption_live_1100", "MON", "10:58", "live"),
-               ("chien_theoption_live_2300", None, "22:58", "live"),    # EURGBP 夜(月火水金・対象月)はスクリプト側で判定
+               ("chien_theoption_live_0700", "MON", "06:58", "live"),   # v1.1: 本番メニュー(追補23・4本)の自動発注。既定はお試し口座(to_live.py)
+               ("chien_theoption_live_2300", None, "22:58", "live"),    # EURGBP 夜(月火水金・対象月)はスクリプト側で判定。11:00 の脚は商品が無く廃止(登録済みタスクは無害)
                ("chien_theoption_live_settle", None, "06:45", "live_settle")]   # 前日までの取引結果を live_trades_<口座>.csv へ
 
 def ensure_tasks():

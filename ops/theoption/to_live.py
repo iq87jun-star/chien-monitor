@@ -15,7 +15,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "1.0"
+VERSION = "1.1"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -23,16 +23,12 @@ HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theopti
 MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 120000   # 1 日のベット合計の上限(月曜 83,500 + EURGBP 5,000 に余裕)
 # 確定メニュー(追補18)。entry = JST の定刻、judge = 判定時刻 JST(next=翌日)、wds = 曜日(0=月)、months = 対象月(None=全月)
 MENU = [
- dict(id="GBPJPY_1H",   pair="GBPJPY", sel="HIGH", entry="07:00", judge="08:00", next=False, stake=10500, wds=[0], months=None, kind="1H"),
- dict(id="AUDJPY_1H",   pair="AUDJPY", sel="HIGH", entry="07:00", judge="08:00", next=False, stake=8000,  wds=[0], months=None, kind="1H"),
- dict(id="CADJPY_1H",   pair="CADJPY", sel="HIGH", entry="07:00", judge="08:00", next=False, stake=6500,  wds=[0], months=None, kind="1H"),
- dict(id="NZDJPY_1H",   pair="NZDJPY", sel="HIGH", entry="07:00", judge="08:00", next=False, stake=5500,  wds=[0], months=None, kind="1H"),
- dict(id="GBPJPY_14",   pair="GBPJPY", sel="HIGH", entry="07:00", judge="14:00", next=False, stake=8000,  wds=[0], months=None, kind="23H"),
- dict(id="EURJPY_N6",   pair="EURJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=11000, wds=[0], months=None, kind="23H"),
- dict(id="AUDJPY_N6",   pair="AUDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=11500, wds=[0], months=None, kind="23H"),
- dict(id="NZDJPY_N6",   pair="NZDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=9500,  wds=[0], months=None, kind="23H"),
- dict(id="AUDJPY_11N10", pair="AUDJPY", sel="HIGH", entry="11:00", judge="10:00", next=True, stake=13000, wds=[0], months=None, kind="23H"),
- dict(id="EURGBP_N6L",  pair="EURGBP", sel="LOW",  entry="23:00", judge="06:00", next=True,  stake=5000,  wds=[0,1,2,4], months=[1,4,5,7,8,9,10,11], kind="23H"),
+ # v1.1 (2026-10-26 追補23): 月曜 07:00 に 1H 契約は無く(1H は 08:00 から)、23H の判定時刻は翌 06:00 のみ
+ #   → 1H×4・GBPJPY→14 時・AUDJPY 11→翌 10 時は商品が無いため除外。実行可能 4 本を DD 予算 30 万円で再配分(月期待 +38,971 円)。
+ dict(id="EURJPY_N6",   pair="EURJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=16000, wds=[0], months=None, kind="23H"),
+ dict(id="AUDJPY_N6",   pair="AUDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=17000, wds=[0], months=None, kind="23H"),
+ dict(id="NZDJPY_N6",   pair="NZDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=14000, wds=[0], months=None, kind="23H"),
+ dict(id="EURGBP_N6L",  pair="EURGBP", sel="LOW",  entry="23:00", judge="06:00", next=True,  stake=7500,  wds=[0,1,2,4], months=[1,4,5,7,8,9,10,11], kind="23H"),
 ]
 MIN_PAYOUT = {"1H": 1.85, "23H": 1.90}; BOOST_PAYOUT = 2.0; BOOST_MULT = 1.5
 
