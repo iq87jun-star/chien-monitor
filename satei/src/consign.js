@@ -106,6 +106,8 @@ export function validPatch(body) {
   if ("post_url" in body) out.post_url = /^https:\/\/(x|twitter)\.com\//.test(body.post_url ?? "") ? clean(body.post_url, 300) : null;
   if ("handover" in body) out.handover = JSON.stringify(Object.fromEntries(Object.keys(HANDOVER).map((k) => [k, Boolean(body.handover?.[k])])));
   if ("handed_on" in body) out.handed_on = body.handed_on ? date(body.handed_on) : null;
+  if ("pub" in body) out.pub = body.pub === true || body.pub === 1 || body.pub === "1" ? 1 : 0;
+  if ("pub_note" in body) out.pub_note = clean(body.pub_note ?? "", 300) || null;
   if ("watch" in body && Number.isInteger(body.watch) && body.watch >= 0 && body.watch <= 10) out.watch = body.watch;
   return out;
 }

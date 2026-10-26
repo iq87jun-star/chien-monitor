@@ -11,6 +11,8 @@ urls.push({ loc: `${BASE}/hoyo/`, changefreq: "weekly", priority: "0.9" });
 for (const page of ["souba", "satei", "jisseki", "theater"]) urls.push({ loc: `${BASE}/hoyo/${page}/`, changefreq: "weekly", priority: "0.8" });
 // グラブル・ウマ娘・第五人格のチェック式査定(satei/public/check.html)
 urls.push({ loc: `${BASE}/kaitori/`, changefreq: "weekly", priority: "0.8" });
+// お客様向けの在庫一覧(satei/public/zaiko.html)
+urls.push({ loc: `${BASE}/zaiko/`, changefreq: "daily", priority: "0.7" });
 // 買取のお取引ガイド(satei/public/guide.html)
 urls.push({ loc: `${BASE}/torihiki/`, changefreq: "monthly", priority: "0.6" });
 

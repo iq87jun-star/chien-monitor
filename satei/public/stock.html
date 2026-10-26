@@ -55,7 +55,7 @@
 </head>
 <body>
 <main>
-  <h1>📦 在庫と分割の管理</h1>
+  <h1>📦 在庫と分割の管理 <a href="https://game-souba.com/zaiko/" target="_blank" rel="noopener" style="font-size:14px;color:var(--accent)">🌐 お客様向けの在庫一覧</a></h1>
   <label class="acct">表示するアカウント <select id="acct"><option value="">すべて</option></select></label>
   <div class="card">
     <form id="f">
@@ -618,6 +618,9 @@ function renderStock() {
         <label>仕入れ元<input data-f="source" value="${esc(s.source)}" /></label>
         <label>仕入れ日<input data-f="bought_at" type="date" value="${esc(s.bought_at)}" /></label>
         <label>売れた金額(円)<input data-f="sold_price" type="number" step="1000" value="${s.sold_price ?? ""}" /></label>
+        <label>🌐 在庫一覧(お客様向け)<select data-f="pub"><option value="0">出さない</option><option value="1"${s.pub ? " selected" : ""}>公開する</option></select></label>
+        <label>🌐 スクショも公開<select data-f="pub_images"><option value="0">出さない</option><option value="1"${s.pub_images ? " selected" : ""}>公開する(UIDを黒塗り済み)</option></select></label>
+        <label>🌐 お客様向けの説明<input data-f="pub_note" value="${esc(s.pub_note)}" maxlength="300" placeholder="例: 完凸多数・モチーフ武器あり" /></label>
       </div>
       <label class="muted">メモ<textarea data-f="memo">${esc(s.memo)}</textarea></label>
       <div class="muted" style="margin-top:8px">出品先(🔍 確認したら「確認済み」を押す。${RULES.checkDays}日見ていないと「今日やること」に出ます)</div>

@@ -89,6 +89,10 @@ jobs:
           cp satei/public/guide.html site-dist/torihiki/index.html
           # 利用規約(元は satei/terms/kiyaku.html)
           cp satei/public/kiyaku.pdf site-dist/torihiki/kiyaku.pdf
+          # お客様向けの在庫一覧(公開にした在庫・代理出品。Worker の /api/catalog)。game-souba.com/zaiko/
+          mkdir -p site-dist/zaiko
+          cp satei/public/zaiko.html site-dist/zaiko/index.html
+          cp -r satei/public/lib site-dist/zaiko/lib
           # 引き継ぎ情報フォーム(売主が記入。回答は Worker の /api/form に送る)。game-souba.com/torihiki/form/?t=…
           mkdir -p site-dist/torihiki/form
           cp satei/public/form.html site-dist/torihiki/form/index.html
