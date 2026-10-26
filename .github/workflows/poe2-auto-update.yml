@@ -93,6 +93,10 @@ jobs:
           mkdir -p site-dist/zaiko
           cp satei/public/zaiko.html site-dist/zaiko/index.html
           cp -r satei/public/lib site-dist/zaiko/lib
+          # 分割払いのお客様ページ(支払い予定とチャット。Worker の /api/portal)。game-souba.com/shiharai/?t=…
+          mkdir -p site-dist/shiharai
+          cp satei/public/shiharai.html site-dist/shiharai/index.html
+          cp -r satei/public/lib site-dist/shiharai/lib
           # 引き継ぎ情報フォーム(売主が記入。回答は Worker の /api/form に送る)。game-souba.com/torihiki/form/?t=…
           mkdir -p site-dist/torihiki/form
           cp satei/public/form.html site-dist/torihiki/form/index.html

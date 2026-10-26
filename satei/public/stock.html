@@ -31,6 +31,10 @@
   .grid2 input, .grid2 select, .grid2 textarea, textarea { width:100%; margin-top:2px; }
   textarea { min-height:60px; }
   .todo { border-left:4px solid var(--accent); } .todo li { margin:4px 0; } .todo li.l3 { color:var(--warn); font-weight:700; }
+  .chat { max-height:320px; overflow-y:auto; display:flex; flex-direction:column; gap:6px; margin-top:8px; padding:8px; border:1px solid var(--line); border-radius:10px; }
+  .msg { max-width:85%; display:flex; flex-direction:column; } .msg span { padding:6px 10px; border-radius:12px; white-space:pre-wrap; word-break:break-word; } .msg small { font-size:11px; color:var(--sub); }
+  .msg.you { align-self:flex-start; } .msg.you span { background:var(--line); }
+  .msg.me { align-self:flex-end; text-align:right; } .msg.me span { background:var(--accent); color:#fff; }
   .bar { height:8px; background:var(--line); border-radius:99px; overflow:hidden; margin-top:6px; } .bar i { display:block; height:100%; background:var(--ok); }
   table { width:100%; border-collapse:collapse; font-size:13px; font-variant-numeric:tabular-nums; }
   th, td { padding:5px 6px; border-bottom:1px solid var(--line); text-align:left; }
@@ -224,6 +228,8 @@ const setGameOptions = () => { for (const id of ["s-game", "p-game", "w-game", "
 setGameOptions();
 // 読み込んだ全件(all)から、選んだアカウントの分だけを data・consign にする(フォロー・要注意は共通)
 let all = null, allConsign = [];
+let unread = {}; // 分割のお客様からの未読メッセージ { split_id: 数 }
+const PORTAL_URL = "https://game-souba.com/shiharai/?t=";
 function applyAcct() {
   data = { ...all, stock: all.stock.filter((s) => inAcct(s.game)), split: all.split.filter((s) => inAcct(s.game)), wants: all.wants.filter((w) => inAcct(w.game)) };
   consign = allConsign.filter((c) => inAcct(c.game));
@@ -269,6 +275,7 @@ function render() {
   const fNew = (data.follow ?? []).filter((f) => f.status === "候補").length;
   if (fDue) t.push({ level: 1, text: `フォロー:14日たった ${fDue}人のフォローバックを確認してください` });
   if (fNew) t.push({ level: 1, text: `フォロー:候補 ${fNew}人をフォローしてください` });
+  for (const s of data.split) if (unread[s.id]) t.unshift({ level: 3, text: `分割 No.${s.id} ${s.buyer}さんから新しいメッセージが ${unread[s.id]}件あります(分割のカードの「💬 お客様ページ・チャット」)` });
   $("todo").innerHTML = t.map((x) => `<li class="l${x.level}">${esc(x.text)}${x.watch ? `<button type="button" data-watch="${x.watch}" data-kind="${x.kind}" data-id="${x.id}">確認した</button>` : ""}</li>`).join("") || `<li class="muted">今日やることはありません</li>`;
   const live = data.split.filter((s) => s.status === "支払い中");
   const ym = today.slice(0, 7);
@@ -652,7 +659,7 @@ function renderSplit() {
     const st = splitState(s, s.pays, today);
     const pct = Math.min(100, Math.round((st.paid / s.total) * 100));
     return `<article class="card" data-split="${s.id}">
-      <header><b>分割 No.${s.id}</b><b>${esc(s.buyer)}さん</b><span class="tag">${GAME[s.game] ?? esc(s.game)}</span><span class="tag${st.late ? " warn" : s.status === "完済" ? " ok" : ""}">${st.late ? `${st.late.days}日遅れ` : esc(s.status)}</span>
+      <header><b>分割 No.${s.id}</b><b>${esc(s.buyer)}さん</b><span class="tag">${GAME[s.game] ?? esc(s.game)}</span><span class="tag${st.late ? " warn" : s.status === "完済" ? " ok" : ""}">${st.late ? `${st.late.days}日遅れ` : esc(s.status)}</span>${unread[s.id] ? `<span class="tag warn">💬 新着 ${unread[s.id]}</span>` : ""}
         <span class="muted">${esc(s.contact)}${s.middle ? ` ・ 間: ${esc(s.middle)}` : ""}</span>${cautionHit(data.caution, s.contact) ? `<span class="tag warn">⚠️ 要注意リスト</span>` : ""}</header>
       <p style="margin:6px 0 0"><b>${yen(st.paid)}</b> / ${yen(s.total)} ・ 残り ${yen(st.remaining)} ・ ${st.count[0]} / ${st.count[1]}回 ${st.next ? `・ 次は <b>${md(st.next.due_on)} ${yen(st.next.amount)}</b>` : ""}${st.mismatch ? ` <span class="tag warn">予定の合計が総額と違います</span>` : ""}</p>
       <div class="bar"><i style="width:${pct}%"></i></div>
@@ -671,6 +678,13 @@ function renderSplit() {
         <label class="muted">メモ<textarea data-f="memo">${esc(s.memo)}</textarea></label>
         <div class="row"><button type="button" data-act="save">保存</button></div>
       </details>
+      <details style="margin-top:6px" data-chat><summary class="muted">💬 お客様ページ・チャット${unread[s.id] ? `(新着 ${unread[s.id]})` : ""}</summary>
+        ${s.portal
+          ? `<div class="row"><input readonly value="${PORTAL_URL}${esc(s.portal)}" style="flex:1;min-width:180px" /><button type="button" class="sub" data-act="portalcopy">DM用の文をコピー</button></div>`
+          : `<div class="row"><button type="button" class="sub" data-act="portal">お客様ページのリンクを作る</button><span class="muted">支払い予定・残り・チャットを、お客様がいつでも見られるページです</span></div>`}
+        <div data-msgs class="chat"><p class="muted">開くと読み込みます</p></div>
+        <div class="row"><textarea data-msg rows="2" placeholder="お客様へのメッセージ" style="flex:1;min-width:180px"></textarea><button type="button" data-act="send">送信</button></div>
+      </details>
       ${imgSection("split", s.id)}
       ${safeBlock(s, s.status !== "支払い中")}
     </article>`;
@@ -678,10 +692,11 @@ function renderSplit() {
 }
 
 async function load() {
-  [all, model, allConsign] = await Promise.all([
+  [all, model, allConsign, unread] = await Promise.all([
     api("/api/stock"),
     model ?? fetch("./model.json").then((r) => r.json()),
     api("/api/consign").then((d) => d.items).catch(() => []),
+    api("/api/portal-unread").then((d) => d.unread).catch(() => ({})),
   ]);
   applyAcct();
   render();
@@ -725,8 +740,32 @@ $("splitList").addEventListener("click", (e) => {
     return run(() => api(`/api/split/${id}/pay`, { method: "POST", body: JSON.stringify(n) }), "予定を追加しました");
   }
   if (act === "save") return run(() => api(`/api/split/${id}`, { method: "PATCH", body: JSON.stringify(fields(card)) }), `分割 No.${id} を保存しました`);
+  if (act === "portal") return run(() => api(`/api/split/${id}/portal`, { method: "POST" }), "お客様ページのリンクを作りました");
+  if (act === "portalcopy") {
+    const s = data.split.find((x) => x.id === id);
+    const text = `${s.buyer}様\n分割払いのお支払い予定・残りの金額は、こちらのページでいつでもご確認いただけます🌸\nご質問やご連絡も、ページ下のメッセージ欄から送っていただけます。\n${PORTAL_URL}${s.portal}\n※このリンクは${s.buyer}様専用です。他の方には共有しないでください。`;
+    return navigator.clipboard.writeText(text).then(() => toast("DM用の文をコピーしました"), () => toast("コピーできませんでした"));
+  }
+  if (act === "send") {
+    const ta = card.querySelector("[data-msg]");
+    if (!ta.value.trim()) return;
+    return api(`/api/split/${id}/msgs`, { method: "POST", body: JSON.stringify({ body: ta.value }) }).then(() => { ta.value = ""; toast("送信しました"); return loadMsgs(card, id); }, (err) => toast(`送れませんでした(${err.message})`));
+  }
   if (act === "handed") return confirm("引き渡し完了にしますか?") && run(() => api(`/api/split/${id}`, { method: "PATCH", body: JSON.stringify({ handover: handoverOf(card), handed_on: today, status: "引き渡し済み" }) }), "引き渡し完了。1・3・7日後に見守りを出します");
 });
+// チャット: 開いた時に読み込む(お客様からのものは既読になる)
+async function loadMsgs(card, id) {
+  const box = card.querySelector("[data-msgs]");
+  const d = await api(`/api/split/${id}/msgs`);
+  box.innerHTML = d.msgs.map((m) => `<div class="msg ${m.from_me ? "me" : "you"}"><span>${esc(m.body)}</span><small>${m.from_me ? "メルル" : "お客様"} ${new Date(m.at).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}</small></div>`).join("") || `<p class="muted">まだメッセージはありません</p>`;
+  box.scrollTop = box.scrollHeight;
+  delete unread[id]; // バッジは次の読み込みで消える(開いているチャットを閉じないよう、ここでは描き直さない)
+}
+$("splitList").addEventListener("toggle", (e) => {
+  if (!e.target.matches?.("[data-chat]") || !e.target.open) return;
+  const card = e.target.closest("[data-split]");
+  loadMsgs(card, Number(card.dataset.split)).catch((err) => toast(`読み込めませんでした(${err.message})`));
+}, true);
 $("splitList").addEventListener("change", (e) => {
   if (!e.target.dataset.h) return;
   const card = e.target.closest("[data-split]");
