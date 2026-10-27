@@ -67,3 +67,11 @@ API の仕様は 2026-10 のクイックスタート(ユーザー提供の PDF)�
 - 記録: `live_<口座>_<日付>.jsonl`、`live_entries_<口座>.csv`(date,strategy_id,pair,direction,payout_actual,stake,trade_id,strike,contract,note)。
 - 予定: 10/26(月)はお試し口座で本番同一条件を実行 → 10/27(火)の週次突合で判定 → 問題なければ 11/2(月)から実口座(設定の切替のみ)。
 - 動作確認: `powershell -NoProfile -ExecutionPolicy Bypass -File C:\chien\ops\theoption\to_run.ps1 -Mode live_plan`(今日の対象脚を表示・発注しない)。
+
+## v1.2 (2026-10-27): メニューを 14 本に拡張(追補29補足「現行4脚+勝率上位10セル」、DD予算30万円で月期待 +50,153円)
+- `to_live.py` MENU: 07:00×3(5,100/5,300/4,400)+ 月曜の分割エントリー(AUDJPY 10:00、EURJPY 13:00/14:00/16:00/21:00、USDJPY 14:00/18:00)+ EURGBP 23:00(2,300)
+  + 深夜建て→同日 06:00 判定の 3 本(火 01:00 EURJPY、水 00:00 GBPJPY、水 02:00 AUDJPY)。月曜合計 54,000 円(DAILY_STAKE_CAP 120,000 の内側)。
+- `legs_for_slot` が日付をまたぐ定刻(火 23:58 起動→水 00:00 建て)を翌日の脚として拾い、`_day` を付けて返す。run_entries は state/CSV/契約照合をその日で扱う。
+- `to_probe.py` EXTRA_TASKS に 9 タスク追加(月 09:58/12:58/13:58/15:58/17:58/20:58、火 00:58/23:58、水 01:58)。登録は次回の to_probe 実行時(`-Mode check` で即時)。
+- ベット額は DD 予算 30 万円(資金 40 万円に緩衝 10 万円)。40 万円を DD 予算にするなら全脚 ×1.33。
+- テスト: `python -m pytest -q test_to_live.py`(13 件)。

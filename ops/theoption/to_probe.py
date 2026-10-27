@@ -13,7 +13,7 @@
   python to_summarize.py out\\probe_YYYYMMDD.jsonl   # 記録の要約
 既定はお試し環境(apidemo / gatewaydemo)。--env live は本番ホスト(キーも本番用が要る)。"""
 import argparse, asyncio, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "1.0"
+VERSION = "1.2"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -53,6 +53,12 @@ EXTRA_TASKS = [("chien_theoption_thursday", "THU", "04:55", "thursday"),
                ("chien_theoption_tenbai", "MON", "07:05", "tenbai"),   # v0.9: 実行中のデモ取引の転売情報を翌06:10まで記録(to_tenbai.py)
                ("chien_theoption_live_0700", "MON", "06:58", "live"),   # v1.1: 本番メニュー(追補23・4本)の自動発注。既定はお試し口座(to_live.py)
                ("chien_theoption_live_2300", None, "22:58", "live"),    # EURGBP 夜(月火水金・対象月)はスクリプト側で判定。11:00 の脚は商品が無く廃止(登録済みタスクは無害)
+               # v1.2 (追補29補足): 勝率上位10セルの追加。月曜セッションの分割エントリー 6 時刻 + 火 01:00 + 水 00:00 / 02:00(日付またぎは to_live 側で翌日の脚として処理)
+               ("chien_theoption_live_1000", "MON", "09:58", "live"), ("chien_theoption_live_1300", "MON", "12:58", "live"),
+               ("chien_theoption_live_1400", "MON", "13:58", "live"), ("chien_theoption_live_1600", "MON", "15:58", "live"),
+               ("chien_theoption_live_1800", "MON", "17:58", "live"), ("chien_theoption_live_2100", "MON", "20:58", "live"),
+               ("chien_theoption_live_0100", "TUE", "00:58", "live"), ("chien_theoption_live_0000", "TUE", "23:58", "live"),
+               ("chien_theoption_live_0200", "WED", "01:58", "live"),
                ("chien_theoption_live_settle", None, "06:45", "live_settle")]   # 前日までの取引結果を live_trades_<口座>.csv へ
 
 def ensure_tasks():

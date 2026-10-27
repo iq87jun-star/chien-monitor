@@ -10,15 +10,18 @@ def jwt(payload):
 DEMO = jwt({"iss": "TheOptionDemo"}); REAL = jwt({"iss": "TheOption"})
 MON = dt.date(2026, 10, 26)
 
-def test_menu_matches_readme_addendum23():
-    assert len(L.MENU) == 4 and sum(l["stake"] for l in L.MENU) == 54500
-    assert sum(l["stake"] for l in L.MENU if l["entry"] == "07:00") == 47000   # 月曜 07:00 の 23H × 3
-    assert all(l["kind"] == "23H" and l["judge"] == "06:00" and l["next"] for l in L.MENU)   # 判定は翌 06:00 のみ(実測)
-    assert all(l["stake"] <= L.MAX_STAKE for l in L.MENU)
+def test_menu_matches_readme_addendum29():
+    assert len(L.MENU) == 14 and sum(l["stake"] for l in L.MENU) == 69200
+    assert sum(l["stake"] for l in L.MENU if l["entry"] == "07:00") == 14800   # 月曜 07:00 の 23H × 3
+    assert sum(l["stake"] for l in L.MENU if 0 in l["wds"]) == 54000           # 月曜に建てる 11 本 ≤ DAILY_STAKE_CAP
+    assert all(l["kind"] == "23H" and l["judge"] == "06:00" for l in L.MENU)   # 判定は 06:00 のみ(翌日 or 深夜建ての同日)
+    assert all((not l["next"]) == (l["entry"] < "06:00") for l in L.MENU)      # 深夜建て(00〜05 時)だけ同日判定
+    assert all(l["stake"] <= L.MAX_STAKE for l in L.MENU) and len({l["id"] for l in L.MENU}) == 14
 
 def test_due_legs_by_weekday_and_month():
-    assert [l["id"] for l in L.MENU if L.is_due_today(l, MON)] == [l["id"] for l in L.MENU]          # 10 月の月曜: 4 本
-    tue = dt.date(2026, 10, 27); assert [l["id"] for l in L.MENU if L.is_due_today(l, tue)] == ["EURGBP_N6L"]
+    assert len([l for l in L.MENU if L.is_due_today(l, MON)]) == 11          # 10 月の月曜: 07:00×3 + 分割 7 + EURGBP
+    tue = dt.date(2026, 10, 27); assert [l["id"] for l in L.MENU if L.is_due_today(l, tue)] == ["EURGBP_N6L", "EURJPY_T01"]
+    wed = dt.date(2026, 10, 28); assert [l["id"] for l in L.MENU if L.is_due_today(l, wed)] == ["EURGBP_N6L", "GBPJPY_W00", "AUDJPY_W02"]
     thu = dt.date(2026, 10, 29); assert [l["id"] for l in L.MENU if L.is_due_today(l, thu)] == []
     jun_mon = dt.date(2026, 6, 1); assert "EURGBP_N6L" not in [l["id"] for l in L.MENU if L.is_due_today(l, jun_mon)]
 
@@ -26,8 +29,18 @@ def test_slot_selection_around_entry_time():
     now = dt.datetime(2026, 10, 26, 6, 58, tzinfo=L.JST)
     assert {l["entry"] for l in L.legs_for_slot(now)} == {"07:00"} and len(L.legs_for_slot(now)) == 3
     now = dt.datetime(2026, 10, 26, 10, 58, tzinfo=L.JST); assert L.legs_for_slot(now) == []
+    now = dt.datetime(2026, 10, 26, 13, 58, tzinfo=L.JST); assert [l["id"] for l in L.legs_for_slot(now)] == ["EURJPY_M14", "USDJPY_M14"]
     now = dt.datetime(2026, 10, 26, 22, 58, tzinfo=L.JST); assert [l["id"] for l in L.legs_for_slot(now)] == ["EURGBP_N6L"]
     now = dt.datetime(2026, 10, 26, 9, 0, tzinfo=L.JST); assert L.legs_for_slot(now) == []
+    assert all(l["_day"] == MON for l in L.legs_for_slot(dt.datetime(2026, 10, 26, 15, 58, tzinfo=L.JST)))
+
+def test_slot_crossing_midnight_uses_next_day():
+    now = dt.datetime(2026, 10, 27, 23, 58, tzinfo=L.JST)   # 火 23:58 起動 → 水 00:00 建ての GBPJPY_W00
+    legs = L.legs_for_slot(now); assert [l["id"] for l in legs] == ["GBPJPY_W00"] and legs[0]["_day"] == dt.date(2026, 10, 28)
+    assert L.judge_utc(legs[0], legs[0]["_day"]) == dt.datetime(2026, 10, 27, 21, 0, tzinfo=L.UTC)   # 水 06:00 JST
+    now = dt.datetime(2026, 10, 28, 1, 58, tzinfo=L.JST); legs = L.legs_for_slot(now); assert [l["id"] for l in legs] == ["AUDJPY_W02"] and legs[0]["_day"] == dt.date(2026, 10, 28)
+    now = dt.datetime(2026, 10, 27, 0, 58, tzinfo=L.JST); legs = L.legs_for_slot(now); assert [l["id"] for l in legs] == ["EURJPY_T01"]
+    now = dt.datetime(2026, 10, 28, 23, 58, tzinfo=L.JST); assert L.legs_for_slot(now) == []   # 木 00:00 には脚が無い
 
 def test_judge_time_utc():
     leg = next(l for l in L.MENU if l["id"] == "EURJPY_N6"); assert L.judge_utc(leg, MON) == dt.datetime(2026, 10, 26, 21, 0, tzinfo=L.UTC)
@@ -84,7 +97,7 @@ def test_run_entries_skips_missing_contract_and_records_csv(monkeypatch):
         now = dt.datetime(2026, 10, 26, 22, 58, tzinfo=L.JST)   # 月曜 23:00 の EURGBP だけが対象
         assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), now) == 0
         rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
-        assert len(rows) == 2 and rows[1].startswith("2026-10-26,EURGBP_N6L,EURGBP,LOW,1.95,7500,1,176.1,EURGBP|FE|23H|HIGHLOW|LOW")
+        assert len(rows) == 2 and rows[1].startswith("2026-10-26,EURGBP_N6L,EURGBP,LOW,1.95,2300,1,176.1,EURGBP|FE|23H|HIGHLOW|LOW")
         assert [p for p, _ in calls] == ["/trading/health", "/wallet/balance", "/trading/buy"]
         # 同じ日に再実行しても二重発注しない
         assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), now) == 0 and [p for p, _ in calls].count("/trading/buy") == 1

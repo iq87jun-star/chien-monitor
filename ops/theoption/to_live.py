@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""theoption 本番メニューの自動発注 v1.0(既定はお試し口座。実口座は to_config.json の二重オプトインが要る)。
-メニュー: theoption_validation/README.md 追補18(確定10本・DD予算30万円のEdge比例配分)。
-動作(タスク chien_theoption_live_*: 月 06:58 / 月 10:58 / 毎日 22:58 に起動 → 直後の定刻の脚だけ実行して終了):
+"""theoption 本番メニューの自動発注 v1.2(既定はお試し口座。実口座は to_config.json の二重オプトインが要る)。
+メニュー: theoption_validation/README.md 追補29補足(現行4脚+勝率上位10セル=14本、DD予算30万円のEdge比例配分、月期待 +50,153円)。
+動作(タスク chien_theoption_live_*: 月 06:58/09:58/12:58/13:58/15:58/17:58/20:58、火 00:58/23:58、水 01:58、毎日 22:58 に起動 → 直後の定刻の脚だけ実行して終了。
+      日付をまたぐ定刻(火 23:58 起動 → 水 00:00 建て)は翌日の脚として扱う):
   1. ガード: 口座種別に合うキー(お試し= JWT iss が TheOptionDemo)。health → 残高 ≥ 今回のベット合計。
   2. 定刻(HH:MM:10 JST)に contracts ストリームを 20 秒集め、「銘柄 | FE | * | HIGHLOW | HIGH/LOW」で判定時刻が一致する契約を選ぶ
      (期間ラベルは問わない。無ければ「契約なし」で見送り=判定時刻が未確認の脚を安全に扱う)。
@@ -15,20 +16,31 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.1"
+VERSION = "1.2"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
          "real": ("https://api.theoption.com/v1", "wss://gateway.theoption.com/v1/ws")}
-MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 120000   # 1 日のベット合計の上限(月曜 83,500 + EURGBP 5,000 に余裕)
+MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 120000   # 1 日のベット合計の上限(v1.2 月曜 11 本 54,000 円、倍率 2.0 で 1.5 倍でも 81,000)
 # 確定メニュー(追補18)。entry = JST の定刻、judge = 判定時刻 JST(next=翌日)、wds = 曜日(0=月)、months = 対象月(None=全月)
 MENU = [
- # v1.1 (2026-10-26 追補23): 月曜 07:00 に 1H 契約は無く(1H は 08:00 から)、23H の判定時刻は翌 06:00 のみ
- #   → 1H×4・GBPJPY→14 時・AUDJPY 11→翌 10 時は商品が無いため除外。実行可能 4 本を DD 予算 30 万円で再配分(月期待 +38,971 円)。
- dict(id="EURJPY_N6",   pair="EURJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=16000, wds=[0], months=None, kind="23H"),
- dict(id="AUDJPY_N6",   pair="AUDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=17000, wds=[0], months=None, kind="23H"),
- dict(id="NZDJPY_N6",   pair="NZDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=14000, wds=[0], months=None, kind="23H"),
- dict(id="EURGBP_N6L",  pair="EURGBP", sel="LOW",  entry="23:00", judge="06:00", next=True,  stake=7500,  wds=[0,1,2,4], months=[1,4,5,7,8,9,10,11], kind="23H"),
+ # v1.2 (2026-10-27 追補29補足): 現行4脚 + 勝率上位10セル(2,753セル走査→ゲート通過122→全期間勝率順)。DD予算30万円のEdge比例配分(100円丸め)。
+ #   上位10の8本は月曜セッションの円クロスHIGHを建て時刻違いで複製したもの(=月曜脚の分割エントリー)、新規は GBPJPY 水00:00 と AUDJPY 水02:00。
+ #   next=False の脚は同日 06:00 判定(深夜建て)。wds は「建てる日」の曜日(火 01:00 建て→wds=[1])。
+ dict(id="EURJPY_N6",   pair="EURJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=5100, wds=[0], months=None, kind="23H"),
+ dict(id="AUDJPY_N6",   pair="AUDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=5300, wds=[0], months=None, kind="23H"),
+ dict(id="NZDJPY_N6",   pair="NZDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=4400, wds=[0], months=None, kind="23H"),
+ dict(id="AUDJPY_M10",  pair="AUDJPY", sel="HIGH", entry="10:00", judge="06:00", next=True,  stake=5400, wds=[0], months=None, kind="23H"),
+ dict(id="EURJPY_M13",  pair="EURJPY", sel="HIGH", entry="13:00", judge="06:00", next=True,  stake=5400, wds=[0], months=None, kind="23H"),
+ dict(id="EURJPY_M14",  pair="EURJPY", sel="HIGH", entry="14:00", judge="06:00", next=True,  stake=5200, wds=[0], months=None, kind="23H"),
+ dict(id="USDJPY_M14",  pair="USDJPY", sel="HIGH", entry="14:00", judge="06:00", next=True,  stake=5200, wds=[0], months=None, kind="23H"),
+ dict(id="EURJPY_M16",  pair="EURJPY", sel="HIGH", entry="16:00", judge="06:00", next=True,  stake=5700, wds=[0], months=None, kind="23H"),
+ dict(id="USDJPY_M18",  pair="USDJPY", sel="HIGH", entry="18:00", judge="06:00", next=True,  stake=5100, wds=[0], months=None, kind="23H"),
+ dict(id="EURJPY_M21",  pair="EURJPY", sel="HIGH", entry="21:00", judge="06:00", next=True,  stake=4900, wds=[0], months=None, kind="23H"),
+ dict(id="EURGBP_N6L",  pair="EURGBP", sel="LOW",  entry="23:00", judge="06:00", next=True,  stake=2300, wds=[0,1,2,4], months=[1,4,5,7,8,9,10,11], kind="23H"),
+ dict(id="EURJPY_T01",  pair="EURJPY", sel="HIGH", entry="01:00", judge="06:00", next=False, stake=5100, wds=[1], months=None, kind="23H"),   # 月曜セッション末尾(火 01:00 建て→火 06:00)
+ dict(id="GBPJPY_W00",  pair="GBPJPY", sel="HIGH", entry="00:00", judge="06:00", next=False, stake=5200, wds=[2], months=None, kind="23H"),   # 火曜セッション末尾(水 00:00 建て→水 06:00)
+ dict(id="AUDJPY_W02",  pair="AUDJPY", sel="HIGH", entry="02:00", judge="06:00", next=False, stake=4900, wds=[2], months=None, kind="23H"),   # 同上(水 02:00 建て→水 06:00)
 ]
 MIN_PAYOUT = {"1H": 1.85, "23H": 1.90}; BOOST_PAYOUT = 2.0; BOOST_MULT = 1.5
 
@@ -83,12 +95,14 @@ def is_due_today(leg, day):
     return day.weekday() in leg["wds"] and (leg["months"] is None or day.month in leg["months"])
 
 def legs_for_slot(now_jst, window_min=5):
-    """今から window_min 分以内に定刻が来る(または定刻から 3 分以内の)脚。"""
-    day = now_jst.date(); out = []
-    for leg in MENU:
-        if not is_due_today(leg, day): continue
-        t = jst(day, leg["entry"]); d = (t - now_jst).total_seconds()
-        if -180 <= d <= window_min * 60: out.append(leg)
+    """今から window_min 分以内に定刻が来る(または定刻から 3 分以内の)脚。日付をまたぐ定刻(23:58 起動→00:00 建て)は翌日の脚として拾う。
+    返す脚には "_day"(建てる日)が付く(同じ時間帯の脚は同じ日)。"""
+    out = []
+    for day in (now_jst.date(), now_jst.date() + dt.timedelta(days=1)):
+        for leg in MENU:
+            if not is_due_today(leg, day): continue
+            t = jst(day, leg["entry"]); d = (t - now_jst).total_seconds()
+            if -180 <= d <= window_min * 60: out.append(dict(leg, _day=day))
     return out
 
 def stake_for(leg, payout):
@@ -174,8 +188,9 @@ def sleep_until(t):
         time.sleep(min(s, 30))
 
 def run_entries(account, key, out_dir, log, now_jst):
-    base, wss = HOSTS[account]; day = now_jst.date(); legs = legs_for_slot(now_jst)
+    base, wss = HOSTS[account]; legs = legs_for_slot(now_jst)
     if not legs: log.say("この時間帯に実行する脚は無い"); return 0
+    day = legs[0]["_day"]   # v1.2: 建てる日(深夜の脚は起動日の翌日)。state/CSV/契約照合はすべてこの日で扱う
     state_path = os.path.join(out_dir, "_diag", "live_state.json"); os.makedirs(os.path.dirname(state_path), exist_ok=True)
     try: state = json.load(open(state_path, encoding="utf-8"))
     except Exception: state = {}
