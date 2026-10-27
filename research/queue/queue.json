@@ -2464,14 +2464,22 @@
    "cells": 0,
    "order": 17.53,
    "note": "docs/349 §9f の保留分。legs() に mon2_cadchf・mon_ger40 を追加し、FN 14166201 の funded を C6(mon2 3.0・ger40 1.5・roll 3.0)に置き換えた config で optimizer_daily と同じ MC を回し、現行(hold_uw 2.22・roll 4.5)と比較。config の更新は結果を見てから(「切替」不要・研究側のみ)",
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/381_q152_portfolio_c6.md"
    ],
    "registered": "2026-10-25",
-   "program": "docs/244 週次アイデア束 #2(CFD)"
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "C6 置換で帳簿期待 380 → 376 万(−1%)・FN 1 年失格 33.7 → 13.0%・全口座無事 44 → 60%。価値は失格回避。10.6 年近似では mon2 年率 0.8%(2021-10 以降 2.4%)。切替維持・config は配備時に更新",
+   "runs": [
+    {
+     "date": "2026-10-27",
+     "summary": "docs/381(診断・セル 0・legs 追加)"
+    }
+   ]
   },
   {
    "id": "Q153",
@@ -3748,6 +3756,13 @@
    "item": "Q151",
    "cells": 0,
    "doc": "docs/380_q151_fn14166201_c6_ea.md"
+  },
+  {
+   "date": "2026-10-27",
+   "slot": "evening",
+   "item": "Q152",
+   "cells": 0,
+   "doc": "docs/381_q152_portfolio_c6.md"
   }
  ],
  "external_checks": [

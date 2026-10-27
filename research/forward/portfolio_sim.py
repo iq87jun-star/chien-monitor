@@ -20,7 +20,8 @@ def legs():
         holdxau = on_cal(base.hold_cell("XAUUSD")); roll = on_cal(roll5())
         _LEGS = dict(mon4=mon4, bplan=L("Mon", "GBPJPY") * 0.374 + L("Mon", "AUDJPY") * 0.322 + L("v4", "USDJPY") * 0.304, idx=nas + spx, holdxau=holdxau, roll=roll,
                      hold_uw=L("Hold", "UK100") * 0.491 + L("Hold", "WTI") * 0.153, btc=L("v4nfx", "BTCUSD") * 0.211, mon3=L("Mon", "EURJPY") * 0.333 + L("Mon", "USDJPY") * 0.333 + L("Mon", "NZDJPY") * 0.334,
-                     a9=(holdxau + L("Mon", "GBPJPY") + nas) / 3, instG=L("Mon", "GBPJPY") * 0.537 * 4 + L("Mon", "AUDJPY") * 0.463 * 4 + (nas + spx) * 0.125 * 4)
+                     a9=(holdxau + L("Mon", "GBPJPY") + nas) / 3, instG=L("Mon", "GBPJPY") * 0.537 * 4 + L("Mon", "AUDJPY") * 0.463 * 4 + (nas + spx) * 0.125 * 4,
+                     mon2_cadchf=(L("Mon", "CADJPY") + L("Mon", "CHFJPY")) * 0.5, mon_ger40=on_cal(base.mon_cell("GER40")))   # 2026-10-27 docs/381 Q152: C6(FN 14166201)用
     return _LEGS
 def book(spec):
     """spec: {"mon4": 8, "idx": 1.0, ...} → 日次リターン系列"""
