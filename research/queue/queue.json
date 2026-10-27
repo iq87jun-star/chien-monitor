@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 10057,
+ "cumulative_cells": 10060,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
  "items": [
   {
@@ -2488,14 +2488,22 @@
    "cells": 3,
    "order": 17.54,
    "note": "Q134(docs/352)の拡張。withdrawal_policy_mc.py の枠組みで、出金頻度 {21 営業日, 10, 1} × 残し 5% の 3 セル。指標 = 12 か月の失格率と出金合計(Q131 併用)。改良系ではなく診断(セルは数える)",
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/382_q153_payout_cycle_buffer.md"
    ],
    "registered": "2026-10-25",
-   "program": "docs/244 週次アイデア束 #2(CFD)"
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "棄却(診断): サイクル短縮は悪化。残し 5% で月次 3,377 → 隔週 2,519 → 毎日 1,712 万(12 か月)・失格 1.5〜2 倍。現行(月次・残し 20%・半分)4,497 万が最良。Q131 併用下では出金頻度が倍率を削る。出金規則は変更しない",
+   "runs": [
+    {
+     "date": "2026-10-28",
+     "summary": "docs/382(診断・セル 3・累積 10,060)"
+    }
+   ]
   },
   {
    "id": "Q154",
