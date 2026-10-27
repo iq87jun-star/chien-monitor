@@ -44,8 +44,8 @@ def test_slot_crossing_midnight_uses_next_day():
     now = dt.datetime(2026, 10, 28, 23, 58, tzinfo=L.JST); assert L.legs_for_slot(now) == []   # 木 00:00 には脚が無い
 
 def test_judge_time_utc():
-    leg = next(l for l in L.MENU if l["id"] == "EURJPY_N6"); assert L.judge_utc(leg, MON) == dt.datetime(2026, 10, 26, 21, 0, tzinfo=L.UTC)
-    leg = next(l for l in L.MENU if l["id"] == "EURGBP_N6L"); assert L.judge_utc(leg, MON) == dt.datetime(2026, 10, 26, 21, 0, tzinfo=L.UTC)
+    leg = next(l for l in L.MENU if l["id"] == "EURJPY_M16"); assert L.judge_utc(leg, MON) == dt.datetime(2026, 10, 26, 21, 0, tzinfo=L.UTC)   # 月 16:00 建て→火 06:00
+    leg = next(l for l in L.MENU if l["id"] == "EURJPY_T01"); assert L.judge_utc(leg, dt.date(2026, 10, 27)) == dt.datetime(2026, 10, 26, 21, 0, tzinfo=L.UTC)   # 火 01:00 建て→火 06:00(同日)
 
 def upd(name, exp, payout="1.95", status="Open"):
     return {"type": "update", "key": name + "|x", "values": {"contract": json.dumps({"name": name, "status": status, "expiration_time": exp, "payout_multiplier": payout})}}
@@ -57,11 +57,11 @@ def test_pick_contract_by_pair_selection_and_judge_time():
               upd("EURJPY|FE|23H|SPREAD|HIGH",  "2026-10-26T21:00:00.000Z", "2.0"),
               upd("GBPJPY|FE|1H|HIGHLOW|HIGH",  "2026-10-25T23:00:00.000Z", "1.9"),
               upd("GBPJPY|FE|7H|HIGHLOW|HIGH",  "2026-10-26T05:00:00.000Z", "1.95")]   # 期間ラベルが未知でも判定時刻で拾う
-    leg = next(l for l in L.MENU if l["id"] == "EURJPY_N6"); c = L.pick_contract(frames, leg, MON)
+    leg = next(l for l in L.MENU if l["id"] == "EURJPY_M16"); c = L.pick_contract(frames, leg, MON)
     assert c["name"] == "EURJPY|FE|23H|HIGHLOW|HIGH" and c["payout"] == "1.95"
     leg14 = dict(id="GBPJPY_14", pair="GBPJPY", sel="HIGH", entry="07:00", judge="14:00", next=False, stake=1000, wds=[0], months=None, kind="23H")
     assert L.pick_contract(frames, leg14, MON)["name"] == "GBPJPY|FE|7H|HIGHLOW|HIGH"   # 期間ラベルが未知でも判定時刻で拾う
-    leg = next(l for l in L.MENU if l["id"] == "AUDJPY_N6"); assert L.pick_contract(frames, leg, MON) is None   # 無い脚は None → 見送り
+    leg = next(l for l in L.MENU if l["id"] == "AUDJPY_M10"); assert L.pick_contract(frames, leg, MON) is None   # 無い脚は None → 見送り
 
 def test_payout_rule():
     leg1h = dict(id="X_1H", pair="AUDJPY", sel="HIGH", entry="08:00", judge="09:00", next=False, stake=8000, wds=[0], months=None, kind="1H")
