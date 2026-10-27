@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""theoption 本番メニューの自動発注 v1.2(既定はお試し口座。実口座は to_config.json の二重オプトインが要る)。
-メニュー: theoption_validation/README.md 追補29補足(現行4脚+勝率上位10セル=14本、DD予算30万円のEdge比例配分、月期待 +50,153円)。
+"""theoption 本番メニューの自動発注 v1.3(既定はお試し口座。実口座は to_config.json の二重オプトインが要る)。
+メニュー: theoption_validation/README.md 追補29裁定(勝率上位10セルのみ・既存4脚なし、DD予算40万円のEdge比例配分、月期待 +69,646円)。
 動作(タスク chien_theoption_live_*: 月 06:58/09:58/12:58/13:58/15:58/17:58/20:58、火 00:58/23:58、水 01:58、毎日 22:58 に起動 → 直後の定刻の脚だけ実行して終了。
       日付をまたぐ定刻(火 23:58 起動 → 水 00:00 建て)は翌日の脚として扱う):
   1. ガード: 口座種別に合うキー(お試し= JWT iss が TheOptionDemo)。health → 残高 ≥ 今回のベット合計。
@@ -16,31 +16,27 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.2"
+VERSION = "1.3"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
          "real": ("https://api.theoption.com/v1", "wss://gateway.theoption.com/v1/ws")}
-MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 120000   # 1 日のベット合計の上限(v1.2 月曜 11 本 54,000 円、倍率 2.0 で 1.5 倍でも 81,000)
+MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 120000   # 1 日のベット合計の上限(v1.3 月曜 7 本 67,600 円、倍率 2.0 で 1.5 倍でも 101,400)
 # 確定メニュー(追補18)。entry = JST の定刻、judge = 判定時刻 JST(next=翌日)、wds = 曜日(0=月)、months = 対象月(None=全月)
 MENU = [
- # v1.2 (2026-10-27 追補29補足): 現行4脚 + 勝率上位10セル(2,753セル走査→ゲート通過122→全期間勝率順)。DD予算30万円のEdge比例配分(100円丸め)。
- #   上位10の8本は月曜セッションの円クロスHIGHを建て時刻違いで複製したもの(=月曜脚の分割エントリー)、新規は GBPJPY 水00:00 と AUDJPY 水02:00。
+ # v1.3 (2026-10-27 追補29裁定): 勝率上位10セルのみ(既存4脚は外す)。2,753セル走査→ゲート通過122→全期間勝率順の上位10。DD予算40万円のEdge比例配分(100円丸め)。
+ #   8本は月曜セッションの円クロスHIGH(建て時刻違い=分割エントリー)、2本は深夜建て(水 00:00 GBPJPY / 水 02:00 AUDJPY)。
  #   next=False の脚は同日 06:00 判定(深夜建て)。wds は「建てる日」の曜日(火 01:00 建て→wds=[1])。
- dict(id="EURJPY_N6",   pair="EURJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=5100, wds=[0], months=None, kind="23H"),
- dict(id="AUDJPY_N6",   pair="AUDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=5300, wds=[0], months=None, kind="23H"),
- dict(id="NZDJPY_N6",   pair="NZDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=4400, wds=[0], months=None, kind="23H"),
- dict(id="AUDJPY_M10",  pair="AUDJPY", sel="HIGH", entry="10:00", judge="06:00", next=True,  stake=5400, wds=[0], months=None, kind="23H"),
- dict(id="EURJPY_M13",  pair="EURJPY", sel="HIGH", entry="13:00", judge="06:00", next=True,  stake=5400, wds=[0], months=None, kind="23H"),
- dict(id="EURJPY_M14",  pair="EURJPY", sel="HIGH", entry="14:00", judge="06:00", next=True,  stake=5200, wds=[0], months=None, kind="23H"),
- dict(id="USDJPY_M14",  pair="USDJPY", sel="HIGH", entry="14:00", judge="06:00", next=True,  stake=5200, wds=[0], months=None, kind="23H"),
- dict(id="EURJPY_M16",  pair="EURJPY", sel="HIGH", entry="16:00", judge="06:00", next=True,  stake=5700, wds=[0], months=None, kind="23H"),
- dict(id="USDJPY_M18",  pair="USDJPY", sel="HIGH", entry="18:00", judge="06:00", next=True,  stake=5100, wds=[0], months=None, kind="23H"),
- dict(id="EURJPY_M21",  pair="EURJPY", sel="HIGH", entry="21:00", judge="06:00", next=True,  stake=4900, wds=[0], months=None, kind="23H"),
- dict(id="EURGBP_N6L",  pair="EURGBP", sel="LOW",  entry="23:00", judge="06:00", next=True,  stake=2300, wds=[0,1,2,4], months=[1,4,5,7,8,9,10,11], kind="23H"),
- dict(id="EURJPY_T01",  pair="EURJPY", sel="HIGH", entry="01:00", judge="06:00", next=False, stake=5100, wds=[1], months=None, kind="23H"),   # 月曜セッション末尾(火 01:00 建て→火 06:00)
- dict(id="GBPJPY_W00",  pair="GBPJPY", sel="HIGH", entry="00:00", judge="06:00", next=False, stake=5200, wds=[2], months=None, kind="23H"),   # 火曜セッション末尾(水 00:00 建て→水 06:00)
- dict(id="AUDJPY_W02",  pair="AUDJPY", sel="HIGH", entry="02:00", judge="06:00", next=False, stake=4900, wds=[2], months=None, kind="23H"),   # 同上(水 02:00 建て→水 06:00)
+ dict(id="AUDJPY_M10",  pair="AUDJPY", sel="HIGH", entry="10:00", judge="06:00", next=True,  stake=9800,  wds=[0], months=None, kind="23H"),
+ dict(id="EURJPY_M13",  pair="EURJPY", sel="HIGH", entry="13:00", judge="06:00", next=True,  stake=9800,  wds=[0], months=None, kind="23H"),
+ dict(id="EURJPY_M14",  pair="EURJPY", sel="HIGH", entry="14:00", judge="06:00", next=True,  stake=9600,  wds=[0], months=None, kind="23H"),
+ dict(id="USDJPY_M14",  pair="USDJPY", sel="HIGH", entry="14:00", judge="06:00", next=True,  stake=9600,  wds=[0], months=None, kind="23H"),
+ dict(id="EURJPY_M16",  pair="EURJPY", sel="HIGH", entry="16:00", judge="06:00", next=True,  stake=10400, wds=[0], months=None, kind="23H"),
+ dict(id="USDJPY_M18",  pair="USDJPY", sel="HIGH", entry="18:00", judge="06:00", next=True,  stake=9400,  wds=[0], months=None, kind="23H"),
+ dict(id="EURJPY_M21",  pair="EURJPY", sel="HIGH", entry="21:00", judge="06:00", next=True,  stake=9000,  wds=[0], months=None, kind="23H"),
+ dict(id="EURJPY_T01",  pair="EURJPY", sel="HIGH", entry="01:00", judge="06:00", next=False, stake=9400,  wds=[1], months=None, kind="23H"),   # 月曜セッション末尾(火 01:00 建て→火 06:00)
+ dict(id="GBPJPY_W00",  pair="GBPJPY", sel="HIGH", entry="00:00", judge="06:00", next=False, stake=9600,  wds=[2], months=None, kind="23H"),   # 火曜セッション末尾(水 00:00 建て→水 06:00)
+ dict(id="AUDJPY_W02",  pair="AUDJPY", sel="HIGH", entry="02:00", judge="06:00", next=False, stake=8900,  wds=[2], months=None, kind="23H"),   # 同上(水 02:00 建て→水 06:00)
 ]
 MIN_PAYOUT = {"1H": 1.85, "23H": 1.90}; BOOST_PAYOUT = 2.0; BOOST_MULT = 1.5
 
