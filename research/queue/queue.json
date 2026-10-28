@@ -1487,16 +1487,23 @@
    "slug": "topaz_eth_mon_missing",
    "title": "トパーズ Mon の指数 2 本(NAS100 / US500)と旧 ETHUSDp が建たない原因 — 銘柄解決・スプレッド上限・建て時刻",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/241_deployment_register_2026-09-14.md"
    ],
    "note": "10/5 に ETHUSDp の Mon 建玉なし・ログに理由なし。EA11 のスプレッド上限 45 pip・ResolveSymbol・取引時間を点検し、必要なら v+0.01 でログ行を追加 【10/28 ダイジェスト】positions.csv で v1.15(10/12)以降トパーズに指数 Mon の建玉が 1 本も無いことを確認。10/27 11:00 の v1.17 INIT で「NAS100 を解決できず→スキップ」(US500 → US500p は解決)。原因候補: (a) Fintokei の Nasdaq 銘柄名が NAS100 系でない(全銘柄走査でも不一致・ユーザーに気配値表示の名称を確認)、(b) InpMonSpreadCaps に指数が無く既定 3.0 pip が指数に適用され常時見送り(Instant G は bps 上限 3.0)、(c) 建て時刻が FX と同じ 4/6/8/10 UTC で米国現物寄り前(Instant G / EA9 は 13:30 UTC +8 分)。v1.18 で G 型(bps 上限・米国寄り窓・別名)を移植する案。配備は「切替」の後",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 19
+   "order": 19,
+   "result": "原因確定(10/28 Util 診断): Fintokei の Nasdaq は US100p(NAS100 は名称不一致で未解決)、US500p は円クロス用 3.0 pip 上限(実スプレッド 57 pt)で常時見送り。旧 ETHUSDp も同じ上限の問題。EA11 v1.18(実名・bps 上限・米国寄り単発)を用意、配備は「切替」待ち",
+   "runs": [
+    {
+     "date": "2026-10-28",
+     "summary": "docs/241 §1af(工学・セル 0)"
+    }
+   ]
   },
   {
    "id": "Q102",
