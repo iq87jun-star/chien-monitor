@@ -12,7 +12,7 @@ def test_parse_name():
     d = P.parse_name("BTCJPY|FE|15M|HIGHLOW|HIGH|2026_08_10_14_05_00")
     assert (d["asset"], d["exp"], d["dur"], d["product"], d["sel"], d["stamp"]) == ("BTCJPY", "FE", "15M", "HIGHLOW", "HIGH", "2026_08_10_14_05_00")
     assert P.parse_name("USDJPY|FD|30S|TOUCH|LOW")["sel"] == "LOW"
-    assert P.is_target("USDJPY|FD|1H|HIGHLOW|HIGH") and P.is_target("EURJPY|FD|22H|HIGHLOW|HIGH") and not P.is_target("EURJPY|FD|5M|HIGHLOW|HIGH") and not P.is_target("USDJPY|FE|1H|HIGHLOW|HIGH") and not P.is_target("BTCJPY|FD|1H|HIGHLOW|HIGH")
+    assert P.is_target("USDJPY|FD|1H|HIGHLOW|HIGH") and P.is_target("EURJPY|FD|22H|HIGHLOW|HIGH") and not P.is_target("EURJPY|FD|5M|HIGHLOW|HIGH") and P.is_target("USDJPY|FE|1H|HIGHLOW|HIGH") and not P.is_target("USDJPY|XX|1H|HIGHLOW|HIGH") and not P.is_target("BTCJPY|FD|1H|HIGHLOW|HIGH")   # v0.4 で FE 満期も対象
 
 def test_recorder_and_summary(capsys):
     with tempfile.TemporaryDirectory() as tmp:
@@ -48,7 +48,7 @@ def test_ws_roundtrip_with_fake_gateway():
                 return r
     r = asyncio.run(run())
     assert got["auth"] == "Bearer KEY" and got["sub"] == {"type": "subscribe", "reqId": "1", "stream": "contracts"}
-    assert got["data_sub"]["stream"] == "contract_data" and got["data_sub"]["key"] == "GBPJPY|FD|1H|HIGHLOW|HIGH"
+    assert got["data_sub"]["stream"] == "contract_data" and got["data_sub"]["contract"] == "GBPJPY|FD|1H|HIGHLOW|HIGH"   # 購読は "contract" 欄(to_tenbai / to_live と同じ)
     assert "GBPJPY|FD|1H|HIGHLOW|HIGH" in r.first_seen
 
 def test_never_trades():
