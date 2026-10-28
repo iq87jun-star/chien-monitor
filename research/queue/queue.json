@@ -2527,14 +2527,22 @@
    "cells": 0,
    "order": 17.55,
    "note": "docs/370 §5 B。現行 config の口座別・月次出金分布(portfolio_sim)から、分配 +5pt / +10pt の期待増分を算出し、アドオン価格との損益分岐(何か月で回収)を表にする。価格はユーザーが公式で確認して入力(未入力なら価格の関数で表示)",
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/384_q154_split_addon_breakeven.md"
    ],
    "registered": "2026-10-25",
-   "program": "docs/244 週次アイデア束 #2(CFD)"
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "FN Lifetime 95% は審査料 +30%(2-Step/Lite)・+25%(1-Step)で分配 80→95%(×1.19)。E[累計出金] > 1.6×審査料 で得、Q88 の FN 25k なら 8 倍 → 新規 FN 購入時は必須。Fintokei の +10% は公式に無し(要書面確認)。既存口座は後付け不可",
+   "runs": [
+    {
+     "date": "2026-10-28",
+     "summary": "docs/384(診断・セル 0)"
+    }
+   ]
   },
   {
    "id": "Q155",
