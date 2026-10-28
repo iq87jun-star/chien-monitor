@@ -2551,14 +2551,22 @@
    "cells": 0,
    "order": 17.56,
    "note": "docs/370 §5 C。FTMO 50k ×2(本口座・EA8 ×6 dyn1 k1.5・EA3 ×6)の月次系列 MC で「4 か月連続 +10%」の 12 / 24 か月内到達確率と、到達時の期待出金増分。条件は FTMO 公式の文言を docs に転記(未確認なら仮定を明記)",
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/385_q155_ftmo_scaling_reach.md"
    ],
    "registered": "2026-10-25",
-   "program": "docs/244 週次アイデア束 #2(CFD)"
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "FTMO 50k ×2: 初回スケール 12m 70〜73% / 24m 83〜85%(中央 6 か月)。24m 出金 643 → 1,213 万(+89%)/口座。現行の残し 20%・半分が 5 変形で最良。スケール時に EA 基準残高を更新する手順を提案",
+   "runs": [
+    {
+     "date": "2026-10-29",
+     "summary": "docs/385(診断・セル 0)"
+    }
+   ]
   }
  ],
  "runs": [
