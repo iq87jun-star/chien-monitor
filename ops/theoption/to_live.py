@@ -167,7 +167,7 @@ def append_csv(path, header, row):
 def load_account(out_dir):
     """to_config.json の live_real が true かつ THEOPTION_API_KEY_REAL が有るときだけ実口座。それ以外はお試し。"""
     cfg = {}
-    try: cfg = json.load(open(os.path.join(HERE, "to_config.json"), encoding="utf-8"))
+    try: cfg = json.load(open(os.path.join(HERE, "to_config.json"), encoding="utf-8-sig"))   # v1.3a: to_setup.ps1(PS 5.1 の Set-Content UTF8)は BOM 付きで書く。utf-8 だと読めず黙ってお試しに戻っていた
     except Exception: pass
     if cfg.get("live_real") is True and os.environ.get("THEOPTION_API_KEY_REAL", "").strip():
         return "real", os.environ["THEOPTION_API_KEY_REAL"].strip()

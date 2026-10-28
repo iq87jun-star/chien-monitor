@@ -83,6 +83,15 @@ def test_default_account_is_demo_without_double_opt_in(monkeypatch):
     assert L.load_account("x") == ("real", REAL)
     monkeypatch.delenv("THEOPTION_API_KEY_REAL"); assert L.load_account("x")[0] == "demo"
 
+def test_config_with_bom_is_read(monkeypatch):
+    # to_setup.ps1(PS 5.1 の Set-Content -Encoding UTF8)が書く BOM 付き to_config.json でも live_real を読めること
+    monkeypatch.setenv("THEOPTION_API_KEY", DEMO); monkeypatch.setenv("THEOPTION_API_KEY_REAL", REAL)
+    monkeypatch.setattr(L, "HERE", tempfile.mkdtemp())
+    with open(os.path.join(L.HERE, "to_config.json"), "w", encoding="utf-8-sig") as f: json.dump({"out": "x", "live_real": True}, f)
+    assert L.load_account("x") == ("real", REAL)
+    with open(os.path.join(L.HERE, "to_config.json"), "w", encoding="utf-8-sig") as f: json.dump({"out": "x"}, f)
+    assert L.load_account("x")[0] == "demo"
+
 def test_run_entries_skips_missing_contract_and_records_csv(monkeypatch):
     calls = []
     def fake_rest(base, path, key, body=None, timeout=15):
