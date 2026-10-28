@@ -62,5 +62,12 @@ def test_write_summary_files():
         assert "USDJPY|FD|1H|HIGHLOW|HIGH" in open(os.path.join(tmp, "probe_demo_20261026_0525.summary.txt"), encoding="utf-8").read()
         assert "targets=1" in open(os.path.join(tmp, "_diag", "last_run.txt"), encoding="utf-8").read()
 
+def test_task_settings_ps_allows_battery_and_wake():
+    ps = P.task_settings_ps(["chien_theoption_live_1000", "chien_mtlog_sync"])
+    assert "'chien_theoption_live_1000','chien_mtlog_sync'" in ps
+    for k in ("$s.DisallowStartIfOnBatteries = $false", "$s.StopIfGoingOnBatteries = $false", "$s.WakeToRun = $true", "$s.StartWhenAvailable = $true", "Set-ScheduledTask"):
+        assert k in ps
+    assert ps.isascii() or all(ord(c) < 128 for c in ps.split("'fixed ")[1])   # 出力メッセージは ASCII
+
 def test_ensure_tasks_noop_off_windows():
     assert P.ensure_tasks() == [] or os.name == "nt"

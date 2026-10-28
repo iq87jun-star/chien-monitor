@@ -72,7 +72,20 @@ def ensure_tasks():
         sc = ["/SC", "DAILY"] if day is None else ["/SC", "WEEKLY", "/D", day]   # v0.6
         r = subprocess.run(["schtasks", "/Create"] + sc + ["/ST", at, "/TN", name, "/TR", tr, "/F"], capture_output=True, text=True)
         made.append((name, r.returncode)); print("タスク登録:", name, day, at, "ok" if r.returncode == 0 else r.stderr.strip())
+    try:   # v1.3b: 登録済みのものも含めて毎回そろえる(設定済みなら何もしない)。失敗しても記録は続ける
+        r = subprocess.run(["powershell", "-NoProfile", "-Command", task_settings_ps([t[0] for t in EXTRA_TASKS])], capture_output=True, text=True, timeout=120)
+        for line in (r.stdout or "").splitlines(): print("タスク設定:", line)
+    except Exception as e: print("タスク設定に失敗:", repr(e))
     return made
+
+def task_settings_ps(names):
+    """schtasks /Create の既定(バッテリー駆動では開始しない・バッテリーに切り替わると停止・スリープ解除しない)を直す PowerShell。
+    ノート PC で電源が外れていたりスリープ中だったりしても、記録・発注のタスクが止まらないようにする。出力は ASCII(cp932 の文字化けを避ける)。"""
+    lst = ",".join(f"'{n}'" for n in names)
+    return ("foreach ($n in @(" + lst + ")) { $t = Get-ScheduledTask -TaskName $n -ErrorAction SilentlyContinue; if (-not $t) { continue }; $s = $t.Settings; "
+            "if ($s.DisallowStartIfOnBatteries -or $s.StopIfGoingOnBatteries -or -not $s.WakeToRun -or -not $s.StartWhenAvailable) { "
+            "$s.DisallowStartIfOnBatteries = $false; $s.StopIfGoingOnBatteries = $false; $s.WakeToRun = $true; $s.StartWhenAvailable = $true; "
+            "Set-ScheduledTask -TaskName $n -Settings $s | Out-Null; 'fixed ' + $n + ' (battery ok, wake)' } }")
 
 def contract_json(values):
     """values.contract は JSON 文字列。壊れていれば None。"""
