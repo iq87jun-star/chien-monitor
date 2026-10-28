@@ -1391,16 +1391,24 @@
    "slug": "purchase_mc_2026-11",
    "title": "11 月購入候補の MC 比較(11/1 実行・10 月分までのレグ DB)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/383_q88_purchase_mc_2026-11.md"
    ],
    "note": "FTMO Std 100k+EA10 / Fintokei チャレンジ / FN Stellar / Alpha Capital Swing / The5ers。docs/318 §2 の業者上限を制約。実行日 2026-11-01 以降(10 月データが揃ってから)",
    "registered": "2026-10-01",
    "program": "docs/322",
-   "order": 14
+   "order": 14,
+   "result": "36 か月 MC(同一帳簿・残し 20%・半分出金): 1 位 The5ers HS 100k + A 案 ×1.5(年価値 177・到達 81 / 失格 15%)、2 位 FTMO Std 100k + EA10S ×2.0(128・74 / 17%・FTMO 比率上限のため 4 社目の後)、3 位 CTI(The5ers の代替)。E8 One は出金関門で出金月の 8 割繰り越し・失格 63% で見送り。FN 25k ×3・Fintokei・Alpha は対象外",
+   "runs": [
+    {
+     "date": "2026-10-28",
+     "summary": "docs/383(診断・セル 0・ユーザー指示で 11/1 から前倒し)"
+    }
+   ]
   },
   {
    "id": "Q97",
