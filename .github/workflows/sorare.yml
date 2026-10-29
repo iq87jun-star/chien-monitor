@@ -1,0 +1,74 @@
+# Sorare(sorare/)の J1 Rare 大会: 次節のラインナップを選んで Discord に送り、設定があれば登録する。
+#   - sorare/ を変更する push・PR: 単体テスト
+#   - 定期実行(毎日 20:17 JST): 節の開始(締切)が 24 時間以内の日だけ動く → 各節 1 回
+#   - 手動実行: force で時間に関係なく動く
+# リポジトリには書き込まない(他の自動更新・VPS の配備ブランチには触れない)。
+#
+# Secrets(未設定なら未ログインの提案だけ。手順は sorare/README.md):
+#   SORARE_DISCORD_WEBHOOK … 通知先
+#   SORARE_EMAIL / SORARE_PASSWORD / SORARE_OTP_SECRET … ログイン(2段階認証が無効なら OTP は不要)
+#   SORARE_API_KEY … 任意(API の上限が上がる)
+# Variables: SORARE_SUBMIT = true でラインナップを実際に登録する
+
+name: sorare
+
+on:
+  push:
+    paths: ["sorare/**", ".github/workflows/sorare.yml"]
+  pull_request:
+    paths: ["sorare/**", ".github/workflows/sorare.yml"]
+  schedule:
+    - cron: "17 11 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "締切までの時間に関係なく動かす"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sorare
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: sorare
+
+jobs:
+  test:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: sorare/package-lock.json
+      - run: npm ci
+      - run: npm test
+
+  lineup:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: sorare/package-lock.json
+      - run: npm ci
+      - run: node run.js
+        env:
+          SORARE_FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force && '1' || '' }}
+          SORARE_SUBMIT: ${{ vars.SORARE_SUBMIT }}
+          SORARE_DISCORD_WEBHOOK: ${{ secrets.SORARE_DISCORD_WEBHOOK }}
+          SORARE_EMAIL: ${{ secrets.SORARE_EMAIL }}
+          SORARE_PASSWORD: ${{ secrets.SORARE_PASSWORD }}
+          SORARE_OTP_SECRET: ${{ secrets.SORARE_OTP_SECRET }}
+          SORARE_API_KEY: ${{ secrets.SORARE_API_KEY }}
