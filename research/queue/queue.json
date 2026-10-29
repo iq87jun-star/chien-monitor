@@ -1526,16 +1526,24 @@
    "slug": "monthly_scoring_routine",
    "title": "実口座の月次採点(docs/219 系)の Routine 化",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/387_q102_monthly_scoring_routine.md"
    ],
    "note": "毎月 1 日の採点を ops_inbox の記録から自動実行し、月次改正案に載せる。手順は docs/219 系と同じ",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 20
+   "order": 20,
+   "result": "forward/monthly_scoring.py: ops_inbox から月次 %・族別・分布照合・R<0/5% 割れの連続回数を生成。試走 2026-10 は 9/10 口座プラス・5% 割れ 0。毎月 1 日のダイジェストに組み込み",
+   "runs": [
+    {
+     "date": "2026-10-30",
+     "summary": "docs/387(工学・セル 0)"
+    }
+   ]
   },
   {
    "id": "Q103",
