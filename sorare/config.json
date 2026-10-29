@@ -1,8 +1,33 @@
 {
-  "_comment": "J1 の Rare 大会に毎節ラインナップを組む設定。leaderboard は so5Fixture の slug の後ろに付く部分。 marketBudgetUsd / plusBudgetUsd は購入候補の最安プラン・プラスアルファプランの予算。sell は売却候補の条件(maxAge を超える年齢、minStartRate 未満のスタメン率、買値から gainPct% 以上の値上がり)と、出品の目安を最安出品から何 % 下げるか(undercutPct)。 trade は自動売買の設定(SORARE_TRADE=true の時だけ実行): 買うプラン(cheap / plus)、1枚と直近7日の購入額の上限、買ってから売らない日数、買値より下で出品しないか、決済と出品の通貨(WEI = ETH ウォレット、USD・EUR = キャッシュウォレット)。",
-  "competition": "j1-league",
-  "leaderboard": "seasonal-japan-in_season_japan_rare_pvp",
-  "rarity": "rare",
+  "_comment": "targets は毎節ラインナップを組む大会の一覧(enabled: false で止める)。各大会の項目は上の既定値に重ねる。leaderboard は so5Fixture の slug の後ろに付く部分、league は通知に出すリーグ名。 marketBudgetUsd / plusBudgetUsd は購入候補の最安プラン・プラスアルファプランの予算。sell は売却候補の条件(maxAge を超える年齢、minStartRate 未満のスタメン率、買値から gainPct% 以上の値上がり)と、出品の目安を最安出品から何 % 下げるか(undercutPct)。 trade は自動売買の設定(SORARE_TRADE=true の時だけ実行): 買うプラン(cheap / plus)、1枚と直近7日の購入額の上限(全大会の合計)、買ってから売らない日数、買値より下で出品しないか、決済と出品の通貨(WEI = ETH ウォレット、USD・EUR = キャッシュウォレット)。Jupiler Rare は最安でも 5 枚で $100 前後なので、使う時は weeklyMaxUsd も上げる。",
+  "targets": [
+    {
+      "name": "J1 Rare",
+      "league": "J1",
+      "competition": "j1-league",
+      "leaderboard": "seasonal-japan-in_season_japan_rare_pvp",
+      "rarity": "rare"
+    },
+    {
+      "name": "J1 Limited",
+      "league": "J1",
+      "competition": "j1-league",
+      "leaderboard": "seasonal-japan-in_season_japan_limited_pvp",
+      "rarity": "limited",
+      "marketBudgetUsd": 5,
+      "plusBudgetUsd": 10
+    },
+    {
+      "name": "Jupiler Rare",
+      "league": "ベルギー",
+      "competition": "jupiler-pro-league",
+      "leaderboard": "seasonal-jupiler-in_season_jupiler_rare",
+      "rarity": "rare",
+      "marketBudgetUsd": 120,
+      "plusBudgetUsd": 200,
+      "enabled": false
+    }
+  ],
   "seasonYear": 2026,
   "maxPerClub": 2,
   "marketBudgetUsd": 30,
