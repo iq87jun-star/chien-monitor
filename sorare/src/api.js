@@ -56,14 +56,28 @@ export function createClient({ apiKey = "", fetchImpl = fetch, sleep = (ms) => n
   return { gql, signIn, get authed() { return !!jwt; } };
 }
 
-export function totp(base32, now = Date.now(), step = 30, digits = 6) {
+// 秘密鍵は base32 の文字列のほか、QR コードの中身(otpauth://...?secret=...)も受け付ける。空白・ハイフン・= は無視する。
+export function normalizeOtpSecret(s) {
+  const t = s.trim();
+  if (/^otpauth:/i.test(t)) {
+    const m = t.match(/[?&]secret=([^&]+)/i);
+    if (!m) throw new SorareError("SORARE_OTP_SECRET の otpauth URL に secret= が無い");
+    return normalizeOtpSecret(decodeURIComponent(m[1]));
+  }
+  const v = t.replace(/[\s=-]/g, "").toUpperCase();
+  if (/^\d{6,8}$/.test(v)) throw new SorareError("SORARE_OTP_SECRET が数字だけ: 認証アプリの6桁のコードではなく、2段階認証を設定する時に出る英字の秘密鍵を登録してください");
+  const bad = [...v].filter((c) => !"ABCDEFGHIJKLMNOPQRSTUVWXYZ234567".includes(c));
+  if (bad.length) {
+    const kinds = [...new Set(bad.map((c) => (/[0189]/.test(c) ? "数字の0・1・8・9" : /[A-Z0-9]/.test(c) ? c : "記号")))];
+    throw new SorareError(`SORARE_OTP_SECRET に秘密鍵で使わない文字(${kinds.join("・")})が ${bad.length} 個ある(長さ ${v.length} 文字)。バックアップコードではなく、QR コードの横に出る英字の鍵か otpauth:// の URL を登録してください`);
+  }
+  return v;
+}
+
+export function totp(secret, now = Date.now(), step = 30, digits = 6) {
   const alpha = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
   let bits = "";
-  for (const c of base32.replace(/[\s=]/g, "").toUpperCase()) {
-    const v = alpha.indexOf(c);
-    if (v < 0) throw new SorareError("SORARE_OTP_SECRET が base32 ではない");
-    bits += v.toString(2).padStart(5, "0");
-  }
+  for (const c of normalizeOtpSecret(secret)) bits += alpha.indexOf(c).toString(2).padStart(5, "0");
   const key = Buffer.from(bits.match(/.{8}/g).map((b) => parseInt(b, 2)));
   const msg = Buffer.alloc(8);
   msg.writeBigUInt64BE(BigInt(Math.floor(now / 1000 / step)));
