@@ -47,6 +47,18 @@ test("totp は RFC 6238 のテストベクタと一致", () => {
   assert.equal(totp("GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ", 59000, 30, 8), "94287082");
 });
 
+test("totp は otpauth URL・小文字・空白とハイフン入りの秘密鍵も受け付ける", () => {
+  const want = totp("GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ", 59000);
+  assert.equal(totp("otpauth://totp/Sorare:me?secret=GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ&issuer=Sorare", 59000), want);
+  assert.equal(totp("gezd gnbv-gy3t qojq gezd gnbv gy3t qojq", 59000), want);
+});
+
+test("秘密鍵でない値はわかる理由で止める", () => {
+  assert.throws(() => totp("123456"), /6桁のコードではなく/);
+  assert.throws(() => totp("ABCD-1890-EFGH"), /数字の0・1・8・9/);
+  assert.throws(() => totp("otpauth://totp/x?issuer=Sorare"), /secret= が無い/);
+});
+
 test("usd はドル・ユーロ建てを換算し ETH 建ては null", () => {
   assert.equal(usd({ usdCents: 46 }), 0.46);
   assert.equal(usd({ eurCents: 200 }, 1.1), 2.2);
