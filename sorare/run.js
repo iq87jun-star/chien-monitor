@@ -3,15 +3,27 @@
 //         SORARE_FORCE=1 node run.js … 時間に関係なく動く
 // 環境変数(GitHub の Secrets): SORARE_EMAIL / SORARE_PASSWORD / SORARE_OTP_SECRET(2段階認証の秘密鍵)/ SORARE_API_KEY
 //   SORARE_DISCORD_WEBHOOK … 通知先。SORARE_SUBMIT=true … ラインナップを実際に登録する(既定は提案だけ)
-// 売却・出品はしない(お金が動く操作は人が行う)。
+// 購入・売却・出品はしない(お金が動く操作は人が行う)。購入候補と売却候補はカードのページへのリンク付きで送る。
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { createClient } from "./src/api.js";
 import { upcoming, clubs, player, myCards, submitLineup } from "./src/data.js";
-import { teamForm, project, bestLineup, sellCandidates } from "./src/model.js";
+import { teamForm, project, bestLineup, sellCandidates, sellPrice } from "./src/model.js";
 
 const cfg = JSON.parse(readFileSync(new URL("./config.json", import.meta.url)));
 const env = process.env;
 const POS_JA = { Goalkeeper: "GK", Defender: "DF", Midfielder: "MF", Forward: "FW" };
+const SLOT = ["GK", "DF", "MF", "FW", "EX"];
+const cardUrl = (slug) => `https://sorare.com/football/cards/${slug}`;
+
+// Discord の 1 通 2000 文字に収まるよう、行の区切りで分ける
+function chunks(text, max) {
+  const out = [""];
+  for (const line of text.split("\n")) {
+    if (out[out.length - 1].length + line.length + 1 > max) out.push("");
+    out[out.length - 1] += (out[out.length - 1] ? "\n" : "") + line.slice(0, max);
+  }
+  return out.filter(Boolean);
+}
 
 async function pool(items, n, fn) {
   const out = new Array(items.length);
@@ -43,14 +55,20 @@ async function main() {
   const avgGf = cl.reduce((s, c) => s + form[c.name].gf, 0) / cl.length;
   const ctx = { form, next, avgGf };
 
-  // 市場の最安値の出品から、予算内で一番の組み合わせ(未ログイン時と、手持ちで 5 枚そろわない時の購入候補)
+  // 購入候補(未ログイン時と、手持ちで 5 枚そろわない時): 市場の最安出品から「最安」(予算 marketBudgetUsd)と
+  // 「プラスアルファ」(予算 plusBudgetUsd。最安より予想が高い時だけ)の 2 案
   async function market() {
     const slugs = cl.flatMap((c) => c.players);
     const ps = (await pool(slugs, 4, (s) => player(api.gql, s, cfg.rarity))).filter((p) => p && p.league === cfg.competition);
-    return bestLineup(ps.map((p) => project({ ...p, card: p.priceCard }, ctx)), { maxPerClub: cfg.maxPerClub, budget: cfg.marketBudgetUsd });
+    const cands = ps.map((p) => project({ ...p, card: p.priceCard }, ctx));
+    const cheap = bestLineup(cands, { maxPerClub: cfg.maxPerClub, budget: cfg.marketBudgetUsd });
+    const plus = bestLineup(cands, { maxPerClub: cfg.maxPerClub, budget: cfg.plusBudgetUsd });
+    return [cheap && { title: `最安プラン(予算 $${cfg.marketBudgetUsd} 以内)`, ...cheap },
+      plus && (!cheap || plus.pts > cheap.pts + 0.5) && { title: `プラスアルファ プラン(予算 $${cfg.plusBudgetUsd} 以内)`, ...plus }].filter(Boolean);
   }
+  const lineupLines = (b, links) => b.lineup.map((c, i) => `${SLOT[i]} ${c.name}(${c.club}${c.home ? " vs " : " @ "}${c.opp})予想 ${c.proj.toFixed(0)}${c.id === b.captain ? " ★キャプテン" : ""}${c.price != null ? ` $${c.price.toFixed(2)}` : ""}${links && c.card ? `\n  <${cardUrl(c.card)}>` : ""}`);
 
-  let best, buying = false, owned = [];
+  let best = null, plans = [], owned = [];
   if (api.authed) {
     const all = await myCards(api.gql, cfg.rarity);
     const cards = all.filter((c) => c.seasonYear === cfg.seasonYear && c.player);
@@ -62,24 +80,24 @@ async function main() {
     best = bestLineup(owned, { maxPerClub: cfg.maxPerClub });
     if (!best) {
       lines.push("手持ちでは 5 枚そろわない(GK・DF・MF・FW が各 1 枚以上必要)。代わりに購入候補を出します");
-      best = await market(); buying = true;
+      plans = await market();
     }
   } else {
-    lines.push(`未ログイン: 市場の最安値で予算 $${cfg.marketBudgetUsd} 以内の組み合わせを提案`);
-    best = await market(); buying = true;
+    lines.push("未ログイン: 購入候補を出します");
+    plans = await market();
   }
 
   lines.unshift(`**Sorare ${leaderboard.displayName}(J1 ${cfg.rarity})** ${fixture.slug} 締切まで約 ${hours.toFixed(0)} 時間`);
-  if (!best) {
-    lines.push("5 枚そろう組み合わせが無い");
-  } else {
-    if (buying) lines.push(`**購入候補(予算 $${cfg.marketBudgetUsd} 以内・今の最安出品)**`);
-    const slot = ["GK", "DF", "MF", "FW", "EX"];
-    best.lineup.forEach((c, i) => lines.push(`${slot[i]} ${c.name}(${c.club}${c.home ? " vs " : " @ "}${c.opp})予想 ${c.proj.toFixed(0)}${c.id === best.captain ? " ★キャプテン" : ""}${c.price != null ? ` $${c.price.toFixed(2)}` : ""}`));
-    lines.push(`予想合計 ${best.pts.toFixed(0)}(ボーナス抜き)${buying ? ` / 費用 $${best.cost.toFixed(2)}` : ""}`);
-    if (buying) {
-      lines.push("(購入はアプリで行ってください。買った後の次の実行で、手持ちから組んで登録します)");
-    } else if (env.SORARE_SUBMIT === "true") {
+  for (const pl of plans) {
+    lines.push("", `**購入候補: ${pl.title}**(今の最安出品。リンクから確認して購入)`, ...lineupLines(pl, true),
+      `予想合計 ${pl.pts.toFixed(0)}(ボーナス抜き) / 費用 $${pl.cost.toFixed(2)}`);
+  }
+  if (plans.length === 2) lines.push(`→ プラスアルファは +$${(plans[1].cost - plans[0].cost).toFixed(2)} で予想 +${(plans[1].pts - plans[0].pts).toFixed(0)} 点`);
+  if (plans.length) lines.push("(買った後の次の実行で、手持ちから組んで登録します)");
+  if (!best && !plans.length) lines.push("5 枚そろう組み合わせが無い");
+  if (best) {
+    lines.push(...lineupLines(best, false), `予想合計 ${best.pts.toFixed(0)}(ボーナス抜き)`);
+    if (env.SORARE_SUBMIT === "true") {
       const cap = best.lineup.find((c) => c.id === best.captain).card;
       const id = await submitLineup(api.gql, leaderboard.id, best.lineup, cap);
       lines.push(`✅ ラインナップを登録しました(${id})`);
@@ -91,8 +109,12 @@ async function main() {
   if (owned.length) {
     const sell = sellCandidates(owned, cfg.sell);
     if (sell.length) {
-      lines.push("", "**売却の検討候補**(出品はアプリで行ってください)");
-      for (const c of sell) lines.push(`- ${c.name}(${c.club}・${POS_JA[c.pos]}): ${c.reasons.join("・")} / 今の最安出品 ${c.floor != null ? "$" + c.floor.toFixed(2) : "なし"}`);
+      lines.push("", `**売却の検討候補**(条件: ${cfg.sell.maxAge + 1}歳以上、またはスタメン率 ${Math.round(cfg.sell.minStartRate * 100)}% 未満。出品はリンク先で)`);
+      for (const c of sell) {
+        const ask = sellPrice(c.floor, cfg.sell.undercutPct);
+        lines.push(`- ${c.name}(${c.club}・${POS_JA[c.pos]}): ${c.reasons.join("・")} / 今の最安出品 ${c.floor != null ? "$" + c.floor.toFixed(2) : "なし"}` +
+          ` / 出品の目安 ${ask != null ? "$" + ask.toFixed(2) + (cfg.sell.undercutPct ? `(最安の ${cfg.sell.undercutPct}% 下)` : "(最安と同額)") : "相場なし(取引履歴を見て決める)"}\n  <${cardUrl(c.card)}>`);
+      }
     }
   }
 
@@ -102,8 +124,10 @@ async function main() {
   writeFileSync(new URL("./out/summary.md", import.meta.url), text + "\n");
   if (env.GITHUB_STEP_SUMMARY) appendFileSync(env.GITHUB_STEP_SUMMARY, text + "\n");
   if (env.SORARE_DISCORD_WEBHOOK) {
-    const r = await fetch(env.SORARE_DISCORD_WEBHOOK, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content: text.slice(0, 1990) }) });
-    if (!r.ok) console.error(`Discord 送信失敗 HTTP ${r.status}`);
+    for (const content of chunks(text, 1990)) {
+      const r = await fetch(env.SORARE_DISCORD_WEBHOOK, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content }) });
+      if (!r.ok) console.error(`Discord 送信失敗 HTTP ${r.status}`);
+    }
   }
 }
 

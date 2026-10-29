@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { teamForm, startRate, project, bestLineup, sellCandidates } from "../src/model.js";
+import { teamForm, startRate, project, bestLineup, sellCandidates, sellPrice } from "../src/model.js";
 import { totp, usd } from "../src/api.js";
 
 test("teamForm はホーム・アウェイを見分けて未消化の試合を飛ばす", () => {
@@ -63,4 +63,12 @@ test("usd はドル・ユーロ建てを換算し ETH 建ては null", () => {
   assert.equal(usd({ usdCents: 46 }), 0.46);
   assert.equal(usd({ eurCents: 200 }, 1.1), 2.2);
   assert.equal(usd({ usdCents: null, eurCents: null }), null);
+});
+
+test("sellPrice は最安から undercutPct% 下げてセントで切り捨て、最安が無ければ null", () => {
+  assert.equal(sellPrice(6.6, 0), 6.6);
+  assert.equal(sellPrice(6.6, 5), 6.27);
+  assert.equal(sellPrice(0.01, 50), 0.01);
+  assert.equal(sellPrice(0.29, 0), 0.29);   // 0.29 * 100 = 28.999… でも 0.28 にしない
+  assert.equal(sellPrice(null, 5), null);
 });
