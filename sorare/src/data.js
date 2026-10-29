@@ -2,7 +2,7 @@
 import { usd } from "./api.js";
 import { startRate } from "./model.js";
 
-const PRICE = "slug liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents } } }";
+const PRICE = "slug liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents wei } } }";
 
 export async function upcoming(gql, leaderboardSuffix) {
   const fx = (await gql("{ so5 { so5Fixture(type: UPCOMING) { slug startDate } } }")).so5.so5Fixture;
@@ -44,7 +44,7 @@ export async function myCards(gql, rarity) {
   let after = null;
   for (;;) {
     const d = (await gql(`query($a: String) { currentUser { cards(first: 10, after: $a, rarities: [${rarity}], sport: FOOTBALL) {
-      nodes { slug rarityTyped seasonYear anyPlayer { slug } ownershipHistory { from amounts { usdCents eurCents } } } pageInfo { endCursor hasNextPage } } } }`, { a: after })).currentUser;
+      nodes { slug rarityTyped seasonYear anyPlayer { slug } ownershipHistory { from amounts { usdCents eurCents wei } } } pageInfo { endCursor hasNextPage } } } }`, { a: after })).currentUser;
     if (!d) throw new Error("ログインしていない");
     // 1 ページ 10 枚(所有履歴まで取ると、未ログイン・APIKEY なしの上限 complexity 500 に 50 枚では収まらない)
     // 買値 = 所有履歴の最後(今の持ち主になった時)の取引額。パックなど価格の無い入手は null
