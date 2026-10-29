@@ -170,6 +170,15 @@ def measure(months):
     for c in ("real_gross", "real_net", "cost_real", "paper_gross", "paper_sched", "paper_model", "model_cost", "slip_in", "slip_out", "timing", "cost_diff", "gap"): t[c + "_bps"] = t[c] * 1e4
     # 予定本数(建て損ね): SCHEDULE(配備の予定表)から月ごとに数える。0 本のレグも行として出す
     exp_rows = []
+    # Q100(docs/386): 2026-10 以降は manifest + EA 入力から生成(forward/exec_schedule.py)。それ以前は手書きの SCHEDULE(履歴)
+    try:
+        import exec_schedule as es; _rules = es.account_rules()
+        for (y, m) in months:
+            if (y, m) >= (2026, 10):
+                for r in es.expected_counts_month(_rules, y, m).itertuples(): exp_rows.append(dict(account=r.account, month=f"{y}-{m:02d}", fam=r.fam, sym=r.sym, n_expected=int(r.n_expected)))
+        months_legacy = [(y, m) for (y, m) in months if (y, m) < (2026, 10)]
+    except Exception as _e:
+        print("exec_schedule 生成失敗 → 手書き SCHEDULE を使用:", repr(_e)); months_legacy = list(months)
     for acct, legs in SCHEDULE.items():
         for lg in legs:
             dow = PER_WEEK[lg["fam"]][0]; since = pd.Timestamp(lg["since"]); until = pd.Timestamp(lg.get("until", "2099-12-31")); skip = set(pd.to_datetime(lg.get("skip", [])))

@@ -1479,16 +1479,24 @@
    "slug": "miss_detect_auto",
    "title": "建て損ね検知の自動化(予定表を manifest から生成し毎週照合)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/386_q100_exec_schedule.md"
    ],
    "note": "exec_gap.py の SCHEDULE 手書きを deploy_manifest + EA 入力(レグ・ショット・曜日)から生成。毎週月曜のダイジェストで建て損ねを 1 行報告",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 18
+   "order": 18,
+   "result": "forward/exec_schedule.py: manifest + EA 入力から予定表を生成し週次照合(建て損ね・二重建て検知)。初回照合で FN 14074882 が 10/19 以降 全ショット 2 本建て(別端末の疑い)を検出。ダイジェストに組み込み",
+   "runs": [
+    {
+     "date": "2026-10-29",
+     "summary": "docs/386(工学・セル 0)"
+    }
+   ]
   },
   {
    "id": "Q101",
