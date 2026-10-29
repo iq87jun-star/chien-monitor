@@ -37,9 +37,11 @@ test("bestLineup は GK・DF・MF・FW・EX の順でクラブ上限と予算を
   assert.equal(bestLineup(c.filter((x) => x.pos !== "Goalkeeper")), null);
 });
 
-test("sellCandidates は年齢とスタメン率で拾う", () => {
-  const r = sellCandidates([{ age: 33, start: 0.9 }, { age: 25, start: 0.3 }, { age: 25, start: 0.9 }], { maxAge: 31, minStartRate: 0.5 });
-  assert.deepEqual(r.map((x) => x.reasons), [["33歳"], ["スタメン率30%"]]);
+test("sellCandidates は年齢・スタメン率・値上がりで拾う", () => {
+  const r = sellCandidates([{ age: 33, start: 0.9 }, { age: 25, start: 0.3 }, { age: 25, start: 0.9 },
+    { age: 25, start: 0.9, cost: 5, floor: 6.5 }, { age: 25, start: 0.9, cost: 5, floor: 6 }, { age: 25, start: 0.9, cost: null, floor: 9 }],
+  { maxAge: 31, minStartRate: 0.5, gainPct: 30 });
+  assert.deepEqual(r.map((x) => x.reasons), [["33歳"], ["スタメン率30%"], ["値上がり +30%(買値 $5.00)"]]);   // +20% と買値不明は拾わない
 });
 
 test("totp は RFC 6238 のテストベクタと一致", () => {

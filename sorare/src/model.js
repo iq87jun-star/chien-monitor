@@ -57,10 +57,14 @@ export function bestLineup(cands, { maxPerClub = 2, budget = Infinity, topN = 8 
   return { ...best, captain: cap.id };
 }
 
-// 売り候補: 年齢が高い、またはスタメンから外れてきたカード
-export function sellCandidates(cards, { maxAge = 31, minStartRate = 0.5 } = {}) {
+// 売り候補: 年齢が高い、スタメンから外れてきた、または買値から gainPct% 以上値上がりしたカード(値上がりは今の最安出品で判定)
+export function sellCandidates(cards, { maxAge = 31, minStartRate = 0.5, gainPct = 30 } = {}) {
   return cards
-    .map((c) => ({ ...c, reasons: [c.age > maxAge && `${c.age}歳`, c.start < minStartRate && `スタメン率${Math.round(c.start * 100)}%`].filter(Boolean) }))
+    .map((c) => {
+      const gain = c.cost && c.floor != null ? (c.floor / c.cost - 1) * 100 : null;
+      return { ...c, gain, reasons: [c.age > maxAge && `${c.age}歳`, c.start < minStartRate && `スタメン率${Math.round(c.start * 100)}%`,
+        gain != null && gain >= gainPct && `値上がり +${Math.round(gain)}%(買値 $${c.cost.toFixed(2)})`].filter(Boolean) };
+    })
     .filter((c) => c.reasons.length);
 }
 

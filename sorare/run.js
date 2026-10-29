@@ -73,9 +73,9 @@ async function main() {
     const all = await myCards(api.gql, cfg.rarity);
     const cards = all.filter((c) => c.seasonYear === cfg.seasonYear && c.player);
     const bySlug = new Map();
-    for (const c of cards) if (!bySlug.has(c.player)) bySlug.set(c.player, c.slug);
+    for (const c of cards) if (!bySlug.has(c.player)) bySlug.set(c.player, c);
     const ps = (await pool([...bySlug.keys()], 3, (s) => player(api.gql, s, cfg.rarity))).filter((p) => p && p.league === cfg.competition);
-    owned = ps.map((p) => project({ ...p, card: bySlug.get(p.id), floor: p.price, price: null }, ctx));
+    owned = ps.map((p) => project({ ...p, card: bySlug.get(p.id).slug, cost: bySlug.get(p.id).cost, floor: p.price, price: null }, ctx));
     lines.push(`手持ちの ${cfg.rarity} カード: 全 ${all.length} 枚、うち ${cfg.seasonYear} 年の J1 選手 ${owned.length} 人`);
     best = bestLineup(owned, { maxPerClub: cfg.maxPerClub });
     if (!best) {
@@ -109,7 +109,7 @@ async function main() {
   if (owned.length) {
     const sell = sellCandidates(owned, cfg.sell);
     if (sell.length) {
-      lines.push("", `**売却の検討候補**(条件: ${cfg.sell.maxAge + 1}歳以上、またはスタメン率 ${Math.round(cfg.sell.minStartRate * 100)}% 未満。出品はリンク先で)`);
+      lines.push("", `**売却の検討候補**(条件: ${cfg.sell.maxAge + 1}歳以上、スタメン率 ${Math.round(cfg.sell.minStartRate * 100)}% 未満、または買値から +${cfg.sell.gainPct}% 以上の値上がり。出品はリンク先で)`);
       for (const c of sell) {
         const ask = sellPrice(c.floor, cfg.sell.undercutPct);
         lines.push(`- ${c.name}(${c.club}・${POS_JA[c.pos]}): ${c.reasons.join("・")} / 今の最安出品 ${c.floor != null ? "$" + c.floor.toFixed(2) : "なし"}` +
