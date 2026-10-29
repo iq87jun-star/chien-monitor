@@ -63,3 +63,9 @@ export function sellCandidates(cards, { maxAge = 31, minStartRate = 0.5 } = {}) 
     .map((c) => ({ ...c, reasons: [c.age > maxAge && `${c.age}歳`, c.start < minStartRate && `スタメン率${Math.round(c.start * 100)}%`].filter(Boolean) }))
     .filter((c) => c.reasons.length);
 }
+
+// 出品価格の目安: 今の最安出品から undercutPct% 下げた額(セント単位で切り捨て、最低 $0.01)。最安出品が無ければ null
+export function sellPrice(floor, undercutPct = 0) {
+  if (floor == null) return null;
+  return Math.max(0.01, Math.floor(+(floor * (100 - undercutPct)).toFixed(6)) / 100);
+}
