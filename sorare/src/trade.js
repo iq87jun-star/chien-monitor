@@ -3,7 +3,7 @@
 // 入力の形は API のエラーメッセージで確かめたもの。上限の判定(planBuys・planSells)は API を呼ばない純粋な関数(test/trade.test.js)。
 import { randomUUID } from "node:crypto";
 import { signAuthorizationRequest } from "@sorare/crypto";
-import { usd } from "./api.js";
+import { usd, rates, setRates } from "./api.js";
 
 const WEEK = 7 * 864e5;
 
@@ -64,6 +64,17 @@ export function buildApprovals(authorizations, sign) {
   });
 }
 
+// 出品額(USD)を、出品する通貨の receiveAmount に。USD・EUR はセント、ETH は wei(gwei 単位で丸める)
+export function toReceiveAmount(priceUsd, currency, { eurUsd, ethUsd } = rates) {
+  if (currency === "USD") return { amount: String(Math.round(priceUsd * 100)), currency };
+  if (currency === "EUR") return { amount: String(Math.round((priceUsd / eurUsd) * 100)), currency };
+  if (currency === "WEI") {
+    if (!ethUsd) throw new Error("ETH のレートが読めない");
+    return { amount: (BigInt(Math.round((priceUsd / ethUsd) * 1e9)) * 10n ** 9n).toString(), currency };
+  }
+  throw new Error(`扱わない通貨: ${currency}`);
+}
+
 const AUTH = `authorizations { fingerprint request { __typename
   ... on StarkexLimitOrderAuthorizationRequest { vaultIdSell vaultIdBuy amountSell amountBuy tokenSell tokenBuy nonce expirationTimestamp feeInfo { feeLimit tokenId sourceVaultId } }
   ... on StarkexTransferAuthorizationRequest { amount condition expirationTimestamp nonce receiverPublicKey receiverVaultId senderVaultId token feeInfoUser { feeLimit tokenId sourceVaultId } }
@@ -75,12 +86,15 @@ export function createTrader(gql, { privateKey, currency = "USD" }) {
 
   // 今出ている最安の出品を、価格を確かめ直してから買う(提案の後に値上げされていたら買わない)
   async function buy(card, maxPrice) {
-    const c = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { id receiverSide { amounts { usdCents eurCents } } } } }`, { s: card })).anyCard;
+    // 決済に使うレートを先に取り、同じレートで出品価格を USD にして上限と比べる
+    const ex = (await gql("{ config { exchangeRate { id rates } } }")).config.exchangeRate;
+    setRates(ex.rates);
+    const exchangeRateId = ex.id;
+    const c = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { id receiverSide { amounts { usdCents eurCents wei } } } } }`, { s: card })).anyCard;
     const offer = c?.liveSingleSaleOffer;
     if (!offer) throw new Error("出品が無くなった");
     const price = usd(offer.receiverSide?.amounts);
-    if (price == null || price > maxPrice + 1e-9) throw new Error(`価格が変わった($${price} > 上限 $${maxPrice})`);
-    const exchangeRateId = (await gql("{ config { exchangeRate { id } } }")).config.exchangeRate.id;
+    if (price == null || price > maxPrice + 1e-9) throw new Error(`価格が変わった($${price?.toFixed(2)} > 上限 $${maxPrice})`);
     const settlementInfo = { currency, paymentMethod: "WALLET", exchangeRateId };
     const p = (await gql(`mutation($input: prepareAcceptOfferInput!) { prepareAcceptOffer(input: $input) { ${AUTH} errors { message } } }`,
       { input: { offerId: offer.id, settlementInfo } }, { retries: 0 })).prepareAcceptOffer;
@@ -94,18 +108,18 @@ export function createTrader(gql, { privateKey, currency = "USD" }) {
     return price;
   }
 
-  // 出品額はセント単位の文字列で渡し、出品後に実際の出品額を読み直して確かめる
+  // 出品額は通貨の最小単位(セント・wei)の文字列で渡し、出品後に実際の出品額を読み直して確かめる
   async function list(card, price) {
     const c = (await gql(`query($s: String!) { anyCard(slug: $s) { assetId liveSingleSaleOffer { id } } }`, { s: card })).anyCard;
     if (c.liveSingleSaleOffer) throw new Error("すでに出品中");
-    const receiveAmount = { amount: String(Math.round(price * 100)), currency };
+    const receiveAmount = toReceiveAmount(price, currency);
     const p = (await gql(`mutation($input: prepareOfferInput!) { prepareOffer(input: $input) { ${AUTH} errors { message } } }`,
       { input: { sendAssetIds: [c.assetId], receiveAssetIds: [], receiveAmount, settlementCurrencies: [currency] } }, { retries: 0 })).prepareOffer;
     errs(p, "出品の準備");
     const o = (await gql(`mutation($input: createSingleSaleOfferInput!) { createSingleSaleOffer(input: $input) { tokenOffer { id } errors { message } } }`,
       { input: { dealId: randomUUID(), assetId: c.assetId, receiveAmount, settlementCurrencies: [currency], approvals: buildApprovals(p.authorizations, sign) } }, { retries: 0 })).createSingleSaleOffer;
     errs(o, "出品");
-    const after = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents } } } } }`, { s: card })).anyCard;
+    const after = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents wei } } } } }`, { s: card })).anyCard;
     const listed = usd(after?.liveSingleSaleOffer?.receiverSide?.amounts);
     if (listed == null || Math.abs(listed - price) > Math.max(0.05, price * 0.02)) throw new Error(`出品額が想定と違う(想定 $${price.toFixed(2)} / 実際 $${listed}): アプリで確認して取り消してください`);
     return listed;

@@ -61,10 +61,12 @@ test("秘密鍵でない値はわかる理由で止める", () => {
   assert.throws(() => totp("otpauth://totp/x?issuer=Sorare"), /secret= が無い/);
 });
 
-test("usd はドル・ユーロ建てを換算し ETH 建ては null", () => {
+test("usd はドル・ユーロ建てを換算し、ETH 建てはレートがある時だけ換算する", () => {
   assert.equal(usd({ usdCents: 46 }), 0.46);
-  assert.equal(usd({ eurCents: 200 }, 1.1), 2.2);
+  assert.equal(usd({ eurCents: 200 }, { eurUsd: 1.1, ethUsd: null }), 2.2);
   assert.equal(usd({ usdCents: null, eurCents: null }), null);
+  assert.equal(usd({ wei: "1500000000000000" }, { eurUsd: 1.1, ethUsd: 2000 }), 3);   // 0.0015 ETH × $2000
+  assert.equal(usd({ wei: "1500000000000000" }, { eurUsd: 1.1, ethUsd: null }), null);
 });
 
 test("sellPrice は最安から undercutPct% 下げてセントで切り捨て、最安が無ければ null", () => {

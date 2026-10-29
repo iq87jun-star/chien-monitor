@@ -44,3 +44,10 @@ test("buildApprovals は種類ごとの承認を作り、署名は秘密鍵で�
   assert.equal(signable({ __typename: "StarkexTransferAuthorizationRequest", amount: "5", feeInfoUser: { feeLimit: "1" } }).feeInfoUser.feeLimit, 1n);
   assert.throws(() => buildApprovals([{ fingerprint: "f", request: { __typename: "Unknown" } }], () => ({})), /知らない承認/);
 });
+
+test("toReceiveAmount は USD をセント、ETH を wei(gwei で丸め)にする", async () => {
+  const { toReceiveAmount } = await import("../src/trade.js");
+  assert.deepEqual(toReceiveAmount(6.6, "USD", { eurUsd: 1.1, ethUsd: 2000 }), { amount: "660", currency: "USD" });
+  assert.deepEqual(toReceiveAmount(5, "WEI", { eurUsd: 1.1, ethUsd: 2000 }), { amount: "2500000000000000", currency: "WEI" });   // $5 / $2000 = 0.0025 ETH
+  assert.throws(() => toReceiveAmount(5, "WEI", { eurUsd: 1.1, ethUsd: null }), /ETH のレート/);
+});

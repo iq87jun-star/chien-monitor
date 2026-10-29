@@ -6,7 +6,7 @@
 // 購入・出品は SORARE_TRADE=true と SORARE_PRIVATE_KEY(ウォレットの秘密鍵)がある時だけ、config の trade の上限内で行う。
 // それ以外は「購入予定・出品予定」をリンク付きで送るだけ(試し運転)。
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
-import { createClient } from "./src/api.js";
+import { createClient, setRates } from "./src/api.js";
 import { upcoming, clubs, player, myCards, submitLineup } from "./src/data.js";
 import { teamForm, project, bestLineup, sellCandidates, sellPrice } from "./src/model.js";
 import { createTrader, planBuys, planSells, spentInWeek } from "./src/trade.js";
@@ -47,6 +47,9 @@ async function main() {
     const me = await api.signIn({ email: env.SORARE_EMAIL, password: env.SORARE_PASSWORD, otpSecret: env.SORARE_OTP_SECRET || "" });
     console.log(`ログイン: ${me}`);
   }
+
+  // ユーロ・ETH の換算レート(ETH 建ての出品を USD で比べるため)
+  try { setRates((await api.gql("{ config { exchangeRate { rates } } }")).config.exchangeRate.rates); } catch { /* 読めなければユーロ 1.1・ETH は換算しない */ }
 
   const cl = await clubs(api.gql, cfg.competition);
   const form = Object.fromEntries(cl.map((c) => [c.name, teamForm(c.name, c.games)]));

@@ -86,10 +86,17 @@ export function totp(secret, now = Date.now(), step = 30, digits = 6) {
   return String((h.readUInt32BE(o) & 0x7fffffff) % 10 ** digits).padStart(digits, "0");
 }
 
-// 出品価格(receiverSide.amounts)を USD に。ユーロ建ては固定レート、ETH 建ては扱わない(null)。
-export function usd(amounts, eurUsd = 1.1) {
+// 換算レート。run.js が Sorare の config.exchangeRate で上書きする(読めない時はユーロ 1.1、ETH は換算しない)
+export const rates = { eurUsd: 1.1, ethUsd: null };
+export function setRates(r) {
+  if (r?.eth?.usd && r?.eth?.eur) { rates.ethUsd = r.eth.usd; rates.eurUsd = r.eth.usd / r.eth.eur; }
+}
+
+// 出品価格(receiverSide.amounts)を USD に。ETH 建て(wei)は ETH のレートがある時だけ換算する
+export function usd(amounts, { eurUsd, ethUsd } = rates) {
   if (!amounts) return null;
   if (amounts.usdCents) return amounts.usdCents / 100;
   if (amounts.eurCents) return (amounts.eurCents / 100) * eurUsd;
+  if (amounts.wei && ethUsd) return (Number(amounts.wei) / 1e18) * ethUsd;
   return null;
 }

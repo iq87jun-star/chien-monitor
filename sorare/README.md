@@ -28,7 +28,7 @@ Sorare の J1 Rare 大会(In-Season)に向けて、節ごとに次の処理を�
 | `weeklyMaxUsd` | 60 | 直近 7 日の購入額の上限。これまでの購入額は所有履歴から数える |
 | `minHoldDays` | 14 | 買ってからこの日数は売らない |
 | `neverBelowCost` | true | 買値より安くは出品しない |
-| `currency` | `USD` | 決済と出品の通貨(Sorare の現金ウォレットの通貨) |
+| `currency` | `WEI` | 決済と出品の通貨。`WEI` = ETH ウォレット、`USD`・`EUR` = キャッシュウォレット(キャッシュウォレットはパスポートでの本人確認が必要) |
 
 ほかに、次の場合も売買しません。
 
@@ -39,6 +39,12 @@ Sorare の J1 Rare 大会(In-Season)に向けて、節ごとに次の処理を�
 - 買ってそろった時は、同じ実行の中でラインナップを組んで登録する(`SORARE_SUBMIT=true` の時)。
 
 止めたい時は Variable `SORARE_TRADE` を消します。止めた後は、試し運転(通知だけ)に戻ります。
+
+ETH ウォレットで売買する時の注意:
+
+- 上限(`perCardMaxUsd`・`weeklyMaxUsd`)は USD のままです。ETH 建ての価格は、Sorare の換算レート(`config.exchangeRate`)で USD にして比べます。
+- 出品額は USD の目安を ETH(wei)に換算して出します。Sorare の「受け取り方法」は Crypto only か Cash and Crypto にしておいてください。
+- ETH ウォレットに ETH が無いと購入は失敗します(通知に理由が出ます)。
 
 注意:
 
