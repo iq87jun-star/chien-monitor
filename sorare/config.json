@@ -1,5 +1,5 @@
 {
-  "_comment": "J1 の Rare 大会に毎節ラインナップを組む設定。leaderboard は so5Fixture の slug の後ろに付く部分。 marketBudgetUsd / plusBudgetUsd は購入候補の最安プラン・プラスアルファプランの予算。sell は売却候補の条件(maxAge を超える年齢、minStartRate 未満のスタメン率、買値から gainPct% 以上の値上がり)と、出品の目安を最安出品から何 % 下げるか(undercutPct)。",
+  "_comment": "J1 の Rare 大会に毎節ラインナップを組む設定。leaderboard は so5Fixture の slug の後ろに付く部分。 marketBudgetUsd / plusBudgetUsd は購入候補の最安プラン・プラスアルファプランの予算。sell は売却候補の条件(maxAge を超える年齢、minStartRate 未満のスタメン率、買値から gainPct% 以上の値上がり)と、出品の目安を最安出品から何 % 下げるか(undercutPct)。 trade は自動売買の設定(SORARE_TRADE=true の時だけ実行): 買うプラン(cheap / plus)、1枚と直近7日の購入額の上限、買ってから売らない日数、買値より下で出品しないか、決済通貨。",
   "competition": "j1-league",
   "leaderboard": "seasonal-japan-in_season_japan_rare_pvp",
   "rarity": "rare",
@@ -13,5 +13,13 @@
     "gainPct": 30,
     "undercutPct": 0
   },
-  "plusBudgetUsd": 60
+  "plusBudgetUsd": 60,
+  "trade": {
+    "buyPlan": "cheap",
+    "perCardMaxUsd": 30,
+    "weeklyMaxUsd": 60,
+    "minHoldDays": 14,
+    "neverBelowCost": true,
+    "currency": "USD"
+  }
 }
