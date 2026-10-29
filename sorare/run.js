@@ -43,35 +43,47 @@ async function main() {
   const avgGf = cl.reduce((s, c) => s + form[c.name].gf, 0) / cl.length;
   const ctx = { form, next, avgGf };
 
-  let cands, owned = [];
+  // 市場の最安値の出品から、予算内で一番の組み合わせ(未ログイン時と、手持ちで 5 枚そろわない時の購入候補)
+  async function market() {
+    const slugs = cl.flatMap((c) => c.players);
+    const ps = (await pool(slugs, 4, (s) => player(api.gql, s, cfg.rarity))).filter((p) => p && p.league === cfg.competition);
+    return bestLineup(ps.map((p) => project({ ...p, card: p.priceCard }, ctx)), { maxPerClub: cfg.maxPerClub, budget: cfg.marketBudgetUsd });
+  }
+
+  let best, buying = false, owned = [];
   if (api.authed) {
-    const cards = (await myCards(api.gql, cfg.rarity)).filter((c) => c.seasonYear === cfg.seasonYear && c.player);
+    const all = await myCards(api.gql, cfg.rarity);
+    const cards = all.filter((c) => c.seasonYear === cfg.seasonYear && c.player);
     const bySlug = new Map();
     for (const c of cards) if (!bySlug.has(c.player)) bySlug.set(c.player, c.slug);
     const ps = (await pool([...bySlug.keys()], 3, (s) => player(api.gql, s, cfg.rarity))).filter((p) => p && p.league === cfg.competition);
     owned = ps.map((p) => project({ ...p, card: bySlug.get(p.id), floor: p.price, price: null }, ctx));
-    cands = owned;
-    lines.push(`手持ちの ${cfg.seasonYear} 年 ${cfg.rarity} カード(J1): ${owned.length} 人`);
+    lines.push(`手持ちの ${cfg.rarity} カード: 全 ${all.length} 枚、うち ${cfg.seasonYear} 年の J1 選手 ${owned.length} 人`);
+    best = bestLineup(owned, { maxPerClub: cfg.maxPerClub });
+    if (!best) {
+      lines.push("手持ちでは 5 枚そろわない(GK・DF・MF・FW が各 1 枚以上必要)。代わりに購入候補を出します");
+      best = await market(); buying = true;
+    }
   } else {
-    const slugs = cl.flatMap((c) => c.players);
-    const ps = (await pool(slugs, 4, (s) => player(api.gql, s, cfg.rarity))).filter((p) => p && p.league === cfg.competition);
-    cands = ps.map((p) => project({ ...p, card: p.priceCard }, ctx));
     lines.push(`未ログイン: 市場の最安値で予算 $${cfg.marketBudgetUsd} 以内の組み合わせを提案`);
+    best = await market(); buying = true;
   }
 
-  const best = bestLineup(cands, { maxPerClub: cfg.maxPerClub, budget: api.authed ? Infinity : cfg.marketBudgetUsd });
   lines.unshift(`**Sorare ${leaderboard.displayName}(J1 ${cfg.rarity})** ${fixture.slug} 締切まで約 ${hours.toFixed(0)} 時間`);
   if (!best) {
-    lines.push("5 枚そろう組み合わせが無い(GK・DF・MF・FW が各 1 枚以上必要)");
+    lines.push("5 枚そろう組み合わせが無い");
   } else {
+    if (buying) lines.push(`**購入候補(予算 $${cfg.marketBudgetUsd} 以内・今の最安出品)**`);
     const slot = ["GK", "DF", "MF", "FW", "EX"];
     best.lineup.forEach((c, i) => lines.push(`${slot[i]} ${c.name}(${c.club}${c.home ? " vs " : " @ "}${c.opp})予想 ${c.proj.toFixed(0)}${c.id === best.captain ? " ★キャプテン" : ""}${c.price != null ? ` $${c.price.toFixed(2)}` : ""}`));
-    lines.push(`予想合計 ${best.pts.toFixed(0)}(ボーナス抜き)${api.authed ? "" : ` / 費用 $${best.cost.toFixed(2)}`}`);
-    if (api.authed && env.SORARE_SUBMIT === "true") {
+    lines.push(`予想合計 ${best.pts.toFixed(0)}(ボーナス抜き)${buying ? ` / 費用 $${best.cost.toFixed(2)}` : ""}`);
+    if (buying) {
+      lines.push("(購入はアプリで行ってください。買った後の次の実行で、手持ちから組んで登録します)");
+    } else if (env.SORARE_SUBMIT === "true") {
       const cap = best.lineup.find((c) => c.id === best.captain).card;
       const id = await submitLineup(api.gql, leaderboard.id, best.lineup, cap);
       lines.push(`✅ ラインナップを登録しました(${id})`);
-    } else if (api.authed) {
+    } else {
       lines.push("(提案のみ。登録するには SORARE_SUBMIT=true)");
     }
   }
