@@ -4,8 +4,11 @@ import { startRate } from "./model.js";
 
 const PRICE = "slug liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents wei } } }";
 
+// 対象の節は次の節(UPCOMING)。SORARE_FIXTURE に節の slug を入れるとその節にする(先の節を試す時用)
 export async function upcoming(gql, leaderboardSuffix) {
-  const fx = (await gql("{ so5 { so5Fixture(type: UPCOMING) { slug startDate } } }")).so5.so5Fixture;
+  const fx = process.env.SORARE_FIXTURE
+    ? (await gql("query($s: String!) { so5 { so5Fixture(slug: $s) { slug startDate } } }", { s: process.env.SORARE_FIXTURE })).so5.so5Fixture
+    : (await gql("{ so5 { so5Fixture(type: UPCOMING) { slug startDate } } }")).so5.so5Fixture;
   const slug = `${fx.slug}-${leaderboardSuffix}`;
   let lb = null;
   try { lb = (await gql("query($s: String!) { so5 { so5Leaderboard(slug: $s) { id displayName } } }", { s: slug }, { retries: 1 })).so5.so5Leaderboard; } catch { /* その節にこの大会が無い */ }
