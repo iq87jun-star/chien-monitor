@@ -1,7 +1,7 @@
 # Sorare(sorare/)の J1 Rare 大会: 次節のラインナップを選んで Discord に送り、設定があれば登録する。
 #   - sorare/ を変更する push・PR: 単体テスト
 #   - 定期実行(毎日 20:17 JST): 節の開始(締切)が 24 時間以内の日だけ動く → 各節 1 回
-#   - 手動実行: force で時間に関係なく動く
+#   - 手動実行: force で時間に関係なく動く。otp にチェックすると、2段階認証のコードを Discord に送るだけ(認証アプリを失くした時用)
 # リポジトリには書き込まない(他の自動更新・VPS の配備ブランチには触れない)。
 #
 # Secrets(未設定なら未ログインの提案だけ。手順は sorare/README.md):
@@ -27,6 +27,10 @@ on:
         description: "締切までの時間に関係なく動かす"
         type: boolean
         default: true
+      otp:
+        description: "認証アプリを失くした時用: 2段階認証の6桁コードを Discord に送るだけ(ラインナップは動かさない)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -54,7 +58,7 @@ jobs:
       - run: npm test
 
   lineup:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && !inputs.otp)
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
@@ -76,3 +80,20 @@ jobs:
           SORARE_PASSWORD: ${{ secrets.SORARE_PASSWORD }}
           SORARE_OTP_SECRET: ${{ secrets.SORARE_OTP_SECRET }}
           SORARE_API_KEY: ${{ secrets.SORARE_API_KEY }}
+
+  otp:
+    if: github.event_name == 'workflow_dispatch' && inputs.otp
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: sorare/package-lock.json
+      - run: npm ci
+      - run: node otp.js
+        env:
+          SORARE_OTP_SECRET: ${{ secrets.SORARE_OTP_SECRET }}
+          SORARE_DISCORD_WEBHOOK: ${{ secrets.SORARE_DISCORD_WEBHOOK }}
