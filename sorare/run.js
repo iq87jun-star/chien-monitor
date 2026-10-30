@@ -1,6 +1,7 @@
 // Sorare の大会(config.targets。既定は J1 Rare): 次節のラインナップを選び、(設定があれば)登録し、売り候補と一緒に Discord に送る。
 // 使い方: node run.js            … 締切が runWithinHours 以内の時だけ動く(毎日 1 回動かせば各節 1 回だけ当たる)
 //         SORARE_FORCE=1 node run.js … 時間に関係なく動く
+//         SORARE_FIXTURE=football-6-10-nov-2026 … 次の節の代わりにその節で動く(先の節を試す時用)
 // 環境変数(GitHub の Secrets): SORARE_EMAIL / SORARE_PASSWORD / SORARE_OTP_SECRET(2段階認証の秘密鍵)/ SORARE_API_KEY
 //   SORARE_DISCORD_WEBHOOK … 通知先。SORARE_SUBMIT=true … ラインナップを実際に登録する(既定は提案だけ)
 // 購入・出品は SORARE_TRADE=true と SORARE_PRIVATE_KEY(ウォレットの秘密鍵)がある時だけ、config の trade の上限内で行う。
