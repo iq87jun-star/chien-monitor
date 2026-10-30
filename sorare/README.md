@@ -6,6 +6,7 @@ Sorare の大会(In-Season)に向けて、節ごとに次の処理を行いま�
 |---|---|---|
 | J1 Rare | 有効 | 本命。現金の賞金は上位約 12% |
 | J1 Limited | 有効 | 安く遊べる練習用(5 枚で数ドル)。賞金はほぼカードの欠片 |
+| Jupiler Limited(ベルギー) | 有効 | ヨーロッパの練習用(5 枚で $20 以内)。現金の賞金は上位 10 位まで |
 | Jupiler Rare(ベルギー) | 無効(`enabled: false`) | 最低の賞金が $15。5 枚で $100 前後かかるので、使う時は `trade.weeklyMaxUsd` も上げる |
 
 大会を足す時は、`targets` に `name`(通知の名前)・`league`(リーグ名)・`competition`(リーグの slug)・`leaderboard`(大会の slug の後半)・`rarity` を書きます。予算などは大会ごとに上書きできます。
