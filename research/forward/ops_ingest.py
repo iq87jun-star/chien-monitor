@@ -40,7 +40,17 @@ def digest(d):
         try: lg = pd.read_csv(lp)
         except pd.errors.EmptyDataError: lg = pd.DataFrame()
         if len(lg):
-            out["alerts"] = lg[lg.line.str.contains(r"\[HALT\]|\[BAL GUARD\]|\[DAILY STOP\]|\[EXPIRY\]|\[PROFIT LOCK\]|\[TRAIL|解決できず|SIZE SANITY")].line.tail(10).tolist()
+            # Q103(docs/388): agent 1.8 の category 列があれば分類で拾う(停止 = 口座ガード系・見送り = スプレッド/門/祝日/再試行・既知 = 補助 EA 診断等)。無ければ従来の正規表現
+            if "category" in lg.columns:
+                lg["category"] = lg["category"].fillna("その他").astype(str)
+                out["alerts"] = lg[lg.category == "停止"].line.tail(10).tolist()
+                out["skips"] = lg[lg.category == "見送り"].line.tail(10).tolist()
+                out["known"] = int((lg.category == "既知").sum())
+                dtag = re.findall(r"(\d{8})\.log", " ".join(lg.file.astype(str).tail(1)))
+                today = lg[lg.file.astype(str).str.contains(dtag[-1])] if dtag else lg
+                out["cat_today"] = today.category.value_counts().to_dict()
+            else:
+                out["alerts"] = lg[lg.line.str.contains(r"\[HALT\]|\[BAL GUARD\]|\[DAILY STOP\]|\[EXPIRY\]|\[PROFIT LOCK\]|\[TRAIL|解決できず|SIZE SANITY")].line.tail(10).tolist()
             ini = lg[lg.line.str.contains(r"\[INIT")]
             out["last_init"] = ini.line.iloc[-1][:200] if len(ini) else ""
             out["ea_names"] = sorted(set(m.group(1) for m in (re.search(r"\t(【[^\t]+?)\s*\(", l) for l in lg.line.astype(str)) if m))   # ログに出た EA 名(端末で動いている EA)
@@ -78,7 +88,7 @@ def main():
     print(f"エージェント生成 {status.get('generated_utc')} / 口座 {len(rows)} / 失敗 {len(res['agent_failures'])}")
     for r in rows:
         if r.get("vps_last_utc"): print(f"   VPS ログ: 最終 {r['vps_last_utc']} UTC({r['vps_age_h']} h 前) 24h {r.get('vps_24h')} ENTRY 3d {r.get('vps_entries_3d')}")
-        print(f"#{r['account']}: eq {r.get('equity', float('nan')):,.0f} (bal {r.get('balance', float('nan')):,.0f}) 建玉 {r.get('open_positions', '-')} | 7日 {r.get('net_7d', '-')} ({r.get('n_7d', '-')} 本) | 30日 {r.get('net_30d', '-')} SL率 {r.get('sl_hit_rate_30d', '-')}% | 3日の建て {r.get('entries_3d', '-')} | 警告 {len(r.get('alerts', []))}")
+        print(f"#{r['account']}: eq {r.get('equity', float('nan')):,.0f} (bal {r.get('balance', float('nan')):,.0f}) 建玉 {r.get('open_positions', '-')} | 7日 {r.get('net_7d', '-')} ({r.get('n_7d', '-')} 本) | 30日 {r.get('net_30d', '-')} SL率 {r.get('sl_hit_rate_30d', '-')}% | 3日の建て {r.get('entries_3d', '-')} | 警告 {len(r.get('alerts', []))}{(' 見送り ' + str(len(r['skips']))) if r.get('skips') else ''}{(' 既知 ' + str(r['known'])) if r.get('known') else ''}")
         for a in r.get("alerts", [])[-3:]: print("   ! " + a[:160])
         if r.get("ea_names"): print("   EA:", "; ".join(n[:60] for n in r["ea_names"]), "| INIT 版:", ",".join(r.get("init_versions", [])) or "なし")
     for f in res["agent_failures"]: print(f"   × エージェント失敗 #{f.get('account')} {f.get('name')}: {f.get('error')}")

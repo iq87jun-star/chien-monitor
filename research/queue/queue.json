@@ -1550,16 +1550,24 @@
    "slug": "ea_log_alert_classify",
    "title": "EA ログの警告を agent 側で分類(MONTH STOP など)しダイジェストへ",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/388_q103_ea_log_classify.md"
    ],
    "note": "chien_ops_agent の抽出に [MONTH STOP]/[BAL GUARD]/[DAILY STOP] の分類と直近 30 日の保持を追加(agent 1.8)。Q83 の建て損ね原因を記録から確定できるように",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 21
+   "order": 21,
+   "result": "agent 1.8: マーカー追加(SKIP/RETRY/STOP/PAYOUT 等)・category 列(既知/停止/見送り/建て/情報)・30 日保持・status に分類別件数。ops_ingest は停止だけを警告に。反映は chien_setup.bat 再実行(ユーザー)",
+   "runs": [
+    {
+     "date": "2026-10-30",
+     "summary": "docs/388(工学・セル 0)"
+    }
+   ]
   },
   {
    "id": "Q104",

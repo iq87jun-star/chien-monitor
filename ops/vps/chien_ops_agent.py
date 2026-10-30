@@ -34,7 +34,20 @@ except ImportError:
 
 MANIFEST = None
 MARKERS = ("[HALT]", "[BAL GUARD]", "[DAILY STOP]", "[EXPIRY]", "[PROFIT LOCK]", "[TRAIL", "[INIT", "[Mon ENTRY]", "[Mon SKIP]", "[Mon TIME EXIT]",
-           "[Hold ENTRY]", "[Sess ENTRY]", "[Roll ENTRY]", "[v4 ENTRY]", "[CLOSE ALL", "[NOTIFY]", "SIZE SANITY", "銘柄解決", "解決できず", "[LOG]", "[LOG SEND]")   # 1.7a: Q111 記録版の送信状態(docs/327)
+           "[Hold ENTRY]", "[Sess ENTRY]", "[Roll ENTRY]", "[v4 ENTRY]", "[CLOSE ALL", "[NOTIFY]", "SIZE SANITY", "銘柄解決", "解決できず", "[LOG]", "[LOG SEND]",   # 1.7a: Q111 記録版の送信状態(docs/327)
+           "[STOP]", "MONTH STOP", "[Mon RETRY]", "[Roll SKIP", "[Roll RETRY]", "[Roll TIME EXIT]", "[Sess SKIP", "[Sess RETRY]", "[Sess TIME EXIT]",
+           "[Brk ENTRY]", "[Brk RETRY]", "[Brk SKIP", "[Hold SKIP", "[Hold EXIT", "[v4 GIVEUP]", "[PAYOUT]", "[DYN", "[WEEKEND", "[Mon GIVEUP]")   # 1.8 (Q103・docs/388): 見送り・再試行・停止理由を全部拾う
+LOG_RETAIN_DAYS = 30   # 1.8: ea_log_extract.csv は直近 30 日分を保持(毎時の走査分と前回ファイルを結合・重複除去)
+# 1.8 (Q103): 行の分類。停止 = 口座ガード・期限・ロック / 見送り = スプレッド・門・祝日・再試行・断念 / 建て = ENTRY・TIME EXIT / 情報 = INIT・PAYOUT・DYN・送信 / 既知 = 補助 EA の診断・未解決銘柄
+_CLS = (("既知", ("[銘柄解決] Util", "[INIT Util", "[CLOSE ALL Util]", "'NAS100'を解決できず")),   # 既知を先に判定(補助 EA の行を停止に数えない)
+        ("停止", ("[HALT]", "[BAL GUARD]", "[DAILY STOP]", "[EXPIRY]", "[PROFIT LOCK]", "[TRAIL", "[STOP]", "MONTH STOP", "[CLOSE ALL", "SIZE SANITY")),
+        ("見送り", ("SKIP", "RETRY", "GIVEUP", "解決できず", "[WEEKEND")),
+        ("建て", ("ENTRY]", "TIME EXIT]", "[Hold EXIT")),
+        ("情報", ("[INIT", "[PAYOUT]", "[DYN", "[NOTIFY]", "[LOG", "[SYM]", "銘柄解決")))
+def classify_line(line):
+    for cat, keys in _CLS:
+        if any(k in line for k in keys): return cat
+    return "その他"
 DEAL_ENTRY_IN, DEAL_ENTRY_OUT, DEAL_ENTRY_INOUT, DEAL_ENTRY_OUT_BY = 0, 1, 2, 3
 
 
@@ -93,8 +106,25 @@ def scan_logs(data_path, days):
                 txt = open(p, encoding="utf-8", errors="ignore").read()
             for line in txt.splitlines():
                 if any(m in line for m in MARKERS):
-                    out.append(dict(file=f"{sub}/{day}.log", line=line.strip()[:400]))
+                    out.append(dict(file=f"{sub}/{day}.log", line=line.strip()[:400], category=classify_line(line)))
     return pd.DataFrame(out)
+
+
+def merge_retain(prev_path, lg, days=LOG_RETAIN_DAYS):
+    """1.8: 前回の ea_log_extract.csv と結合し、ファイル名の日付で直近 days 日だけ残す(重複は file+line で除去)。"""
+    cols = ["file", "line", "category"]
+    try:
+        prev = pd.read_csv(prev_path, encoding="utf-8-sig") if os.path.exists(prev_path) else pd.DataFrame(columns=cols)
+    except Exception:
+        prev = pd.DataFrame(columns=cols)
+    if "category" not in prev.columns and len(prev): prev["category"] = prev["line"].astype(str).map(classify_line)
+    allx = pd.concat([prev[[c for c in cols if c in prev.columns]], lg], ignore_index=True) if len(prev) else lg
+    if not len(allx): return pd.DataFrame(columns=cols)
+    allx = allx.drop_duplicates(subset=["file", "line"], keep="last")
+    cutoff = (dt.date.today() - dt.timedelta(days=days)).strftime("%Y%m%d")
+    day_of = allx["file"].astype(str).str.extract(r"(\d{8})\.log")[0].fillna("00000000")
+    allx = allx[day_of >= cutoff].copy(); allx["_d"] = day_of[allx.index]
+    return allx.sort_values(["_d", "line"]).drop(columns="_d").reset_index(drop=True)
 
 
 def run_terminal(t, since, out_root, log_days):
@@ -154,13 +184,17 @@ def run_terminal(t, since, out_root, log_days):
             except Exception as ex:
                 print(f"  棚卸し/配備 例外 {ex!r}")
         lg = scan_logs(ti.data_path, log_days) if ti is not None else pd.DataFrame()
-        if lg.empty: lg = pd.DataFrame(columns=["file", "line"])
+        if lg.empty: lg = pd.DataFrame(columns=["file", "line", "category"])
+        lg = merge_retain(os.path.join(d, "ea_log_extract.csv"), lg)   # 1.8: 直近 30 日を保持
         lg.to_csv(os.path.join(d, "ea_log_extract.csv"), index=False, encoding="utf-8-sig")
+        today_tag = dt.date.today().strftime("%Y%m%d"); lg_today = lg[lg.file.astype(str).str.contains(today_tag)] if len(lg) else lg
+        cat_counts = lg_today.category.value_counts().to_dict() if len(lg_today) else {}
         st = dict(account=acct, name=name, ok=True, time=now.isoformat(), balance=ai.balance, equity=ai.equity, open_positions=len(op),
                   attached_eas=[f"{a['ea']}@{a['symbol']}" for a in (dep or {}).get("inventory", {}).get("attached", [])],
                   deploy=({k: v for k, v in dep.items() if k in ("compiled", "apply")} if dep else None),
                   closed_positions=int(len(pos)), since=since, data_path=(ti.data_path if ti else ""), log_lines=int(len(lg)),
-                  halts=int(lg.line.str.contains(r"\[HALT\]|\[BAL GUARD\]|\[DAILY STOP\]|\[EXPIRY\]|\[PROFIT LOCK\]").sum()) if len(lg) else 0,
+                  halts=int(lg_today.line.str.contains(r"\[HALT\]|\[BAL GUARD\]|\[DAILY STOP\]|\[EXPIRY\]|\[PROFIT LOCK\]").sum()) if len(lg_today) else 0,
+                  alert_counts_today=cat_counts,   # 1.8 (Q103): 当日の行数を分類別に(停止 / 見送り / 建て / 情報 / 既知 / その他)
                   last_init=(lg[lg.line.str.contains(r"\[INIT")].line.iloc[-1] if len(lg) and lg.line.str.contains(r"\[INIT").any() else ""))
         print(f"[{name}] ok balance={ai.balance:.2f} equity={ai.equity:.2f} 建玉={len(op)} 決済済={len(pos)} ログ{len(lg)}行")
         return st
@@ -281,7 +315,7 @@ class _Tee:
 def main():
     _log = os.path.join(os.path.dirname(os.path.abspath(__file__)), "agent.log")
     sys.stdout = _Tee(sys.stdout, _log); sys.stderr = _Tee(sys.stderr, _log)
-    print(f"\n==== {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()} UTC agent 1.7c ====")
+    print(f"\n==== {dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()} UTC agent 1.8 ====")
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "terminals.json"))
     ap.add_argument("--since", default="2026-08-01")
@@ -309,7 +343,7 @@ def main():
         except Exception as e:
             print(f"[{t.get('name')}] 例外 {e!r}"); status.append(dict(account=str(t.get("account")), name=t.get("name"), ok=False, error=repr(e), time=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat()))
         time.sleep(2)
-    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.7c", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    json.dump(dict(generated_utc=dt.datetime.now(dt.timezone.utc).replace(tzinfo=None).isoformat(), agent_version="1.8", terminals=status), open(os.path.join(out_root, "status.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     ok = sum(1 for s in status if s.get("ok")); print(f"完了 {ok}/{len(status)} 端末 → {out_root}")
     try: write_diag(out_root, os.path.dirname(os.path.abspath(__file__)))
     except Exception as e: print(f"_diag 書き出し失敗 {e!r}")
