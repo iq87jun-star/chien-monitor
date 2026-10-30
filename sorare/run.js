@@ -1,4 +1,4 @@
-// Sorare の J1 Rare 大会: 次節のラインナップを選び、(設定があれば)登録し、売り候補と一緒に Discord に送る。
+// Sorare の大会(config.targets。既定は J1 Rare): 次節のラインナップを選び、(設定があれば)登録し、売り候補と一緒に Discord に送る。
 // 使い方: node run.js            … 締切が runWithinHours 以内の時だけ動く(毎日 1 回動かせば各節 1 回だけ当たる)
 //         SORARE_FORCE=1 node run.js … 時間に関係なく動く
 // 環境変数(GitHub の Secrets): SORARE_EMAIL / SORARE_PASSWORD / SORARE_OTP_SECRET(2段階認証の秘密鍵)/ SORARE_API_KEY
@@ -34,12 +34,12 @@ async function pool(items, n, fn) {
   return out;
 }
 
+// config.targets の大会ごとに runTarget を順に動かす。ログイン・換算レート・自動購入の週の上限は全大会で共通
 async function main() {
   const api = createClient({ apiKey: env.SORARE_API_KEY || "" });
-  const lines = [];
-  const { fixture, leaderboard, leaderboardSlug } = await upcoming(api.gql, cfg.leaderboard);
+  const targets = (cfg.targets || [{}]).filter((t) => t.enabled !== false).map((t) => ({ ...cfg, ...t }));
+  const { fixture } = await upcoming(api.gql, targets[0].leaderboard);
   const hours = (Date.parse(fixture.startDate) - Date.now()) / 3600e3;
-  if (!leaderboard) return console.log(`次の節 ${fixture.slug} に ${leaderboardSlug} は無い。終了`);
   if (!env.SORARE_FORCE && (hours > cfg.runWithinHours || hours < 0.25))
     return console.log(`締切まで ${hours.toFixed(1)} 時間(${cfg.runWithinHours} 時間以内で動く)。終了`);
 
@@ -51,7 +51,42 @@ async function main() {
   // ユーロ・ETH の換算レート(ETH 建ての出品を USD で比べるため)
   try { setRates((await api.gql("{ config { exchangeRate { rates } } }")).config.exchangeRate.rates); } catch { /* 読めなければユーロ 1.1・ETH は換算しない */ }
 
-  const cl = await clubs(api.gql, cfg.competition);
+  // 直近 7 日の購入額は、全大会のランクの手持ちから数え、この実行で買った分を足していく
+  const shared = { spent: null };
+  if (api.authed) {
+    shared.spent = 0;
+    for (const r of new Set(targets.map((t) => t.rarity))) shared.spent += spentInWeek(await myCards(api.gql, r));
+  }
+
+  mkdirSync(new URL("./out/", import.meta.url), { recursive: true });
+  writeFileSync(new URL("./out/summary.md", import.meta.url), "");
+  let failed = false;
+  for (const t of targets) {
+    let text;
+    try { text = await runTarget(api, t, shared); }
+    catch (e) { console.error(e); failed = true; text = `⚠️ Sorare 自動化でエラー(${t.name}): ${String(e.message).slice(0, 1800)}`; }
+    if (!text) continue;
+    console.log(text);
+    appendFileSync(new URL("./out/summary.md", import.meta.url), text + "\n\n");
+    if (env.GITHUB_STEP_SUMMARY) appendFileSync(env.GITHUB_STEP_SUMMARY, text + "\n\n");
+    if (env.SORARE_DISCORD_WEBHOOK) {
+      for (const content of chunks(text, 1990)) {
+        const r = await fetch(env.SORARE_DISCORD_WEBHOOK, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content }) });
+        if (!r.ok) console.error(`Discord 送信失敗 HTTP ${r.status}`);
+      }
+    }
+  }
+  if (failed) process.exitCode = 1;
+}
+
+// 1 つの大会(t = config の既定値に targets の 1 件を重ねたもの)のラインナップ・購入・売却。通知の本文を返す
+async function runTarget(api, t, shared) {
+  const lines = [];
+  const { fixture, leaderboard, leaderboardSlug } = await upcoming(api.gql, t.leaderboard);
+  const hours = (Date.parse(fixture.startDate) - Date.now()) / 3600e3;
+  if (!leaderboard) { console.log(`次の節 ${fixture.slug} に ${leaderboardSlug} は無い(${t.name})`); return null; }
+
+  const cl = await clubs(api.gql, t.competition);
   const form = Object.fromEntries(cl.map((c) => [c.name, teamForm(c.name, c.games)]));
   const next = Object.fromEntries(cl.filter((c) => c.next).map((c) => {
     const home = c.next.homeTeam.name === c.name;
@@ -64,24 +99,24 @@ async function main() {
   // 「プラスアルファ」(予算 plusBudgetUsd。最安より予想が高い時だけ)の 2 案
   async function market() {
     const slugs = cl.flatMap((c) => c.players);
-    const ps = (await pool(slugs, 4, (s) => player(api.gql, s, cfg.rarity))).filter((p) => p && p.league === cfg.competition);
+    const ps = (await pool(slugs, 4, (s) => player(api.gql, s, t.rarity))).filter((p) => p && p.league === t.competition);
     const cands = ps.map((p) => project({ ...p, card: p.priceCard }, ctx));
-    const cheap = bestLineup(cands, { maxPerClub: cfg.maxPerClub, budget: cfg.marketBudgetUsd });
-    const plus = bestLineup(cands, { maxPerClub: cfg.maxPerClub, budget: cfg.plusBudgetUsd });
-    return [cheap && { title: `最安プラン(予算 $${cfg.marketBudgetUsd} 以内)`, ...cheap },
-      plus && (!cheap || plus.pts > cheap.pts + 0.5) && { title: `プラスアルファ プラン(予算 $${cfg.plusBudgetUsd} 以内)`, ...plus }].filter(Boolean);
+    const cheap = bestLineup(cands, { maxPerClub: t.maxPerClub, budget: t.marketBudgetUsd });
+    const plus = bestLineup(cands, { maxPerClub: t.maxPerClub, budget: t.plusBudgetUsd });
+    return [cheap && { title: `最安プラン(予算 $${t.marketBudgetUsd} 以内)`, ...cheap },
+      plus && (!cheap || plus.pts > cheap.pts + 0.5) && { title: `プラスアルファ プラン(予算 $${t.plusBudgetUsd} 以内)`, ...plus }].filter(Boolean);
   }
   const lineupLines = (b, links) => b.lineup.map((c, i) => `${SLOT[i]} ${c.name}(${c.club}${c.home ? " vs " : " @ "}${c.opp})予想 ${c.proj.toFixed(0)}${c.id === b.captain ? " ★キャプテン" : ""}${c.price != null ? ` $${c.price.toFixed(2)}` : ""}${links && c.card ? `\n  <${cardUrl(c.card)}>` : ""}`);
 
-  // 手持ち(seasonYear 年の J1 選手)を読み直す。自動購入の後にも呼ぶ
+  // 手持ち(seasonYear 年の、この大会のリーグの選手)を読み直す。自動購入の後にも呼ぶ
   let all = [], owned = [];
   async function loadOwned() {
-    all = await myCards(api.gql, cfg.rarity);
+    all = await myCards(api.gql, t.rarity);
     const bySlug = new Map();
-    for (const c of all) if (c.seasonYear === cfg.seasonYear && c.player && !bySlug.has(c.player)) bySlug.set(c.player, c);
-    const ps = (await pool([...bySlug.keys()], 3, (s) => player(api.gql, s, cfg.rarity))).filter((p) => p && p.league === cfg.competition);
+    for (const c of all) if (c.seasonYear === t.seasonYear && c.player && !bySlug.has(c.player)) bySlug.set(c.player, c);
+    const ps = (await pool([...bySlug.keys()], 3, (s) => player(api.gql, s, t.rarity))).filter((p) => p && p.league === t.competition);
     owned = ps.map((p) => { const c = bySlug.get(p.id); return project({ ...p, card: c.slug, cost: c.cost, since: c.since, floor: p.price, price: null }, ctx); });
-    return bestLineup(owned, { maxPerClub: cfg.maxPerClub });
+    return bestLineup(owned, { maxPerClub: t.maxPerClub });
   }
 
   const tr = cfg.trade;
@@ -92,7 +127,7 @@ async function main() {
   let best = null, plans = [];
   if (api.authed) {
     best = await loadOwned();
-    lines.push(`手持ちの ${cfg.rarity} カード: 全 ${all.length} 枚、うち ${cfg.seasonYear} 年の J1 選手 ${owned.length} 人`);
+    lines.push(`手持ちの ${t.rarity} カード: 全 ${all.length} 枚、うち ${t.seasonYear} 年の ${t.league} の選手 ${owned.length} 人`);
     if (!best) {
       lines.push("手持ちでは 5 枚そろわない(GK・DF・MF・FW が各 1 枚以上必要)。代わりに購入候補を出します");
       plans = await market();
@@ -102,7 +137,7 @@ async function main() {
     plans = await market();
   }
 
-  lines.unshift(`**Sorare ${leaderboard.displayName}(J1 ${cfg.rarity})** ${fixture.slug} 締切まで約 ${hours.toFixed(0)} 時間`);
+  lines.unshift(`**Sorare ${t.name}(${leaderboard.displayName})** ${fixture.slug} 締切まで約 ${hours.toFixed(0)} 時間`);
   for (const pl of plans) {
     lines.push("", `**購入候補: ${pl.title}**(今の最安出品)`, ...lineupLines(pl, true),
       `予想合計 ${pl.pts.toFixed(0)}(ボーナス抜き) / 費用 $${pl.cost.toFixed(2)}`);
@@ -113,13 +148,13 @@ async function main() {
   const plan = plans.find((p) => p.title.startsWith(tr.buyPlan === "plus" ? "プラスアルファ" : "最安")) || plans[0];
   if (plan && api.authed) {
     const have = new Set(owned.map((c) => c.id));
-    const buys = planBuys(plan.lineup.filter((c) => !have.has(c.id)), tr, spentInWeek(all));
+    const buys = planBuys(plan.lineup.filter((c) => !have.has(c.id)), tr, shared.spent ?? spentInWeek(all));
     lines.push("", `**自動購入**(${plan.title}・1枚 $${tr.perCardMaxUsd}・週 $${tr.weeklyMaxUsd} まで)${tradeNote}`);
     let bought = 0;
     for (const b of buys) {
       if (!b.ok) { lines.push(`- 見送り ${b.name} $${b.price?.toFixed(2)}: ${b.why}`); continue; }
       if (!trading) { lines.push(`- 購入予定 ${b.name} $${b.price.toFixed(2)}`); continue; }
-      try { const paid = await trader.buy(b.card, b.price); bought++; lines.push(`- ✅ 購入 ${b.name} $${paid.toFixed(2)}`); }
+      try { const paid = await trader.buy(b.card, b.price); bought++; shared.spent += paid; lines.push(`- ✅ 購入 ${b.name} $${paid.toFixed(2)}`); }
       catch (e) { lines.push(`- ⚠️ 購入できず ${b.name}: ${e.message}`); }
     }
     if (bought) {
@@ -158,17 +193,7 @@ async function main() {
     }
   }
 
-  const text = lines.join("\n");
-  console.log(text);
-  mkdirSync(new URL("./out/", import.meta.url), { recursive: true });
-  writeFileSync(new URL("./out/summary.md", import.meta.url), text + "\n");
-  if (env.GITHUB_STEP_SUMMARY) appendFileSync(env.GITHUB_STEP_SUMMARY, text + "\n");
-  if (env.SORARE_DISCORD_WEBHOOK) {
-    for (const content of chunks(text, 1990)) {
-      const r = await fetch(env.SORARE_DISCORD_WEBHOOK, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content }) });
-      if (!r.ok) console.error(`Discord 送信失敗 HTTP ${r.status}`);
-    }
-  }
+  return lines.join("\n");
 }
 
 main().catch(async (e) => {
