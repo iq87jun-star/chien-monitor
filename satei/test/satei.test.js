@@ -390,6 +390,11 @@ test("チェック式査定(グラブル・ウマ娘・第五人格): 学習モ�
   assert.equal(fillTemplate("{X}", { id: 1, game: "granblue" }), "@meruru_prop");
   assert.equal(fillTemplate("{X}", { id: 1, game: "identityv" }), "@meruru_prop");
   assert.equal(fillTemplate("{X}", { id: 1, game: "genshin-impact" }), "@Meruru_Genshin");
+  // {スクショ} はゲームごとにお願いする内容が変わる
+  assert.match(fillTemplate("{スクショ}", { id: 1, game: "granblue" }), /十天衆・十賢者[\s\S]*ユーザーID/);
+  assert.match(fillTemplate("{スクショ}", { id: 1, game: "houkaistarrail" }), /光円錐/);
+  assert.match(fillTemplate("{スクショ}", { id: 1, game: "identityv" }), /衣装一覧/);
+  assert.match(fillTemplate("{スクショ}", { id: 1, game: "unknown" }), /アカウントの内容が分かるスクショ/);
 });
 
 test("チェック式査定: 売れた出品から項目の数を読む(学習用)", async () => {
