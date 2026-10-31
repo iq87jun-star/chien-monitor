@@ -73,3 +73,39 @@ export function sellPrice(floor, undercutPct = 0) {
   if (floor == null) return null;
   return Math.max(0.01, Math.floor(+(floor * (100 - undercutPct)).toFixed(6)) / 100);
 }
+
+// NBA: 節の中で一番良い 1 試合 × カードのボーナスが得点。予想 = 直近 10 試合の平均 + ばらつき × 試合数に応じた上振れ
+// (n 試合の最大値の期待値 ≒ 平均 + 標準偏差 × 係数)。節に試合が無い・欠場(OUT)なら 0、出場未定(GTD)は 0.7 倍
+const MAX_OF_N = [0, 0, 0.56, 0.85, 1.03, 1.16];
+export function nbaProject(p, gamesByTeam) {
+  const n = gamesByTeam[p.club] || 0;
+  if (!n || p.injury === "OUT") return { ...p, games: n, proj: 0 };
+  const played = (p.scores || []).filter((s) => s > 0);
+  const mean = p.l15 || (played.length ? played.reduce((a, b) => a + b, 0) / played.length : 0);
+  const sd = played.length > 1 ? Math.sqrt(played.reduce((a, b) => a + (b - mean) ** 2, 0) / played.length) : 0;
+  const proj = (mean + sd * MAX_OF_N[Math.min(n, 5)]) * (p.injury === "GTD" ? 0.7 : 1);
+  return { ...p, games: n, proj };
+}
+
+// NBA のラインナップ: 位置の決まりなしで 5 枚。星の合計が starCap 以下、budget があれば価格の合計がその範囲。
+// 予想の高い順に並べ、残りを全部足しても今の最良に届かない枝は切る(候補は上位 topN まで)
+export function bestNbaLineup(cands, { starCap = Infinity, budget = Infinity, topN = 60 } = {}) {
+  const c = cands.filter((x) => x.proj > 0 && x.stars != null && (budget === Infinity || x.price != null))
+    .sort((a, b) => b.proj - a.proj).slice(0, topN);
+  let best = null;
+  const pick = [];
+  (function dfs(i, pts, stars, cost) {
+    if (pick.length === 5) { if (!best || pts > best.pts) best = { pts, cost, lineup: [...pick] }; return; }
+    for (let j = i; j < c.length; j++) {
+      const need = 5 - pick.length;
+      let bound = pts;
+      for (let k = j; k < j + need && k < c.length; k++) bound += c[k].proj;
+      if (best && bound <= best.pts) return;
+      const x = c[j];
+      if (stars + x.stars > starCap || cost + (x.price || 0) > budget) continue;
+      pick.push(x); dfs(j + 1, pts + x.proj, stars + x.stars, cost + (x.price || 0)); pick.pop();
+    }
+  })(0, 0, 0, 0);
+  if (!best) return null;
+  return { ...best, stars: best.lineup.reduce((s, x) => s + x.stars, 0), captain: null };
+}
