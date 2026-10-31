@@ -8,7 +8,7 @@ Sorare の大会(In-Season)に向けて、節ごとに次の処理を行いま�
 | J1 Limited | 有効 | 安く遊べる練習用(5 枚で数ドル)。賞金はほぼカードの欠片 |
 | Jupiler Limited(ベルギー) | 有効 | ヨーロッパの練習用(5 枚で $20 以内)。現金の賞金は上位 10 位まで |
 | Jupiler Rare(ベルギー) | 無効(`enabled: false`) | 最低の賞金が $15。5 枚で $100 前後かかるので、使う時は `trade.weeklyMaxUsd` も上げる |
-| NBA Limited Champion | 有効・自動購入なし(`autoBuy: false`) | 節は週 2 回。現金の賞金は上位 50 位まで(最低 $25)。5 枚で $30 前後 |
+| NBA Limited Champion | 有効 | 節は週 2 回。現金の賞金は上位 50 位まで(最低 $25)。5 枚で $30 前後 |
 | NBA Rare Champion | 無効 | 現金の賞金は上位 60 位まで(最低 $25、参加 600〜700 チーム)。5 枚で $100 前後 |
 
 大会を足す時は、`targets` に `name`(通知の名前)・`league`(リーグ名)・`competition`(リーグの slug)・`leaderboard`(大会の slug の後半)・`rarity` を書きます。予算などは大会ごとに上書きできます。
@@ -45,7 +45,7 @@ Sorare の大会(In-Season)に向けて、節ごとに次の処理を行いま�
 |---|---|---|
 | `buyPlan` | `cheap` | 買うプラン(`cheap` = 最安、`plus` = プラスアルファ) |
 | `perCardMaxUsd` | 30 | 1 枚の上限。超えるカードは買わない |
-| `weeklyMaxUsd` | 60 | 直近 7 日の購入額の上限(全大会の合計)。これまでの購入額は所有履歴から数える |
+| `weeklyMaxUsd` | 100 | 直近 7 日の購入額の上限(全大会の合計)。これまでの購入額は所有履歴から数える |
 | `minHoldDays` | 14 | 買ってからこの日数は売らない |
 | `neverBelowCost` | true | 買値より安くは出品しない |
 | `currency` | `WEI` | 決済と出品の通貨。`WEI` = ETH ウォレット、`USD`・`EUR` = キャッシュウォレット(キャッシュウォレットはパスポートでの本人確認が必要) |
