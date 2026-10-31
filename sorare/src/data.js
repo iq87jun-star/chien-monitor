@@ -58,11 +58,12 @@ export async function player(gql, slug, rarity) {
   };
 }
 
+// ケガは今のもの(activeInjuries)だけ見る。injuries は治ったものも含む
 export async function nbaPlayer(gql, slug, rarity) {
   const p = (await gql(`query($s: String!) { anyPlayer(slug: $s) { ... on NBAPlayer { slug displayName age anyPositions gameplayTier
     averageScore(type: LAST_TEN_PLAYED_SO5_AVERAGE_SCORE)
     playerGameScores(last: 10) { score }
-    injuries { status }
+    activeInjuries { status }
     activeClub { name domesticLeague { slug } }
     lowestPriceAnyCard(rarity: ${rarity}, inSeason: true) { ${PRICE} } } } }`, { s: slug })).anyPlayer;
   if (!p) return null;
@@ -70,7 +71,7 @@ export async function nbaPlayer(gql, slug, rarity) {
   return {
     id: p.slug, name: p.displayName, age: p.age, pos: (p.anyPositions?.[0] || "").replace("basketball_", ""), tier: p.gameplayTier,
     l15: p.averageScore || 0, scores, start: scores.length ? scores.filter((s) => s > 0).length / 10 : 0,
-    injury: p.injuries?.[0]?.status || null, club: p.activeClub?.name, league: p.activeClub?.domesticLeague?.slug,
+    injury: p.activeInjuries?.[0]?.status || null, club: p.activeClub?.name, league: p.activeClub?.domesticLeague?.slug,
     price: usd(p.lowestPriceAnyCard?.liveSingleSaleOffer?.receiverSide?.amounts), priceCard: p.lowestPriceAnyCard?.slug || null,
   };
 }
