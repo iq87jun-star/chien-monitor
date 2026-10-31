@@ -62,6 +62,7 @@ EXTRA_TASKS = [("chien_theoption_thursday", "THU", "04:55", "thursday"),
                # v1.4 (追補31): AUDJPY 02:00 プール脚は火〜金の 02:00 建て。水曜は上の既存タスクで、火・木・金を追加(月曜 07:00 と 毎日 22:58 は v1.0 から登録済み)
                ("chien_theoption_live_0200_tue", "TUE", "01:58", "live"), ("chien_theoption_live_0200_thu", "THU", "01:58", "live"),
                ("chien_theoption_live_0200_fri", "FRI", "01:58", "live"),
+               ("chien_theoption_live_0955", None, "09:54", "live"),   # v1.5: 仲値脚(ゴトー日 09:55 建て 15M LOW ×3)。ゴトー日でなければ空振り
                ("chien_theoption_live_settle", None, "06:45", "live_settle")]   # 前日までの取引結果を live_trades_<口座>.csv へ
 
 def ensure_tasks():
