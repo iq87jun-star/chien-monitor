@@ -13,7 +13,7 @@
   python to_summarize.py out\\probe_YYYYMMDD.jsonl   # 記録の要約
 既定はお試し環境(apidemo / gatewaydemo)。--env live は本番ホスト(キーも本番用が要る)。"""
 import argparse, asyncio, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "1.2"
+VERSION = "1.4"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -59,6 +59,9 @@ EXTRA_TASKS = [("chien_theoption_thursday", "THU", "04:55", "thursday"),
                ("chien_theoption_live_1800", "MON", "17:58", "live"), ("chien_theoption_live_2100", "MON", "20:58", "live"),
                ("chien_theoption_live_0100", "TUE", "00:58", "live"), ("chien_theoption_live_0000", "TUE", "23:58", "live"),
                ("chien_theoption_live_0200", "WED", "01:58", "live"),
+               # v1.4 (追補31): AUDJPY 02:00 プール脚は火〜金の 02:00 建て。水曜は上の既存タスクで、火・木・金を追加(月曜 07:00 と 毎日 22:58 は v1.0 から登録済み)
+               ("chien_theoption_live_0200_tue", "TUE", "01:58", "live"), ("chien_theoption_live_0200_thu", "THU", "01:58", "live"),
+               ("chien_theoption_live_0200_fri", "FRI", "01:58", "live"),
                ("chien_theoption_live_settle", None, "06:45", "live_settle")]   # 前日までの取引結果を live_trades_<口座>.csv へ
 
 def ensure_tasks():
