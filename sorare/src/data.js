@@ -4,15 +4,31 @@ import { startRate } from "./model.js";
 
 const PRICE = "slug liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents wei } } }";
 
-// 対象の節は次の節(UPCOMING)。SORARE_FIXTURE に節の slug を入れるとその節にする(先の節を試す時用)
-export async function upcoming(gql, leaderboardSuffix) {
-  const fx = process.env.SORARE_FIXTURE
-    ? (await gql("query($s: String!) { so5 { so5Fixture(slug: $s) { slug startDate } } }", { s: process.env.SORARE_FIXTURE })).so5.so5Fixture
-    : (await gql("{ so5 { so5Fixture(type: UPCOMING) { slug startDate } } }")).so5.so5Fixture;
+// 対象の節は次の節(UPCOMING)。sport は FOOTBALL か NBA。SORARE_FIXTURE に節の slug を入れるとその節にする(先の節を試す時用。その競技の節だけ)
+// 大会のルール(rules)も読む: captain はキャプテンの有無、averageScores は NBA の星の合計の上限(max)
+export async function upcoming(gql, leaderboardSuffix, sport = "FOOTBALL") {
+  const forced = process.env.SORARE_FIXTURE;
+  const fx = forced && forced.startsWith(sport === "NBA" ? "nba-" : "football-")
+    ? (await gql("query($s: String!) { so5 { so5Fixture(slug: $s) { slug startDate } } }", { s: forced })).so5.so5Fixture
+    : (await gql(`{ so5 { so5Fixture(type: UPCOMING${sport === "NBA" ? ", sport: NBA" : ""}) { slug startDate } } }`)).so5.so5Fixture;
   const slug = `${fx.slug}-${leaderboardSuffix}`;
   let lb = null;
-  try { lb = (await gql("query($s: String!) { so5 { so5Leaderboard(slug: $s) { id displayName } } }", { s: slug }, { retries: 1 })).so5.so5Leaderboard; } catch { /* その節にこの大会が無い */ }
+  try { lb = (await gql("query($s: String!) { so5 { so5Leaderboard(slug: $s) { id displayName rules { captain averageScores { max averageType } } } } }", { s: slug }, { retries: 1 })).so5.so5Leaderboard; } catch { /* その節にこの大会が無い */ }
   return { fixture: fx, leaderboardSlug: slug, leaderboard: lb };
+}
+
+// 節の中のチームごとの試合数(NBA は節の中で一番良い 1 試合が得点になるので、試合数が多いほど有利)
+export async function fixtureGames(gql, fixtureSlug) {
+  const games = (await gql("query($s: String!) { so5 { so5Fixture(slug: $s) { games { homeTeam { name } awayTeam { name } } } } }", { s: fixtureSlug })).so5.so5Fixture.games;
+  const n = {};
+  for (const g of games) for (const t of [g.homeTeam?.name, g.awayTeam?.name]) if (t) n[t] = (n[t] || 0) + 1;
+  return n;
+}
+
+// NBA の選手ランク(gameplayTier)ごとの星の数。ラインナップの星の合計に上限がある
+export async function nbaStars(gql) {
+  const r = (await gql("{ config { gameplayTierRatings(sport: NBA) { gameplayTier stars } } }")).config.gameplayTierRatings;
+  return Object.fromEntries(r.map((x) => [x.gameplayTier, x.stars]));
 }
 
 export async function clubs(gql, competition) {
@@ -42,11 +58,29 @@ export async function player(gql, slug, rarity) {
   };
 }
 
-export async function myCards(gql, rarity) {
+// ケガは今のもの(activeInjuries)だけ見る。injuries は治ったものも含む
+export async function nbaPlayer(gql, slug, rarity) {
+  const p = (await gql(`query($s: String!) { anyPlayer(slug: $s) { ... on NBAPlayer { slug displayName age anyPositions gameplayTier
+    averageScore(type: LAST_TEN_PLAYED_SO5_AVERAGE_SCORE)
+    playerGameScores(last: 10) { score }
+    activeInjuries { status }
+    activeClub { name domesticLeague { slug } }
+    lowestPriceAnyCard(rarity: ${rarity}, inSeason: true) { ${PRICE} } } } }`, { s: slug })).anyPlayer;
+  if (!p) return null;
+  const scores = (p.playerGameScores || []).map((g) => g.score || 0);
+  return {
+    id: p.slug, name: p.displayName, age: p.age, pos: (p.anyPositions?.[0] || "").replace("basketball_", ""), tier: p.gameplayTier,
+    l15: p.averageScore || 0, scores, start: scores.length ? scores.filter((s) => s > 0).length / 10 : 0,
+    injury: p.activeInjuries?.[0]?.status || null, club: p.activeClub?.name, league: p.activeClub?.domesticLeague?.slug,
+    price: usd(p.lowestPriceAnyCard?.liveSingleSaleOffer?.receiverSide?.amounts), priceCard: p.lowestPriceAnyCard?.slug || null,
+  };
+}
+
+export async function myCards(gql, rarity, sport = "FOOTBALL") {
   const out = [];
   let after = null;
   for (;;) {
-    const d = (await gql(`query($a: String) { currentUser { cards(first: 10, after: $a, rarities: [${rarity}], sport: FOOTBALL) {
+    const d = (await gql(`query($a: String) { currentUser { cards(first: 10, after: $a, rarities: [${rarity}], sport: ${sport}) {
       nodes { slug rarityTyped seasonYear anyPlayer { slug } ownershipHistory { from amounts { usdCents eurCents wei } } } pageInfo { endCursor hasNextPage } } } }`, { a: after })).currentUser;
     if (!d) throw new Error("ログインしていない");
     // 1 ページ 10 枚(所有履歴まで取ると、未ログイン・APIKEY なしの上限 complexity 500 に 50 枚では収まらない)
