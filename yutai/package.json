@@ -1,0 +1,11 @@
+{
+  "name": "yutai",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js",
+    "fetch": "node fetch.js",
+    "report": "node report.js"
+  }
+}

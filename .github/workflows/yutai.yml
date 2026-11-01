@@ -1,0 +1,63 @@
+# 優待クロス(yutai/)の判定と紙上フォワード。
+#   - 平日 1 日 1 回(日証金の更新 JST 10:30 ごろの後): 日証金データ取得 → report.md 更新 → コミット
+#     → Discord に権利付最終日が近い候補と前営業日の採点を送る
+#   - yutai/ を変更する PR: 単体テストだけ
+#
+# Secrets(任意):
+#   YUTAI_DISCORD_WEBHOOK … 未設定なら通知しない(report.md の更新だけ)
+
+name: yutai
+
+on:
+  schedule:
+    - cron: "7 2 * * 1-5" # JST 11:07(平日)
+  workflow_dispatch:
+  pull_request:
+    paths: ["yutai/**", ".github/workflows/yutai.yml"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: yutai-${{ github.event_name == 'pull_request' && github.ref || 'main' }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: yutai
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test
+        run: npm test
+
+      - name: Fetch JSF data
+        if: github.event_name != 'pull_request'
+        run: node fetch.js
+
+      - name: Report
+        if: github.event_name != 'pull_request'
+        env:
+          YUTAI_DISCORD_WEBHOOK: ${{ secrets.YUTAI_DISCORD_WEBHOOK }}
+        run: node report.js > /dev/null
+
+      - name: Commit
+        if: github.event_name != 'pull_request'
+        run: |
+          git config user.name "market-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data report.md
+          if git diff --cached --quiet; then
+            echo "no changes"
+          else
+            git commit -m "chore: auto-update yutai data [skip ci]"
+            for i in 1 2 3 4; do git pull --rebase && git push && break; sleep $((2 ** i)); done
+          fi
