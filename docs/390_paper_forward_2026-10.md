@@ -4,7 +4,7 @@
 > docs/225 と同じ生成式・同じコスト定数で選抜凍結日 2026-07-29 以後に延長したもの。結果: `research/results/paper_forward_2026-10.csv`。
 > 前月: docs/321(9 月)。本書で 10 月が月末まで確定した。実口座の 10 月採点は docs/389 §1(monthly_scoring)。
 > 「(候補)」は docs/229 §4・docs/303・docs/304 の事前登録セル。判定期間は 2026-10〜2027-03 の 6 か月で、**10 月が累積の 1 か月目**。
-> 今朝の環境再構築で祝日カレンダー(`data_ext/`)が消えていたため、jpholiday / holidays パッケージから再生成してから再実行した(値は 9 月と同じ定義)。時間足系の候補(MonIdxIntra・MonIdxSession0・MonJpyIntra6J・MonJpySession6J・RollGateB2・HoldSL10)は日足の紙上では延長できず、`data_end` が 8 月末のまま(Q107 で時間足の再取得込みにする)。
+> 今朝の環境再構築で `data_ext/` の祝日カレンダーが一時的に消えたが、リポジトリ管理下の原本(`jp_holidays_2016_2026.csv`・`holidays_us_uk_au_nz_2016_2027.csv`)を復元して実行した(9 月と同じ定義。再生成版では AU/NZ の州祝日の扱いが違い MonExAUNZ だけ値が変わるため、原本に統一)。時間足系の候補(MonIdxIntra・MonIdxSession0・MonJpyIntra6J・MonJpySession6J・RollGateB2・HoldSL10)は日足の紙上では延長できず、`data_end` が 8 月末のまま(Q107 で時間足の再取得込みにする)。
 
 ## 2. 結果(%・活動日ベース。9 月列は docs/321 の再掲)
 
@@ -58,8 +58,8 @@
 | MonExHol(候補) | USDJPY | -0.98 | **+1.06** | 3 | -0.30 | -0.6 |
 | MonExHol(候補) | NZDJPY | -1.37 | **+0.58** | 3 | +3.50 | +8.0 |
 | MonExHol(候補) | CHFJPY | -1.19 | **-0.19** | 3 | -1.36 | -3.0 |
-| MonExAUNZ(候補) | AUDJPY | -0.77 | **+0.73** | 3 | +5.32 | +11.2 |
-| MonExAUNZ(候補) | NZDJPY | -1.37 | **+0.07** | 3 | +2.75 | +5.9 |
+| MonExAUNZ(候補) | AUDJPY | — | **+0.40** | 2 | +5.14 | +11.3 |
+| MonExAUNZ(候補) | NZDJPY | — | **+0.28** | 2 | +2.98 | +6.7 |
 | MonExJpTue(候補) | USDJPY | -0.98 | **+1.26** | 4 | -0.72 | -1.4 |
 | MonExJpTue(候補) | EURJPY | -1.30 | **+0.03** | 4 | +0.76 | +1.6 |
 | MonExJpTue(候補) | GBPJPY | -0.75 | **+0.42** | 4 | +5.14 | +10.3 |
@@ -88,7 +88,7 @@
 - **TSMOM** は GER40 +2.41 だけ正で、ETHUSD −16.5 / BTCUSD −7.65 / NAS100 −5.35 / US500 −0.98 / XAUUSD −0.05(建玉なし)が負。12m は XAUUSD +12.8 以外の 5 セルが負(ETHUSD −38.9)で、9 月の読み(未実装のまま据え置き)を変える材料は無い。
 - **A案(RF5)系**は MonThuS USDCHF +2.22 / RSI2a GBPUSD +0.74 が正、RSI2b GBPJPY −0.38(3 か月連続負・12m +1.9)。実口座の A 案(1-Step 531466484・EA9)は 10 月 +1.56% で Mon 36 本すべて正。
 - **v4 FX** は 10 月 5 ペアで約定があり 2 勝 3 敗(EURJPY +0.31 / GBPUSD +0.26、EURUSD −1.25 / AUDUSD −0.84 / NZDUSD −0.17)。9 月の 5 連敗からは改善したが 12m は 9 ペア中 5 ペアが負のまま。
-- **候補セル(累積 1 か月目)**: 月曜派生 15 本は元の Mon と同符号で、10 月は祝日・AU/NZ・五十日の除外が効く局面が無かった(MonExAUNZ AUDJPY +0.73 は 10/26 を除外して元の +1.06 を下回る)。MonExGotobi Mon7 +0.54。Thu XAUUSD −1.80(12m −11.0・2 か月で −0.5)。時間足系 6 本は未計測(注記)。
+- **候補セル(累積 1 か月目)**: 月曜派生 15 本は元の Mon と同符号で、10 月は祝日・AU/NZ・五十日の除外が効く局面が無かった(MonExAUNZ は 10/5 NSW 労働者の日と 10/26 NZ 労働者の日を除外して n2、AUDJPY +0.40 / NZDJPY +0.28 で元の Mon と同符号だが小さい)。MonExGotobi Mon7 +0.54。Thu XAUUSD −1.80(12m −11.0・2 か月で −0.5)。時間足系 6 本は未計測(注記)。
 
 ## 4. 運用
 
