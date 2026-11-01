@@ -20,13 +20,15 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.5"
+VERSION = "1.5a"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
          "real": ("https://api.theoption.com/v1", "wss://gateway.theoption.com/v1/ws")}
 MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 120000   # 1 日のベット合計の上限(月曜 72,700 + ゴトー日の仲値 21,000 = 93,700。倍率 2.0 の 1.5 倍が重なると後の脚が見送りになる)
 FAST_PRESCAN_SECS = 25; FAST_BUY_DELAY = 1.0; FAST_GAP = 1.2   # v1.5: 15M 脚は定刻の 25 秒前から契約を先読みし、定刻 +1 秒に 1.2 秒間隔で発注
+STALE_RETRY_SECS = 15; STALE_RETRY_DEADLINE_MIN = 20   # v1.5a: 週明け 07:00 は業者のレート配信が数分〜10 分以上凍結し buy が 216 で拒否される(11/2 実測)。15 秒おきに 07:20 まで再試行
+TRANSIENT_CODES = {224, 213, 214, 216, 999}   # 再試行する一時的な拒否コード(216 = Unable to process your request: レート未配信など)
 # 確定メニュー(追補18)。entry = JST の定刻、judge = 判定時刻 JST(next=翌日)、wds = 曜日(0=月)、months = 対象月(None=全月)
 MENU = [
  # v1.4 (2026-10-31 追補31裁定): 事前登録4脚(追補18・23、10年フルのミッド再判定) + AUDJPY 02:00 プール脚(追補29、曜日・ペア横断で成立する因子)。
@@ -282,15 +284,22 @@ def run_entries(account, key, out_dir, log, now_jst):
             rec["note"] = f"日次ベット上限 {DAILY_STAKE_CAP} 超過で見送り"; log.say(leg["id"], rec["note"]); log.write("skip", {"leg": leg["id"], "reason": rec["note"]})
             append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], 0, "", "", c["name"], rec["note"]])
             done[leg["id"]] = rec; continue
-        resp = None
-        for attempt in range(3 if fast else 2):
+        resp = None; deadline = entry0 + dt.timedelta(minutes=STALE_RETRY_DEADLINE_MIN); attempt = 0
+        while True:
+            attempt += 1
             st, resp = rest(base, "/trading/buy", key, buy_body(c["name"], c["expiration_time"], stake), timeout=8 if fast else 15)
-            log.write("buy", {"leg": leg["id"], "http": st, "req": buy_body(c["name"], c["expiration_time"], stake), "body": resp, "t_jst": dt.datetime.now(JST).strftime("%H:%M:%S.%f")[:-3]})
+            log.write("buy", {"leg": leg["id"], "http": st, "req": buy_body(c["name"], c["expiration_time"], stake), "body": resp, "t_jst": dt.datetime.now(JST).strftime("%H:%M:%S.%f")[:-3], "attempt": attempt})
             if resp.get("status") == "success": break
             codes = err_codes(resp); log.say(leg["id"], "buy 拒否", codes, str(resp)[:160])
-            if fast: time.sleep(1.0); continue   # 開場直後の拒否(未開場など)は 1 秒後に再試行
-            if not (set(codes) & {224, 213, 214, 216, 999}): break
-            time.sleep(2)
+            if fast:   # 15M: 開場直後の拒否(未開場など)は 1 秒後に再試行、最大 3 回(1 分遅れると勝率が落ちる脚なので粘らない)
+                if attempt >= 3: break
+                time.sleep(1.0); continue
+            if not (set(codes) & TRANSIENT_CODES): break   # 残高不足・契約無効などは再試行しない
+            if attempt == 1: time.sleep(2); continue        # 従来どおり 2 秒後に 1 回
+            # v1.5a: 一時的な拒否(216 など)は、業者のレート配信が始まるまで STALE_RETRY_SECS おきに定刻 +STALE_RETRY_DEADLINE_MIN 分まで粘る
+            if dt.datetime.now(JST) + dt.timedelta(seconds=STALE_RETRY_SECS) > deadline:
+                log.say(leg["id"], f"定刻 +{STALE_RETRY_DEADLINE_MIN} 分まで拒否が続いたので見送り"); break
+            time.sleep(STALE_RETRY_SECS)
         if resp and resp.get("status") == "success":
             d = resp.get("data") or {}; op = d.get("order_properties") or {}
             rec = {"stake": stake, "trade": str(d.get("trade")), "strike": op.get("strike"), "contract": c["name"], "payout": c["payout"]}

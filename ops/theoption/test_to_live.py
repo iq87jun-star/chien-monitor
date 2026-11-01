@@ -175,3 +175,55 @@ def test_run_entries_skips_missing_contract_and_records_csv(monkeypatch):
         assert [p for p, _ in calls] == ["/trading/health", "/wallet/balance", "/trading/buy"]
         # 同じ日に再実行しても二重発注しない
         assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), now) == 0 and [p for p, _ in calls].count("/trading/buy") == 1
+
+def test_run_entries_retries_transient_216_until_feed_is_live(monkeypatch):
+    """v1.5a: 11/2(月)07:00 の実測。業者のレート配信が凍結している間は buy が 216 で拒否される → 15 秒おきに再試行し、配信開始後に約定する。"""
+    calls = []; slept = []
+    fake_now = {"t": dt.datetime(2026, 11, 9, 7, 0, 10, tzinfo=L.JST)}
+    class FakeDT(dt.datetime):
+        @classmethod
+        def now(cls, tz=None): return fake_now["t"]
+    monkeypatch.setattr(L.dt, "datetime", FakeDT)
+    def fake_sleep(s): slept.append(s); fake_now["t"] = fake_now["t"] + dt.timedelta(seconds=s)
+    monkeypatch.setattr(L.time, "sleep", fake_sleep); monkeypatch.setattr(L, "sleep_until", lambda t: None)
+    def fake_rest(base, path, key, body=None, timeout=15):
+        calls.append((path, body, timeout, fake_now["t"]))
+        if path == "/wallet/balance": return 200, {"status": "success", "data": {"balance": 1005350}}
+        if path == "/trading/buy":
+            if fake_now["t"] < dt.datetime(2026, 11, 9, 7, 8, 30, tzinfo=L.JST):   # 07:08:30 までレート凍結
+                return 200, {"status": "fail", "data": None, "errors": [{"description": "Unable to process your request. Please try again later.", "errorCode": 216}]}
+            return 200, {"status": "success", "data": {"trade": 9, "order_properties": {"strike": 175.9}}}
+        return 200, {"status": "success", "data": {"isActive": True}}
+    monkeypatch.setattr(L, "rest", fake_rest)
+    async def fake_scan(wss, key, secs):
+        return [upd(f"{p}|FE|23H|HIGHLOW|HIGH", "2026-11-09T21:00:00.000Z", "1.95", status="Open") for p in ("EURJPY", "AUDJPY", "NZDJPY")]
+    monkeypatch.setattr(L, "scan_contracts", fake_scan)
+    with tempfile.TemporaryDirectory() as tmp:
+        assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), fake_now["t"]) == 0
+        buys = [c for c in calls if c[0] == "/trading/buy"]
+        first_ok = next(c for c in buys if c[3] >= dt.datetime(2026, 11, 9, 7, 8, 30, tzinfo=L.JST))
+        assert first_ok[3] < dt.datetime(2026, 11, 9, 7, 9, 0, tzinfo=L.JST)          # 配信開始から 15 秒以内に約定
+        assert all(2 <= s <= L.STALE_RETRY_SECS or s >= 4.0 for s in slept)             # 再試行間隔は 2 秒→15 秒、脚間は 4〜8 秒
+        rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
+        assert len(rows) == 4 and all(",9,175.9," in r for r in rows[1:])            # 3 本とも約定として記録
+
+def test_run_entries_gives_up_at_deadline(monkeypatch):
+    fake_now = {"t": dt.datetime(2026, 11, 9, 7, 0, 10, tzinfo=L.JST)}
+    class FakeDT(dt.datetime):
+        @classmethod
+        def now(cls, tz=None): return fake_now["t"]
+    monkeypatch.setattr(L.dt, "datetime", FakeDT)
+    monkeypatch.setattr(L.time, "sleep", lambda s: fake_now.__setitem__("t", fake_now["t"] + dt.timedelta(seconds=s))); monkeypatch.setattr(L, "sleep_until", lambda t: None)
+    n = {"buy": 0}
+    def fake_rest(base, path, key, body=None, timeout=15):
+        if path == "/wallet/balance": return 200, {"status": "success", "data": {"balance": 1005350}}
+        if path == "/trading/buy": n["buy"] += 1; return 200, {"status": "fail", "errors": [{"errorCode": 216}]}
+        return 200, {"status": "success", "data": {"isActive": True}}
+    monkeypatch.setattr(L, "rest", fake_rest)
+    async def fake_scan(wss, key, secs): return [upd("EURJPY|FE|23H|HIGHLOW|HIGH", "2026-11-09T21:00:00.000Z", "1.95", status="Open")]
+    monkeypatch.setattr(L, "scan_contracts", fake_scan)
+    with tempfile.TemporaryDirectory() as tmp:
+        L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), fake_now["t"])
+        assert fake_now["t"] <= dt.datetime(2026, 11, 9, 7, 20, 30, tzinfo=L.JST) and n["buy"] >= 70   # 07:20 で打ち切り(約 80 回)
+        rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
+        assert "buy 拒否 [216]" in rows[1] and ",0,,," in rows[1]
