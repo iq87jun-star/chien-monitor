@@ -1463,16 +1463,24 @@
    "slug": "roll_x3_guard_grid",
    "title": "Roll ×3.0 版のガード格子(11/1 判定後)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/391_q99_roll_x3_guard_grid.md"
    ],
    "note": "docs/279 §4 の 10 月判定が正なら、トパーズ EA11 の Roll ×3.0 を Q85 と同じ格子で再計算。実行は 11/1 以降",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 17
+   "order": 17,
+   "result": "現行帳簿(Mon4 ×8 + 指数 Mon 各 1.0)に Roll ×{0,1,2,3} を足した Q85 格子 36 セル: 現行ガード(4%/9%)で ×3 は到達 91.4→92.6・失格 8.6→7.4、可行セルは日次 3%/床 10% のみ(×1〜3)。2.8% 残高ガード込みの 10.6 年 MC では到達 84% 不変・失格 8→10%・資金化後の期待 +0.4pt/年。変更しない(Roll 停止継続・D 案は資金化後に再評価)。10 月の水曜監視(docs/279 §4 の解禁条件)は Dukascopy 429/503 で取得未了・結論は依存しない",
+   "runs": [
+    {
+     "date": "2026-11-02",
+     "summary": "docs/391(診断・セル 0・36 格子・変更しない)"
+    }
+   ]
   },
   {
    "id": "Q100",
@@ -3826,6 +3834,13 @@
    "item": "Q152",
    "cells": 0,
    "doc": "docs/381_q152_portfolio_c6.md"
+  },
+  {
+   "date": "2026-11-02",
+   "slot": "morning",
+   "item": "Q99",
+   "cells": 0,
+   "doc": "docs/391_q99_roll_x3_guard_grid.md"
   }
  ],
  "external_checks": [
