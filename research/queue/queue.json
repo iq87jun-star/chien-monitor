@@ -1582,16 +1582,24 @@
    "slug": "holiday_skip_parity",
    "title": "祝日スキップの実口座パリティ(10/5 AUDJPY で初確認 → 他の祝日)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/392_q104_holiday_skip_parity.md"
    ],
    "note": "Q53/Q56 の祝日表と実口座の [Mon SKIP] ログを照合し、研究系列の除外日と EA の除外日が一致するか毎月確認する装置",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 22
+   "order": 22,
+   "result": "EA の InpJpHolidayMondays(祝日月曜+翌火曜祝日の月曜 11 日)・InpAuNzHolidayMondays(NSW+NZ 12 日)は jpholiday/holidays の期待集合と 2027-12 まで完全一致。除外日 4 回(10/5 豪・10/12 JP・10/26 NZ・11/2 翌火曜 JP)で除外日に建てた例 0(11/2 は 9 口座 [Mon SKIP] 50 行)。変更しない。毎月 1 日に同スクリプトで再確認。付記: ルビー/パール/14166201 の EA が InpExpiry 10/31 到達で新規停止(ユーザー判断待ち)",
+   "runs": [
+    {
+     "date": "2026-11-02",
+     "summary": "docs/392(診断・セル 0・カレンダー一致・違反 0・変更しない)"
+    }
+   ]
   },
   {
    "id": "Q105",
@@ -3841,6 +3849,13 @@
    "item": "Q99",
    "cells": 0,
    "doc": "docs/391_q99_roll_x3_guard_grid.md"
+  },
+  {
+   "date": "2026-11-02",
+   "slot": "evening",
+   "item": "Q104",
+   "cells": 0,
+   "doc": "docs/392_q104_holiday_skip_parity.md"
   }
  ],
  "external_checks": [
