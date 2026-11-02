@@ -1606,16 +1606,24 @@
    "slug": "p2_lock_optimize",
    "title": "P2 のロック値最適化(目標 5/6% × ロック幅・MC)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/393_q105_p2_lock_optimize.md"
    ],
    "note": "FTMO P2 4.9/5.05・Fintokei 5.9/6.05 の現行値を、レグ DB の MC で到達率・失格率の格子にかけて検証。基準は Q85 と同じ",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 23
+   "order": 23,
+   "result": "Q85 と同じ MC で 6 帳簿 × (ロック幅 c × アーム幅 g) 25 格子。ロック幅 c は到達・失格に無感応(±0.1)。アーム幅 g(Arm < Close の隙間・現行 0.15pp)は建玉なしで帯に着地すると通過も再開もしない「滞留」を生み、トパーズ 3.5% / ルビー 4.9% / C6 12.4%(到達 −3.4〜−12pt)。Arm = Close で滞留 0・失格不変。変更する: 全 EA で InpLockArmPct = InpLockClosePct(入力のみ・v+0.01・切替後)。P1 の現行 7.9/8.05 も同じ構造",
+   "runs": [
+    {
+     "date": "2026-11-03",
+     "summary": "docs/393(診断・セル 0・提案: Arm = Close・9 EA の v+0.01 を用意)"
+    }
+   ]
   },
   {
    "id": "Q106",
@@ -3856,6 +3864,13 @@
    "item": "Q104",
    "cells": 0,
    "doc": "docs/392_q104_holiday_skip_parity.md"
+  },
+  {
+   "date": "2026-11-03",
+   "slot": "morning",
+   "item": "Q105",
+   "cells": 0,
+   "doc": "docs/393_q105_p2_lock_optimize.md"
   }
  ],
  "external_checks": [
