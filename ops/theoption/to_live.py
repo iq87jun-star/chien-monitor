@@ -20,13 +20,14 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.6"
+VERSION = "1.6a"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
          "real": ("https://api.theoption.com/v1", "wss://gateway.theoption.com/v1/ws")}
 MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 120000   # 1 日のベット合計の上限(月曜 72,700 + ゴトー日の仲値 21,000 = 93,700。倍率 2.0 の 1.5 倍が重なると後の脚が見送りになる)
 FAST_PRESCAN_SECS = 25; FAST_BUY_DELAY = 1.0; FAST_GAP = 1.2   # v1.5: 15M 脚は定刻の 25 秒前から契約を先読みし、定刻 +1 秒に 1.2 秒間隔で発注
+FAST_LATE_SCAN_SECS = 20   # v1.6a: 枠が定刻ちょうどに出る場合に備え、定刻 +20 秒まで購読を続ける(そろった瞬間に打ち切るので通常は 1 秒以内)
 STALE_RETRY_SECS = 15; STALE_RETRY_DEADLINE_MIN = 20   # v1.5a: 週明け 07:00 は業者のレート配信が数分〜10 分以上凍結し buy が 216 で拒否される(11/2 実測)。15 秒おきに 07:20 まで再試行
 TRANSIENT_CODES = {224, 213, 214, 216, 999}   # 再試行する一時的な拒否コード(216 = Unable to process your request: レート未配信など)
 # 確定メニュー(追補18)。entry = JST の定刻、judge = 判定時刻 JST(next=翌日)、wds = 曜日(0=月)、months = 対象月(None=全月)
@@ -186,7 +187,8 @@ def pick_contract(frames, leg, day):
 def buy_body(name, expiration_time, amount):
     return {"contract": name, "amount": int(amount), "order_type": "market", "order_properties": {"expiration_time": expiration_time}}
 
-async def scan_contracts(wss, key, secs):
+async def scan_contracts(wss, key, secs, done=None):
+    """contracts ストリームを secs 秒購読。done(frames) が True を返したらその時点で打ち切る(v1.6a: 15M 脚は目的の契約が出た瞬間に発注へ進む)。"""
     import websockets
     hdr = {"Authorization": "Bearer " + key}; frames = []
     try: conn = websockets.connect(wss, additional_headers=hdr, open_timeout=20, ping_interval=20, max_size=None)
@@ -200,7 +202,8 @@ async def scan_contracts(wss, key, secs):
             try: raw = await asyncio.wait_for(ws.recv(), max(1, t_end - time.time()))
             except asyncio.TimeoutError: break
             try: frames.append(json.loads(raw))
-            except ValueError: pass
+            except ValueError: continue
+            if done is not None and done(frames): break
     return frames
 
 def keep_awake():
@@ -280,14 +283,15 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     if bal is None or float(bal) < need: log.say(f"残高 {bal} < 必要 {need:.0f} → 発注しない"); log.write("guard", {"balance": bal, "need": need}); return 1
     today_total = sum(v.get("stake", 0) for v in done.values())
     fast = legs[0]["kind"] == "15M"; entry0 = jst(day, legs[0]["entry"])
-    if fast:   # v1.5: 先読み(定刻 −25 秒から 24 秒)→ 定刻 +1 秒に発注。1 分遅れると勝率が 3pp 落ちる脚のため
-        sleep_until(entry0 - dt.timedelta(seconds=FAST_PRESCAN_SECS)); scan_secs = FAST_PRESCAN_SECS - 1
+    if fast:   # v1.5/v1.6a: 定刻 −25 秒から購読し、目的の契約が全部そろった瞬間に打ち切る(15M の枠は開場の直前〜同時にしか配信されない: 11/2 09:51 の実見で 09:55 枠は未配信)。
+        sleep_until(entry0 - dt.timedelta(seconds=FAST_PRESCAN_SECS)); scan_secs = FAST_PRESCAN_SECS + FAST_LATE_SCAN_SECS
+        stop_when = lambda fr: all(pick_contract(fr, l, day) for l in legs)
     else:
-        sleep_until(entry0 + dt.timedelta(seconds=10)); scan_secs = SCAN_SECS
-    try: frames = asyncio.run(scan_contracts(wss, key, scan_secs))
+        sleep_until(entry0 + dt.timedelta(seconds=10)); scan_secs = SCAN_SECS; stop_when = None
+    try: frames = asyncio.run(scan_contracts(wss, key, scan_secs, stop_when))
     except Exception as e: frames = []; log.write("error", repr(e)); log.say("contracts 購読に失敗:", repr(e))
-    log.write("scan", {"n": len(frames)})
-    if fast: sleep_until(entry0 + dt.timedelta(seconds=FAST_BUY_DELAY))
+    log.write("scan", {"n": len(frames), "t_jst": dt.datetime.now(JST).strftime("%H:%M:%S.%f")[:-3]})
+    if fast: sleep_until(entry0 + dt.timedelta(seconds=FAST_BUY_DELAY))   # 定刻前にそろっていれば定刻 +1 秒まで待つ。定刻後に出たならすぐ発注
     csv_path = os.path.join(out_dir, f"live_entries_{account}.csv")
     hdr = ["date", "strategy_id", "pair", "direction", "payout_actual", "stake", "trade_id", "strike", "contract", "note"]
     for leg in legs:
