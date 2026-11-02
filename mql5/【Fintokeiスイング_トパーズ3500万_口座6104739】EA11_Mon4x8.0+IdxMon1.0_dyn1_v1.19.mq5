@@ -1,4 +1,4 @@
-//| ★v1.19(2026-11-03 docs/393 Q105): InpLockArmPct = InpLockClosePct(入力のみ・ロジック不変)。
+//| ★v1.19(2026-11-03 docs/241 §1aj): IsIdx を桁数でも判定(Fintokei US100p/US500p は digits 2 で PipOf=0.1 → FX 扱いになり指数 Mon が建たなかった)。他は v1.18 と同一。
 //| ★v1.18(2026-10-28 docs/241 §1af・Q101): 指数 Mon(US100p / US500p)を Instant G v1.16 と同型に: 銘柄名は Fintokei 実名(US100/US500)、別名表に US100/USTEC/NDX100・SPX500/SP500 を追加、
 //|   スプレッド上限は bps(InpIdxMaxSpreadBps 3.0)、建ては米国現物寄り(13:30 夏 / 14:30 冬 UTC)+8 分から 60 分窓の単発(重み×倍率を分割しない)・24h 保有。FX 4 本・ガード・Magic・dyn は v1.17 と同一。
 //| ★v1.17 dyn1(2026-10-26 docs/379 Q150): Q131 余裕比例サイジング(InpDynK・InpKeepPct)を EA8 v1.37 から移植。既定 InpDynK=0(無効)。資金化の「完了」時に 2.5・保持 20% を入力(docs/349 §9f)。取引ロジック・ガード・Magic は v1.16 と同一。|
@@ -16,7 +16,7 @@
 //|   ⚠v1.00 の Hold 建玉(UK100p / USOILp・943623)は手動決済してから差替・再移行                                              |
 //+------------------------------------------------------------------+
 #property copyright "chien-monitor research"
-#property version   "1.19"   // v1.19(2026-11-03 docs/393 Q105): InpLockArmPct = InpLockClosePct のみ。取引ロジック・他入力・Magic は v1.18 と同一。
+#property version   "1.19"   // v1.19(2026-11-03 docs/241 §1aj): IsIdx の桁数判定のみ(指数 Mon の不発修正)。取引ロジック・入力・Magic は v1.18 と同一。
 // v1.18   // v1.18(2026-10-28 docs/241 §1af・Q101): 指数 Mon を G 型(実名 US100/US500・bps 上限・米国寄り単発)に。FX・ガード・Magic 不変。   // v1.17 dyn1(2026-10-26 docs/379 Q150): Q131 余裕比例サイジング(InpDynK / InpKeepPct)を移植。既定 0 = 無効。ロジック・ガード・Magic は v1.16 と同一。   // v1.16(2026-10-21 docs/328 §9m): 未接続・equity 0 ではガード(床・日次・残高)を判定しない。取引ロジックは v1.15 と同一。   // v1.15(2026-10-12 ユーザー「1 番高くなる形で」(docs/349 §9・docs/241 §1y): 6 月の月収期待を最大化する設定。ロジック・ガード・Magic 不変。) ← v1.14(2026-10-12 ユーザー「ビットコインは外してください」→ 確認の結果 ETHUSD(Mon)だけを外す(docs/350 §4・docs/241 §1x)。ロジック・他レグ・ガード・Magic 不変。) ← v1.13(2026-10-11 ユーザー「全て切り替え」(docs/349 §6c・docs/241 §1w): +2σ を 2027-06 までに入れる倍率。ロジック・ガード・Magic 不変。) ← v1.12(2026-10-07・Q111 docs/327): VPS ログ送信(InpLogUrl・Apps Script)を追加。取引ロジックは v1.11 と同一   // EA11 v1.11(2026-10-05・Q93 docs/324): ロット計算の tick 値経路を口座通貨に換算し、損益経路を正とする(円口座の偽 SIZE SANITY 解消)。他は v1.10 と同一
 //   // EA11 v1.10(2026-09-29): EA7g v1.25 の機構で Mon4 ×2.0 + Roll ×1.0 + 非FX ×0.5(docs/318 §8・docs/320 §8)
 #property strict
@@ -152,7 +152,7 @@ input int    InpBalGuardMaxMonth = 2;     // 月内発動上限(超過は月末�
 
 input group "=== 利益ロック(Fintokei スイング P1=+8%。P2(+6%)移行時は 5.9/6.05/6.1 に変更・InpBaselineReset=true を1回) ==="
 input bool   InpProfitLockEnable = true;
-input double InpLockArmPct    = 8.05;   // v1.19(2026-11-03 docs/393 Q105): Arm = Close(旧 7.9)。Arm<Close の帯に建玉なしで着地すると通過も再開もしない「滞留」を無くす   // equity+この%で新規停止(P1 +8%。P2 は 5.9)
+input double InpLockArmPct    = 7.9;   // equity+この%で新規停止(P1 +8%。P2 は 5.9)
 input double InpLockClosePct  = 8.05;  // equity+この%で全決済し恒久ロック(PASS_LOCK。P2 は 6.05)
 input double InpProfitStopPct = 8.1;   // +この%で新規停止(保険。P2 は 6.1)
 
@@ -338,7 +338,10 @@ double PipOf(string s){
    if(pt>0) return pt*10.0;
    return (StringFind(s,"JPY")>=0)? 0.01 : 0.0001; }
 // v1.18(G v1.10 から移植): 指数判定・bps スプレッド・米国夏時間・現物寄り窓
-bool IsIdx(string s){ return (PipOf(s)>=1.0); }
+bool IsIdx(string s){   // v1.19(2026-11-03 docs/241 §1aj): Fintokei の US100p/US500p は digits 2(point 0.01)で PipOf=0.1 → 旧判定では FX 扱いになり、指数 Mon が 4/6/8/10 UTC の FX 枠で pip 上限 3.0 に掛かって一度も建たなかった。G 型(Instant v1.17)と同じく桁数でも判定する
+   if(PipOf(s)>=1.0) return true;
+   if(StringFind(s,"JPY")>=0) return false;   // 円クロス(digits 3)は FX
+   return ((int)SymbolInfoInteger(s,SYMBOL_DIGITS)<=2); }   // 指数・XAU 等(InpMonLegs の指数は US100/US500 のみ)
 double SpreadBps(string s){
    double a=SymbolInfoDouble(s,SYMBOL_ASK), b=SymbolInfoDouble(s,SYMBOL_BID);
    if(a<=0||b<=0) return 1e9;
