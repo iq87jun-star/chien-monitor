@@ -227,3 +227,40 @@ def test_run_entries_gives_up_at_deadline(monkeypatch):
         assert fake_now["t"] <= dt.datetime(2026, 11, 9, 7, 20, 30, tzinfo=L.JST) and n["buy"] >= 70   # 07:20 で打ち切り(約 80 回)
         rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
         assert "buy 拒否 [216]" in rows[1] and ",0,,," in rows[1]
+
+def test_v16_per_leg_account_routing(monkeypatch):
+    """v1.6(追補37・裁定 B): live_real でも demo_legs(既定: 月曜 3 本 + 仲値 3 本)はお試し口座、EURGBP 23:00 と AUDJPY 02:00 は実口座。"""
+    monkeypatch.setenv("THEOPTION_API_KEY", DEMO); monkeypatch.setenv("THEOPTION_API_KEY_REAL", REAL)
+    monkeypatch.setattr(L, "HERE", tempfile.mkdtemp()); monkeypatch.setattr(L, "keep_awake", lambda: None)
+    with open(os.path.join(L.HERE, "to_config.json"), "w", encoding="utf-8-sig") as f: json.dump({"out": "x", "live_real": True}, f)
+    runs = []
+    monkeypatch.setattr(L, "run_entries", lambda acc, key, out, log, now, only_ids=None: runs.append((acc, key, tuple(sorted(only_ids)))) or 0)
+    class FakeDT(dt.datetime):
+        @classmethod
+        def now(cls, tz=None): return FakeDT.t
+    monkeypatch.setattr(L.dt, "datetime", FakeDT)
+    with tempfile.TemporaryDirectory() as tmp:
+        FakeDT.t = dt.datetime(2026, 11, 3, 22, 58, tzinfo=L.JST)     # 火曜 22:58 → 23:00 EURGBP(11 月は対象月)は実口座
+        assert L.main(["--out", tmp]) == 0 and runs == [("real", REAL, ("EURGBP_N6L",))]
+        runs.clear(); FakeDT.t = dt.datetime(2026, 11, 4, 1, 58, tzinfo=L.JST)   # 水曜 01:58 → 02:00 AUDJPY プール脚は実口座
+        assert L.main(["--out", tmp]) == 0 and runs == [("real", REAL, ("AUDJPY_02",))]
+        runs.clear(); FakeDT.t = dt.datetime(2026, 11, 9, 6, 58, tzinfo=L.JST)   # 月曜 06:58 → 3 本はお試しのまま
+        assert L.main(["--out", tmp]) == 0 and runs == [("demo", DEMO, ("AUDJPY_N6", "EURJPY_N6", "NZDJPY_N6"))]
+        runs.clear(); FakeDT.t = dt.datetime(2026, 11, 5, 9, 54, tzinfo=L.JST)   # ゴトー日 09:54 → 仲値 3 本もお試し
+        assert L.main(["--out", tmp]) == 0 and runs == [("demo", DEMO, ("EURJPY_NK", "GBPJPY_NK", "USDJPY_NK"))]
+        # demo_legs を空にすると全脚が実口座
+        with open(os.path.join(L.HERE, "to_config.json"), "w", encoding="utf-8-sig") as f: json.dump({"out": "x", "live_real": True, "demo_legs": []}, f)
+        runs.clear(); FakeDT.t = dt.datetime(2026, 11, 9, 6, 58, tzinfo=L.JST)
+        assert L.main(["--out", tmp]) == 0 and runs == [("real", REAL, ("AUDJPY_N6", "EURJPY_N6", "NZDJPY_N6"))]
+        # live_real が無ければ従来どおり全脚お試し(実口座キーがあっても)
+        with open(os.path.join(L.HERE, "to_config.json"), "w", encoding="utf-8-sig") as f: json.dump({"out": "x"}, f)
+        runs.clear(); FakeDT.t = dt.datetime(2026, 11, 3, 22, 58, tzinfo=L.JST)
+        assert L.main(["--out", tmp]) == 0 and runs == [("demo", DEMO, ("EURGBP_N6L",))]
+        # 実口座キーの iss が合わなければその口座は止まる(お試し側は影響なし)
+        with open(os.path.join(L.HERE, "to_config.json"), "w", encoding="utf-8-sig") as f: json.dump({"out": "x", "live_real": True}, f)
+        monkeypatch.setenv("THEOPTION_API_KEY_REAL", DEMO); runs.clear()
+        assert L.main(["--out", tmp]) == 3 and runs == []
+        monkeypatch.setenv("THEOPTION_API_KEY_REAL", REAL)
+        # --settle は実口座・お試しの両方
+        settles = []; monkeypatch.setattr(L, "run_settle", lambda acc, key, out, log: settles.append(acc) or 0)
+        assert L.main(["--settle", "--out", tmp]) == 0 and settles == ["real", "demo"]

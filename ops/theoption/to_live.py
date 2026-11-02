@@ -20,7 +20,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.5a"
+VERSION = "1.6"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -224,14 +224,34 @@ def append_csv(path, header, row):
         if new: w.writerow(header)
         w.writerow(row)
 
-def load_account(out_dir):
-    """to_config.json の live_real が true かつ THEOPTION_API_KEY_REAL が有るときだけ実口座。それ以外はお試し。"""
+# v1.6 (追補37・ユーザー裁定 B): 実口座に切り替えても、未検証の脚はお試し口座に残す。既定は月曜 07:00 の 3 本(11/9 の再試行経路の確認待ち)と仲値 3 本(11/5・11/10・11/13 のデモ検証待ち)。
+# to_config.json の "demo_legs": [...] で上書き([] なら全脚が実口座)。検証が済んだ脚から外す。
+DEMO_LEGS_DEFAULT = ["EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6", "USDJPY_NK", "EURJPY_NK", "GBPJPY_NK"]
+
+def load_config():
     cfg = {}
     try: cfg = json.load(open(os.path.join(HERE, "to_config.json"), encoding="utf-8-sig"))   # v1.3a: to_setup.ps1(PS 5.1 の Set-Content UTF8)は BOM 付きで書く。utf-8 だと読めず黙ってお試しに戻っていた
     except Exception: pass
+    return cfg if isinstance(cfg, dict) else {}
+
+def load_account(out_dir):
+    """to_config.json の live_real が true かつ THEOPTION_API_KEY_REAL が有るときだけ実口座。それ以外はお試し。"""
+    cfg = load_config()
     if cfg.get("live_real") is True and os.environ.get("THEOPTION_API_KEY_REAL", "").strip():
         return "real", os.environ["THEOPTION_API_KEY_REAL"].strip()
     return "demo", os.environ.get("THEOPTION_API_KEY", "").strip()
+
+def demo_leg_ids(cfg=None):
+    cfg = load_config() if cfg is None else cfg
+    v = cfg.get("demo_legs")
+    return set(v) if isinstance(v, list) else set(DEMO_LEGS_DEFAULT)
+
+def account_for_leg(leg, base_account, cfg=None):
+    """実口座が有効でも demo_legs に入っている脚はお試し口座で発注する(脚別口座)。"""
+    return "demo" if base_account == "real" and leg["id"] in demo_leg_ids(cfg) else base_account
+
+def key_for(account):
+    return os.environ.get("THEOPTION_API_KEY_REAL" if account == "real" else "THEOPTION_API_KEY", "").strip()
 
 def key_matches_account(account, key):
     iss = jwt_iss(key)
@@ -243,8 +263,9 @@ def sleep_until(t):
         if s <= 0: return
         time.sleep(min(s, 30))
 
-def run_entries(account, key, out_dir, log, now_jst):
+def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     base, wss = HOSTS[account]; legs = legs_for_slot(now_jst)
+    if only_ids is not None: legs = [l for l in legs if l["id"] in only_ids]   # v1.6: 脚別口座(main が口座ごとに呼ぶ)
     if not legs: log.say("この時間帯に実行する脚は無い"); return 0
     day = legs[0]["_day"]   # v1.2: 建てる日(深夜の脚は起動日の翌日)。state/CSV/契約照合はすべてこの日で扱う
     state_path = os.path.join(out_dir, "_diag", "live_state.json"); os.makedirs(os.path.dirname(state_path), exist_ok=True)
@@ -333,16 +354,26 @@ def run_settle(account, key, out_dir, log):
 def main(argv=None):
     ap = argparse.ArgumentParser(); ap.add_argument("--settle", action="store_true"); ap.add_argument("--plan", action="store_true")
     ap.add_argument("--out", default=os.environ.get("THEOPTION_OUT") or os.path.join(HERE, "out")); a = ap.parse_args(argv)
-    now = dt.datetime.now(JST); account, key = load_account(a.out)
-    log = Log(os.path.join(a.out, f"live_{account}_{now:%Y%m%d}.jsonl"))
+    now = dt.datetime.now(JST); account, key = load_account(a.out); cfg = load_config()
     if a.plan:
-        day = now.date(); print(f"{day} ({'月火水木金土日'[day.weekday()]}) 口座={account} {'ゴトー日' if is_gotobi(day) else ''}")
+        day = now.date(); print(f"{day} ({'月火水木金土日'[day.weekday()]}) 口座={account} {'ゴトー日' if is_gotobi(day) else ''} お試しに残す脚={sorted(demo_leg_ids(cfg)) if account == 'real' else '(全脚お試し)'}")
         for leg in MENU:
-            if is_due_today(leg, day): print(f"  {leg['entry']} {leg['id']:14} {leg['pair']} {leg['sel']} 判定 {leg['judge']}{'(翌日)' if leg['next'] else ''} ¥{leg['stake']:,}")
+            if is_due_today(leg, day): print(f"  {leg['entry']} {leg['id']:14} {leg['pair']} {leg['sel']} 判定 {leg['judge']}{'(翌日)' if leg['next'] else ''} ¥{leg['stake']:,} [{account_for_leg(leg, account, cfg)}]")
         return 0
-    if not key: log.say("API キーが無い"); return 2
-    if not key_matches_account(account, key): log.say(f"キーが口座種別({account})に合わない → 終了"); log.write("guard", {"account": account, "iss": jwt_iss(key)}); return 3
-    log.say(f"v{VERSION} 口座={account}"); keep_awake()
-    return run_settle(account, key, a.out, log) if a.settle else run_entries(account, key, a.out, log, now)
+    # v1.6: 口座ごとに分けて実行。--settle は鍵のある口座をすべて、発注はこの時間帯の脚を口座別に
+    if a.settle: groups = {acc: None for acc in (("real", "demo") if account == "real" else ("demo",))}
+    else:
+        groups = {}
+        for leg in legs_for_slot(now): groups.setdefault(account_for_leg(leg, account, cfg), set()).add(leg["id"])
+        if not groups: groups = {account: set()}   # 脚が無くても従来どおり「この時間帯に実行する脚は無い」を記録する
+    rc = 0; keep_awake()
+    for acc, ids in groups.items():
+        k = key_for(acc); log = Log(os.path.join(a.out, f"live_{acc}_{now:%Y%m%d}.jsonl"))
+        if not k: log.say(f"API キーが無い({acc})"); rc = max(rc, 2); continue
+        if not key_matches_account(acc, k): log.say(f"キーが口座種別({acc})に合わない → 終了"); log.write("guard", {"account": acc, "iss": jwt_iss(k)}); rc = max(rc, 3); continue
+        log.say(f"v{VERSION} 口座={acc}" + (f" 脚={sorted(ids)}" if ids else ""))
+        r = run_settle(acc, k, a.out, log) if a.settle else run_entries(acc, k, a.out, log, now, only_ids=ids)
+        rc = max(rc, r or 0)
+    return rc
 
 if __name__ == "__main__": sys.exit(main())
