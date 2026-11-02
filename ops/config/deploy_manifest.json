@@ -83,7 +83,7 @@
    "apply": true,
    "ensure": [
     {
-     "ea": "【FN100k_口座14166201】RecentFit_Hold_UK100WTI_2.22倍+Roll5_4.5倍_v1.37.mq5",
+     "ea": "【FN100k_口座14166201】RecentFit_Hold_UK100WTI_2.22倍+Roll5_4.5倍_v1.38.mq5",
      "symbol": "UK100",
      "period": "H1"
     }
@@ -93,9 +93,10 @@
     "Sess上位5_4.8倍",
     "【FN100k_口座14166201】RecentFit_NonFX_2.22倍+Roll5_4.5倍_v1.33",
     "【FN100k_口座14166201】RecentFit_Hold_UK100WTI_2.22倍+Roll5_4.5倍_v1.35",
-    "【FN100k_口座14166201】RecentFit_Hold_UK100WTI_2.22倍+Roll5_4.5倍_v1.36"
+    "【FN100k_口座14166201】RecentFit_Hold_UK100WTI_2.22倍+Roll5_4.5倍_v1.36",
+    "【FN100k_口座14166201】RecentFit_Hold_UK100WTI_2.22倍+Roll5_4.5倍_v1.37"
    ],
-   "note": "2026-10-26 ユーザー「切替」(docs/241 §1ad・docs/378 Q147): v1.37 = Roll 金利差門 2.0pp。 2026-10-23 ユーザー「切替」(docs/241 §1ac): v+0.01(未接続・equity 0 ではガードを判定しない・docs/328 §9m)。ロジック・入力・Magic 不変。 2026-10-17 ユーザー「停止完了」(MQL5 VPS 全停止)→ apply:true・自前 VPS に配備(docs/328 §9f)。 2026-10-12 ユーザー「1 番高くなる形で」(docs/349 §9・docs/241 §1y): RecentFit_Hold_UK100WTI_2.22倍+Roll5_4.5倍_v1.35.mq5(未配備の前版を置換)。旧: 【FN100k_口座14166201】RecentFit_NonFX_2.22倍_ETHなし+Roll5_4.5倍_v1.34.mq5。 2026-10-12 ユーザー「ETHUSD(Mon)だけ外す」: v1.34: InpMonLegs 空(ETHUSD Mon を外す)(未配備の前版を置換)。旧: 【FN100k_口座14166201】RecentFit_NonFX_2.22倍+Roll5_4.5倍_v1.33.mq5。 2026-10-11 ユーザー「全て切り替え」(docs/349 §6c・docs/241 §1w): v1.33: InpMult 2.22・InpSessMult 4.5(×1.5)。ロジック・ガード・Magic 不変。MQL5 VPS 側は手動で再アタッチ(または入力値の書き換え)。旧: 【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍_v1.32.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍.mq5。 旧 v1.31",
+   "note": "2026-11-02 ユーザー「切替」(docs/241 §1ai・docs/392 §5): v+0.01 = InpExpiry 2026.10.31 → 2027.03.31 のみ(期限到達で 11/2 07:00 JST から新規停止していたのを解除)。ロジック・入力・Magic 不変。 2026-10-26 ユーザー「切替」(docs/241 §1ad・docs/378 Q147): v1.37 = Roll 金利差門 2.0pp。 2026-10-23 ユーザー「切替」(docs/241 §1ac): v+0.01(未接続・equity 0 ではガードを判定しない・docs/328 §9m)。ロジック・入力・Magic 不変。 2026-10-17 ユーザー「停止完了」(MQL5 VPS 全停止)→ apply:true・自前 VPS に配備(docs/328 §9f)。 2026-10-12 ユーザー「1 番高くなる形で」(docs/349 §9・docs/241 §1y): RecentFit_Hold_UK100WTI_2.22倍+Roll5_4.5倍_v1.35.mq5(未配備の前版を置換)。旧: 【FN100k_口座14166201】RecentFit_NonFX_2.22倍_ETHなし+Roll5_4.5倍_v1.34.mq5。 2026-10-12 ユーザー「ETHUSD(Mon)だけ外す」: v1.34: InpMonLegs 空(ETHUSD Mon を外す)(未配備の前版を置換)。旧: 【FN100k_口座14166201】RecentFit_NonFX_2.22倍+Roll5_4.5倍_v1.33.mq5。 2026-10-11 ユーザー「全て切り替え」(docs/349 §6c・docs/241 §1w): v1.33: InpMult 2.22・InpSessMult 4.5(×1.5)。ロジック・ガード・Magic 不変。MQL5 VPS 側は手動で再アタッチ(または入力値の書き換え)。旧: 【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍_v1.32.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN100k_口座14166201】RecentFit_NonFX_1.48倍+Roll5_3.0倍.mq5。 旧 v1.31",
    "terminal": "FundedNext",
    "prepare_profile": true
   },
@@ -139,7 +140,7 @@
    "apply": true,
    "ensure": [
     {
-     "ea": "【Fintokeiパール500万】RecentFit_8.0倍_dyn1_v1.11.mq5",
+     "ea": "【Fintokeiパール500万】RecentFit_8.0倍_dyn1_v1.12.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -147,9 +148,10 @@
    "remove": [
     "EA4_Sess8_4.8倍",
     "【Fintokeiパール500万】RecentFit_4.0倍_v1.08",
-    "【Fintokeiパール500万】RecentFit_8.0倍_dyn1_v1.10"
+    "【Fintokeiパール500万】RecentFit_8.0倍_dyn1_v1.10",
+    "【Fintokeiパール500万】RecentFit_8.0倍_dyn1_v1.11"
    ],
-   "note": "2026-10-23 ユーザー「切替」(docs/241 §1ac): v+0.01(未接続・equity 0 ではガードを判定しない・docs/328 §9m)。ロジック・入力・Magic 不変。 2026-10-17 ユーザー「停止完了」(MQL5 VPS 全停止)→ apply:true・自前 VPS に配備(docs/328 §9f)。 2026-10-12 ユーザー「1 番高くなる形で」(docs/349 §9・docs/241 §1y): RecentFit_8.0倍_dyn1_v1.10.mq5(未配備の前版を置換)。旧: 【Fintokeiパール500万】RecentFit_4.0倍_v1.08.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【Fintokeiパール500万】RecentFit_4.0倍.mq5。 Q93 のロット経路修正(docs/324)も同梱。 旧 B案 v1.06",
+   "note": "2026-11-02 ユーザー「切替」(docs/241 §1ai・docs/392 §5): v+0.01 = InpExpiry 2026.10.31 → 2027.03.31 のみ(期限到達で 11/2 07:00 JST から新規停止していたのを解除)。ロジック・入力・Magic 不変。 2026-10-23 ユーザー「切替」(docs/241 §1ac): v+0.01(未接続・equity 0 ではガードを判定しない・docs/328 §9m)。ロジック・入力・Magic 不変。 2026-10-17 ユーザー「停止完了」(MQL5 VPS 全停止)→ apply:true・自前 VPS に配備(docs/328 §9f)。 2026-10-12 ユーザー「1 番高くなる形で」(docs/349 §9・docs/241 §1y): RecentFit_8.0倍_dyn1_v1.10.mq5(未配備の前版を置換)。旧: 【Fintokeiパール500万】RecentFit_4.0倍_v1.08.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【Fintokeiパール500万】RecentFit_4.0倍.mq5。 Q93 のロット経路修正(docs/324)も同梱。 旧 B案 v1.06",
    "terminal": "Fintokei",
    "prepare_profile": true
   },
@@ -171,16 +173,17 @@
    "apply": true,
    "ensure": [
     {
-     "ea": "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.05.mq5",
+     "ea": "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.06.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
    ],
    "remove": [
     "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_10.0倍_v1.03",
-    "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.04"
+    "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.04",
+    "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.05"
    ],
-   "note": "2026-10-23 ユーザー「切替」(docs/241 §1ac): v+0.01(未接続・equity 0 ではガードを判定しない・docs/328 §9m)。ロジック・入力・Magic 不変。 2026-10-17 ユーザー「停止完了」(MQL5 VPS 全停止)→ apply:true・自前 VPS に配備(docs/328 §9f)。 2026-10-12 ユーザー「1 番高くなる形で」(docs/349 §9・docs/241 §1y): RecentFit_B案_12.0倍_v1.04.mq5(未配備の前版を置換)。旧: 【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_10.0倍_v1.03.mq5。 2026-10-11 ユーザー「全て切り替え」(docs/349 §6c・docs/241 §1w): B案 v1.03: InpMult 10.0。ロジック・ガード・Magic 不変。MQL5 VPS 側は手動で再アタッチ(または入力値の書き換え)。旧: 【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_4.0倍_v1.02.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_4.0倍.mq5。 Q93 のロット経路修正(docs/324)も同梱。 旧 Ruby Swing Phase 1(JPY)2026-09-28 購入。B案 ×4.0 v1.00(docs/320)",
+   "note": "2026-11-02 ユーザー「切替」(docs/241 §1ai・docs/392 §5): v+0.01 = InpExpiry 2026.10.31 → 2027.03.31 のみ(期限到達で 11/2 07:00 JST から新規停止していたのを解除)。ロジック・入力・Magic 不変。 2026-10-23 ユーザー「切替」(docs/241 §1ac): v+0.01(未接続・equity 0 ではガードを判定しない・docs/328 §9m)。ロジック・入力・Magic 不変。 2026-10-17 ユーザー「停止完了」(MQL5 VPS 全停止)→ apply:true・自前 VPS に配備(docs/328 §9f)。 2026-10-12 ユーザー「1 番高くなる形で」(docs/349 §9・docs/241 §1y): RecentFit_B案_12.0倍_v1.04.mq5(未配備の前版を置換)。旧: 【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_10.0倍_v1.03.mq5。 2026-10-11 ユーザー「全て切り替え」(docs/349 §6c・docs/241 §1w): B案 v1.03: InpMult 10.0。ロジック・ガード・Magic 不変。MQL5 VPS 側は手動で再アタッチ(または入力値の書き換え)。旧: 【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_4.0倍_v1.02.mq5。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_4.0倍.mq5。 Q93 のロット経路修正(docs/324)も同梱。 旧 Ruby Swing Phase 1(JPY)2026-09-28 購入。B案 ×4.0 v1.00(docs/320)",
    "terminal": "Fintokei",
    "prepare_profile": true
   },
