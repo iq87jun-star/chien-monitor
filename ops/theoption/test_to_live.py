@@ -113,15 +113,19 @@ def test_run_entries_fast_path_for_15m(monkeypatch):
         return 200, {"status": "success", "data": {"isActive": True}}
     monkeypatch.setattr(L, "rest", fake_rest); monkeypatch.setattr(L, "sleep_until", lambda t: sleeps.append(t)); monkeypatch.setattr(L.time, "sleep", lambda s: None)
     scans = []
-    async def fake_scan(wss, key, secs):
+    async def fake_scan(wss, key, secs, done=None):
         scans.append(secs)
-        return [upd(f"{p}|FE|15M|HIGHLOW|LOW", "2026-11-05T01:10:00.000Z", "1.85", status="Unknown") for p in ("USDJPY", "EURJPY", "GBPJPY")]
+        frames = [upd("USDJPY|FE|15M|HIGHLOW|LOW", "2026-11-05T01:05:00.000Z", "1.85")]   # 1 つ前の枠だけ → まだ打ち切らない
+        assert done is not None and not done(frames)
+        frames += [upd(f"{p}|FE|15M|HIGHLOW|LOW", "2026-11-05T01:10:00.000Z", "1.85", status="Unknown") for p in ("USDJPY", "EURJPY", "GBPJPY")]
+        assert done(frames)   # 3 本そろった瞬間に打ち切る
+        return frames
     monkeypatch.setattr(L, "scan_contracts", fake_scan)
     with tempfile.TemporaryDirectory() as tmp:
         now = dt.datetime(2026, 11, 5, 9, 54, tzinfo=L.JST)
         assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), now) == 0
         e = dt.datetime(2026, 11, 5, 9, 55, tzinfo=L.JST)
-        assert sleeps == [e - dt.timedelta(seconds=25), e + dt.timedelta(seconds=1)] and scans == [24]   # 先読み → 定刻 +1 秒に発注
+        assert sleeps == [e - dt.timedelta(seconds=25), e + dt.timedelta(seconds=1)] and scans == [45]   # −25 秒から最長 +20 秒まで購読 → 定刻 +1 秒に発注
         buys = [c for c in calls if c[0] == "/trading/buy"]; assert len(buys) == 4 and all(c[2] == 8 for c in buys)   # 拒否 1 回 + 成功 3 本
         rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
         assert len(rows) == 4 and all(",7000,7,153.21," in r for r in rows[1:]) and rows[1].startswith("2026-11-05,USDJPY_NK,USDJPY,LOW,1.85,7000")
@@ -164,7 +168,7 @@ def test_run_entries_skips_missing_contract_and_records_csv(monkeypatch):
         return 200, {"status": "success", "data": {"isActive": True}}
     monkeypatch.setattr(L, "rest", fake_rest); monkeypatch.setattr(L, "sleep_until", lambda t: None); monkeypatch.setattr(L.time, "sleep", lambda s: None)
     frames = [upd("EURJPY|FE|23H|HIGHLOW|HIGH", "2026-10-26T21:00:00.000Z", "1.95")]
-    async def fake_scan(wss, key, secs): return frames
+    async def fake_scan(wss, key, secs, done=None): return frames
     monkeypatch.setattr(L, "scan_contracts", fake_scan)
     with tempfile.TemporaryDirectory() as tmp:
         now = dt.datetime(2026, 10, 26, 6, 58, tzinfo=L.JST)   # 月曜 07:00: 3 本のうち EURJPY だけ契約がある → 1 本購入・2 本「契約なし」
@@ -195,7 +199,7 @@ def test_run_entries_retries_transient_216_until_feed_is_live(monkeypatch):
             return 200, {"status": "success", "data": {"trade": 9, "order_properties": {"strike": 175.9}}}
         return 200, {"status": "success", "data": {"isActive": True}}
     monkeypatch.setattr(L, "rest", fake_rest)
-    async def fake_scan(wss, key, secs):
+    async def fake_scan(wss, key, secs, done=None):
         return [upd(f"{p}|FE|23H|HIGHLOW|HIGH", "2026-11-09T21:00:00.000Z", "1.95", status="Open") for p in ("EURJPY", "AUDJPY", "NZDJPY")]
     monkeypatch.setattr(L, "scan_contracts", fake_scan)
     with tempfile.TemporaryDirectory() as tmp:
@@ -220,7 +224,7 @@ def test_run_entries_gives_up_at_deadline(monkeypatch):
         if path == "/trading/buy": n["buy"] += 1; return 200, {"status": "fail", "errors": [{"errorCode": 216}]}
         return 200, {"status": "success", "data": {"isActive": True}}
     monkeypatch.setattr(L, "rest", fake_rest)
-    async def fake_scan(wss, key, secs): return [upd("EURJPY|FE|23H|HIGHLOW|HIGH", "2026-11-09T21:00:00.000Z", "1.95", status="Open")]
+    async def fake_scan(wss, key, secs, done=None): return [upd("EURJPY|FE|23H|HIGHLOW|HIGH", "2026-11-09T21:00:00.000Z", "1.95", status="Open")]
     monkeypatch.setattr(L, "scan_contracts", fake_scan)
     with tempfile.TemporaryDirectory() as tmp:
         L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), fake_now["t"])
