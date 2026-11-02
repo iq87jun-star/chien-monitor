@@ -65,6 +65,8 @@ ETH ウォレットで売買する時の注意:
 - 上限(`perCardMaxUsd`・`weeklyMaxUsd`)は USD のままです。ETH 建ての価格は、Sorare の換算レート(`config.exchangeRate`)で USD にして比べます。
 - 出品額は USD の目安を ETH(wei)に換算して出します。Sorare の「受け取り方法」は Crypto only か Cash and Crypto にしておいてください。
 - ETH ウォレットに ETH が無いと購入は失敗します(通知に理由が出ます)。
+- 売り手が受け取る通貨を選べるので、ユーロや Solana(LAMPORT)でしか受け取らない出品は ETH では買えません。ログインしている時は、購入候補の価格とリンクを「`currency` で買える出品の中の最安」にします。
+- 最初の売買の前に、`SORARE_PRIVATE_KEY` の公開鍵が Sorare のアカウントの鍵(starkKey)と一致するか確かめます。違う時は売買せず、通知に理由が出ます。
 
 注意:
 

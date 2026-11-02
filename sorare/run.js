@@ -8,7 +8,7 @@
 // それ以外は「購入予定・出品予定」をリンク付きで送るだけ(試し運転)。
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { createClient, setRates } from "./src/api.js";
-import { upcoming, clubs, player, nbaPlayer, fixtureGames, nbaStars, myCards, submitLineup } from "./src/data.js";
+import { market, upcoming, clubs, player, nbaPlayer, fixtureGames, nbaStars, myCards, submitLineup } from "./src/data.js";
 import { teamForm, project, bestLineup, nbaProject, bestNbaLineup, sellCandidates, sellPrice } from "./src/model.js";
 import { createTrader, planBuys, planSells, spentInWeek } from "./src/trade.js";
 
@@ -52,6 +52,7 @@ async function main() {
   if (env.SORARE_EMAIL && env.SORARE_PASSWORD) {
     const me = await api.signIn({ email: env.SORARE_EMAIL, password: env.SORARE_PASSWORD, otpSecret: env.SORARE_OTP_SECRET || "" });
     console.log(`ログイン: ${me}`);
+    market.currency = cfg.trade?.currency || null;   // 価格は、この通貨で買える出品の最安にする
   }
 
   // ユーロ・ETH の換算レート(ETH 建ての出品を USD で比べるため)

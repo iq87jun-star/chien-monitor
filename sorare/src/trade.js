@@ -2,7 +2,7 @@
 // 購入: prepareAcceptOffer → 秘密鍵で署名 → acceptOffer。出品: prepareOffer → 署名 → createSingleSaleOffer。
 // 入力の形は API のエラーメッセージで確かめたもの。上限の判定(planBuys・planSells)は API を呼ばない純粋な関数(test/trade.test.js)。
 import { randomUUID } from "node:crypto";
-import { signAuthorizationRequest } from "@sorare/crypto";
+import { signAuthorizationRequest, exportPublicKey } from "@sorare/crypto";
 import { usd, rates, setRates } from "./api.js";
 
 const WEEK = 7 * 864e5;
@@ -82,17 +82,27 @@ const AUTH = `authorizations { fingerprint request { __typename
 
 export function createTrader(gql, { privateKey, currency = "USD" }) {
   const sign = (req) => signAuthorizationRequest(privateKey, req);
+  // 秘密鍵がこのアカウントのもの(公開鍵 = Sorare の starkKey)か、最初の売買の前に 1 回だけ確かめる。違う鍵の署名は「Invalid authorization request」になる
+  let keyChecked = null;
+  const checkKey = () => (keyChecked ??= (async () => {
+    const want = (await gql("{ currentUser { starkKey } }")).currentUser?.starkKey;
+    let mine;
+    try { mine = BigInt("0x" + exportPublicKey(privateKey, true).slice(4)); } catch { throw new Error("SORARE_PRIVATE_KEY が秘密鍵の形になっていない"); }
+    if (want && BigInt(want) !== mine) throw new Error("SORARE_PRIVATE_KEY がこのアカウントの鍵と違う(公開鍵が一致しない)。Sorare のウォレット設定から書き出した秘密鍵か確かめてください");
+  })());
   const errs = (d, what) => { if (d?.errors?.length) throw new Error(`${what}: ` + d.errors.map((e) => e.message).join(" / ")); };
 
   // 今出ている最安の出品を、価格を確かめ直してから買う(提案の後に値上げされていたら買わない)
   async function buy(card, maxPrice) {
+    await checkKey();
     // 決済に使うレートを先に取り、同じレートで出品価格を USD にして上限と比べる
     const ex = (await gql("{ config { exchangeRate { id rates } } }")).config.exchangeRate;
     setRates(ex.rates);
     const exchangeRateId = ex.id;
-    const c = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { id receiverSide { amounts { usdCents eurCents wei } } } } }`, { s: card })).anyCard;
+    const c = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { id settlementCurrencies receiverSide { amounts { usdCents eurCents wei } } } } }`, { s: card })).anyCard;
     const offer = c?.liveSingleSaleOffer;
     if (!offer) throw new Error("出品が無くなった");
+    if (offer.settlementCurrencies && !offer.settlementCurrencies.includes(currency)) throw new Error(`この出品は ${currency} で買えない(売り手の受け取り: ${offer.settlementCurrencies.join("・")})`);
     const price = usd(offer.receiverSide?.amounts);
     if (price == null || price > maxPrice + 1e-9) throw new Error(`価格が変わった($${price?.toFixed(2)} > 上限 $${maxPrice})`);
     const settlementInfo = { currency, paymentMethod: "WALLET", exchangeRateId };
@@ -110,6 +120,7 @@ export function createTrader(gql, { privateKey, currency = "USD" }) {
 
   // 出品額は通貨の最小単位(セント・wei)の文字列で渡し、出品後に実際の出品額を読み直して確かめる
   async function list(card, price) {
+    await checkKey();
     const c = (await gql(`query($s: String!) { anyCard(slug: $s) { assetId liveSingleSaleOffer { id } } }`, { s: card })).anyCard;
     if (c.liveSingleSaleOffer) throw new Error("すでに出品中");
     const receiveAmount = toReceiveAmount(price, currency);

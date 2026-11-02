@@ -2,7 +2,33 @@
 import { usd } from "./api.js";
 import { startRate } from "./model.js";
 
-const PRICE = "slug liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents wei } } }";
+const PRICE = "slug seasonYear liveSingleSaleOffer { settlementCurrencies receiverSide { amounts { usdCents eurCents wei } } }";
+
+// 自動売買の決済通貨(run.js がログイン後に入れる)。最安の出品がこの通貨で買えない時(売り手がユーロ・Solana などでしか受け取らない)は、
+// 買える出品の中の最安を探す。null なら通貨を気にしない(未ログインの提案)
+export const market = { currency: null };
+
+async function priced(gql, playerSlug, card, rarity) {
+  const o = card?.liveSingleSaleOffer;
+  if (!o || !market.currency || o.settlementCurrencies?.includes(market.currency)) return { price: usd(o?.receiverSide?.amounts), priceCard: card?.slug || null };
+  // 出品の並びは価格順ではないので、25 件ずつ最大 100 件まで見る(APIKEY なしの complexity 500 に収まる大きさ)
+  const nodes = [];
+  for (let after = null, i = 0; i < 4; i++) {
+    const r = (await gql(`query($p: String!, $a: String) { tokens { liveSingleSaleOffers(playerSlug: $p, first: 25, after: $a) { nodes { settlementCurrencies
+      receiverSide { amounts { usdCents eurCents wei } } senderSide { anyCards { slug rarityTyped seasonYear } } } pageInfo { endCursor hasNextPage } } } }`, { p: playerSlug, a: after })).tokens.liveSingleSaleOffers;
+    nodes.push(...r.nodes);
+    if (!r.pageInfo.hasNextPage) break;
+    after = r.pageInfo.endCursor;
+  }
+  let best = { price: null, priceCard: null };
+  for (const n of nodes) {
+    const c = n.senderSide?.anyCards;
+    if (c?.length !== 1 || c[0].rarityTyped !== rarity || c[0].seasonYear !== card.seasonYear || !n.settlementCurrencies?.includes(market.currency)) continue;
+    const price = usd(n.receiverSide?.amounts);
+    if (price != null && (best.price == null || price < best.price)) best = { price, priceCard: c[0].slug };
+  }
+  return best;
+}
 
 // 対象の節は次の節(UPCOMING)。sport は FOOTBALL か NBA。SORARE_FIXTURE に節の slug を入れるとその節にする(先の節を試す時用。その競技の節だけ)
 // 大会のルール(rules)も読む: captain はキャプテンの有無、averageScores は NBA の星の合計の上限(max)
@@ -54,7 +80,7 @@ export async function player(gql, slug, rarity) {
   return {
     id: p.slug, name: p.displayName, age: p.age, pos: p.position, l15: p.averageScore || 0,
     start: startRate(p.so5Scores), club: p.activeClub?.name, league: p.activeClub?.domesticLeague?.slug,
-    price: usd(p.lowestPriceAnyCard?.liveSingleSaleOffer?.receiverSide?.amounts), priceCard: p.lowestPriceAnyCard?.slug || null,
+    ...(await priced(gql, p.slug, p.lowestPriceAnyCard, rarity)),
   };
 }
 
@@ -72,7 +98,7 @@ export async function nbaPlayer(gql, slug, rarity) {
     id: p.slug, name: p.displayName, age: p.age, pos: (p.anyPositions?.[0] || "").replace("basketball_", ""), tier: p.gameplayTier,
     l15: p.averageScore || 0, scores, start: scores.length ? scores.filter((s) => s > 0).length / 10 : 0,
     injury: p.activeInjuries?.[0]?.status || null, club: p.activeClub?.name, league: p.activeClub?.domesticLeague?.slug,
-    price: usd(p.lowestPriceAnyCard?.liveSingleSaleOffer?.receiverSide?.amounts), priceCard: p.lowestPriceAnyCard?.slug || null,
+    ...(await priced(gql, p.slug, p.lowestPriceAnyCard, rarity)),
   };
 }
 
