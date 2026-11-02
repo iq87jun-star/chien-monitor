@@ -914,7 +914,7 @@ health=isActive、残高 1,005,350、契約は 07:00:01 に status Open、倍率
 - スクリプト: scratchpad `late_entry.py`(FXCM 感度)、`rec_1102/probe_0525.jsonl`(Drive から取得・復号)。
 
 ### 追補37 裁定 (2026-11-02): ユーザー決定 = (B) 11/3 に 23:00 EURGBP・02:00 AUDJPY だけ実口座化、月曜 3 本と仲値 3 本はお試し口座で検証継続
-- 実装: to_live v1.6「脚別口座」(`demo_legs`、既定 = 月曜 3 本 + 仲値 3 本)。v1.5(仲値脚)・v1.5a(再試行)とともに `claude/to-live-v15`(ea2adda、ops 運用ブランチ c85f6e4 から fast-forward 可)。運用ブランチ ccr-dbb29a98-7cflzp への反映は本番配備にあたるためユーザー承認待ち(GitHub で `claude/to-live-v15` → `ccr-dbb29a98-7cflzp` のマージ、または承認後に当方がプッシュ)。PC は各タスク起動時に to_live.py を再取得するので、反映後の最初のタスクから新コードで動く(11/2 22:58 の EURGBP お試しに間に合わせるには 22:50 までに反映)。
+- 実装: to_live v1.6「脚別口座」(`demo_legs`、既定 = 月曜 3 本 + 仲値 3 本)。v1.5(仲値脚)・v1.5a(再試行)とともに `claude/to-live-v15`(ea2adda、ops 運用ブランチ c85f6e4 から fast-forward 可)。運用ブランチ ccr-dbb29a98-7cflzp へは 11/2 14:00 JST にユーザー承認のうえ fast-forward 反映(c85f6e4→ea2adda)。PC は各タスク起動時に to_live.py を再取得するので、11/2 22:58 の EURGBP(お試し)から新コードで動く。live_0955 タスクの登録には PC で `-Mode check` を 1 回実行。
 - 11/3(火)07:10 の突合の判定基準(改): 11/2 23:00 EURGBP と 11/3 02:00 AUDJPY がお試しで正常に発注・判定(strike vs ミッド、expiration_strike の目減り ≤0.2pip) → 「切替可」。ユーザーが `to_config.json` の `live_real` を true にすると、実口座で動くのは 23:00 EURGBP(10,000 円)と 02:00 AUDJPY(4,800 円)のみ。
 - 月曜 3 本: 11/9(月)07:00 のお試しで v1.5a の再試行経路(約定時刻・strike と配信初値の一致)を確認 → 11/10 の突合で合格なら `demo_legs` から外す(仲値 3 本だけ残す)。
 - 仲値 3 本: 11/5・11/10・11/13 のお試し 3 回 → 合格なら `demo_legs: []`。
