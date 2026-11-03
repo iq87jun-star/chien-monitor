@@ -10,7 +10,7 @@
 #   SORARE_EMAIL / SORARE_PASSWORD / SORARE_OTP_SECRET … ログイン(2段階認証が無効なら OTP は不要)
 #   SORARE_API_KEY … 任意(API の上限が上がる)
 #   SORARE_PRIVATE_KEY … Sorare のウォレットの秘密鍵(自動売買に使う。漏れると資産を失うので扱いに注意)
-# Variables: SORARE_SUBMIT = true でラインナップを実際に登録する
+# Variables: SORARE_SUBMIT … 既定でラインナップを実際に登録する。false にすると提案の通知だけ
 #            SORARE_TRADE = true で自動購入・自動出品を実際に行う(未設定なら「予定」の通知だけ。上限は sorare/config.json の trade)
 
 name: sorare
@@ -79,7 +79,7 @@ jobs:
       - run: node run.js
         env:
           SORARE_FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force && '1' || '' }}
-          SORARE_SUBMIT: ${{ vars.SORARE_SUBMIT }}
+          SORARE_SUBMIT: ${{ vars.SORARE_SUBMIT || 'true' }}
           SORARE_TRADE: ${{ vars.SORARE_TRADE }}
           SORARE_PRIVATE_KEY: ${{ secrets.SORARE_PRIVATE_KEY }}
           SORARE_DISCORD_WEBHOOK: ${{ secrets.SORARE_DISCORD_WEBHOOK }}
