@@ -82,6 +82,9 @@ test("火曜: 今夜の帰りと、明日(水)は休み", () => {
   const msg = buildMessage(config, "2026-11-03", hourly("2026-11-03"), hourly("2026-11-03"));
   assert.match(msg, /今夜の帰り 11\/3\(火\)\*\* 22:30〜23:15/);
   assert.match(msg, /明日 11\/4\(水\)はお休み/);
+  assert.match(msg, /最高10℃ \/ 最低10℃/);
+  assert.match(msg, /06〜9時 .*\n.*09〜12時/);
+  assert.match(msg, /21〜24時/);
 });
 
 test("水曜: 帰りはなく、明日の通常の行き", () => {

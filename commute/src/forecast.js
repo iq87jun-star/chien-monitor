@@ -130,6 +130,24 @@ function line(label, window, s) {
   return parts.join(" / ") + (tips.length ? `\n　${tips.join("\n　")}` : "");
 }
 
+// お休みの日の 1 日の天気: 最高・最低と、6 時から 3 時間ごとの様子
+export function dayForecast(label, hourly, date) {
+  const all = summarize(hourly, date, 0, 23 * 60);
+  if (!all) return `**${label}** … 予報なし`;
+  const total = r1(all.rows.reduce((t, r) => t + r.precip, 0));
+  const head = `**${label}**\n${describe(all.code)} 最高${r1(all.tempMax)}℃ / 最低${r1(all.tempMin)}℃` +
+    ` / 降水確率${all.pop}%${total > 0 ? `・合計${total}mm` : ""} / 突風${r1(all.gust)}m/s`;
+  const blocks = [];
+  for (let h = 6; h <= 21; h += 3) {
+    const s = summarize(hourly, date, h * 60, (h + 2) * 60);
+    if (!s) continue;
+    blocks.push(`　${String(h).padStart(2, "0")}〜${h + 3}時 ${describe(s.code)} ${r1(s.tempMin)}〜${r1(s.tempMax)}℃ 降水${s.pop}%${s.precip > 0 ? `(${r1(s.precip)}mm/h)` : ""} 風${r1(s.wind)}m/s`);
+  }
+  const daytime = summarize(hourly, date, 9 * 60, 17 * 60);
+  const tips = daytime ? advice(daytime) : [];
+  return [head, ...blocks, ...(tips.length ? [`　日中: ${tips.join(" / ")}`] : [])].join("\n");
+}
+
 // 通知の本文を作る。today の帰り(today が勤務日なら)と、翌日の行き(翌日が勤務日なら)
 // home: 自宅の hourly(行きに使う)、work: 職場の hourly(帰りに使う)
 export function buildMessage(config, today, home, work) {
@@ -147,7 +165,7 @@ export function buildMessage(config, today, home, work) {
     const label = `明日の行き ${md(tomorrow)}(${weekday(tomorrow)})${shift === "early" ? " 🌅早番" : ""}`;
     out.push(line(label, `${fmt(start - m)}〜${fmt(start)}`, summarize(home, tomorrow, start - m, start)));
   } else {
-    out.push(`明日 ${md(tomorrow)}(${weekday(tomorrow)})はお休み 🎉`);
+    out.push(dayForecast(`明日 ${md(tomorrow)}(${weekday(tomorrow)})はお休み 🎉 1日の天気(自宅)`, home, tomorrow));
   }
   return out.length ? `🏃🚲 **通勤の天気**\n${out.join("\n\n")}` : null;
 }
