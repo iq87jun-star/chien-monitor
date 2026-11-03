@@ -1,0 +1,56 @@
+# 通勤(松本市の自宅 ⇄ 塩尻市の信州五十六家)の天気を Discord に送る(commute/)。
+#   - commute/ を変更する push・PR: 単体テスト
+#   - 定期実行(毎日 17:43 JST): 今夜 22:30 の帰りと、明日の行き(早番なら 5 時台)の天気を送る。明日が休み(水曜)なら 1 日の天気
+#     (GitHub の定期実行は遅れることがあるので、帰りの数時間前に動かす)
+#   - 手動実行: すぐに送る。date で「今日」の日付を変えて試せる
+# リポジトリには書き込まない。
+#
+# Secrets: COMMUTE_DISCORD_WEBHOOK … 通知先(未設定ならログに出すだけ)
+
+name: commute
+
+on:
+  push:
+    paths: ["commute/**", ".github/workflows/commute.yml"]
+  pull_request:
+    paths: ["commute/**", ".github/workflows/commute.yml"]
+  schedule:
+    - cron: "43 8 * * *"
+  workflow_dispatch:
+    inputs:
+      date:
+        description: "今日として扱う日付(YYYY-MM-DD。空なら本当の今日)"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: commute
+
+jobs:
+  test:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+
+  notify:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node run.js
+        env:
+          COMMUTE_DATE: ${{ inputs.date }}
+          COMMUTE_DISCORD_WEBHOOK: ${{ secrets.COMMUTE_DISCORD_WEBHOOK }}
