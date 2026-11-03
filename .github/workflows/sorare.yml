@@ -1,6 +1,7 @@
 # Sorare(sorare/)の J1 Rare 大会: 次節のラインナップを選んで Discord に送り、設定があれば登録する。
 #   - sorare/ を変更する push・PR: 単体テスト
-#   - 定期実行(毎日 20:17 JST): 節の開始(締切)が 24 時間以内の日だけ動く → 各節 1 回
+#   - 定期実行(3 時間ごと): 節の開始(締切)が 12 時間以内の大会だけ動く。済んだ大会はキャッシュ(sorare/state)に記録し、各節 1 回だけ通知する
+#     (GitHub の定期実行は数時間遅れることがあるので、1 日 1 回では締切に間に合わないことがある)
 #   - 手動実行: force で時間に関係なく動く。otp にチェックすると、2段階認証のコードを Discord に送るだけ(認証アプリを失くした時用)
 # リポジトリには書き込まない(他の自動更新・VPS の配備ブランチには触れない)。
 #
@@ -9,7 +10,7 @@
 #   SORARE_EMAIL / SORARE_PASSWORD / SORARE_OTP_SECRET … ログイン(2段階認証が無効なら OTP は不要)
 #   SORARE_API_KEY … 任意(API の上限が上がる)
 #   SORARE_PRIVATE_KEY … Sorare のウォレットの秘密鍵(自動売買に使う。漏れると資産を失うので扱いに注意)
-# Variables: SORARE_SUBMIT = true でラインナップを実際に登録する
+# Variables: SORARE_SUBMIT … 既定でラインナップを実際に登録する。false にすると提案の通知だけ
 #            SORARE_TRADE = true で自動購入・自動出品を実際に行う(未設定なら「予定」の通知だけ。上限は sorare/config.json の trade)
 
 name: sorare
@@ -20,7 +21,7 @@ on:
   pull_request:
     paths: ["sorare/**", ".github/workflows/sorare.yml"]
   schedule:
-    - cron: "17 11 * * *"
+    - cron: "47 */3 * * *"
   workflow_dispatch:
     inputs:
       force:
@@ -69,10 +70,16 @@ jobs:
           cache: npm
           cache-dependency-path: sorare/package-lock.json
       - run: npm ci
+      # 済んだ大会の記録(state/done.json)。前回の実行の分を読み、終わったら保存する
+      - uses: actions/cache/restore@v4
+        with:
+          path: sorare/state
+          key: sorare-state-${{ github.run_id }}
+          restore-keys: sorare-state-
       - run: node run.js
         env:
           SORARE_FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force && '1' || '' }}
-          SORARE_SUBMIT: ${{ vars.SORARE_SUBMIT }}
+          SORARE_SUBMIT: ${{ vars.SORARE_SUBMIT || 'true' }}
           SORARE_TRADE: ${{ vars.SORARE_TRADE }}
           SORARE_PRIVATE_KEY: ${{ secrets.SORARE_PRIVATE_KEY }}
           SORARE_DISCORD_WEBHOOK: ${{ secrets.SORARE_DISCORD_WEBHOOK }}
@@ -80,6 +87,11 @@ jobs:
           SORARE_PASSWORD: ${{ secrets.SORARE_PASSWORD }}
           SORARE_OTP_SECRET: ${{ secrets.SORARE_OTP_SECRET }}
           SORARE_API_KEY: ${{ secrets.SORARE_API_KEY }}
+      - if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: sorare/state
+          key: sorare-state-${{ github.run_id }}-${{ github.run_attempt }}
 
   otp:
     if: github.event_name == 'workflow_dispatch' && inputs.otp
