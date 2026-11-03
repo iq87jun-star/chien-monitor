@@ -37,14 +37,24 @@ async function pool(items, n, fn) {
 }
 
 // config.targets の大会ごとに runTarget を順に動かす。ログイン・換算レート・自動購入の週の上限は全大会で共通
+// 済んだ大会の記録(節の slug:大会名)。GitHub Actions のキャッシュで実行をまたいで残す(リポジトリには書かない)。
+// 定期実行は 1 日に何回も動くので、その節で済んだ大会は 2 回目から何もしない(通知も送らない)
+const STATE = new URL("./state/done.json", import.meta.url);
+function loadDone() { try { return JSON.parse(readFileSync(STATE, "utf8")); } catch { return []; } }
+function saveDone(done) { mkdirSync(new URL("./state/", import.meta.url), { recursive: true }); writeFileSync(STATE, JSON.stringify(done.slice(-100))); }
+
 async function main() {
   const api = createClient({ apiKey: env.SORARE_API_KEY || "" });
   // 締切(節の開始)が runWithinHours 以内の大会だけ動かす。競技ごとに節の日程が違うので大会ごとに見る
   const targets = [];
+  const done = loadDone();
+  saveDone(done);   // キャッシュに保存するファイルを、何もしない日にも作っておく
   for (const t of (cfg.targets || [{}]).filter((t) => t.enabled !== false).map((t) => ({ ...cfg, ...t }))) {
     const { fixture } = await upcoming(api.gql, t.leaderboard, sportOf(t));
     const hours = (Date.parse(fixture.startDate) - Date.now()) / 3600e3;
-    if (env.SORARE_FORCE || (hours <= cfg.runWithinHours && hours >= 0.25)) targets.push(t);
+    t.doneKey = `${fixture.slug}:${t.name}`;
+    if (!env.SORARE_FORCE && done.includes(t.doneKey)) console.log(`${t.name}: ${fixture.slug} は済んでいる`);
+    else if (env.SORARE_FORCE || (hours <= cfg.runWithinHours && hours >= 0.25)) targets.push(t);
     else console.log(`${t.name}: ${fixture.slug} の締切まで ${hours.toFixed(1)} 時間(${cfg.runWithinHours} 時間以内で動く)`);
   }
   if (!targets.length) return console.log("今日動く大会は無い。終了");
@@ -70,7 +80,11 @@ async function main() {
   let failed = false;
   for (const t of targets) {
     let text;
-    try { text = await runTarget(api, t, shared); }
+    try {
+      text = await runTarget(api, t, shared);
+      // 自動購入で 5 枚そろわなかった時は済みにしない(次の実行で買い直す)。エラーの時も同じ
+      if (!t.retry && !done.includes(t.doneKey)) { done.push(t.doneKey); saveDone(done); }
+    }
     catch (e) { console.error(e); failed = true; text = `⚠️ Sorare 自動化でエラー(${t.name}): ${String(e.message).slice(0, 1800)}`; }
     if (!text) continue;
     console.log(text);
@@ -185,6 +199,7 @@ async function runTarget(api, t, shared) {
       best = await loadOwned();
       lines.push(best ? "手持ちで 5 枚そろったので、このまま組みます" : "まだ 5 枚そろわない(次の実行で続きを買います)");
     }
+    if (trading && !best && buys.some((b) => b.ok)) { t.retry = true; lines.push("(締切前の次の実行で、もう一度買います)"); }
   } else if (plans.length) {
     lines.push("(買った後の次の実行で、手持ちから組んで登録します)");
   }
