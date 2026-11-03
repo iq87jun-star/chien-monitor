@@ -34,6 +34,22 @@ test("水曜は休み、早番の週は 19 日から", () => {
   assert.equal(shiftOf(config, "2026-11-26"), "normal");
 });
 
+test("早番は 3 週間に 1 回(木〜火)", () => {
+  assert.equal(shiftOf(config, "2026-12-09"), "normal");
+  assert.equal(shiftOf(config, "2026-12-10"), "early");
+  assert.equal(shiftOf(config, "2026-12-15"), "early");
+  assert.equal(shiftOf(config, "2026-12-17"), "normal");
+  assert.equal(shiftOf(config, "2026-12-31"), "early");
+  assert.equal(shiftOf(config, "2026-10-29"), "early"); // 過去にさかのぼっても周期どおり
+});
+
+test("交代や臨時の早番で上書きできる", () => {
+  const c = { ...config, notEarly: ["2026-12-10"], earlyShift: [{ from: "2026-12-03", to: "2026-12-03" }] };
+  assert.equal(shiftOf(c, "2026-12-10"), "normal");
+  assert.equal(shiftOf(c, "2026-12-11"), "early");
+  assert.equal(shiftOf(c, "2026-12-03"), "early");
+});
+
 test("区間の一番悪い天気・最低気温・最大突風をとる", () => {
   const h = hourly("2026-11-05", {}, {
     "2026-11-05T08:00": { code: 61, precip: 2, pop: 90, temp: 8 },

@@ -36,9 +36,19 @@ export function isWorkday(config, date) {
   if (config.holidays.includes(weekday(date))) return false;
   return !(config.daysOff ?? []).includes(date);
 }
+const daysBetween = (a, b) => Math.round((new Date(`${b}T00:00:00Z`) - new Date(`${a}T00:00:00Z`)) / 864e5);
+
+// 早番か: notEarly(交代などで外れた日)> earlyShift(臨時の早番の期間)> earlyShiftRotation(3 人で回す周期)
 export function shiftOf(config, date) {
-  const early = (config.earlyShift ?? []).some((p) => p.from <= date && date <= p.to);
-  return early ? "early" : "normal";
+  if ((config.notEarly ?? []).includes(date)) return "normal";
+  if ((config.earlyShift ?? []).some((p) => p.from <= date && date <= p.to)) return "early";
+  const r = config.earlyShiftRotation;
+  if (r) {
+    const d = daysBetween(r.start, date);
+    const k = ((d % r.everyDays) + r.everyDays) % r.everyDays;
+    if (k < r.lengthDays) return "early";
+  }
+  return "normal";
 }
 
 // 区間 [from, to](分)にかかる 1 時間ごとの予報の時刻(毎正時)を返す

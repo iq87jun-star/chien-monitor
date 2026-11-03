@@ -1,14 +1,34 @@
 {
-  "home": { "name": "自宅(松本市寿中)", "lat": 36.185032, "lon": 137.969376 },
-  "work": { "name": "信州五十六家 広丘店(塩尻市広丘堅石)", "lat": 36.139797, "lon": 137.944031 },
-  "holidays": ["水"],
+  "home": {
+    "name": "自宅(松本市寿中)",
+    "lat": 36.185032,
+    "lon": 137.969376
+  },
+  "work": {
+    "name": "信州五十六家 広丘店(塩尻市広丘堅石)",
+    "lat": 36.139797,
+    "lon": 137.944031
+  },
+  "holidays": [
+    "水"
+  ],
   "shift": {
-    "normal": { "start": "09:00", "end": "22:30" },
-    "early": { "start": "06:00", "end": "22:30" }
+    "normal": {
+      "start": "09:00",
+      "end": "22:30"
+    },
+    "early": {
+      "start": "06:00",
+      "end": "22:30"
+    }
   },
   "commuteMinutes": 45,
-  "earlyShift": [
-    { "from": "2026-11-19", "to": "2026-11-24" }
-  ],
-  "daysOff": []
+  "earlyShift": [],
+  "daysOff": [],
+  "earlyShiftRotation": {
+    "start": "2026-11-19",
+    "everyDays": 21,
+    "lengthDays": 7
+  },
+  "notEarly": []
 }
