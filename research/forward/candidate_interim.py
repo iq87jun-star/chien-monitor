@@ -44,9 +44,12 @@ def ensure_months(syms, periods, fetch=True, t0=None):
     return missing
 
 
+_ORIG_LOAD = q_common.load   # 差し替え後も本体 H1 を読めるように元の関数を保持(自己再帰の防止)
+
+
 def ext_load(sym):
     """本体 H1 + 月次ファイル(ある分だけ)。q_common.load と同じ列・同じ休場フィルター。"""
-    df = q_common.load(sym); parts = [df]
+    df = _ORIG_LOAD(sym); parts = [df]
     for f in sorted(os.listdir(MDATA)):
         if f.startswith(sym + "_") and f.endswith("_bid.csv"):
             d = pd.read_csv(os.path.join(MDATA, f), parse_dates=["t"]).set_index("t"); d = d[(d.high > d.low) | (d.volume > 0)]; parts.append(d[d.index > df.index.max()])

@@ -1651,16 +1651,21 @@
    "slug": "candidate_interim_auto",
    "title": "紙上フォワード候補 16 本の中間判定を毎月自動化",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/395_q107_candidate_interim.md"
    ],
    "note": "docs/229 §4 の 6 か月判定(2026-10〜2027-03)の累積を毎月 1 日に自動集計し、月次改正案に載せる。判定基準は変えない",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 25
+   "order": 25,
+   "result": "forward/candidate_interim.py を追加し paper_forward.py 末尾から自動実行(docs/229 §4 の規則不変)。10 月: 25 本中 19 本 +・棄却確定 0。不具合 2 件を解消(時間足系 6 本の月次 H1 継ぎ足し・HoldSL10 後の base.DATA 凍結)",
+   "runs": [
+    "2026-11-04 morning"
+   ]
   },
   {
    "id": "Q108",
@@ -3883,6 +3888,13 @@
    "item": "Q106",
    "cells": 0,
    "doc": "docs/394_q106_fintokei_concurrent_risk.md"
+  },
+  {
+   "date": "2026-11-04",
+   "slot": "morning",
+   "item": "Q107",
+   "cells": 0,
+   "doc": "docs/395_q107_candidate_interim.md"
   }
  ],
  "external_checks": [
