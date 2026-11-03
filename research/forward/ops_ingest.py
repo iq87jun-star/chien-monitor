@@ -92,6 +92,12 @@ def main():
         for a in r.get("alerts", [])[-3:]: print("   ! " + a[:160])
         if r.get("ea_names"): print("   EA:", "; ".join(n[:60] for n in r["ea_names"]), "| INIT 版:", ",".join(r.get("init_versions", [])) or "なし")
     for f in res["agent_failures"]: print(f"   × エージェント失敗 #{f.get('account')} {f.get('name')}: {f.get('error')}")
+    # Q106(docs/394): Fintokei 3 口座の同時保有リスク(3% 警告線までの距離)を 1 行ずつ
+    q106 = os.path.join(ROOT, "queue", "q106_fintokei_concurrent_risk.py")
+    if os.path.exists(q106) and root == "ops_inbox":
+        import subprocess
+        try: print(subprocess.run([sys.executable, "-W", "ignore", q106, "--snapshot"], capture_output=True, text=True, timeout=120, cwd=ROOT).stdout.rstrip())
+        except Exception as ex: print(f"   (Q106 同時保有リスクの算出に失敗: {ex})")
 
 
 if __name__ == "__main__":
