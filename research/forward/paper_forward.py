@@ -50,7 +50,7 @@ def candidate_series(fam, sym, dow, short):
         sys.path.insert(0, os.path.join(ROOT, "queue")); from q_session import session
         return session(sym, 0, 0 if fam == "MonIdxSession0" else "open")
     if fam == "HoldSL10":   # docs/330 Q90: 連続 LONG + 建値固定 SL 10%(窓初日に建て直し・翌日始値で再建て)
-        sys.path.insert(0, os.path.join(ROOT, "queue")); from q90_hold_disaster_sl import hold_sl
+        sys.path.insert(0, os.path.join(ROOT, "queue")); live = base.DATA; from q90_hold_disaster_sl import hold_sl; base.DATA = live   # Q107(docs/395 §2): q90 の import が base.DATA を凍結フォルダに固定するのを戻す
         return hold_sl(sym, 10.0)[0]
     if fam in ("MonExAUNZ", "MonExJpTue", "MonExGotobi"):   # docs/304 Q56: 参加者フィルター(改良系通過・紙上のみ)
         sys.path.insert(0, os.path.join(ROOT, "queue")); from q_jp import is_jp_holiday; from q_cal import CAL, gotobi, mon7
@@ -80,6 +80,9 @@ def main():
         rows.append(r)
     df = pd.DataFrame(rows); out = os.path.join(ROOT, "results", f"paper_forward_{months[0]}.csv"); df.to_csv(out, index=False)
     pd.set_option("display.width", 200); print(df.to_string(index=False)); print("->", out)
+    try:   # Q107(docs/395): 候補セルの中間判定(docs/229 §4 の 6 か月判定)を同じ定例で集計。時間足系は月次 H1 を継ぎ足して再計算
+        sys.path.insert(0, HERE); import candidate_interim as ci; ci.main(fetch=True)
+    except Exception as e: print(f"(候補の中間判定に失敗: {e})")
 
 
 if __name__ == "__main__": main()
