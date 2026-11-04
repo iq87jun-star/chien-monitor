@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { generateKey, verifyLimitOrder, exportPublicKey, signAuthorizationRequest } from "@sorare/crypto";
-import { planBuys, planSells, spentInWeek, buildApprovals, signable } from "../src/trade.js";
+import { planBuys, planSells, spentInWeek } from "../src/trade.js";
+import { ethKey, createSigner, buildApprovals } from "../src/sign.js";
 
 const lim = { perCardMaxUsd: 30, weeklyMaxUsd: 60 };
 
@@ -31,20 +31,6 @@ test("planSells はラインナップ・保有期間・買値を守る", () => {
   assert.match(r[3].why, /ラインナップ/);
 });
 
-test("buildApprovals は種類ごとの承認を作り、署名は秘密鍵で検証できる", () => {
-  const pk = generateKey();
-  const order = { __typename: "StarkexLimitOrderAuthorizationRequest", vaultIdSell: 1, vaultIdBuy: 2, amountSell: "100", amountBuy: "200",
-    tokenSell: "0x1", tokenBuy: "0x2", nonce: 3, expirationTimestamp: 438953, feeInfo: null };
-  const fiat = { __typename: "MangopayWalletTransferAuthorizationRequest", amount: 660, currency: "USD", mangopayWalletId: "w1", nonce: 4, operationHash: "h" };
-  const [a, b] = buildApprovals([{ fingerprint: "f1", request: order }, { fingerprint: "f2", request: fiat }], (req) => signAuthorizationRequest(pk, req));
-  assert.deepEqual(Object.keys(a), ["fingerprint", "starkexLimitOrderApproval"]);
-  assert.deepEqual(Object.keys(b), ["fingerprint", "mangopayWalletTransferApproval"]);
-  assert.equal(b.mangopayWalletTransferApproval.nonce, 4);
-  assert.ok(verifyLimitOrder(exportPublicKey(pk), signable(order), a.starkexLimitOrderApproval.signature));
-  assert.equal(signable({ __typename: "StarkexTransferAuthorizationRequest", amount: "5", feeInfoUser: { feeLimit: "1" } }).feeInfoUser.feeLimit, 1n);
-  assert.throws(() => buildApprovals([{ fingerprint: "f", request: { __typename: "Unknown" } }], () => ({})), /知らない承認/);
-});
-
 test("toReceiveAmount は USD をセント、ETH を wei(gwei で丸め)にする", async () => {
   const { toReceiveAmount } = await import("../src/trade.js");
   assert.deepEqual(toReceiveAmount(6.6, "USD", { eurUsd: 1.1, ethUsd: 2000 }), { amount: "660", currency: "USD" });
@@ -52,14 +38,35 @@ test("toReceiveAmount は USD をセント、ETH を wei(gwei で丸め)にす�
   assert.throws(() => toReceiveAmount(5, "WEI", { eurUsd: 1.1, ethUsd: null }), /ETH のレート/);
 });
 
-test("keyCandidates は空白・引用符・0x の有無をそろえ、範囲外の鍵は grindKey した候補も出す", async () => {
-  const { keyCandidates } = await import("../src/trade.js");
-  const h = "1".repeat(62);
-  assert.equal(keyCandidates(` "0x${h}"\n`)[0], "0x" + h);
-  assert.equal(keyCandidates(h.toUpperCase())[0], "0x" + h);
-  const big = keyCandidates("0x" + "f".repeat(64));
-  assert.equal(big.length, 1);
-  assert.ok(BigInt(big[0]) < 0x800000000000010ffffffffffffffffb781126dcae7b2321e66a241adc64d2fn);
-  assert.throws(() => keyCandidates("0xzz12"), /16 進数/);
-  assert.match(keyCandidates("abandon ".repeat(11) + "about")[0], /^0x[0-9a-f]+$/);   // BIP39 のテスト用フレーズ
+// Sorare 公式の例(github.com/sorare/api examples/baseBankTransfer.js・solanaKeyPair.js)の鍵と、期待される署名・アドレス
+const EX_KEY = "0xa9405b77d085276e4b6e35cf494e83f0533d4751fc13e2fdceb6229330ef5146";
+const BASE_REQ = { __typename: "EthereumBankTransferAuthorizationRequest", contractAddress: "0xC887caC5924033340bdd4dd97812738824bCf989", deadline: "1763474595",
+  amount: "1000000000000000", feeAmount: "0", proxyAddress: "0x0000000000000000000000000000000000000000", receiverAddress: "0xABd4c585d69Fe6fC7380Ad0bE9a9D932Ba74F709",
+  salt: "0x1b6de9fc32e321756431d71322b1c4ed7e45ea1199b7e278dcbc8547bdc7235f", senderAddress: "0xB1a1ed82d0C7DC3f3bA7e2b2613328c64e9d9dA3" };
+
+test("ETH(Base)の支払いの署名が Sorare の例と一致し、Solana の鍵も例のアドレスになる", async () => {
+  const signer = await createSigner(` "${EX_KEY.toUpperCase().replace("0X", "0x")}"\n`);
+  assert.equal(signer.solAddress, "8ixw6XQW2tuZhc1xgbhh6bq6YvL5K5nXLsN9LjrzMrxq");
+  const [a] = await buildApprovals([{ fingerprint: "982b", request: BASE_REQ }], signer);
+  assert.deepEqual(a, { fingerprint: "982b", ethereumBankTransferApproval: { deadline: BASE_REQ.deadline, salt: BASE_REQ.salt,
+    signature: "0xc503f3f479dfc8c2a76ca8cdf336b0a270cda0ae407fe5270a87b7cdacd2efb8046ccb6e31a7853e22a7541b67f2c49a6ae8cf006673ed17d6995aeb3e624fbf1c" } });
+});
+
+test("buildApprovals は送り手のアドレスが鍵と違う・知らない種類・check の拒否で署名せずに止める", async () => {
+  const signer = await createSigner(EX_KEY);
+  await assert.rejects(buildApprovals([{ fingerprint: "f", request: { ...BASE_REQ, senderAddress: "0x0000000000000000000000000000000000000001" } }], signer), /アドレスが一致しない/);
+  await assert.rejects(buildApprovals([{ fingerprint: "f", request: { __typename: "StarkexTransferAuthorizationRequest" } }], signer), /扱わない承認/);
+  await assert.rejects(buildApprovals([{ fingerprint: "f", request: BASE_REQ }], signer, () => { throw new Error("上限"); }), /上限/);
+  const sol = { __typename: "SolanaTokenTransferAuthorizationRequest", leafIndex: 5, merkleTreeAddress: "CS7kYFjkSW9iPmCZpmNv5jwyE9FmLzR95ag2bpwtM8uF",
+    originator: "Dv8A8XKBz5QARFKZ5Kewdk8myCDcne9wiD7ULTanHKU", receiverAddress: "cZq5d4nCqUJoysDh49TPRBSXgFx5dsP9Ho4PVJgYEDY",
+    senderAddress: "8ixw6XQW2tuZhc1xgbhh6bq6YvL5K5nXLsN9LjrzMrxq", expirationTimestamp: 1763482762, nonce: "3", transferProxyProgramAddress: "Gz9o1yxV5kVfyC53fFu7StTVeetPZWa2sohzvxJiLxMP" };
+  const [b] = await buildApprovals([{ fingerprint: "d4", request: sol }], signer);
+  assert.equal(b.solanaTokenTransferApproval.nonce, "3");
+  assert.match(b.solanaTokenTransferApproval.signature, /^[1-9A-HJ-NP-Za-km-z]{80,90}$/);
+});
+
+test("ethKey は 0x + 64 桁にそろえ、違う形は形だけを理由にして止める", () => {
+  assert.equal(ethKey(" " + EX_KEY.slice(2) + "\n"), EX_KEY);
+  assert.throws(() => ethKey("0x1234"), /64 桁/);
+  assert.throws(() => ethKey("abandon ".repeat(11) + "about"), /64 桁/);
 });

@@ -8,8 +8,9 @@
     "run": "node run.js"
   },
   "dependencies": {
-    "@sorare/crypto": "^3.0.1",
+    "@solana/kit": "^5.5.1",
     "bcryptjs": "^3.0.3",
-    "micro-starknet": "^0.2.3"
+    "micro-key-producer": "^0.10.2",
+    "viem": "^2.57.16"
   }
 }
