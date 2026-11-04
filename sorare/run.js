@@ -9,7 +9,7 @@
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { createClient, setRates } from "./src/api.js";
 import { market, upcoming, clubs, player, nbaPlayer, fixtureGames, nbaStars, myCards, submitLineup } from "./src/data.js";
-import { teamForm, project, bestLineup, nbaProject, bestNbaLineup, sellCandidates, sellPrice } from "./src/model.js";
+import { teamForm, project, bestLineup, nbaProject, bestNbaLineup, sellCandidates, sellPrice, swapCandidates } from "./src/model.js";
 import { createTrader, planBuys, planSells, spentInWeek } from "./src/trade.js";
 
 const cfg = JSON.parse(readFileSync(new URL("./config.json", import.meta.url)));
@@ -131,28 +131,40 @@ async function runTarget(api, t, shared) {
 
   // 購入候補(未ログイン時と、手持ちで 5 枚そろわない時): 市場の最安出品から「最安」(予算 marketBudgetUsd)と
   // 「プラスアルファ」(予算 plusBudgetUsd。最安より予想が高い時だけ)の 2 案
+  let mktCache = null;
+  async function marketCands() {
+    if (!mktCache) {
+      const slugs = cl.flatMap((c) => c.players);
+      const ps = (await pool(slugs, 4, getPlayer)).filter((p) => p && p.league === t.competition);
+      mktCache = ps.map((p) => proj({ ...p, card: p.priceCard }));
+    }
+    return mktCache;
+  }
   async function market() {
-    const slugs = cl.flatMap((c) => c.players);
-    const ps = (await pool(slugs, 4, getPlayer)).filter((p) => p && p.league === t.competition);
-    const cands = ps.map((p) => proj({ ...p, card: p.priceCard }));
+    // 手持ちの選手は価格 0(手持ちのカードを使う)にして、足りない分だけ買う組み合わせを選ぶ
+    const mine = new Map(owned.map((c) => [c.id, c]));
+    const mkt = await marketCands();
+    const cands = [...mkt.map((p) => (mine.has(p.id) ? { ...mine.get(p.id), price: 0, owned: true } : p)),
+      ...owned.filter((c) => !mkt.some((p) => p.id === c.id)).map((c) => ({ ...c, price: 0, owned: true }))];
     const cheap = optimize(cands, { budget: t.marketBudgetUsd });
     const plus = optimize(cands, { budget: t.plusBudgetUsd });
     return [cheap && { title: `最安プラン(予算 $${t.marketBudgetUsd} 以内)`, ...cheap },
       plus && (!cheap || plus.pts > cheap.pts + 0.5) && { title: `プラスアルファ プラン(予算 $${t.plusBudgetUsd} 以内)`, ...plus }].filter(Boolean);
   }
   const where = (c) => (nba ? `${c.club}・節に ${c.games} 試合・★${c.stars}${c.injury ? `・${c.injury}` : ""}` : `${c.club}${c.home ? " vs " : " @ "}${c.opp}`);
-  const lineupLines = (b, links) => [...b.lineup.map((c, i) => `${nba ? POS_JA[c.pos] || "P" : SLOT[i]} ${c.name}(${where(c)})予想 ${c.proj.toFixed(0)}${c.id === b.captain ? " ★キャプテン" : ""}${c.price != null ? ` $${c.price.toFixed(2)}` : ""}${links && c.card ? `\n  <${cardUrl(c.card, t)}>` : ""}`),
+  const lineupLines = (b, links) => [...b.lineup.map((c, i) => `${nba ? POS_JA[c.pos] || "P" : SLOT[i]} ${c.name}(${where(c)})予想 ${c.proj.toFixed(0)}${c.id === b.captain ? " ★キャプテン" : ""}${c.owned ? " 手持ち" : c.price != null ? ` $${c.price.toFixed(2)}` : ""}${links && c.card && !c.owned ? `\n  <${cardUrl(c.card, t)}>` : ""}`),
     ...(nba && b.stars != null ? [`星の合計 ${b.stars} / 上限 ${leaderboard.rules?.averageScores?.max ?? "なし"}`] : [])];
 
   // 手持ち(seasonYear 年の、この大会のリーグの選手)を読み直す。自動購入の後にも呼ぶ
   let all = [], owned = [];
+  const swapOut = new Set();   // 入れ替えで売るカード(ラインナップに入れず、出品する)
   async function loadOwned() {
     all = await myCards(api.gql, t.rarity, sportOf(t));
     const bySlug = new Map();
     for (const c of all) if (c.seasonYear === t.seasonYear && c.player && !bySlug.has(c.player)) bySlug.set(c.player, c);
     const ps = (await pool([...bySlug.keys()], 3, getPlayer)).filter((p) => p && p.league === t.competition);
     owned = ps.map((p) => { const c = bySlug.get(p.id); return proj({ ...p, card: c.slug, cost: c.cost, since: c.since, floor: p.price, price: null }); });
-    return optimize(owned);
+    return optimize(owned.filter((c) => !swapOut.has(c.card)));
   }
 
   const tr = cfg.trade;
@@ -204,6 +216,27 @@ async function runTarget(api, t, shared) {
     lines.push("(買った後の次の実行で、手持ちから組んで登録します)");
   }
 
+  // 入れ替え(config の swap): 値上がりしたカードを、似た働きの安い選手に替える。先に代わりを買い、そろってから値上がりしたカードを出品する
+  // (出品してもすぐ売れるとは限らないので、先に買って今節のラインナップを欠かさない)
+  const sw = cfg.swap;
+  if (api.authed && best && sw?.enabled && t.autoBuy !== false) {
+    const opts = { ...sw, minHoldDays: tr.minHoldDays };
+    const gainers = owned.filter((c) => c.cost && c.floor != null && (c.floor / c.cost - 1) * 100 >= sw.gainPct);
+    const swaps = gainers.length ? swapCandidates(owned, await marketCands(), opts) : [];
+    if (swaps.length) {
+      lines.push("", `**入れ替え**(買値から +${sw.gainPct}% 以上値上がりしたカードを、予想 ${Math.round(sw.minProjRatio * 100)}% 以上・価格 ${Math.round(sw.maxPriceRatio * 100)}% 以下の選手に替える)${tradeNote}`);
+      for (const x of swaps) {
+        const head = `- ${x.sell.name}(${POS_JA[x.sell.pos] || x.sell.pos}): 買値 $${x.sell.cost.toFixed(2)} → 今 $${x.sell.floor.toFixed(2)}(+${Math.round(x.gain)}%)\n  代わり: ${x.sub.name}(${x.sub.club}・予想 ${x.sub.proj.toFixed(0)} / ${x.sell.name} は ${x.sell.proj.toFixed(0)})$${x.sub.price.toFixed(2)} / 入れ替えると手元に約 +$${x.profit.toFixed(2)}\n  <${cardUrl(x.sub.card, t)}>`;
+        const [b] = planBuys([x.sub], tr, shared.spent ?? spentInWeek(all));
+        if (!b.ok) { lines.push(`${head}\n  見送り: ${b.why}`); continue; }
+        if (!trading) { lines.push(`${head}\n  (入れ替え予定)`); continue; }
+        try { const paid = await trader.buy(x.sub.card, x.sub.price); shared.spent += paid; swapOut.add(x.sell.card); lines.push(`${head}\n  ✅ 代わりを購入 $${paid.toFixed(2)}(${x.sell.name} は下の売却で出品)`); }
+        catch (e) { lines.push(`${head}\n  ⚠️ 代わりを買えず(入れ替えはしない): ${e.message}`); }
+      }
+      if (swapOut.size) best = await loadOwned() || best;
+    }
+  }
+
   // 手持ちで 5 枚そろわない間は済みにしない。アプリで買った後も、締切前の次の実行で組んで登録する
   if (api.authed && !best) t.retry = true;
   if (!best && !plans.length) lines.push("5 枚そろう組み合わせが無い");
@@ -221,6 +254,11 @@ async function runTarget(api, t, shared) {
   // 売却候補: 条件に当てはまるカードを、ラインナップ・保有期間・買値を確かめてから出品する
   if (owned.length) {
     const sell = sellCandidates(owned, cfg.sell).map((c) => ({ ...c, ask: sellPrice(c.floor, cfg.sell.undercutPct) }));
+    for (const c of owned.filter((c) => swapOut.has(c.card))) {
+      const s = sell.find((x) => x.card === c.card);
+      if (s) s.reasons.push("入れ替え");
+      else sell.push({ ...c, reasons: ["入れ替え"], ask: sellPrice(c.floor, cfg.sell.undercutPct) });
+    }
     if (sell.length) {
       lines.push("", `**売却候補**(条件: ${cfg.sell.maxAge + 1}歳以上、スタメン率 ${Math.round(cfg.sell.minStartRate * 100)}% 未満、または買値から +${cfg.sell.gainPct}% 以上の値上がり)${tradeNote}`);
       const inLineup = new Set(best ? best.lineup.map((c) => c.card) : []);

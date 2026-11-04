@@ -63,6 +63,15 @@
   "maxPerClub": 2,
   "marketBudgetUsd": 30,
   "runWithinHours": 12,
+  "swap": {
+    "enabled": true,
+    "gainPct": 20,
+    "minProjRatio": 0.9,
+    "maxPriceRatio": 0.6,
+    "minProfitUsd": 1,
+    "feePct": 5,
+    "newJoinDays": 30
+  },
   "sell": {
     "maxAge": 31,
     "minStartRate": 0.5,

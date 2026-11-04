@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { teamForm, startRate, project, bestLineup, sellCandidates, sellPrice } from "../src/model.js";
+import { teamForm, startRate, project, bestLineup, sellCandidates, sellPrice, swapCandidates, availability } from "../src/model.js";
 import { totp, usd } from "../src/api.js";
 
 test("teamForm はホーム・アウェイを見分けて未消化の試合を飛ばす", () => {
@@ -75,4 +75,31 @@ test("sellPrice は最安から undercutPct% 下げてセントで切り捨て�
   assert.equal(sellPrice(0.01, 50), 0.01);
   assert.equal(sellPrice(0.29, 0), 0.29);   // 0.29 * 100 = 28.999… でも 0.28 にしない
   assert.equal(sellPrice(null, 5), null);
+});
+
+test("availability は出場停止・欠場を 0、出場が微妙なら 0.7 にする", () => {
+  assert.equal(availability({}), 1);
+  assert.equal(availability({ suspended: true }), 0);
+  assert.equal(availability({ injury: "out" }), 0);
+  assert.equal(availability({ injury: "Doubtful" }), 0.7);
+});
+
+test("swapCandidates は値上がりしたカードを、同じポジションで予想が近く安い選手に替え、得の大きい順に 1 対 1 で選ぶ", () => {
+  const now = Date.parse("2026-11-04T00:00:00Z");
+  const old = "2026-10-01T00:00:00Z";
+  const owned = [
+    { id: "a", card: "ca", pos: "Defender", proj: 60, cost: 5, floor: 8, since: old },
+    { id: "b", card: "cb", pos: "Forward", proj: 50, cost: 5, floor: 5.5, since: old },                   // +10% は対象外
+    { id: "c", card: "cc", pos: "Defender", proj: 60, cost: 5, floor: 9, since: "2026-11-01T00:00:00Z" },  // 買って 14 日以内
+  ];
+  const market = [
+    { id: "x", card: "cx", pos: "Defender", proj: 56, price: 3 },
+    { id: "y", card: "cy", pos: "Defender", proj: 58, price: 2, injury: "out" },                         // ケガ
+    { id: "z", card: "cz", pos: "Defender", proj: 59, price: 2, joined: "2026-10-20T00:00:00Z" },        // 移籍したばかり
+    { id: "w", card: "cw", pos: "Defender", proj: 50, price: 1 },                                        // 予想が低すぎる
+    { id: "v", card: "cv", pos: "Midfielder", proj: 70, price: 1 },                                      // ポジション違い
+  ];
+  const r = swapCandidates(owned, market, { gainPct: 20, minProjRatio: 0.9, maxPriceRatio: 0.6, minProfitUsd: 1, feePct: 5, minHoldDays: 14, newJoinDays: 30 }, now);
+  assert.deepEqual(r.map((x) => [x.sell.id, x.sub.id]), [["a", "x"]]);
+  assert.equal(+r[0].profit.toFixed(2), 4.6);   // 8 × 0.95 - 3
 });
