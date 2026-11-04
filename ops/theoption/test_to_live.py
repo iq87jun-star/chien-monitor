@@ -11,15 +11,15 @@ DEMO = jwt({"iss": "TheOptionDemo"}); REAL = jwt({"iss": "TheOption"})
 MON = dt.date(2026, 10, 26)
 
 def test_menu_matches_readme_addendum31_and_34():
-    assert len(L.MENU) == 8 and sum(l["stake"] for l in L.MENU) == 98500
+    assert len(L.MENU) == 10 and sum(l["stake"] for l in L.MENU) == 112500
     assert sum(l["stake"] for l in L.MENU if l["entry"] == "07:00") == 62700          # 月曜 07:00 の 23H × 3(DD40万換算)
     mon = sum(l["stake"] for l in L.MENU if 0 in l["wds"] and not l.get("gotobi")); assert mon == 72700 and mon * L.BOOST_MULT <= L.DAILY_STAKE_CAP
     nk = [l for l in L.MENU if l.get("gotobi")]
-    assert [l["pair"] for l in nk] == ["USDJPY", "EURJPY", "GBPJPY"] and all(l["kind"] == "15M" and l["sel"] == "LOW" and l["entry"] == "09:55" and l["judge"] == "10:10" and not l["next"] and l["stake"] == 7000 for l in nk)
-    assert mon + sum(l["stake"] for l in nk) <= L.DAILY_STAKE_CAP                      # 月曜がゴトー日でも日次上限内(93,700)
+    assert [l["pair"] for l in nk] == ["USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY"] and all(l["kind"] == "15M" and l["sel"] == "LOW" and l["entry"] == "09:55" and l["judge"] == "10:10" and not l["next"] and l["stake"] == 7000 for l in nk)
+    assert mon + sum(l["stake"] for l in nk) == 107700 <= L.DAILY_STAKE_CAP           # 月曜がゴトー日でも日次上限内(v1.8: 72,700 + 35,000)
     assert all(l["kind"] == "23H" and l["judge"] == "06:00" for l in L.MENU if not l.get("gotobi"))
     assert all((not l["next"]) == (l["entry"] < "06:00") for l in L.MENU if not l.get("gotobi"))      # 深夜建て(02:00)だけ同日判定
-    assert all(l["stake"] <= L.MAX_STAKE for l in L.MENU) and len({l["id"] for l in L.MENU}) == 8
+    assert all(l["stake"] <= L.MAX_STAKE for l in L.MENU) and len({l["id"] for l in L.MENU}) == 10
 
 def test_jp_bank_holidays_and_gotobi():
     H = L.jp_bank_holidays(2026)
@@ -41,9 +41,9 @@ def test_due_legs_by_weekday_and_month():
     tue = dt.date(2026, 10, 27); assert [l["id"] for l in L.MENU if L.is_due_today(l, tue)] == ["EURGBP_N6L", "AUDJPY_02"]
     wed = dt.date(2026, 10, 28); assert [l["id"] for l in L.MENU if L.is_due_today(l, wed)] == ["EURGBP_N6L", "AUDJPY_02"]
     thu = dt.date(2026, 10, 29); assert [l["id"] for l in L.MENU if L.is_due_today(l, thu)] == ["AUDJPY_02"]
-    fri = dt.date(2026, 10, 30); assert [l["id"] for l in L.MENU if L.is_due_today(l, fri)] == ["EURGBP_N6L", "AUDJPY_02", "USDJPY_NK", "EURJPY_NK", "GBPJPY_NK"]   # 10/30 = 月末(ゴトー日)
-    nov5 = dt.date(2026, 11, 5); assert [l["id"] for l in L.MENU if L.is_due_today(l, nov5)] == ["AUDJPY_02", "USDJPY_NK", "EURJPY_NK", "GBPJPY_NK"]
-    nov10 = dt.date(2026, 11, 10); assert [l["id"] for l in L.MENU if L.is_due_today(l, nov10)] == ["EURGBP_N6L", "AUDJPY_02", "USDJPY_NK", "EURJPY_NK", "GBPJPY_NK"]
+    fri = dt.date(2026, 10, 30); assert [l["id"] for l in L.MENU if L.is_due_today(l, fri)] == ["EURGBP_N6L", "AUDJPY_02", "USDJPY_NK", "EURJPY_NK", "GBPJPY_NK", "CHFJPY_NK", "CADJPY_NK"]   # 10/30 = 月末(ゴトー日)
+    nov5 = dt.date(2026, 11, 5); assert [l["id"] for l in L.MENU if L.is_due_today(l, nov5)] == ["AUDJPY_02", "USDJPY_NK", "EURJPY_NK", "GBPJPY_NK", "CHFJPY_NK", "CADJPY_NK"]
+    nov10 = dt.date(2026, 11, 10); assert [l["id"] for l in L.MENU if L.is_due_today(l, nov10)] == ["EURGBP_N6L", "AUDJPY_02", "USDJPY_NK", "EURJPY_NK", "GBPJPY_NK", "CHFJPY_NK", "CADJPY_NK"]
     jun_mon = dt.date(2026, 6, 1); assert "EURGBP_N6L" not in [l["id"] for l in L.MENU if L.is_due_today(l, jun_mon)]
 
 def test_slot_selection_around_entry_time():
@@ -51,8 +51,8 @@ def test_slot_selection_around_entry_time():
     assert {l["entry"] for l in L.legs_for_slot(now)} == {"07:00"} and len(L.legs_for_slot(now)) == 3
     now = dt.datetime(2026, 10, 26, 9, 58, tzinfo=L.JST); assert L.legs_for_slot(now) == []           # v1.4: 月曜 10:00 以降の分割脚は無い(タスクは空振りで無害)
     now = dt.datetime(2026, 10, 26, 9, 54, tzinfo=L.JST); assert L.legs_for_slot(now) == []           # 10/26 はゴトー日でない → 09:54 起動は空振り
-    now = dt.datetime(2026, 11, 5, 9, 54, tzinfo=L.JST); legs = L.legs_for_slot(now)                  # 11/5(木)ゴトー日 → 仲値 3 本
-    assert [l["id"] for l in legs] == ["USDJPY_NK", "EURJPY_NK", "GBPJPY_NK"] and all(l["_day"] == dt.date(2026, 11, 5) for l in legs)
+    now = dt.datetime(2026, 11, 5, 9, 54, tzinfo=L.JST); legs = L.legs_for_slot(now)                  # 11/5(木)ゴトー日 → 仲値 5 本(v1.8)
+    assert [l["id"] for l in legs] == ["USDJPY_NK", "EURJPY_NK", "GBPJPY_NK", "CHFJPY_NK", "CADJPY_NK"] and all(l["_day"] == dt.date(2026, 11, 5) for l in legs)
     assert L.judge_utc(legs[0], legs[0]["_day"]) == dt.datetime(2026, 11, 5, 1, 10, tzinfo=L.UTC)
     now = dt.datetime(2026, 10, 26, 22, 58, tzinfo=L.JST); assert [l["id"] for l in L.legs_for_slot(now)] == ["EURGBP_N6L"]
     now = dt.datetime(2026, 10, 29, 22, 58, tzinfo=L.JST); assert L.legs_for_slot(now) == []          # 木曜 23:00 は EURGBP 対象外
@@ -117,8 +117,8 @@ def test_run_entries_fast_path_for_15m(monkeypatch):
         scans.append(secs)
         frames = [upd("USDJPY|FE|15M|HIGHLOW|LOW", "2026-11-05T01:05:00.000Z", "1.85")]   # 1 つ前の枠だけ → まだ打ち切らない
         assert done is not None and not done(frames)
-        frames += [upd(f"{p}|FE|15M|HIGHLOW|LOW", "2026-11-05T01:10:00.000Z", "1.85", status="Unknown") for p in ("USDJPY", "EURJPY", "GBPJPY")]
-        assert done(frames)   # 3 本そろった瞬間に打ち切る
+        frames += [upd(f"{p}|FE|15M|HIGHLOW|LOW", "2026-11-05T01:10:00.000Z", "1.85", status="Unknown") for p in ("USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY")]
+        assert done(frames)   # 5 本そろった瞬間に打ち切る
         return frames
     monkeypatch.setattr(L, "scan_contracts", fake_scan)
     with tempfile.TemporaryDirectory() as tmp:
@@ -126,9 +126,9 @@ def test_run_entries_fast_path_for_15m(monkeypatch):
         assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), now) == 0
         e = dt.datetime(2026, 11, 5, 9, 55, tzinfo=L.JST)
         assert sleeps == [e - dt.timedelta(seconds=25), e + dt.timedelta(seconds=1)] and scans == [45]   # −25 秒から最長 +20 秒まで購読 → 定刻 +1 秒に発注
-        buys = [c for c in calls if c[0] == "/trading/buy"]; assert len(buys) == 4 and all(c[2] == 8 for c in buys)   # 拒否 1 回 + 成功 3 本
+        buys = [c for c in calls if c[0] == "/trading/buy"]; assert len(buys) == 6 and all(c[2] == 8 for c in buys)   # 拒否 1 回 + 成功 5 本
         rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
-        assert len(rows) == 4 and all(",7000,7,153.21," in r for r in rows[1:]) and rows[1].startswith("2026-11-05,USDJPY_NK,USDJPY,LOW,1.85,7000")
+        assert len(rows) == 6 and all(",7000,7,153.21," in r for r in rows[1:]) and rows[1].startswith("2026-11-05,USDJPY_NK,USDJPY,LOW,1.85,7000")
 
 def test_payout_rule():
     leg1h = dict(id="X_1H", pair="AUDJPY", sel="HIGH", entry="08:00", judge="09:00", next=False, stake=8000, wds=[0], months=None, kind="1H")
@@ -250,8 +250,8 @@ def test_v16_per_leg_account_routing(monkeypatch):
         assert L.main(["--out", tmp]) == 0 and runs == [("real", REAL, ("AUDJPY_02",))]
         runs.clear(); FakeDT.t = dt.datetime(2026, 11, 9, 6, 58, tzinfo=L.JST)   # 月曜 06:58 → 3 本はお試しのまま
         assert L.main(["--out", tmp]) == 0 and runs == [("demo", DEMO, ("AUDJPY_N6", "EURJPY_N6", "NZDJPY_N6"))]
-        runs.clear(); FakeDT.t = dt.datetime(2026, 11, 5, 9, 54, tzinfo=L.JST)   # ゴトー日 09:54 → 仲値 3 本もお試し
-        assert L.main(["--out", tmp]) == 0 and runs == [("demo", DEMO, ("EURJPY_NK", "GBPJPY_NK", "USDJPY_NK"))]
+        runs.clear(); FakeDT.t = dt.datetime(2026, 11, 5, 9, 54, tzinfo=L.JST)   # ゴトー日 09:54 → 仲値 5 本もお試し
+        assert L.main(["--out", tmp]) == 0 and runs == [("demo", DEMO, ("CADJPY_NK", "CHFJPY_NK", "EURJPY_NK", "GBPJPY_NK", "USDJPY_NK"))]
         # demo_legs を空にすると全脚が実口座
         with open(os.path.join(L.HERE, "to_config.json"), "w", encoding="utf-8-sig") as f: json.dump({"out": "x", "live_real": True, "demo_legs": []}, f)
         runs.clear(); FakeDT.t = dt.datetime(2026, 11, 9, 6, 58, tzinfo=L.JST)
@@ -282,4 +282,4 @@ def test_v17_gotobi_kind_and_stake():
     assert L.stake_for(nk, "1.85", dt.date(2026, 11, 5)) == 7000 and L.stake_for(nk, "1.85") == 7000      # day 無しは従来どおり
     assert L.stake_for(nk, "2.0", dt.date(2026, 11, 25)) == 15800                                         # BOOST ×1.5 と重なれば 7000×1.5×1.5=15,750 → 100 円丸め
     assert L.stake_for(mon, "1.95", dt.date(2026, 11, 30)) == 21300                                       # 23H 脚は影響なし
-    assert 72700 + 3 * 10500 <= L.DAILY_STAKE_CAP                                                           # 25 日が月曜でも日次上限内
+    assert 72700 + 5 * 10500 <= L.DAILY_STAKE_CAP and 72700 * L.BOOST_MULT + 5 * 10500 <= L.DAILY_STAKE_CAP   # 25 日が月曜でも日次上限内(v1.8)

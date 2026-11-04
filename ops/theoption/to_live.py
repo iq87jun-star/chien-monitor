@@ -5,6 +5,7 @@
       上位10セル(v1.3)はウォークフォワードで選抜バイアス≈61%と判明したため実口座メニューから外し、紙上追跡に戻した。
       v1.5(追補34裁定): 仲値脚 = ゴトー日(5・10・15・20・25・月末、土日・銀行休業日は前倒し)の 09:55:00 JST に USDJPY/EURJPY/GBPJPY の
       FE|15M LOW(判定 10:10)を各 7,000 円。建て遅延に敏感(1 分遅れで −3pp)なので、09:54:35 から契約を先読みし 09:55:01 に 1.2 秒間隔で発注する。
+      v1.8(追補46): 仲値脚に CHFJPY・CADJPY(各 7,000 円)を追加して 5 本(1 日 35,000 円、25 日 52,500 円)。追加 2 本は demo_legs 既定でお試しから。
 動作(タスク chien_theoption_live_*: 月 06:58/09:58/12:58/13:58/15:58/17:58/20:58、火 00:58/23:58、水 01:58、毎日 22:58 に起動 → 直後の定刻の脚だけ実行して終了。
       日付をまたぐ定刻(火 23:58 起動 → 水 00:00 建て)は翌日の脚として扱う):
   0. 起動タスクに 毎日 09:54(live_0955)を追加。ゴトー日でなければ「脚は無い」で終了。
@@ -20,12 +21,12 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.7"
+VERSION = "1.8"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
          "real": ("https://api.theoption.com/v1", "wss://gateway.theoption.com/v1/ws")}
-MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 120000   # 1 日のベット合計の上限(月曜 72,700 + ゴトー日の仲値 21,000 = 93,700。倍率 2.0 の 1.5 倍が重なると後の脚が見送りになる)
+MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 170000   # 1 日のベット合計の上限(v1.8: 月曜 72,700 + ゴトー日の仲値 35,000、25 日なら 52,500 = 125,200。月曜 ×1.5 と 25 日が重なる 161,550 も収める)
 FAST_PRESCAN_SECS = 25; FAST_BUY_DELAY = 1.0; FAST_GAP = 1.2   # v1.5: 15M 脚は定刻の 25 秒前から契約を先読みし、定刻 +1 秒に 1.2 秒間隔で発注
 FAST_LATE_SCAN_SECS = 20   # v1.6a: 枠が定刻ちょうどに出る場合に備え、定刻 +20 秒まで購読を続ける(そろった瞬間に打ち切るので通常は 1 秒以内)
 STALE_RETRY_SECS = 15; STALE_RETRY_DEADLINE_MIN = 20   # v1.5a: 週明け 07:00 は業者のレート配信が数分〜10 分以上凍結し buy が 216 で拒否される(11/2 実測)。15 秒おきに 07:20 まで再試行
@@ -45,6 +46,10 @@ MENU = [
  dict(id="USDJPY_NK",   pair="USDJPY", sel="LOW",  entry="09:55", judge="10:10", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
  dict(id="EURJPY_NK",   pair="EURJPY", sel="LOW",  entry="09:55", judge="10:10", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
  dict(id="GBPJPY_NK",   pair="GBPJPY", sel="LOW",  entry="09:55", judge="10:10", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
+ # v1.8 (2026-11-05 追補46・ユーザー決定「進めて下さい」): 仲値脚に CHFJPY・CADJPY を追加(Dukascopy M1 BID、10 年)。CHFJPY 66.4%(63.9/68.6、BE割れ 0/11)、CADJPY 62.1%(60.0/63.9、0/11)。
+ #   既存 3 本との相関 +0.58〜0.74。全体合算で 月+100,609 / 最大DD 409,610(資金増額が前提)。建て遅延は最初の 1 分で −5〜6pp なので、発注順は既存 3 本の後(定刻 +4.6 秒・+5.8 秒)。
+ dict(id="CHFJPY_NK",   pair="CHFJPY", sel="LOW",  entry="09:55", judge="10:10", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
+ dict(id="CADJPY_NK",   pair="CADJPY", sel="LOW",  entry="09:55", judge="10:10", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
 ]
 MIN_PAYOUT = {"1H": 1.85, "15M": 1.85, "23H": 1.90}; BOOST_PAYOUT = 2.0; BOOST_MULT = 1.5
 
@@ -246,7 +251,7 @@ def append_csv(path, header, row):
 
 # v1.6 (追補37・ユーザー裁定 B): 実口座に切り替えても、未検証の脚はお試し口座に残す。既定は月曜 07:00 の 3 本(11/9 の再試行経路の確認待ち)と仲値 3 本(11/5・11/10・11/13 のデモ検証待ち)。
 # to_config.json の "demo_legs": [...] で上書き([] なら全脚が実口座)。検証が済んだ脚から外す。
-DEMO_LEGS_DEFAULT = ["EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6", "USDJPY_NK", "EURJPY_NK", "GBPJPY_NK"]
+DEMO_LEGS_DEFAULT = ["EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6", "USDJPY_NK", "EURJPY_NK", "GBPJPY_NK", "CHFJPY_NK", "CADJPY_NK"]   # v1.8: 追加 2 本もお試しから
 
 def load_config():
     cfg = {}
