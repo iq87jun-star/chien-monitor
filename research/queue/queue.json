@@ -1672,16 +1672,24 @@
    "slug": "payout_rules_check",
    "title": "資金化後の出金・残高扱いの実測(FN/FTMO 規約の再確認)",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/396_q108_payout_rules_check.md"
    ],
    "note": "Q86 の MC の前提(出金周期・出金後の残高・利益分配率)を各社の現行規約から確認し、docs に表で残す。KYC 等の業者手続きには触れない",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 26
+   "order": 26,
+   "result": "Fintokei・FN 2-Step は MC 前提(月次・超過分のみ・静的床・80%)どおり。FTMO 2-Step は Reward=全利益分配・口座は額面に戻る(緩衝はロールオーバー、ロール後の床基準は未公表→FTMO に確認案)。FTMO 1-Step は EOD トレーリング床・出金で全リセット・ロール不可で、MC の静的床が誤り: 資金化後 ×3.125 は規約床で 1 年失格 40%(MC 9%)、最適は毎サイクル全額 Reward。FN Instant は 70%(Tier1-2)と建値ロック床で MC 楽観。運用変更なし・Q 候補 A(MC 修正)B(FTMO 請求方針)を提案",
+   "runs": [
+    {
+     "date": "2026-11-04",
+     "summary": "規約 5 プラン照合 + 参考計算 13 変形(セル 0)→ docs/396。出金規則は変更なし。portfolio_sim の 1-Step/Instant の床は要修正(Q 候補 A)"
+    }
+   ]
   },
   {
    "id": "Q109",
