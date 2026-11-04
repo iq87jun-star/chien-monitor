@@ -193,7 +193,7 @@ async function runTarget(api, t, shared) {
   if (plans.length === 2) lines.push(`→ プラスアルファは +$${(plans[1].cost - plans[0].cost).toFixed(2)} で予想 +${(plans[1].pts - plans[0].pts).toFixed(0)} 点`);
 
   // 自動購入: buyPlan のプランを、1 枚と週の上限の範囲で買う。手持ちにある選手は買わない
-  const plan = plans.find((p) => p.title.startsWith(tr.buyPlan === "plus" ? "プラスアルファ" : "最安")) || plans[0];
+  const plan = plans.find((p) => p.title.startsWith((t.buyPlan ?? tr.buyPlan) === "plus" ? "プラスアルファ" : "最安")) || plans[0];
   if (plan && api.authed && t.autoBuy === false) {
     lines.push("", "(この大会は自動購入しない設定: autoBuy=false。購入はリンクから)");
   } else if (plan && api.authed) {
