@@ -18,11 +18,13 @@ export function createClient({ apiKey = "", fetchImpl = fetch, sleep = (ms) => n
       let body;
       try {
         const res = await fetchImpl(API, { method: "POST", headers, body: JSON.stringify({ query, variables }) });
-        if (res.status === 429 || res.status >= 500) throw new Error(`HTTP ${res.status}`);
+        // 429(使いすぎ)は、Retry-After(なければ 30 秒)だけ待ってやり直す。断られた要求は処理されていないので、登録・売買でもやり直してよい
+        if (res.status === 429) { const ra = Number(res.headers?.get?.("retry-after")); throw Object.assign(new Error("HTTP 429"), { wait: (ra > 0 ? Math.min(ra, 120) : 30) * 1000 }); }
+        if (res.status >= 500) throw new Error(`HTTP ${res.status}`);
         body = await res.json();
       } catch (e) {
-        if (i >= retries) throw e;
-        await sleep(2000 * 2 ** i);
+        if (i >= (e.wait ? Math.max(retries, 6) : retries)) throw e;
+        await sleep(e.wait ?? 2000 * 2 ** i);
         continue;
       }
       if (body.errors?.length) {

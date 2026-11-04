@@ -3,6 +3,7 @@
 // 入力の形は API のエラーメッセージで確かめたもの。上限の判定(planBuys・planSells)は API を呼ばない純粋な関数(test/trade.test.js)。
 import { randomUUID } from "node:crypto";
 import { signAuthorizationRequest, exportPublicKey, generateKey } from "@sorare/crypto";
+import { grindKey } from "micro-starknet";
 import { usd, rates, setRates } from "./api.js";
 
 const WEEK = 7 * 864e5;
@@ -80,34 +81,40 @@ const AUTH = `authorizations { fingerprint request { __typename
   ... on StarkexTransferAuthorizationRequest { amount condition expirationTimestamp nonce receiverPublicKey receiverVaultId senderVaultId token feeInfoUser { feeLimit tokenId sourceVaultId } }
   ... on MangopayWalletTransferAuthorizationRequest { amount currency mangopayWalletId nonce operationHash } } }`;
 
-// 秘密鍵の形をそろえる。前後の空白・改行・引用符は除く。単語の並び(リカバリーフレーズ)なら、そこから Sorare の鍵を作る。
-// 合わない時は、鍵そのものは出さずに、形(長さ・単語数)だけを理由に入れて止める
+// 秘密鍵の候補を作る。前後の空白・改行・引用符は除き、0x の有無・大文字小文字をそろえる。
+// 単語の並び(リカバリーフレーズ)なら、そこから Sorare の鍵を作る。
+// 16 進数が StarkEx の鍵の範囲外の時は、StarkEx の決まり(grindKey)で範囲内に直した鍵も候補にする(どれが正しいかは公開鍵で確かめる)。
+// 使えない時は、鍵そのものは出さずに、形(長さ・単語数)だけを理由に入れて止める
 const STARK_N = 0x800000000000010ffffffffffffffffb781126dcae7b2321e66a241adc64d2fn;
-export function normalizeKey(raw) {
+export function keyCandidates(raw) {
   const k = String(raw ?? "").trim().replace(/^["']|["']$/g, "").trim();
   const words = k.split(/\s+/).filter(Boolean);
   if (words.length >= 12) {
-    try { return generateKey(words.join(" ")); } catch { throw new Error(`SORARE_PRIVATE_KEY が ${words.length} 単語のフレーズだが、リカバリーフレーズとして読めない`); }
+    try { return [generateKey(words.join(" "))]; } catch { throw new Error(`SORARE_PRIVATE_KEY が ${words.length} 単語のフレーズだが、リカバリーフレーズとして読めない`); }
   }
-  const hex = k.replace(/^0x/i, "");
-  if (!/^[0-9a-f]+$/i.test(hex)) throw new Error(`SORARE_PRIVATE_KEY に 16 進数(0-9・a-f)以外の文字がある(${k.length} 文字・${words.length} 語)`);
+  const hex = k.replace(/^0x/i, "").toLowerCase();
+  if (!/^[0-9a-f]+$/.test(hex)) throw new Error(`SORARE_PRIVATE_KEY に 16 進数(0-9・a-f)以外の文字がある(${k.length} 文字・${words.length} 語)`);
   const n = BigInt("0x" + hex);
-  if (n === 0n || n >= STARK_N) throw new Error(`SORARE_PRIVATE_KEY が Sorare(StarkEx)の鍵の範囲外(${hex.length} 桁)。Ethereum など別の鍵の可能性がある`);
-  return "0x" + hex.toLowerCase();
+  if (n === 0n) throw new Error("SORARE_PRIVATE_KEY が 0");
+  const out = [];
+  if (n < STARK_N) out.push("0x" + hex);
+  out.push("0x" + grindKey("0x" + hex).padStart(64, "0"));
+  return [...new Set(out)];
 }
 
 export function createTrader(gql, { privateKey: rawKey, currency = "USD" }) {
-  let privateKey = null, keyError = null;
-  try { privateKey = normalizeKey(rawKey); } catch (e) { keyError = e; }
+  let privateKey = null, candidates = [], keyError = null;
+  try { candidates = keyCandidates(rawKey); } catch (e) { keyError = e; }
   const sign = (req) => signAuthorizationRequest(privateKey, req);
   // 秘密鍵がこのアカウントのもの(公開鍵 = Sorare の starkKey)か、最初の売買の前に 1 回だけ確かめる。違う鍵の署名は「Invalid authorization request」になる
   let keyChecked = null;
   const checkKey = () => (keyChecked ??= (async () => {
     if (keyError) throw keyError;
     const want = (await gql("{ currentUser { starkKey } }")).currentUser?.starkKey;
-    let mine;
-    try { mine = BigInt("0x" + exportPublicKey(privateKey, true).slice(4)); } catch (e) { throw new Error(`SORARE_PRIVATE_KEY から公開鍵を作れない(${e.message.slice(0, 80)})`); }
-    if (want && BigInt(want) !== mine) throw new Error("SORARE_PRIVATE_KEY がこのアカウントの鍵と違う(公開鍵が一致しない)。Sorare のウォレット設定から書き出した秘密鍵か確かめてください");
+    const pub = (k) => { try { return BigInt("0x" + exportPublicKey(k, true).slice(4)); } catch { return null; } };
+    privateKey = want ? candidates.find((k) => pub(k) === BigInt(want)) : candidates[0];
+    if (!privateKey) throw new Error(`SORARE_PRIVATE_KEY がこのアカウントの鍵と違う(公開鍵が一致しない。${String(rawKey).trim().length} 文字)。`
+      + "Ethereum の鍵ではなく、Sorare の取引用の鍵(StarkEx)が必要です");
   })());
   const errs = (d, what) => { if (d?.errors?.length) throw new Error(`${what}: ` + d.errors.map((e) => e.message).join(" / ")); };
 

@@ -52,12 +52,14 @@ test("toReceiveAmount は USD をセント、ETH を wei(gwei で丸め)にす�
   assert.throws(() => toReceiveAmount(5, "WEI", { eurUsd: 1.1, ethUsd: null }), /ETH のレート/);
 });
 
-test("normalizeKey は空白・引用符・0x の有無をそろえ、範囲外や 16 進数でない値は形だけを理由にして止める", async () => {
-  const { normalizeKey } = await import("../src/trade.js");
+test("keyCandidates は空白・引用符・0x の有無をそろえ、範囲外の鍵は grindKey した候補も出す", async () => {
+  const { keyCandidates } = await import("../src/trade.js");
   const h = "1".repeat(62);
-  assert.equal(normalizeKey(` "0x${h}"\n`), "0x" + h);
-  assert.equal(normalizeKey(h.toUpperCase()), "0x" + h);
-  assert.throws(() => normalizeKey("0x" + "f".repeat(64)), /範囲外/);
-  assert.throws(() => normalizeKey("0xzz12"), /16 進数/);
-  assert.match(normalizeKey("abandon ".repeat(11) + "about"), /^0x[0-9a-f]+$/);   // BIP39 のテスト用フレーズ
+  assert.equal(keyCandidates(` "0x${h}"\n`)[0], "0x" + h);
+  assert.equal(keyCandidates(h.toUpperCase())[0], "0x" + h);
+  const big = keyCandidates("0x" + "f".repeat(64));
+  assert.equal(big.length, 1);
+  assert.ok(BigInt(big[0]) < 0x800000000000010ffffffffffffffffb781126dcae7b2321e66a241adc64d2fn);
+  assert.throws(() => keyCandidates("0xzz12"), /16 進数/);
+  assert.match(keyCandidates("abandon ".repeat(11) + "about")[0], /^0x[0-9a-f]+$/);   // BIP39 のテスト用フレーズ
 });
