@@ -20,7 +20,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.6a"
+VERSION = "1.7"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -144,6 +144,21 @@ def gotobi_days(y):
 
 def is_gotobi(day): return day in gotobi_days(day.year) or day in gotobi_days(day.year + 1)   # 1/5 前倒しが前年 12 月末に入る場合も拾う
 
+# v1.7 (追補43・ユーザー決定): 仲値脚のベットをゴトー日の種類で配分。25 日(給与・決済日)は 10 年で 70〜73%、月末は 58〜61%(前半が BE 近辺)。
+GOTOBI_MULT = {"25": 1.5, "eom": 0.75, "other": 1.0}
+def gotobi_kind(day):
+    """前倒し後の営業日 day が、どの名目ゴトー日(5/10/15/20/25/月末)に対応するかを返す: '25' / 'eom' / 'other' / None(ゴトー日でない)。
+    同じ営業日に複数の名目日が前倒しで重なることは無い(名目日は 5 日以上離れている)。"""
+    import calendar
+    for y, m in ((day.year, day.month), ((day + dt.timedelta(days=7)).year, (day + dt.timedelta(days=7)).month)):
+        for d in (5, 10, 15, 20, 25, calendar.monthrange(y, m)[1]):
+            dd = dt.date(y, m, d)
+            while not is_bizday(dd): dd -= dt.timedelta(days=1)
+            if dd == day: return "eom" if d == calendar.monthrange(y, m)[1] else ("25" if d == 25 else "other")
+    return None
+def gotobi_mult(leg, day):
+    return GOTOBI_MULT.get(gotobi_kind(day) or "other", 1.0) if leg.get("gotobi") else 1.0
+
 def is_due_today(leg, day):
     if leg.get("gotobi") and not is_gotobi(day): return False
     return day.weekday() in leg["wds"] and (leg["months"] is None or day.month in leg["months"])
@@ -159,12 +174,14 @@ def legs_for_slot(now_jst, window_min=5):
             if -180 <= d <= window_min * 60: out.append(dict(leg, _day=day))
     return out
 
-def stake_for(leg, payout):
-    """倍率規則: 下限未満は 0(見送り)、BOOST 以上は 1.5 倍(上限 MAX_STAKE)。"""
+def stake_for(leg, payout, day=None):
+    """倍率規則: 下限未満は 0(見送り)、BOOST 以上は 1.5 倍(上限 MAX_STAKE)。v1.7: 仲値脚はゴトー日の種類で ×1.5/×0.75(100 円単位に丸め)。"""
     try: p = float(payout)
     except (TypeError, ValueError): return 0
     if p < MIN_PAYOUT[leg["kind"]]: return 0
-    s = leg["stake"] * (BOOST_MULT if p >= BOOST_PAYOUT else 1.0); return int(min(MAX_STAKE, s))
+    s = leg["stake"] * (BOOST_MULT if p >= BOOST_PAYOUT else 1.0)
+    if day is not None: s = round(s * gotobi_mult(leg, day) / 100) * 100
+    return int(min(MAX_STAKE, s))
 
 def pick_contract(frames, leg, day):
     """contracts フレーム列から、銘柄・HIGH/LOW・判定時刻(UTC)が一致する Open の HIGHLOW 契約を選ぶ。期間ラベルは問わない。
@@ -300,7 +317,8 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
             rec["note"] = "契約なし(判定時刻が一致する HIGHLOW が無い)"; log.say(leg["id"], rec["note"]); log.write("skip", {"leg": leg["id"], "reason": rec["note"]})
             append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], "", 0, "", "", "", rec["note"]])
             done[leg["id"]] = rec; continue
-        stake = stake_for(leg, c["payout"])
+        stake = stake_for(leg, c["payout"], day)
+        if leg.get("gotobi"): log.write("gotobi", {"leg": leg["id"], "kind": gotobi_kind(day), "mult": gotobi_mult(leg, day), "stake": stake})
         if stake <= 0:
             rec["note"] = f"倍率 {c['payout']} が下限未満で見送り"; log.say(leg["id"], rec["note"]); log.write("skip", {"leg": leg["id"], "reason": rec["note"], "contract": c})
             append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], 0, "", "", c["name"], rec["note"]])
@@ -362,7 +380,7 @@ def main(argv=None):
     if a.plan:
         day = now.date(); print(f"{day} ({'月火水木金土日'[day.weekday()]}) 口座={account} {'ゴトー日' if is_gotobi(day) else ''} お試しに残す脚={sorted(demo_leg_ids(cfg)) if account == 'real' else '(全脚お試し)'}")
         for leg in MENU:
-            if is_due_today(leg, day): print(f"  {leg['entry']} {leg['id']:14} {leg['pair']} {leg['sel']} 判定 {leg['judge']}{'(翌日)' if leg['next'] else ''} ¥{leg['stake']:,} [{account_for_leg(leg, account, cfg)}]")
+            if is_due_today(leg, day): print(f"  {leg['entry']} {leg['id']:14} {leg['pair']} {leg['sel']} 判定 {leg['judge']}{'(翌日)' if leg['next'] else ''} ¥{stake_for(leg, MIN_PAYOUT[leg['kind']], day):,}{'(' + (gotobi_kind(day) or '') + ' ×' + str(gotobi_mult(leg, day)) + ')' if leg.get('gotobi') else ''} [{account_for_leg(leg, account, cfg)}]")
         return 0
     # v1.6: 口座ごとに分けて実行。--settle は鍵のある口座をすべて、発注はこの時間帯の脚を口座別に
     if a.settle: groups = {acc: None for acc in (("real", "demo") if account == "real" else ("demo",))}
