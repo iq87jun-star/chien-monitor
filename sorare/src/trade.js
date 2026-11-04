@@ -73,11 +73,13 @@ export function createTrader(gql, { privateKey: rawKey, currency = "USD" }) {
     const p = (await gql(`mutation($input: prepareAcceptOfferInput!) { prepareAcceptOffer(input: $input) { ${AUTH} errors { message } } }`,
       { input: { offerId: offer.id, settlementInfo } }, { retries: 0 })).prepareAcceptOffer;
     errs(p, "購入の準備");
-    // 念のため、支払う ETH(手数料込み)が上限を超えていないかを、同じレートで USD にして確かめてから署名する(5% まで許す)
+    // 念のため、支払う ETH(手数料込み)が上限を超えていないかを、同じレートで USD にして確かめてから署名する。
+    // 手数料とレートの差で、数ドルのカードは 1 割ほど上がるので 15%(最低 30 セント)まで許す(1 枚の上限 perCardMaxUsd は planBuys で別に守っている)
+    const payLimit = maxPrice + Math.max(0.3, maxPrice * 0.15);
     const approvals = await buildApprovals(p.authorizations, sig, (r) => {
       if (r.__typename !== "EthereumBankTransferAuthorizationRequest") return;
       const paid = usd({ wei: (BigInt(r.amount) + BigInt(r.feeAmount || 0)).toString() });
-      if (paid == null || paid > maxPrice * 1.05) throw new Error(`支払額が上限を超える($${paid?.toFixed(2)} > $${maxPrice})`);
+      if (paid == null || paid > payLimit) throw new Error(`支払額が上限を超える($${paid?.toFixed(2)} > $${payLimit.toFixed(2)})`);
     });
     const a = (await gql(`mutation($input: acceptOfferInput!) { acceptOffer(input: $input) { tokenOffer { id } errors { message } } }`,
       { input: { offerId: offer.id, settlementInfo, approvals } }, { retries: 0 })).acceptOffer;
