@@ -1,12 +1,13 @@
 # 価格履歴の取り直し(追補4)。CLOB の prices-history は解決済みの古い市場で interval=max が空を返し、
 # startTs/endTs の幅は約 15 日が上限。そこで closedTime から 14 日窓で遡り、
 # min(最後に 0.02<p<0.98 だった時刻, endDate) の 31 日前まで(最大 10 窓)を集める。
-# 既に十分な履歴がある ph/<id>.json は飛ばす。並列 4、各リクエスト後 0.25 秒待ち。順番は固定シードで混ぜる
+# 既に十分な履歴がある ph/<id>.json は飛ばす。並列 4(引数で変更可)、各リクエスト後 0.25 秒待ち。順番は固定シードで混ぜる
 # (途中で止まっても期間の偏らない標本になる)。再実行すれば続きから。
 # <データディレクトリ>/sample_ids.json があれば、その市場だけを取る。
-# 使い方: python3 collect4.py <データディレクトリ>
+# 使い方: python3 collect4.py <データディレクトリ> [並列数=4]
 import json, os, sys, time, random, re, urllib.request, urllib.error, datetime as dt, threading
 from concurrent.futures import ThreadPoolExecutor
+NW=int(sys.argv[2]) if len(sys.argv)>2 else 4
 D=sys.argv[1]; PH=os.path.join(D,'ph'); os.makedirs(PH,exist_ok=True)
 DAY=86400; W=14*DAY
 def get(url, tries=6):
@@ -67,7 +68,7 @@ while True:
     if not todo: break
     random.Random(20261104).shuffle(todo)
     print('pass todo',len(todo),flush=True); n=0; lock=threading.Lock()
-    with ThreadPoolExecutor(4) as ex:
+    with ThreadPoolExecutor(NW) as ex:
         for res in ex.map(work,todo):
             n+=1
             if n%1000==0: print('ph',n,res,flush=True)
