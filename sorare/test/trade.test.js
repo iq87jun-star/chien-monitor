@@ -51,3 +51,13 @@ test("toReceiveAmount は USD をセント、ETH を wei(gwei で丸め)にす�
   assert.deepEqual(toReceiveAmount(5, "WEI", { eurUsd: 1.1, ethUsd: 2000 }), { amount: "2500000000000000", currency: "WEI" });   // $5 / $2000 = 0.0025 ETH
   assert.throws(() => toReceiveAmount(5, "WEI", { eurUsd: 1.1, ethUsd: null }), /ETH のレート/);
 });
+
+test("normalizeKey は空白・引用符・0x の有無をそろえ、範囲外や 16 進数でない値は形だけを理由にして止める", async () => {
+  const { normalizeKey } = await import("../src/trade.js");
+  const h = "1".repeat(62);
+  assert.equal(normalizeKey(` "0x${h}"\n`), "0x" + h);
+  assert.equal(normalizeKey(h.toUpperCase()), "0x" + h);
+  assert.throws(() => normalizeKey("0x" + "f".repeat(64)), /範囲外/);
+  assert.throws(() => normalizeKey("0xzz12"), /16 進数/);
+  assert.match(normalizeKey("abandon ".repeat(11) + "about"), /^0x[0-9a-f]+$/);   // BIP39 のテスト用フレーズ
+});
