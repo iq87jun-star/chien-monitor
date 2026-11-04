@@ -1696,16 +1696,24 @@
    "slug": "hold_reentry_cost",
    "title": "Hold の再エントリー規則と月初コストの実測",
    "cells": 0,
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/322_improvement_program_2026-11.md"
+    "docs/322_improvement_program_2026-11.md",
+    "docs/398_q109_hold_reentry_cost.md"
    ],
    "note": "Q83 で参考扱いだった Hold(UK100/WTI/XAU)の実口座の建て直し(9/14・9/21・9/25)と研究系列の月初 5 bps コストを突き合わせ、Hold の執行差を測る",
    "registered": "2026-10-06",
    "program": "docs/322 第2期",
-   "order": 27
+   "order": 27,
+   "result": "建て直し 1 回の直接コストは 2〜7 bps で研究の月初 5 bps と整合。欠落はスワップ: FTMO XAU/GER40 −50 bps/月・FN 14074882 XAU −76 bps/月(研究は 0・Hold XAU 粗利の 3〜4 割)。swap-free(Fintokei スイング・FN 14166201)は 0。9 月の露出欠落は EA 入替・手動・誤ロックが原因で規則不変。WTI は CL=F 基差で研究が楽観。Q 候補 C(スワップ込み帳簿 MC・Hold XAU 重み再検討)・D(WTI を Dukascopy スポットに)を提案",
+   "runs": [
+    {
+     "date": "2026-11-05",
+     "summary": "ops_inbox の RFHold 18 件(6 口座)を Yahoo 日足と照合。建て直し 1.6〜7 bps、スワップ −49〜−76 bps/月、露出欠落 5 件(運用事象)。docs/398"
+    }
+   ]
   },
   {
    "id": "Q110",
