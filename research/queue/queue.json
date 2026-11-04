@@ -2641,6 +2641,74 @@
      "summary": "docs/385(診断・セル 0)"
     }
    ]
+  },
+  {
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "registered": "2026-11-05",
+   "program": "docs/244 Q108/Q109 派生(CFD)",
+   "id": "Q156",
+   "slug": "portfolio_sim_floor_by_account_type",
+   "title": "portfolio_sim の資金化後の床を口座型別に修正(FTMO 1-Step トレーリング+出金リセット・FN Instant 建値ロック・FTMO 2-Step 全利益分配+ロール)し、帳簿 MC と 1-Step 資金化後倍率を再計算",
+   "cells": 0,
+   "order": 30,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/396_q108_payout_rules_check.md"
+   ],
+   "note": "docs/396 §5 Q 候補 A。`forward/portfolio_sim.run_portfolio` の資金化後の床: FTMO 1-Step = max(EOD 最高残高, 額面) −10%・Reward で全利益分配(90%)・新口座で床リセット・ロール不可・保持は意味なし → 方針は毎サイクル全額 Reward。FN Instant = 最高残高 −6%・額面で頭打ち・分配 70%(Tier1-2)・+5% で $400 の運用規則。FTMO 2-Step = 請求で全利益分配(80%)+ 取り分をロール(床の基準は FTMO 回答まで E2(元額面)/E3(新残高)の両方)。Fintokei・FN 2-Step は現行どおり。docs/349 §9c〜§9f・docs/382 の合計月収を再計算し、1-Step(531466484)の資金化後倍率(現 ×3.125/2.03)を「規約床で 1 年失格 ≤10%」の膝に戻す案と EA9 の InpKeepPct の扱いを提案。config・EA・manifest は変更しない(切替はユーザー)"
+  },
+  {
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "registered": "2026-11-05",
+   "program": "docs/244 Q108/Q109 派生(CFD)",
+   "id": "Q157",
+   "slug": "hold_swap_cost_book",
+   "title": "Hold のスワップ(口座型別)を研究系列と帳簿 MC に入れ、EA9・EA10L・14074882 の Hold XAU 重みと FTMO での Hold→Mon 置換を再評価",
+   "cells": 0,
+   "order": 31,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/398_q109_hold_reentry_cost.md"
+   ],
+   "note": "docs/398 §4 Q 候補 C。`recentfit_screen.hold_cell` / `forward/portfolio_sim.legs()` に日割りスワップ(FTMO XAU −52・GER40 −49・FN 非アドオン XAU −76 bps/月、Fintokei スイング・FN アドオンは 0。出所 results/q109_hold_swap_comm.csv)を口座型の引数で入れる。docs/349 §9 の帳簿 MC(到達・失格・月収)を再計算し、Hold XAU の重み {現行, 半分, 0} をスワップ込みで比較(EA9 A 案 1/3・EA10L 0.9→0.45・14074882 0.4)。FTMO で Hold を Mon 系に置き換える案は docs/318 §2(Mon 族の比率は上げない)と衝突するため判定はユーザー。研究系列の 5 年スコア(docs/290 Hold 行)もスワップ込みの列を追加。EA・config は変更しない"
+  },
+  {
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "registered": "2026-11-05",
+   "program": "docs/244 Q108/Q109 派生(CFD)",
+   "id": "Q158",
+   "slug": "hold_wti_spot_series",
+   "title": "Hold WTI(と Q89 の UKOIL 等)の参照系列を CL=F から Dukascopy LIGHTCMDUSD(CFD スポット)に替えて 5 年スコアを取り直す",
+   "cells": 0,
+   "order": 32,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/398_q109_hold_reentry_cost.md"
+   ],
+   "note": "docs/398 §4 Q 候補 D・docs/323 §5。data_dukascopy/WTI_hour.csv.gz(2026-08 まで)+ 月次 H1(candidate_interim.ensure_months)で日足終値を作り、hold_cell と同じ式で 5 年スコア(docs/290 の列)と 14166201 の保有区間(docs/398 §2 d)の実 vs 系列を再計算。差が基差で説明できるか、研究の Hold WTI 期待値をいくら下げるかを書く。Dukascopy が 503 / 接続断ならデータ待ちで次へ送る(11/5 は取得不可)"
+  },
+  {
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "registered": "2026-11-05",
+   "program": "docs/244 Q108/Q109 派生(CFD)",
+   "id": "Q159",
+   "slug": "ftmo_2step_reward_policy",
+   "title": "FTMO 2-Step 本口座の請求方針(月次ロール / 年 1〜2 回の全額請求 / 請求せず)の MC 比較と [PAYOUT] 行の FTMO 向け文言",
+   "cells": 0,
+   "order": 33,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/396_q108_payout_rules_check.md"
+   ],
+   "note": "docs/396 §5 Q 候補 B。FTMO の回答(一部 Reward の可否・ロール後の床基準)が来たら、その規則で E1/E2/E3/E4(docs/396 §3 b)に『年 1〜2 回の全額請求』を加えて 50k ×2 の同じ MC で比較し、docs/349 §9c の出金規則の FTMO 版を提案。工学: EA8/EA3 の [PAYOUT] 行を FTMO 口座では『請求額』ではなく『ロール額』で出す InpPayoutMode を別版(版 +0.01)で用意(manifest・docs/241 は変更しない)。FTMO 未回答なら次へ送り、11/13 を過ぎても未回答なら E2/E3 の両方で計算して仮判定"
   }
  ],
  "runs": [
