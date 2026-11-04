@@ -1,9 +1,8 @@
 // 自動売買(SORARE_TRADE=true の時だけ実行。それ以外は「実行予定」を返すだけ)。
-// 購入: prepareAcceptOffer → 秘密鍵で署名 → acceptOffer。出品: prepareOffer → 署名 → createSingleSaleOffer。
+// 購入: prepareAcceptOffer → 秘密鍵で署名(src/sign.js) → acceptOffer。出品: prepareOffer → 署名 → createSingleSaleOffer。
 // 入力の形は API のエラーメッセージで確かめたもの。上限の判定(planBuys・planSells)は API を呼ばない純粋な関数(test/trade.test.js)。
 import { randomUUID } from "node:crypto";
-import { signAuthorizationRequest, exportPublicKey, generateKey } from "@sorare/crypto";
-import { grindKey } from "micro-starknet";
+import { createSigner, buildApprovals, AUTH } from "./sign.js";
 import { usd, rates, setRates } from "./api.js";
 
 const WEEK = 7 * 864e5;
@@ -38,33 +37,6 @@ export function planSells(cands, { minHoldDays = 14, neverBelowCost = true } = {
   });
 }
 
-// 署名ライブラリは StarkEx の金額(amountSell・amountBuy・amount・feeLimit)を BigInt で受け取る。API は文字列で返すので変換する。
-// 法定通貨の送金(Mangopay)は文字列のまま連結して署名するので変えない
-export function signable(request) {
-  if (request.__typename === "MangopayWalletTransferAuthorizationRequest") return request;
-  const r = { ...request };
-  for (const k of ["amountSell", "amountBuy", "amount"]) if (r[k] != null) r[k] = BigInt(r[k]);
-  for (const k of ["feeInfo", "feeInfoUser"]) if (r[k]) r[k] = { ...r[k], feeLimit: BigInt(r[k].feeLimit) };
-  return r;
-}
-
-// 署名済みの承認。種類ごとに入れるフィールドが違う
-export function buildApprovals(authorizations, sign) {
-  return authorizations.map(({ fingerprint, request }) => {
-    const signature = sign(signable(request));
-    switch (request.__typename) {
-      case "StarkexTransferAuthorizationRequest":
-        return { fingerprint, starkexTransferApproval: { nonce: request.nonce, expirationTimestamp: request.expirationTimestamp, signature } };
-      case "StarkexLimitOrderAuthorizationRequest":
-        return { fingerprint, starkexLimitOrderApproval: { nonce: request.nonce, expirationTimestamp: request.expirationTimestamp, signature } };
-      case "MangopayWalletTransferAuthorizationRequest":
-        return { fingerprint, mangopayWalletTransferApproval: { nonce: request.nonce, signature } };
-      default:
-        throw new Error(`知らない承認の種類: ${request.__typename}`);
-    }
-  });
-}
-
 // 出品額(USD)を、出品する通貨の receiveAmount に。USD・EUR はセント、ETH は wei(gwei 単位で丸める)
 export function toReceiveAmount(priceUsd, currency, { eurUsd, ethUsd } = rates) {
   if (currency === "USD") return { amount: String(Math.round(priceUsd * 100)), currency };
@@ -76,51 +48,15 @@ export function toReceiveAmount(priceUsd, currency, { eurUsd, ethUsd } = rates) 
   throw new Error(`扱わない通貨: ${currency}`);
 }
 
-const AUTH = `authorizations { fingerprint request { __typename
-  ... on StarkexLimitOrderAuthorizationRequest { vaultIdSell vaultIdBuy amountSell amountBuy tokenSell tokenBuy nonce expirationTimestamp feeInfo { feeLimit tokenId sourceVaultId } }
-  ... on StarkexTransferAuthorizationRequest { amount condition expirationTimestamp nonce receiverPublicKey receiverVaultId senderVaultId token feeInfoUser { feeLimit tokenId sourceVaultId } }
-  ... on MangopayWalletTransferAuthorizationRequest { amount currency mangopayWalletId nonce operationHash } } }`;
-
-// 秘密鍵の候補を作る。前後の空白・改行・引用符は除き、0x の有無・大文字小文字をそろえる。
-// 単語の並び(リカバリーフレーズ)なら、そこから Sorare の鍵を作る。
-// 16 進数が StarkEx の鍵の範囲外の時は、StarkEx の決まり(grindKey)で範囲内に直した鍵も候補にする(どれが正しいかは公開鍵で確かめる)。
-// 使えない時は、鍵そのものは出さずに、形(長さ・単語数)だけを理由に入れて止める
-const STARK_N = 0x800000000000010ffffffffffffffffb781126dcae7b2321e66a241adc64d2fn;
-export function keyCandidates(raw) {
-  const k = String(raw ?? "").trim().replace(/^["']|["']$/g, "").trim();
-  const words = k.split(/\s+/).filter(Boolean);
-  if (words.length >= 12) {
-    try { return [generateKey(words.join(" "))]; } catch { throw new Error(`SORARE_PRIVATE_KEY が ${words.length} 単語のフレーズだが、リカバリーフレーズとして読めない`); }
-  }
-  const hex = k.replace(/^0x/i, "").toLowerCase();
-  if (!/^[0-9a-f]+$/.test(hex)) throw new Error(`SORARE_PRIVATE_KEY に 16 進数(0-9・a-f)以外の文字がある(${k.length} 文字・${words.length} 語)`);
-  const n = BigInt("0x" + hex);
-  if (n === 0n) throw new Error("SORARE_PRIVATE_KEY が 0");
-  const out = [];
-  if (n < STARK_N) out.push("0x" + hex);
-  out.push("0x" + grindKey("0x" + hex).padStart(64, "0"));
-  return [...new Set(out)];
-}
-
 export function createTrader(gql, { privateKey: rawKey, currency = "USD" }) {
-  let privateKey = null, candidates = [], keyError = null;
-  try { candidates = keyCandidates(rawKey); } catch (e) { keyError = e; }
-  const sign = (req) => signAuthorizationRequest(privateKey, req);
-  // 秘密鍵がこのアカウントのもの(公開鍵 = Sorare の starkKey)か、最初の売買の前に 1 回だけ確かめる。違う鍵の署名は「Invalid authorization request」になる
-  let keyChecked = null;
-  const checkKey = () => (keyChecked ??= (async () => {
-    if (keyError) throw keyError;
-    const want = (await gql("{ currentUser { starkKey } }")).currentUser?.starkKey;
-    const pub = (k) => { try { return BigInt("0x" + exportPublicKey(k, true).slice(4)); } catch { return null; } };
-    privateKey = want ? candidates.find((k) => pub(k) === BigInt(want)) : candidates[0];
-    if (!privateKey) throw new Error(`SORARE_PRIVATE_KEY がこのアカウントの鍵と違う(公開鍵が一致しない。${String(rawKey).trim().length} 文字)。`
-      + "Ethereum の鍵ではなく、Sorare の取引用の鍵(StarkEx)が必要です");
-  })());
+  // 鍵(Ethereum の秘密鍵)から署名用の鍵を 1 回だけ作る。形が違えば、最初の売買で理由を出して止まる
+  let signer = null;
+  const getSigner = async () => (signer ??= await createSigner(rawKey));
   const errs = (d, what) => { if (d?.errors?.length) throw new Error(`${what}: ` + d.errors.map((e) => e.message).join(" / ")); };
 
   // 今出ている最安の出品を、価格を確かめ直してから買う(提案の後に値上げされていたら買わない)
   async function buy(card, maxPrice) {
-    await checkKey();
+    const sig = await getSigner();
     // 決済に使うレートを先に取り、同じレートで出品価格を USD にして上限と比べる
     const ex = (await gql("{ config { exchangeRate { id rates } } }")).config.exchangeRate;
     setRates(ex.rates);
@@ -135,26 +71,29 @@ export function createTrader(gql, { privateKey: rawKey, currency = "USD" }) {
     const p = (await gql(`mutation($input: prepareAcceptOfferInput!) { prepareAcceptOffer(input: $input) { ${AUTH} errors { message } } }`,
       { input: { offerId: offer.id, settlementInfo } }, { retries: 0 })).prepareAcceptOffer;
     errs(p, "購入の準備");
-    // 念のため、法定通貨の送金額(セント)が上限を超えていないかも確かめてから署名する(手数料分 5% まで許す)
-    const over = p.authorizations.find((x) => x.request.__typename === "MangopayWalletTransferAuthorizationRequest" && Number(x.request.amount) > maxPrice * 100 * 1.05);
-    if (over) throw new Error(`送金額が上限を超える(${over.request.amount} ${over.request.currency} セント)`);
+    // 念のため、支払う ETH(手数料込み)が上限を超えていないかを、同じレートで USD にして確かめてから署名する(5% まで許す)
+    const approvals = await buildApprovals(p.authorizations, sig, (r) => {
+      if (r.__typename !== "EthereumBankTransferAuthorizationRequest") return;
+      const paid = usd({ wei: (BigInt(r.amount) + BigInt(r.feeAmount || 0)).toString() });
+      if (paid == null || paid > maxPrice * 1.05) throw new Error(`支払額が上限を超える($${paid?.toFixed(2)} > $${maxPrice})`);
+    });
     const a = (await gql(`mutation($input: acceptOfferInput!) { acceptOffer(input: $input) { tokenOffer { id } errors { message } } }`,
-      { input: { offerId: offer.id, settlementInfo, approvals: buildApprovals(p.authorizations, sign) } }, { retries: 0 })).acceptOffer;
+      { input: { offerId: offer.id, settlementInfo, approvals } }, { retries: 0 })).acceptOffer;
     errs(a, "購入");
     return price;
   }
 
   // 出品額は通貨の最小単位(セント・wei)の文字列で渡し、出品後に実際の出品額を読み直して確かめる
   async function list(card, price) {
-    await checkKey();
+    const sig = await getSigner();
     const c = (await gql(`query($s: String!) { anyCard(slug: $s) { assetId liveSingleSaleOffer { id } } }`, { s: card })).anyCard;
     if (c.liveSingleSaleOffer) throw new Error("すでに出品中");
     const receiveAmount = toReceiveAmount(price, currency);
     const p = (await gql(`mutation($input: prepareOfferInput!) { prepareOffer(input: $input) { ${AUTH} errors { message } } }`,
-      { input: { sendAssetIds: [c.assetId], receiveAssetIds: [], receiveAmount, settlementCurrencies: [currency] } }, { retries: 0 })).prepareOffer;
+      { input: { type: "SINGLE_SALE_OFFER", sendAssetIds: [c.assetId], receiveAssetIds: [], receiveAmount, settlementCurrencies: [currency] } }, { retries: 0 })).prepareOffer;
     errs(p, "出品の準備");
     const o = (await gql(`mutation($input: createSingleSaleOfferInput!) { createSingleSaleOffer(input: $input) { tokenOffer { id } errors { message } } }`,
-      { input: { dealId: randomUUID(), assetId: c.assetId, receiveAmount, settlementCurrencies: [currency], approvals: buildApprovals(p.authorizations, sign) } }, { retries: 0 })).createSingleSaleOffer;
+      { input: { dealId: randomUUID(), assetId: c.assetId, receiveAmount, settlementCurrencies: [currency], approvals: await buildApprovals(p.authorizations, sig) } }, { retries: 0 })).createSingleSaleOffer;
     errs(o, "出品");
     const after = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents wei } } } } }`, { s: card })).anyCard;
     const listed = usd(after?.liveSingleSaleOffer?.receiverSide?.amounts);

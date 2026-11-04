@@ -199,11 +199,13 @@ async function runTarget(api, t, shared) {
       best = await loadOwned();
       lines.push(best ? "手持ちで 5 枚そろったので、このまま組みます" : "まだ 5 枚そろわない(次の実行で続きを買います)");
     }
-    if (trading && !best && buys.some((b) => b.ok)) { t.retry = true; lines.push("(締切前の次の実行で、もう一度買います)"); }
+    if (trading && !best && buys.some((b) => b.ok)) lines.push("(締切前の次の実行で、もう一度買います)");
   } else if (plans.length) {
     lines.push("(買った後の次の実行で、手持ちから組んで登録します)");
   }
 
+  // 手持ちで 5 枚そろわない間は済みにしない。アプリで買った後も、締切前の次の実行で組んで登録する
+  if (api.authed && !best) t.retry = true;
   if (!best && !plans.length) lines.push("5 枚そろう組み合わせが無い");
   if (best) {
     lines.push("", "**ラインナップ**", ...lineupLines(best, false), `予想合計 ${best.pts.toFixed(0)}(ボーナス抜き)`);
