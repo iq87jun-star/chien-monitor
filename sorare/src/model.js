@@ -25,13 +25,52 @@ export function startRate(scores) {
 export function project(p, { form, next, avgGf }) {
   const m = next[p.club];
   if (!m || !form[m.opp] || !form[p.club] || !avgGf) return { ...p, proj: 0 };
+  const avail = availability(p);
+  if (!avail) return { ...p, opp: m.opp, home: m.home, proj: 0 };
   const o = form[m.opp], me = form[p.club];
   const clamp = (x) => Math.max(0.85, Math.min(1.15, x));
   let f = ["Goalkeeper", "Defender"].includes(p.pos)
     ? clamp(1 + (0.5 * (avgGf - o.gf)) / avgGf + (0.25 * (avgGf - me.ga)) / avgGf)
     : clamp(1 + (0.5 * (o.ga - avgGf)) / avgGf + (0.25 * (me.gf - avgGf)) / avgGf);
   f *= m.home ? 1.03 : 0.97;
-  return { ...p, opp: m.opp, home: m.home, factor: f, proj: p.l15 * f * (0.3 + 0.7 * p.start) };
+  return { ...p, opp: m.opp, home: m.home, factor: f, proj: p.l15 * f * (0.3 + 0.7 * p.start) * avail };
+}
+
+// 出られる見込み: 出場停止・ケガで欠場なら 0、出場が微妙(doubtful・GTD など)なら 0.7、それ以外は 1
+export function availability(p) {
+  if (p.suspended) return 0;
+  if (!p.injury) return 1;
+  return /doubt|question|gtd|day.?to.?day|probable/i.test(p.injury) ? 0.7 : 0;
+}
+
+// 入れ替え: 値上がりしたカードを売り、似た働きの安い選手のカードに替える。
+// 売る側: 買値から gainPct% 以上値上がり(今の最安出品で判定)し、買ってから minHoldDays 日を過ぎたもの。
+// 代わり: 手持ちに無い同じポジションの選手(NBA は星が売る側以下)で、ケガ・出場停止が無く、移籍して newJoinDays 日以上たち、
+// 予想が売る側の minProjRatio 倍以上、価格が売る側の最安出品の maxPriceRatio 倍以下。
+// 手元に残る額 = 売値 × (1 - feePct%) - 代わりの価格 が minProfitUsd 以上のものだけ、得の大きい順に。代わりの選手は 1 回だけ使う
+export function swapCandidates(owned, market, { gainPct = 20, minProjRatio = 0.9, maxPriceRatio = 0.6, minProfitUsd = 1, feePct = 5, minHoldDays = 14, newJoinDays = 30 } = {}, now = Date.now()) {
+  const have = new Set(owned.map((c) => c.id));
+  const out = [], used = new Set();
+  const sells = owned.filter((c) => c.cost && c.floor != null && c.proj > 0 && (c.floor / c.cost - 1) * 100 >= gainPct
+    && !(c.since && now - Date.parse(c.since) < minHoldDays * 864e5));
+  const pairs = [];
+  for (const s of sells) {
+    for (const m of market) {
+      if (have.has(m.id) || m.price == null || !m.card || m.proj <= 0 || availability(m) < 1) continue;
+      if (m.joined && now - Date.parse(m.joined) < newJoinDays * 864e5) continue;
+      if (s.stars != null ? (m.stars == null || m.stars > s.stars) : m.pos !== s.pos) continue;
+      if (m.proj < s.proj * minProjRatio || m.price > s.floor * maxPriceRatio) continue;
+      const profit = s.floor * (1 - feePct / 100) - m.price;
+      if (profit >= minProfitUsd) pairs.push({ sell: s, sub: m, profit, gain: (s.floor / s.cost - 1) * 100 });
+    }
+  }
+  pairs.sort((a, b) => b.profit - a.profit || b.sub.proj - a.sub.proj);
+  for (const p of pairs) {
+    if (used.has(p.sell.id) || used.has(p.sub.id)) continue;
+    used.add(p.sell.id); used.add(p.sub.id);
+    out.push(p);
+  }
+  return out;
 }
 
 // GK・DF・MF・FW・エクストラ(GK 以外)の 5 枚。同じクラブは maxPerClub 人まで、budget があれば price の合計がその範囲。

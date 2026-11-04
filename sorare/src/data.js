@@ -74,12 +74,16 @@ export async function player(gql, slug, rarity) {
   const p = (await gql(`query($s: String!) { anyPlayer(slug: $s) { ... on Player { slug displayName age position
     averageScore(type: LAST_FIFTEEN_SO5_AVERAGE_SCORE)
     so5Scores(last: 10) { score playerGameStats { minsPlayed } }
+    activeInjuries { status } activeSuspensions { endDate } memberships { startDate endDate }
     activeClub { name domesticLeague { slug } }
     lowestPriceAnyCard(rarity: ${rarity}, inSeason: true) { ${PRICE} } } } }`, { s: slug })).anyPlayer;
   if (!p) return null;
   return {
     id: p.slug, name: p.displayName, age: p.age, pos: p.position, l15: p.averageScore || 0,
     start: startRate(p.so5Scores), club: p.activeClub?.name, league: p.activeClub?.domesticLeague?.slug,
+    // ケガ・出場停止・移籍は Sorare のデータ(今のもの)から。joined は今のクラブに入った日(移籍したばかりかを見る)
+    injury: p.activeInjuries?.[0]?.status || null, suspended: !!p.activeSuspensions?.length,
+    joined: (p.memberships || []).filter((m) => !m.endDate).map((m) => m.startDate).sort().at(-1) || null,
     ...(await priced(gql, p.slug, p.lowestPriceAnyCard, rarity)),
   };
 }
