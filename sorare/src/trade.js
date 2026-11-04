@@ -66,7 +66,9 @@ export function createTrader(gql, { privateKey: rawKey, currency = "USD" }) {
     if (!offer) throw new Error("出品が無くなった");
     if (offer.settlementCurrencies && !offer.settlementCurrencies.includes(currency)) throw new Error(`この出品は ${currency} で買えない(売り手の受け取り: ${offer.settlementCurrencies.join("・")})`);
     const price = usd(offer.receiverSide?.amounts);
-    if (price == null || price > maxPrice + 1e-9) throw new Error(`価格が変わった($${price?.toFixed(2)} > 上限 $${maxPrice})`);
+    // ユーロ・ETH 建ての出品は、換算レートが少し動くだけで USD の額が変わる。値上げだけを止めるよう、2%(最低 2 セント)までの差は許す
+    const limit = maxPrice + Math.max(0.02, maxPrice * 0.02);
+    if (price == null || price > limit) throw new Error(`価格が変わった($${price?.toFixed(2)} > 上限 $${limit.toFixed(2)})`);
     const settlementInfo = { currency, paymentMethod: "WALLET", exchangeRateId };
     const p = (await gql(`mutation($input: prepareAcceptOfferInput!) { prepareAcceptOffer(input: $input) { ${AUTH} errors { message } } }`,
       { input: { offerId: offer.id, settlementInfo } }, { retries: 0 })).prepareAcceptOffer;
