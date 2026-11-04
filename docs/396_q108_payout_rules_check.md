@@ -61,3 +61,8 @@
 - 12 月改定の注意: 14074882(FN 2-Step 本口座)は 2026-01-12 以前の購入なので 15% reward・Scale-Up 条件が旧規則(10% 累積成長)。
 
 累積セル数: 10,060(Q108 はセル 0)。次回(11/5 朝): Q109(Hold の再エントリー規則と月初コストの実測)。
+
+## 6. 追記(2026-11-04 ユーザー「お願いします」)
+- FTMO サポートへ §5 の 2 点(一部 Reward の可否・ロールオーバー後の Maximum Loss の基準)を 1 通送信(宛先 support@ftmo.com・件名「Two questions about Reward withdrawals on 2-Step FTMO Accounts」)。返信は FN 返信チェックの定期タスク(4 時間おき)で合わせて確認する。
+- FN サポートへの 11/6 のリマインドに、Stellar 2-Step の 2 点(Performance Reward の任意額の可否・On-Demand Performance Reward 90% を既存の本口座で選べるか)を追加した。
+- 回答が来るまで運用は現状どおり(FTMO 50k × 2 は請求しない・他は毎月 1 日の `[PAYOUT]` 行どおり)。
