@@ -268,3 +268,18 @@ def test_v16_per_leg_account_routing(monkeypatch):
         # --settle は実口座・お試しの両方
         settles = []; monkeypatch.setattr(L, "run_settle", lambda acc, key, out, log: settles.append(acc) or 0)
         assert L.main(["--settle", "--out", tmp]) == 0 and settles == ["real", "demo"]
+
+def test_v17_gotobi_kind_and_stake():
+    """v1.7(追補43): 仲値脚は 25 日 ×1.5 / 月末 ×0.75 / 他 ×1.0。前倒し後の日付から名目ゴトー日を判定する。"""
+    K = L.gotobi_kind
+    assert K(dt.date(2026, 11, 5)) == "other" and K(dt.date(2026, 11, 13)) == "other"   # 11/15 日曜 → 11/13 金曜
+    assert K(dt.date(2026, 11, 25)) == "25" and K(dt.date(2026, 10, 23)) == "25"        # 10/25 日曜 → 10/23 金曜
+    assert K(dt.date(2026, 11, 30)) == "eom" and K(dt.date(2026, 1, 30)) == "eom"        # 1/31 土曜 → 1/30 金曜
+    assert K(dt.date(2026, 12, 30)) == "eom" and K(dt.date(2026, 5, 1)) == "other"       # 大晦日前倒し / 5/5 → 5/1
+    assert K(dt.date(2026, 11, 4)) is None and K(dt.date(2026, 11, 7)) is None
+    nk = next(l for l in L.MENU if l["id"] == "USDJPY_NK"); mon = next(l for l in L.MENU if l["id"] == "EURJPY_N6")
+    assert L.stake_for(nk, "1.85", dt.date(2026, 11, 25)) == 10500 and L.stake_for(nk, "1.85", dt.date(2026, 11, 30)) == 5200
+    assert L.stake_for(nk, "1.85", dt.date(2026, 11, 5)) == 7000 and L.stake_for(nk, "1.85") == 7000      # day 無しは従来どおり
+    assert L.stake_for(nk, "2.0", dt.date(2026, 11, 25)) == 15800                                         # BOOST ×1.5 と重なれば 7000×1.5×1.5=15,750 → 100 円丸め
+    assert L.stake_for(mon, "1.95", dt.date(2026, 11, 30)) == 21300                                       # 23H 脚は影響なし
+    assert 72700 + 3 * 10500 <= L.DAILY_STAKE_CAP                                                           # 25 日が月曜でも日次上限内
