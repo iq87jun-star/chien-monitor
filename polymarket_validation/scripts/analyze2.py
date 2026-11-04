@@ -137,42 +137,45 @@ for T in TS:
     for c in CATS: table(c,[d for d in data if d['cat']==c],T,'A')
 print('\n## negRisk 別(記述のみ、ゲート外。基準 A, T=7)')
 table('negRisk',[d for d in data if d['neg']],7,'A'); table('非 negRisk',[d for d in data if not d['neg']],7,'A')
-# ゲート判定
-print('\n## 判定(追補3)\n\n| 戦略 | 価格帯 | T | n | p | q | 純益 A | 純益 B (n) | 前半 / 後半 | カテゴリ(n≥30) | 実測コスト時 | 95% 下限(boot / CP) | 判定 | 落ちたゲート |\n|---|---|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|---|---|')
-verdicts=[]
-for T in TS:
-    oA=obs(data,T,'A'); oB=obs(data,T,'B'); oE=obs(early,T,'A'); oL=obs(late,T,'A'); oC={c:obs([d for d in data if d['cat']==c],T,'A') for c in CATS}
-    for side,(lo,hi) in UNITS:
-        a=inb(oA,lo,hi); s=stats(a)
-        if not s or s[0]<30: print(f'| {side} | {lo:.2f}–{hi:.2f} | {T} | {len(a)} | | | | | | | | | 判定せず(n<30) | |'); continue
-        n,p,q=s; rA=net(side,p,q); fails=[]
-        if rA<=0: fails.append('G1')
-        sb=stats(inb(oB,lo,hi)); rB=net(side,sb[1],sb[2]) if sb and sb[0]>=30 else None
-        if rB is None: fails.append('G5(B n<30)')
-        elif rB<=0: fails.append('G5')
-        hs=[]
-        for o in (oE,oL):
-            t=stats(inb(o,lo,hi))
-            if t and t[0]>=30:
-                r=net(side,t[1],t[2]); hs.append(f'{r*100:+.1f}%')
-                if r<=0 or r<0.5*rA: fails.append('G2')
-            else: hs.append('n<30')
-        cs=[]
-        for c in CATS:
-            t=stats(inb(oC[c],lo,hi))
-            if t and t[0]>=30:
-                r=net(side,t[1],t[2]); cs.append(f'{c[:3]} {r*100:+.1f}%')
-                if r<=0: fails.append('G3')
-        cm=cmeas.get((lo,hi),C0); rM=net(side,p,q,cm)
-        if rM<=0: fails.append('G4')
-        bl,m=boot_lower(side,a); k=sum(x[1] for x in a)
-        qb=cp_bound(k,n,side); cl=net(side,p,qb); low=min(bl,cl)
-        fails=sorted(set(fails))
-        v='不合格' if fails else ('合格' if low>0 else '保留')
-        miss=(n-k) if side=='YES' else k
-        verdicts.append((side,lo,hi,T,v))
-        print(f'| {side} | {lo:.2f}–{hi:.2f} | {T} | {n} | {p:.3f} | {q:.3f} | {rA*100:+.1f}% | {"" if rB is None else f"{rB*100:+.1f}%"} ({sb[0] if sb else 0}) | {" / ".join(hs)} | {", ".join(cs)} | {rM*100:+.1f}% (c={cm*100:.2f}c) | {bl*100:+.1f}% / {cl*100:+.1f}% (外れ {miss}, イベント {m}) | {v} | {",".join(fails)} |')
-print('\n判定集計:',dict(Counter(v[-1] for v in verdicts)))
+# ゲート判定。PA = 主の基準、OA = G5 で照合するもう一方の基準
+def gate(PA,OA,title):
+    print(f'\n## {title}\n\n| 戦略 | 価格帯 | T | n | p | q | 純益 {PA} | 純益 {OA} (n) | 前半 / 後半 | カテゴリ(n≥30) | 実測コスト時 | 95% 下限(boot / CP) | 判定 | 落ちたゲート |\n|---|---|---:|---:|---:|---:|---:|---:|---:|---|---:|---:|---|---|')
+    verdicts=[]
+    for T in TS:
+        oA=obs(data,T,PA); oB=obs(data,T,OA); oE=obs(early,T,PA); oL=obs(late,T,PA); oC={c:obs([d for d in data if d['cat']==c],T,PA) for c in CATS}
+        for side,(lo,hi) in UNITS:
+            a=inb(oA,lo,hi); s=stats(a)
+            if not s or s[0]<30: print(f'| {side} | {lo:.2f}–{hi:.2f} | {T} | {len(a)} | | | | | | | | | 判定せず(n<30) | |'); continue
+            n,p,q=s; rA=net(side,p,q); fails=[]
+            if rA<=0: fails.append('G1')
+            sb=stats(inb(oB,lo,hi)); rB=net(side,sb[1],sb[2]) if sb and sb[0]>=30 else None
+            if rB is None: fails.append('G5(B n<30)')
+            elif rB<=0: fails.append('G5')
+            hs=[]
+            for o in (oE,oL):
+                t=stats(inb(o,lo,hi))
+                if t and t[0]>=30:
+                    r=net(side,t[1],t[2]); hs.append(f'{r*100:+.1f}%')
+                    if r<=0 or r<0.5*rA: fails.append('G2')
+                else: hs.append('n<30')
+            cs=[]
+            for c in CATS:
+                t=stats(inb(oC[c],lo,hi))
+                if t and t[0]>=30:
+                    r=net(side,t[1],t[2]); cs.append(f'{c[:3]} {r*100:+.1f}%')
+                    if r<=0: fails.append('G3')
+            cm=cmeas.get((lo,hi),C0); rM=net(side,p,q,cm)
+            if rM<=0: fails.append('G4')
+            bl,m=boot_lower(side,a); k=sum(x[1] for x in a)
+            qb=cp_bound(k,n,side); cl=net(side,p,qb); low=min(bl,cl)
+            fails=sorted(set(fails))
+            v='不合格' if fails else ('合格' if low>0 else '保留')
+            miss=(n-k) if side=='YES' else k
+            verdicts.append((side,lo,hi,T,v))
+            print(f'| {side} | {lo:.2f}–{hi:.2f} | {T} | {n} | {p:.3f} | {q:.3f} | {rA*100:+.1f}% | {"" if rB is None else f"{rB*100:+.1f}%"} ({sb[0] if sb else 0}) | {" / ".join(hs)} | {", ".join(cs)} | {rM*100:+.1f}% (c={cm*100:.2f}c) | {bl*100:+.1f}% / {cl*100:+.1f}% (外れ {miss}, イベント {m}) | {v} | {",".join(fails)} |')
+    print('\n判定集計:',dict(Counter(v[-1] for v in verdicts)))
+gate('A','B','判定(追補3、正式: 主 = 基準 A、G5 で基準 B を照合)')
+gate('B','A','参考(事後に追加、判定は変えない): 主 = 執行可能な基準 B で同じゲート、G5 で基準 A を照合')
 print('\n## H3 時間減価: T=7 → T=1 の YES 価格変化(基準 A、解決側別)\n\n| p7 帯 | 解決 | n | 平均 Δp |\n|---|---|---:|---:|')
 for lo,hi in [(0.02,0.10),(0.10,0.30),(0.30,0.70),(0.70,0.90),(0.90,0.98)]:
     for y in (1,0):
