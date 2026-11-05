@@ -1,0 +1,39 @@
+{
+  "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+  "roles": {
+    "research": { "label": "🔎 調査役", "model": "perplexity/sonar-pro", "maxTokens": 1500 },
+    "ideaA": { "label": "💡 発案役A", "model": "openai/gpt-5.6-terra", "maxTokens": 2500 },
+    "ideaB": { "label": "💡 発案役B", "model": "google/gemini-4-argon", "maxTokens": 2500 },
+    "critic": { "label": "🛡️ 批判役", "model": "deepseek/deepseek-v4-pro-0813", "maxTokens": 2500 },
+    "chair": { "label": "🧭 まとめ役", "model": "anthropic/claude-sonnet-5.5", "maxTokens": 3000 }
+  },
+  "profile": {
+    "prop": {
+      "firm": "(プロップ会社名)",
+      "accountSize": 100000,
+      "currency": "USD",
+      "dailyLossPct": 5,
+      "maxLossPct": 10,
+      "profitTargetPct": 8,
+      "riskPerTradePct": 0.5,
+      "rules": ["指標発表の前後 2 分は取引禁止(会社の規約に合わせて書き換える)"],
+      "markets": ["USDJPY", "EURUSD", "XAUUSD"],
+      "timeframes": ["M5", "M15", "H1"]
+    },
+    "binary": {
+      "broker": "(国内のバイナリーオプション業者名)",
+      "payoutMultiple": 1.8,
+      "expiries": ["2時間"],
+      "markets": ["USDJPY", "EURJPY"],
+      "stakePerTrade": 5000,
+      "dailyLossLimit": 20000
+    },
+    "notes": ""
+  },
+  "calendar": {
+    "url": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
+    "currencies": ["USD", "JPY", "EUR", "GBP", "AUD"],
+    "impact": ["High"],
+    "hours": 36
+  }
+}

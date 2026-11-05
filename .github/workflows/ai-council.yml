@@ -1,0 +1,57 @@
+# 複数の AI に相場・売買アイデアを検討させ、まとめを Discord に送る(ai-council/)。
+#   - ai-council/ を変更する push・PR: 単体テスト
+#   - 定期実行(平日 7:47 JST): 今日の作戦メモ(調査役 → 発案役 A・B → 批判役 → まとめ役)
+#   - 手動実行: question に相談を書くと、その相談を同じ流れで検討する(空なら今日の作戦メモ)
+# リポジトリには書き込まない。全員の発言は Actions の実行結果のまとめにも出る。
+#
+# Secrets: OPENROUTER_API_KEY … OpenRouter の API キー(未設定なら AI を呼ばずに渡す内容だけ表示)
+#          AI_COUNCIL_DISCORD_WEBHOOK … 通知先(未設定ならログに出すだけ)
+
+name: ai-council
+
+on:
+  push:
+    paths: ["ai-council/**", ".github/workflows/ai-council.yml"]
+  pull_request:
+    paths: ["ai-council/**", ".github/workflows/ai-council.yml"]
+  schedule:
+    - cron: "47 22 * * 0-4"
+  workflow_dispatch:
+    inputs:
+      question:
+        description: "AI たちへの相談(空なら今日の作戦メモ)"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: ai-council
+
+jobs:
+  test:
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+
+  council:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node run.js
+        env:
+          AI_COUNCIL_QUESTION: ${{ inputs.question }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          AI_COUNCIL_DISCORD_WEBHOOK: ${{ secrets.AI_COUNCIL_DISCORD_WEBHOOK }}
