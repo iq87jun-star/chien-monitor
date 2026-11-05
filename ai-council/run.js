@@ -39,7 +39,7 @@ async function calendar() {
 }
 
 async function openrouter(role, system, user) {
-  const { model, maxTokens } = config.roles[role];
+  const { model, maxTokens, reasoning } = config.roles[role];
   if (!key) {
     console.log(`\n===== ${role}(${model})に渡す内容 =====\n${user}`);
     return { text: `(試しの実行: ${model} は呼んでいません)`, cost: 0 };
@@ -60,9 +60,12 @@ async function openrouter(role, system, user) {
           { role: "system", content: system },
           { role: "user", content: user },
         ],
+        // 考える深さ(OpenRouter が各社の設定に読み替える)。max_tokens は考えた分も含む
+        ...(reasoning && { reasoning: { effort: reasoning } }),
         usage: { include: true },
       }),
-      signal: AbortSignal.timeout(180_000),
+      // Deep Research は何十回も検索するので数分かかる
+      signal: AbortSignal.timeout(600_000),
     });
     const body = await res.json().catch(() => ({}));
     if (!res.ok || body.error) throw new Error(`${model} ${res.status}: ${JSON.stringify(body.error ?? body).slice(0, 300)}`);
