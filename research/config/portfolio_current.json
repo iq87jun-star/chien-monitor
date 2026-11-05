@@ -15,8 +15,8 @@
     "mon4": 2.0
    },
    "funded": {
-    "a9": 3.125,
-    "mon4": 2.03
+    "a9": 1.25,
+    "mon4": 0.81
    },
    "e0": 1.003,
    "targets": [
@@ -27,7 +27,8 @@
    "trail": true,
    "balance_jpy": 15800000,
    "k": 2.0,
-   "rule": "ftmo1step"
+   "rule": "ftmo1step",
+   "_funded_note": "2026-11-05 ユーザー「切替」(docs/399 Q156): 資金化後 a9 3.125 / mon4 2.03 → 1.25 / 0.81(規約床で資金化後失格 ≤10% の膝)。EA9 の InpMult は「完了」時に 1.25 を入力・InpKeepPct は 0 相当(毎サイクル全額 Reward)。評価中の設定(eval a9 3.0 / mon4 2.0・EA9 v1.06 InpMult 3.0)は不変"
   },
   {
    "name": "宝くじ 531343523",
