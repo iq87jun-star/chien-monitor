@@ -5,7 +5,7 @@ import { SYSTEM, researchPrompt, ideaPrompt, criticPrompt, chairPrompt } from ".
 
 export const ORDER = ["research", "ideaA", "ideaB", "critic", "chair"];
 
-export async function runCouncil({ config, chat, mode, question, portfolio, calendar, overlaps, today }) {
+export async function runCouncil({ config, chat, mode, question, portfolio, live = "", calendar, overlaps, today }) {
   const steps = {};
   const call = async (role, system, user) => {
     const { label, model } = config.roles[role];
@@ -22,7 +22,7 @@ export async function runCouncil({ config, chat, mode, question, portfolio, cale
     return step;
   };
   const textOf = (s) => (s.error ? `(${s.label} は失敗: ${s.error})` : s.text);
-  const base = { mode, question, portfolio, calendar, overlaps, today };
+  const base = { mode, question, portfolio, live, calendar, overlaps, today };
 
   const research = await call("research", SYSTEM.research, researchPrompt(base));
   const ideaSteps = await Promise.all(

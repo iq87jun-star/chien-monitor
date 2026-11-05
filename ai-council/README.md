@@ -47,6 +47,32 @@ AI たちには毎回、**[portfolio.md](portfolio.md)(口座・規約・手法�
 | `legs` | 各手法の保有時間(日本時間の曜日・開始・時間数・見る通貨)。`days: "gotobi"` はゴトー日(祝日の前倒しは未対応) |
 | `calendar` | 重要指標の通貨・重要度、何時間先まで(`hours`)、保有時間との重なりを見る範囲(`legHours`)と重要度(`legImpact`、`Holiday` は祝日) |
 
+## パソコンからの口座データ(自動)
+
+パソコンが毎朝(平日 7:30 ごろ)、MT5 の 10 口座と theoption の残高・建玉・失格ライン・日次上限を `status.json` にまとめ、**暗号化して** `ai-council-status` ブランチに `status.enc` として置きます(このリポジトリは公開なので、暗号化しないと残高が誰でも見えるため)。点検会議はそれを読み、失格・日次上限までの距離と、同じ銘柄・同じ向きの重複建玉を計算して AI に渡します。18 時間以上古いと「書き出しが止まっている可能性」と知らせます。
+
+- 暗号: AES-256-GCM。`status.enc` = base64(nonce 12 バイト + 暗号文 + タグ 16 バイト)。鍵は base64 の 32 バイト
+- 鍵はパソコンのファイル(リポジトリの外)と、GitHub の Secret `AI_COUNCIL_STATUS_KEY` の 2 か所だけ
+- `status.json` の形:
+
+```json
+{
+  "updatedAt": "2026-11-06T07:30:00+09:00",
+  "prop": [
+    { "name": "FN-100ギャンブル", "currency": "USD", "balance": 92873, "equity": 92500,
+      "floor": 90000, "dailyLimit": 87873,
+      "positions": [{ "symbol": "XAUUSD", "side": "BUY", "lots": 0.4, "profit": -200 }],
+      "notes": "" }
+  ],
+  "theoption": { "balance": 395560,
+    "recent": [{ "date": "11/5", "leg": "EURGBP 23時 LOW", "result": "勝ち", "pnl": 9500 }],
+    "errors": [], "notes": "" },
+  "warnings": []
+}
+```
+
+`floor` は失格になる equity の水準、`dailyLimit` は今日の日次損失で失格になる equity の水準(どちらも業者の規約どおりにパソコン側で計算)。
+
 ## 手元で試す
 
 ```sh

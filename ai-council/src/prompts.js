@@ -42,8 +42,9 @@ const CHAIR_ASK = `次の順で:
 4. 試すならその手順(紙上フォワード・デモで何を何回見るか)
 5. 意見が割れた点`;
 
-const common = ({ portfolio, calendar, overlaps }) => [
+const common = ({ portfolio, live, calendar, overlaps }) => [
   section("運用の現状", portfolio),
+  section("最新の口座データ(パソコンから自動。運用の現状の残高より優先。失格・日次上限までの距離は計算済み)", live || "(なし)"),
   section("この先 36 時間の重要指標(日本時間)", calendar),
   section("各手法の保有時間に重なる重要指標・祝日(この先 4 日、プログラムで計算)", overlaps),
 ];
