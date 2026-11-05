@@ -3,7 +3,7 @@
 //   AI_COUNCIL_DISCORD_WEBHOOK … 送り先(未設定なら標準出力に出すだけ)
 //   AI_COUNCIL_QUESTION … 相談したいこと(空なら「今日の作戦メモ」)
 import { readFileSync, appendFileSync } from "node:fs";
-import { profileText, pickEvents, calendarText, todayJST } from "./src/context.js";
+import { pickEvents, calendarText, todayJST, formatJST, legWindows, legOverlaps, overlapText, mergeEvents } from "./src/context.js";
 import { runCouncil, transcript, splitMessage } from "./src/council.js";
 
 const config = JSON.parse(readFileSync(new URL("./config.json", import.meta.url)));
@@ -24,18 +24,22 @@ async function retry(fn, tries = 3) {
   }
 }
 
-async function calendar() {
-  try {
-    const events = await retry(async () => {
-      const res = await fetch(config.calendar.url, { headers: { "User-Agent": UA } });
-      if (!res.ok) throw new Error(`経済指標カレンダー ${res.status}`);
-      return res.json();
-    });
-    return calendarText(pickEvents(events, config.calendar));
-  } catch (e) {
-    console.error(e.message);
-    return "(経済指標カレンダーを取れなかった)";
-  }
+// 今週・来週の経済指標(Forex Factory)。取れなかった週は飛ばす
+async function events() {
+  const lists = await Promise.all(config.calendar.urls.map(async (url) => {
+    try {
+      return await retry(async () => {
+        const res = await fetch(url, { headers: { "User-Agent": UA } });
+        if (!res.ok) throw new Error(`経済指標カレンダー ${res.status}: ${url}`);
+        return res.json();
+      });
+    } catch (e) {
+      console.error(e.message);
+      return null;
+    }
+  }));
+  if (lists.every((l) => !l)) return null;
+  return mergeEvents(lists.filter(Boolean));
 }
 
 async function openrouter(role, system, user) {
@@ -80,11 +84,18 @@ async function openrouter(role, system, user) {
   }, 2);
 }
 
-const context = profileText(config.profile);
-const cal = await calendar();
-const result = await runCouncil({ config, chat: openrouter, mode, question, context, calendar: cal, today });
+const portfolio = readFileSync(new URL(config.portfolio, import.meta.url), "utf8");
+const now = new Date();
+const ev = await events();
+const calendar = ev ? calendarText(pickEvents(ev, config.calendar, now)) : "(経済指標カレンダーを取れなかった)";
+// 来週分は週末まで公開されないことがあるので、どこまで見られたかを添える
+const lastEvent = ev && new Date(Math.max(...ev.map((e) => new Date(e.date).getTime())));
+const overlaps = ev
+  ? `${overlapText(legOverlaps(legWindows(config.legs, now, config.calendar.legHours), ev, config.calendar))}\n(カレンダーは ${formatJST(lastEvent)} までの分しか取れていない。それより後は未確認)`
+  : "(経済指標カレンダーを取れなかったので未計算)";
+const result = await runCouncil({ config, chat: openrouter, mode, question, portfolio, calendar, overlaps, today });
 
-const title = mode === "brief" ? `AI 作戦会議 ${today}` : `AI 相談 ${today}: ${question.slice(0, 40)}`;
+const title = mode === "brief" ? `AI 点検会議 ${today}` : `AI 相談 ${today}: ${question.slice(0, 40)}`;
 const full = transcript({ title, ...result });
 const failed = result.steps.filter((s) => s.error).map((s) => `${s.label}(${s.error.slice(0, 80)})`);
 const header = [

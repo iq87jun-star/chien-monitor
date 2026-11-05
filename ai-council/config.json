@@ -1,39 +1,32 @@
 {
   "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+  "portfolio": "portfolio.md",
   "roles": {
     "research": { "label": "🔎 調査役", "model": "perplexity/sonar-deep-research", "maxTokens": 12000, "reasoning": "high" },
-    "ideaA": { "label": "💡 発案役A", "model": "openai/gpt-5.6-sol", "maxTokens": 12000, "reasoning": "high" },
-    "ideaB": { "label": "💡 発案役B", "model": "google/gemini-4-argon", "maxTokens": 12000, "reasoning": "high" },
+    "ideaA": { "label": "🔍 点検役A", "model": "openai/gpt-5.6-sol", "maxTokens": 12000, "reasoning": "high" },
+    "ideaB": { "label": "🔍 点検役B", "model": "google/gemini-4-argon", "maxTokens": 12000, "reasoning": "high" },
     "critic": { "label": "🛡️ 批判役", "model": "anthropic/claude-opus-5.5", "maxTokens": 12000, "reasoning": "high" },
     "chair": { "label": "🧭 まとめ役", "model": "anthropic/claude-opus-5.5", "maxTokens": 12000, "reasoning": "high" }
   },
-  "profile": {
-    "prop": {
-      "firm": "(プロップ会社名)",
-      "accountSize": 100000,
-      "currency": "USD",
-      "dailyLossPct": 5,
-      "maxLossPct": 10,
-      "profitTargetPct": 8,
-      "riskPerTradePct": 0.5,
-      "rules": ["指標発表の前後 2 分は取引禁止(会社の規約に合わせて書き換える)"],
-      "markets": ["USDJPY", "EURUSD", "XAUUSD"],
-      "timeframes": ["M5", "M15", "H1"]
-    },
-    "binary": {
-      "broker": "(国内のバイナリーオプション業者名)",
-      "payoutMultiple": 1.8,
-      "expiries": ["2時間"],
-      "markets": ["USDJPY", "EURJPY"],
-      "stakePerTrade": 5000,
-      "dailyLossLimit": 20000
-    },
-    "notes": ""
-  },
+  "legs": [
+    { "name": "Mon4(円クロス LONG)", "days": [1], "start": "13:00", "hours": 30, "currencies": ["JPY", "GBP", "EUR", "AUD", "USD"] },
+    { "name": "Mon 指数(NAS100・US500 LONG)", "days": [1], "start": "22:30", "hours": 26, "currencies": ["USD"] },
+    { "name": "Roll5(円クロス SHORT)", "days": [4], "start": "05:00", "hours": 4, "currencies": ["JPY", "GBP", "EUR", "AUD", "NZD", "CAD", "USD"] },
+    { "name": "theoption 月曜 7 時 HIGH(お試し)", "days": [1], "start": "07:00", "hours": 23, "currencies": ["JPY", "EUR", "AUD", "NZD"] },
+    { "name": "theoption EURGBP 23 時 LOW(実口座)", "days": [1, 2, 3, 5], "start": "23:00", "hours": 7, "currencies": ["EUR", "GBP"] },
+    { "name": "theoption AUDJPY 2 時 HIGH(実口座)", "days": [2, 3, 4, 5], "start": "02:00", "hours": 4, "currencies": ["AUD", "JPY"] },
+    { "name": "theoption 仲値 15 分 LOW(お試し)", "days": "gotobi", "start": "09:55", "hours": 0.17, "currencies": ["JPY", "USD", "EUR", "GBP", "CHF", "CAD"] }
+  ],
   "calendar": {
-    "url": "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
-    "currencies": ["USD", "JPY", "EUR", "GBP", "AUD"],
+    "urls": [
+      "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
+      "https://nfs.faireconomy.media/ff_calendar_nextweek.json"
+    ],
+    "currencies": ["USD", "JPY", "EUR", "GBP", "AUD", "NZD", "CAD", "CHF"],
     "impact": ["High"],
-    "hours": 36
+    "hours": 36,
+    "legHours": 96,
+    "legImpact": ["High", "Holiday"],
+    "marginMinutes": 30
   }
 }

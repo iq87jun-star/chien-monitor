@@ -1,64 +1,83 @@
-// AI に渡す前提(自分のルール・損益分岐・経済指標)を作る。ここは計算だけで、通信しない。
+// AI に渡す前提(経済指標・各手法の保有時間との重なり)を作る。ここは計算だけで、通信しない。
 
-// バイナリー: 払い戻し倍率 m(1,000 円賭けて当たれば m×1,000 円戻る)の損益分岐の勝率は 1/m
-export function breakEvenWinRate(payoutMultiple) {
-  if (!(payoutMultiple > 1)) throw new Error(`payoutMultiple は 1 より大きい数: ${payoutMultiple}`);
-  return 1 / payoutMultiple;
-}
-
-// プロップ: 1 回の損失額と、日次・最大の損失上限まで何連敗できるか
-export function propLimits({ accountSize, dailyLossPct, maxLossPct, riskPerTradePct }) {
-  const risk = (accountSize * riskPerTradePct) / 100;
-  const daily = (accountSize * dailyLossPct) / 100;
-  const max = (accountSize * maxLossPct) / 100;
-  return { risk, daily, max, lossesToDaily: Math.floor(daily / risk), lossesToMax: Math.floor(max / risk) };
-}
-
-const pct = (x) => `${(x * 100).toFixed(1)}%`;
-const num = (x) => x.toLocaleString("en-US");
-
-export function profileText(profile) {
-  const lines = [];
-  const p = profile.prop;
-  if (p) {
-    const l = propLimits(p);
-    lines.push(
-      `【プロップ】${p.firm} / 口座 ${num(p.accountSize)} ${p.currency}`,
-      `- 日次損失上限 ${p.dailyLossPct}%(${num(l.daily)})、最大損失 ${p.maxLossPct}%(${num(l.max)})、利益目標 ${p.profitTargetPct}%`,
-      `- 1 回のリスク ${p.riskPerTradePct}%(${num(l.risk)})→ ${l.lossesToDaily} 連敗で日次上限、${l.lossesToMax} 連敗で最大損失`,
-      `- 銘柄 ${p.markets.join("・")} / 時間足 ${p.timeframes.join("・")}`,
-      ...(p.rules ?? []).map((r) => `- 規約: ${r}`),
-    );
-  }
-  const b = profile.binary;
-  if (b) {
-    lines.push(
-      `【バイナリーオプション】${b.broker}`,
-      `- 払い戻し倍率 ${b.payoutMultiple} 倍 → 損益分岐の勝率 ${pct(breakEvenWinRate(b.payoutMultiple))}`,
-      `- 判定時間 ${b.expiries.join("・")} / 銘柄 ${b.markets.join("・")} / 1 回 ${num(b.stakePerTrade)} 円、1 日の損失上限 ${num(b.dailyLossLimit)} 円`,
-    );
-  }
-  if (profile.notes) lines.push(`【メモ】${profile.notes}`);
-  return lines.join("\n");
-}
+const H = 3600e3;
+const JST = 9 * H;
+const WEEK = "日月火水木金土";
 
 // 日本時間の「11/5(木) 22:30」
-const WEEK = "日月火水木金土";
 export function formatJST(date) {
-  const j = new Date(date.getTime() + 9 * 3600e3);
+  const j = new Date(date.getTime() + JST);
   const hh = String(j.getUTCHours()).padStart(2, "0");
   const mm = String(j.getUTCMinutes()).padStart(2, "0");
   return `${j.getUTCMonth() + 1}/${j.getUTCDate()}(${WEEK[j.getUTCDay()]}) ${hh}:${mm}`;
 }
 
 export function todayJST(now = new Date()) {
-  return new Date(now.getTime() + 9 * 3600e3).toISOString().slice(0, 10);
+  return new Date(now.getTime() + JST).toISOString().slice(0, 10);
 }
 
-// Forex Factory の週間カレンダー(JSON)から、1 時間前〜hours 時間後の重要指標を選ぶ
+// ゴトー日: 5・10・15・20・25 日と月末。土日なら前の金曜へ(日本の祝日の前倒しは未対応)
+export function isGotobi(y, m, d) {
+  const last = new Date(Date.UTC(y, m, 0)).getUTCDate(); // m は 1〜12
+  const dow = (dd) => new Date(Date.UTC(y, m - 1, dd)).getUTCDay();
+  if (dow(d) === 0 || dow(d) === 6) return false;
+  const targets = [5, 10, 15, 20, 25, last];
+  return targets.some((t) => {
+    let x = t;
+    while (dow(x) === 0 || dow(x) === 6) x--;
+    return x === d;
+  });
+}
+
+// now から hours 時間以内に始まる、各手法の保有時間(日本時間の曜日・時刻で定義)
+export function legWindows(legs, now, hours) {
+  const out = [];
+  const startDay = new Date(now.getTime() + JST);
+  for (let i = -2; i <= Math.ceil(hours / 24) + 1; i++) {
+    const day = new Date(Date.UTC(startDay.getUTCFullYear(), startDay.getUTCMonth(), startDay.getUTCDate() + i));
+    const [y, m, d, dow] = [day.getUTCFullYear(), day.getUTCMonth() + 1, day.getUTCDate(), day.getUTCDay()];
+    for (const leg of legs) {
+      const hit = leg.days === "gotobi" ? isGotobi(y, m, d) : leg.days.includes(dow);
+      if (!hit) continue;
+      const [hh, mm] = leg.start.split(":").map(Number);
+      const from = new Date(Date.UTC(y, m - 1, d, hh, mm) - JST);
+      const to = new Date(from.getTime() + leg.hours * H);
+      if (to > now && from.getTime() <= now.getTime() + hours * H) out.push({ leg, from, to });
+    }
+  }
+  return out.sort((a, b) => a.from - b.from);
+}
+
+// 保有時間(開始の margin 分前から終了まで)に、関係する通貨の重要指標・祝日が入るもの。祝日はその時刻から 24 時間とみなす
+export function legOverlaps(windows, events, { legImpact, marginMinutes }) {
+  return windows
+    .map((w) => {
+      const from = w.from.getTime() - marginMinutes * 60e3;
+      const hits = events.filter((e) => {
+        const t = new Date(e.date).getTime();
+        const end = e.impact === "Holiday" ? t + 24 * H : t;
+        return legImpact.includes(e.impact) && w.leg.currencies.includes(e.country) && end >= from && t <= w.to.getTime();
+      });
+      return { ...w, hits };
+    })
+    .filter((w) => w.hits.length);
+}
+
+export function overlapText(overlaps) {
+  if (!overlaps.length) return "(この先の保有時間に重なる重要指標・祝日はなし)";
+  return overlaps
+    .map((o) => {
+      const head = `- ${o.leg.name}: ${formatJST(o.from)}〜${formatJST(o.to)}`;
+      const hits = o.hits.map((e) => `  - ${formatJST(new Date(e.date))} [${e.country}] ${e.title}${e.impact === "Holiday" ? "(祝日)" : ""}`);
+      return [head, ...hits].join("\n");
+    })
+    .join("\n");
+}
+
+// 1 時間前〜hours 時間後の重要指標
 export function pickEvents(events, { currencies, impact, hours }, now = new Date()) {
-  const from = now.getTime() - 3600e3;
-  const until = now.getTime() + hours * 3600e3;
+  const from = now.getTime() - H;
+  const until = now.getTime() + hours * H;
   return events
     .map((e) => ({ ...e, at: new Date(e.date) }))
     .filter((e) => currencies.includes(e.country) && impact.includes(e.impact))
@@ -74,4 +93,13 @@ export function calendarText(events) {
       return `- ${formatJST(e.at)} [${e.country}] ${e.title}${fp ? `(${fp})` : ""}`;
     })
     .join("\n");
+}
+
+// 2 週分のカレンダーを重複なしでまとめる
+export function mergeEvents(lists) {
+  const seen = new Set();
+  return lists.flat().filter((e) => {
+    const k = `${e.date}|${e.country}|${e.title}`;
+    return seen.has(k) ? false : seen.add(k);
+  });
 }
