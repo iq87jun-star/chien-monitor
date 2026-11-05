@@ -2668,9 +2668,9 @@
    ]
   },
   {
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "registered": "2026-11-05",
    "program": "docs/244 Q108/Q109 派生(CFD)",
    "id": "Q157",
@@ -2680,9 +2680,11 @@
    "order": 31,
    "docs": [
     "docs/244_morning_research_queue.md",
-    "docs/398_q109_hold_reentry_cost.md"
+    "docs/398_q109_hold_reentry_cost.md",
+    "docs/400_q157_hold_swap_cost_book.md"
    ],
-   "note": "docs/398 §4 Q 候補 C。`recentfit_screen.hold_cell` / `forward/portfolio_sim.legs()` に日割りスワップ(FTMO XAU −52・GER40 −49・FN 非アドオン XAU −76 bps/月、Fintokei スイング・FN アドオンは 0。出所 results/q109_hold_swap_comm.csv)を口座型の引数で入れる。docs/349 §9 の帳簿 MC(到達・失格・月収)を再計算し、Hold XAU の重み {現行, 半分, 0} をスワップ込みで比較(EA9 A 案 1/3・EA10L 0.9→0.45・14074882 0.4)。FTMO で Hold を Mon 系に置き換える案は docs/318 §2(Mon 族の比率は上げない)と衝突するため判定はユーザー。研究系列の 5 年スコア(docs/290 Hold 行)もスワップ込みの列を追加。EA・config は変更しない"
+   "note": "docs/398 §4 Q 候補 C。`recentfit_screen.hold_cell` / `forward/portfolio_sim.legs()` に日割りスワップ(FTMO XAU −52・GER40 −49・FN 非アドオン XAU −76 bps/月、Fintokei スイング・FN アドオンは 0。出所 results/q109_hold_swap_comm.csv)を口座型の引数で入れる。docs/349 §9 の帳簿 MC(到達・失格・月収)を再計算し、Hold XAU の重み {現行, 半分, 0} をスワップ込みで比較(EA9 A 案 1/3・EA10L 0.9→0.45・14074882 0.4)。FTMO で Hold を Mon 系に置き換える案は docs/318 §2(Mon 族の比率は上げない)と衝突するため判定はユーザー。研究系列の 5 年スコア(docs/290 Hold 行)もスワップ込みの列を追加。EA・config は変更しない",
+   "result": "スワップ込みで合計 280→270 万。1-Step 9.0→6.4 万/月・失格 25→36%。config a9 は EA9 実レグより XAU 名目 2.8 倍過大(実レグでは到達 83%・失格 19%)。EA・manifest・config 帳簿は不変、config にスワップ欄のみ追加。候補 E(1-Step 帳簿を実レグで再記述)を提案"
   },
   {
    "status": "pending",
@@ -3987,6 +3989,13 @@
    "item": "Q107",
    "cells": 0,
    "doc": "docs/395_q107_candidate_interim.md"
+  },
+  {
+   "date": "2026-11-06",
+   "slot": "morning",
+   "item": "Q157",
+   "cells": 0,
+   "doc": "docs/400_q157_hold_swap_cost_book.md"
   }
  ],
  "external_checks": [

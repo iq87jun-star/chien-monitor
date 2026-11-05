@@ -128,12 +128,14 @@ def mon_cell(nm):
     return clip((df[df["weekday"] == 0]["o2o"] - c).dropna())
 
 
-def hold_cell(nm):
+def hold_cell(nm, swap_bps_m=0.0):
+    """終値→終値の連続保有・月初 5 bps。swap_bps_m(docs/398 Q109・docs/400 Q157): 口座型別の月次スワップ(bps・負 = 費用)を営業日割り(/21)で毎日差し引く。既定 0 = 従来どおり。"""
     df = load_daily(nm)
     s = df["close"].pct_change().dropna()
     s = clip(s)
     firsts = pd.Series(s.index, index=s.index).groupby(pd.PeriodIndex(s.index, freq="M")).min()
     s.loc[s.index.isin(firsts.values)] -= 5e-4
+    if swap_bps_m: s = s + swap_bps_m / 1e4 / 21.0
     return s
 
 

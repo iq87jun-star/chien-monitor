@@ -106,4 +106,4 @@ Q140 で、Dukascopy の bid 始値が 22 UTC(7 時 JST)のロールオーバー
 | Q157 | Hold のスワップ(FTMO XAU −52・GER40 −49・FN 非アドオン XAU −76 bps/月)を研究系列と帳簿 MC に入れ、EA9・EA10L・14074882 の Hold XAU 重み {現行, 半分, 0} と FTMO の Hold→Mon 置換を再評価(docs/398 §4 C) | 0 | 診断 |
 | Q158 | Hold WTI(と UKOIL 等)の参照を CL=F → Dukascopy LIGHTCMDUSD に替えて 5 年スコアと 14166201 の実 vs 系列を取り直す(docs/398 §4 D)。Dukascopy 不通ならデータ待ちで次へ | 0 | 診断(データ待ちあり) |
 | Q159 | FTMO 2-Step の請求方針(月次ロール / 年 1〜2 回全額 / 請求せず)の MC 比較 + [PAYOUT] 行の FTMO 向け `InpPayoutMode`(別版)。FTMO 回答待ち・11/13 までに無ければ E2/E3 両方で仮判定(docs/396 §5 B) | 0 | 診断 + 工学 |
-見込み: 11/5 夕 Q156 → 11/6 朝 Q157 → 夕 Q158(Dukascopy 次第)→ 11/9 朝 Q159(FTMO 回答次第)。いずれも EA・manifest・config は変更せず、採用は「切替」。
+見込み: 11/5 夕 Q156(済・docs/399)→ 11/6 朝 Q157(済・docs/400。候補 E = 1-Step 帳簿を EA9 実レグで再記述、要「登録」)→ 夕 Q158(Dukascopy 次第)→ 11/9 朝 Q159(FTMO 回答済・E2 基準)。いずれも EA・manifest・config は変更せず、採用は「切替」。

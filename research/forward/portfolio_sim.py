@@ -20,12 +20,17 @@ def legs():
         holdxau = on_cal(base.hold_cell("XAUUSD")); roll = on_cal(roll5())
         _LEGS = dict(mon4=mon4, bplan=L("Mon", "GBPJPY") * 0.374 + L("Mon", "AUDJPY") * 0.322 + L("v4", "USDJPY") * 0.304, idx=nas + spx, holdxau=holdxau, roll=roll,
                      hold_uw=L("Hold", "UK100") * 0.491 + L("Hold", "WTI") * 0.153, btc=L("v4nfx", "BTCUSD") * 0.211, mon3=L("Mon", "EURJPY") * 0.333 + L("Mon", "USDJPY") * 0.333 + L("Mon", "NZDJPY") * 0.334,
-                     a9=(holdxau + L("Mon", "GBPJPY") + nas) / 3, instG=L("Mon", "GBPJPY") * 0.537 * 4 + L("Mon", "AUDJPY") * 0.463 * 4 + (nas + spx) * 0.125 * 4,
-                     mon2_cadchf=(L("Mon", "CADJPY") + L("Mon", "CHFJPY")) * 0.5, mon_ger40=on_cal(base.mon_cell("GER40")))   # 2026-10-27 docs/381 Q152: C6(FN 14166201)用
+                     a9=(holdxau + L("Mon", "GBPJPY") + nas) / 3, a9_noxau=(L("Mon", "GBPJPY") + nas) / 3, instG=L("Mon", "GBPJPY") * 0.537 * 4 + L("Mon", "AUDJPY") * 0.463 * 4 + (nas + spx) * 0.125 * 4,
+                     mon2_cadchf=(L("Mon", "CADJPY") + L("Mon", "CHFJPY")) * 0.5, mon_ger40=on_cal(base.mon_cell("GER40")),   # 2026-10-27 docs/381 Q152: C6(FN 14166201)用
+                     mon_gbpjpy=L("Mon", "GBPJPY"), mon_eurjpy=L("Mon", "EURJPY"), mon_audjpy=L("Mon", "AUDJPY"), mon_usdjpy=L("Mon", "USDJPY"), nas=nas)   # 2026-11-06 docs/400 Q157: EA9 の実レグ記述用
     return _LEGS
-def book(spec):
-    """spec: {"mon4": 8, "idx": 1.0, ...} → 日次リターン系列"""
-    lg = legs(); return sum(lg[k] * w for k, w in spec.items())
+HOLD_XAU_EXPO = {"holdxau": 1.0, "a9": 1.0 / 3.0}   # spec の重み 1 あたりの Hold XAU 名目(docs/400 Q157: スワップは Hold XAU 名目に日割りで掛かる)
+def hold_xau_notional(spec): return sum(w * HOLD_XAU_EXPO.get(k, 0.0) for k, w in spec.items())
+def book(spec, swap_xau_bps_m=0.0):
+    """spec: {"mon4": 8, "idx": 1.0, ...} → 日次リターン系列。swap_xau_bps_m(負 = 費用・bps/月): Hold XAU 名目 × 月次スワップ / 21 を毎営業日差し引く(docs/398 §2c の実測。FTMO XAU −52・FN 非アドオン −76・swap-free 0)。"""
+    lg = legs(); s = sum(lg[k] * w for k, w in spec.items())
+    if swap_xau_bps_m: s = s + hold_xau_notional(spec) * swap_xau_bps_m / 1e4 / 21.0
+    return s
 def R(c): return np.asarray(c[(c.index >= P0) & (c.index <= P1)].values, float)
 def run_portfolio(cfg, N=6000, seed=44, months_after=12, verbose=False, legacy=False):
     """cfg = portfolio_current.json 形式。戻り: dict(total=月平均出金の配列(円), per={口座: (配列(円), 配列(残高比))}, m0, stats={口座: dict(reach, fail, fail_funded, ...)})
@@ -40,7 +45,8 @@ def run_portfolio(cfg, N=6000, seed=44, months_after=12, verbose=False, legacy=F
     m0 = int(d0 * 250 / 365) // 21; months = DAYS // 21; per = {}; stats = {}
     for a in cfg["accounts"]:
         if not a.get("active", True): continue
-        ce = R(book(a["eval"]))[IDX]; cf = R(book(a["funded"]))[IDX]; e0 = a["e0"]; tg = a["targets"]; mdd = a["mdd"]; dll = a["dll"]; bal = a["balance_jpy"]
+        sw = 0.0 if legacy else a.get("swap_xau_bps_m", 0.0)
+        ce = R(book(a["eval"], sw))[IDX]; cf = R(book(a["funded"], sw))[IDX]; e0 = a["e0"]; tg = a["targets"]; mdd = a["mdd"]; dll = a["dll"]; bal = a["balance_jpy"]
         kk = a.get("k", k); kp = a.get("keep", keep); fn = a.get("funded_now", False); trail = a.get("trail", False)
         rule = "static" if legacy else a.get("rule", "static"); share = 0.8 if legacy else a.get("share", {"ftmo1step": 0.9, "fn_instant": 0.7}.get(rule, 0.8))
         pfx = a.get("pay_fixed") if (rule == "fn_instant" and not legacy) else None
