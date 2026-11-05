@@ -1,10 +1,12 @@
 // 複数の AI(OpenRouter 経由)に相場・アイデアを検討させ、まとめを Discord に送る。
 //   OPENROUTER_API_KEY … OpenRouter の API キー(未設定なら AI を呼ばずに、渡す内容だけ表示する)
 //   AI_COUNCIL_DISCORD_WEBHOOK … 送り先(未設定なら標準出力に出すだけ)
-//   AI_COUNCIL_QUESTION … 相談したいこと(空なら「今日の作戦メモ」)
-import { readFileSync, appendFileSync } from "node:fs";
+//   AI_COUNCIL_QUESTION … 相談したいこと(空なら「今日の点検」)
+//   AI_COUNCIL_STATUS_KEY … パソコンが書き出す口座データ(status.enc)の鍵(未設定・ファイルなしなら使わない)
+import { readFileSync, appendFileSync, existsSync } from "node:fs";
 import { pickEvents, calendarText, todayJST, formatJST, legWindows, legOverlaps, overlapText, mergeEvents } from "./src/context.js";
 import { runCouncil, transcript, splitMessage } from "./src/council.js";
+import { decryptStatus, statusText } from "./src/status.js";
 
 const config = JSON.parse(readFileSync(new URL("./config.json", import.meta.url)));
 const UA = "chien-monitor-ai-council/0.1 (+https://github.com/iq87jun-star/chien-monitor)";
@@ -93,7 +95,21 @@ const lastEvent = ev && new Date(Math.max(...ev.map((e) => new Date(e.date).getT
 const overlaps = ev
   ? `${overlapText(legOverlaps(legWindows(config.legs, now, config.calendar.legHours), ev, config.calendar))}\n(カレンダーは ${formatJST(lastEvent)} までの分しか取れていない。それより後は未確認)`
   : "(経済指標カレンダーを取れなかったので未計算)";
-const result = await runCouncil({ config, chat: openrouter, mode, question, portfolio, calendar, overlaps, today });
+// パソコンが毎朝書き出す最新の口座データ。ワークフローが ai-council-status ブランチから status.enc を持ってくる
+function liveStatus() {
+  const file = new URL("./status.enc", import.meta.url);
+  const statusKey = process.env.AI_COUNCIL_STATUS_KEY;
+  if (!existsSync(file)) return "(パソコンからの口座データなし。portfolio.md の 11/1 時点の数字で考える)";
+  if (!statusKey) return "(口座データはあるが AI_COUNCIL_STATUS_KEY が未設定で読めない)";
+  try {
+    return statusText(decryptStatus(readFileSync(file, "utf8"), statusKey), now);
+  } catch (e) {
+    console.error(`口座データを読めない: ${e.message}`);
+    return `(口座データを読めなかった: ${e.message})`;
+  }
+}
+const live = liveStatus();
+const result = await runCouncil({ config, chat: openrouter, mode, question, portfolio, live, calendar, overlaps, today });
 
 const title = mode === "brief" ? `AI 点検会議 ${today}` : `AI 相談 ${today}: ${question.slice(0, 40)}`;
 const full = transcript({ title, ...result });

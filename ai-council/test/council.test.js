@@ -117,3 +117,33 @@ test("portfolio.md がある", () => {
   assert.match(p, /棄却済み/);
   assert.doesNotMatch(p, /\d{7,}/); // 口座番号を書かない
 });
+
+import { decryptStatus, encryptStatus, statusText } from "../src/status.js";
+
+test("口座データ: 暗号化して戻せる、鍵が違えば失敗", () => {
+  const key = Buffer.alloc(32, 7).toString("base64");
+  const obj = { updatedAt: "2026-11-06T07:30:00+09:00", prop: [] };
+  assert.deepEqual(decryptStatus(encryptStatus(obj, key), key), obj);
+  assert.throws(() => decryptStatus(encryptStatus(obj, key), Buffer.alloc(32, 8).toString("base64")));
+  assert.throws(() => decryptStatus("AAAA", "short"), /32 バイト/);
+});
+
+test("口座データ: 失格・日次上限までの距離、重複建玉、古さを書く", () => {
+  const s = {
+    updatedAt: "2026-11-06T07:30:00+09:00",
+    prop: [{ name: "FN-100ギャンブル", currency: "USD", balance: 92873, equity: 92500, floor: 90000, dailyLimit: 87873,
+      positions: [{ symbol: "XAUUSD", side: "BUY", lots: 0.4, profit: -200 }, { symbol: "XAUUSD", side: "BUY", lots: 0.4, profit: -173 }] }],
+    theoption: { balance: 395560, recent: [{ date: "11/5", leg: "EURGBP 23時 LOW", result: "勝ち", pnl: 9500 }], errors: ["213 AUDJPY 再試行で約定"] },
+    warnings: ["Fin-ルビー の端末が応答なし"],
+  };
+  const t = statusText(s, new Date("2026-11-05T22:47:00Z"));
+  assert.match(t, /0\.3 時間前/);
+  assert.match(t, /失格まで 2,500/);
+  assert.match(t, /日次上限まで 4,627/);
+  assert.match(t, /同じ銘柄・同じ向きが複数: XAUUSD BUY ×2/);
+  assert.match(t, /395,560 円/);
+  assert.match(t, /\+9500 円/);
+  assert.match(t, /端末が応答なし/);
+  assert.doesNotMatch(t, /18 時間以上前/);
+  assert.match(statusText(s, new Date("2026-11-07T07:00:00Z")), /18 時間以上前/);
+});

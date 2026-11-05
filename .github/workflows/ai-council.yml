@@ -50,8 +50,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      # パソコンが毎朝書き出す口座データ(暗号化済み)。なければ portfolio.md の数字だけで動く
+      - name: 口座データを取る
+        continue-on-error: true
+        run: |
+          git fetch --depth 1 origin ai-council-status
+          git show FETCH_HEAD:status.enc > status.enc
       - run: node run.js
         env:
+          AI_COUNCIL_STATUS_KEY: ${{ secrets.AI_COUNCIL_STATUS_KEY }}
           AI_COUNCIL_QUESTION: ${{ inputs.question }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           AI_COUNCIL_DISCORD_WEBHOOK: ${{ secrets.AI_COUNCIL_DISCORD_WEBHOOK }}
