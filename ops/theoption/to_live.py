@@ -6,6 +6,7 @@
       v1.5(追補34裁定): 仲値脚 = ゴトー日(5・10・15・20・25・月末、土日・銀行休業日は前倒し)の 09:55:00 JST に USDJPY/EURJPY/GBPJPY の
       FE|15M LOW(判定 10:10)を各 7,000 円。建て遅延に敏感(1 分遅れで −3pp)なので、09:54:35 から契約を先読みし 09:55:01 に 1.2 秒間隔で発注する。
       v1.8(追補46): 仲値脚に CHFJPY・CADJPY(各 7,000 円)を追加して 5 本(1 日 35,000 円、25 日 52,500 円)。追加 2 本は demo_legs 既定でお試しから。
+      v1.9(追補48): 15M 枠は開場 +17 秒まで配信されないため、09:55 枠ではなく 09:50 開場の枠(判定 10:05)を 09:55:01 に買う。建て時刻の精度が勝率の源泉なので判定を 5 分早める。
 動作(タスク chien_theoption_live_*: 月 06:58/09:58/12:58/13:58/15:58/17:58/20:58、火 00:58/23:58、水 01:58、毎日 22:58 に起動 → 直後の定刻の脚だけ実行して終了。
       日付をまたぐ定刻(火 23:58 起動 → 水 00:00 建て)は翌日の脚として扱う):
   0. 起動タスクに 毎日 09:54(live_0955)を追加。ゴトー日でなければ「脚は無い」で終了。
@@ -21,7 +22,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.8"
+VERSION = "1.9"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -43,13 +44,16 @@ MENU = [
  dict(id="AUDJPY_02",   pair="AUDJPY", sel="HIGH", entry="02:00", judge="06:00", next=False, stake=4800,  wds=[1,2,3,4], months=None, kind="23H"),   # 火〜金 02:00 建て→同日 06:00(月〜木セッション)
  # v1.5 (2026-10-31 追補34裁定): 仲値後の反落。ゴトー日(gotobi=True: 土日・銀行休業日は直前の営業日に前倒し)の 09:55 建て→10:10 判定 LOW、15M FE 1.85。
  #   10年ミッド(FXCM M1) USDJPY 62.6 / EURJPY 64.8 / GBPJPY 62.8%(両期間合格、年別BE割れ0〜1)。3 本の相関 +0.63〜0.71。v1.4 と合算で 月+81,294 / 最大DD 344k。
- dict(id="USDJPY_NK",   pair="USDJPY", sel="LOW",  entry="09:55", judge="10:10", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
- dict(id="EURJPY_NK",   pair="EURJPY", sel="LOW",  entry="09:55", judge="10:10", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
- dict(id="GBPJPY_NK",   pair="GBPJPY", sel="LOW",  entry="09:55", judge="10:10", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
+ dict(id="USDJPY_NK",   pair="USDJPY", sel="LOW",  entry="09:55", judge="10:05", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
+ dict(id="EURJPY_NK",   pair="EURJPY", sel="LOW",  entry="09:55", judge="10:05", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
+ dict(id="GBPJPY_NK",   pair="GBPJPY", sel="LOW",  entry="09:55", judge="10:05", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
+ # v1.9 (2026-11-05 追補48): 判定 10:10 → 10:05(= 09:50 開場の 15M 枠を 09:55:01 に買う)。15M の枠は開場 +17 秒にならないと contracts ストリームに出ない
+ #   (10/26 プローブで全枠 +17〜18 秒、11/5 デモは 5 本とも 09:55:28〜35 約定)。09:55 枠を待つと建てが 30 秒遅れ、1 分遅れの近似で勝率 −2〜5pp(CADJPY 57.2 で合格線)。
+ #   09:50 枠は 09:50:17 から Open なので先読みで即見つかり、09:55:01 に建てられる。09:55→10:05 LOW の 10 年: USDJPY 64.3 / EURJPY 64.1 / GBPJPY 63.6 / CHFJPY 67.0 / CADJPY 63.1(10:10 判定と同等以上)、全体合算 月+104,073 / 最大DD 351,960。
  # v1.8 (2026-11-05 追補46・ユーザー決定「進めて下さい」): 仲値脚に CHFJPY・CADJPY を追加(Dukascopy M1 BID、10 年)。CHFJPY 66.4%(63.9/68.6、BE割れ 0/11)、CADJPY 62.1%(60.0/63.9、0/11)。
  #   既存 3 本との相関 +0.58〜0.74。全体合算で 月+100,609 / 最大DD 409,610(資金増額が前提)。建て遅延は最初の 1 分で −5〜6pp なので、発注順は既存 3 本の後(定刻 +4.6 秒・+5.8 秒)。
- dict(id="CHFJPY_NK",   pair="CHFJPY", sel="LOW",  entry="09:55", judge="10:10", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
- dict(id="CADJPY_NK",   pair="CADJPY", sel="LOW",  entry="09:55", judge="10:10", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
+ dict(id="CHFJPY_NK",   pair="CHFJPY", sel="LOW",  entry="09:55", judge="10:05", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
+ dict(id="CADJPY_NK",   pair="CADJPY", sel="LOW",  entry="09:55", judge="10:05", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
 ]
 MIN_PAYOUT = {"1H": 1.85, "15M": 1.85, "23H": 1.90}; BOOST_PAYOUT = 2.0; BOOST_MULT = 1.5
 
