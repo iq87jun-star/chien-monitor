@@ -2643,9 +2643,9 @@
    ]
   },
   {
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "registered": "2026-11-05",
    "program": "docs/244 Q108/Q109 派生(CFD)",
    "id": "Q156",
@@ -2655,9 +2655,17 @@
    "order": 30,
    "docs": [
     "docs/244_morning_research_queue.md",
-    "docs/396_q108_payout_rules_check.md"
+    "docs/396_q108_payout_rules_check.md",
+    "docs/399_q156_portfolio_sim_floor_by_account_type.md"
    ],
-   "note": "docs/396 §5 Q 候補 A。`forward/portfolio_sim.run_portfolio` の資金化後の床: FTMO 1-Step = max(EOD 最高残高, 額面) −10%・Reward で全利益分配(90%)・新口座で床リセット・ロール不可・保持は意味なし → 方針は毎サイクル全額 Reward。FN Instant = 最高残高 −6%・額面で頭打ち・分配 70%(Tier1-2)・+5% で $400 の運用規則。FTMO 2-Step = 請求で全利益分配(80%)+ 取り分をロール(床の基準は FTMO 回答まで E2(元額面)/E3(新残高)の両方)。Fintokei・FN 2-Step は現行どおり。docs/349 §9c〜§9f・docs/382 の合計月収を再計算し、1-Step(531466484)の資金化後倍率(現 ×3.125/2.03)を「規約床で 1 年失格 ≤10%」の膝に戻す案と EA9 の InpKeepPct の扱いを提案。config・EA・manifest は変更しない(切替はユーザー)"
+   "note": "docs/396 §5 Q 候補 A。`forward/portfolio_sim.run_portfolio` の資金化後の床: FTMO 1-Step = max(EOD 最高残高, 額面) −10%・Reward で全利益分配(90%)・新口座で床リセット・ロール不可・保持は意味なし → 方針は毎サイクル全額 Reward。FN Instant = 最高残高 −6%・額面で頭打ち・分配 70%(Tier1-2)・+5% で $400 の運用規則。FTMO 2-Step = 請求で全利益分配(80%)+ 取り分をロール(床の基準は FTMO 回答まで E2(元額面)/E3(新残高)の両方)。Fintokei・FN 2-Step は現行どおり。docs/349 §9c〜§9f・docs/382 の合計月収を再計算し、1-Step(531466484)の資金化後倍率(現 ×3.125/2.03)を「規約床で 1 年失格 ≤10%」の膝に戻す案と EA9 の InpKeepPct の扱いを提案。config・EA・manifest は変更しない(切替はユーザー)",
+   "result": "portfolio_sim に rule(static/ftmo2step/ftmo1step/fn_instant)を実装。合計 375 → 292 万(−22%)、差は 1-Step(108 → 22 万/月・資金化後失格 27 → 54%)。10/23 採用の 1-Step 資金化後 ×3.125 は旧モデルの産物、規約床で失格 ≤10% の膝は a9 1.25 / Mon4 0.81(×0.4)→ 切替候補。FTMO 2-Step はロール運用でほぼ不変(+2 万)。FN Instant は建値ロック+70% で失格 76%。config の倍率・EA は不変",
+   "runs": [
+    {
+     "date": "2026-11-05",
+     "summary": "docs/399。新旧モデル比較 + 1-Step 資金化後倍率 7 点の格子(セル 0)。docs/349 §9g・docs/382 §4 を追記"
+    }
+   ]
   },
   {
    "status": "pending",
