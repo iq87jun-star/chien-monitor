@@ -66,3 +66,10 @@
 - FTMO サポートへ §5 の 2 点(一部 Reward の可否・ロールオーバー後の Maximum Loss の基準)を 1 通送信(宛先 support@ftmo.com・件名「Two questions about Reward withdrawals on 2-Step FTMO Accounts」)。返信は FN 返信チェックの定期タスク(4 時間おき)で合わせて確認する。
 - FN サポートへの 11/6 のリマインドに、Stellar 2-Step の 2 点(Performance Reward の任意額の可否・On-Demand Performance Reward 90% を既存の本口座で選べるか)を追加した。
 - 回答が来るまで運用は現状どおり(FTMO 50k × 2 は請求しない・他は毎月 1 日の `[PAYOUT]` 行どおり)。
+
+## 7. FTMO サポートの回答(2026-11-04 21:35 UTC 受信・チケット TJZ-LCLKF-689)
+- **一部 Reward は不可**: 2-Step で Reward を請求すると現在の取引サイクルが終了し、**全建玉を決済**したうえで次の FTMO Account が発行される。「利益の一部を同じ口座に残して取引を続ける」ことはできない。
+- **ロールオーバーで残せる**: Reward の一部または全部を次口座へ(最低 $20)。
+- **床の基準は元の Initial Simulated Capital**: 「The Maximum Loss Limit is based on the original Initial Simulated Capital, meaning the rolled-over amount directly increases your safety buffer」。例: $50,000 口座で $5,000 をロール → 新残高 $55,000、床は $45,000 のまま、緩衝 $10,000。
+- **判定: §3 (b) の E2 が成立**(E3 ではない)。FTMO 2-Step 本口座の「保持 20%・超過分の半分」は、毎月 1 日に Reward を請求し、取り分のうち「基準残高 × 1.20 + 超過分の半分 − 額面」をロールする運用で MC(期待 17.2% vs 現行モデル 18.8%・失格同率)どおりに再現できる。請求時に全建玉を決済する必要がある点(EA8 の GER40 ブレイクが建玉中なら請求を建玉のない日にずらす)は Q159 で規則化する。
+- 未確認のまま残る点: ロール分を次回に受け取る際の分配(FAQ の「ロール分は 100%」の文面どおりか)、請求後に新口座が発行されるまでの空白日数(その間は Mon4 の建てが止まる)。Q159 で FAQ 文面を引用して前提に置く。

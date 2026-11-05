@@ -2708,7 +2708,7 @@
     "docs/244_morning_research_queue.md",
     "docs/396_q108_payout_rules_check.md"
    ],
-   "note": "docs/396 §5 Q 候補 B。FTMO の回答(一部 Reward の可否・ロール後の床基準)が来たら、その規則で E1/E2/E3/E4(docs/396 §3 b)に『年 1〜2 回の全額請求』を加えて 50k ×2 の同じ MC で比較し、docs/349 §9c の出金規則の FTMO 版を提案。工学: EA8/EA3 の [PAYOUT] 行を FTMO 口座では『請求額』ではなく『ロール額』で出す InpPayoutMode を別版(版 +0.01)で用意(manifest・docs/241 は変更しない)。FTMO 未回答なら次へ送り、11/13 を過ぎても未回答なら E2/E3 の両方で計算して仮判定"
+   "note": "docs/396 §5 Q 候補 B。FTMO の回答(一部 Reward の可否・ロール後の床基準)が来たら、その規則で E1/E2/E3/E4(docs/396 §3 b)に『年 1〜2 回の全額請求』を加えて 50k ×2 の同じ MC で比較し、docs/349 §9c の出金規則の FTMO 版を提案。工学: EA8/EA3 の [PAYOUT] 行を FTMO 口座では『請求額』ではなく『ロール額』で出す InpPayoutMode を別版(版 +0.01)で用意(manifest・docs/241 は変更しない)。FTMO 未回答なら次へ送り、11/13 を過ぎても未回答なら E2/E3 の両方で計算して仮判定\n【2026-11-05 追記】FTMO 回答済み(docs/396 §7): 一部 Reward 不可・請求で全建玉決済と新口座発行・ロールは最低 $20・床は元の Initial Simulated Capital 基準(E2 成立)。回答待ちは解除、E2 を前提に実行してよい。請求時の全決済(GER40 ブレイク建玉中の扱い)と新口座発行までの空白日数も規則に含める"
   }
  ],
  "runs": [
