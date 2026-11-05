@@ -15,7 +15,7 @@ def test_menu_matches_readme_addendum31_and_34():
     assert sum(l["stake"] for l in L.MENU if l["entry"] == "07:00") == 62700          # 月曜 07:00 の 23H × 3(DD40万換算)
     mon = sum(l["stake"] for l in L.MENU if 0 in l["wds"] and not l.get("gotobi")); assert mon == 72700 and mon * L.BOOST_MULT <= L.DAILY_STAKE_CAP
     nk = [l for l in L.MENU if l.get("gotobi")]
-    assert [l["pair"] for l in nk] == ["USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY"] and all(l["kind"] == "15M" and l["sel"] == "LOW" and l["entry"] == "09:55" and l["judge"] == "10:10" and not l["next"] and l["stake"] == 7000 for l in nk)
+    assert [l["pair"] for l in nk] == ["USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY"] and all(l["kind"] == "15M" and l["sel"] == "LOW" and l["entry"] == "09:55" and l["judge"] == "10:05" and not l["next"] and l["stake"] == 7000 for l in nk)
     assert mon + sum(l["stake"] for l in nk) == 107700 <= L.DAILY_STAKE_CAP           # 月曜がゴトー日でも日次上限内(v1.8: 72,700 + 35,000)
     assert all(l["kind"] == "23H" and l["judge"] == "06:00" for l in L.MENU if not l.get("gotobi"))
     assert all((not l["next"]) == (l["entry"] < "06:00") for l in L.MENU if not l.get("gotobi"))      # 深夜建て(02:00)だけ同日判定
@@ -53,7 +53,7 @@ def test_slot_selection_around_entry_time():
     now = dt.datetime(2026, 10, 26, 9, 54, tzinfo=L.JST); assert L.legs_for_slot(now) == []           # 10/26 はゴトー日でない → 09:54 起動は空振り
     now = dt.datetime(2026, 11, 5, 9, 54, tzinfo=L.JST); legs = L.legs_for_slot(now)                  # 11/5(木)ゴトー日 → 仲値 5 本(v1.8)
     assert [l["id"] for l in legs] == ["USDJPY_NK", "EURJPY_NK", "GBPJPY_NK", "CHFJPY_NK", "CADJPY_NK"] and all(l["_day"] == dt.date(2026, 11, 5) for l in legs)
-    assert L.judge_utc(legs[0], legs[0]["_day"]) == dt.datetime(2026, 11, 5, 1, 10, tzinfo=L.UTC)
+    assert L.judge_utc(legs[0], legs[0]["_day"]) == dt.datetime(2026, 11, 5, 1, 5, tzinfo=L.UTC)   # v1.9: 09:50 枠(判定 10:05)
     now = dt.datetime(2026, 10, 26, 22, 58, tzinfo=L.JST); assert [l["id"] for l in L.legs_for_slot(now)] == ["EURGBP_N6L"]
     now = dt.datetime(2026, 10, 29, 22, 58, tzinfo=L.JST); assert L.legs_for_slot(now) == []          # 木曜 23:00 は EURGBP 対象外
     assert all(l["_day"] == MON for l in L.legs_for_slot(dt.datetime(2026, 10, 26, 6, 58, tzinfo=L.JST)))
@@ -91,12 +91,12 @@ def test_pick_contract_by_pair_selection_and_judge_time():
 
 def test_pick_15m_contract_allows_prescan_status():
     nk = next(l for l in L.MENU if l["id"] == "USDJPY_NK"); day = dt.date(2026, 11, 5)
-    frames = [upd("USDJPY|FE|15M|HIGHLOW|LOW", "2026-11-05T01:10:00.000Z", "1.85", status="Unknown"),
+    frames = [upd("USDJPY|FE|15M|HIGHLOW|LOW", "2026-11-05T01:05:00.000Z", "1.85", status="Unknown"),
               upd("USDJPY|FE|15M|HIGHLOW|LOW", "2026-11-05T01:05:00.000Z", "1.85", status="Open"),
-              upd("USDJPY|FE|15M|HIGHLOW|HIGH", "2026-11-05T01:10:00.000Z", "1.85", status="Unknown"),
+              upd("USDJPY|FE|15M|HIGHLOW|HIGH", "2026-11-05T01:05:00.000Z", "1.85", status="Unknown"),
               upd("USDJPY|FE|1H|HIGHLOW|LOW", "2026-11-05T02:00:00.000Z", "1.9"),
-              upd("USDJPY|FE|15M|HIGHLOW|LOW", "2026-11-05T01:10:00.000Z", "1.85", status="Closed")]
-    c = L.pick_contract(frames[:4], nk, day); assert c and c["name"] == "USDJPY|FE|15M|HIGHLOW|LOW" and c["expiration_time"] == "2026-11-05T01:10:00.000Z"
+              upd("USDJPY|FE|15M|HIGHLOW|LOW", "2026-11-05T01:05:00.000Z", "1.85", status="Closed")]
+    c = L.pick_contract(frames[:4], nk, day); assert c and c["name"] == "USDJPY|FE|15M|HIGHLOW|LOW" and c["expiration_time"] == "2026-11-05T01:05:00.000Z"
     assert L.pick_contract([frames[4]], nk, day) is None                                  # Closed は選ばない
     n6 = next(l for l in L.MENU if l["id"] == "EURJPY_N6")                                # 23H 脚は従来どおり Open のみ
     assert L.pick_contract([upd("EURJPY|FE|23H|HIGHLOW|HIGH", "2026-10-26T21:00:00.000Z", status="Unknown")], n6, MON) is None
@@ -117,7 +117,7 @@ def test_run_entries_fast_path_for_15m(monkeypatch):
         scans.append(secs)
         frames = [upd("USDJPY|FE|15M|HIGHLOW|LOW", "2026-11-05T01:05:00.000Z", "1.85")]   # 1 つ前の枠だけ → まだ打ち切らない
         assert done is not None and not done(frames)
-        frames += [upd(f"{p}|FE|15M|HIGHLOW|LOW", "2026-11-05T01:10:00.000Z", "1.85", status="Unknown") for p in ("USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY")]
+        frames += [upd(f"{p}|FE|15M|HIGHLOW|LOW", "2026-11-05T01:05:00.000Z", "1.85", status="Unknown") for p in ("USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY")]
         assert done(frames)   # 5 本そろった瞬間に打ち切る
         return frames
     monkeypatch.setattr(L, "scan_contracts", fake_scan)
