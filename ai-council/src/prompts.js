@@ -1,4 +1,5 @@
 // 役割ごとの指示。どの AI にも共通の前提(COMMON)と、運用の現状(portfolio.md)を付ける。
+// mode: brief(毎朝の点検)/ ask(手動の相談)/ explore(毎週土曜の新規開拓)
 
 const COMMON = `あなたは、プロップファーム 10 口座の EA 運用と、theoption の自動発注を行っている個人トレーダーを手伝う相談役の 1 人です。日本語で、スマホで読みやすく箇条書き中心に答えてください。
 守ること:
@@ -7,17 +8,36 @@ const COMMON = `あなたは、プロップファーム 10 口座の EA 運用�
 - 数字(損失額・失格ラインまでの距離・損益分岐)で考える。勝ちを保証する言い方をしない
 - 分からないこと・未確認のことは、はっきりそう書く。価格や予想値をでっち上げない`;
 
-export const SYSTEM = {
-  research: `${COMMON}
-あなたの役割は「調査役」です。Web 検索で最新の事実を集め、出典付きで短くまとめます。意見や売買の提案はしません。`,
-  idea: `${COMMON}
-あなたの役割は「点検役」です。前提・調査結果・指標の重なりをもとに、口座と手法ごとのリスクを点検します。他の AI とは独立に考えてください。`,
-  critic: `${COMMON}
-あなたの役割は「批判役」です。点検役 2 人の意見の誤り・言い過ぎ・見落としを具体的に指摘します。
-特に、規約の読み違い、失格ラインまでの計算、後付けフィルタ(根拠の薄い「止める」提案)、棄却済み手法の蒸し返し、未確認の数字を事実のように扱っていないか、を確かめてください。`,
-  chair: `${COMMON}
-あなたの役割は「まとめ役」です。調査役・点検役・批判役の意見を読み、本人がそのまま使える形にまとめます。全体で 1,500 字以内。`,
+const EXPLORE_GOALS = `新規開拓の狙い(3 つ):
+① 月曜の偏りを減らす新しい脚: Mon 系がリスク寄与の 78%(目標 40〜50%)。Mon 系と相関が低く、機能している系統(曜日・時間帯・月の季節性、金利差の Roll、Hold、ブレイク、クロスアセットの月次モメンタム)の延長にある候補。新しい理屈を当てに行く案は期待値が低い(週足トレンド・カレンダー追加で 2 連敗済み)
+② 新しいプロップ会社・プラン: 到達速度の最大のレバーは並走口座数。EA・VPS が使えるか、費用、目標・最大損失・日次の定義(静的かトレーリングか)、一貫性ルール、ニュース・週末規則、出金と分配、スケーリング、運営の信用、日本居住者が使えるか
+③ theoption の新しい脚: 倍率が固定の商品(23 時間 1.95・1 時間 1.90・15 分 1.85・15 秒 2.00)で、損益分岐 +3pp 以上を 10 年データで狙える時間帯・通貨。両建て・レイテンシー狙いは規約違反なので除く`;
+
+const ROLE = {
+  brief: {
+    idea: "あなたの役割は「点検役」です。前提・調査結果・指標の重なりをもとに、口座と手法ごとのリスクを点検します。他の AI とは独立に考えてください。",
+    critic: "あなたの役割は「批判役」です。点検役 2 人の意見の誤り・言い過ぎ・見落としを具体的に指摘します。\n特に、規約の読み違い、失格ラインまでの計算、後付けフィルタ(根拠の薄い「止める」提案)、棄却済み手法の蒸し返し、未確認の数字を事実のように扱っていないか、を確かめてください。",
+    chair: "あなたの役割は「まとめ役」です。調査役・点検役・批判役の意見を読み、本人がそのまま使える形にまとめます。全体で 1,500 字以内。",
+  },
+  explore: {
+    idea: `あなたの役割は「発案役」です。${EXPLORE_GOALS}
+①②③それぞれに候補を出してください。候補ごとに: 仮説(なぜ効くはずか、構造的な理由)、棄却済みの手法と何が違うか、使うデータ、検証の手順、既存の手法(特に Mon 系)との相関の見込み、合格の基準。②は会社・プランごとに、上の項目と、既存の EA をそのまま載せられるか。他の AI とは独立に考えてください。`,
+    critic: `あなたの役割は「批判役」です。発案役 2 人の候補を厳しく選別します。
+- 棄却済みの手法や、過去に出した候補の言い換え・蒸し返しではないか
+- 後付けの理由・データの覗き見・多重検定(たくさん試して当たったものを選ぶ)になっていないか。仮説が先にあるか
+- Mon 系と本当に相関が低いか(同じ円クロス・同じ曜日・同じリスクオン要因に乗っていないか)
+- ②: 規約(EA・VPS・ニュース・週末・一貫性・口座をまたぐ両建て)で既存の EA が使えるか、信用・出金の実績、費用に見合うか。未確認の条件を事実のように書いていないか
+- ③: 倍率と損益分岐を正しく使っているか、規約違反(両建て・レイテンシー)にならないか
+残す価値のある候補と、その直し方を書いてください。`,
+    chair: `あなたの役割は「まとめ役」です。調査役・発案役・批判役の意見を読み、検証に回す候補を選びます。全体で 2,000 字以内。`,
+  },
 };
+ROLE.ask = ROLE.brief;
+
+export function systemFor(mode, role) {
+  if (role === "research") return `${COMMON}\nあなたの役割は「調査役」です。Web 検索で最新の事実を集め、出典付きで短くまとめます。意見や売買の提案はしません。`;
+  return `${COMMON}\n${ROLE[mode][role === "ideaA" || role === "ideaB" ? "idea" : role]}`;
+}
 
 const section = (title, body) => `# ${title}\n${body}`;
 
@@ -42,40 +62,83 @@ const CHAIR_ASK = `次の順で:
 4. 試すならその手順(紙上フォワード・デモで何を何回見るか)
 5. 意見が割れた点`;
 
-const common = ({ portfolio, live, calendar, overlaps }) => [
-  section("運用の現状", portfolio),
-  section("最新の口座データ(パソコンから自動。運用の現状の残高より優先。失格・日次上限までの距離は計算済み)", live || "(なし)"),
-  section("この先 36 時間の重要指標(日本時間)", calendar),
-  section("各手法の保有時間に重なる重要指標・祝日(この先 4 日、プログラムで計算)", overlaps),
-];
+const CHAIR_EXPLORE = `次の順で:
+1. 今週の結論(3 行以内。検証に回す価値のある候補がなければ「今週はなし」でよい)
+2. 検証に回す候補(①②③合わせて最大 3 つ、価値の高い順)。候補ごとに:
+   - 狙い(①②③)と名前
+   - 仮説と、棄却済み・過去の候補との違い
+   - ①③: 使うデータ、検証の手順(G3 順列・G5 Jackknife・ウォークフォワード)、必要な取引回数、Mon 系との相関の見込み、合格の基準
+   - ②: 費用、規約の要点、既存の EA を載せられるか、確認が必要な点(書面で確かめること)
+   - 研究ブランチの Q リスト(docs/244)に登録するための 1 行の要約
+3. 今回は見送った候補と理由(短く)
+4. 最後に、次の形の一覧を必ず付ける(過去の候補の記録に使う。候補がなければ「- 候補: なし」):
+## 候補一覧
+- 候補: ① 〇〇
+- 候補: ② 〇〇`;
 
-export function researchPrompt({ mode, question, today, ...ctx }) {
-  const topic = mode === "brief"
-    ? `今日(${today}、日本時間)の材料: 円相場(円クロス)・日米欧の株価指数・金・原油・独 DAX の動きの要因、日銀・FRB・RBA・RBNZ の見通し、要人発言、地政学。加えて FTMO・FundedNext・Fintokei・theoption の規約変更や告知があれば`
-    : `次の相談に関係する事実(相場の材料、業者の規約や評判、関連する研究など):\n${question}`;
+const common = ({ mode, portfolio, live, calendar, overlaps, explored }) =>
+  mode === "explore"
+    ? [
+        section("運用の現状", portfolio),
+        section("最新の口座データ(パソコンから自動)", live || "(なし)"),
+        section("過去の新規開拓会議で出した候補(言い換え・蒸し返しをしない。新しい根拠があるときだけ再提案)", explored || "(まだなし)"),
+      ]
+    : [
+        section("運用の現状", portfolio),
+        section("最新の口座データ(パソコンから自動。運用の現状の残高より優先。失格・日次上限までの距離は計算済み)", live || "(なし)"),
+        section("この先 36 時間の重要指標(日本時間)", calendar),
+        section("各手法の保有時間に重なる重要指標・祝日(この先 4 日、プログラムで計算)", overlaps),
+      ];
+
+export function researchPrompt({ question, today, ...ctx }) {
+  const topic = {
+    brief: `今日(${today}、日本時間)の材料: 円相場(円クロス)・日米欧の株価指数・金・原油・独 DAX の動きの要因、日銀・FRB・RBA・RBNZ の見通し、要人発言、地政学。加えて FTMO・FundedNext・Fintokei・theoption の規約変更や告知があれば`,
+    ask: `次の相談に関係する事実(相場の材料、業者の規約や評判、関連する研究など):\n${question}`,
+    explore: `新規開拓の材料(${today} 時点の最新)。
+- ①: 為替・株価指数・金・原油・債券の、曜日・時間帯・月末月初・祝日前後・金利差に関する研究(論文・実務の検証)。特に円クロスの月曜効果と相関が低いもの
+- ②: EA が使えるプロップファーム(CFD・先物)の最新の条件と規約の変更、評判・出金の実績、閉鎖や規制の動き。日本居住者が使えるか
+- ③: theoption の商品・倍率・規約の変更、国内外の固定倍率バイナリーの状況
+${EXPLORE_GOALS}`,
+  }[ctx.mode];
   return [section("調べること", topic), ...common(ctx)].join("\n\n");
 }
 
-export function ideaPrompt({ mode, question, research, ...ctx }) {
-  const ask = mode === "brief" ? BRIEF_ASK : `次の相談に答えてください。前提の手法・規約・検証結果に照らして考えてください:\n${question}`;
+export function ideaPrompt({ question, research, ...ctx }) {
+  const ask = {
+    brief: BRIEF_ASK,
+    ask: `次の相談に答えてください。前提の手法・規約・検証結果に照らして考えてください:\n${question}`,
+    explore: "①②③それぞれについて、検証に回す価値のある候補を出してください(各 1〜3 個)。",
+  }[ctx.mode];
   return [section("お願い", ask), ...common(ctx), section("調査役のまとめ", research)].join("\n\n");
 }
 
 export function criticPrompt({ ideas, ...ctx }) {
+  const who = ctx.mode === "explore" ? "発案役 2 人の候補を選別し" : "点検役 2 人の意見を批判し";
   return [
-    section("お願い", "点検役 2 人の意見を批判し、直すならどう直すかを書いてください。"),
+    section("お願い", `${who}、直すならどう直すかを書いてください。`),
     ...common(ctx),
-    section("点検役の意見", ideas),
+    section(ctx.mode === "explore" ? "発案役の候補" : "点検役の意見", ideas),
   ].join("\n\n");
 }
 
-export function chairPrompt({ mode, question, research, ideas, critique, ...ctx }) {
-  const ask = mode === "brief" ? `今日の点検メモ。${CHAIR_BRIEF}` : `相談への答え: ${question}\n${CHAIR_ASK}`;
+export function chairPrompt({ question, research, ideas, critique, ...ctx }) {
+  const ask = {
+    brief: `今日の点検メモ。${CHAIR_BRIEF}`,
+    ask: `相談への答え: ${question}\n${CHAIR_ASK}`,
+    explore: `今週の新規開拓メモ。${CHAIR_EXPLORE}`,
+  }[ctx.mode];
   return [
     section("作るもの", ask),
     ...common(ctx),
     section("調査役", research),
-    section("点検役", ideas),
+    section(ctx.mode === "explore" ? "発案役" : "点検役", ideas),
     section("批判役", critique),
   ].join("\n\n");
+}
+
+// まとめ役の「候補一覧」から候補を取り出す(過去の候補の記録用)
+export function extractCandidates(text) {
+  return [...(text ?? "").matchAll(/^\s*-\s*候補[::]\s*(.+?)\s*$/gm)]
+    .map((m) => m[1])
+    .filter((c) => c && c !== "なし");
 }

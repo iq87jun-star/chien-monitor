@@ -8,6 +8,10 @@
     "critic": { "label": "🛡️ 批判役", "model": "anthropic/claude-opus-5.5", "maxTokens": 12000, "reasoning": "high" },
     "chair": { "label": "🧭 まとめ役", "model": "anthropic/claude-opus-5.5", "maxTokens": 12000, "reasoning": "high" }
   },
+  "exploreLabels": {
+    "ideaA": "💡 発案役A",
+    "ideaB": "💡 発案役B"
+  },
   "legs": [
     { "name": "Mon4(円クロス LONG)", "days": [1], "start": "13:00", "hours": 30, "currencies": ["JPY", "GBP", "EUR", "AUD", "USD"] },
     { "name": "Mon 指数(NAS100・US500 LONG)", "days": [1], "start": "22:30", "hours": 26, "currencies": ["USD"] },
