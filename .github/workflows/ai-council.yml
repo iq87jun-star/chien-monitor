@@ -1,11 +1,14 @@
-# 複数の AI に相場・売買アイデアを検討させ、まとめを Discord に送る(ai-council/)。
+# 複数の AI にプロップ口座・theoption の運用を点検・検討させ、まとめを Discord に送る(ai-council/)。
 #   - ai-council/ を変更する push・PR: 単体テスト
-#   - 定期実行(平日 7:47 JST): 今日の作戦メモ(調査役 → 発案役 A・B → 批判役 → まとめ役)
-#   - 手動実行: question に相談を書くと、その相談を同じ流れで検討する(空なら今日の作戦メモ)
-# リポジトリには書き込まない。全員の発言は Actions の実行結果のまとめにも出る。
+#   - 定期実行(平日 7:47 JST): 今日の点検(調査役 → 点検役 A・B → 批判役 → まとめ役)
+#   - 定期実行(土曜 8:17 JST): 新規開拓会議(①月曜の偏りを減らす脚 ②新しいプロップ会社 ③theoption の新しい脚)。
+#     出た候補を ai-council/explored.md に足してコミットする(次回からの蒸し返しを防ぐ)
+#   - 手動実行: question に相談を書くと、その相談を検討する。空なら mode(点検 / 新規開拓)を動かす
+# 全員の発言は Actions の実行結果のまとめにも出る。
 #
 # Secrets: OPENROUTER_API_KEY … OpenRouter の API キー(未設定なら AI を呼ばずに渡す内容だけ表示)
 #          AI_COUNCIL_DISCORD_WEBHOOK … 通知先(未設定ならログに出すだけ)
+#          AI_COUNCIL_STATUS_KEY … パソコンが書き出す口座データの鍵
 
 name: ai-council
 
@@ -16,12 +19,18 @@ on:
     paths: ["ai-council/**", ".github/workflows/ai-council.yml"]
   schedule:
     - cron: "47 22 * * 0-4"
+    - cron: "17 23 * * 5"
   workflow_dispatch:
     inputs:
       question:
-        description: "AI たちへの相談(空なら今日の作戦メモ)"
+        description: "AI たちへの相談(空なら下の mode を動かす)"
         type: string
         default: ""
+      mode:
+        description: "相談が空のときに動かす会議"
+        type: choice
+        options: ["点検", "新規開拓"]
+        default: "点検"
 
 permissions:
   contents: read
@@ -45,6 +54,10 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    permissions:
+      contents: write
+    env:
+      MODE: ${{ (github.event.schedule == '17 23 * * 5' || inputs.mode == '新規開拓') && 'explore' || 'brief' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -58,7 +71,23 @@ jobs:
           git show FETCH_HEAD:status.enc > status.enc
       - run: node run.js
         env:
+          AI_COUNCIL_MODE: ${{ env.MODE }}
           AI_COUNCIL_STATUS_KEY: ${{ secrets.AI_COUNCIL_STATUS_KEY }}
           AI_COUNCIL_QUESTION: ${{ inputs.question }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           AI_COUNCIL_DISCORD_WEBHOOK: ${{ secrets.AI_COUNCIL_DISCORD_WEBHOOK }}
+      - name: 新規開拓の候補を記録する
+        if: env.MODE == 'explore' && inputs.question == ''
+        run: |
+          git config user.name "ai-council-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add explored.md
+          if git diff --cached --quiet; then
+            echo "記録する候補なし"
+          else
+            git commit -m "chore: ai-council 新規開拓の候補を記録 [skip ci]"
+            for i in 1 2 3; do
+              git pull --rebase origin "${GITHUB_REF_NAME}" && git push && break
+              sleep $((i * 5))
+            done
+          fi

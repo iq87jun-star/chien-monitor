@@ -3,16 +3,19 @@
 //   AI_COUNCIL_DISCORD_WEBHOOK … 送り先(未設定なら標準出力に出すだけ)
 //   AI_COUNCIL_QUESTION … 相談したいこと(空なら「今日の点検」)
 //   AI_COUNCIL_STATUS_KEY … パソコンが書き出す口座データ(status.enc)の鍵(未設定・ファイルなしなら使わない)
-import { readFileSync, appendFileSync, existsSync } from "node:fs";
+//   AI_COUNCIL_MODE … explore なら新規開拓会議(相談が空のときだけ。空なら毎朝の点検)
+import { readFileSync, appendFileSync, existsSync, writeFileSync } from "node:fs";
 import { pickEvents, calendarText, todayJST, formatJST, legWindows, legOverlaps, overlapText, mergeEvents } from "./src/context.js";
 import { runCouncil, transcript, splitMessage } from "./src/council.js";
 import { decryptStatus, statusText } from "./src/status.js";
+import { extractCandidates } from "./src/prompts.js";
 
 const config = JSON.parse(readFileSync(new URL("./config.json", import.meta.url)));
 const UA = "chien-monitor-ai-council/0.1 (+https://github.com/iq87jun-star/chien-monitor)";
 const key = process.env.OPENROUTER_API_KEY;
 const question = (process.env.AI_COUNCIL_QUESTION ?? "").trim();
-const mode = question ? "ask" : "brief";
+const mode = question ? "ask" : process.env.AI_COUNCIL_MODE === "explore" ? "explore" : "brief";
+const exploredFile = new URL("./explored.md", import.meta.url);
 const today = todayJST();
 
 async function retry(fn, tries = 3) {
@@ -109,9 +112,22 @@ function liveStatus() {
   }
 }
 const live = liveStatus();
-const result = await runCouncil({ config, chat: openrouter, mode, question, portfolio, live, calendar, overlaps, today });
+const explored = existsSync(exploredFile) ? readFileSync(exploredFile, "utf8") : "";
+const result = await runCouncil({ config, chat: openrouter, mode, question, portfolio, live, calendar, overlaps, explored, today });
 
-const title = mode === "brief" ? `AI 点検会議 ${today}` : `AI 相談 ${today}: ${question.slice(0, 40)}`;
+// 新規開拓会議の候補を explored.md に足す(ワークフローがコミットする。次回からの蒸し返しを防ぐ)
+if (mode === "explore" && key) {
+  const found = extractCandidates(result.final);
+  const lines = found.length ? found.map((c) => `- ${today} ${c}`) : [`- ${today} (検証に回す候補なし)`];
+  appendFileSync(exploredFile, `${lines.join("\n")}\n`);
+  console.log(`explored.md に ${found.length} 件を記録`);
+}
+
+const title = {
+  brief: `AI 点検会議 ${today}`,
+  explore: `AI 新規開拓会議 ${today}`,
+  ask: `AI 相談 ${today}: ${question.slice(0, 40)}`,
+}[mode];
 const full = transcript({ title, ...result });
 const failed = result.steps.filter((s) => s.error).map((s) => `${s.label}(${s.error.slice(0, 80)})`);
 const header = [

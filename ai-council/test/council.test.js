@@ -147,3 +147,36 @@ test("口座データ: 失格・日次上限までの距離、重複建玉、古
   assert.doesNotMatch(t, /18 時間以上前/);
   assert.match(statusText(s, new Date("2026-11-07T07:00:00Z")), /18 時間以上前/);
 });
+
+import { extractCandidates, systemFor } from "../src/prompts.js";
+
+test("新規開拓会議: ①②③と過去の候補を渡し、発案役の名前で呼ぶ", async () => {
+  const seen = {};
+  const chat = async (role, system, user) => ((seen[role] = { system, user }), { text: `${role} の答え` });
+  const r = await runCouncil({ config, chat, mode: "explore", question: "", portfolio: "前提P", live: "口座L",
+    calendar: "指標Y", overlaps: "重なりZ", explored: "- 2026-11-07 ① 金曜の指数", today: "2026-11-07" });
+  assert.match(seen.research.user, /プロップファーム/);
+  assert.match(seen.ideaA.system, /月曜の偏りを減らす/);
+  assert.match(seen.ideaA.system, /theoption の新しい脚/);
+  assert.match(seen.critic.system, /蒸し返し/);
+  for (const role of ["research", "ideaA", "critic", "chair"]) {
+    assert.match(seen[role].user, /前提P/);
+    assert.match(seen[role].user, /金曜の指数/); // 過去の候補
+    assert.doesNotMatch(seen[role].user, /重なりZ/); // 新規開拓では指標の重なりは渡さない
+  }
+  assert.match(seen.chair.user, /## 候補一覧/);
+  assert.equal(r.steps[1].label, "💡 発案役A");
+});
+
+test("点検と相談では点検役のまま", () => {
+  assert.match(systemFor("brief", "ideaA"), /点検役/);
+  assert.match(systemFor("ask", "critic"), /点検役 2 人/);
+  assert.match(systemFor("explore", "research"), /調査役/);
+});
+
+test("まとめ役の候補一覧から候補を取り出す", () => {
+  const text = "本文\n- 候補として面白い\n## 候補一覧\n- 候補: ① 月末の指数 LONG\n- 候補:② FundedNext 以外の EA 可の会社\n- 候補: なし\n";
+  assert.deepEqual(extractCandidates(text), ["① 月末の指数 LONG", "② FundedNext 以外の EA 可の会社"]);
+  assert.deepEqual(extractCandidates("- 候補: なし"), []);
+  assert.deepEqual(extractCandidates(null), []);
+});
