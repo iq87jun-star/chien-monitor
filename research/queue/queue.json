@@ -2701,12 +2701,12 @@
     "docs/244_morning_research_queue.md",
     "docs/398_q109_hold_reentry_cost.md"
    ],
-   "note": "docs/398 §4 Q 候補 D・docs/323 §5。data_dukascopy/WTI_hour.csv.gz(2026-08 まで)+ 月次 H1(candidate_interim.ensure_months)で日足終値を作り、hold_cell と同じ式で 5 年スコア(docs/290 の列)と 14166201 の保有区間(docs/398 §2 d)の実 vs 系列を再計算。差が基差で説明できるか、研究の Hold WTI 期待値をいくら下げるかを書く。Dukascopy が 503 / 接続断ならデータ待ちで次へ送る(11/5 は取得不可)"
+   "note": "docs/398 §4 Q 候補 D・docs/323 §5。data_dukascopy/WTI_hour.csv.gz(2026-08 まで)+ 月次 H1(candidate_interim.ensure_months)で日足終値を作り、hold_cell と同じ式で 5 年スコア(docs/290 の列)と 14166201 の保有区間(docs/398 §2 d)の実 vs 系列を再計算。差が基差で説明できるか、研究の Hold WTI 期待値をいくら下げるかを書く。Dukascopy が 503 / 接続断ならデータ待ちで次へ送る(11/5 は取得不可)\n【2026-11-06 夕】Dukascopy datafeed 不通(トンネル切断)のため再びデータ待ちで次へ送った(Q159 を実行)"
   },
   {
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "registered": "2026-11-05",
    "program": "docs/244 Q108/Q109 派生(CFD)",
    "id": "Q159",
@@ -2716,9 +2716,11 @@
    "order": 33,
    "docs": [
     "docs/244_morning_research_queue.md",
-    "docs/396_q108_payout_rules_check.md"
+    "docs/396_q108_payout_rules_check.md",
+    "docs/401_q159_ftmo_2step_reward_policy.md"
    ],
-   "note": "docs/396 §5 Q 候補 B。FTMO の回答(一部 Reward の可否・ロール後の床基準)が来たら、その規則で E1/E2/E3/E4(docs/396 §3 b)に『年 1〜2 回の全額請求』を加えて 50k ×2 の同じ MC で比較し、docs/349 §9c の出金規則の FTMO 版を提案。工学: EA8/EA3 の [PAYOUT] 行を FTMO 口座では『請求額』ではなく『ロール額』で出す InpPayoutMode を別版(版 +0.01)で用意(manifest・docs/241 は変更しない)。FTMO 未回答なら次へ送り、11/13 を過ぎても未回答なら E2/E3 の両方で計算して仮判定\n【2026-11-05 追記】FTMO 回答済み(docs/396 §7): 一部 Reward 不可・請求で全建玉決済と新口座発行・ロールは最低 $20・床は元の Initial Simulated Capital 基準(E2 成立)。回答待ちは解除、E2 を前提に実行してよい。請求時の全決済(GER40 ブレイク建玉中の扱い)と新口座発行までの空白日数も規則に含める"
+   "note": "docs/396 §5 Q 候補 B。FTMO の回答(一部 Reward の可否・ロール後の床基準)が来たら、その規則で E1/E2/E3/E4(docs/396 §3 b)に『年 1〜2 回の全額請求』を加えて 50k ×2 の同じ MC で比較し、docs/349 §9c の出金規則の FTMO 版を提案。工学: EA8/EA3 の [PAYOUT] 行を FTMO 口座では『請求額』ではなく『ロール額』で出す InpPayoutMode を別版(版 +0.01)で用意(manifest・docs/241 は変更しない)。FTMO 未回答なら次へ送り、11/13 を過ぎても未回答なら E2/E3 の両方で計算して仮判定\n【2026-11-05 追記】FTMO 回答済み(docs/396 §7): 一部 Reward 不可・請求で全建玉決済と新口座発行・ロールは最低 $20・床は元の Initial Simulated Capital 基準(E2 成立)。回答待ちは解除、E2 を前提に実行してよい。請求時の全決済(GER40 ブレイク建玉中の扱い)と新口座発行までの空白日数も規則に含める",
+   "result": "月次ロール(E2・現行 MC)を維持: 2 年で総価値 41.7%/年・失格 24%。年 1 回全額 35.4%/年・失格 35%、半年〜月次の全額請求は失格 47〜67%。感度: ロール分が 80% 再分配なら出金 17.2→5.2(FAQ 要確認)、空白 5 営業日で −16%。EA8 v1.40 / EA3 v1.22 に InpPayoutMode(FTMO ロール方式の [PAYOUT] 行)を別ファイルで用意。manifest・docs/241 不変"
   },
   {
    "status": "pending",
@@ -4012,6 +4014,14 @@
    "item": "Q157",
    "cells": 0,
    "doc": "docs/400_q157_hold_swap_cost_book.md"
+  },
+  {
+   "date": "2026-11-06",
+   "slot": "evening",
+   "item": "Q159",
+   "cells": 0,
+   "doc": "docs/401_q159_ftmo_2step_reward_policy.md",
+   "note": "Q158 は Dukascopy 不通でデータ待ち"
   }
  ],
  "external_checks": [

@@ -118,4 +118,4 @@ AI 会議(main `ai-council/explored.md` 2026-11-06 ①②)の候補。判定は 
 - データ注意: `data_dukascopy/XAUUSD_hour.csv.gz` は 2021-01〜2025-12(docs/234 の stage4 データ・週末は埋め足)。前窓は Q16 と同じく免除、OOS は 2025-01〜2025-12。2026 年分は Dukascopy datafeed が復旧していれば `candidate_interim.ensure_months` で足す(11/5 は不通)。
 - Q160 の代替案(要「登録」): (a) UK100 1 セルだけを Q16 の追加行として検定する、または (b) 新規セル 0 の診断として、配備中 GER40 ブレイクの週次系列と Mon4・Mon 指数・Hold UK100 の相関、Mon 系の最悪 10% 週の GER40 ブレイク平均損益を記録する(ユーザーが Q160 で「追加で見ること」に挙げた項目)。どちらも AI 側の前提(GER40 ブレイクが有意)を補強するものではない。
 - 実行後: 結果を main の `ai-council/explored.md` の該当行末尾に「→ 採用(紙上フォワード)」「→ 棄却(理由)」で書き足す PR を main 向けに作る(Q160 の行には「→ 登録せず(Q16 と重複)」)。
-見込み: 11/6 夕 Q158(Dukascopy 不通なら Q159 へ)→ 11/9 朝 Q159 → 11/9 夕 Q161(Q158 を飛ばした場合は 11/9 朝)。通過しても紙上フォワードの CANDIDATES に入れるだけで EA・manifest・config は変えない。
+見込み: 11/6 夕は Q158 が Dukascopy 不通のため Q159 を実行(済・docs/401)→ 11/9 朝 Q158(復旧していれば)または Q161。通過しても紙上フォワードの CANDIDATES に入れるだけで EA・manifest・config は変えない。
