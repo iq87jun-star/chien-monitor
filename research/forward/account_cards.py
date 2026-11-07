@@ -28,6 +28,55 @@ META = {  # 口座番号 → 会社・表示名・採用 EA(docs/241 §1ak 時�
 RULE_JA = {"static": "静的床・月次出金", "ftmo2step": "FTMO 2-Step(全利益分配・ロール)", "ftmo1step": "FTMO 1-Step(トレーリング床・毎月全額)", "fn_instant": "FN Instant(建値ロック・+5% で 2%)"}
 def acc_id(name): return name.split()[-1]
 def spec_txt(spec): return " + ".join(f"{k} ×{w:g}" for k, w in spec.items())
+import forward.portfolio_sim as ps
+# ---- 採用 EA の実レグ(mql5 の Inp*Legs × InpMult を名目で書き下したもの。帳簿の spec とは独立。docs/400 §2d の流儀) ----
+MON4W = {"GBPJPY": 0.260, "EURJPY": 0.266, "AUDJPY": 0.215, "USDJPY": 0.258}   # EA3/EA8/EA10L/EA11 の逆ボラ加重(帳簿 mon4 は等ウェイト 0.25)
+def m4(x): return {f"mon:{s}": round(w * x, 4) for s, w in MON4W.items()}
+EA_LEGS = {
+    "531466484": dict(eval={"mon:GBPJPY": 0.797 * 3, "mon:EURJPY": 0.167 * 3, "mon:AUDJPY": 0.167 * 3, "mon:USDJPY": 0.167 * 3, "nas": 0.25 * 3, "hold:XAUUSD": 0.12 * 3},
+                      funded={"mon:GBPJPY": 0.797 * 1.25, "mon:EURJPY": 0.167 * 1.25, "mon:AUDJPY": 0.167 * 1.25, "mon:USDJPY": 0.167 * 1.25, "nas": 0.25 * 1.25, "hold:XAUUSD": 0.12 * 1.25},
+                      note="帳簿 spec(a9 3.0 + mon4 2.0)は XAU 名目 1.0・NAS 1.0 だが、EA は XAU 0.36・NAS 0.75・GBPJPY 2.39(docs/400 §2d)"),
+    "531343523": dict(eval={**m4(10.0), "brk": 6.0, "hold:XAUUSD": 0.9}, funded={**m4(5.0), "brk": 3.0, "hold:XAUUSD": 0.45}, note="EA は GER40 ブレイク ×6.0 を含む(帳簿 spec にない・試験運用)。Mon4 は逆ボラ加重"),
+    "14166201": dict(eval={"hold:UK100": 0.491 * 2.22, "hold:WTI": 0.153 * 2.22, "roll4": 4.5}, funded={"hold:UK100": 0.491 * 2.22, "hold:WTI": 0.153 * 2.22, "roll4": 4.5},
+                     note="Roll は金利差門 2.0pp で CADJPY が止まるため 4 本(帳簿 spec は 5 本・門なし)"),
+    "6104736": dict(eval={"mon:GBPJPY": 0.374 * 12, "mon:AUDJPY": 0.322 * 12, "v4:USDJPY": 0.304 * 12}, funded={"mon:GBPJPY": 0.374 * 6, "mon:AUDJPY": 0.322 * 6, "v4:USDJPY": 0.304 * 6}, note="帳簿 spec(bplan)と一致"),
+    "6104739": dict(eval={**m4(8.0), "nas": 1.0, "spx": 1.0}, funded={**m4(4.0), "nas": 0.5, "spx": 0.5}, note="指数 Mon は一致。Mon4 は逆ボラ加重(帳簿は等ウェイト)"),
+    "521100397": dict(eval={**m4(6.0), "brk": 2.0}, funded={**m4(6.0), "brk": 2.0}, note="EA は GER40 ブレイク ×2.0 を含む(帳簿 spec にない・試験運用)。Mon4 は逆ボラ加重"),
+    "531407058": dict(eval=m4(6.0), funded=m4(6.0), note="Mon4 は逆ボラ加重(帳簿は等ウェイト)。他は一致"),
+    "6071612": dict(eval={"mon:GBPJPY": 0.374 * 8, "mon:AUDJPY": 0.322 * 8, "v4:USDJPY": 0.304 * 8}, funded={"mon:GBPJPY": 0.374 * 8, "mon:AUDJPY": 0.322 * 8, "v4:USDJPY": 0.304 * 8}, note="帳簿 spec(bplan)と一致"),
+    "14074882": dict(eval={"mon:EURJPY": 0.333 * 4, "mon:USDJPY": 0.333 * 4, "mon:NZDJPY": 0.334 * 4, "hold:XAUUSD": 0.4}, funded={"mon:EURJPY": 0.333 * 4, "mon:USDJPY": 0.333 * 4, "mon:NZDJPY": 0.334 * 4, "hold:XAUUSD": 0.4}, note="帳簿 spec(mon3 + holdxau)と一致"),
+    "11988011": dict(eval={"mon:GBPJPY": 0.537 * 4, "mon:AUDJPY": 0.463 * 4, "nas": 0.5, "spx": 0.5}, funded={"mon:GBPJPY": 0.537 * 4, "mon:AUDJPY": 0.463 * 4, "nas": 0.5, "spx": 0.5}, note="帳簿 spec(instG)と一致"),
+}
+_S = {}
+def S(key):
+    """レグ系列(暦日・費用込み): mon:SYM / v4:SYM / hold:SYM / nas / spx / brk(GER40 ドンチャン 120 トレイル・q52)/ roll4(水曜 20 UTC 円クロス SHORT 4h・CADJPY 抜き)"""
+    if key in _S: return _S[key]
+    fam, _, sym = key.partition(":")
+    if fam in ("mon", "v4"): s = ps.L({"mon": "Mon", "v4": "v4"}[fam], sym)
+    elif fam == "hold": s = ps.on_cal(ps.base.hold_cell(sym))
+    elif key == "nas": s = ps.on_cal(ps.base.mon_cell("NAS100"))
+    elif key == "spx": s = ps.on_cal(ps.base.mon_cell("US500"))
+    elif key == "brk":
+        q = open(os.path.join(ROOT, "queue", "q52_donchian_vs_hold.py"), encoding="utf-8").read().split("cum = int(sys.argv[1])")[0]
+        qn = {"__name__": "q52"}; exec(compile(q, "q52", "exec"), qn); s = ps.on_cal(qn["donchian"]("GER40", 120, "trail"))
+    elif key == "roll4":
+        q = ps.q129; out = None
+        for sym_ in ("USDJPY", "EURJPY", "GBPJPY", "AUDJPY"):
+            o = q.load(sym_)["open"]; t = o.index[(o.index.dayofweek == 2) & (o.index.hour == 20)]
+            r = q.trades(sym_, t, o.reindex(t).values, -np.ones(len(t)), o.reindex(t + pd.Timedelta(hours=4)).values) * 0.2; r.index = r.index.normalize()
+            out = r if out is None else out.add(r, fill_value=0)
+        s = ps.on_cal(out)
+    else: raise KeyError(key)
+    _S[key] = s; return s
+def ea_book(lg, sw):
+    s = sum(S(k) * w for k, w in lg.items()); xau = lg.get("hold:XAUUSD", 0.0)
+    if sw and xau: s = s + xau * sw / 1e4 / 21.0
+    return s
+def legs_txt(lg): return " + ".join(f"{k} ×{w:.3g}" for k, w in lg.items())
+def monthly_of(s):
+    m = (1 + s).resample("ME").prod() - 1
+    end = m.index[-1]; start = pd.Timestamp(year=end.year - YEARS, month=end.month, day=1) + pd.offsets.MonthEnd(0) + pd.offsets.MonthBegin(1)
+    return m[m.index >= start]
 def monthly(spec, sw):
     s = book(spec, sw); m = (1 + s).resample("ME").prod() - 1
     end = m.index[-1]; start = pd.Timestamp(year=end.year - YEARS, month=end.month, day=1) + pd.offsets.MonthEnd(0) + pd.offsets.MonthBegin(1)
@@ -99,7 +148,8 @@ for a in cfg["accounts"]:
     if not a.get("active", True): continue
     aid = acc_id(a["name"]); firm, label, ea = META.get(aid, ("", "", "")); d = dig.get(aid, {}); fn = a.get("funded_now", False)
     cur = d.get("currency", "JPY" if firm == "Fintokei" else "USD"); init = a["balance_jpy"] if cur == "JPY" else a["balance_jpy"] / FX
-    sw = a.get("swap_xau_bps_m", 0.0); me = monthly(a["eval"], sw); mf = monthly(a["funded"], sw); stage = "funded" if fn else "eval"
+    sw = a.get("swap_xau_bps_m", 0.0); stage = "funded" if fn else "eval"
+    EL = EA_LEGS.get(aid); me = monthly_of(ea_book(EL["eval"], sw)) if EL else monthly(a["eval"], sw); mf = monthly_of(ea_book(EL["funded"], sw)) if EL else monthly(a["funded"], sw)
     for ym_, ve, vf in zip(me.index, me.values, mf.values):
         rows_m.append(dict(account=aid, name=a["name"], kind="ledger", ym=ym_.strftime("%Y-%m"), year=int(ym_.year), month=int(ym_.month), ret_eval=round(float(ve), 5), ret_funded=round(float(vf), 5), ret_cur=round(float(vf if fn else ve), 5), ret_actual=None, net_actual=None, n_actual=None, mtd=False))
     eq = d.get("equity"); bl = d.get("balance")
@@ -110,6 +160,8 @@ for a in cfg["accounts"]:
     st_e, st_f = mstats(me), mstats(mf); st_c = st_f if fn else st_e; s = mc(a)
     rows_a.append(dict(account=aid, name=a["name"], firm=firm, label=label, ea=ea, rule=a.get("rule", "static"), rule_ja=RULE_JA[a.get("rule", "static")], stage=stage, stage_ja="資金化済" if fn else "評価中",
                        targets=" / ".join(f"{t*100:g}%" for t in a["targets"]) if a["targets"] else "", e0=a["e0"], spec_eval=spec_txt(a["eval"]), spec_funded=spec_txt(a["funded"]), spec_cur=spec_txt(a["funded"] if fn else a["eval"]),
+                       ea_eval=legs_txt(EL["eval"]) if EL else spec_txt(a["eval"]), ea_funded=legs_txt(EL["funded"]) if EL else spec_txt(a["funded"]), ea_cur=legs_txt(EL["funded"] if fn else EL["eval"]) if EL else spec_txt(a["funded"] if fn else a["eval"]),
+                       ea_note=EL["note"] if EL else "EA 実レグ未定義(帳簿 spec で代用)", hist_basis="EA 実レグ" if EL else "帳簿 spec",
                        k=a.get("k", k), keep=a.get("keep", keep), pay_frac=pf, mdd=a["mdd"], dll=a["dll"], swap_xau_bps_m=sw, balance_jpy=a["balance_jpy"], currency=cur, initial=round(init, 2),
                        balance=bl, equity=eq, pnl_pct=(eq / init - 1) if eq is not None else None, open_positions=d.get("open_positions"), snapshot_utc=d.get("snapshot_utc", ""), net_7d=d.get("net_7d"), net_30d=d.get("net_30d"),
                        net_30d_pct=(d.get("net_30d") / init) if d.get("net_30d") is not None else None, sl_hit_rate_30d=d.get("sl_hit_rate_30d"), closed_total=d.get("closed_total"),
