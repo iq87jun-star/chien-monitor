@@ -8,9 +8,9 @@
 // それ以外は「購入予定・出品予定」をリンク付きで送るだけ(試し運転)。
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { createClient, setRates, usd } from "./src/api.js";
-import { market, upcoming, pastFixture, fixtureResults, clubs, player, nbaPlayer, fixtureGames, nbaStars, myCards, submitLineup } from "./src/data.js";
+import { market, walletUsd, upcoming, pastFixture, fixtureResults, clubs, player, nbaPlayer, fixtureGames, nbaStars, myCards, submitLineup } from "./src/data.js";
 import { teamForm, project, bestLineup, nbaProject, bestNbaLineup, sellCandidates, sellPrice, swapCandidates, resultText } from "./src/model.js";
-import { createTrader, planBuys, planSells, spentInWeek } from "./src/trade.js";
+import { createTrader, planBuys, planSells, spentInWeek, pickPlan } from "./src/trade.js";
 
 const cfg = JSON.parse(readFileSync(new URL("./config.json", import.meta.url)));
 const env = process.env;
@@ -93,8 +93,11 @@ async function main() {
   if (!targets.length) return;
 
   // 直近 7 日の購入額は、全大会のランクの手持ちから数え、この実行で買った分を足していく
-  const shared = { spent: null };
+  // 残高: 自動購入はこの範囲だけ(賞金・売却で増えたら、config の targets の順に広がる)。購入するたびに減らしていく
+  const shared = { spent: null, balance: null };
   if (api.authed) {
+    shared.balance = await walletUsd(api.gql);
+    console.log(`ウォレット残高: ${shared.balance != null ? "$" + shared.balance.toFixed(2) : "読めない"}`);
     shared.spent = 0;
     for (const k of new Set(targets.map((t) => `${t.rarity}:${sportOf(t)}`))) shared.spent += spentInWeek(await myCards(api.gql, ...k.split(":")));
   }
@@ -212,18 +215,24 @@ async function runTarget(api, t, shared) {
   if (plans.length === 2) lines.push(`→ プラスアルファは +$${(plans[1].cost - plans[0].cost).toFixed(2)} で予想 +${(plans[1].pts - plans[0].pts).toFixed(0)} 点`);
 
   // 自動購入: buyPlan のプランを、1 枚と週の上限の範囲で買う。手持ちにある選手は買わない
-  const plan = plans.find((p) => p.title.startsWith((t.buyPlan ?? tr.buyPlan) === "plus" ? "プラスアルファ" : "最安")) || plans[0];
-  if (plan && api.authed && t.autoBuy === false) {
+  // プランは残高に合わせて選ぶ(buyPlan: cheap / plus / auto)。足りなければこの節は見送り、締切前に何度も通知しないよう済みにする
+  const have0 = new Set(owned.map((c) => c.id));
+  const pick = api.authed && trading ? pickPlan(plans, t.buyPlan ?? tr.buyPlan, shared.balance, tr.reserveUsd || 0, have0) : { plan: plans.find((p) => p.title.startsWith((t.buyPlan ?? tr.buyPlan) === "plus" ? "プラスアルファ" : "最安")) || plans[0] };
+  const plan = pick.plan;
+  if (plans.length && api.authed && !plan && t.autoBuy !== false) {
+    lines.push("", `**自動購入**: 見送り(${pick.why})。賞金やカードの売却で残高が増えたら、自動で始めます`);
+    t.skipped = true;
+  } else if (plan && api.authed && t.autoBuy === false) {
     lines.push("", "(この大会は自動購入しない設定: autoBuy=false。購入はリンクから)");
   } else if (plan && api.authed) {
     const have = new Set(owned.map((c) => c.id));
     const buys = planBuys(plan.lineup.filter((c) => !have.has(c.id)), tr, shared.spent ?? spentInWeek(all));
-    lines.push("", `**自動購入**(${plan.title}・1枚 $${tr.perCardMaxUsd}・週 $${tr.weeklyMaxUsd} まで)${tradeNote}`);
+    lines.push("", `**自動購入**(${plan.title}・1枚 $${tr.perCardMaxUsd}・週 $${tr.weeklyMaxUsd} まで${shared.balance != null ? `・残高 $${shared.balance.toFixed(2)}` : ""})${tradeNote}`);
     let bought = 0;
     for (const b of buys) {
       if (!b.ok) { lines.push(`- 見送り ${b.name} $${b.price?.toFixed(2)}: ${b.why}`); continue; }
       if (!trading) { lines.push(`- 購入予定 ${b.name} $${b.price.toFixed(2)}`); continue; }
-      try { const paid = await trader.buy(b.card, b.price); bought++; shared.spent += paid; lines.push(`- ✅ 購入 ${b.name} $${paid.toFixed(2)}`); }
+      try { const paid = await trader.buy(b.card, b.price); bought++; shared.spent += paid; if (shared.balance != null) shared.balance -= paid; lines.push(`- ✅ 購入 ${b.name} $${paid.toFixed(2)}`); }
       catch (e) { lines.push(`- ⚠️ 購入できず ${b.name}: ${e.message}`); }
     }
     if (bought) {
@@ -248,8 +257,9 @@ async function runTarget(api, t, shared) {
         const head = `- ${x.sell.name}(${POS_JA[x.sell.pos] || x.sell.pos}): 買値 $${x.sell.cost.toFixed(2)} → 今 $${x.sell.floor.toFixed(2)}(+${Math.round(x.gain)}%)\n  代わり: ${x.sub.name}(${x.sub.club}・予想 ${x.sub.proj.toFixed(0)} / ${x.sell.name} は ${x.sell.proj.toFixed(0)})$${x.sub.price.toFixed(2)} / 入れ替えると手元に約 +$${x.profit.toFixed(2)}\n  <${cardUrl(x.sub.card, t)}>`;
         const [b] = planBuys([x.sub], tr, shared.spent ?? spentInWeek(all));
         if (!b.ok) { lines.push(`${head}\n  見送り: ${b.why}`); continue; }
+        if (shared.balance != null && x.sub.price + (tr.reserveUsd || 0) > shared.balance) { lines.push(`${head}\n  見送り: 残高 $${shared.balance.toFixed(2)} では足りない`); continue; }
         if (!trading) { lines.push(`${head}\n  (入れ替え予定)`); continue; }
-        try { const paid = await trader.buy(x.sub.card, x.sub.price); shared.spent += paid; swapOut.add(x.sell.card); lines.push(`${head}\n  ✅ 代わりを購入 $${paid.toFixed(2)}(${x.sell.name} は下の売却で出品)`); }
+        try { const paid = await trader.buy(x.sub.card, x.sub.price); shared.spent += paid; if (shared.balance != null) shared.balance -= paid; swapOut.add(x.sell.card); lines.push(`${head}\n  ✅ 代わりを購入 $${paid.toFixed(2)}(${x.sell.name} は下の売却で出品)`); }
         catch (e) { lines.push(`${head}\n  ⚠️ 代わりを買えず(入れ替えはしない): ${e.message}`); }
       }
       if (swapOut.size) best = await loadOwned() || best;
@@ -257,7 +267,7 @@ async function runTarget(api, t, shared) {
   }
 
   // 手持ちで 5 枚そろわない間は済みにしない。アプリで買った後も、締切前の次の実行で組んで登録する
-  if (api.authed && !best) t.retry = true;
+  if (api.authed && !best && !t.skipped) t.retry = true;
   if (!best && !plans.length) lines.push("5 枚そろう組み合わせが無い");
   if (best) {
     lines.push("", "**ラインナップ**", ...lineupLines(best, false), `予想合計 ${best.pts.toFixed(0)}(ボーナス抜き)`);

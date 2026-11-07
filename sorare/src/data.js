@@ -43,6 +43,19 @@ export async function upcoming(gql, leaderboardSuffix, sport = "FOOTBALL") {
   return { fixture: fx, leaderboardSlug: slug, leaderboard: lb };
 }
 
+// ウォレットの残高(USD)。ETH は Base への移行後の残高(availableBalances)を見て、読めなければ旧来の availableBalance(wei)。どちらも読めなければ null
+export async function walletUsd(gql) {
+  try {
+    const u = (await gql("{ currentUser { availableBalances { wei { wei usdCents eurCents } } } }")).currentUser;
+    const v = usd(u?.availableBalances?.wei);
+    if (v != null) return v;
+  } catch { /* 下へ */ }
+  try {
+    const w = (await gql("{ currentUser { availableBalance } }")).currentUser?.availableBalance;
+    return w != null ? usd({ wei: String(w) }) : null;
+  } catch { return null; }
+}
+
 // 一番最近終わった節。aasmState が closed なら順位と賞金が確定している
 export async function pastFixture(gql, sport = "FOOTBALL") {
   return (await gql(`{ so5 { so5Fixture(type: PAST${sport === "NBA" ? ", sport: NBA" : ""}) { slug aasmState } } }`)).so5.so5Fixture;

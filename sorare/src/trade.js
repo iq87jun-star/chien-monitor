@@ -19,6 +19,17 @@ export function planBuys(lineup, { perCardMaxUsd, weeklyMaxUsd }, spentThisWeek)
   });
 }
 
+// 残高に合わせて買うプランを選ぶ。plans は [最安, プラスアルファ?] の順。足りないカード(have に無い選手)の合計 + reserve が残高以内のものだけ。
+// mode: "cheap" は最安だけ、"plus" はプラスアルファだけ、"auto" は残高が足りればプラスアルファ、足りなければ最安。
+// balance が null(読めない)なら残高では絞らない。返り値 { plan, cost, why }(買えるものが無ければ plan は null で why に理由)
+export function pickPlan(plans, mode = "cheap", balance = null, reserve = 0, have = new Set()) {
+  const need = (p) => p.lineup.filter((c) => !have.has(c.id)).reduce((s, c) => s + (c.price || 0), 0);
+  const order = mode === "plus" ? [plans[1] || plans[0]] : mode === "auto" ? [plans[1], plans[0]].filter(Boolean) : [plans[0]];
+  for (const p of order) if (p && (balance == null || need(p) + reserve <= balance + 1e-9)) return { plan: p, cost: need(p) };
+  const p = order.at(-1);
+  return { plan: null, cost: p ? need(p) : 0, why: p ? `残高 $${balance.toFixed(2)} では足りない(必要 $${(need(p) + reserve).toFixed(2)})` : "プランが無い" };
+}
+
 // 直近 7 日に買ったカードの合計額(所有履歴の最後の取引がこの 7 日以内のもの)
 export function spentInWeek(cards, now = Date.now()) {
   return cards.filter((c) => c.cost && c.since && now - Date.parse(c.since) < WEEK).reduce((s, c) => s + c.cost, 0);
