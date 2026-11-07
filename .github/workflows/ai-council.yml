@@ -69,6 +69,13 @@ jobs:
         run: |
           git fetch --depth 1 origin ai-council-status
           git show FETCH_HEAD:status.enc > status.enc
+      # 新規開拓会議では、研究・theoption の各ブランチの最新の検証結果を読んで次の探索に生かす
+      - name: 検証結果を取る
+        if: env.MODE == 'explore'
+        continue-on-error: true
+        run: |
+          git fetch --depth 1 origin claude/prop-trading-new-methods-a8y3l1 && git show FETCH_HEAD:research/queue/queue.json > research_queue.json || true
+          git fetch --depth 1 origin claude/zaption-check-m776m7 && git show FETCH_HEAD:theoption_validation/README.md > theoption_README.md || true
       - run: node run.js
         env:
           AI_COUNCIL_MODE: ${{ env.MODE }}

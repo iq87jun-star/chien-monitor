@@ -180,3 +180,61 @@ test("まとめ役の候補一覧から候補を取り出す", () => {
   assert.deepEqual(extractCandidates("- 候補: なし"), []);
   assert.deepEqual(extractCandidates(null), []);
 });
+
+import { handoffSections, withoutHandoff, buildHandoffs, queueFeedback, readmeFeedback } from "../src/handoff.js";
+
+const CHAIR = `## 1. 今週の結論
+- 3 つ
+## 受け渡し
+### 研究ブランチ(①)
+- 月末月初の指数 LONG(US500・NAS100、2 セル)
+### theoption(③)
+- 木曜 5 時の 1 時間 LOW(AUDJPY 除く)
+### 問い合わせ(②)
+なし
+## 候補一覧
+- 候補: ① 月末月初
+`;
+
+test("受け渡し: 渡す先ごとに取り出し、なしは飛ばす", () => {
+  const s = handoffSections(CHAIR);
+  assert.match(s.research, /月末月初/);
+  assert.match(s.theoption, /AUDJPY 除く/);
+  assert.equal(s.inquiry, undefined);
+  assert.deepEqual(handoffSections("受け渡しなし"), {});
+});
+
+test("受け渡し: 指示文に規則と書き戻しを付け、Discord 本文からは外す", () => {
+  const h = buildHandoffs(CHAIR, "2026-11-14");
+  assert.equal(h.length, 2);
+  assert.match(h[0].to, /プロップ研究/);
+  assert.match(h[0].text, /docs\/244 §1/);
+  assert.match(h[0].text, /explored\.md/);
+  assert.match(h[0].text, /月末月初の指数 LONG/);
+  assert.match(h[1].text, /両建て/);
+  const body = withoutHandoff(CHAIR);
+  assert.doesNotMatch(body, /受け渡し|木曜 5 時/);
+  assert.match(body, /## 候補一覧/);
+  assert.match(body, /今週の結論/);
+});
+
+test("検証結果の取り込み: キューの最近の項目と theoption の追補見出し", () => {
+  const q = { cumulative_cells: 10060, items: [
+    { id: "Q160", status: "rejected", title: "指数ドンチャン横展開", result: "Q16 と重複" },
+    { id: "Q161", status: "pending", title: "XAU 金曜窓" },
+  ] };
+  const t = queueFeedback(q);
+  assert.match(t, /累積セル数 10060/);
+  assert.match(t, /Q160\(rejected\): 指数ドンチャン横展開 → Q16 と重複/);
+  assert.match(t, /Q161\(pending\)/);
+  const md = "# x\n## 追補51 (11/7): 週次\n本文\n## 追補52 (11/7): 木曜 5 時 1H LOW — **棄却**\n";
+  assert.equal(readmeFeedback(md), "- 追補51 (11/7): 週次\n- 追補52 (11/7): 木曜 5 時 1H LOW — **棄却**");
+});
+
+test("新規開拓会議に検証結果を渡す", async () => {
+  const seen = {};
+  const chat = async (role, system, user) => ((seen[role] = user), { text: "ok" });
+  await runCouncil({ config, chat, mode: "explore", question: "", portfolio: "", feedback: "追補52 棄却", today: "2026-11-14" });
+  assert.match(seen.ideaA, /追補52 棄却/);
+  assert.match(seen.chair, /## 受け渡し/);
+});

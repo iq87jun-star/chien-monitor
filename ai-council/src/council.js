@@ -6,7 +6,7 @@ import { systemFor, researchPrompt, ideaPrompt, criticPrompt, chairPrompt } from
 
 export const ORDER = ["research", "ideaA", "ideaB", "critic", "chair"];
 
-export async function runCouncil({ config, chat, mode, question, portfolio, live = "", calendar, overlaps, explored = "", today }) {
+export async function runCouncil({ config, chat, mode, question, portfolio, live = "", calendar, overlaps, explored = "", feedback = "", today }) {
   const steps = {};
   const call = async (role, user) => {
     const system = systemFor(mode, role);
@@ -25,7 +25,7 @@ export async function runCouncil({ config, chat, mode, question, portfolio, live
     return step;
   };
   const textOf = (s) => (s.error ? `(${s.label} は失敗: ${s.error})` : s.text);
-  const base = { mode, question, portfolio, live, calendar, overlaps, explored, today };
+  const base = { mode, question, portfolio, live, calendar, overlaps, explored, feedback, today };
 
   const research = await call("research", researchPrompt(base));
   const ideaSteps = await Promise.all(
