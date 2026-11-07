@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { teamForm, startRate, project, bestLineup, sellCandidates, sellPrice, swapCandidates, availability } from "../src/model.js";
+import { teamForm, startRate, project, bestLineup, sellCandidates, sellPrice, swapCandidates, availability, resultText } from "../src/model.js";
 import { totp, usd } from "../src/api.js";
 
 test("teamForm はホーム・アウェイを見分けて未消化の試合を飛ばす", () => {
@@ -102,4 +102,19 @@ test("swapCandidates は値上がりしたカードを、同じポジション�
   const r = swapCandidates(owned, market, { gainPct: 20, minProjRatio: 0.9, maxPriceRatio: 0.6, minProfitUsd: 1, feePct: 5, minHoldDays: 14, newJoinDays: 30 }, now);
   assert.deepEqual(r.map((x) => [x.sell.id, x.sub.id]), [["a", "x"]]);
   assert.equal(+r[0].profit.toFixed(2), 4.6);   // 8 × 0.95 - 3
+});
+
+test("resultText は大会ごとの順位・点数・選手・賞金をまとめ、出ていない節は null", () => {
+  assert.equal(resultText({ slug: "f", mySo5Lineups: [] }, () => 0), null);
+  const fx = { slug: "football-6-10-nov-2026",
+    mySo5Lineups: [{ name: "x", so5Leaderboard: { slug: "lb1", displayName: "Jupiler Limited", so5LineupsCount: 1234 }, so5Rankings: [{ ranking: 12, score: 301.25 }],
+      so5Appearances: [{ score: 60, anyPlayer: { displayName: "A" } }, { score: null, anyPlayer: { displayName: "B" } }] },
+      { name: "y", so5Leaderboard: { slug: "lb2", displayName: "J1 Rare", so5LineupsCount: 50 }, so5Rankings: [{ ranking: 40, score: 200 }], so5Appearances: [] }],
+    mySo5Rewards: [{ so5Leaderboard: { slug: "lb1" }, amount: { usdCents: 2500 }, rewardCards: [{ id: "c" }] }] };
+  const t = resultText(fx, (a) => (a?.usdCents ?? 0) / 100);
+  assert.match(t, /\*\*Jupiler Limited\*\*: 12 位 \/ 1,234 チーム・合計 301\.3 点/);
+  assert.match(t, /A 60\.0 \/ B 0\.0/);
+  assert.match(t, /🏆 賞金 \$25\.00 \+ カード 1 枚/);
+  assert.match(t, /\*\*J1 Rare\*\*: 40 位 \/ 50 チーム・合計 200\.0 点\n  \n  賞金なし/);
+  assert.match(t, /賞金の合計 \$25\.00/);
 });

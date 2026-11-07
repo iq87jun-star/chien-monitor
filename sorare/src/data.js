@@ -43,6 +43,19 @@ export async function upcoming(gql, leaderboardSuffix, sport = "FOOTBALL") {
   return { fixture: fx, leaderboardSlug: slug, leaderboard: lb };
 }
 
+// 一番最近終わった節。aasmState が closed なら順位と賞金が確定している
+export async function pastFixture(gql, sport = "FOOTBALL") {
+  return (await gql(`{ so5 { so5Fixture(type: PAST${sport === "NBA" ? ", sport: NBA" : ""}) { slug aasmState } } }`)).so5.so5Fixture;
+}
+
+// 節の自分の結果: 大会ごとのラインナップ(順位・点数・選手ごとの点数)と賞金。ログインが必要
+export async function fixtureResults(gql, slug) {
+  return (await gql(`query($s: String!) { so5 { so5Fixture(slug: $s) { slug
+    mySo5Lineups { name so5Leaderboard { slug displayName so5LineupsCount } so5Rankings { ranking score }
+      so5Appearances { score anyPlayer { displayName } } }
+    mySo5Rewards { so5Leaderboard { slug } amount { usdCents eurCents wei } rewardCards { id } } } } }`, { s: slug })).so5.so5Fixture;
+}
+
 // 節の中のチームごとの試合数(NBA は節の中で一番良い 1 試合が得点になるので、試合数が多いほど有利)
 export async function fixtureGames(gql, fixtureSlug) {
   const games = (await gql("query($s: String!) { so5 { so5Fixture(slug: $s) { games { homeTeam { name } awayTeam { name } } } } }", { s: fixtureSlug })).so5.so5Fixture.games;
