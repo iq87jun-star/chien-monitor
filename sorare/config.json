@@ -1,14 +1,6 @@
 {
-  "_comment": "targets は毎節ラインナップを組む大会の一覧(enabled: false で止める)。各大会の項目は上の既定値に重ねる。leaderboard は so5Fixture の slug の後ろに付く部分、league は通知に出すリーグ名。 marketBudgetUsd / plusBudgetUsd は購入候補の最安プラン・プラスアルファプランの予算。sell は売却候補の条件(maxAge を超える年齢、minStartRate 未満のスタメン率、買値から gainPct% 以上の値上がり)と、出品の目安を最安出品から何 % 下げるか(undercutPct)。 trade は自動売買の設定(SORARE_TRADE=true の時だけ実行): 買うプラン(cheap / plus。大会ごとに buyPlan で上書きできる)、1枚と直近7日の購入額の上限(全大会の合計)、買ってから売らない日数、買値より下で出品しないか、決済と出品の通貨(WEI = ETH ウォレット、USD・EUR = キャッシュウォレット)。Jupiler Rare は最安でも 5 枚で $100 前後かかる(weeklyMaxUsd はそれを見込んで $250)。 sport: \"nba\" の大会は NBA(星の合計に上限、キャプテン無し、節は週 2 回)。autoBuy: false の大会は購入候補の通知だけで自動購入しない。",
+  "_comment": "targets は毎節ラインナップを組む大会の一覧(enabled: false で止める)。各大会の項目は上の既定値に重ねる。leaderboard は so5Fixture の slug の後ろに付く部分、league は通知に出すリーグ名。 marketBudgetUsd / plusBudgetUsd は購入候補の最安プラン・プラスアルファプランの予算。sell は売却候補の条件(maxAge を超える年齢、minStartRate 未満のスタメン率、買値から gainPct% 以上の値上がり)と、出品の目安を最安出品から何 % 下げるか(undercutPct)。 trade は自動売買の設定(SORARE_TRADE=true の時だけ実行): 買うプラン(cheap / plus。大会ごとに buyPlan で上書きできる)、1枚と直近7日の購入額の上限(全大会の合計)、買ってから売らない日数、買値より下で出品しないか、決済と出品の通貨(WEI = ETH ウォレット、USD・EUR = キャッシュウォレット)。Jupiler Rare は最安でも 5 枚で $100 前後かかる(weeklyMaxUsd はそれを見込んで $250)。 sport: \"nba\" の大会は NBA(星の合計に上限、キャプテン無し、節は週 2 回)。autoBuy: false の大会は購入候補の通知だけで自動購入しない。 自動購入はウォレット残高の範囲だけで、targets の上から順に使う(安い大会を先に)。残高が足りない大会はその節は見送り、賞金やカードの売却で増えたら自動で始まる。buyPlan: auto は残高が足りればプラスアルファ、足りなければ最安。trade.reserveUsd は手数料のために残しておく額。",
   "targets": [
-    {
-      "name": "J1 Rare",
-      "league": "J1",
-      "competition": "j1-league",
-      "leaderboard": "seasonal-japan-in_season_japan_rare_pvp",
-      "rarity": "rare",
-      "buyPlan": "plus"
-    },
     {
       "name": "J1 Limited",
       "league": "J1",
@@ -28,15 +20,6 @@
       "plusBudgetUsd": 30
     },
     {
-      "name": "Jupiler Rare",
-      "league": "ベルギー",
-      "competition": "jupiler-pro-league",
-      "leaderboard": "seasonal-jupiler-in_season_jupiler_rare",
-      "rarity": "rare",
-      "marketBudgetUsd": 120,
-      "plusBudgetUsd": 200
-    },
-    {
       "name": "NBA Limited Champion",
       "sport": "nba",
       "league": "NBA",
@@ -45,6 +28,23 @@
       "rarity": "limited",
       "marketBudgetUsd": 30,
       "plusBudgetUsd": 60
+    },
+    {
+      "name": "J1 Rare",
+      "league": "J1",
+      "competition": "j1-league",
+      "leaderboard": "seasonal-japan-in_season_japan_rare_pvp",
+      "rarity": "rare",
+      "buyPlan": "auto"
+    },
+    {
+      "name": "Jupiler Rare",
+      "league": "ベルギー",
+      "competition": "jupiler-pro-league",
+      "leaderboard": "seasonal-jupiler-in_season_jupiler_rare",
+      "rarity": "rare",
+      "marketBudgetUsd": 120,
+      "plusBudgetUsd": 200
     },
     {
       "name": "NBA Rare Champion",
@@ -85,6 +85,7 @@
     "weeklyMaxUsd": 250,
     "minHoldDays": 14,
     "neverBelowCost": true,
-    "currency": "WEI"
+    "currency": "WEI",
+    "reserveUsd": 2
   }
 }

@@ -70,3 +70,17 @@ test("ethKey は 0x + 64 桁にそろえ、違う形は形だけを理由にし�
   assert.throws(() => ethKey("0x1234"), /64 桁/);
   assert.throws(() => ethKey("abandon ".repeat(11) + "about"), /64 桁/);
 });
+
+test("pickPlan は残高に収まるプランを選び、auto は余裕があればプラスアルファ、足りなければ見送り", async () => {
+  const { pickPlan } = await import("../src/trade.js");
+  const P = (...prices) => ({ lineup: prices.map((p, i) => ({ id: `p${i}${p}`, price: p })) });
+  const cheap = P(1, 1, 1, 1, 1), plus = P(5, 5, 5, 5, 5);
+  assert.equal(pickPlan([cheap, plus], "auto", 30, 2).plan, plus);      // 25 + 2 <= 30
+  assert.equal(pickPlan([cheap, plus], "auto", 20, 2).plan, cheap);     // 27 > 20 → 最安
+  assert.equal(pickPlan([cheap, plus], "cheap", 100, 2).plan, cheap);
+  const no = pickPlan([cheap, plus], "cheap", 5, 2);                    // 5 + 2 > 5
+  assert.equal(no.plan, null);
+  assert.match(no.why, /残高 \$5\.00 では足りない\(必要 \$7\.00\)/);
+  assert.equal(pickPlan([cheap], "cheap", 3, 0, new Set(["p01", "p11"])).plan, cheap);   // 手持ち 2 人は数えない(3 枚 $3)
+  assert.equal(pickPlan([cheap, plus], "plus", null).plan, plus);         // 残高が読めなければ絞らない
+});
