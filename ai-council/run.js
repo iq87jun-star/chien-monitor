@@ -9,6 +9,7 @@ import { pickEvents, calendarText, todayJST, formatJST, legWindows, legOverlaps,
 import { runCouncil, transcript, splitMessage } from "./src/council.js";
 import { decryptStatus, statusText } from "./src/status.js";
 import { extractCandidates } from "./src/prompts.js";
+import { buildHandoffs, withoutHandoff, queueFeedback, readmeFeedback } from "./src/handoff.js";
 
 const config = JSON.parse(readFileSync(new URL("./config.json", import.meta.url)));
 const UA = "chien-monitor-ai-council/0.1 (+https://github.com/iq87jun-star/chien-monitor)";
@@ -113,7 +114,25 @@ function liveStatus() {
 }
 const live = liveStatus();
 const explored = existsSync(exploredFile) ? readFileSync(exploredFile, "utf8") : "";
-const result = await runCouncil({ config, chat: openrouter, mode, question, portfolio, live, calendar, overlaps, explored, today });
+// 各ブランチの最新の検証結果(ワークフローが研究・theoption のブランチから取ってくる)。次の探索に生かす
+function feedbackText() {
+  const read = (name) => {
+    const f = new URL(`./${name}`, import.meta.url);
+    return existsSync(f) ? readFileSync(f, "utf8") : null;
+  };
+  const parts = [];
+  try {
+    const q = read("research_queue.json");
+    if (q) parts.push(`## プロップ研究の検証キュー(docs/244、最近の項目)\n${queueFeedback(JSON.parse(q))}`);
+  } catch (e) {
+    console.error(`検証キューを読めない: ${e.message}`);
+  }
+  const r = read("theoption_README.md");
+  if (r) parts.push(`## theoption の最近の追補(判定)\n${readmeFeedback(r)}`);
+  return parts.join("\n\n");
+}
+const feedback = mode === "explore" ? feedbackText() : "";
+const result = await runCouncil({ config, chat: openrouter, mode, question, portfolio, live, calendar, overlaps, explored, feedback, today });
 
 // 新規開拓会議の候補を explored.md に足す(ワークフローがコミットする。次回からの蒸し返しを防ぐ)
 if (mode === "explore" && key) {
@@ -146,25 +165,36 @@ const header = [
   result.steps.map((s) => `${s.error ? "❌" : "✅"}${s.label.replace(/^\S+\s/, "")}: ${s.model.split("/")[1]}`).join(" / "),
   failed.length ? `⚠️ 失敗: ${failed.join("、")}` : "",
 ].filter(Boolean).join("\n");
-const summary = `${header}\n\n${result.final ?? "(まとめ役が失敗したので、添付の全文を見てください)"}\n\n_全員の発言は添付ファイル。費用の目安 $${result.cost.toFixed(3)}。投資の判断はご自身で。_`;
+const handoffs = mode === "explore" ? buildHandoffs(result.final, today) : [];
+const body = mode === "explore" ? withoutHandoff(result.final) : result.final;
+const summary = `${header}\n\n${body || "(まとめ役が失敗したので、添付の全文を見てください)"}\n\n_全員の発言は添付ファイル。費用の目安 $${result.cost.toFixed(3)}。投資の判断はご自身で。_`;
 
+const handoffText = handoffs.map((h) => `## 📋 ${h.to} へ貼り付け\n\n${h.text}`).join("\n\n---\n\n");
 console.log(`\n${full}`);
-if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, full);
+if (handoffText) console.log(`\n# 受け渡しの指示文\n\n${handoffText}`);
+if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, handoffText ? `${full}\n\n# 受け渡しの指示文\n\n${handoffText}` : full);
 
 const webhook = process.env.AI_COUNCIL_DISCORD_WEBHOOK;
-if (!webhook) {
-  console.log("AI_COUNCIL_DISCORD_WEBHOOK が未設定なので送っていません");
-} else {
-  const parts = splitMessage(summary);
+// text を 2,000 字以内に分けて送り、最後の 1 通にファイルを付ける
+async function post(text, file) {
+  const parts = splitMessage(text);
   for (const [i, content] of parts.entries()) {
     const form = new FormData();
     form.append("payload_json", JSON.stringify({ content, allowed_mentions: { parse: [] } }));
-    // 最後の 1 通に全文(Markdown)を付ける
-    if (i === parts.length - 1) form.append("files[0]", new Blob([full], { type: "text/markdown" }), `ai-council-${today}.md`);
+    if (file && i === parts.length - 1) form.append("files[0]", new Blob([file.body], { type: "text/markdown" }), file.name);
     const res = await fetch(webhook, { method: "POST", body: form });
     if (!res.ok) throw new Error(`Discord ${res.status}: ${await res.text()}`);
   }
-  console.log("Discord に送りました");
+}
+if (!webhook) {
+  console.log("AI_COUNCIL_DISCORD_WEBHOOK が未設定なので送っていません");
+} else {
+  await post(summary, { body: full, name: `ai-council-${today}.md` });
+  // 受け渡しの指示文は、渡す先ごとに別の通で(長押しでコピーしやすいように)。同じ内容をファイルでも付ける
+  for (const [i, h] of handoffs.entries()) {
+    await post(`📋 **${h.to} へ貼り付け**\n\n${h.text}`, { body: h.text, name: `handoff-${today}-${i + 1}.md` });
+  }
+  console.log(`Discord に送りました(受け渡し ${handoffs.length} 件)`);
 }
 
 // 全員失敗(キーの間違い・残高切れなど)は Actions を赤にして気づけるようにする
