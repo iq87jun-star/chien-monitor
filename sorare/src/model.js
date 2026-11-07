@@ -107,6 +107,29 @@ export function sellCandidates(cards, { maxAge = 31, minStartRate = 0.5, gainPct
     .filter((c) => c.reasons.length);
 }
 
+// 節の結果の通知文。ラインナップが無ければ null(その節に出ていない)
+export function resultText(fx, toUsd) {
+  const lineups = fx?.mySo5Lineups || [];
+  if (!lineups.length) return null;
+  const rewards = fx.mySo5Rewards || [];
+  const lines = [`**Sorare 結果** ${fx.slug}`];
+  let total = 0;
+  for (const l of lineups) {
+    const lb = l.so5Leaderboard || {};
+    const r = l.so5Rankings?.[0];
+    const teams = lb.so5LineupsCount ? ` / ${lb.so5LineupsCount.toLocaleString("en-US")} チーム` : "";
+    lines.push("", `**${lb.displayName || l.name}**: ${r?.ranking != null ? `${r.ranking} 位${teams}` : "順位なし"}・合計 ${(r?.score ?? 0).toFixed(1)} 点`);
+    lines.push("  " + (l.so5Appearances || []).map((a) => `${a.anyPlayer?.displayName || "?"} ${(a.score ?? 0).toFixed(1)}`).join(" / "));
+    const mine = rewards.filter((w) => w.so5Leaderboard?.slug === lb.slug);
+    const cash = mine.reduce((s, w) => s + (toUsd(w.amount) || 0), 0);
+    const cards = mine.reduce((s, w) => s + (w.rewardCards?.length || 0), 0);
+    total += cash;
+    lines.push(cash || cards ? `  🏆 賞金${cash ? ` $${cash.toFixed(2)}` : ""}${cards ? ` + カード ${cards} 枚` : ""}` : "  賞金なし");
+  }
+  if (lineups.length > 1) lines.push("", `賞金の合計 $${total.toFixed(2)}`);
+  return lines.join("\n");
+}
+
 // 出品価格の目安: 今の最安出品から undercutPct% 下げた額(セント単位で切り捨て、最低 $0.01)。最安出品が無ければ null
 export function sellPrice(floor, undercutPct = 0) {
   if (floor == null) return null;
