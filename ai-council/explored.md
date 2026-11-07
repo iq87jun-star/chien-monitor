@@ -7,5 +7,5 @@
 - 2026-11-06 ② FundedNext Stellar 2-Step 25k Swap-Free 複数口座 → FundedNext に書面で問い合わせ中(7 項目)
 - 2026-11-06 ① XAU 金曜窓 LONG(木曜清算後〜金曜清算前) → 研究の Q161 に登録(11/9 実行予定)。紙上候補 Thu XAUUSD と木曜夜が重なる
 - 2026-11-07 ① US500・NAS100 の月末〜第 3 営業日 寄り後 24 時間 LONG(月・金除く、2 セル)
-- 2026-11-07 ③ theoption 木曜 5 時(水曜 20 UTC)円クロス 1 時間 LOW(Roll5 の移植、AUDJPY 除く、金利差 2pp 以上)
+- 2026-11-07 ③ theoption 木曜 5 時(水曜 20 UTC)円クロス 1 時間 LOW(Roll5 の移植、AUDJPY 除く、金利差 2pp 以上) → 棄却(10 年ミッド・6 通貨とも水曜 20→21Z の LOW 勝率 43〜49% で損益分岐 52.6% 未満、金利差門 ≥2pp で 43.4% と悪化、G3/G5 不通過。Roll の下げは 21→22Z = theoption 休場 06:00〜07:00 JST に集中。theoption_validation/README.md 追補52、branch claude/zaption-check-m776m7)
 - 2026-11-07 ② FTMO 2-Step Swing 100k(合算上限・レバレッジ・週末と指標の扱いを書面で確認)
