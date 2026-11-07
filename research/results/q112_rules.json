@@ -1,0 +1,8 @@
+{
+ "Breakout Classic: 1段階 目標10% 静的DD6% 日次3%": {"target": [0.10], "mdd": 0.06, "dd_type": "static", "dll": 0.03},
+ "Breakout Pro: 1段階 目標12% 静的DD5% 日次3%": {"target": [0.12], "mdd": 0.05, "dd_type": "static", "dll": 0.03},
+ "HyroTrader 2-Step: 10%/5% 静的DD10% 日次5%": {"target": [0.10, 0.05], "mdd": 0.10, "dd_type": "static", "dll": 0.05},
+ "HyroTrader 1-Step: 目標10% 静的DD6% 日次4%": {"target": [0.10], "mdd": 0.06, "dd_type": "static", "dll": 0.04},
+ "CFT 2-Phase: 8%/5% 静的DD10% 日次5%": {"target": [0.08, 0.05], "mdd": 0.10, "dd_type": "static", "dll": 0.05},
+ "CFT 1-Phase: 目標10% 残高トレーリング6% 日次4%": {"target": [0.10], "mdd": 0.06, "dd_type": "trail_bal_eod", "dll": 0.04}
+}

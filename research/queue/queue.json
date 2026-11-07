@@ -1,0 +1,4036 @@
+{
+ "cumulative_cells": 10060,
+ "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
+ "items": [
+  {
+   "id": "Q1",
+   "slug": "tsmom_ea",
+   "title": "TSMOM 族の EA 実装 + パリティ",
+   "cells": 0,
+   "status": "in_progress",
+   "sessions_planned": 3,
+   "sessions_done": 3,
+   "docs": [
+    "docs/247_q1_tsmom_ea_design.md",
+    "docs/253_q1_tsmom_ea_implementation.md",
+    "docs/291_q1_tsmom_parity_a_signs.md"
+   ],
+   "result": "v1.40 実装済み・パリティ A 段(符号一致)通過 97.5%(docs/291)。GER40 は MT5 出力に無し(銘柄名確認)。B 段(テスター損益)待ち"
+  },
+  {
+   "id": "Q2",
+   "slug": "event_drift",
+   "title": "イベント前後ドリフト(FOMC/BoJ/CPI/NFP)",
+   "cells": 240,
+   "status": "done",
+   "sessions_planned": 2,
+   "sessions_done": 1,
+   "docs": [
+    "docs/248_q2_event_drift.md"
+   ],
+   "result": "通過 0(最小 p 0.027)。CPI 前日 L 円クロスは前窓逆符号。雇用統計 当日/翌日 36 セルは構造的に空"
+  },
+  {
+   "id": "Q3",
+   "slug": "index_gold_windows",
+   "title": "指数・金の時間帯窓",
+   "cells": 360,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/249_sess_cost_sign_defect.md"
+   ],
+   "result": "重複: US500/GER40 は第3段、NAS100/XAUUSD は第4段で同一格子(9窓×L/S×5曜日)を検定済み。新規セル 0"
+  },
+  {
+   "id": "Q4",
+   "slug": "sess_exit",
+   "title": "Sess の出口改良",
+   "cells": 96,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/249_sess_cost_sign_defect.md"
+   ],
+   "result": "再実装で基準 Sharpe が全て負 → SHORT コスト符号バグを発見(docs/249)。Sess 族は無効。出口改良は無意味"
+  },
+  {
+   "id": "Q5",
+   "slug": "usd_strength_sess",
+   "title": "通貨強弱条件付き Sess",
+   "cells": 48,
+   "status": "withdrawn",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/249_sess_cost_sign_defect.md"
+   ],
+   "result": "docs/249: Sess 族が無効のため取り下げ(セル加算なし)"
+  },
+  {
+   "id": "Q6",
+   "slug": "vol_regime_gate",
+   "title": "ボラ・レジーム門",
+   "cells": 18,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/251_q6_q8_q10_results.md"
+   ],
+   "result": "中分位門が改良基準を満たすが機構なし・累積半減で採用せず。VIX 門は docs/203/204 済み(新規 6 セル)"
+  },
+  {
+   "id": "Q7",
+   "slug": "mon_shot_decomp",
+   "title": "Mon 円クロスのショット分解",
+   "cells": 84,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/250_q7_mon_shot_decomposition.md"
+   ],
+   "result": "4 UTC 最強・10 UTC 最弱・出口差なし。配備変更なし"
+  },
+  {
+   "id": "Q8",
+   "slug": "holiday_sq",
+   "title": "祝日・月末・SQ",
+   "cells": 96,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/251_q6_q8_q10_results.md"
+   ],
+   "result": "通過 0(最小 p 0.014)"
+  },
+  {
+   "id": "Q9",
+   "slug": "sess_dow",
+   "title": "Sess の曜日分解",
+   "cells": 40,
+   "status": "withdrawn",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/249_sess_cost_sign_defect.md"
+   ],
+   "result": "docs/249: Sess 族が無効のため取り下げ(セル加算なし)"
+  },
+  {
+   "id": "Q10",
+   "slug": "xs_fx_momentum",
+   "title": "クロスセクション FX モメンタム",
+   "cells": 12,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/251_q6_q8_q10_results.md"
+   ],
+   "result": "通過 0。対USD 2w ランクは OOS で強く逆符号"
+  },
+  {
+   "id": "Q11",
+   "slug": "stage5_conditional",
+   "title": "第 5 段 H1 条件付き(F1〜F4 + F1'/F4')",
+   "cells": 566,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/252_stage5_conditional_search.md"
+   ],
+   "result": "566 セル・通過 0・p<0.05 が 1(期待 28)。H1 の新規探索は一巡"
+  },
+  {
+   "id": "Q12",
+   "slug": "newsyms_h1_grid",
+   "title": "新銘柄への時間帯格子(逐次)",
+   "cells": 900,
+   "status": "done",
+   "sessions_planned": 6,
+   "sessions_done": 9,
+   "docs": [
+    "docs/255_newsyms_h1_grid_results.md"
+   ],
+   "result": "第1〜17回・19 銘柄・1,710 セル通過 0(p<0.05 は 1 本・期待 84)。時間帯格子は 38 銘柄・累積 6,210 で閉じる(docs/255 総括)"
+  },
+  {
+   "id": "Q13",
+   "slug": "prevday_hl_break",
+   "title": "前日高安ブレイク(H1・14 銘柄)",
+   "cells": 112,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/257_q13_prevday_hl_break.md"
+   ],
+   "result": "通過 0(p<0.05 1 本・期待 6)。p < 0.05 は 1 本(偶然期待 6)。USDJPY 上抜け追随 4h が IS 27/39(p=0.012)だが",
+   "source": "docs/256 §4(黄金の守人 / MoonDog / Ghost / Cepheus)"
+  },
+  {
+   "id": "Q14",
+   "slug": "tokyo_fix_early",
+   "title": "仲値・東京早朝(円クロス)",
+   "cells": 80,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/258_q14_tokyo_fix_early.md"
+   ],
+   "result": "通過 0(p<0.05 0 本・期待 4)。p < 0.05 は 0 本(偶然期待 4)。仲値のゴトー日セルは最良でも USDJPY 01-05 S の IS 19",
+   "source": "docs/256 §4(仲値トレード / White Bear Z)"
+  },
+  {
+   "id": "Q15",
+   "slug": "gold_pullback_long",
+   "title": "ゴールド押し目 LONG(トレンド門)",
+   "cells": 16,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/259_q15_gold_pullback_long.md"
+   ],
+   "result": "通過 0(p<0.05 0 本・期待 1)。16 セルすべて IS 平均が負(最良 XAGUSD 門なし k=1 24h の −0.04 bps)。IS で押し目は",
+   "source": "docs/256 §4(昇金竜 / 錬金術 Rising Tide)",
+   "note": "docs/256 初版の 32 は二重計上。実行前に 16 へ訂正"
+  },
+  {
+   "id": "Q16",
+   "slug": "h1_donchian_trail",
+   "title": "H1 ドンチャン + ATR トレイル",
+   "cells": 64,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/260_q16_h1_donchian_trail.md"
+   ],
+   "result": "通過 0(p<0.05 3 本・期待 3)。p < 0.05 は 3 本 = 偶然期待 3。最良は NAS100 N=120 LONG(固定 24h: IS 23/",
+   "source": "docs/256 §4(LTAF / STAF / tagosaku / 一撃くん)"
+  },
+  {
+   "id": "Q17",
+   "slug": "h1_volume_spike",
+   "title": "出来高スパイク(H1)",
+   "cells": 56,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/261_q17_h1_volume_spike.md"
+   ],
+   "result": "通過 0(p<0.05 0 本・期待 3)。p < 0.05 は 0 本(偶然期待 3)。追随・逆行のどちら側も IS +月率が 5 割前後で、平均 bps は全セ",
+   "source": "docs/256 §4(Silent Exit / TORURIPI)"
+  },
+  {
+   "id": "Q18",
+   "slug": "measured_cost_sess_retest",
+   "title": "bid/ask 実測コストと Sess 8 + A 案 S3 の再検定(診断)",
+   "cells": 11,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/262_q18_measured_cost_sess_retest.md"
+   ],
+   "result": "実測往復は仮定 3pip の 1/3〜1/10(主要通貨)。Sess 8 は実測後も 8/8 負。A 案 S3 は出口 22 UTC の拡大で実測後 −1.0 bps"
+  },
+  {
+   "id": "Q19",
+   "slug": "measured_cost_h1_grid",
+   "title": "実測コスト版 H1 格子(旧 19 銘柄・別トラック)",
+   "cells": 1710,
+   "status": "done",
+   "sessions_planned": 2,
+   "sessions_done": 1,
+   "docs": [
+    "docs/263_q19_measured_cost_h1_grid.md"
+   ],
+   "result": "通過 0・p<0.05 は 15(期待 86)。実測コストでも H1 格子は閉じる。上位は既知の Mon 円クロス LONG",
+   "source": "docs/262 §C"
+  },
+  {
+   "id": "Q20",
+   "slug": "wed_swap_carry",
+   "title": "水曜トリプルスワップ前のキャリー逆流",
+   "cells": 75,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/265_q20_wed_swap_carry.md"
+   ],
+   "result": "通過 0(p<0.05 8・期待 4)。**基準では棄却**(最小 p = 0.001・閾値 6.0e-6)。ただし p < 0.05 が 8 本(偶然期待 4)で、**すべて W",
+   "source": "docs/264"
+  },
+  {
+   "id": "Q21",
+   "slug": "index_overnight",
+   "title": "指数のオーバーナイト・プレミアム",
+   "cells": 54,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/266_q21_index_overnight.md"
+   ],
+   "result": "通過 0(p<0.05 0・期待 3)。p < 0.05 は 0 本(偶然期待 3)。夜間 LONG の最良は NAS100 19/31(+4.6 bps・OOS −1.1)で、文",
+   "source": "docs/264"
+  },
+  {
+   "id": "Q22",
+   "slug": "cash_open_orb",
+   "title": "現物寄り付きの初動レンジ・ブレイク",
+   "cells": 36,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/267_q22_cash_open_orb.md"
+   ],
+   "result": "通過 0(p<0.05 0・期待 2)。p < 0.05 は 0 本(偶然期待 2)。最良は GER40 追随・クローズまで 24/39(+3.9 bps・OOS 11/20・+2",
+   "source": "docs/264"
+  },
+  {
+   "id": "Q23",
+   "slug": "rebalance_days",
+   "title": "指数リバランス日の引け前フロー(診断)",
+   "cells": 30,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/268_q23_rebalance_days.md"
+   ],
+   "result": "通過 0(p<0.05 0・期待 2)。判定可能セル 0/30(登録時に承知)。診断値: MSCI 引け前 SHORT は EU 3 指数で 9/13・9/13・8/13 と揃うが",
+   "source": "docs/264"
+  },
+  {
+   "id": "Q24",
+   "slug": "monthend_fix",
+   "title": "月末ロンドンフィックス前後",
+   "cells": 48,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/269_q24_monthend_fix.md"
+   ],
+   "result": "通過 0(p<0.05 1・期待 2)。p < 0.05 は 1 本(偶然期待 2)。EURJPY フィックス前 SHORT 26/39(p=0.027)だが OOS 7/20・−",
+   "source": "docs/264"
+  },
+  {
+   "id": "Q25",
+   "slug": "xs_momentum_12_1",
+   "title": "クロスセクション 12-1 モメンタム",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/270_q25_xs_momentum_12_1.md"
+   ],
+   "result": "通過 0(p<0.05 0・期待 0)。p < 0.05 は 0 本。FX7 の 12-1(S=1)が 23/39・+15 bps/月・OOS 11/20・+17 と唯一 IS・O",
+   "source": "docs/264"
+  },
+  {
+   "id": "Q26",
+   "slug": "crypto_h1_grid",
+   "title": "暗号資産の曜日×時間帯格子(BTC/ETH)",
+   "cells": 252,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/271_q26_crypto_h1_grid.md"
+   ],
+   "result": "通過 0(p<0.05 2・期待 13)。週末効果なし。最良 BTC Mon 20-00 L は OOS 負",
+   "source": "docs/264"
+  },
+  {
+   "id": "Q27",
+   "slug": "q20_measured_jpy",
+   "title": "Q20 追試: 円クロス 6 本の実測 bid/ask 再計算 + 監視設定",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/272_q27_q20_measured_jpy.md"
+   ],
+   "result": "実測後 +3.3〜+6.7 bps/取引・合成 24/32(2024〜)。全期間合成は前窓 0.43 で基準未達 → 候補入りせず監視(q20_monitor.py・12 ヶ月で 8/12 なら Q28)"
+  },
+  {
+   "id": "Q28",
+   "slug": "roll_leg_fintokei_swing",
+   "title": "ロール捕捉レグ(swap-free)— Fintokei スイングで Mon 4 と併走・EA7",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 3,
+   "sessions_done": 1,
+   "docs": [
+    "docs/276_q28_roll_leg_fintokei_swing.md"
+   ],
+   "result": "MC: Mon4 ×2.0 + Roll ×3 → 資金化 86.6% / 失格 0.3% / 中央 216 日。EA7 作成中 → EA7 v1.20(docs/276)・EA7g v1.25(#6078225 稼働)・#14166201 v1.31 に Roll5 を実装済み(2026-09-27 台帳整理で done)"
+  },
+  {
+   "id": "Q29",
+   "slug": "roll_ext_gold_em",
+   "title": "ロール拡張: ゴールド/銀 Wed LONG(実測)+ EM 3 ペア(USDMXN/USDZAR/USDTRY)Wed LONG",
+   "cells": 11,
+   "status": "done",
+   "sessions_planned": 2,
+   "sessions_done": 2,
+   "docs": [
+    "docs/277_q29_q30_roll_ext_cot_extremes.md",
+    "docs/278_q29b_em_roll_results.md"
+   ],
+   "result": "0/11。Q29a: XAUUSD 実測 +4.7 bps だが Thu 対照も同等(上昇相場)。Q29b: EM 3 ペアは粗利 0〜5 bps で理論ロール(5〜33 bps)が出ず、往復 3〜7 bps で純負。ロール機構の裏付けは弱まった → Q28 は 10/1 監視を厳守"
+  },
+  {
+   "id": "Q30",
+   "slug": "cot_extremes_1w",
+   "title": "COT レバレッジド・ファンド極端値 → 1 週反転/追随",
+   "cells": 28,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/277_q29_q30_roll_ext_cot_extremes.md"
+   ],
+   "result": "0/28。判定可能セル 0(極端値が稀)。COT は門でも単独でも不採用"
+  },
+  {
+   "id": "Q31",
+   "slug": "gold_sessions",
+   "title": "金属のセッション偏り(アジア L / ロンドン S / AM→PM fix S)",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/280_q31_q33_prereg.md",
+    "docs/281_q31_q33_results.md"
+   ],
+   "result": "0/6"
+  },
+  {
+   "id": "Q32",
+   "slug": "index_opex_week",
+   "title": "指数の OPEX 週 LONG",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/280_q31_q33_prereg.md",
+    "docs/281_q31_q33_results.md"
+   ],
+   "result": "0/6"
+  },
+  {
+   "id": "Q33",
+   "slug": "index_intraday_mom",
+   "title": "指数の日中モメンタム(第1時間→最終時間)",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/280_q31_q33_prereg.md",
+    "docs/281_q31_q33_results.md"
+   ],
+   "result": "0/6"
+  },
+  {
+   "id": "Q34",
+   "slug": "cb_predrift",
+   "title": "中銀会合前 24h の指数 LONG(FOMC/ECB/BoE/BoJ/RBA)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/282_q34_cb_predrift_prereg.md",
+    "docs/283_q34_cb_predrift_results.md"
+   ],
+   "result": "0/8。FOMC 前は IS 21/26 (+42 bps, p=0.001) だが OOS 5/13・前窓 47% で消失"
+  },
+  {
+   "id": "Q35",
+   "slug": "vix_term_overnight",
+   "title": "VIX/VIX3M 期間構造 × 指数オーバーナイト LONG",
+   "cells": 18,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/284_backlog_q35_q39_prereg.md",
+    "docs/285_q35_vix_term_results.md"
+   ],
+   "result": "0/9(+再実行 9)。バックワーデーション後 5 日 L は IS 10/11 +250 bps だが年 3〜4 回・閾値未達"
+  },
+  {
+   "id": "Q37",
+   "slug": "index_gap_fade",
+   "title": "指数の寄り付きギャップ埋め",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/284_backlog_q35_q39_prereg.md",
+    "docs/287_q37_q39_family4_results.md"
+   ],
+   "result": "0/6"
+  },
+  {
+   "id": "Q38",
+   "slug": "h1_leadlag",
+   "title": "H1 リードラグ(WTI→CAD, XAU→AUD, UST→JPY)",
+   "cells": 3,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/284_backlog_q35_q39_prereg.md",
+    "docs/287_q37_q39_family4_results.md"
+   ],
+   "result": "0/3(毎時 3 pip でコスト支配。UST→USDJPY 粗利 t=2.5 のみ)"
+  },
+  {
+   "id": "Q39",
+   "slug": "nycut_meanrev_h1",
+   "title": "NY カット前 FX 平均回帰(H1 近似)",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/284_backlog_q35_q39_prereg.md",
+    "docs/287_q37_q39_family4_results.md"
+   ],
+   "result": "0/6(逆張りは全ペア負 = 継続)"
+  },
+  {
+   "id": "Q36",
+   "slug": "fix_reversal_m1",
+   "title": "フィックス前後(WMR/NY カット・M1)",
+   "cells": 12,
+   "status": "done",
+   "sessions_planned": 4,
+   "sessions_done": 4,
+   "docs": [
+    "docs/284_backlog_q35_q39_prereg.md",
+    "docs/286_q36_fix_reversal_results.md"
+   ],
+   "result": "0/12(EURUSD・GBPUSD・USDJPY・AUDUSD 各 0/3)。フィックス直前の動きは継続(逆張り全て負)。月末のみは OOS 12〜13/20 だが IS 裏付けなし"
+  },
+  {
+   "id": "Q40",
+   "slug": "q40_session_spillover",
+   "title": "地域間セッション波及(F5)",
+   "cells": 14,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/293_q40_q43_families_5_8.md"
+   ],
+   "result": "0/14。追随は全滅、アジアは前日 US に逆行"
+  },
+  {
+   "id": "Q41",
+   "slug": "q41_cb_postmove",
+   "title": "中銀発表後の継続(F6)",
+   "cells": 11,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/293_q40_q43_families_5_8.md"
+   ],
+   "result": "0/11。最良 BoJ→JP225 p=0.16。FOMC→US500 は OOS 反転"
+  },
+  {
+   "id": "Q42",
+   "slug": "q42_fx_carry_xs",
+   "title": "FX キャリー XS・直物のみ(F7)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/293_q40_q43_families_5_8.md"
+   ],
+   "result": "0/4。上位3/下位3 IS 24/39 だが OOS 12/19 −4 bps"
+  },
+  {
+   "id": "Q43",
+   "slug": "q43_index_weekend",
+   "title": "指数の週末反転/継続(F8)",
+   "cells": 12,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/293_q40_q43_families_5_8.md"
+   ],
+   "result": "0/12。IS 追随・OOS 反転で不安定"
+  },
+  {
+   "id": "Q44",
+   "slug": "fix_continuation_m1",
+   "title": "フィックス継続の複製検定(新ペア USDCAD/NZDUSD/EURJPY・M1)",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/294_m1_families_q44_q47.md"
+   ],
+   "result": "0/6。フィックス直前の継続は新ペア 3 本で IS・OOS とも全セル負 → Q36 は期間・ペア固有。M1 家族閉鎖"
+  },
+  {
+   "id": "Q45",
+   "slug": "london_open_m1",
+   "title": "ロンドン寄り付きの初動継続(M1・4 ペア)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/294_m1_families_q44_q47.md"
+   ],
+   "result": "0/8。初動は続かない"
+  },
+  {
+   "id": "Q47",
+   "slug": "us_release_m1",
+   "title": "米指標(CPI/NFP)発表の初動継続(M1・4 ペア)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/294_m1_families_q44_q47.md"
+   ],
+   "result": "0/8。2024 は CPI 後継続(USDJPY 9/12 +18 bps)だが 2025〜 全て負"
+  },
+  {
+   "id": "Q46",
+   "slug": "tokyo_fix_m1",
+   "title": "東京仲値の M1 版(USDJPY)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/294_m1_families_q44_q47.md"
+   ],
+   "result": "0/4。仲値後 SHORT は 2024 のみ。ゴトー日仲値後 SHORT は OOS 14/20 だが IS 7/12"
+  },
+  {
+   "id": "Q48",
+   "slug": "fx_weekend_gap_m1",
+   "title": "FX 週明けギャップ埋め(M1・4 ペア)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/294_m1_families_q44_q47.md"
+   ],
+   "result": "0/8。ギャップは埋まらず継続(全セル負)"
+  },
+  {
+   "id": "Q49",
+   "slug": "fx_tsmom",
+   "title": "FX 時系列モメンタム(14 ペア・月次)",
+   "cells": 14,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/295_abstraction_families_q49_q51.md"
+   ],
+   "result": "0/14。前窓 0.2〜0.4・IS 最良 22/39。FX に TSMOM は移らない"
+  },
+  {
+   "id": "Q50",
+   "slug": "hold_trend_gate",
+   "title": "Hold の SMA200 門(改良系・7 銘柄)",
+   "cells": 7,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/295_abstraction_families_q49_q51.md"
+   ],
+   "result": "改良 0/7。OOS Sharpe を 6/7 で悪化"
+  },
+  {
+   "id": "Q51",
+   "slug": "bond_premium",
+   "title": "債券プレミアム(BUND/USTBOND × Hold・TSMOM)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/295_abstraction_families_q49_q51.md"
+   ],
+   "result": "0/4。2021〜 の債券に期間プレミアム無し"
+  },
+  {
+   "id": "Q52",
+   "slug": "donchian_vs_hold",
+   "title": "指数ブレイク買い vs Hold(改良系・NAS100/GER40)",
+   "cells": 2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/296_q52_donchian_vs_hold.md"
+   ],
+   "result": "改良 0/2。IS の Sharpe・最悪月は改善するが OOS Sharpe が低下、リターンは Hold の 1/4"
+  },
+  {
+   "id": "Q53",
+   "slug": "jp_holiday_legs",
+   "title": "日本の祝日 × 採用レグ(Mon/Roll/翌営業日)",
+   "cells": 38,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/303_q53_q55_jp_calendar_voltarget.md"
+   ],
+   "result": "新規 0 通過。改良系: Mon 円クロスの祝日月曜スキップが 5/7 ペア・Mon4/Mon2/Mon7 合成で改良(紙上フォワード候補入り)。祝日月曜は 7 ペアとも平均マイナス"
+  },
+  {
+   "id": "Q54",
+   "slug": "jp_flow_calendar",
+   "title": "日本の資金フロー暦(ゴトー日・月初)× 円クロス",
+   "cells": 14,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/303_q53_q55_jp_calendar_voltarget.md"
+   ],
+   "result": "0/14。ゴトー日・月初とも IS 平均マイナス"
+  },
+  {
+   "id": "Q55",
+   "slug": "vol_target",
+   "title": "ボラターゲット(改良系・7 構成)",
+   "cells": 7,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/303_q53_q55_jp_calendar_voltarget.md"
+   ],
+   "result": "改良 0/7。OOS Sharpe は上がるが IS Sharpe と最悪月が悪化"
+  },
+  {
+   "id": "Q53b",
+   "slug": "jp_holiday_composites",
+   "title": "Q53 合成確認(Mon4/Mon2/Mon7 祝日除外)",
+   "cells": 3,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/303_q53_q55_jp_calendar_voltarget.md"
+   ],
+   "result": "改良 3/3"
+  },
+  {
+   "id": "Q56",
+   "slug": "participant_filters",
+   "title": "参加者フィルター × Mon(各国祝日・翌日祝日・お盆・月末・ゴトー・月初・BoJ 週・指数×NYSE 祝日)",
+   "cells": 22,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/304_q56_q59_participant_filters.md"
+   ],
+   "result": "新規 0。改良 3/11: 豪NZ祝日月曜除外(AUDJPY/NZDJPY)・翌火曜JP祝日除外・ゴトー日月曜除外(確信度低)。米英休場は無関係。指数 Mon は研究系列が NYSE 休場日に建てていない(EA パリティ)"
+  },
+  {
+   "id": "Q57",
+   "slug": "holiday_tuesday_shift",
+   "title": "祝日月曜の週の火曜シフト",
+   "cells": 7,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/304_q56_q59_participant_filters.md"
+   ],
+   "result": "0/7。IS は 7 ペアともプラスだが OOS 5/7 マイナス・n=18"
+  },
+  {
+   "id": "Q58",
+   "slug": "roll_value_date",
+   "title": "ロールの値日シフト週",
+   "cells": 15,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/304_q56_q59_participant_filters.md"
+   ],
+   "result": "0/15・改良 0/5。火曜に移らず、祝日週の水曜はむしろ強い(値日仮説は否定)"
+  },
+  {
+   "id": "Q59",
+   "slug": "friday_conditioned_mon",
+   "title": "金曜条件付き Mon(H1)",
+   "cells": 5,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/304_q56_q59_participant_filters.md"
+   ],
+   "result": "0/5・改良 0/1。金曜・ギャップの符号で差なし"
+  },
+  {
+   "id": "Q60",
+   "slug": "mon_session_windows",
+   "title": "Mon 円クロスの時間帯分解(東京/ロンドン/NY)+ ショット前倒し",
+   "cells": 23,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/305_q60_q63_session_windows.md"
+   ],
+   "result": "新規 0。利益はロンドン 07-16 UTC に集中・東京窓はコスト後マイナス。前倒し {0,2,4,6} は Mon2 のみ改良(Mon4 は最悪月悪化)"
+  },
+  {
+   "id": "Q60b",
+   "slug": "mon_london_variants",
+   "title": "Q60 追跡: ロンドン窓のみ・ロンドン開始ショット",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/305_q60_q63_session_windows.md"
+   ],
+   "result": "改良 0/4。現行 4/6/8/10 × 24h を時刻変更で改善できない"
+  },
+  {
+   "id": "Q61",
+   "slug": "roll_participant_filters",
+   "title": "参加者フィルター × ロール(ゴトー・月末・BoJ 週・FOMC 週)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/305_q60_q63_session_windows.md"
+   ],
+   "result": "新規 0。改良 1/4: 月末最終JP営業日の水曜除外(n=13)"
+  },
+  {
+   "id": "Q62",
+   "slug": "mon_remaining_filters",
+   "title": "Mon 残り条件(前金曜JP祝日・翌火曜豪NZ祝日)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/305_q60_q63_session_windows.md"
+   ],
+   "result": "0/4。翌火曜豪NZ祝日は −21.9 bps だが OOS Sharpe 同値で不通過"
+  },
+  {
+   "id": "Q63",
+   "slug": "jp225_holiday_parity",
+   "title": "JP225 × JP 祝日 パリティ診断",
+   "cells": 2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/305_q60_q63_session_windows.md"
+   ],
+   "result": "研究系列は JP 休場日に行なし(EA 化時に祝日スキップが必要)"
+  },
+  {
+   "id": "Q64",
+   "slug": "london_dst_shots",
+   "title": "ロンドン時間に合わせた季節分解・DST 連動ショット",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/306_q64_q67_third_round.md"
+   ],
+   "result": "0/6。夏時間が強いが DST 連動は改良にならない"
+  },
+  {
+   "id": "Q65",
+   "slug": "cn_hk_holidays",
+   "title": "中国連休週 × AUD/NZD・Mon7",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/306_q64_q67_third_round.md"
+   ],
+   "result": "0/4。連休週はむしろ良い"
+  },
+  {
+   "id": "Q66",
+   "slug": "after_long_break",
+   "title": "日本の連休明け最初の月曜",
+   "cells": 2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/306_q64_q67_third_round.md"
+   ],
+   "result": "0/2"
+  },
+  {
+   "id": "Q67",
+   "slug": "roll_early_week_holiday",
+   "title": "ロール × 週初 JP 祝日週",
+   "cells": 10,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/306_q64_q67_third_round.md"
+   ],
+   "result": "0/10。祝日週の水曜ロールは 2〜3 倍強い(Q58 と整合)"
+  },
+  {
+   "id": "Q68",
+   "slug": "tokyo_window_decision",
+   "title": "東京窓の符号による Mon 途中判断",
+   "cells": 16,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/311_q68_q71_guard_and_signal.md"
+   ],
+   "result": "0/16。東京窓の符号は予測力なし、−1ATR 手仕舞いは Sharpe を大きく下げる"
+  },
+  {
+   "id": "Q69",
+   "slug": "mon_carry_gate",
+   "title": "Mon 円クロスのキャリー門",
+   "cells": 14,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/311_q68_q71_guard_and_signal.md"
+   ],
+   "result": "0/14。GBPJPY/USDJPY は高キャリーで効くが AUD/NZD は逆、時期の代理変数"
+  },
+  {
+   "id": "Q70",
+   "slug": "holiday_monday_short",
+   "title": "ガード日の月曜 SHORT",
+   "cells": 9,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/311_q68_q71_guard_and_signal.md"
+   ],
+   "result": "0/9"
+  },
+  {
+   "id": "Q71",
+   "slug": "gap_magnitude",
+   "title": "週末ギャップ幅ガード",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/311_q68_q71_guard_and_signal.md"
+   ],
+   "result": "0/4。除外は OOS を壊す(2025〜26 の利益は大ギャップ週に集中)"
+  },
+  {
+   "id": "Q72",
+   "slug": "intervention_guard",
+   "title": "介入リスク(急激な円安後)ガード",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/312_q72_q75_guard_validation.md"
+   ],
+   "result": "0/6。条件が広すぎ(36%)、最悪日は非該当週"
+  },
+  {
+   "id": "Q73",
+   "slug": "existing_guards",
+   "title": "既存ガード検証(年末年始・スプレッド上限)",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/312_q72_q75_guard_validation.md"
+   ],
+   "result": "改良 1/3: Mon の年末年始フィルターは正当(−11 bps)。ロールは逆(+14.5 bps・n=13)。スプレッド上限は効果なし"
+  },
+  {
+   "id": "Q74",
+   "slug": "account_guards",
+   "title": "口座ガード(日次・月内停止)の検証",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/312_q72_q75_guard_validation.md"
+   ],
+   "result": "0/4。Mon 主体では発動せず、EA7g は規則装置。閾値変更なし"
+  },
+  {
+   "id": "Q75",
+   "slug": "roll_last_hour",
+   "title": "ロール最終 1 時間の除外",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/312_q72_q75_guard_validation.md"
+   ],
+   "result": "0/6。最終時間は利益の 2〜3 割"
+  },
+  {
+   "id": "Q76",
+   "slug": "mon_stoploss",
+   "title": "Mon 災害 SL(k×ATR24)の検証",
+   "cells": 12,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/313_q76_q78_stoploss_validation.md"
+   ],
+   "result": "0/12。2.5×ATR は 34% 発動・5 年 22.5→20.5%・OOS Sharpe 2.44→1.67。保険として維持(実口座 12.3% と整合)"
+  },
+  {
+   "id": "Q77",
+   "slug": "roll_stoploss",
+   "title": "Roll5 の SL 検証",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/313_q76_q78_stoploss_validation.md"
+   ],
+   "result": "0/4。15pip 固定は 21.7% 発動・IS 4.77→3.50"
+  },
+  {
+   "id": "Q78",
+   "slug": "riskoff_gate",
+   "title": "S&P<SMA200 週の Mon 除外",
+   "cells": 2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/313_q76_q78_stoploss_validation.md"
+   ],
+   "result": "0/2。該当週 +8.0 bps 対 +3.7 でむしろ良い"
+  },
+  {
+   "id": "Q79",
+   "slug": "h1_oscillators",
+   "title": "H1 オシレーター(RSI/BB/Stoch/CCI × 逆張り・追随 × 4h/24h)",
+   "cells": 304,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/314_q79_q80_h1_technical_closure.md"
+   ],
+   "result": "0/304(p<0.05 1・期待 15)。16 区分すべて IS 平均負。粗利 0 でコストのみ残る"
+  },
+  {
+   "id": "Q80",
+   "slug": "h1_trend_ichimoku_adx",
+   "title": "H1 一目・ADX トレンド(L/S・24h)",
+   "cells": 76,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/314_q79_q80_h1_technical_closure.md"
+   ],
+   "result": "0/76(p<0.05 1・期待 4)。GBPJPY 一目 L は Mon 円クロスと重複、OOS 消失"
+  },
+  {
+   "id": "Q81",
+   "slug": "evz_gate",
+   "title": "通貨ボラ門(CBOE EVZ 80 分位・Mon7 のみ/除外)",
+   "cells": 2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/315_q81_evz_gate.md"
+   ],
+   "result": "0/2。除外は改良基準を形式上満たす(IS 3.58→4.02)が 2022 年を 36 週外す期間代理・OOS 3 ヶ月・EVZ 廃止で不採用"
+  },
+  {
+   "id": "Q82",
+   "slug": "fintokei_swing_nonfx_roll_ea",
+   "title": "Fintokei スイング トパーズ 3,500万用 EA(非FX Hold ×1.48 + Roll5 ×1.0・スイング用ガード)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/318_prop_caps_cost_and_portfolio_mix.md",
+    "docs/320_purchase_set_eas_and_coupons.md"
+   ],
+   "note": "探索ではなく実装(セル加算なし)。前提: Fintokei での UK100/WTI/BTC/ETH 取引可否(接尾辞 p)・同時保有リスク 3% の内側に Hold 災害 SL(倍率 1.48→1.0 の可能性)・Q28 の水曜ロール監視が 9・10 月と正(docs/279 §4)。購入は 10 月の帰結後",
+   "result": "EA11(トパーズ 3,500万: 非FX ×1.48 + Roll ×1.0・スイング用ガード)を作成。Fintokei 端末で UK100p/USOILp/BTCUSDp/ETHUSDp/GBPJPYp を確認(2026-09-28)。セル加算なし"
+  },
+  {
+   "id": "Q83",
+   "slug": "exec_gap",
+   "title": "執行差の測定装置(実口座 vs 紙上・レグ別・月次)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/323_q83_exec_gap.md"
+   ],
+   "note": "診断。ops_inbox の positions.csv(magic/コメント)と紙上同日セルを突き合わせ forward/exec_gap.py を作る。規則: 実−紙が 2 か月連続で Mon −5 / Roll −3 bps/取引未満のレグは縮小案",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 1,
+   "result": "診断。定時レグ(Roll/S1-S3/Sess)の執行差 ±2 bps/取引、ETH Mon の滑り+コスト −14〜15 bps = モデル 15 bps と一致(モデルは FX で保守的)。縮小案なし。発見: FN v1.30 と EA11 で Roll 9/30 スキップが不一致、531343523 は 9/9〜27 建玉なし(月内停止ガード最有力)"
+  },
+  {
+   "id": "Q93",
+   "slug": "jpy_lot_path_fix",
+   "title": "円建て口座のロット計算経路の修正(SIZE SANITY の原因・EA11/ルビー/パール)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/324_q93_jpy_lot_path.md"
+   ],
+   "note": "工学。LotFromNotional の tick 値換算を口座通貨で正しく行い v+0.01。テスターで UK100p/USOILp/BTCUSDp のロット一致を確認。配備は「切替」後",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 2,
+   "result": "工学。原因 = AXSE の tick 値が損益通貨建て(未換算)。損益経路を正にした v1.11(EA11)/ v1.01(ルビー)/ v1.07(パール)を別ファイルで追加。ロット値は不変(検算 3.88/0.17 一致)、偽警告と強通貨口座の過小ロットを解消。配備は 11 月改訂でまとめて"
+  },
+  {
+   "id": "Q85",
+   "slug": "guard_mult_frontier",
+   "title": "口座規則別のガード・倍率フロンティア(FTMO Std / Fintokei スイング / FN・MC 格子)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/325_q85_guard_mult_frontier.md"
+   ],
+   "note": "register_metrics の MC で 倍率{2.0,2.5,3.3,4.0}×日次停止{3,4,5%}×床{8,9,10%}。採用点は最悪年でも失格 ≤10% の中で到達率最大。既存口座は P1→P2 時のみ適用",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 3,
+   "result": "診断(108 格子)。FTMO Std: ×2.0/日次5%/床10% が採用点(到達 87.5・失格 0.7・最悪年 7.9%)で現行 ×3.3 は最悪年 30.6%。Fintokei: ×2.0 維持・日次 3% で最悪年 18→10%。FN 非FX+Roll は全格子不可(最悪年 40〜58%)→ 構成見直しを 11 月議題に"
+  },
+  {
+   "id": "Q84",
+   "slug": "mon_shot_exclude_real",
+   "title": "実口座で劣化が大きい Mon ショットの除外(改良系)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/326_q84_mon_shot_exclude_real.md"
+   ],
+   "note": "Q83 の結果で劣化最大ショットを特定し、研究系列で除外版 Mon4 を改良系基準で判定",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 4,
+   "result": "棄却: 実口座特定は 8 UTC(執行成分 +2.4 bps・誤差内)。ex8 は IS/OOS Sharpe +0.04 だが最悪月 IS −0.6 / OOS −4.5 bps 悪化で改良系不成立。配備構成不変。副産物: ETHUSD Mon は 00 UTC にエッジ集中の疑い(次期キュー候補)"
+  },
+  {
+   "id": "Q89",
+   "slug": "hold_universe_ext",
+   "title": "Hold 族の銘柄拡張(XAGUSD/COPPER/UKOIL/NGAS/US2000/HK50/AUS200/EU50)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/329_q89_hold_universe_ext.md"
+   ],
+   "note": "hold_cell と同一構成・標準基準(IS/OOS 符号一致・前窓 ≥50%・Bonferroni)。通過 → 紙上候補",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 5,
+   "result": "棄却 0/8: IS +月率 44〜54%(p 0.37〜0.83)、前窓は 8 本とも ≥50% だが有意から遠い。XAGUSD/COPPER は OOS(2025)だけ強い。配備不変。参考: 配備中 Hold 6 も単独では標準基準 p 0.17〜0.37(採用経路が RecentFit 校正のため)"
+  },
+  {
+   "id": "Q90",
+   "slug": "hold_disaster_sl",
+   "title": "Hold の災害 SL 水準(改良系・{10%,20%,なし} × Hold 6 銘柄)",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/330_q90_hold_disaster_sl.md"
+   ],
+   "note": "改良系基準。通過 → 11 月 EA 改訂案の InpHoldSLPct",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 6,
+   "result": "改良 1/18(BTCUSD 10% のみ・Sharpe +0.02 の僅差・BTC Hold は未配備)。指数/金は 15% の有無でほぼ不変(10 年でヒット 0〜3 回・2020/2025 の V 字で損確定、2022 で保護)。InpHoldCatSLPct=15 維持。BTCUSD HoldSL10 を紙上候補に追加"
+  },
+  {
+   "id": "Q91",
+   "slug": "mon_eth_exit",
+   "title": "Mon ETHUSD の出口(改良系・{12h,36h,翌日 NY 引け,24h+トレイル})",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/350_q91_mon_eth_exit.md"
+   ],
+   "note": "改良系基準。通過 → 14166201 G案・EA11 の ETHUSD レグ",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 7,
+   "result": "4 変種とも棄却(IS/OOS で 24h を上回らない)。基準自体が弱く(OOS Sharpe −0.06)、11 月改訂で ETHUSD Mon レグの継続判定(Q92 と同規則)を提案"
+  },
+  {
+   "id": "Q92",
+   "slug": "index_mon_stop_rule",
+   "title": "指数 Mon(6 本)の継続判定(docs/276 停止規則・研究系列と実口座)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/358_q92_index_mon_continuation.md"
+   ],
+   "note": "診断。外す/残すを 11 月 EA 改訂案に出す",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 8,
+   "result": "NAS100/US500/GER40 残す(研究系列の 5〜7 月 3 連続負は 8〜10 月で解消・実口座は未発動)。JP225/UK100/FR40 は外す(未配備)。トパーズ v1.15 はそのまま"
+  },
+  {
+   "id": "Q86",
+   "slug": "funded_mult_payout",
+   "title": "資金化後の倍率逓減と出金最大化(12 か月 MC)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/360_q86_funded_mult_payout.md"
+   ],
+   "note": "Mon4 ×3.3 維持 vs ×2.0/×1.5、出金 2 週/4 週。提案: InpFundedMult の要否",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 9,
+   "result": "逓減は不利(失格 −0〜2pt で出金 −3〜4 割、低い固定倍率に劣る)。2 週出金は +10〜15%(保持 ≥10% で失格 +0.3pt 以内・Q108 で規約確認)。Q131 採用設定が固定倍率の全格子に優越(×6 で出金 3 倍・失格同じ)。InpFundedMult は追加しない(資金化口座は別ログイン・InpMult + InpDynK で足りる)",
+   "runs": [
+    {
+     "date": "2026-10-14",
+     "summary": "10.6 年 MC・倍率 9 × 保持 4 × 頻度 2 × 口座 2 型 → docs/360。InpFundedMult 不要"
+    }
+   ]
+  },
+  {
+   "id": "Q87",
+   "slug": "book_mix_auto",
+   "title": "帳簿リスク寄与の自動計算(forward/book_mix.py・毎月 1 日)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/361_q87_book_mix_auto.md"
+   ],
+   "note": "docs/318 §3/§8a を自動化。目標からの乖離 ±10pt 超を改正案に",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 10,
+   "result": "forward/book_mix.py(共分散法 + 単位 vol 法・建玉の族判定)。現行 Mon 78% / その他 11 / Roll 0 / Hold 11(資金化後 73 / 9 / 0 / 18)。Mon は目標 40–50 を +28pt 超だが期待値最大の編成として採用済み(docs/349 §9c)→ 今は変更しない。毎月 1 日に運用ダイジェストから実行し月次改正案へ",
+   "runs": [
+    {
+     "date": "2026-10-15",
+     "summary": "book_mix.py 作成・初回実行 → docs/361。Mon 78% 目標超(変更しない・11/1 で再判定)"
+    }
+   ]
+  },
+  {
+   "id": "Q94",
+   "slug": "tester_automation",
+   "title": "ストラテジーテスターの自動化(terminal64 /config:tester.ini → Drive _tester/)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/362_q94_tester_automation.md"
+   ],
+   "note": "chien_deploy に run_tester()。Q1 の B 段パリティを人手なしで回す",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 11,
+   "result": "ops/vps/chien_tester.py 1.0(テスター専用ポータブル端末で /config:tester.ini → Drive _tester/)+ forward/tester_parity.py(htm 約定表 → 月次・取引数比・損益差・判定)。実行は VPS 側でテスター端末の準備後(切替 10/17–18 の後)。Q1 B 段と Q95 の受け入れに使う",
+   "runs": [
+    {
+     "date": "2026-10-16",
+     "summary": "実装 + 自己検査 → docs/362。VPS での実行はテスター端末準備後"
+    }
+   ]
+  },
+  {
+   "id": "Q95",
+   "slug": "ea_core_include",
+   "title": "EA 共通部の include 化(mql5/include/chien_core.mqh)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/363_q95_ea_core_include.md"
+   ],
+   "note": "Q94 のパリティで include 版 = 現行版を確認してから切替",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 12,
+   "result": "10 本で本体一致の 28 関数(243 行)を mql5/include/chien_core.mqh に分離。試作 EA3 v1.20_inc は include 展開で v1.19 と同一(関数集合・本文・関数外テキスト一致)。分岐 13 関数(MoneyPerUnit/PipOf/ResolveSymbol 等)は第 2 段。コンパイル・Q94 パリティ・deploy の include 取り込みは 11/1 改訂で",
+   "runs": [
+    {
+     "date": "2026-10-19",
+     "summary": "chien_core.mqh 1.0 + EA3 v1.20_inc(未配備・未コンパイル)→ docs/363"
+    }
+   ]
+  },
+  {
+   "id": "Q96",
+   "slug": "p1_p2_lock_switch",
+   "title": "P1 通過 → P2 のロック自動切替(設計)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/364_q96_p1_p2_lock_switch.md"
+   ],
+   "note": "設計書のみ。実装は 11 月の EA 改訂で",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 13,
+   "result": "B 案(manifest の段階切替)を採用: ensure[].inputs でチャートの <inputs> に P1/P2 のロック値を注入・successor で後継口座(新ログイン)に P2 値を自動適用・3 条件(残高±0.5%・前任の PROFIT LOCK・同一業者)で照合。EA 側は InpExpectedInitBal の照合ガードとロック永続化のみ(v+0.01)。A 案(EA 自動検知)は段階を安全に知る手段が無く不採用。実装は 11/1(deploy → EA → agent 1.9)",
+   "runs": [
+    {
+     "date": "2026-10-20",
+     "summary": "設計書 docs/364(B 案採用・セル 0)"
+    }
+   ]
+  },
+  {
+   "id": "Q88",
+   "slug": "purchase_mc_2026-11",
+   "title": "11 月購入候補の MC 比較(11/1 実行・10 月分までのレグ DB)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/383_q88_purchase_mc_2026-11.md"
+   ],
+   "note": "FTMO Std 100k+EA10 / Fintokei チャレンジ / FN Stellar / Alpha Capital Swing / The5ers。docs/318 §2 の業者上限を制約。実行日 2026-11-01 以降(10 月データが揃ってから)",
+   "registered": "2026-10-01",
+   "program": "docs/322",
+   "order": 14,
+   "result": "36 か月 MC(同一帳簿・残し 20%・半分出金): 1 位 The5ers HS 100k + A 案 ×1.5(年価値 177・到達 81 / 失格 15%)、2 位 FTMO Std 100k + EA10S ×2.0(128・74 / 17%・FTMO 比率上限のため 4 社目の後)、3 位 CTI(The5ers の代替)。E8 One は出金関門で出金月の 8 割繰り越し・失格 63% で見送り。FN 25k ×3・Fintokei・Alpha は対象外",
+   "runs": [
+    {
+     "date": "2026-10-28",
+     "summary": "docs/383(診断・セル 0・ユーザー指示で 11/1 から前倒し)"
+    }
+   ]
+  },
+  {
+   "id": "Q97",
+   "slug": "fn_14166201_redesign",
+   "title": "FN 14166201 の構成見直し(Mon4 核の候補 MC・FN 規則)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/371_q97_fn_14166201_redesign.md"
+   ],
+   "note": "Q85 で非FX+Roll は全格子不可。FN Stellar 規則(目標 8%・床 10%・日次 5%)で Mon4 核の候補を Q85 と同じ格子で比較し、Q87 の家族配分目標と整合させる。EA は別ファイル(版 +0.01)で用意、配備は「切替」後",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 15,
+   "result": "現行(非FX+Roll ×3)と BTC/ETH 外しは全格子で不可行(最悪年失格 29〜53%・Hold UK100/WTI の 2022/2024 が原因)。FN 内で空いている Mon CADJPY/CHFJPY + Mon GER40 ×0.5 + Roll ×1(C6)が可行: 規則上 ×4.0/日次 3%(到達 96.1・失格 3.2・最悪年 10.0 境界)、推奨 ×3.0/日次 3%(到達 93.8・失格 3.2・最悪年 8.5・中央 62 日)。11/1 改正案(P2 から・「切替」後)。FN 書面で異銘柄指数の同日同方向を要確認",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "docs/371(診断・セル 0・7 候補 170 行・C6 ×3.0 推奨)"
+    }
+   ]
+  },
+  {
+   "id": "Q98",
+   "slug": "ea10_mult2_variant",
+   "title": "EA10 ×2.0 版の作成(新規 FTMO Std 用)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/374_q98_ea10s_x2_new_ftmo_std.md"
+   ],
+   "note": "Q85 の採用点(×2.0・日次 5%・床 10%)。EA10 の InpMult/ガード既定値を変えた別ファイル。manifest の ftmo_std100k_new は変更しない(購入時にユーザー判断)",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 16,
+   "result": "EA10S v1.07 を別ファイルで作成(mql5/【FTMO100k_新規Std】EA10S_…_v1.07.mq5): Mon4 ×2.0・Brk ×1.2・Hold 0.18・日次 4.8%・床 −9.8%・Magic 944820。コードは EA10L v1.06 と同一。manifest 不変(購入時に「切替」)。Q88 で EA10 ×3.3 と比較",
+   "runs": [
+    {
+     "date": "2026-10-22",
+     "summary": "docs/374(工学・セル 0・EA10S v1.07 作成)"
+    }
+   ]
+  },
+  {
+   "id": "Q99",
+   "slug": "roll_x3_guard_grid",
+   "title": "Roll ×3.0 版のガード格子(11/1 判定後)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/391_q99_roll_x3_guard_grid.md"
+   ],
+   "note": "docs/279 §4 の 10 月判定が正なら、トパーズ EA11 の Roll ×3.0 を Q85 と同じ格子で再計算。実行は 11/1 以降",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 17,
+   "result": "現行帳簿(Mon4 ×8 + 指数 Mon 各 1.0)に Roll ×{0,1,2,3} を足した Q85 格子 36 セル: 現行ガード(4%/9%)で ×3 は到達 91.4→92.6・失格 8.6→7.4、可行セルは日次 3%/床 10% のみ(×1〜3)。2.8% 残高ガード込みの 10.6 年 MC では到達 84% 不変・失格 8→10%・資金化後の期待 +0.4pt/年。変更しない(Roll 停止継続・D 案は資金化後に再評価)。10 月の水曜監視(docs/279 §4 の解禁条件)は Dukascopy 429/503 で取得未了・結論は依存しない",
+   "runs": [
+    {
+     "date": "2026-11-02",
+     "summary": "docs/391(診断・セル 0・36 格子・変更しない)"
+    }
+   ]
+  },
+  {
+   "id": "Q100",
+   "slug": "miss_detect_auto",
+   "title": "建て損ね検知の自動化(予定表を manifest から生成し毎週照合)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/386_q100_exec_schedule.md"
+   ],
+   "note": "exec_gap.py の SCHEDULE 手書きを deploy_manifest + EA 入力(レグ・ショット・曜日)から生成。毎週月曜のダイジェストで建て損ねを 1 行報告",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 18,
+   "result": "forward/exec_schedule.py: manifest + EA 入力から予定表を生成し週次照合(建て損ね・二重建て検知)。初回照合で FN 14074882 が 10/19 以降 全ショット 2 本建て(別端末の疑い)を検出。ダイジェストに組み込み",
+   "runs": [
+    {
+     "date": "2026-10-29",
+     "summary": "docs/386(工学・セル 0)"
+    }
+   ]
+  },
+  {
+   "id": "Q101",
+   "slug": "topaz_eth_mon_missing",
+   "title": "トパーズ Mon の指数 2 本(NAS100 / US500)と旧 ETHUSDp が建たない原因 — 銘柄解決・スプレッド上限・建て時刻",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/241_deployment_register_2026-09-14.md"
+   ],
+   "note": "10/5 に ETHUSDp の Mon 建玉なし・ログに理由なし。EA11 のスプレッド上限 45 pip・ResolveSymbol・取引時間を点検し、必要なら v+0.01 でログ行を追加 【10/28 ダイジェスト】positions.csv で v1.15(10/12)以降トパーズに指数 Mon の建玉が 1 本も無いことを確認。10/27 11:00 の v1.17 INIT で「NAS100 を解決できず→スキップ」(US500 → US500p は解決)。原因候補: (a) Fintokei の Nasdaq 銘柄名が NAS100 系でない(全銘柄走査でも不一致・ユーザーに気配値表示の名称を確認)、(b) InpMonSpreadCaps に指数が無く既定 3.0 pip が指数に適用され常時見送り(Instant G は bps 上限 3.0)、(c) 建て時刻が FX と同じ 4/6/8/10 UTC で米国現物寄り前(Instant G / EA9 は 13:30 UTC +8 分)。v1.18 で G 型(bps 上限・米国寄り窓・別名)を移植する案。配備は「切替」の後",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 19,
+   "result": "原因確定(10/28 Util 診断): Fintokei の Nasdaq は US100p(NAS100 は名称不一致で未解決)、US500p は円クロス用 3.0 pip 上限(実スプレッド 57 pt)で常時見送り。旧 ETHUSDp も同じ上限の問題。EA11 v1.18(実名・bps 上限・米国寄り単発)を用意、配備は「切替」待ち",
+   "runs": [
+    {
+     "date": "2026-10-28",
+     "summary": "docs/241 §1af(工学・セル 0)"
+    }
+   ]
+  },
+  {
+   "id": "Q102",
+   "slug": "monthly_scoring_routine",
+   "title": "実口座の月次採点(docs/219 系)の Routine 化",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/387_q102_monthly_scoring_routine.md"
+   ],
+   "note": "毎月 1 日の採点を ops_inbox の記録から自動実行し、月次改正案に載せる。手順は docs/219 系と同じ",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 20,
+   "result": "forward/monthly_scoring.py: ops_inbox から月次 %・族別・分布照合・R<0/5% 割れの連続回数を生成。試走 2026-10 は 9/10 口座プラス・5% 割れ 0。毎月 1 日のダイジェストに組み込み",
+   "runs": [
+    {
+     "date": "2026-10-30",
+     "summary": "docs/387(工学・セル 0)"
+    }
+   ]
+  },
+  {
+   "id": "Q103",
+   "slug": "ea_log_alert_classify",
+   "title": "EA ログの警告を agent 側で分類(MONTH STOP など)しダイジェストへ",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/388_q103_ea_log_classify.md"
+   ],
+   "note": "chien_ops_agent の抽出に [MONTH STOP]/[BAL GUARD]/[DAILY STOP] の分類と直近 30 日の保持を追加(agent 1.8)。Q83 の建て損ね原因を記録から確定できるように",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 21,
+   "result": "agent 1.8: マーカー追加(SKIP/RETRY/STOP/PAYOUT 等)・category 列(既知/停止/見送り/建て/情報)・30 日保持・status に分類別件数。ops_ingest は停止だけを警告に。反映は chien_setup.bat 再実行(ユーザー)",
+   "runs": [
+    {
+     "date": "2026-10-30",
+     "summary": "docs/388(工学・セル 0)"
+    }
+   ]
+  },
+  {
+   "id": "Q104",
+   "slug": "holiday_skip_parity",
+   "title": "祝日スキップの実口座パリティ(10/5 AUDJPY で初確認 → 他の祝日)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/392_q104_holiday_skip_parity.md"
+   ],
+   "note": "Q53/Q56 の祝日表と実口座の [Mon SKIP] ログを照合し、研究系列の除外日と EA の除外日が一致するか毎月確認する装置",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 22,
+   "result": "EA の InpJpHolidayMondays(祝日月曜+翌火曜祝日の月曜 11 日)・InpAuNzHolidayMondays(NSW+NZ 12 日)は jpholiday/holidays の期待集合と 2027-12 まで完全一致。除外日 4 回(10/5 豪・10/12 JP・10/26 NZ・11/2 翌火曜 JP)で除外日に建てた例 0(11/2 は 9 口座 [Mon SKIP] 50 行)。変更しない。毎月 1 日に同スクリプトで再確認。付記: ルビー/パール/14166201 の EA が InpExpiry 10/31 到達で新規停止(ユーザー判断待ち)",
+   "runs": [
+    {
+     "date": "2026-11-02",
+     "summary": "docs/392(診断・セル 0・カレンダー一致・違反 0・変更しない)"
+    }
+   ]
+  },
+  {
+   "id": "Q105",
+   "slug": "p2_lock_optimize",
+   "title": "P2 のロック値最適化(目標 5/6% × ロック幅・MC)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/393_q105_p2_lock_optimize.md"
+   ],
+   "note": "FTMO P2 4.9/5.05・Fintokei 5.9/6.05 の現行値を、レグ DB の MC で到達率・失格率の格子にかけて検証。基準は Q85 と同じ",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 23,
+   "result": "Q85 と同じ MC で 6 帳簿 × (ロック幅 c × アーム幅 g) 25 格子。ロック幅 c は到達・失格に無感応(±0.1)。アーム幅 g(Arm < Close の隙間・現行 0.15pp)は建玉なしで帯に着地すると通過も再開もしない「滞留」を生み、トパーズ 3.5% / ルビー 4.9% / C6 12.4%(到達 −3.4〜−12pt)。Arm = Close で滞留 0・失格不変。変更する: 全 EA で InpLockArmPct = InpLockClosePct(入力のみ・v+0.01・切替後)。P1 の現行 7.9/8.05 も同じ構造",
+   "runs": [
+    {
+     "date": "2026-11-03",
+     "summary": "docs/393(診断・セル 0・提案: Arm = Close・9 EA の v+0.01 を用意)"
+    }
+   ]
+  },
+  {
+   "id": "Q106",
+   "slug": "fintokei_concurrent_risk",
+   "title": "同時保有リスク 3% 警告(Fintokei)の実測と EA の警告線",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/394_q106_fintokei_concurrent_risk.md"
+   ],
+   "note": "トパーズ・ルビーの建玉から同時保有リスク(SL 到達時の損失合計)を日次で計算し、3% 警告線との距離をダイジェストに出す。EA の警告線との整合も確認",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 24,
+   "result": "実損グループ最悪: トパーズ −0.84%・ルビー −0.12%・パール −0.08%(警告相当 0 時間)。SL 同時到達の最悪はトパーズ −6.86%(10/26・うち 4.8pt は 10/28 決済の旧 Hold 残玉)。EA 日次ガード(2.8/4.0)との隙間は『前日確定損 + 翌日含み損』の構造のみ(発生 0)。判定: EA 変更なし・グループガードは 11 月候補・ダイジェストに距離を追加(ops_ingest → q106 --snapshot)",
+   "runs": [
+    "2026-11-03 evening"
+   ]
+  },
+  {
+   "id": "Q107",
+   "slug": "candidate_interim_auto",
+   "title": "紙上フォワード候補 16 本の中間判定を毎月自動化",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/395_q107_candidate_interim.md"
+   ],
+   "note": "docs/229 §4 の 6 か月判定(2026-10〜2027-03)の累積を毎月 1 日に自動集計し、月次改正案に載せる。判定基準は変えない",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 25,
+   "result": "forward/candidate_interim.py を追加し paper_forward.py 末尾から自動実行(docs/229 §4 の規則不変)。10 月: 25 本中 19 本 +・棄却確定 0。不具合 2 件を解消(時間足系 6 本の月次 H1 継ぎ足し・HoldSL10 後の base.DATA 凍結)",
+   "runs": [
+    "2026-11-04 morning"
+   ]
+  },
+  {
+   "id": "Q108",
+   "slug": "payout_rules_check",
+   "title": "資金化後の出金・残高扱いの実測(FN/FTMO 規約の再確認)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/396_q108_payout_rules_check.md"
+   ],
+   "note": "Q86 の MC の前提(出金周期・出金後の残高・利益分配率)を各社の現行規約から確認し、docs に表で残す。KYC 等の業者手続きには触れない",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 26,
+   "result": "Fintokei・FN 2-Step は MC 前提(月次・超過分のみ・静的床・80%)どおり。FTMO 2-Step は Reward=全利益分配・口座は額面に戻る(緩衝はロールオーバー、ロール後の床基準は未公表→FTMO に確認案)。FTMO 1-Step は EOD トレーリング床・出金で全リセット・ロール不可で、MC の静的床が誤り: 資金化後 ×3.125 は規約床で 1 年失格 40%(MC 9%)、最適は毎サイクル全額 Reward。FN Instant は 70%(Tier1-2)と建値ロック床で MC 楽観。運用変更なし・Q 候補 A(MC 修正)B(FTMO 請求方針)を提案",
+   "runs": [
+    {
+     "date": "2026-11-04",
+     "summary": "規約 5 プラン照合 + 参考計算 13 変形(セル 0)→ docs/396。出金規則は変更なし。portfolio_sim の 1-Step/Instant の床は要修正(Q 候補 A)"
+    }
+   ]
+  },
+  {
+   "id": "Q109",
+   "slug": "hold_reentry_cost",
+   "title": "Hold の再エントリー規則と月初コストの実測",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/398_q109_hold_reentry_cost.md"
+   ],
+   "note": "Q83 で参考扱いだった Hold(UK100/WTI/XAU)の実口座の建て直し(9/14・9/21・9/25)と研究系列の月初 5 bps コストを突き合わせ、Hold の執行差を測る",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 27,
+   "result": "建て直し 1 回の直接コストは 2〜7 bps で研究の月初 5 bps と整合。欠落はスワップ: FTMO XAU/GER40 −50 bps/月・FN 14074882 XAU −76 bps/月(研究は 0・Hold XAU 粗利の 3〜4 割)。swap-free(Fintokei スイング・FN 14166201)は 0。9 月の露出欠落は EA 入替・手動・誤ロックが原因で規則不変。WTI は CL=F 基差で研究が楽観。Q 候補 C(スワップ込み帳簿 MC・Hold XAU 重み再検討)・D(WTI を Dukascopy スポットに)を提案",
+   "runs": [
+    {
+     "date": "2026-11-05",
+     "summary": "ops_inbox の RFHold 18 件(6 口座)を Yahoo 日足と照合。建て直し 1.6〜7 bps、スワップ −49〜−76 bps/月、露出欠落 5 件(運用事象)。docs/398"
+    }
+   ]
+  },
+  {
+   "id": "Q110",
+   "slug": "vps_consolidation_design",
+   "title": "VPS 1 台への集約設計(手元 PC 依存の解消)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/328_q110_single_vps_design.md"
+   ],
+   "note": "docs/317 §0 の最終解。手元 PC の毎時エージェントと MQL5 VPS の役割を 1 台の VPS に集約する構成案(費用・手順・リスク)。実施はユーザー判断",
+   "registered": "2026-10-06",
+   "program": "docs/322 第2期",
+   "order": 28,
+   "result": "設計書: Windows VPS 1 台(ロンドン 4 vCPU/8GB・月 $15〜55)に端末 10 本 + エージェント + claude remote-control。MQL5 VPS($115〜135/月)を 1 か月並走後に解約。切替は停止→装着の順(二重稼働禁止)。実施はユーザーの VPS 購入後(ユーザー 10/7 前倒し指示)"
+  },
+  {
+   "id": "Q111",
+   "slug": "vps_log_push_webrequest",
+   "title": "VPS ログ送信(EA WebRequest + Apps Script)と決済コメント理由コード",
+   "cells": 0,
+   "status": "in_progress",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/327_q111_vps_log_push.md"
+   ],
+   "note": "EA が VPS 上から [SKIP]/[HALT]/[MONTH STOP]/[ENTRY] 等の行・毎時スナップショット(残高・有効証拠金・建玉)・決済取引を HTTPS POST し、Apps Script が Drive chien_ops/<口座>/vps_log.csv に追記。決済コメントに理由コード(|SL |MONTHSTOP 等)。include 化(Q95)に組み込み、URL は InpLogUrl(.set 側・公開リポジトリに書かない)。WebRequest は事象時と毎時のみ・タイムアウト 2 秒。ops_ingest に読み込みを追加し『最後の受信から 2 時間以上』をダイジェストで警告。PC エージェントは保険として維持。実施(許可 URL 登録・再移行)は 11 月の切替と同時",
+   "registered": "2026-10-07",
+   "program": "docs/322 第2期",
+   "order": 29,
+   "result": "記録版 10 本生成(別ファイル・版 +0.01)+ Apps Script 受け口 + ops_ingest 取り込み。配備は不変。切替(manifest 更新・許可 URL・再移行)はユーザーの「切替」後 → 完了で done"
+  },
+  {
+   "id": "Q112",
+   "slug": "crypto_prop_fit",
+   "title": "暗号資産プロップの規約照合と ETHUSD Mon / BTC v4 / Hold BTC の適合(診断)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/331_q112_crypto_prop_fit.md"
+   ],
+   "note": "診断(セル 0)。業者 3〜4 社の規約(DD の型・日次上限・週末保有・最小取引日数・出金条件)・費用・出金実績を照合し、研究系列(ETHUSD Mon4 / v4 BTCUSD / Hold BTCUSD)の MC を各規約に当てて到達率・失格率を出す。提案は「候補業者と 1 口座目の構成 / 見送り」。購入はユーザー判断",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 30,
+   "result": "見送り: 暗号資産 3 レグは 5 年で Sharpe −0.1〜0.2(Mon ETH 年率 +1.9%・DD −42%)。MC 到達 40〜70% はボラ由来で失格 25〜60%。規約は Hyro(自前ボット可)・Breakout(信用最高・自動売買未確認)。再検討は標準基準通過か暗号資産のみの RecentFit 校正で失格 <10%"
+  },
+  {
+   "id": "Q113",
+   "slug": "futures_prop_fit",
+   "title": "先物プロップの適合性(診断): CME ミクロ 10 銘柄に族を写像し、17:00 ET 前フラット制約下で残るセルを数える",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/332_q113_futures_prop_fit.md"
+   ],
+   "note": "診断(セル 0・探索しない)。MES/MNQ/M2K/MYM/MGC/SIL/MCL/MNG/6J/MBT に Mon 指数・Hold・Roll5・v4 を写像し、『日次クローズ前にフラット・週末不可・EOD トレーリング DD・一貫性ルール』の下で既存セル(H1 データの日中版)が IS/OOS で符号を保つかを数える。残るセルがあれば次キューの探索候補として事前登録案を書く(基準は docs/244 §1 のまま)。残らなければ撤退を提案",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 31,
+   "result": "保留: 先物プロップは全社フラット 16:10〜16:59 ET・持ち越し不可(Elite Diamond Hands のみ例外)。使えるのは日中版 Mon 指数 1 族(7/8 セルで符号維持・標準基準は 0・JP225 は日中版が OOS 1.52)。50k MC ×3 で到達 74%/失格 22%・年率 +9.6%。自動化可で VPS 可は MFFU と Tradeify。実験するなら MFFU Rapid 50k。次キュー候補: 日中版 Mon 指数 4 セル(改良系)"
+  },
+  {
+   "id": "Q114",
+   "slug": "mon_index_intraday",
+   "title": "Mon 指数の日中版(改良系・4 セル): 月曜 13 UTC 建て → 同日 20 UTC 決済 vs 配備形 24h",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/332_q113_futures_prop_fit.md",
+    "docs/333_q114_mon_index_intraday.md"
+   ],
+   "note": "docs/332 §2 の副産物。US500 / NAS100 / US30 / JP225 の h13 について、日中版(→ 20 UTC)が 24h 版を改良系基準(IS・OOS 両方で Sharpe 改善 かつ 最悪月が悪化しない)で上回るか。h14 は参照のみ。通過 → 紙上候補(CFD でも使える)・11 月改訂案の Mon 指数レグ(11988011 G案)の出口候補。先物口座の購入とは独立",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 32,
+   "result": "改良 2/4: US30(Sharpe +0.06/+0.20)・JP225(IS 0.64→0.98・OOS −0.56→1.52・最悪月改善)で成立。US500/NAS100 は OOS 改善だが IS 悪化で不成立 → 11988011 の出口は不変。US30/JP225 を紙上候補 MonIdxIntra に追加"
+  },
+  {
+   "id": "Q115",
+   "slug": "futures_vs_cfd",
+   "title": "先物 vs 現物 CFD(4 セル + 参照): Q114 の Mon 指数 13→20 UTC を CME 先物連続限月(Yahoo ES/NQ/YM/NKD)で再現し同一期間の CFD と比較",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/334_q115_futures_vs_cfd.md"
+   ],
+   "note": "ユーザー「先物と現物で比較できますか」→「登録して直ぐに進めてください」。H1 は 2024-05〜(Yahoo 730 日制限)、日足 2016〜は月曜セッション形で参照。先物コスト ES 0.6/NQ 0.3/YM 0.5/NKD 1.5 bps。先物データは data_yahoo_fut/ にキャッシュ(git 管理外)",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 33,
+   "result": "週次リターン相関 0.99・符号一致 97〜100%・先物が +1.4〜3.5 bps/回(コスト差)。CFD の Mon 指数結果は先物でそのまま成立。標準通過 0(IS 8 か月で判定不能)。NKD は米ドル建てで長期は円建て JP225 と乖離 → NIY 要確認"
+  },
+  {
+   "id": "Q116",
+   "slug": "niy_vs_jp225",
+   "title": "円建て日経先物 NIY=F で Mon JP225 13→20 UTC を再現し JP225 CFD・NKD と比較(1 セル + 参照)",
+   "cells": 1,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/335_q116_niy_vs_jp225.md"
+   ],
+   "note": "ユーザー「NIY も登録して直ぐに進めてください」(docs/334 §4 の要確認)。Yahoo の NIY 日足は清算値のみのバーが多く、日足参照は清算→清算に変更。コスト 1.5 bps",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 34,
+   "result": "H1 13→20: NIY vs JP225 CFD 相関 1.000・符号一致 99%・差 +1.8 bps(コスト差)。NIY vs NKD 0.999。日足清算→清算は 0.90〜0.95。日経系は先物(円建て/ドル建て)に流用可。先物口座ではサイズ過大(NIY 1 枚 ≈ 2,000 万円)→ 日経は CFD 側に残す"
+  },
+  {
+   "id": "Q117",
+   "slug": "mffu_tradovate_bot",
+   "title": "MFFU(Tradovate)向け先物ボット: Mon 指数 日中版(MES/MNQ/MYM・13→20 UTC)の発注ボット実装と紙上パリティ",
+   "cells": 0,
+   "status": "in_progress",
+   "sessions_planned": 3,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/336_q117_mffu_tradovate_bot.md"
+   ],
+   "note": "ユーザー「MFFU の Tradovate ボット実装を登録して進めてください」。判断と発注を分離(transport = dry / webhook(TradersPost)/ tradovate REST 未検証)。プロップ口座には Tradovate API キーが出ないため送信は Webhook 橋渡しが前提。MFFU の自動化規約(監視なし完全自律の可否)は購入前に書面確認。秘密は config.json(git 管理外)のみ",
+   "registered": "2026-10-09",
+   "program": "docs/322",
+   "order": 35,
+   "result": "v0.1: ops/futures/mffu_bot.py(限月ロール・休場/HALT/冪等・3 実行 entry/exit/check)+ テスト 5 本通過 + タスク登録 ps1 + 設計 docs/336。次: MFFU 規約確認 → 購入 → TradersPost 紙口座で 4 週パリティ → 切替"
+  },
+  {
+   "id": "Q118",
+   "slug": "roll5_dayshift",
+   "title": "Roll5 の引け前シフト(新規 4 セル): 水曜 USDJPY SHORT を 12/14/16/18 → 20 UTC に移して符号を保つか",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/337_q118_roll5_dayshift.md"
+   ],
+   "note": "ユーザー「ロール系は該当しないですか」→「登録」。配備形 Roll5(20→00 UTC)は先物プロップ不可のため、引け前に移した形を標準基準で検証。参照: 5 クロス等ウェイト・配備形",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 36,
+   "result": "4 セル全て全窓で負(IS Sharpe −0.3〜−0.9・OOS −1.3〜−3.1)。水曜 JPY 効果は 20〜00 UTC に局在。棄却・先物口座には Roll 系を載せない"
+  },
+  {
+   "id": "Q119",
+   "slug": "niy_liquidity",
+   "title": "NIY の米国時間帯の流動性とコスト感応度(診断・セル 0): 先物口座の 4 本目に載せられるか",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/338_q119_niy_liquidity.md"
+   ],
+   "note": "ユーザー「他に先物口座に載せられる系列はありますか」→「登録」。Yahoo H1 出来高(NIY vs NKD・米国時間 vs 東京時間)とコスト 1.5/3/5/8 bps の感応度",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 37,
+   "result": "NIY は米国時間に 1,400 枚/H1(NKD の 4 倍)・ゼロ出来高 0.2%・コスト 8 bps でも Sharpe 1.04 → NIY 1 枚を 4 本目に追加(ユーザー設定待ち)。6J 日中版は紙上候補 MonJpyIntra6J"
+  },
+  {
+   "id": "Q120",
+   "slug": "dynamic_contracts",
+   "title": "先物口座の枚数の動的化(工学・セル 0): 残余 MLL 連動の縮小規則 A/B/C を MC で固定と比較",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/339_q120_dynamic_contracts.md"
+   ],
+   "note": "ユーザー「新しい手法を立案してください」→「おすすめで進めてください」で Q120〜Q124 を一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 38,
+   "result": "規則 A(残余 < 50% 半分・< 25% 休み)で sim 失格 44→18%・Live 32→14%、手取り −15〜20%。評価段階は固定、sim/Live で A を採用(v0.5 scaling)"
+  },
+  {
+   "id": "Q121",
+   "slug": "vix_gate_intraday",
+   "title": "VIX 門 × Mon 指数日中版(改良系 4 セル): 前金曜 VIX > 20/25 の月曜見送り(US500/NAS100)",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/340_q121_vix_gate_intraday.md"
+   ],
+   "note": "ユーザー「新しい手法を立案してください」→「おすすめで進めてください」で Q120〜Q124 を一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 39,
+   "result": "3/4 成立。VIX > 25 見送りが両指数で IS・OOS 改善・最悪月不変 → 先物ボット vix_gate(MES/MNQ)に採用"
+  },
+  {
+   "id": "Q122",
+   "slug": "exit_grid_intraday",
+   "title": "Mon 指数日中版の出口格子(改良系 6 セル): 20 UTC → 18/19 UTC",
+   "cells": 6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/341_q122_exit_grid_intraday.md"
+   ],
+   "note": "ユーザー「新しい手法を立案してください」→「おすすめで進めてください」で Q120〜Q124 を一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 40,
+   "result": "0/6。最終 1 時間が利益の大部分 → 20 UTC 維持"
+  },
+  {
+   "id": "Q123",
+   "slug": "thu_xau_intraday",
+   "title": "木曜 XAU の日中版(新規 1 セル): 13→20 UTC(MGC 向け)",
+   "cells": 1,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/342_q123_thu_xau_intraday.md"
+   ],
+   "note": "ユーザー「新しい手法を立案してください」→「おすすめで進めてください」で Q120〜Q124 を一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 41,
+   "result": "棄却(IS −0.37・前窓 −1.40)。木曜効果は夜間に局在"
+  },
+  {
+   "id": "Q124",
+   "slug": "wti_weekday_intraday",
+   "title": "原油の曜日×日中格子(新規 5 セル): WTI 月〜金 13→20 UTC LONG(MCL 向け)",
+   "cells": 5,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/343_q124_wti_weekday_intraday.md"
+   ],
+   "note": "ユーザー「新しい手法を立案してください」→「おすすめで進めてください」で Q120〜Q124 を一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 42,
+   "result": "0/5。月曜 IS 0.86 だが OOS −0.73、水曜 IS −1.41 → 棄却"
+  },
+  {
+   "id": "Q125",
+   "slug": "index_session_mon",
+   "title": "Mon 指数のセッション版(新規 9 セル): 日曜 22 / 月曜 0 / 7 UTC 建て → 20 UTC(US500/NAS100/US30)",
+   "cells": 9,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/344_q125_index_session_mon.md"
+   ],
+   "note": "第 3 期(先物向け・セッション版)。ユーザー「先物の方がコスパ良いので手法開拓が出来れば進めて欲しい」を登録指示として一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322 第3期",
+   "order": 43,
+   "result": "0/9 通過。OOS 2.1〜2.8 だが IS 0.1〜0.5。月曜 0 UTC 建ては全窓正で符号安定 → 紙上候補 MonIdxSession0"
+  },
+  {
+   "id": "Q126",
+   "slug": "index_session_weekdays",
+   "title": "指数セッション版の曜日格子(新規 12 セル): 火〜金 前日 22 UTC → 20 UTC",
+   "cells": 12,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/345_q126_index_session_weekdays.md"
+   ],
+   "note": "第 3 期(先物向け・セッション版)。ユーザー「先物の方がコスパ良いので手法開拓が出来れば進めて欲しい」を登録指示として一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322 第3期",
+   "order": 44,
+   "result": "0/12。月曜以外にセッション・ドリフト無し"
+  },
+  {
+   "id": "Q127",
+   "slug": "crypto_session_mon",
+   "title": "暗号資産の月曜セッション版(新規 4 セル・MBT/MET): ETH/BTC × {open→20, 13→20}",
+   "cells": 4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/346_q127_crypto_session_mon.md"
+   ],
+   "note": "第 3 期(先物向け・セッション版)。ユーザー「先物の方がコスパ良いので手法開拓が出来れば進めて欲しい」を登録指示として一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322 第3期",
+   "order": 45,
+   "result": "0/4。暗号資産は先物口座の対象外のまま"
+  },
+  {
+   "id": "Q128",
+   "slug": "gold_fx_session",
+   "title": "金・円のセッション版(新規 3 セル): XAU 木/月 open→20、USDJPY 月曜 open→20 LONG(6J)",
+   "cells": 3,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/347_q128_gold_fx_session.md"
+   ],
+   "note": "第 3 期(先物向け・セッション版)。ユーザー「先物の方がコスパ良いので手法開拓が出来れば進めて欲しい」を登録指示として一括登録・同日実行",
+   "registered": "2026-10-11",
+   "program": "docs/322 第3期",
+   "order": 46,
+   "result": "0/3。USDJPY 月曜セッションは IS p 1.5e-4・OOS 11/20 だが前窓 45% → 紙上候補 MonJpySession6J"
+  },
+  {
+   "id": "Q129",
+   "slug": "cfd_prop_expansion",
+   "title": "CFD プロップの 4 社目候補(診断・セル 0): 11 社の規約照合 × 3 帳簿 MC",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/348_q129_cfd_prop_expansion.md"
+   ],
+   "note": "ユーザー「業者を広げた場合に別手法の活用など出来るものは」→「登録」。規約調査は副エージェント(2026-10-10)。結果は 11/1 の Q88 購入候補へ",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 47,
+   "result": "候補 3 社: The5ers High Stakes(A 型帳簿・信用最大)、E8 One DD10%(Hold/Roll・swap-free 要確認)、CTI 2-Step(残高基準 DD)。Alpha/Maven/Goat は EA・VPS 規約で不可、BG/FTUK は含み損 2% ガードで不可。新手法は増えず Hold/Roll の枠が増える"
+  },
+  {
+   "id": "Q130",
+   "slug": "vps_agent_auth_retry",
+   "title": "VPS 記録エージェント: initialize −6(Authorization failed)の 1 回再試行(工学・セル 0)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/349_prop_account_register_2026-10-11.md"
+   ],
+   "note": "ユーザー「再試行の対策を登録してください」(2026-10-11)。10/10 22:00 UTC の 531466484 取得失敗(docs/349 §6f)への対策。agent 1.7c: -6 のときだけ 30 秒後に 1 回再試行・status.json に retried を記録。反映は VPS で chien_setup.bat 再実行(エージェントは自己更新しない)",
+   "registered": "2026-10-11",
+   "program": "docs/322",
+   "order": 48,
+   "result": "実装済み(ops/vps/chien_ops_agent.py 1.7c)。VPS 反映待ち。効果検証: status.json の agent_version=1.7c と、以後の -6 行の有無"
+  },
+  {
+   "id": "Q131",
+   "slug": "buffer_scaled_sizing",
+   "title": "余裕比例サイジング(工学+改良系): 静的床の口座で緩衝に比例して倍率を上げ、月末に初期残高 +保持率 超を出金する規則の EA 実装と検証",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 2,
+   "sessions_done": 2,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/349_prop_account_register_2026-10-11.md",
+    "docs/351_q131_buffer_scaled_sizing.md"
+   ],
+   "note": "ユーザー「登録」(2026-10-12)。docs/349 §8f: FTMO 50k Mon4 ×5 基準・k=1(余裕 20% で ×10)・10% 保持 → 1 年失格 7 → 10%・出金 2 倍(月 5 → 11 万)。範囲: (1) 評価段階(P1/P2 の静的床)と資金化後の両方で k ∈ {0.5,1,2}・保持率 {5,10,15}%・出金頻度 {2 週, 月} の 10.6 年 MC(5 口座型 Mon4 / B案 / EA9 / Mon3+Hold / 非FX+Roll)。(2) EA 共通部に InpDynK・InpKeepPct(既定 0 = 現行どおり)を追加した新版(別ファイル・版 +0.01)。判定: docs/244 §1 改良系(IS・OOS で Sharpe 改善・最悪月悪化なし)+ 失格率が固定倍率比で +5pt 以内。トレーリング床の口座(1-Step・MFFU・FN Instant)は余裕が動くので対象外。2026-10-12 ユーザー「優先順位で行ってください」→ 最優先(order 7.1)",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.1,
+   "result": "朝 1: 本口座で出金 2〜4 倍・失格 +1〜3pt(ガード無しでも 2〜3 倍・+2〜5pt)。評価段階は効かない。推奨 k=1・保持 10%・月次。朝 2: EA3 v1.18 / EA8 v1.36 / パール v1.09 / 14074882 v1.11 に InpDynK・InpKeepPct を実装(既定 0)。配備は「切替」待ち"
+  },
+  {
+   "id": "Q132",
+   "slug": "mffu_contracts_x2",
+   "title": "MFFU 枚数 ×2.0(10/4/10)の経路 MC(診断・セル 0): 日中ソフト停止 $2,500 を 1 分足で実装し ×1.5 と比較",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/353_q132_mffu_contracts_x2.md"
+   ],
+   "note": "ユーザー「優先順位で行ってください」(2026-10-12)。初回出金 60 → 62%・Live 48 → 53% の見込み(docs/349 §8a)。判定: Live 到達・初回出金の確率と sim 手取り期待が ×1.5 を上回り、失格が +5pt 以内 → config の qty 変更を提案(「切替」で)",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.3,
+   "result": "日中停止を入れると Live 到達 36 → 18〜21%(枚数に依らず)。増やすと Live 後の失格だけ増える。5/2/5 のまま・7/3/7 取り下げ。docs/336 §18 の Live 42% は過大"
+  },
+  {
+   "id": "Q133",
+   "slug": "topaz_mon4_plus_index",
+   "title": "トパーズ Mon4 ×8 + 指数 Mon(NAS100 / US500)帳簿(診断・セル 0): 2.8% ガード MC で §8e の Mon4 のみ案と比較",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/355_q133_topaz_mon4_plus_index.md"
+   ],
+   "note": "ユーザー「優先順位で行ってください」(2026-10-12)。Instant G と同型の指数 Mon を Fintokei スイングに載せる。判定: 5 月末までの到達率と資金化後の月収が Mon4 のみ案を上回り、失格が +3pt 以内。証拠金も確認",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.4,
+   "result": "Mon4 ×8 + 指数 Mon 各 1.0: 到達 82 / 失格 12%・6 月期待 31 万(Mon4 のみ 69 / 15%・15 万)。採用は Q92 の後・11/1 改正案へ"
+  },
+  {
+   "id": "Q134",
+   "slug": "payout_buffer_policy",
+   "title": "出金・緩衝の最適化(診断・セル 0): 固定倍率のまま 保持率 {0,5,10,15}% × 出金頻度 {2 週,月} の 1 年出金額と失格率(本口座 5 本・10.6 年 MC)",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 0.5,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/352_q134_payout_buffer_policy.md"
+   ],
+   "note": "ユーザー「優先順位で行ってください」(2026-10-12)。EA 変更なし・運用ルールだけ。全額出金(失格 12%)と 10% 保持(2%)の間の最適点を出し、11/1 改正案の出金規則にする",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.2,
+   "result": "全額出金は失格 4〜5 倍。固定倍率は保持 5%・月次が膝(失格 +1pt で出金 1.8 倍)。Q131 導入後は 10%。11/1 改正案の出金規則へ"
+  },
+  {
+   "id": "Q135",
+   "slug": "target_proximity_boost",
+   "title": "評価段階の目標直前ブースト(改良系・セル 0): P1/P2 の目標まで残り {1,2}% で倍率を {×0.5,×1.5,×2} にする規則の 10.6 年 MC",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/356_q135_target_proximity_boost.md"
+   ],
+   "note": "ユーザー「優先順位で行ってください」(2026-10-12)。目標到達の取りこぼし(目標直前で反転して失格)を減らせるか。判定: 到達率 +2pt 以上かつ失格率が悪化しない",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.6,
+   "result": "棄却: 残り 1〜2% の倍率変更は到達 ±1pt・失格 ±1pt"
+  },
+  {
+   "id": "Q136",
+   "slug": "mon4_concentration_dd",
+   "title": "Mon4 集中の同時ドローダウン実測(診断・セル 0): 全口座が同じ月曜に負ける確率と大きさ・§8e/§8f を全部採ったときの同時失格確率",
+   "cells": 0,
+   "status": "done",
+   "sessions_planned": 0.5,
+   "sessions_done": 1,
+   "docs": [
+    "docs/322_improvement_program_2026-11.md",
+    "docs/354_q136_mon4_concentration_dd.md"
+   ],
+   "note": "ユーザー「優先順位で行ってください」(2026-10-12)。収益ではなくリスクの把握。10.6 年の月曜ごとの帳簿合算損益の分布・最悪 5 日・同時失格の確率を docs に",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 7.5,
+   "result": "最悪 5 日は全部月曜・10 口座同時。1 年内 3 本以上同時失格 29%(独立 25%)・5 本以上 12%(独立 2.6%)・0 本 29%(独立 14%)"
+  },
+  {
+   "id": "Q137",
+   "slug": "jp_calendar",
+   "title": "日本固有の暦: SQ(第 2 金曜)・配当権利取り/権利落ち・期初の資金フロー(JP225・USDJPY・新規 18 セル)",
+   "cells": 18,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/357_q137_jp_calendar_sq_dividend_fiscal.md"
+   ],
+   "note": "ユーザー「登録して進めてください」(2026-10-12)。日本系で 10 年エッジの候補を探す。B・C は年 2 回で設計上判定不能(イベント単位の参照のみ)",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 48.1,
+   "result": "0/18 通過。A1(SQ 週前半 L)は 2021 年以降のみ、B1(権利取り L)は 3 窓同符号だが n=17・t 1.69"
+  },
+  {
+   "id": "Q138",
+   "slug": "local_calendar",
+   "title": "Q137 の型を銘柄別に: 各市場の先物満期週(前半・満期後)8 指数 + 春節(HK50)・豪会計年度末(AUS200)(新規 40 セル)",
+   "cells": 40,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/359_q138_local_calendar_by_index.md"
+   ],
+   "note": "ユーザー「同じ様に銘柄別で試作できますか」(2026-10-12)。Q8 の満期当日とは重複させない。S 族は年 1 回で設計上判定不能(参照のみ)",
+   "registered": "2026-10-12",
+   "program": "docs/322",
+   "order": 48.2,
+   "result": "0/40 通過。満期週は銘柄間で不一致、HK50 春節明け L は 3 窓とも対照超だが n=8 で観測のみ"
+  },
+  {
+   "id": "Q139",
+   "slug": "mon_sun22_shot",
+   "title": "Mon4 → Mon5: 週明け 日曜 22 UTC(東京オープン)ショットの追加/置換(20 UTC 決済)",
+   "cells": 8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/365_ext_tokyo_open_basket_check.md",
+    "docs/366_q139_mon_sun22_shot.md"
+   ],
+   "note": "外部提案(claude/zaption-check-m776m7)の照合 docs/365 から登録。改良系: 4 通貨 × {h4 置換, 5 本目追加}・ベース Mon4(h4/6/8/10・24h)。合格なら紙上フォワード(paper_forward MonSun22・登録時に追加済み)+ デモ端末で 22:00〜22:25 UTC の実スプレッドと取り逃しを計測 → 実コスト 10pip 以内なら 11/1 改正案で EA の InpMonHoursUTC に日曜 22 を足す版(v+0.01)。相手ブランチの EA は現行口座に載せない 2026-10-20 ユーザー「明日の検証結果を報告してください」→ order 14.5(10/21 朝の 1 本に前倒し)",
+   "registered": "2026-10-20",
+   "program": "docs/365",
+   "order": 14.5,
+   "result": "改良成立 8/8(4 通貨 × 置換/追加・IS/OOS とも Sharpe 改善・最悪月悪化なし)。実装は B(5 本目追加)優先。紙上フォワード MonSun22 ×4 は登録時に追加済み。採用は 22:00〜22:25 UTC の実スプレッド実測(往復 10pip 以内)後・11/1 改正案で EA v+0.01(InpMonSunShot) 【10/21 訂正 docs/367 §5】Sun22 UTC 建ては bid の沈み込みを含む。現実価格(ask 建て/bid 決済・2024〜26)では改善なし → 判定を不成立に改め、紙上フォワードの MonSun22 を外し、EA 組み込み提案を取り下げ",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "8 セル・改良成立 8/8 → docs/366・累積 9,784"
+    },
+    {
+     "date": "2026-10-21",
+     "summary": "訂正: 現実価格では改善なし(docs/367 §5)→ 不成立"
+    }
+   ]
+  },
+  {
+   "id": "Q140",
+   "slug": "bin_horizon_ladder",
+   "title": "バイナリー: 既知アノマリーの判定時刻の階段(月曜 7 時 JST 円クロス・毎日 7 時の 1H 家族 × 保有 2〜8h/23h)",
+   "cells": 48,
+   "note": "別ブランチ(theoption_validation)は 1H と 22/23H のみ検証。間の保有時間で WR が最大になる判定時刻を探す。セル: 月曜 7 時 JST(=日曜 22 UTC)HIGH の EURJPY/AUDJPY/NZDJPY/GBPJPY/CADJPY/CHFJPY × 保有 {2,3,4,6,8,23}h = 36 + 毎日 7 時 JST の EURGBP/CHFJPY/EURJPY/USDCHF HIGH × 保有 {2,3,4}h = 12。バイナリー向け判定(docs/244 §1b・2026-10-21 登録): 判定はトレード単位の勝率 WR を損益分岐 BE(1/ペイアウト: 1H 1.90→52.63%・22/23H 1.95→51.28%・不明は 1.90)と比べる。合格 = 探索窓(2021-10〜2024-12)で WR−BE ≥ +3pp かつ 二項 p(n 勝/N 回・BE 基準)< 0.05/累積セル数、OOS(2025-01〜)で WR > BE、前窓(2016-01〜2021-09)で WR > BE。Dukascopy H1 の始値→始値(ミッド)。HIGH/LOW は別セル。合格は紙上フォワード(別ブランチの probe 記録と突合)へ、実取引はユーザー判断。",
+   "order": 16.6,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/367_q140_bin_horizon_ladder.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 §1b(バイナリー)",
+   "result": "棄却。bid 始値ベースでは 21/48 セルが合格に見えるが、22 UTC(7 時 JST)のロールオーバーで bid が沈むアーティファクト。ミッド(2024〜26)では毎日 7 時家族は BE 前後(EURGBP のみ +4pp)、月曜 7 時の円クロス 2h は +6〜19pp で残る(紙上候補・10/26 の実記録で確認)。§1b を 20〜23 UTC 建てはミッド必須に修正",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "48 セル・棄却(bid アーティファクト)→ docs/367・累積 9,832"
+    }
+   ]
+  },
+  {
+   "id": "Q141",
+   "slug": "bin_session_open_1h",
+   "title": "バイナリー: 他市場オープン直後 1 時間の方向(フランクフルト 15 時・ロンドン 16 時・NY 22/23 時 JST)",
+   "cells": 64,
+   "note": "東京 7 時で効いた『開場直後の方向性』を他の開場に当てる。セル: 8 ペア(EURUSD/GBPUSD/EURGBP/USDCHF/EURCHF/USDJPY/EURJPY/GBPJPY)× 建て {06,07,13,14} UTC × {HIGH,LOW}、保有 1h、月〜金プール。EURCHF のデータが無ければ AUDUSD で代替。バイナリー向け判定(docs/244 §1b・2026-10-21 登録): 判定はトレード単位の勝率 WR を損益分岐 BE(1/ペイアウト: 1H 1.90→52.63%・22/23H 1.95→51.28%・不明は 1.90)と比べる。合格 = 探索窓(2021-10〜2024-12)で WR−BE ≥ +3pp かつ 二項 p(n 勝/N 回・BE 基準)< 0.05/累積セル数、OOS(2025-01〜)で WR > BE、前窓(2016-01〜2021-09)で WR > BE。Dukascopy H1 の始値→始値(ミッド)。HIGH/LOW は別セル。合格は紙上フォワード(別ブランチの probe 記録と突合)へ、実取引はユーザー判断。 【10/21 docs/367 §4】20〜23 UTC 建てのセルはミッド(bid+ask)/2 で判定し、2024〜26 で WR > BE+3pp を追加条件にする。",
+   "order": 16.7,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/368_q141_q142_bin_session_open_and_ports.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 §1b(バイナリー)",
+   "result": "棄却 0/64。探索窓で edge ≥ +3pp のセルも 0。他の市場開場には東京 7 時型の方向性は無い",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "64 セル・棄却 → docs/368 §1・累積 9,896"
+    }
+   ]
+  },
+  {
+   "id": "Q142",
+   "slug": "bin_port_known_families",
+   "title": "バイナリー: こちらで検証済みの家族の移植(木曜 XAU HIGH・月曜 米国指数 HIGH・水曜夜 円クロス LOW(Roll))",
+   "cells": 12,
+   "note": "新規探索ではなく既存家族の移植(多重性の負担が小さい)。セル: XAUUSD 木曜 07 JST→翌 06 JST(23h)HIGH = 1、US500/NAS100/US30 の月曜 07 JST→翌 06 JST HIGH と 22:30 JST→05 JST HIGH(H1 では 13→20 UTC)= 6、Roll: USDJPY/EURJPY/GBPJPY/AUDJPY/CADJPY の水曜 20→00 UTC(木曜 05→09 JST)LOW = 5。ザオプションに該当銘柄・判定時刻の商品があるかは別ブランチの fe_products_final.csv と 10/22・10/26 の記録で確認(無ければ『商品なし』と記録して終了)。バイナリー向け判定(docs/244 §1b・2026-10-21 登録): 判定はトレード単位の勝率 WR を損益分岐 BE(1/ペイアウト: 1H 1.90→52.63%・22/23H 1.95→51.28%・不明は 1.90)と比べる。合格 = 探索窓(2021-10〜2024-12)で WR−BE ≥ +3pp かつ 二項 p(n 勝/N 回・BE 基準)< 0.05/累積セル数、OOS(2025-01〜)で WR > BE、前窓(2016-01〜2021-09)で WR > BE。Dukascopy H1 の始値→始値(ミッド)。HIGH/LOW は別セル。合格は紙上フォワード(別ブランチの probe 記録と突合)へ、実取引はユーザー判断。 【10/21 docs/367 §4】20〜23 UTC 建てのセルはミッド(bid+ask)/2 で判定し、2024〜26 で WR > BE+3pp を追加条件にする。",
+   "order": 16.8,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/368_q141_q142_bin_session_open_and_ports.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 §1b(バイナリー)",
+   "result": "登録基準(セル単位)では棄却 0/12。Roll(水曜 20→00 UTC 円クロス LOW)は 5 本とも探索 +9〜13pp・OOS +11〜23pp・ミッド +10〜20pp で一貫(USDJPY/GBPJPY はミッド単独で閾値通過)→ 家族プール 1 セル(Q143)の登録を提案。指数月曜日中は +7pp、23h と金は弱い。US500/US30 の日曜 22 UTC はバー無しで無効",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "12 セル・棄却(家族プール Q143 を提案)→ docs/368 §2・累積 9,908"
+    }
+   ]
+  },
+  {
+   "id": "Q143",
+   "slug": "bin_roll_family_pool",
+   "title": "バイナリー Roll: 水曜 20〜00 UTC(木曜 05〜09 JST)円クロス LOW の家族プール(1 セル)+ 商品の有無",
+   "cells": 1,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/368_q141_q142_bin_session_open_and_ports.md",
+    "docs/369_q143_bin_roll_family_pool.md"
+   ],
+   "note": "docs/368 §3 の提案を登録(ユーザー「登録」2026-10-21)。5 本の勝敗を連結して §1b で判定(探索 WR−BE ≥ +3pp・二項 p < 0.05/累積・OOS と前窓で WR > BE)+ ロールオーバー帯なのでミッド(2024〜)でも edge ≥ +3pp かつ p < 閾値。商品: ザオプションに木曜 05:00 JST 建て → 09:00 JST 判定があるかは別ブランチの記録で確認(無ければ 1H ×4 の各時間を別途検証)。",
+   "registered": "2026-10-21",
+   "program": "docs/244 §1b(バイナリー)",
+   "order": 16.9,
+   "result": "棄却(前窓 51.3% < BE 52.6%)。探索 63.3%(p 2.4e-10)・OOS 69.1%・ミッド 68.0%(p 1.8e-15)は通過だが、2016〜17・2021 は逆向きで局面依存(金利差仮説)。CFD の Roll5(14166201 ×4.5)にも同じ注意 → Q97/11/1 で停止条件の仮説登録を検討",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "1 セル・棄却(前窓不合格)→ docs/369・累積 9,909"
+    }
+   ]
+  },
+  {
+   "id": "Q144",
+   "slug": "rollover_short_rescan",
+   "title": "ロールオーバー帯(21〜23 UTC 建て)の売り建て・買い決済セルを現実価格で再走査",
+   "cells": 114,
+   "note": "docs/367 の bid アーティファクトの逆: 21〜23 UTC に売り建て(または買いの決済)するセルは bid 評価で 20pp 前後不利に見えていた。ask データのある 20 銘柄 × 建て {21,22,23} UTC × 保有 {1,2}h の SHORT(=120 セル・月〜金プール)を現実価格で走査。基準 §1(往復 3pip の代わりに現実価格・二項 p < 0.05/累積・前窓 bid で +月率 ≥ 50%・OOS 同符号)。現実価格(買い = ask 始値で建て・bid 始値で決済、売りはその逆)で判定。ask は 2024-01〜のみのため、探索窓の検定は bid−3pip(§1)で行い、2024〜26 の現実価格で符号と大きさを確認する(ask 2016〜 受領後に探索窓も現実価格に置き換える)。",
+   "order": 17.1,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/375_q144_rollover_short_rescan.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "棄却: 114 セル(19 銘柄・USDTRY/USDMXN/USDZAR 除外)で合格 0・p<0.05 も 0。現実価格 2024〜26 で 1 取引平均が正のセルも 0(最良 EURUSD h23 2h −0.24 bps)。bid アーティファクトの逆は取れない",
+   "runs": [
+    {
+     "date": "2026-10-22",
+     "summary": "docs/375(114 セル・合格 0・累積 10,039)"
+    }
+   ]
+  },
+  {
+   "id": "Q145",
+   "slug": "tokyo_fix_usdjpy",
+   "title": "仲値(9:55 JST)前後の USDJPY: 00:00→00:55 UTC 買い・00:55→01:30 UTC 売り(ゴトー日 / 全営業日)",
+   "cells": 4,
+   "note": "仕組み: 輸入企業のドル買い需要が仲値に集中し、仲値後に戻る。H1 のため 00→01 UTC 買い(仲値前)・01→02 UTC 売り(仲値後)で近似。セル: {全営業日, ゴトー日} × {前 LONG, 後 SHORT} = 4。コスト往復 3pip。前窓・OOS・累積 Bonferroni は §1 どおり。",
+   "order": 17.2,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/376_q145_tokyo_fix_usdjpy.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "棄却: 4 セル合格 0。IS +月率 26〜41%・1 取引平均 −0.4〜−3.1 bps・前窓 14〜35%。Q14 と合わせて仲値家族は閉じる",
+   "runs": [
+    {
+     "date": "2026-10-23",
+     "summary": "docs/376(4 セル・合格 0・累積 10,043)"
+    }
+   ]
+  },
+  {
+   "id": "Q146",
+   "slug": "month_end_london_fix",
+   "title": "月末ロンドンフィックス(16:00 GMT)前後の GBPUSD / EURUSD(前日 15 UTC → 当日 16 UTC・当日 16 → 20 UTC)",
+   "cells": 8,
+   "note": "仕組み: 月末の株式・債券リバランスに伴う通貨フロー。月末営業日の前日 15 UTC → 当日 16 UTC の LONG/SHORT(方向は事前に決めない=両方をセルに数える)× GBPUSD/EURUSD = 4、当日 16 → 20 UTC の反転 LONG/SHORT × 2 = 4。n が少ない(年 12 回)ので 2016〜 の全期間を前窓なしで扱い、二項 p は累積 Bonferroni。",
+   "order": 17.3,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/377_q146_month_end_london_fix.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "棄却: 8 セル合格 0・p<0.05 は 1(GBPUSD fix 後 4h SHORT 75/128・平均 +2.1 bps・IS/OOS 負)。Q24 と合わせて月末フィックス家族は閉じる",
+   "runs": [
+    {
+     "date": "2026-10-23",
+     "summary": "docs/377(8 セル・合格 0・累積 10,051)"
+    }
+   ]
+  },
+  {
+   "id": "Q147",
+   "slug": "roll_rate_diff_gate",
+   "title": "Roll(水曜 20→00 UTC 円クロス売り)の停止条件: 日米 2 年金利差の閾値(改良系)",
+   "cells": 6,
+   "note": "docs/369: Roll の勝率は 2016〜17・2021 で逆向き、2018〜19・2022〜 で強い(金利差仮説)。金利差データ(FRED DGS2 と日本 2 年国債・Yahoo/FRED から取得、無ければ US 2 年のみ)で閾値 {1.0, 1.5, 2.0}% × {5 本等分, 本数別} = 6 セル。基準は改良系(IS・OOS 両方で Sharpe 改善 かつ 最悪月が悪化しない)。合格なら 11/1 改正案で 14166201 の Roll に停止条件を提案(EA の InpRollGate は別版)。",
+   "order": 17.4,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/378_q147_roll_rate_diff_gate.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "改良成立 1/6(B 本数別・2.0%): IS Sharpe 1.21→2.02・最悪月 −0.47→−0.27、OOS 1.65→1.66(CADJPY 数週分・僅少)。他 5 セルは OOS 同値で不成立。前窓は全セルで −0.71→+0.0〜0.5。現局面(金利差 3%)では非拘束の保険。紙上 RollGateB2 追加。11/1 改正案: InpRollGatePct 2.0",
+   "runs": [
+    {
+     "date": "2026-10-26",
+     "summary": "docs/378(6 セル・成立 1・累積 10,057)"
+    }
+   ]
+  },
+  {
+   "id": "Q148",
+   "slug": "mon4_realprice_recheck",
+   "title": "Mon4 全セル(4 通貨 × h4/6/8/10・24h)の現実価格での再判定(ask 2016〜 受領後)",
+   "cells": 16,
+   "note": "基準の確認(改良系ではなく再判定)。別ブランチの ask 2016〜2023 取得を待つ。受領前に順番が来たら『データ待ち』として次へ送る(status は pending のまま)。往復 3pip の仮定を現実価格に置き換えても §1 の合格が保たれるかを確認し、保たれなければ docs/229 の判定を訂正する。",
+   "order": 17.5,
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/373_q148_mon4_realprice_recheck.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "保たれた: 現実価格(ask 建て・bid 決済)は 16/16 セルで従来仮定(bid−3pip)と同等か良い。実効往復 GBPJPY 3.7〜4.2 / EURJPY 2.0 / AUDJPY 1.6 / USDJPY 1.0 pip。閾値合格は従来どおり 0/16(単一時刻ショットの構造)。訂正なし。USDJPY は ask 2024〜のみ(前窓保留)",
+   "runs": [
+    {
+     "date": "2026-10-21",
+     "summary": "docs/373(16 セル・劣化なし・累積 9,925)"
+    }
+   ]
+  },
+  {
+   "id": "Q149",
+   "slug": "mffu_alloc_by_corr",
+   "title": "先物ボット: 月曜 13→20 UTC の 3 指数(MES/MNQ/MYM)の配分を相関で見直す(5/2/5 対 相関調整)",
+   "cells": 3,
+   "note": "新パターンではなく配分。US500/NAS100/US30 の月曜日中リターンの相関行列(2021-10〜)から、等名目・リスクパリティ・最小分散の 3 配分を 5/2/5 と比べる(日次ソフト停止 $2,500 の到達率と到達日 MC・docs/353 の枠組み)。合格基準は改良系(到達率が下がらず失格率が下がる)。採用は「切替」後に sizing.json。",
+   "order": 17.6,
+   "status": "cancelled",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "registered": "2026-10-21",
+   "program": "docs/244 週次アイデア束 #1(CFD/先物)",
+   "result": "2026-10-23 ユーザー「一旦先物からは手を引きます」(MFFU 2 口座が非活動規則で失格・docs/336 §25)。再開時に再登録"
+  },
+  {
+   "id": "Q150",
+   "slug": "ea11_dynk_sizing",
+   "title": "EA11(トパーズ)に Q131 の余裕比例サイジング(InpDynK・保持 20%)を実装",
+   "cells": 0,
+   "order": 17.51,
+   "note": "docs/349 §9f で採用した k 2.5 の受け皿。EA11 v1.16 を基に別ファイル v+0.01。EA8 v1.37 の dyn1 実装(InpDynK / InpKeepPct・資金化後のみ有効)を移植。既定は InpDynK=0(無効)にし、資金化の「完了」時に 2.5 を入力。Fintokei 規則(残高基準日次 5%・2.8% 全決済ガード)との整合を docs に書く。manifest・docs/241 は変更しない",
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/379_q150_ea11_dynk_sizing.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "EA11 v1.17 dyn1 を別ファイルで作成(InpDynK 既定 0・InpKeepPct 20・4 か所の名目に DynFactor・OnTick に PAYOUT ログ)。EA8 v1.37 と同一実装。配備は「切替」後、k 2.5 は資金化後(Q136 の再計算を添える)",
+   "runs": [
+    {
+     "date": "2026-10-26",
+     "summary": "docs/379(工学・セル 0・v1.17 dyn1)"
+    }
+   ]
+  },
+  {
+   "id": "Q151",
+   "slug": "fn14166201_c6_ea",
+   "title": "FN 14166201 用 C6 EA(Mon CADJPY/CHFJPY + Mon GER40 ×0.5 + Roll ×1・FN 規則)",
+   "cells": 0,
+   "order": 17.52,
+   "note": "docs/371 Q97 の採用案。EA11 v1.16(指数 Mon の実装あり)を基に FN 用 v+0.01: InpMonLegs=CADJPY:0.5,CHFJPY:0.5・指数 Mon GER40 0.5・Roll(Sess)×1・Hold/BTC/ETH なし・InpMult 3.0・日次 3%・床 10%・P2 目標 5% のロック・FN の銘柄別名(GER40 の FN 表記を ResolveSymbol に)。P1 通過(10/30 見込み)後の「切替」で配備。manifest 不変",
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/380_q151_fn14166201_c6_ea.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "EA11C6 v1.00 を別ファイルで作成(EA11 v1.17 dyn1 基・Mon CADJPY/CHFJPY/GER40 ×3.0・Roll ×3.0 門 2.0・日次 3%・床 9.8・P2 ロック 4.9/5.05/5.1・Magic 943600・GER40 別名追加)。配備は P1 通過後の「切替」。GER40 の FN 銘柄名/point と FN 書面の確認が前提",
+   "runs": [
+    {
+     "date": "2026-10-27",
+     "summary": "docs/380(工学・セル 0・EA11C6 v1.00)"
+    }
+   ]
+  },
+  {
+   "id": "Q152",
+   "slug": "portfolio_sim_c6_legs",
+   "title": "portfolio_sim に Mon CADJPY/CHFJPY・Mon GER40 のレグを追加し C6 を含む帳簿で期待値を再計算",
+   "cells": 0,
+   "order": 17.53,
+   "note": "docs/349 §9f の保留分。legs() に mon2_cadchf・mon_ger40 を追加し、FN 14166201 の funded を C6(mon2 3.0・ger40 1.5・roll 3.0)に置き換えた config で optimizer_daily と同じ MC を回し、現行(hold_uw 2.22・roll 4.5)と比較。config の更新は結果を見てから(「切替」不要・研究側のみ)",
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/381_q152_portfolio_c6.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "C6 置換で帳簿期待 380 → 376 万(−1%)・FN 1 年失格 33.7 → 13.0%・全口座無事 44 → 60%。価値は失格回避。10.6 年近似では mon2 年率 0.8%(2021-10 以降 2.4%)。切替維持・config は配備時に更新",
+   "runs": [
+    {
+     "date": "2026-10-27",
+     "summary": "docs/381(診断・セル 0・legs 追加)"
+    }
+   ]
+  },
+  {
+   "id": "Q153",
+   "slug": "payout_cycle_buffer",
+   "title": "出金サイクル(月次 / 隔週 / 毎日)×「+5% 残し」の失格率と出金額(docs/370 §5 A)",
+   "cells": 3,
+   "order": 17.54,
+   "note": "Q134(docs/352)の拡張。withdrawal_policy_mc.py の枠組みで、出金頻度 {21 営業日, 10, 1} × 残し 5% の 3 セル。指標 = 12 か月の失格率と出金合計(Q131 併用)。改良系ではなく診断(セルは数える)",
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/382_q153_payout_cycle_buffer.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "棄却(診断): サイクル短縮は悪化。残し 5% で月次 3,377 → 隔週 2,519 → 毎日 1,712 万(12 か月)・失格 1.5〜2 倍。現行(月次・残し 20%・半分)4,497 万が最良。Q131 併用下では出金頻度が倍率を削る。出金規則は変更しない",
+   "runs": [
+    {
+     "date": "2026-10-28",
+     "summary": "docs/382(診断・セル 3・累積 10,060)"
+    }
+   ]
+  },
+  {
+   "id": "Q154",
+   "slug": "profit_split_addon_breakeven",
+   "title": "分配アドオン(FN Lite 95%・Fintokei +10%)の損益分岐(価格はユーザー入力)",
+   "cells": 0,
+   "order": 17.55,
+   "note": "docs/370 §5 B。現行 config の口座別・月次出金分布(portfolio_sim)から、分配 +5pt / +10pt の期待増分を算出し、アドオン価格との損益分岐(何か月で回収)を表にする。価格はユーザーが公式で確認して入力(未入力なら価格の関数で表示)",
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/384_q154_split_addon_breakeven.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "FN Lifetime 95% は審査料 +30%(2-Step/Lite)・+25%(1-Step)で分配 80→95%(×1.19)。E[累計出金] > 1.6×審査料 で得、Q88 の FN 25k なら 8 倍 → 新規 FN 購入時は必須。Fintokei の +10% は公式に無し(要書面確認)。既存口座は後付け不可",
+   "runs": [
+    {
+     "date": "2026-10-28",
+     "summary": "docs/384(診断・セル 0)"
+    }
+   ]
+  },
+  {
+   "id": "Q155",
+   "slug": "ftmo_scaling_reach",
+   "title": "FTMO スケーリング(4 か月連続 +10% で残高 +25%・分配 90%)の到達確率",
+   "cells": 0,
+   "order": 17.56,
+   "note": "docs/370 §5 C。FTMO 50k ×2(本口座・EA8 ×6 dyn1 k1.5・EA3 ×6)の月次系列 MC で「4 か月連続 +10%」の 12 / 24 か月内到達確率と、到達時の期待出金増分。条件は FTMO 公式の文言を docs に転記(未確認なら仮定を明記)",
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/385_q155_ftmo_scaling_reach.md"
+   ],
+   "registered": "2026-10-25",
+   "program": "docs/244 週次アイデア束 #2(CFD)",
+   "result": "FTMO 50k ×2: 初回スケール 12m 70〜73% / 24m 83〜85%(中央 6 か月)。24m 出金 643 → 1,213 万(+89%)/口座。現行の残し 20%・半分が 5 変形で最良。スケール時に EA 基準残高を更新する手順を提案",
+   "runs": [
+    {
+     "date": "2026-10-29",
+     "summary": "docs/385(診断・セル 0)"
+    }
+   ]
+  },
+  {
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "registered": "2026-11-05",
+   "program": "docs/244 Q108/Q109 派生(CFD)",
+   "id": "Q156",
+   "slug": "portfolio_sim_floor_by_account_type",
+   "title": "portfolio_sim の資金化後の床を口座型別に修正(FTMO 1-Step トレーリング+出金リセット・FN Instant 建値ロック・FTMO 2-Step 全利益分配+ロール)し、帳簿 MC と 1-Step 資金化後倍率を再計算",
+   "cells": 0,
+   "order": 30,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/396_q108_payout_rules_check.md",
+    "docs/399_q156_portfolio_sim_floor_by_account_type.md"
+   ],
+   "note": "docs/396 §5 Q 候補 A。`forward/portfolio_sim.run_portfolio` の資金化後の床: FTMO 1-Step = max(EOD 最高残高, 額面) −10%・Reward で全利益分配(90%)・新口座で床リセット・ロール不可・保持は意味なし → 方針は毎サイクル全額 Reward。FN Instant = 最高残高 −6%・額面で頭打ち・分配 70%(Tier1-2)・+5% で $400 の運用規則。FTMO 2-Step = 請求で全利益分配(80%)+ 取り分をロール(床の基準は FTMO 回答まで E2(元額面)/E3(新残高)の両方)。Fintokei・FN 2-Step は現行どおり。docs/349 §9c〜§9f・docs/382 の合計月収を再計算し、1-Step(531466484)の資金化後倍率(現 ×3.125/2.03)を「規約床で 1 年失格 ≤10%」の膝に戻す案と EA9 の InpKeepPct の扱いを提案。config・EA・manifest は変更しない(切替はユーザー)",
+   "result": "portfolio_sim に rule(static/ftmo2step/ftmo1step/fn_instant)を実装。合計 375 → 292 万(−22%)、差は 1-Step(108 → 22 万/月・資金化後失格 27 → 54%)。10/23 採用の 1-Step 資金化後 ×3.125 は旧モデルの産物、規約床で失格 ≤10% の膝は a9 1.25 / Mon4 0.81(×0.4)→ 切替候補。FTMO 2-Step はロール運用でほぼ不変(+2 万)。FN Instant は建値ロック+70% で失格 76%。config の倍率・EA は不変",
+   "runs": [
+    {
+     "date": "2026-11-05",
+     "summary": "docs/399。新旧モデル比較 + 1-Step 資金化後倍率 7 点の格子(セル 0)。docs/349 §9g・docs/382 §4 を追記"
+    }
+   ]
+  },
+  {
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "registered": "2026-11-05",
+   "program": "docs/244 Q108/Q109 派生(CFD)",
+   "id": "Q157",
+   "slug": "hold_swap_cost_book",
+   "title": "Hold のスワップ(口座型別)を研究系列と帳簿 MC に入れ、EA9・EA10L・14074882 の Hold XAU 重みと FTMO での Hold→Mon 置換を再評価",
+   "cells": 0,
+   "order": 31,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/398_q109_hold_reentry_cost.md",
+    "docs/400_q157_hold_swap_cost_book.md"
+   ],
+   "note": "docs/398 §4 Q 候補 C。`recentfit_screen.hold_cell` / `forward/portfolio_sim.legs()` に日割りスワップ(FTMO XAU −52・GER40 −49・FN 非アドオン XAU −76 bps/月、Fintokei スイング・FN アドオンは 0。出所 results/q109_hold_swap_comm.csv)を口座型の引数で入れる。docs/349 §9 の帳簿 MC(到達・失格・月収)を再計算し、Hold XAU の重み {現行, 半分, 0} をスワップ込みで比較(EA9 A 案 1/3・EA10L 0.9→0.45・14074882 0.4)。FTMO で Hold を Mon 系に置き換える案は docs/318 §2(Mon 族の比率は上げない)と衝突するため判定はユーザー。研究系列の 5 年スコア(docs/290 Hold 行)もスワップ込みの列を追加。EA・config は変更しない",
+   "result": "スワップ込みで合計 280→270 万。1-Step 9.0→6.4 万/月・失格 25→36%。config a9 は EA9 実レグより XAU 名目 2.8 倍過大(実レグでは到達 83%・失格 19%)。EA・manifest・config 帳簿は不変、config にスワップ欄のみ追加。候補 E(1-Step 帳簿を実レグで再記述)を提案"
+  },
+  {
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "registered": "2026-11-05",
+   "program": "docs/244 Q108/Q109 派生(CFD)",
+   "id": "Q158",
+   "slug": "hold_wti_spot_series",
+   "title": "Hold WTI(と Q89 の UKOIL 等)の参照系列を CL=F から Dukascopy LIGHTCMDUSD(CFD スポット)に替えて 5 年スコアを取り直す",
+   "cells": 0,
+   "order": 32,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/398_q109_hold_reentry_cost.md"
+   ],
+   "note": "docs/398 §4 Q 候補 D・docs/323 §5。data_dukascopy/WTI_hour.csv.gz(2026-08 まで)+ 月次 H1(candidate_interim.ensure_months)で日足終値を作り、hold_cell と同じ式で 5 年スコア(docs/290 の列)と 14166201 の保有区間(docs/398 §2 d)の実 vs 系列を再計算。差が基差で説明できるか、研究の Hold WTI 期待値をいくら下げるかを書く。Dukascopy が 503 / 接続断ならデータ待ちで次へ送る(11/5 は取得不可)\n【2026-11-06 夕】Dukascopy datafeed 不通(トンネル切断)のため再びデータ待ちで次へ送った(Q159 を実行)"
+  },
+  {
+   "status": "done",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "registered": "2026-11-05",
+   "program": "docs/244 Q108/Q109 派生(CFD)",
+   "id": "Q159",
+   "slug": "ftmo_2step_reward_policy",
+   "title": "FTMO 2-Step 本口座の請求方針(月次ロール / 年 1〜2 回の全額請求 / 請求せず)の MC 比較と [PAYOUT] 行の FTMO 向け文言",
+   "cells": 0,
+   "order": 33,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/396_q108_payout_rules_check.md",
+    "docs/401_q159_ftmo_2step_reward_policy.md"
+   ],
+   "note": "docs/396 §5 Q 候補 B。FTMO の回答(一部 Reward の可否・ロール後の床基準)が来たら、その規則で E1/E2/E3/E4(docs/396 §3 b)に『年 1〜2 回の全額請求』を加えて 50k ×2 の同じ MC で比較し、docs/349 §9c の出金規則の FTMO 版を提案。工学: EA8/EA3 の [PAYOUT] 行を FTMO 口座では『請求額』ではなく『ロール額』で出す InpPayoutMode を別版(版 +0.01)で用意(manifest・docs/241 は変更しない)。FTMO 未回答なら次へ送り、11/13 を過ぎても未回答なら E2/E3 の両方で計算して仮判定\n【2026-11-05 追記】FTMO 回答済み(docs/396 §7): 一部 Reward 不可・請求で全建玉決済と新口座発行・ロールは最低 $20・床は元の Initial Simulated Capital 基準(E2 成立)。回答待ちは解除、E2 を前提に実行してよい。請求時の全決済(GER40 ブレイク建玉中の扱い)と新口座発行までの空白日数も規則に含める",
+   "result": "月次ロール(E2・現行 MC)を維持: 2 年で総価値 41.7%/年・失格 24%。年 1 回全額 35.4%/年・失格 35%、半年〜月次の全額請求は失格 47〜67%。感度: ロール分が 80% 再分配なら出金 17.2→5.2(FAQ 要確認)、空白 5 営業日で −16%。EA8 v1.40 / EA3 v1.22 に InpPayoutMode(FTMO ロール方式の [PAYOUT] 行)を別ファイルで用意。manifest・docs/241 不変"
+  },
+  {
+   "status": "pending",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "registered": "2026-11-06",
+   "program": "docs/244 週次アイデア束 #3(ai-council 11/6・CFD)",
+   "id": "Q161",
+   "slug": "xau_friday_window_long",
+   "title": "XAUUSD の金曜の窓 LONG: 木曜 COMEX 清算後(18 UTC 足始値)に建て、金曜 COMEX 清算前(17 UTC 足始値)に決済(窓 1 つ固定・新規 1 セル)",
+   "cells": 1,
+   "order": 34,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "note": "ai-council 2026-11-06 ①(XAU 金曜窓 LONG)。仮説: 週末の地政学リスクに備える買いが金曜の金を押し上げる。判定は docs/244 §1 の標準基準(Bonferroni・IS 2021-10〜2024-12・OOS 2025-01〜・コスト XAUUSD 5bps・前窓は XAU H1 が 2021 開始のため Q16 と同じく免除)。窓は 1 つに固定し、前後 ±1 時間(17/19 UTC 建て・16/18 UTC 決済)は頑健性の記録のみで選ばない。参考記録(判定には使わない): (1) Hold XAU(日次 close→close)との日次相関 — 高ければ Hold XAU の無い口座(FTMO 50k A/B・Fintokei)向けの候補と記す、(2) 米雇用統計の金曜(第 1 金曜・BLS 日程で確認)を除いた結果、(3) 紙上候補 Thu XAUUSD(木曜 o2o 24h・docs/230)との重なり分解: 木 18→24 UTC と 金 00→17 UTC の 2 区間の寄与、および Thu XAUUSD との日次相関。通過しても Thu XAUUSD と同時には CANDIDATES に入れず、どちらを残すかを提案(2 本とも残すなら理由を書く)。データ: data_dukascopy/XAUUSD_hour.csv.gz(2021-01〜2025-12・週末埋め足あり → 週末行は除外して使う)。2026 年分は candidate_interim.ensure_months で足せたら足す(不通なら 2025-12 末尾で判定し注記)。棄却は正常な結果。実行後に main の ai-council/explored.md の該当行(2026-11-06 ① XAU 金曜窓)へ結果を書き足す PR を main 向けに作る(Q160 の行には「→ 登録せず(Q16 と重複)」を併記)。EA・manifest・config は変更しない"
+  }
+ ],
+ "runs": [
+  {
+   "date": "2026-09-18",
+   "item": "Q1",
+   "session": 1,
+   "note": "設計完了(docs/247)。E5 スリーブの移植で新規設計はほぼ不要。セル 0・累積 3400",
+   "manual": true
+  },
+  {
+   "date": "2026-09-18",
+   "item": "Q2",
+   "session": 1,
+   "note": "240 セル・通過 0・累積 3640",
+   "manual": true
+  },
+  {
+   "date": "2026-09-18",
+   "item": "Q3",
+   "session": 1,
+   "note": "重複・新規セル 0",
+   "manual": true
+  },
+  {
+   "date": "2026-09-18",
+   "item": "Q4",
+   "session": 1,
+   "note": "符号バグ発見(docs/249)。Sess 族無効・全 Sess EA 停止指示。96 変種は累積に加算(3736)",
+   "manual": true
+  },
+  {
+   "date": "2026-09-18",
+   "item": "Q7",
+   "session": 1,
+   "note": "84 セル・診断・配備変更なし・累積 3820",
+   "manual": true
+  },
+  {
+   "date": "2026-09-18",
+   "item": "Q6",
+   "session": 1,
+   "note": "6 セル・採用せず",
+   "manual": true
+  },
+  {
+   "date": "2026-09-18",
+   "item": "Q8",
+   "session": 1,
+   "note": "96 セル・通過 0",
+   "manual": true
+  },
+  {
+   "date": "2026-09-18",
+   "item": "Q10",
+   "session": 1,
+   "note": "12 セル・通過 0・累積 3934",
+   "manual": true
+  },
+  {
+   "date": "2026-09-18",
+   "item": "Q11",
+   "session": 1,
+   "note": "566 セル・通過 0・累積 4500",
+   "manual": true
+  },
+  {
+   "date": "2026-09-18",
+   "item": "Q1",
+   "session": "2-3",
+   "note": "実装 + パリティツール(docs/253)。ユーザー側の MT5 作業待ち",
+   "manual": true
+  },
+  {
+   "date": "2026-09-19",
+   "item": "Q12",
+   "session": 1,
+   "note": "270 セル・通過 0・累積 4770",
+   "manual": true
+  },
+  {
+   "date": "2026-09-19",
+   "item": "Q12",
+   "session": 2,
+   "note": "AUDCAD 90 セル・通過 0・累積 4860",
+   "manual": true
+  },
+  {
+   "date": "2026-09-20",
+   "item": "Q12",
+   "session": 3,
+   "note": "BRENT 90 セル・通過 0・累積 4950",
+   "manual": true
+  },
+  {
+   "date": "2026-09-20",
+   "item": "Q12",
+   "session": 4,
+   "note": "WTI 90 セル・通過 0・累積 5040",
+   "manual": true
+  },
+  {
+   "date": "2026-09-20",
+   "item": "Q12",
+   "session": 5,
+   "note": "UK100 90 セル・通過 0・累積 5130",
+   "manual": true
+  },
+  {
+   "date": "2026-09-20",
+   "item": "Q12",
+   "session": 6,
+   "note": "JP225 90 セル・通過 0・累積 5220",
+   "manual": true
+  },
+  {
+   "date": "2026-09-20",
+   "item": "Q12",
+   "session": 7,
+   "note": "EUSTX50 90 セル・通過 0・累積 5310",
+   "manual": true
+  },
+  {
+   "date": "2026-09-20",
+   "item": "Q12",
+   "session": 8,
+   "note": "US30 90 セル・通過 0・累積 5400",
+   "manual": true
+  },
+  {
+   "date": "2026-09-20",
+   "item": "Q12",
+   "round": 9,
+   "syms": [
+    "AUS200"
+   ],
+   "cells": 90,
+   "cum_after": 5490,
+   "passed": 0,
+   "doc": "docs/255"
+  },
+  {
+   "date": "2026-09-20",
+   "item": "Q12",
+   "round": 10,
+   "syms": [
+    "HK50"
+   ],
+   "cells": 90,
+   "cum_after": 5580,
+   "passed": 0,
+   "doc": "docs/255"
+  },
+  {
+   "date": "2026-09-20",
+   "item": "Q12",
+   "round": 11,
+   "syms": [
+    "BUND"
+   ],
+   "cells": 90,
+   "cum_after": 5670,
+   "passed": 0,
+   "doc": "docs/255"
+  },
+  {
+   "date": "2026-09-20",
+   "item": "Q12",
+   "round": 12,
+   "syms": [
+    "USTBOND"
+   ],
+   "cells": 90,
+   "cum_after": 5760,
+   "passed": 0,
+   "doc": "docs/255"
+  },
+  {
+   "date": "2026-09-21",
+   "item": "Q12",
+   "round": 13,
+   "syms": [
+    "DXY"
+   ],
+   "cells": 90,
+   "cum_after": 5850,
+   "passed": 0,
+   "doc": "docs/255"
+  },
+  {
+   "date": "2026-09-21",
+   "item": "Q12",
+   "round": 14,
+   "syms": [
+    "XAGUSD"
+   ],
+   "cells": 90,
+   "cum_after": 5940,
+   "passed": 0,
+   "doc": "docs/255"
+  },
+  {
+   "date": "2026-09-21",
+   "item": "Q12",
+   "round": 15,
+   "syms": [
+    "NZDCAD"
+   ],
+   "cells": 90,
+   "cum_after": 6030,
+   "passed": 0,
+   "doc": "docs/255"
+  },
+  {
+   "date": "2026-09-21",
+   "item": "morning",
+   "note": "Q1 は MT5 側待ち・Q12 は取得完了ごとに逐次実行中(第15回まで)。新規実行なし"
+  },
+  {
+   "date": "2026-09-21",
+   "item": "Q12",
+   "round": 16,
+   "syms": [
+    "CADCHF"
+   ],
+   "cells": 90,
+   "cum_after": 6120,
+   "passed": 0,
+   "doc": "docs/255"
+  },
+  {
+   "date": "2026-09-21",
+   "item": "prereg",
+   "note": "docs/256 で Q13〜Q17(344 セル)を proposed 登録。ユーザー「登録」で pending へ"
+  },
+  {
+   "date": "2026-09-21",
+   "item": "Q12",
+   "round": 17,
+   "syms": [
+    "USDCAD"
+   ],
+   "cells": 90,
+   "cum_after": 6210,
+   "passed": 0,
+   "doc": "docs/255",
+   "note": "Q12 完了"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "prereg",
+   "note": "ユーザー「定例で進めなくとも早く進めて」→ Q13〜Q17 を pending にし本セッションで連続実行"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q13",
+   "cells": 112,
+   "cum_after": 6322,
+   "passed": 0,
+   "doc": "docs/257"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q14",
+   "cells": 80,
+   "cum_after": 6402,
+   "passed": 0,
+   "doc": "docs/258"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q15",
+   "cells": 16,
+   "cum_after": 6418,
+   "passed": 0,
+   "doc": "docs/259"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q16",
+   "cells": 64,
+   "cum_after": 6482,
+   "passed": 0,
+   "doc": "docs/260"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q17",
+   "cells": 56,
+   "cum_after": 6538,
+   "passed": 0,
+   "doc": "docs/261"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q18",
+   "cells": 11,
+   "cum_after": 6549,
+   "passed": 0,
+   "doc": "docs/262",
+   "note": "診断。Q19 を proposed 登録"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q19",
+   "cells": 1710,
+   "cum_after": 8259,
+   "passed": 0,
+   "doc": "docs/263"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "prereg",
+   "note": "docs/264 で Q20〜Q26(503 セル)を登録(ユーザー「登録」)。Q26 は BTC/ETH 取得後"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q20",
+   "cells": 75,
+   "cum_after": 8334,
+   "passed": 0,
+   "doc": "docs/265"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q21",
+   "cells": 54,
+   "cum_after": 8388,
+   "passed": 0,
+   "doc": "docs/266"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q22",
+   "cells": 36,
+   "cum_after": 8424,
+   "passed": 0,
+   "doc": "docs/267"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q23",
+   "cells": 30,
+   "cum_after": 8454,
+   "passed": 0,
+   "doc": "docs/268"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q24",
+   "cells": 48,
+   "cum_after": 8502,
+   "passed": 0,
+   "doc": "docs/269"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q25",
+   "cells": 8,
+   "cum_after": 8510,
+   "passed": 0,
+   "doc": "docs/270"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q27",
+   "cells": 8,
+   "cum_after": 8518,
+   "passed": 0,
+   "doc": "docs/272",
+   "note": "監視開始(forward/q20_monitor.py)"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q26",
+   "cells": 252,
+   "cum_after": 8762,
+   "passed": 0,
+   "doc": "docs/271"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q28",
+   "cells": 0,
+   "cum_after": 8762,
+   "doc": "docs/276",
+   "note": "実装項目。MC 校正・EA7"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q29a",
+   "cells": 2,
+   "cum_after": 8764,
+   "doc": "docs/277",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q30",
+   "cells": 28,
+   "cum_after": 8792,
+   "doc": "docs/277",
+   "note": "0 pass, 0 judged"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q29b",
+   "cells": 9,
+   "cum_after": 8801,
+   "doc": "docs/278",
+   "note": "0 pass; EM roll not observed"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q31",
+   "cells": 6,
+   "cum_after": 8807,
+   "doc": "docs/281",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q32",
+   "cells": 6,
+   "cum_after": 8813,
+   "doc": "docs/281",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q33",
+   "cells": 6,
+   "cum_after": 8819,
+   "doc": "docs/281",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q34",
+   "cells": 8,
+   "cum_after": 8827,
+   "doc": "docs/283",
+   "note": "0 pass; FOMC IS-only"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q35",
+   "cells": 18,
+   "cum_after": 8845,
+   "doc": "docs/285",
+   "note": "0 pass; 21UTC bar gap → 20UTC rerun counted"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q37",
+   "cells": 6,
+   "cum_after": 8851,
+   "doc": "docs/287",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q38",
+   "cells": 3,
+   "cum_after": 8854,
+   "doc": "docs/287",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-22",
+   "item": "Q39",
+   "cells": 6,
+   "cum_after": 8860,
+   "doc": "docs/287",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-23",
+   "item": "Q36 (EURUSD)",
+   "cells": 3,
+   "cum_after": 8863,
+   "doc": "docs/286",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-24",
+   "item": "Q36 (GBPUSD)",
+   "cells": 3,
+   "cum_after": 8866,
+   "doc": "docs/286",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-25",
+   "item": "Q36 (USDJPY)",
+   "cells": 3,
+   "cum_after": 8869,
+   "doc": "docs/286",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-25",
+   "item": "Q1",
+   "cells": 0,
+   "cum_after": 8869,
+   "doc": "docs/291",
+   "note": "parity A passed 97.5% (322 symbol-months); GER40 missing in MT5 dump"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q36 (AUDUSD)",
+   "cells": 3,
+   "cum_after": 8872,
+   "doc": "docs/286",
+   "note": "0 pass; Q36 done; backlog families 1-4 complete, 0 passed"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q40",
+   "cells": 14,
+   "cum_after": 8886,
+   "doc": "docs/293",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q41",
+   "cells": 11,
+   "cum_after": 8897,
+   "doc": "docs/293",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q42",
+   "cells": 4,
+   "cum_after": 8901,
+   "doc": "docs/293",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q43",
+   "cells": 12,
+   "cum_after": 8913,
+   "doc": "docs/293",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q45",
+   "cells": 8,
+   "cum_after": 8921,
+   "doc": "docs/294",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q47",
+   "cells": 8,
+   "cum_after": 8929,
+   "doc": "docs/294",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q46",
+   "cells": 4,
+   "cum_after": 8933,
+   "doc": "docs/294",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q48",
+   "cells": 8,
+   "cum_after": 8941,
+   "doc": "docs/294",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q49",
+   "cells": 14,
+   "cum_after": 8955,
+   "doc": "docs/295",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q50",
+   "cells": 7,
+   "cum_after": 8962,
+   "doc": "docs/295",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q51",
+   "cells": 4,
+   "cum_after": 8966,
+   "doc": "docs/295",
+   "note": "0 pass"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q52",
+   "cells": 2,
+   "cum_after": 8968,
+   "doc": "docs/296",
+   "note": "improvement 0/2"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q53",
+   "cells": 38,
+   "cum_after": 9006,
+   "doc": "docs/303",
+   "note": "improvement 5/7 (Mon holiday-skip), new 0"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q54",
+   "cells": 14,
+   "cum_after": 9020,
+   "doc": "docs/303",
+   "note": "0/14"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q55",
+   "cells": 7,
+   "cum_after": 9027,
+   "doc": "docs/303",
+   "note": "improvement 0/7"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q53b",
+   "cells": 3,
+   "cum_after": 9030,
+   "doc": "docs/303",
+   "note": "composite improvement 3/3"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q56",
+   "cells": 22,
+   "cum_after": 9052,
+   "doc": "docs/304",
+   "note": "improvement 3/11, new 0"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q57",
+   "cells": 7,
+   "cum_after": 9059,
+   "doc": "docs/304",
+   "note": "0/7"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q58",
+   "cells": 15,
+   "cum_after": 9074,
+   "doc": "docs/304",
+   "note": "0/15"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q59",
+   "cells": 5,
+   "cum_after": 9079,
+   "doc": "docs/304",
+   "note": "0/5"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q60",
+   "cells": 23,
+   "cum_after": 9102,
+   "doc": "docs/305",
+   "note": "new 0, improvement 1/2 (Mon2 only)"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q61",
+   "cells": 8,
+   "cum_after": 9110,
+   "doc": "docs/305",
+   "note": "improvement 1/4"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q62",
+   "cells": 4,
+   "cum_after": 9114,
+   "doc": "docs/305",
+   "note": "0/4"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q63",
+   "cells": 2,
+   "cum_after": 9116,
+   "doc": "docs/305",
+   "note": "diagnostic"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q60b",
+   "cells": 4,
+   "cum_after": 9120,
+   "doc": "docs/305",
+   "note": "improvement 0/4"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q64",
+   "cells": 6,
+   "cum_after": 9126,
+   "doc": "docs/306",
+   "note": "0/6"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q65",
+   "cells": 4,
+   "cum_after": 9130,
+   "doc": "docs/306",
+   "note": "0/4"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q66",
+   "cells": 2,
+   "cum_after": 9132,
+   "doc": "docs/306",
+   "note": "0/2"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q67",
+   "cells": 10,
+   "cum_after": 9142,
+   "doc": "docs/306",
+   "note": "0/10 diagnostic"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q68",
+   "cells": 16,
+   "cum_after": 9158,
+   "doc": "docs/311",
+   "note": "0/16"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q69",
+   "cells": 14,
+   "cum_after": 9172,
+   "doc": "docs/311",
+   "note": "0/14"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q70",
+   "cells": 9,
+   "cum_after": 9181,
+   "doc": "docs/311",
+   "note": "0/9"
+  },
+  {
+   "date": "2026-09-26",
+   "item": "Q71",
+   "cells": 4,
+   "cum_after": 9185,
+   "doc": "docs/311",
+   "note": "0/4"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q72",
+   "cells": 6,
+   "cum_after": 9191,
+   "doc": "docs/312",
+   "note": "0/6"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q73",
+   "cells": 6,
+   "cum_after": 9197,
+   "doc": "docs/312",
+   "note": "improvement 1/3 (Mon year-end filter validated)"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q74",
+   "cells": 4,
+   "cum_after": 9201,
+   "doc": "docs/312",
+   "note": "0/4"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q75",
+   "cells": 6,
+   "cum_after": 9207,
+   "doc": "docs/312",
+   "note": "0/6"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q76",
+   "cells": 12,
+   "cum_after": 9219,
+   "doc": "docs/313",
+   "note": "0/12"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q77",
+   "cells": 4,
+   "cum_after": 9223,
+   "doc": "docs/313",
+   "note": "0/4"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q78",
+   "cells": 2,
+   "cum_after": 9225,
+   "doc": "docs/313",
+   "note": "0/2"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q79",
+   "cells": 304,
+   "cum_after": 9529,
+   "doc": "docs/314",
+   "note": "0/304"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q80",
+   "cells": 76,
+   "cum_after": 9605,
+   "doc": "docs/314",
+   "note": "0/76"
+  },
+  {
+   "date": "2026-09-27",
+   "item": "Q81",
+   "cells": 2,
+   "cum_after": 9607,
+   "doc": "docs/315",
+   "note": "0/2(不採用)"
+  },
+  {
+   "date": "2026-09-28",
+   "item": "Q28",
+   "cells": 0,
+   "cum_after": 9607,
+   "doc": "docs/276",
+   "note": "EA7/EA7g 実装済みのため done に整理(セル加算なし)",
+   "manual": true
+  },
+  {
+   "date": "2026-09-28",
+   "item": "Q44",
+   "cells": 6,
+   "cum_after": 9613,
+   "doc": "docs/294",
+   "note": "0/6(複製されず)"
+  },
+  {
+   "date": "2026-10-01",
+   "note": "docs/322 改正プログラム Q83〜Q96 を一括登録(ユーザー「登録」)。順序は order 欄。Q88 は 11/1 以降に実行"
+  },
+  {
+   "date": "2026-10-02",
+   "item": "Q83",
+   "note": "docs/323: exec_gap.py 作成・8〜9 月の 3 口座。縮小案なし。設定不一致(Roll 9/30 スキップ)と RF5 の建て損ね 75% を提案に"
+  },
+  {
+   "date": "2026-10-05",
+   "item": "Q93",
+   "note": "docs/324: 偽 SIZE SANITY の原因特定・v+0.01 を 3 本追加(配備変更なし)"
+  },
+  {
+   "date": "2026-10-06",
+   "item": "Q85",
+   "note": "docs/325: ガード・倍率フロンティア。新規 FTMO Std は ×2.0 提案、トパーズは P2 時に日次 3%、FN は構成見直し"
+  },
+  {
+   "date": "2026-10-06",
+   "note": "第 2 期 Q97〜Q110 を一括登録(ユーザー「登録」)。order は Q88 の後ろに続く(Q99 は 11/1 以降)"
+  },
+  {
+   "date": "2026-10-07",
+   "item": "Q84",
+   "cells": 4,
+   "cumulative": 9617,
+   "summary": "Mon3(除外版)棄却・配備不変。ETHUSD Mon 00 UTC ショットを次期候補に"
+  },
+  {
+   "date": "2026-10-07",
+   "item": "Q111",
+   "cells": 0,
+   "cumulative": 9617,
+   "summary": "記録版 EA 10 本・Apps Script 受け口・取り込み側を作成(ユーザー依頼で前倒し)。配備不変"
+  },
+  {
+   "date": "2026-10-07",
+   "item": "Q110",
+   "cells": 0,
+   "cumulative": 9617,
+   "summary": "VPS 集約の設計書(ユーザー依頼で前倒し)。実施は VPS 購入後"
+  },
+  {
+   "date": "2026-10-08",
+   "item": "Q89",
+   "cells": 8,
+   "cumulative": 9625,
+   "summary": "Hold 銘柄拡張 8 セル全棄却(docs/329)。次回 Q90"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q90",
+   "cells": 6,
+   "cumulative": 9631,
+   "summary": "Hold 災害 SL 水準: 現行 15% 維持。BTCUSD 10% のみ僅差で改良系通過 → 紙上候補(docs/330)。次回 Q91"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "登録",
+   "cells": 0,
+   "cumulative": 9631,
+   "summary": "ユーザー「登録」: Q112(暗号資産プロップ適合・診断)・Q113(先物プロップ適合・診断)を order 30・31 で追加(docs/322 §5b)"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q112",
+   "cells": 0,
+   "cumulative": 9631,
+   "summary": "暗号資産プロップ適合(診断): 見送り(docs/331)。ユーザー「直ぐに進められますか」で前倒し"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q113",
+   "cells": 0,
+   "cumulative": 9631,
+   "summary": "先物プロップ適合(診断): 保留(docs/332)。日中版 Mon 指数は符号維持・MFFU Rapid 50k が唯一の候補。ユーザー「直ぐに進められますか」で前倒し"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "登録",
+   "cells": 0,
+   "cumulative": 9631,
+   "summary": "ユーザー「登録」: Q114(Mon 指数の日中版・改良系・4 セル)を order 32 で追加(docs/322 §5c)"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q114",
+   "cells": 4,
+   "cumulative": 9635,
+   "summary": "Mon 指数の日中版: US30・JP225 で改良系通過(紙上候補)、US500/NAS100 不成立(docs/333)。ユーザー「Q114 を先に」で前倒し"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q115",
+   "cells": 4,
+   "cumulative": 9639,
+   "summary": "先物 vs CFD: 相関 0.99、先物はコスト差分だけ有利。CFD 研究の先物流用に根拠(docs/334)。ユーザー指示で登録即実行"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q116",
+   "cells": 1,
+   "cumulative": 9640,
+   "summary": "NIY(円建て)vs JP225 CFD: 相関 1.000、NKD とも 0.999。docs/334 の要確認を解消(docs/335)。ユーザー指示で登録即実行"
+  },
+  {
+   "date": "2026-10-09",
+   "item": "Q117",
+   "cells": 0,
+   "cumulative": 9640,
+   "summary": "先物ボット v0.1 実装(オフライン検証済み)。Tradovate 直接 API はプロップ口座で不可と判明 → Webhook 橋渡し(TradersPost)を推奨(docs/336)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q118",
+   "cells": 4,
+   "cumulative": 9644,
+   "summary": "Roll5 引け前シフト: 全窓で負・棄却(docs/337)。ユーザー「登録」で即実行"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q119",
+   "cells": 0,
+   "cumulative": 9644,
+   "summary": "NIY 流動性 OK・コスト耐性あり → 先物口座 4 本目に NIY 1 枚(docs/338)。6J は紙上候補"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q120",
+   "cells": 0,
+   "cumulative": 9644,
+   "summary": "規則 A(残余 < 50% 半分・< 25% 休み)で sim 失格 44→18%・Live 32→14%、手取り −15〜20%。評価段階は固定、sim/Li(docs/339)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q121",
+   "cells": 4,
+   "cumulative": 9648,
+   "summary": "3/4 成立。VIX > 25 見送りが両指数で IS・OOS 改善・最悪月不変 → 先物ボット vix_gate(MES/MNQ)に採用(docs/340)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q122",
+   "cells": 6,
+   "cumulative": 9654,
+   "summary": "0/6。最終 1 時間が利益の大部分 → 20 UTC 維持(docs/341)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q123",
+   "cells": 1,
+   "cumulative": 9655,
+   "summary": "棄却(IS −0.37・前窓 −1.40)。木曜効果は夜間に局在(docs/342)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q124",
+   "cells": 5,
+   "cumulative": 9660,
+   "summary": "0/5。月曜 IS 0.86 だが OOS −0.73、水曜 IS −1.41 → 棄却(docs/343)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q125",
+   "cells": 9,
+   "cumulative": 9669,
+   "summary": "0/9 通過。OOS 2.1〜2.8 だが IS 0.1〜0.5。月曜 0 UTC 建ては全窓正で符号安定 → 紙上候補 MonIdxSession0(docs/344)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q126",
+   "cells": 12,
+   "cumulative": 9681,
+   "summary": "0/12。月曜以外にセッション・ドリフト無し(docs/345)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q127",
+   "cells": 4,
+   "cumulative": 9685,
+   "summary": "0/4。暗号資産は先物口座の対象外のまま(docs/346)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q128",
+   "cells": 3,
+   "cumulative": 9688,
+   "summary": "0/3。USDJPY 月曜セッションは IS p 1.5e-4・OOS 11/20 だが前窓 45% → 紙上候補 MonJpySession6J(docs/347)"
+  },
+  {
+   "date": "2026-10-11",
+   "item": "Q129",
+   "cells": 0,
+   "cumulative": 9688,
+   "summary": "CFD 4 社目候補: The5ers HS / E8 One / CTI(docs/348)。Q88(11/1)へ"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q91",
+   "cells": 4,
+   "cumulative": 9692,
+   "summary": "Mon ETHUSD 出口 4 変種とも棄却(docs/350)。レグ継続の判定を 11 月改訂へ"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q131",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "余裕比例サイジング 朝 1: 本口座 4 本で通過(docs/351)。朝 2 で EA 実装"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q131",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "余裕比例サイジング 朝 2: EA 4 本の新版(docs/351 §7)。切替待ち"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q134",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "出金・緩衝の最適化: 保持 5%(固定)/ 10%(Q131)・月次(docs/352)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q132",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "MFFU 枚数: 日中停止込みで Live 約 20%・枚数は 5/2/5 のまま(docs/353)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q136",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "Mon4 集中: 同時失格 5 本以上 12%(docs/354)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q133",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "トパーズ Mon4 ×8 + 指数 Mon 各 1.0 が有望(docs/355)。Q92 待ち"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q135",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "目標直前ブースト 棄却(docs/356)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "登録",
+   "cells": 0,
+   "cumulative": 9692,
+   "summary": "ユーザー「登録して進めてください」: Q137(日本の暦 18 セル)を事前登録(docs/357 §1)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q137",
+   "cells": 18,
+   "cumulative": 9710,
+   "summary": "日本の暦 0/18(docs/357)。SQ 週前半 L は前窓で消える、権利取り L は n=17・t 1.69 で観測のみ"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "登録",
+   "cells": 0,
+   "cumulative": 9710,
+   "summary": "ユーザー「同じ様に銘柄別で」: Q138(各市場の暦 40 セル)を事前登録(docs/359 §1)"
+  },
+  {
+   "date": "2026-10-12",
+   "item": "Q138",
+   "cells": 40,
+   "cumulative": 9750,
+   "summary": "各市場の暦 0/40(docs/359)。NAS100 満期後 L は他の米指数に出ない、HK50 春節明け L は n=8 で観測のみ"
+  },
+  {
+   "date": "2026-10-13",
+   "item": "Q92",
+   "cells": 0,
+   "cumulative": 9710,
+   "summary": "指数 Mon 継続判定: NAS100/US500 残す・JP225/UK100/FR40 外す(docs/358)"
+  },
+  {
+   "date": "2026-10-21",
+   "slot": "evening",
+   "item": "Q97",
+   "cells": 0,
+   "doc": "docs/371_q97_fn_14166201_redesign.md"
+  },
+  {
+   "date": "2026-10-21",
+   "slot": "adhoc",
+   "item": "Q148",
+   "cells": 16,
+   "doc": "docs/373_q148_mon4_realprice_recheck.md"
+  },
+  {
+   "date": "2026-10-22",
+   "slot": "morning",
+   "item": "Q98",
+   "cells": 0,
+   "doc": "docs/374_q98_ea10s_x2_new_ftmo_std.md"
+  },
+  {
+   "date": "2026-10-22",
+   "slot": "evening",
+   "item": "Q144",
+   "cells": 114,
+   "doc": "docs/375_q144_rollover_short_rescan.md"
+  },
+  {
+   "date": "2026-10-23",
+   "slot": "morning",
+   "item": "Q145",
+   "cells": 4,
+   "doc": "docs/376_q145_tokyo_fix_usdjpy.md"
+  },
+  {
+   "date": "2026-10-23",
+   "slot": "evening",
+   "item": "Q146",
+   "cells": 8,
+   "doc": "docs/377_q146_month_end_london_fix.md"
+  },
+  {
+   "date": "2026-10-26",
+   "slot": "morning",
+   "item": "Q147",
+   "cells": 6,
+   "doc": "docs/378_q147_roll_rate_diff_gate.md"
+  },
+  {
+   "date": "2026-10-26",
+   "slot": "evening",
+   "item": "Q150",
+   "cells": 0,
+   "doc": "docs/379_q150_ea11_dynk_sizing.md"
+  },
+  {
+   "date": "2026-10-27",
+   "slot": "morning",
+   "item": "Q151",
+   "cells": 0,
+   "doc": "docs/380_q151_fn14166201_c6_ea.md"
+  },
+  {
+   "date": "2026-10-27",
+   "slot": "evening",
+   "item": "Q152",
+   "cells": 0,
+   "doc": "docs/381_q152_portfolio_c6.md"
+  },
+  {
+   "date": "2026-11-02",
+   "slot": "morning",
+   "item": "Q99",
+   "cells": 0,
+   "doc": "docs/391_q99_roll_x3_guard_grid.md"
+  },
+  {
+   "date": "2026-11-02",
+   "slot": "evening",
+   "item": "Q104",
+   "cells": 0,
+   "doc": "docs/392_q104_holiday_skip_parity.md"
+  },
+  {
+   "date": "2026-11-03",
+   "slot": "morning",
+   "item": "Q105",
+   "cells": 0,
+   "doc": "docs/393_q105_p2_lock_optimize.md"
+  },
+  {
+   "date": "2026-11-03",
+   "slot": "evening",
+   "item": "Q106",
+   "cells": 0,
+   "doc": "docs/394_q106_fintokei_concurrent_risk.md"
+  },
+  {
+   "date": "2026-11-04",
+   "slot": "morning",
+   "item": "Q107",
+   "cells": 0,
+   "doc": "docs/395_q107_candidate_interim.md"
+  },
+  {
+   "date": "2026-11-06",
+   "slot": "morning",
+   "item": "Q157",
+   "cells": 0,
+   "doc": "docs/400_q157_hold_swap_cost_book.md"
+  },
+  {
+   "date": "2026-11-06",
+   "slot": "evening",
+   "item": "Q159",
+   "cells": 0,
+   "doc": "docs/401_q159_ftmo_2step_reward_policy.md",
+   "note": "Q158 は Dukascopy 不通でデータ待ち"
+  }
+ ],
+ "external_checks": [
+  {
+   "date": "2026-10-20",
+   "source": "claude/zaption-check-m776m7",
+   "cells": 26,
+   "docs": "docs/365_ext_tokyo_open_basket_check.md",
+   "verdict": "新規としては不合格(Bonferroni 未達)・改良系(Mon の週明けショット)としては IS/OOS とも Sharpe 改善・採用は「登録」後に紙上フォワード+実スプレッド計測"
+  }
+ ]
+}

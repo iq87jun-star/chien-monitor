@@ -1,0 +1,8 @@
+{
+ "_comment": "MFFU 先物の枚数(docs/336 §24)。mffu_bot.py 0.6 以降は entry/status の直前にこのファイルを raw.githubusercontent から取得し、VPS の config.json の symbols.*.qty / max_contracts_total を上書きする。effective_from(UTC 日付)以降の判断日にのみ適用。変更はユーザーの「切替」後に commit する。秘密は置かない。",
+ "version": 1,
+ "effective_from": "2026-10-20",
+ "qty": {"MES": 5, "MNQ": 2, "MYM": 5},
+ "max_contracts_total": 12,
+ "basis": "docs/353 Q132: 150K Builder は 5/2/5(12 枚)。7/3/7(docs/336 §19)は取り下げ。2026-10-19 の第 2 回エントリーは VPS config.json 未修正のため 7/3/7 で実行(§23)"
+}

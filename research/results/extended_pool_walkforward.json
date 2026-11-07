@@ -1,0 +1,343 @@
+{
+ "meta": {
+  "purpose": "拡張母集団 docs/207",
+  "seed": 7
+ },
+ "runs": {
+  "BASE/SEL12": {
+   "oos_cum": 179.99,
+   "oos_cagr": 14.55,
+   "vol_ann": 14.96,
+   "sharpe": 0.89,
+   "worst_day": -4.87,
+   "worst_intramonth_dd": -11.46,
+   "max_dd": -17.18,
+   "n_days": 2137,
+   "n_active_days": 2103,
+   "pct_flat_days": 1.6,
+   "avg_mult": 2.99,
+   "avg_turnover": 0.371,
+   "cal_factor": 1.295,
+   "sharpe_cal": 0.94,
+   "family_counts": {
+    "TSMOM": 34,
+    "v4": 84,
+    "Mon": 126,
+    "Hold": 117
+   },
+   "new_cell_counts": {},
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 74.2,
+     "funded": 63.1,
+     "fail": 31.9,
+     "p1_days_med": 83,
+     "p1_days_p90": 196,
+     "funded_days_med": 137,
+     "funded_days_p90": 271,
+     "funded_days_med_cal": 177
+    },
+    "FN_8_5": {
+     "p1_pass": 77.9,
+     "funded": 66.5,
+     "fail": 30.6,
+     "p1_days_med": 66,
+     "p1_days_p90": 175,
+     "funded_days_med": 120,
+     "funded_days_p90": 253,
+     "funded_days_med_cal": 155
+    }
+   }
+  },
+  "BASE/CALMAR": {
+   "oos_cum": 371.69,
+   "oos_cagr": 22.71,
+   "vol_ann": 15.99,
+   "sharpe": 1.31,
+   "worst_day": -6.7,
+   "worst_intramonth_dd": -13.0,
+   "max_dd": -13.38,
+   "n_days": 1985,
+   "n_active_days": 1949,
+   "pct_flat_days": 1.8,
+   "avg_mult": 3.28,
+   "avg_turnover": 0.402,
+   "cal_factor": 1.394,
+   "sharpe_cal": 1.34,
+   "family_counts": {
+    "TSMOM": 27,
+    "v4": 91,
+    "Mon": 139,
+    "Hold": 103
+   },
+   "new_cell_counts": {},
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 84.1,
+     "funded": 76.6,
+     "fail": 19.8,
+     "p1_days_med": 71,
+     "p1_days_p90": 170,
+     "funded_days_med": 118,
+     "funded_days_p90": 238,
+     "funded_days_med_cal": 165
+    },
+    "FN_8_5": {
+     "p1_pass": 86.6,
+     "funded": 78.3,
+     "fail": 19.6,
+     "p1_days_med": 57,
+     "p1_days_p90": 149,
+     "funded_days_med": 104,
+     "funded_days_p90": 218,
+     "funded_days_med_cal": 145
+    }
+   }
+  },
+  "BASE/BROAD_IV": {
+   "oos_cum": 236.4,
+   "oos_cagr": 17.36,
+   "vol_ann": 9.33,
+   "sharpe": 1.25,
+   "worst_day": -6.65,
+   "worst_intramonth_dd": -12.63,
+   "max_dd": -20.34,
+   "n_days": 2717,
+   "n_active_days": 2717,
+   "pct_flat_days": 0.0,
+   "avg_mult": 4.3,
+   "avg_turnover": 0.027,
+   "cal_factor": 1.019,
+   "sharpe_cal": 1.49,
+   "family_counts": {
+    "Hold": 546,
+    "Mon": 1183,
+    "TSMOM": 546,
+    "v4": 814
+   },
+   "new_cell_counts": {},
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 82.8,
+     "funded": 77.1,
+     "fail": 13.6,
+     "p1_days_med": 130,
+     "p1_days_p90": 272,
+     "funded_days_med": 216,
+     "funded_days_p90": 392,
+     "funded_days_med_cal": 220
+    },
+    "FN_8_5": {
+     "p1_pass": 86.6,
+     "funded": 80.8,
+     "fail": 13.3,
+     "p1_days_med": 103,
+     "p1_days_p90": 244,
+     "funded_days_med": 191,
+     "funded_days_p90": 369,
+     "funded_days_med_cal": 195
+    }
+   }
+  },
+  "EXT/SEL12": {
+   "oos_cum": 234.18,
+   "oos_cagr": 17.26,
+   "vol_ann": 15.35,
+   "sharpe": 1.01,
+   "worst_day": -4.65,
+   "worst_intramonth_dd": -16.95,
+   "max_dd": -29.22,
+   "n_days": 2126,
+   "n_active_days": 2122,
+   "pct_flat_days": 0.2,
+   "avg_mult": 3.21,
+   "avg_turnover": 0.37,
+   "cal_factor": 1.302,
+   "sharpe_cal": 1.06,
+   "family_counts": {
+    "RSI2": 56,
+    "v4": 61,
+    "TSMOM": 20,
+    "Hold": 99,
+    "Mon": 109,
+    "E5": 18
+   },
+   "new_cell_counts": {
+    "RSI2_EURUSD": 17,
+    "RSI2_USDCAD": 1,
+    "RSI2_AUDUSD": 8,
+    "RSI2_EURJPY": 10,
+    "RSI2_USDCHF": 13,
+    "RSI2_GBPJPY": 2,
+    "RSI2_USDJPY": 5,
+    "E5_BASKET": 18
+   },
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 76.2,
+     "funded": 65.3,
+     "fail": 30.9,
+     "p1_days_med": 76,
+     "p1_days_p90": 184,
+     "funded_days_med": 127,
+     "funded_days_p90": 254,
+     "funded_days_med_cal": 165
+    },
+    "FN_8_5": {
+     "p1_pass": 80.0,
+     "funded": 68.5,
+     "fail": 29.5,
+     "p1_days_med": 60,
+     "p1_days_p90": 162,
+     "funded_days_med": 110,
+     "funded_days_p90": 236,
+     "funded_days_med_cal": 143
+    }
+   }
+  },
+  "EXT/CALMAR": {
+   "oos_cum": 379.1,
+   "oos_cagr": 22.97,
+   "vol_ann": 15.79,
+   "sharpe": 1.29,
+   "worst_day": -6.1,
+   "worst_intramonth_dd": -11.91,
+   "max_dd": -21.9,
+   "n_days": 2065,
+   "n_active_days": 2065,
+   "pct_flat_days": 0.0,
+   "avg_mult": 3.52,
+   "avg_turnover": 0.362,
+   "cal_factor": 1.34,
+   "sharpe_cal": 1.34,
+   "family_counts": {
+    "RSI2": 65,
+    "TSMOM": 16,
+    "v4": 65,
+    "Hold": 79,
+    "Mon": 125,
+    "E5": 14
+   },
+   "new_cell_counts": {
+    "RSI2_EURUSD": 18,
+    "RSI2_AUDUSD": 10,
+    "RSI2_USDJPY": 6,
+    "RSI2_USDCHF": 14,
+    "RSI2_EURJPY": 17,
+    "E5_BASKET": 14
+   },
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 83.7,
+     "funded": 75.6,
+     "fail": 21.1,
+     "p1_days_med": 71,
+     "p1_days_p90": 174,
+     "funded_days_med": 119,
+     "funded_days_p90": 241,
+     "funded_days_med_cal": 160
+    },
+    "FN_8_5": {
+     "p1_pass": 86.3,
+     "funded": 77.9,
+     "fail": 20.4,
+     "p1_days_med": 56,
+     "p1_days_p90": 152,
+     "funded_days_med": 104,
+     "funded_days_p90": 223,
+     "funded_days_med_cal": 139
+    }
+   }
+  },
+  "EXT/BROAD_IV": {
+   "oos_cum": 189.52,
+   "oos_cagr": 15.06,
+   "vol_ann": 8.93,
+   "sharpe": 1.15,
+   "worst_day": -5.42,
+   "worst_intramonth_dd": -13.35,
+   "max_dd": -20.23,
+   "n_days": 2717,
+   "n_active_days": 2717,
+   "pct_flat_days": 0.0,
+   "avg_mult": 4.87,
+   "avg_turnover": 0.023,
+   "cal_factor": 1.019,
+   "sharpe_cal": 1.37,
+   "family_counts": {
+    "E5": 91,
+    "Hold": 546,
+    "Mon": 1183,
+    "RSI2": 819,
+    "TSMOM": 546,
+    "v4": 814
+   },
+   "new_cell_counts": {
+    "E5_BASKET": 91,
+    "RSI2_AUDUSD": 91,
+    "RSI2_EURJPY": 91,
+    "RSI2_EURUSD": 91,
+    "RSI2_GBPJPY": 91,
+    "RSI2_GBPUSD": 91,
+    "RSI2_NZDUSD": 91,
+    "RSI2_USDCAD": 91,
+    "RSI2_USDCHF": 91,
+    "RSI2_USDJPY": 91
+   },
+   "mc": {
+    "FTMO_10_5": {
+     "p1_pass": 78.8,
+     "funded": 72.8,
+     "fail": 14.2,
+     "p1_days_med": 143,
+     "p1_days_p90": 288,
+     "funded_days_med": 235,
+     "funded_days_p90": 421,
+     "funded_days_med_cal": 239
+    },
+    "FN_8_5": {
+     "p1_pass": 84.0,
+     "funded": 77.9,
+     "fail": 13.9,
+     "p1_days_med": 114,
+     "p1_days_p90": 262,
+     "funded_days_med": 210,
+     "funded_days_p90": 402,
+     "funded_days_med_cal": 214
+    }
+   }
+  }
+ },
+ "tests": {
+  "EXT-BASE/SEL12": {
+   "mean_monthly_diff_pct": 0.223,
+   "t": 0.74,
+   "p": 0.4579,
+   "ci95": [
+    -0.348,
+    0.837
+   ],
+   "significant_bonf": false
+  },
+  "EXT-BASE/CALMAR": {
+   "mean_monthly_diff_pct": 0.041,
+   "t": 0.13,
+   "p": 0.8937,
+   "ci95": [
+    -0.438,
+    0.622
+   ],
+   "significant_bonf": false
+  },
+  "EXT-BASE/BROAD_IV": {
+   "mean_monthly_diff_pct": -0.173,
+   "t": -1.42,
+   "p": 0.1566,
+   "ci95": [
+    -0.42,
+    0.039
+   ],
+   "significant_bonf": false
+  }
+ }
+}

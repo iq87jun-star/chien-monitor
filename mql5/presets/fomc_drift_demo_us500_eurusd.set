@@ -1,0 +1,23 @@
+; ==============================================================
+; Chien_FOMC_Drift_EA v1.10 — デモ前進検証用(docs/53 §5・docs/217)
+; デモ口座(FTMO Free Trial または FN デモ)で US500 と EURUSD の 2 チャートに同じ設定で付ける。
+; 違いは InpMagic だけ: US500=930612 / EURUSD=930613(チャート側で変更)。
+; 確認項目: 建玉時刻(前日 14:00 ET=18/19 GMT)・手仕舞い(13:53 ET)・スプレッド・1 晩スワップ・ロット。
+; ==============================================================
+InpAcknowledgeDemoFirst=true
+InpFomcDates=2026.01.28,2026.03.18,2026.04.29,2026.06.17,2026.07.29,2026.09.16,2026.10.28,2026.12.09
+InpEntryHourET=14
+InpExitMinBefore=7
+InpMinRemainHours=2
+InpEventRiskPct=1.0
+InpAccountFloorDDPct=8.0
+InpInitialBalance=0
+InpCloseAllOnGuard=true
+InpAtrPeriodD1=14
+InpCatastropheATR=2.5
+InpMinLot=0.01
+InpMaxLot=50.0
+InpMaxSpreadBps=5.0
+InpMagic=930612
+InpSlippagePoints=30
+InpVerboseLog=true

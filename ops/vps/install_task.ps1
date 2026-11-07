@@ -1,0 +1,28 @@
+﻿# chien 運用エージェントを Windows タスクスケジューラに登録する(docs/317 段階 1・v3)
+# 管理者権限は不要(現在のユーザーで登録): powershell -ExecutionPolicy Bypass -File install_task.ps1
+# トリガー: (a) 毎時(日付 00:00 起点の 1 時間繰り返し) + (b) ログオン 3 分後から 1 時間繰り返し。
+#   (b) があるので PC を起動すれば自動で再開する。電池駆動でも開始・継続(既定では AC 電源時のみ実行になり止まる)。
+$here   = Split-Path -Parent $MyInvocation.MyCommand.Path
+$python = (Get-Command python -ErrorAction SilentlyContinue).Source
+# v3.1 (2026-10-12): PATH に python が無い環境(別シェルから起動した PowerShell 等)では実在するものを順に探す。見つからなければ中止(存在しないパスを登録すると毎時タスクが静かに失敗する)
+if (-not $python -or -not (Test-Path $python)) {
+  $python = @("C:\Program Files\Python312\python.exe", "C:\Program Files\Python311\python.exe",
+              (Join-Path $env:LOCALAPPDATA "Programs\Python\Python312\python.exe"), (Join-Path $env:LOCALAPPDATA "Programs\Python\Python311\python.exe")) | Where-Object { Test-Path $_ } | Select-Object -First 1
+}
+if (-not $python) { Write-Host "python.exe が見つからない。install_task.ps1 の `$python を実在するパスに直して実行" ; exit 1 }
+$script = Join-Path $here "chien_ops_agent.py"
+$config = Join-Path $here "terminals.json"
+$log    = Join-Path $here "agent.log"
+if (-not (Test-Path $config)) { Write-Host "terminals.json が無い。terminals.example.json をコピーして編集してから実行" ; exit 1 }
+# v3: python を直接起動する(cmd /c "..." は引用符が 3 個以上あると先頭と末尾の引用符を剥がすため、前回結果 1 で毎回失敗していた。
+#     ログは agent 1.7 が自分で agent.log に追記する)
+$action  = New-ScheduledTaskAction -Execute $python -Argument "`"$script`" --config `"$config`"" -WorkingDirectory $here
+$hourly  = New-ScheduledTaskTrigger -Once -At (Get-Date).Date -RepetitionInterval (New-TimeSpan -Hours 1) -RepetitionDuration (New-TimeSpan -Days 3650)
+$logon   = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$logon.Delay = "PT3M"
+$logon.Repetition = $hourly.Repetition
+$settings = New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Minutes 30) -MultipleInstances IgnoreNew -RestartCount 3 -RestartInterval (New-TimeSpan -Minutes 5)
+Register-ScheduledTask -TaskName "chien_ops_agent" -Action $action -Trigger @($hourly, $logon) -Settings $settings -Force | Out-Null
+$t = Get-ScheduledTask -TaskName "chien_ops_agent"; $i = $t | Get-ScheduledTaskInfo
+Write-Host "登録: chien_ops_agent(ログオン 3 分後 + 毎時・電池駆動でも実行)。状態=$($t.State) 次回=$($i.NextRunTime) 前回結果=$($i.LastTaskResult)"
+Write-Host "手動実行: schtasks /run /tn chien_ops_agent  / ログ: $log  / 自己診断: Drive の chien_ops\_diag\"

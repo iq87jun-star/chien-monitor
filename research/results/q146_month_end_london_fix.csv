@@ -1,0 +1,9 @@
+symbol,window,direction,n_full,wins_full,rate_full,mean_full_bps,p,is_rate,is_mean_bps,oos_n,oos_rate,oos_mean_bps,passed
+GBPUSD,当日 fix → fix+4h,SHORT,128,75,0.586,2.06,0.0315043913041671,0.487,-3.59,20,0.55,-1.17,False
+EURUSD,当日 fix → fix+4h,SHORT,128,68,0.531,-0.62,0.268134357035553,0.487,-5.87,20,0.6,-0.59,False
+EURUSD,前日 fix−1h → 当日 fix(≈25h),LONG,128,65,0.508,-0.41,0.46480695391499244,0.436,-11.06,20,0.4,-5.86,False
+GBPUSD,前日 fix−1h → 当日 fix(≈25h),LONG,128,64,0.5,6.14,0.5351930460850076,0.359,-1.36,20,0.35,-11.18,False
+EURUSD,前日 fix−1h → 当日 fix(≈25h),SHORT,128,56,0.438,-4.94,0.9336875993375089,0.487,5.49,20,0.55,0.62,False
+GBPUSD,前日 fix−1h → 当日 fix(≈25h),SHORT,128,56,0.438,-10.76,0.9336875993375089,0.487,-3.41,20,0.6,6.67,False
+EURUSD,当日 fix → fix+4h,LONG,128,40,0.312,-4.72,0.999994173132819,0.41,0.29,20,0.35,-4.66,False
+GBPUSD,当日 fix → fix+4h,LONG,128,39,0.305,-6.68,0.9999975385762203,0.359,-1.18,20,0.3,-3.34,False

@@ -1,0 +1,277 @@
+{
+ "meta": {
+  "purpose": "出金・寿命ポリシー docs/202",
+  "account": "FN_Instant20k_11988011",
+  "mult": 4.0,
+  "seed": 7,
+  "horizon": 500,
+  "trail": 0.06,
+  "stop_margin": 0.01,
+  "floor_rule": "min(HWM-6%, 初期)・EA停止=floor+1%",
+  "policies": {
+   "P0": null,
+   "P1_10": [
+    0.1,
+    0.0
+   ],
+   "P2_10_5": [
+    0.1,
+    0.05
+   ],
+   "P3_5": [
+    0.05,
+    0.0
+   ]
+  }
+ },
+ "results": {
+  "recent_12m": {
+   "P0/keep": {
+    "P_stop": 4.5,
+    "E_withdrawn": 0.0,
+    "E_unrealized": 63.97,
+    "E_value": 63.97,
+    "E_lifetime": 481.0,
+    "E_n_withdrawals": 0.0,
+    "P_value_positive": 95.5
+   },
+   "P1_10/keep": {
+    "P_stop": 100.0,
+    "E_withdrawn": 10.43,
+    "E_unrealized": 0.0,
+    "E_value": 10.43,
+    "E_lifetime": 97.0,
+    "E_n_withdrawals": 0.97,
+    "P_value_positive": 95.5
+   },
+   "P1_10/reset": {
+    "P_stop": 20.3,
+    "E_withdrawn": 44.79,
+    "E_unrealized": 3.21,
+    "E_value": 48.0,
+    "E_lifetime": 450.0,
+    "E_n_withdrawals": 4.16,
+    "P_value_positive": 95.5
+   },
+   "P2_10_5/keep": {
+    "P_stop": 23.5,
+    "E_withdrawn": 42.7,
+    "E_unrealized": 4.94,
+    "E_value": 47.64,
+    "E_lifetime": 442.0,
+    "E_n_withdrawals": 7.41,
+    "P_value_positive": 95.5
+   },
+   "P2_10_5/reset": {
+    "P_stop": 18.8,
+    "E_withdrawn": 26.5,
+    "E_unrealized": 4.07,
+    "E_value": 30.57,
+    "E_lifetime": 452.0,
+    "E_n_withdrawals": 4.18,
+    "P_value_positive": 95.5
+   },
+   "P3_5/keep": {
+    "P_stop": 100.0,
+    "E_withdrawn": 5.9,
+    "E_unrealized": 0.0,
+    "E_value": 5.9,
+    "E_lifetime": 55.0,
+    "E_n_withdrawals": 1.03,
+    "P_value_positive": 97.0
+   },
+   "P3_5/reset": {
+    "P_stop": 24.6,
+    "E_withdrawn": 45.05,
+    "E_unrealized": 1.25,
+    "E_value": 46.31,
+    "E_lifetime": 439.0,
+    "E_n_withdrawals": 7.86,
+    "P_value_positive": 97.0
+   }
+  },
+  "full_pessimistic": {
+   "P0/keep": {
+    "P_stop": 63.2,
+    "E_withdrawn": 0.0,
+    "E_unrealized": 12.21,
+    "E_value": 12.21,
+    "E_lifetime": 242.0,
+    "E_n_withdrawals": 0.0,
+    "P_value_positive": 36.8
+   },
+   "P1_10/keep": {
+    "P_stop": 100.0,
+    "E_withdrawn": 4.96,
+    "E_unrealized": 0.0,
+    "E_value": 4.96,
+    "E_lifetime": 84.0,
+    "E_n_withdrawals": 0.45,
+    "P_value_positive": 44.7
+   },
+   "P1_10/reset": {
+    "P_stop": 97.2,
+    "E_withdrawn": 8.37,
+    "E_unrealized": 0.1,
+    "E_value": 8.48,
+    "E_lifetime": 144.0,
+    "E_n_withdrawals": 0.76,
+    "P_value_positive": 44.7
+   },
+   "P2_10_5/keep": {
+    "P_stop": 97.0,
+    "E_withdrawn": 7.06,
+    "E_unrealized": 0.17,
+    "E_value": 7.24,
+    "E_lifetime": 144.0,
+    "E_n_withdrawals": 1.17,
+    "P_value_positive": 44.7
+   },
+   "P2_10_5/reset": {
+    "P_stop": 96.9,
+    "E_withdrawn": 4.77,
+    "E_unrealized": 0.13,
+    "E_value": 4.9,
+    "E_lifetime": 146.0,
+    "E_n_withdrawals": 0.77,
+    "P_value_positive": 44.7
+   },
+   "P3_5/keep": {
+    "P_stop": 100.0,
+    "E_withdrawn": 3.74,
+    "E_unrealized": 0.0,
+    "E_value": 3.74,
+    "E_lifetime": 53.0,
+    "E_n_withdrawals": 0.62,
+    "P_value_positive": 61.2
+   },
+   "P3_5/reset": {
+    "P_stop": 98.5,
+    "E_withdrawn": 9.02,
+    "E_unrealized": 0.02,
+    "E_value": 9.04,
+    "E_lifetime": 131.0,
+    "E_n_withdrawals": 1.51,
+    "P_value_positive": 61.2
+   }
+  }
+ },
+ "lock_sensitivity": {
+  "recent_12m": {
+   "with_lock": {
+    "P_stop": 4.5,
+    "E_withdrawn": 0.0,
+    "E_unrealized": 63.97,
+    "E_value": 63.97,
+    "E_lifetime": 481.0,
+    "E_n_withdrawals": 0.0,
+    "P_value_positive": 95.5
+   },
+   "no_lock_as_docs199": {
+    "P_stop": 57.5,
+    "E_withdrawn": 0.0,
+    "E_unrealized": 30.12,
+    "E_value": 30.12,
+    "E_lifetime": 387.0,
+    "E_n_withdrawals": 0.0,
+    "P_value_positive": 42.5
+   }
+  },
+  "full_pessimistic": {
+   "with_lock": {
+    "P_stop": 63.2,
+    "E_withdrawn": 0.0,
+    "E_unrealized": 12.21,
+    "E_value": 12.21,
+    "E_lifetime": 242.0,
+    "E_n_withdrawals": 0.0,
+    "P_value_positive": 36.8
+   },
+   "no_lock_as_docs199": {
+    "P_stop": 99.8,
+    "E_withdrawn": 0.0,
+    "E_unrealized": 0.08,
+    "E_value": 0.08,
+    "E_lifetime": 117.0,
+    "E_n_withdrawals": 0.0,
+    "P_value_positive": 0.2
+   }
+  }
+ },
+ "verdict": {
+  "recent_12m": {
+   "P0_E_value": 63.97,
+   "policies": {
+    "P1_10": {
+     "beats_P0_keep": false,
+     "beats_P0_reset": false,
+     "robust": false,
+     "E_value_keep": 10.43,
+     "E_value_reset": 48.0
+    },
+    "P2_10_5": {
+     "beats_P0_keep": false,
+     "beats_P0_reset": false,
+     "robust": false,
+     "E_value_keep": 47.64,
+     "E_value_reset": 30.57
+    },
+    "P3_5": {
+     "beats_P0_keep": false,
+     "beats_P0_reset": false,
+     "robust": false,
+     "E_value_keep": 5.9,
+     "E_value_reset": 46.31
+    }
+   },
+   "rank_keep": [
+    "P2_10_5",
+    "P1_10",
+    "P3_5"
+   ],
+   "rank_reset": [
+    "P1_10",
+    "P3_5",
+    "P2_10_5"
+   ],
+   "ranking_depends_on_FN_answer": true
+  },
+  "full_pessimistic": {
+   "P0_E_value": 12.21,
+   "policies": {
+    "P1_10": {
+     "beats_P0_keep": false,
+     "beats_P0_reset": false,
+     "robust": false,
+     "E_value_keep": 4.96,
+     "E_value_reset": 8.48
+    },
+    "P2_10_5": {
+     "beats_P0_keep": false,
+     "beats_P0_reset": false,
+     "robust": false,
+     "E_value_keep": 7.24,
+     "E_value_reset": 4.9
+    },
+    "P3_5": {
+     "beats_P0_keep": false,
+     "beats_P0_reset": false,
+     "robust": false,
+     "E_value_keep": 3.74,
+     "E_value_reset": 9.04
+    }
+   },
+   "rank_keep": [
+    "P2_10_5",
+    "P1_10",
+    "P3_5"
+   ],
+   "rank_reset": [
+    "P3_5",
+    "P1_10",
+    "P2_10_5"
+   ],
+   "ranking_depends_on_FN_answer": true
+  }
+ }
+}

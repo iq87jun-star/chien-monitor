@@ -1,0 +1,104 @@
+# -*- coding: utf-8 -*-
+"""docs/317 段階 1: VPS エージェント(ops/vps/chien_ops_agent.py)の出力を取り込み、口座ごとのダイジェストを出す。
+
+使い方: python3 forward/ops_ingest.py <取り込みディレクトリ>   (Drive の chien_ops を丸ごと落としたもの: <dir>/<account>/positions.csv 等)
+出力: results/ops_digest_latest.json と標準出力の要約(Routine がそのまま報告に使う)。
+  ・口座ごと: 最新 balance / equity / 建玉数 / 直近 7 日の決済損益 / SL 決済率 / ガード発動・EXPIRY・INIT の有無
+  ・レグ別(コメント RFMon_ 等): 直近 30 日の建玉数と損益
+  ・deviation_monitor.py は positions.csv を xlsx と同様に読めるので、逸脱検知はそちらを別途実行(python3 forward/deviation_monitor.py <dir>)。"""
+import os, sys, json, glob, re, datetime as dt, warnings; warnings.filterwarnings("ignore")
+import pandas as pd
+HERE = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(HERE); os.chdir(ROOT); sys.path.insert(0, HERE)
+import mt5_report as mr
+LEG_RE = re.compile(r"^RF\w*?(Mon|Hold|Roll|Sess|v4|Tsmom)[A-Za-z]*?_([A-Za-z0-9._]+?)(?:_h(\d+))?$")
+
+
+def digest(d):
+    acct = os.path.basename(d.rstrip("/\\")); out = dict(account=acct)
+    ep = os.path.join(d, "equity_log.csv")
+    if os.path.exists(ep) and os.path.getsize(ep) > 0:
+        e = pd.read_csv(ep); last = e.iloc[-1]
+        out.update(snapshot_utc=str(last.time_utc), balance=float(last.balance), equity=float(last.equity), open_positions=int(last.open_positions), currency=str(last.currency))
+        if len(e) > 1: out["equity_24h_change"] = float(last.equity) - float(e[e.time_utc <= (pd.Timestamp(last.time_utc) - pd.Timedelta(hours=24)).strftime("%Y-%m-%d %H:%M:%S")].equity.iloc[-1]) if (e.time_utc <= (pd.Timestamp(last.time_utc) - pd.Timedelta(hours=24)).strftime("%Y-%m-%d %H:%M:%S")).any() else None
+    pp = os.path.join(d, "positions.csv")
+    if os.path.exists(pp):
+        _, pos, *_ = mr.parse(pp)
+        if len(pos):
+            pos = pos.dropna(subset=["close_time"]); now = pos.close_time.max()
+            w7 = pos[pos.close_time >= now - pd.Timedelta(days=7)]; w30 = pos[pos.close_time >= now - pd.Timedelta(days=30)]
+            out.update(closed_total=int(len(pos)), last_close=str(now), net_7d=round(float(w7.net.sum()), 2), n_7d=int(len(w7)), net_30d=round(float(w30.net.sum()), 2))
+            if "sl_hit" in pos.columns: out["sl_hit_rate_30d"] = round(float(w30.sl_hit.astype(str).str.lower().eq("true").mean()) * 100, 1) if len(w30) else None
+            legs = []
+            for _, r in w30.iterrows():
+                m = LEG_RE.match(str(r.comment).strip())
+                if m: legs.append(dict(family=m.group(1), symbol=m.group(2), net=r.net))
+            if legs:
+                L = pd.DataFrame(legs).groupby(["family", "symbol"]).net.agg(["size", "sum"]).round(2)
+                out["legs_30d"] = {f"{a}/{b}": dict(n=int(n), net=float(s)) for (a, b), (n, s) in L.iterrows()}
+    lp = os.path.join(d, "ea_log_extract.csv")
+    if os.path.exists(lp) and os.path.getsize(lp) > 0:
+        try: lg = pd.read_csv(lp)
+        except pd.errors.EmptyDataError: lg = pd.DataFrame()
+        if len(lg):
+            # Q103(docs/388): agent 1.8 の category 列があれば分類で拾う(停止 = 口座ガード系・見送り = スプレッド/門/祝日/再試行・既知 = 補助 EA 診断等)。無ければ従来の正規表現
+            if "category" in lg.columns:
+                lg["category"] = lg["category"].fillna("その他").astype(str)
+                out["alerts"] = lg[lg.category == "停止"].line.tail(10).tolist()
+                out["skips"] = lg[lg.category == "見送り"].line.tail(10).tolist()
+                out["known"] = int((lg.category == "既知").sum())
+                dtag = re.findall(r"(\d{8})\.log", " ".join(lg.file.astype(str).tail(1)))
+                today = lg[lg.file.astype(str).str.contains(dtag[-1])] if dtag else lg
+                out["cat_today"] = today.category.value_counts().to_dict()
+            else:
+                out["alerts"] = lg[lg.line.str.contains(r"\[HALT\]|\[BAL GUARD\]|\[DAILY STOP\]|\[EXPIRY\]|\[PROFIT LOCK\]|\[TRAIL|解決できず|SIZE SANITY")].line.tail(10).tolist()
+            ini = lg[lg.line.str.contains(r"\[INIT")]
+            out["last_init"] = ini.line.iloc[-1][:200] if len(ini) else ""
+            out["ea_names"] = sorted(set(m.group(1) for m in (re.search(r"\t(【[^\t]+?)\s*\(", l) for l in lg.line.astype(str)) if m))   # ログに出た EA 名(端末で動いている EA)
+            out["init_versions"] = sorted(set(re.findall(r"\[INIT [^\]]*?v(\d+\.\d+)\]", " ".join(ini.line.astype(str)))))
+            out["entries_3d"] = int(lg.line.str.contains(r"ENTRY\]").sum())
+    vl = sorted(glob.glob(os.path.join(d, "vps_log_*.csv")))   # Q111(docs/327): EA が VPS から送るログ
+    if vl:
+        try:
+            v = pd.concat([pd.read_csv(f) for f in vl], ignore_index=True)
+        except Exception: v = pd.DataFrame()
+        if len(v):
+            v["utc"] = pd.to_datetime(v.utc, errors="coerce"); v = v.dropna(subset=["utc"]).sort_values("utc")
+            last = v.utc.iloc[-1]; age_h = (dt.datetime.utcnow() - last.to_pydatetime()).total_seconds() / 3600
+            out["vps_last_utc"] = str(last); out["vps_age_h"] = round(age_h, 1)
+            d24 = v[v.utc >= last - pd.Timedelta(hours=24)]
+            out["vps_24h"] = {k: int(n) for k, n in d24.kind.value_counts().items()}
+            logs = v[v.kind == "LOG"].text.astype(str)
+            al = logs[logs.str.contains(r"\[HALT\]|\[BAL GUARD\]|\[DAILY STOP\]|\[EXPIRY\]|\[PROFIT LOCK\]|\[TRAIL|解決できず|SIZE SANITY|\[MONTH STOP\]|\[LOG SEND\]")]
+            out["vps_alerts"] = al.tail(10).tolist()
+            out["vps_entries_3d"] = int(v[(v.kind == "LOG") & (v.utc >= last - pd.Timedelta(days=3))].text.astype(str).str.contains(r"ENTRY\]").sum())
+            ini = logs[logs.str.contains(r"\[INIT")]; out["vps_last_init"] = ini.iloc[-1][:200] if len(ini) else ""
+            if age_h > 2: out.setdefault("alerts", []).append(f"[VPS SILENT] 最後の受信 {last} UTC({age_h:.1f} 時間前)— EA 停止・端末切断・WebRequest 不許可のいずれか")
+            if out.get("alerts") is None: out["alerts"] = []
+            out["alerts"] = list(out.get("alerts", [])) + [a for a in out["vps_alerts"] if a not in out.get("alerts", [])][-5:]
+    return out
+
+
+def main():
+    root = sys.argv[1] if len(sys.argv) > 1 else "ops_inbox"
+    st = os.path.join(root, "status.json"); status = json.load(open(st, encoding="utf-8")) if os.path.exists(st) else {}
+    rows = [digest(d) for d in sorted(glob.glob(os.path.join(root, "*"))) if os.path.isdir(d) and os.path.basename(d).isdigit()]   # _diag 等は口座ではない
+    res = dict(ingested_utc=dt.datetime.utcnow().isoformat(), agent_generated_utc=status.get("generated_utc"), accounts=rows,
+               agent_failures=[t for t in status.get("terminals", []) if not t.get("ok")])
+    os.makedirs("results", exist_ok=True); json.dump(res, open("results/ops_digest_latest.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    print(f"エージェント生成 {status.get('generated_utc')} / 口座 {len(rows)} / 失敗 {len(res['agent_failures'])}")
+    for r in rows:
+        if r.get("vps_last_utc"): print(f"   VPS ログ: 最終 {r['vps_last_utc']} UTC({r['vps_age_h']} h 前) 24h {r.get('vps_24h')} ENTRY 3d {r.get('vps_entries_3d')}")
+        print(f"#{r['account']}: eq {r.get('equity', float('nan')):,.0f} (bal {r.get('balance', float('nan')):,.0f}) 建玉 {r.get('open_positions', '-')} | 7日 {r.get('net_7d', '-')} ({r.get('n_7d', '-')} 本) | 30日 {r.get('net_30d', '-')} SL率 {r.get('sl_hit_rate_30d', '-')}% | 3日の建て {r.get('entries_3d', '-')} | 警告 {len(r.get('alerts', []))}{(' 見送り ' + str(len(r['skips']))) if r.get('skips') else ''}{(' 既知 ' + str(r['known'])) if r.get('known') else ''}")
+        for a in r.get("alerts", [])[-3:]: print("   ! " + a[:160])
+        if r.get("ea_names"): print("   EA:", "; ".join(n[:60] for n in r["ea_names"]), "| INIT 版:", ",".join(r.get("init_versions", [])) or "なし")
+    for f in res["agent_failures"]: print(f"   × エージェント失敗 #{f.get('account')} {f.get('name')}: {f.get('error')}")
+    # Q106(docs/394): Fintokei 3 口座の同時保有リスク(3% 警告線までの距離)を 1 行ずつ
+    q106 = os.path.join(ROOT, "queue", "q106_fintokei_concurrent_risk.py")
+    if os.path.exists(q106) and root == "ops_inbox":
+        import subprocess
+        try: print(subprocess.run([sys.executable, "-W", "ignore", q106, "--snapshot"], capture_output=True, text=True, timeout=120, cwd=ROOT).stdout.rstrip())
+        except Exception as ex: print(f"   (Q106 同時保有リスクの算出に失敗: {ex})")
+
+
+if __name__ == "__main__":
+    main()
