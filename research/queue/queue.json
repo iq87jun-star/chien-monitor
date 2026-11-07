@@ -2737,6 +2737,26 @@
     "docs/244_morning_research_queue.md"
    ],
    "note": "ai-council 2026-11-06 ①(XAU 金曜窓 LONG)。仮説: 週末の地政学リスクに備える買いが金曜の金を押し上げる。判定は docs/244 §1 の標準基準(Bonferroni・IS 2021-10〜2024-12・OOS 2025-01〜・コスト XAUUSD 5bps・前窓は XAU H1 が 2021 開始のため Q16 と同じく免除)。窓は 1 つに固定し、前後 ±1 時間(17/19 UTC 建て・16/18 UTC 決済)は頑健性の記録のみで選ばない。参考記録(判定には使わない): (1) Hold XAU(日次 close→close)との日次相関 — 高ければ Hold XAU の無い口座(FTMO 50k A/B・Fintokei)向けの候補と記す、(2) 米雇用統計の金曜(第 1 金曜・BLS 日程で確認)を除いた結果、(3) 紙上候補 Thu XAUUSD(木曜 o2o 24h・docs/230)との重なり分解: 木 18→24 UTC と 金 00→17 UTC の 2 区間の寄与、および Thu XAUUSD との日次相関。通過しても Thu XAUUSD と同時には CANDIDATES に入れず、どちらを残すかを提案(2 本とも残すなら理由を書く)。データ: data_dukascopy/XAUUSD_hour.csv.gz(2021-01〜2025-12・週末埋め足あり → 週末行は除外して使う)。2026 年分は candidate_interim.ensure_months で足せたら足す(不通なら 2025-12 末尾で判定し注記)。棄却は正常な結果。実行後に main の ai-council/explored.md の該当行(2026-11-06 ① XAU 金曜窓)へ結果を書き足す PR を main 向けに作る(Q160 の行には「→ 登録せず(Q16 と重複)」を併記)。EA・manifest・config は変更しない"
+  },
+  {
+   "id": "Q162",
+   "slug": "weekday_diversification",
+   "title": "月曜偏りの訂正案: 週末持ち越し可の 5 口座で Mon を ×0.7/×0.5 に下げ、通過済み Hold UK100/WTI へ振り替え(最悪日のみ揃え D / 最悪日+DD 揃え E)の帳簿・MC 比較(診断・セル 0)",
+   "status": "done",
+   "cells": 0,
+   "order": 35,
+   "registered": "2026-11-07",
+   "program": "ユーザー 2026-11-07「今行えますか」(配分の診断・docs/244 §1 の検定ではない)",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/402_q162_weekday_diversification.md"
+   ],
+   "results": [
+    "research/results/q162_weekday_diversification.csv",
+    "research/results/q162_weekday_diversification_portfolio.csv"
+   ],
+   "note": "結論: 最悪日だけ揃える D は Hold 名目が膨らみ DD が深くなり失格 2 倍 → 不採用。DD も揃える E7 が落とし所(Mon 寄与 89 → 60%・合計月利 3.2 → 3.0%・30 か月期待 同等・失格 +2〜16pt)。Mon 以外の曜日の柱(Thu XAUUSD・Q161)が通るまで相関 0.55 が下限。配備変更なし(切替待ち)"
   }
  ],
  "runs": [
@@ -4022,6 +4042,14 @@
    "cells": 0,
    "doc": "docs/401_q159_ftmo_2step_reward_policy.md",
    "note": "Q158 は Dukascopy 不通でデータ待ち"
+  },
+  {
+   "date": "2026-11-07",
+   "slot": "adhoc",
+   "item": "Q162",
+   "cells": 0,
+   "doc": "docs/402_q162_weekday_diversification.md",
+   "note": "ユーザー「今行えますか」で前倒し(土曜・診断)"
   }
  ],
  "external_checks": [
