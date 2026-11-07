@@ -200,6 +200,13 @@ for a in cfg["accounts"]:
                        ea_rule=(legs_txt({k_: w * sc for k_, w in cur_legs.items()}) if cur_legs else spec_txt({k_: w * sc for k_, w in (a["funded"] if fn else a["eval"]).items()})) + f"(いまの段階 ×{sc:.2f}・{binding}で決まる)",
                        hist_from=me.index[0].strftime("%Y-%m"), hist_to=me.index[-1].strftime("%Y-%m"), generated_utc=gen["generated_utc"], digest_utc=gen["digest_utc"],
                        actual_from=act[0]["ym"] if act else "", actual_to=act[-1]["ym"] if act else "", actual_months=len(act), actual_cum=act_cum, actual_n=int(sum(r_["n"] for r_ in act)), **s, **sr))
+def _clean(o):
+    """JSON 標準に無い NaN/Inf を null に(ダッシュボードの読み込みが NaN で失敗した 2026-11-07)。"""
+    if isinstance(o, dict): return {k_: _clean(v) for k_, v in o.items()}
+    if isinstance(o, list): return [_clean(v) for v in o]
+    if isinstance(o, float) and (np.isnan(o) or np.isinf(o)): return None
+    return o
+rows_a = _clean(rows_a); rows_m = _clean(rows_m)
 os.makedirs("results", exist_ok=True)
 json.dump(dict(rows=rows_a, **gen), open("results/account_cards_accounts.json", "w", encoding="utf-8"), ensure_ascii=False, indent=0)
 json.dump(dict(rows=rows_m, **gen), open("results/account_cards_monthly.json", "w", encoding="utf-8"), ensure_ascii=False, indent=0)
