@@ -77,6 +77,20 @@ def monthly_of(s):
     m = (1 + s).resample("ME").prod() - 1
     end = m.index[-1]; start = pd.Timestamp(year=end.year - YEARS, month=end.month, day=1) + pd.offsets.MonthEnd(0) + pd.offsets.MonthBegin(1)
     return m[m.index >= start]
+def daily_window(s):
+    end = s.index[-1]; start = pd.Timestamp(year=end.year - YEARS, month=end.month, day=1) + pd.offsets.MonthEnd(0) + pd.offsets.MonthBegin(1)
+    return s[s.index >= start]
+def mdd_daily(r):
+    eq = (1 + r).cumprod(); return float((eq / eq.cummax() - 1).min())
+def solve_scale(r, target=0.10):
+    """日次リターン r を定数倍して 5 年の最大 DD(日次終値・峰→谷)がちょうど target になる倍率(2 分法)。"""
+    lo, hi = 0.01, 20.0
+    for _ in range(60):
+        mid = (lo + hi) / 2
+        if -mdd_daily(r * mid) > target: hi = mid
+        else: lo = mid
+    return lo
+DD_TARGET = 0.10
 def monthly(spec, sw):
     s = book(spec, sw); m = (1 + s).resample("ME").prod() - 1
     end = m.index[-1]; start = pd.Timestamp(year=end.year - YEARS, month=end.month, day=1) + pd.offsets.MonthEnd(0) + pd.offsets.MonthBegin(1)
@@ -150,14 +164,19 @@ for a in cfg["accounts"]:
     cur = d.get("currency", "JPY" if firm == "Fintokei" else "USD"); init = a["balance_jpy"] if cur == "JPY" else a["balance_jpy"] / FX
     sw = a.get("swap_xau_bps_m", 0.0); stage = "funded" if fn else "eval"
     EL = EA_LEGS.get(aid); me = monthly_of(ea_book(EL["eval"], sw)) if EL else monthly(a["eval"], sw); mf = monthly_of(ea_book(EL["funded"], sw)) if EL else monthly(a["funded"], sw)
-    for ym_, ve, vf in zip(me.index, me.values, mf.values):
-        rows_m.append(dict(account=aid, name=a["name"], kind="ledger", ym=ym_.strftime("%Y-%m"), year=int(ym_.year), month=int(ym_.month), ret_eval=round(float(ve), 5), ret_funded=round(float(vf), 5), ret_cur=round(float(vf if fn else ve), 5), ret_actual=None, net_actual=None, n_actual=None, mtd=False))
+    # DD 10% 揃え: いまの段階のレグを定数倍し、5 年の日次最大 DD がちょうど DD_TARGET になる倍率(ユーザー 2026-11-07「DD10%揃えを月利表の切替に追加して」)
+    cur_legs = (EL["funded"] if fn else EL["eval"]) if EL else None
+    rd = daily_window(ea_book(cur_legs, sw) if EL else book(a["funded"] if fn else a["eval"], sw)); dd_cur = mdd_daily(rd); sc = solve_scale(rd, DD_TARGET)
+    md = (1 + rd * sc).resample("ME").prod() - 1; dd10 = mdd_daily(rd * sc)
+    for ym_, ve, vf, vd in zip(me.index, me.values, mf.values, md.reindex(me.index).values):
+        rows_m.append(dict(account=aid, name=a["name"], kind="ledger", ym=ym_.strftime("%Y-%m"), year=int(ym_.year), month=int(ym_.month), ret_eval=round(float(ve), 5), ret_funded=round(float(vf), 5), ret_cur=round(float(vf if fn else ve), 5),
+                           ret_dd10=round(float(vd), 5) if not np.isnan(vd) else None, ret_actual=None, net_actual=None, n_actual=None, mtd=False))
     eq = d.get("equity"); bl = d.get("balance")
     act = actual_monthly(aid, bl)
     for r_ in act:
         rows_m.append(dict(account=aid, name=a["name"], kind="actual", ym=r_["ym"], year=r_["year"], month=r_["month"], ret_eval=None, ret_funded=None, ret_cur=None, ret_actual=round(r_["pct"], 5) if r_["pct"] is not None else None, net_actual=r_["net"], n_actual=r_["n"], mtd=r_["mtd"]))
     act_cum = float(np.prod([1 + r_["pct"] for r_ in act if r_["pct"] is not None]) - 1) if act else None
-    st_e, st_f = mstats(me), mstats(mf); st_c = st_f if fn else st_e; s = mc(a)
+    st_e, st_f = mstats(me), mstats(mf); st_c = st_f if fn else st_e; st_d = mstats(md); s = mc(a)
     rows_a.append(dict(account=aid, name=a["name"], firm=firm, label=label, ea=ea, rule=a.get("rule", "static"), rule_ja=RULE_JA[a.get("rule", "static")], stage=stage, stage_ja="資金化済" if fn else "評価中",
                        targets=" / ".join(f"{t*100:g}%" for t in a["targets"]) if a["targets"] else "", e0=a["e0"], spec_eval=spec_txt(a["eval"]), spec_funded=spec_txt(a["funded"]), spec_cur=spec_txt(a["funded"] if fn else a["eval"]),
                        ea_eval=legs_txt(EL["eval"]) if EL else spec_txt(a["eval"]), ea_funded=legs_txt(EL["funded"]) if EL else spec_txt(a["funded"]), ea_cur=legs_txt(EL["funded"] if fn else EL["eval"]) if EL else spec_txt(a["funded"] if fn else a["eval"]),
@@ -165,7 +184,9 @@ for a in cfg["accounts"]:
                        k=a.get("k", k), keep=a.get("keep", keep), pay_frac=pf, mdd=a["mdd"], dll=a["dll"], swap_xau_bps_m=sw, balance_jpy=a["balance_jpy"], currency=cur, initial=round(init, 2),
                        balance=bl, equity=eq, pnl_pct=(eq / init - 1) if eq is not None else None, open_positions=d.get("open_positions"), snapshot_utc=d.get("snapshot_utc", ""), net_7d=d.get("net_7d"), net_30d=d.get("net_30d"),
                        net_30d_pct=(d.get("net_30d") / init) if d.get("net_30d") is not None else None, sl_hit_rate_30d=d.get("sl_hit_rate_30d"), closed_total=d.get("closed_total"),
-                       **{f"h_{k_}": v for k_, v in st_c.items()}, **{f"he_{k_}": v for k_, v in st_e.items()}, **{f"hf_{k_}": v for k_, v in st_f.items()},
+                       **{f"h_{k_}": v for k_, v in st_c.items()}, **{f"he_{k_}": v for k_, v in st_e.items()}, **{f"hf_{k_}": v for k_, v in st_f.items()}, **{f"hd_{k_}": v for k_, v in st_d.items()},
+                       h_mdd_d=dd_cur, dd10_scale=sc, dd10_mdd_d=dd10, dd10_target=DD_TARGET,
+                       ea_dd10=(legs_txt({k_: w * sc for k_, w in cur_legs.items()}) if cur_legs else spec_txt({k_: w * sc for k_, w in (a["funded"] if fn else a["eval"]).items()})) + f"(いまの段階 ×{sc:.2f})",
                        hist_from=me.index[0].strftime("%Y-%m"), hist_to=me.index[-1].strftime("%Y-%m"), generated_utc=gen["generated_utc"], digest_utc=gen["digest_utc"],
                        actual_from=act[0]["ym"] if act else "", actual_to=act[-1]["ym"] if act else "", actual_months=len(act), actual_cum=act_cum, actual_n=int(sum(r_["n"] for r_ in act)), **s))
 os.makedirs("results", exist_ok=True)
