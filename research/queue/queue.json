@@ -2757,6 +2757,38 @@
     "research/results/q162_weekday_diversification_portfolio.csv"
    ],
    "note": "結論: 最悪日だけ揃える D は Hold 名目が膨らみ DD が深くなり失格 2 倍 → 不採用。DD も揃える E7 が落とし所(Mon 寄与 89 → 60%・合計月利 3.2 → 3.0%・30 か月期待 同等・失格 +2〜16pt)。Mon 以外の曜日の柱(Thu XAUUSD・Q161)が通るまで相関 0.55 が下限。配備変更なし(切替待ち)"
+  },
+  {
+   "id": "Q163",
+   "slug": "hold_eu_indices",
+   "title": "欧州指数 4 本(NLD25・ESP35・FRA40・SUI20)の Hold(連続 LONG・日次 close→close・Q89 と同一構成)— 新規 4 セル",
+   "status": "pending",
+   "cells": 4,
+   "order": 36,
+   "registered": "2026-11-07",
+   "program": "ユーザー 2026-11-07「登録」(docs/244 2026-11-07 節の残り未検定 (b))",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "note": "事前固定: Q89(docs/329)の hold_cell と同一構成(日次終値→終値の連続 LONG・費用は指数 IDX_COST 相当・週末持ち越し)。銘柄は別枝 Q145 で Mon 指数形を検定した欧州 4 指数(ITA40 は 3 社に取扱なしのため除外、CHI50/IND50 は OOS が無く判定不能のため除外)。判定は §1 標準(IS 2021-10〜2024-12 月次二項 p < 0.05/累積・OOS 2025〜 平均 > 0・前窓 2016〜2021-09 の +月率 ≥ 50%)。参考記録(判定に使わない): 既存 Hold UK100 / Hold XAU・Mon 指数との日次相関。データ: Dukascopy H1(NLDIDXEUR / ESPIDXEUR / FRAIDXEUR / CHEIDXCHF・別枝 fetch_new.py の対応)から日足を作る。Dukascopy 不通なら Yahoo 日足(^AEX ^IBEX ^FCHI ^SSMI・Q89 と同じ出所)で代替し、出所を結果に明記。通過しても紙上フォワードの CANDIDATES に入れるだけで配備・config は変えない。事前の見込み: Q89 の指数 Hold(HK50・AUS200・EU50)が全棄却で弱い(登録時に当方は推奨せずと記録・ユーザー判断で登録)"
+  },
+  {
+   "id": "Q164",
+   "slug": "untested25_tue_fri_o2o",
+   "title": "別枝 Q145 の 25 銘柄に火〜金の o2o(非指数 = 4/6/8/10 UTC 建て 24h の 4 ショット平均、指数 = 13 UTC 建て 24h)× LONG/SHORT — 新規 200 セル(閉じた時間帯格子の新銘柄での再開)",
+   "status": "pending",
+   "cells": 200,
+   "order": 37,
+   "registered": "2026-11-07",
+   "program": "ユーザー 2026-11-07「登録」(docs/244 2026-11-07 節の残り未検定 (a))",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "note": "事前固定: 銘柄 25 本 = XPTUSD XPDUSD COPPER XRPUSD LTCUSD ADAUSD SGDJPY USDNOK USDSEK EURNOK EURSEK USDCNH USDSGD USDPLN EURPLN USDHUF USDCZK SUI20 ESP35 NLD25 ITA40 FRA40 CHI50 IND50 US2000(別枝 q145_new_symbols.py の CELLS + IDX と同一)。セル = 25 × 曜日 {火,水,木,金} × {LONG, SHORT} = 200。建て方は Q145 と同形(非指数: その曜日の 4/6/8/10 UTC 建て各 24h の平均、指数: 13 UTC 建て 24h)。コスト = 実行値(LONG は ASK 買い BID 売り・SHORT は逆)。判定は §1 標準(累積 Bonferroni は実行時点の累積 + 200)。月曜は Q145 で済んでいるので含めない。データ: Dukascopy H1 BID/ASK 2016〜(別枝の取得物は未コミットのため再取得。fetch_new.py の P 対応表を流用)。Dukascopy 不通(11/5〜11/7 429)の間はデータ待ち(Q158 と同じ扱い)。通過しても紙上フォワードの CANDIDATES に入れるだけ。事前の見込み: 時間帯格子 6,210 セル通過 0 の族の再開で弱い(登録時に当方は推奨せずと記録・ユーザー判断で登録)。実行は 1 セッション(ベクトル化で可)。p<0.05 の本数と偶然期待(10)を併記する"
   }
  ],
  "runs": [
