@@ -164,13 +164,15 @@ for a in cfg["accounts"]:
     cur = d.get("currency", "JPY" if firm == "Fintokei" else "USD"); init = a["balance_jpy"] if cur == "JPY" else a["balance_jpy"] / FX
     sw = a.get("swap_xau_bps_m", 0.0); stage = "funded" if fn else "eval"
     EL = EA_LEGS.get(aid); me = monthly_of(ea_book(EL["eval"], sw)) if EL else monthly(a["eval"], sw); mf = monthly_of(ea_book(EL["funded"], sw)) if EL else monthly(a["funded"], sw)
-    # DD 10% 揃え: いまの段階のレグを定数倍し、5 年の日次最大 DD がちょうど DD_TARGET になる倍率(ユーザー 2026-11-07「DD10%揃えを月利表の切替に追加して」)
+    # 規約揃え(ユーザー 2026-11-07「日次は各社規約があるので、それ以内で最大DDも規約以内にして揃えて」): いまの段階のレグを定数倍し、
+    # 5 年の最悪日(日次終値)が口座の日次限度 dll 以内、かつ 5 年の日次最大 DD が口座の mdd 以内になる最大の倍率(両方を満たす小さい方)。
     cur_legs = (EL["funded"] if fn else EL["eval"]) if EL else None
-    rd = daily_window(ea_book(cur_legs, sw) if EL else book(a["funded"] if fn else a["eval"], sw)); dd_cur = mdd_daily(rd); sc = solve_scale(rd, DD_TARGET)
-    md = (1 + rd * sc).resample("ME").prod() - 1; dd10 = mdd_daily(rd * sc)
+    rd = daily_window(ea_book(cur_legs, sw) if EL else book(a["funded"] if fn else a["eval"], sw)); dd_cur = mdd_daily(rd); worst_day_cur = float(rd.min())
+    s_mdd = solve_scale(rd, a["mdd"]); s_dll = a["dll"] / abs(worst_day_cur) if worst_day_cur < 0 else 20.0; sc = min(s_mdd, s_dll); binding = "日次限度" if s_dll < s_mdd else "最大 DD"
+    md = (1 + rd * sc).resample("ME").prod() - 1; dd10 = mdd_daily(rd * sc); worst_day_rule = float((rd * sc).min())
     for ym_, ve, vf, vd in zip(me.index, me.values, mf.values, md.reindex(me.index).values):
         rows_m.append(dict(account=aid, name=a["name"], kind="ledger", ym=ym_.strftime("%Y-%m"), year=int(ym_.year), month=int(ym_.month), ret_eval=round(float(ve), 5), ret_funded=round(float(vf), 5), ret_cur=round(float(vf if fn else ve), 5),
-                           ret_dd10=round(float(vd), 5) if not np.isnan(vd) else None, ret_actual=None, net_actual=None, n_actual=None, mtd=False))
+                           ret_rule=round(float(vd), 5) if not np.isnan(vd) else None, ret_actual=None, net_actual=None, n_actual=None, mtd=False))
     eq = d.get("equity"); bl = d.get("balance")
     act = actual_monthly(aid, bl)
     for r_ in act:
@@ -184,9 +186,9 @@ for a in cfg["accounts"]:
                        k=a.get("k", k), keep=a.get("keep", keep), pay_frac=pf, mdd=a["mdd"], dll=a["dll"], swap_xau_bps_m=sw, balance_jpy=a["balance_jpy"], currency=cur, initial=round(init, 2),
                        balance=bl, equity=eq, pnl_pct=(eq / init - 1) if eq is not None else None, open_positions=d.get("open_positions"), snapshot_utc=d.get("snapshot_utc", ""), net_7d=d.get("net_7d"), net_30d=d.get("net_30d"),
                        net_30d_pct=(d.get("net_30d") / init) if d.get("net_30d") is not None else None, sl_hit_rate_30d=d.get("sl_hit_rate_30d"), closed_total=d.get("closed_total"),
-                       **{f"h_{k_}": v for k_, v in st_c.items()}, **{f"he_{k_}": v for k_, v in st_e.items()}, **{f"hf_{k_}": v for k_, v in st_f.items()}, **{f"hd_{k_}": v for k_, v in st_d.items()},
-                       h_mdd_d=dd_cur, dd10_scale=sc, dd10_mdd_d=dd10, dd10_target=DD_TARGET,
-                       ea_dd10=(legs_txt({k_: w * sc for k_, w in cur_legs.items()}) if cur_legs else spec_txt({k_: w * sc for k_, w in (a["funded"] if fn else a["eval"]).items()})) + f"(いまの段階 ×{sc:.2f})",
+                       **{f"h_{k_}": v for k_, v in st_c.items()}, **{f"he_{k_}": v for k_, v in st_e.items()}, **{f"hf_{k_}": v for k_, v in st_f.items()}, **{f"hr_{k_}": v for k_, v in st_d.items()},
+                       h_mdd_d=dd_cur, h_worst_day=worst_day_cur, rule_scale=sc, rule_scale_mdd=s_mdd, rule_scale_dll=s_dll, rule_binding=binding, rule_mdd_d=dd10, rule_worst_day=worst_day_rule,
+                       ea_rule=(legs_txt({k_: w * sc for k_, w in cur_legs.items()}) if cur_legs else spec_txt({k_: w * sc for k_, w in (a["funded"] if fn else a["eval"]).items()})) + f"(いまの段階 ×{sc:.2f}・{binding}で決まる)",
                        hist_from=me.index[0].strftime("%Y-%m"), hist_to=me.index[-1].strftime("%Y-%m"), generated_utc=gen["generated_utc"], digest_utc=gen["digest_utc"],
                        actual_from=act[0]["ym"] if act else "", actual_to=act[-1]["ym"] if act else "", actual_months=len(act), actual_cum=act_cum, actual_n=int(sum(r_["n"] for r_ in act)), **s))
 os.makedirs("results", exist_ok=True)
