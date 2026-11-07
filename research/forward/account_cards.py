@@ -104,9 +104,12 @@ def mstats(m):
 g = cfg["global"]; k, keep, pf = g["k"], g["keep"], g.get("pay_frac", 1.0); start = pd.Timestamp(g["start"])
 DAYS = 21 * MONTHS; rng = np.random.default_rng(SEED)
 T = len(R(legs()["mon4"])); nb = T - BLOCK + 1; stt = rng.integers(0, nb, size=(N, DAYS // BLOCK + 1)); IDX = (stt[:, :, None] + np.arange(BLOCK)[None, None, :]).reshape(N, -1)[:, :DAYS]
+def bk(spec, sw):
+    """spec が EA 実レグ(mon:SYM など)なら ea_book、研究 spec(mon4 など)なら book。"""
+    return ea_book(spec, sw) if any((":" in k) or k in ("nas", "spx", "brk", "roll4") for k in spec) else book(spec, sw)
 def mc(a):
     sw = a.get("swap_xau_bps_m", 0.0)
-    ce = R(book(a["eval"], sw))[IDX]; cf = R(book(a["funded"], sw))[IDX]; e0 = a["e0"]; tg = a["targets"]; mdd = a["mdd"]; dll = a["dll"]; bal = a["balance_jpy"]
+    ce = R(bk(a["eval"], sw))[IDX]; cf = R(bk(a["funded"], sw))[IDX]; e0 = a["e0"]; tg = a["targets"]; mdd = a["mdd"]; dll = a["dll"]; bal = a["balance_jpy"]
     kk = a.get("k", k); kp = a.get("keep", keep); fn = a.get("funded_now", False); trail = a.get("trail", False)
     rule = a.get("rule", "static"); share = a.get("share", {"ftmo1step": 0.9, "fn_instant": 0.7}.get(rule, 0.8)); pfx = a.get("pay_fixed") if rule == "fn_instant" else None
     e = np.full(N, e0); basel = np.ones(N); stage = np.zeros(N, int); funded = np.full(N, fn); failed = np.zeros(N, bool); hwm = np.full(N, e0); paid = np.zeros((N, MONTHS)); ro = np.zeros(N); fund_day = np.full(N, -1); fund_day[funded] = 0
@@ -179,6 +182,12 @@ for a in cfg["accounts"]:
         rows_m.append(dict(account=aid, name=a["name"], kind="actual", ym=r_["ym"], year=r_["year"], month=r_["month"], ret_eval=None, ret_funded=None, ret_cur=None, ret_actual=round(r_["pct"], 5) if r_["pct"] is not None else None, net_actual=r_["net"], n_actual=r_["n"], mtd=r_["mtd"]))
     act_cum = float(np.prod([1 + r_["pct"] for r_ in act if r_["pct"] is not None]) - 1) if act else None
     st_e, st_f = mstats(me), mstats(mf); st_c = st_f if fn else st_e; st_d = mstats(md); s = mc(a)
+    # 規約揃えの見込み(ユーザー 2026-11-07「追加で」): EA 実レグ × 規約揃え係数で同じ MC。評価中・資金化後とも同じ係数で縮める
+    import copy as _copy
+    ar = _copy.deepcopy(a)
+    if EL: ar["eval"] = {k_: w * sc for k_, w in EL["eval"].items()}; ar["funded"] = {k_: w * sc for k_, w in EL["funded"].items()}
+    else: ar["eval"] = {k_: w * sc for k_, w in a["eval"].items()}; ar["funded"] = {k_: w * sc for k_, w in a["funded"].items()}
+    sr = {f"r_{k_}": v for k_, v in mc(ar).items()}
     rows_a.append(dict(account=aid, name=a["name"], firm=firm, label=label, ea=ea, rule=a.get("rule", "static"), rule_ja=RULE_JA[a.get("rule", "static")], stage=stage, stage_ja="資金化済" if fn else "評価中",
                        targets=" / ".join(f"{t*100:g}%" for t in a["targets"]) if a["targets"] else "", e0=a["e0"], spec_eval=spec_txt(a["eval"]), spec_funded=spec_txt(a["funded"]), spec_cur=spec_txt(a["funded"] if fn else a["eval"]),
                        ea_eval=legs_txt(EL["eval"]) if EL else spec_txt(a["eval"]), ea_funded=legs_txt(EL["funded"]) if EL else spec_txt(a["funded"]), ea_cur=legs_txt(EL["funded"] if fn else EL["eval"]) if EL else spec_txt(a["funded"] if fn else a["eval"]),
@@ -190,7 +199,7 @@ for a in cfg["accounts"]:
                        h_mdd_d=dd_cur, h_worst_day=worst_day_cur, rule_scale=sc, rule_scale_mdd=s_mdd, rule_scale_dll=s_dll, rule_binding=binding, rule_mdd_d=dd10, rule_worst_day=worst_day_rule,
                        ea_rule=(legs_txt({k_: w * sc for k_, w in cur_legs.items()}) if cur_legs else spec_txt({k_: w * sc for k_, w in (a["funded"] if fn else a["eval"]).items()})) + f"(いまの段階 ×{sc:.2f}・{binding}で決まる)",
                        hist_from=me.index[0].strftime("%Y-%m"), hist_to=me.index[-1].strftime("%Y-%m"), generated_utc=gen["generated_utc"], digest_utc=gen["digest_utc"],
-                       actual_from=act[0]["ym"] if act else "", actual_to=act[-1]["ym"] if act else "", actual_months=len(act), actual_cum=act_cum, actual_n=int(sum(r_["n"] for r_ in act)), **s))
+                       actual_from=act[0]["ym"] if act else "", actual_to=act[-1]["ym"] if act else "", actual_months=len(act), actual_cum=act_cum, actual_n=int(sum(r_["n"] for r_ in act)), **s, **sr))
 os.makedirs("results", exist_ok=True)
 json.dump(dict(rows=rows_a, **gen), open("results/account_cards_accounts.json", "w", encoding="utf-8"), ensure_ascii=False, indent=0)
 json.dump(dict(rows=rows_m, **gen), open("results/account_cards_monthly.json", "w", encoding="utf-8"), ensure_ascii=False, indent=0)
