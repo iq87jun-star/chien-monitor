@@ -4,7 +4,7 @@
 //   AI_COUNCIL_QUESTION … 相談したいこと(空なら「今日の点検」)
 //   AI_COUNCIL_STATUS_KEY … パソコンが書き出す口座データ(status.enc)の鍵(未設定・ファイルなしなら使わない)
 //   AI_COUNCIL_MODE … explore なら新規開拓会議(相談が空のときだけ。空なら毎朝の点検)
-import { readFileSync, appendFileSync, existsSync, writeFileSync } from "node:fs";
+import { readFileSync, appendFileSync, existsSync, writeFileSync, mkdirSync } from "node:fs";
 import { pickEvents, calendarText, todayJST, formatJST, legWindows, legOverlaps, overlapText, mergeEvents } from "./src/context.js";
 import { runCouncil, transcript, splitMessage } from "./src/council.js";
 import { decryptStatus, statusText } from "./src/status.js";
@@ -132,6 +132,14 @@ const title = {
   ask: `AI 相談 ${today}: ${question.slice(0, 40)}`,
 }[mode];
 const full = transcript({ title, ...result });
+
+// 新規開拓会議の全文をリポジトリに残す(土曜午後の定期タスクが読み、研究・theoption の各セッションへ受け渡す)
+if (mode === "explore" && key) {
+  const dir = new URL("./explore/", import.meta.url);
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(new URL(`${today}.md`, dir), full);
+  writeFileSync(new URL("latest.md", dir), `<!-- date: ${today} -->\n${full}`);
+}
 const failed = result.steps.filter((s) => s.error).map((s) => `${s.label}(${s.error.slice(0, 80)})`);
 const header = [
   `**${title}**`,
