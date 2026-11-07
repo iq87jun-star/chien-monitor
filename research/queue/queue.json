@@ -1,6 +1,6 @@
 {
- "cumulative_cells": 10060,
- "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696",
+ "cumulative_cells": 10061,
+ "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061",
  "items": [
   {
    "id": "Q1",
@@ -2794,17 +2794,23 @@
    "id": "Q165",
    "slug": "mon4_session_exit20",
    "title": "Mon4 のセッション形(GBPJPY・EURJPY・AUDJPY・USDJPY 等ウェイト・日曜 22 UTC 寄り建て → 月曜 20 UTC 決済 LONG)— 配備形 Mon4 4 ショット 24h に対する改良系 1 セル",
-   "status": "pending",
+   "status": "done",
    "cells": 1,
    "order": 38,
    "registered": "2026-11-07",
    "program": "ユーザー 2026-11-07「登録」(Q128 の USDJPY セッション形を 4 通貨合成で再定義・docs/244 2026-11-07 節)",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/403_q165_mon4_session_exit20.md"
    ],
-   "note": "事前固定: 系列 = q_session.session(sym, 0, 'open')(日曜 22 UTC 前後 2 時間の最初の足で建て・月曜 20 UTC 足始値で決済・Q128 と同じ実装・往復 3pip)を 4 通貨 0.25 ずつ合成。比較対象 = 配備形 Mon4(base.mon_cell × 0.25 の合成・4/6/8/10 UTC 建て各 24h)。判定 = §1 改良系(IS 2021-10〜2024-12 と OOS 2025〜 の両方で Sharpe が配備形を上回り、最悪月が配備形より悪くない)。参考記録(判定に使わない): 前窓 2016-01〜2021-09 の +月率(標準基準なら ≥50%)、配備形との週次相関、通貨別の寄与(USDJPY 単独は Q128 で前窓 45%・IS p 1.5e-4・OOS 11/20)。通過 → 紙上候補(配備形 Mon4 の出口を 20 UTC に変える案)として CANDIDATES に追加するだけで EA・config は変えない。注意: 出口 20 UTC は日次ガード・祝日フィルターと独立。Fintokei の取引時間(サーバー時刻オフセット)で 20 UTC 決済が可能か、通過時に確認する。データは手元(data_202609・H1)で足りるため Dukascopy 不通でも実行可。実行順は Q163 の後・Q164 がデータ待ちの間に前倒し可"
+   "note": "事前固定: 系列 = q_session.session(sym, 0, 'open')(日曜 22 UTC 前後 2 時間の最初の足で建て・月曜 20 UTC 足始値で決済・Q128 と同じ実装・往復 3pip)を 4 通貨 0.25 ずつ合成。比較対象 = 配備形 Mon4(base.mon_cell × 0.25 の合成・4/6/8/10 UTC 建て各 24h)。判定 = §1 改良系(IS 2021-10〜2024-12 と OOS 2025〜 の両方で Sharpe が配備形を上回り、最悪月が配備形より悪くない)。参考記録(判定に使わない): 前窓 2016-01〜2021-09 の +月率(標準基準なら ≥50%)、配備形との週次相関、通貨別の寄与(USDJPY 単独は Q128 で前窓 45%・IS p 1.5e-4・OOS 11/20)。通過 → 紙上候補(配備形 Mon4 の出口を 20 UTC に変える案)として CANDIDATES に追加するだけで EA・config は変えない。注意: 出口 20 UTC は日次ガード・祝日フィルターと独立。Fintokei の取引時間(サーバー時刻オフセット)で 20 UTC 決済が可能か、通過時に確認する。データは手元(data_202609・H1)で足りるため Dukascopy 不通でも実行可。実行順は Q163 の後・Q164 がデータ待ちの間に前倒し可",
+   "results": [
+    "research/results/q165_mon4_session_exit20.csv",
+    "research/results/q165_mon4_session_exit20_levels.csv"
+   ],
+   "result": "改良系 不成立: Sharpe は IS 1.73→2.78・OOS 1.23→2.77 と両方改善だが IS 最悪月 −0.82→−1.59%(2024-08)で悪化。標準は前窓 58%・IS p 1.5e-4(α 5.0e-6 未達)。配備形との相関 0.90。提案(要登録): 分割建て + 出口 20 UTC の改良系 1 セル"
   }
  ],
  "runs": [
@@ -4098,6 +4104,14 @@
    "cells": 0,
    "doc": "docs/402_q162_weekday_diversification.md",
    "note": "ユーザー「今行えますか」で前倒し(土曜・診断)"
+  },
+  {
+   "date": "2026-11-07",
+   "slot": "adhoc",
+   "item": "Q165",
+   "cells": 1,
+   "doc": "docs/403_q165_mon4_session_exit20.md",
+   "note": "ユーザー「セッション形はこのまま検証してください」で同日実行(土曜)"
   }
  ],
  "external_checks": [
