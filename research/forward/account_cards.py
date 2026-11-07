@@ -81,6 +81,19 @@ def mc(a):
                 a_med=q(fa, .5), a_lo=q(fa, .023), a_hi=q(fa, .977), c12_med=q(cum12[fits], .5), c12_lo=q(cum12[fits], .023), c12_hi=q(cum12[fits], .977),
                 c30_mean=float(paid.sum(axis=1).mean()), c30_p0=float((paid.sum(axis=1) <= 0).mean()), horizon_m=MONTHS)
 gen = dict(generated_utc=dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"), digest_utc=digest.get("ingested_utc", ""), sim_start=str(start.date()), N=N, seed=SEED, horizon_m=MONTHS)
+def actual_monthly(aid, latest_balance):
+    """実口座の実績月利: ops_inbox/<口座>/positions.csv(決済済み・損益+手数料+スワップ)を決済月で集計し、最新残高から月末残高を逆算(入出金なしの前提)。"""
+    p = os.path.join("ops_inbox", aid, "positions.csv")
+    if not os.path.exists(p) or latest_balance is None: return []
+    x = pd.read_csv(p, encoding="utf-8-sig"); x["ct"] = pd.to_datetime(x.close_time, format="%Y.%m.%d %H:%M:%S", errors="coerce"); x = x[x.ct.notna()]
+    x["net"] = x.profit.fillna(0) + x.commission.fillna(0) + x.swap.fillna(0); grp = x.groupby(x.ct.dt.to_period("M"))
+    months = sorted(grp.groups.keys()); out = []; bal_end = float(latest_balance)
+    cur = pd.Timestamp.utcnow().to_period("M")
+    for per in reversed(months):
+        g = grp.get_group(per); net = float(g.net.sum()); n = int(len(g)); bal_start = bal_end - net
+        out.append(dict(ym=str(per), year=per.year, month=per.month, net=round(net, 2), n=n, bal_start=round(bal_start, 2), bal_end=round(bal_end, 2), pct=(net / bal_start) if bal_start else None, mtd=bool(per == cur)))
+        bal_end = bal_start
+    return list(reversed(out))
 rows_a, rows_m = [], []
 for a in cfg["accounts"]:
     if not a.get("active", True): continue
@@ -88,16 +101,21 @@ for a in cfg["accounts"]:
     cur = d.get("currency", "JPY" if firm == "Fintokei" else "USD"); init = a["balance_jpy"] if cur == "JPY" else a["balance_jpy"] / FX
     sw = a.get("swap_xau_bps_m", 0.0); me = monthly(a["eval"], sw); mf = monthly(a["funded"], sw); stage = "funded" if fn else "eval"
     for ym_, ve, vf in zip(me.index, me.values, mf.values):
-        rows_m.append(dict(account=aid, name=a["name"], ym=ym_.strftime("%Y-%m"), year=int(ym_.year), month=int(ym_.month), ret_eval=round(float(ve), 5), ret_funded=round(float(vf), 5), ret_cur=round(float(vf if fn else ve), 5)))
-    st_e, st_f = mstats(me), mstats(mf); st_c = st_f if fn else st_e; s = mc(a)
+        rows_m.append(dict(account=aid, name=a["name"], kind="ledger", ym=ym_.strftime("%Y-%m"), year=int(ym_.year), month=int(ym_.month), ret_eval=round(float(ve), 5), ret_funded=round(float(vf), 5), ret_cur=round(float(vf if fn else ve), 5), ret_actual=None, net_actual=None, n_actual=None, mtd=False))
     eq = d.get("equity"); bl = d.get("balance")
+    act = actual_monthly(aid, bl)
+    for r_ in act:
+        rows_m.append(dict(account=aid, name=a["name"], kind="actual", ym=r_["ym"], year=r_["year"], month=r_["month"], ret_eval=None, ret_funded=None, ret_cur=None, ret_actual=round(r_["pct"], 5) if r_["pct"] is not None else None, net_actual=r_["net"], n_actual=r_["n"], mtd=r_["mtd"]))
+    act_cum = float(np.prod([1 + r_["pct"] for r_ in act if r_["pct"] is not None]) - 1) if act else None
+    st_e, st_f = mstats(me), mstats(mf); st_c = st_f if fn else st_e; s = mc(a)
     rows_a.append(dict(account=aid, name=a["name"], firm=firm, label=label, ea=ea, rule=a.get("rule", "static"), rule_ja=RULE_JA[a.get("rule", "static")], stage=stage, stage_ja="資金化済" if fn else "評価中",
                        targets=" / ".join(f"{t*100:g}%" for t in a["targets"]) if a["targets"] else "", e0=a["e0"], spec_eval=spec_txt(a["eval"]), spec_funded=spec_txt(a["funded"]), spec_cur=spec_txt(a["funded"] if fn else a["eval"]),
                        k=a.get("k", k), keep=a.get("keep", keep), pay_frac=pf, mdd=a["mdd"], dll=a["dll"], swap_xau_bps_m=sw, balance_jpy=a["balance_jpy"], currency=cur, initial=round(init, 2),
                        balance=bl, equity=eq, pnl_pct=(eq / init - 1) if eq is not None else None, open_positions=d.get("open_positions"), snapshot_utc=d.get("snapshot_utc", ""), net_7d=d.get("net_7d"), net_30d=d.get("net_30d"),
                        net_30d_pct=(d.get("net_30d") / init) if d.get("net_30d") is not None else None, sl_hit_rate_30d=d.get("sl_hit_rate_30d"), closed_total=d.get("closed_total"),
                        **{f"h_{k_}": v for k_, v in st_c.items()}, **{f"he_{k_}": v for k_, v in st_e.items()}, **{f"hf_{k_}": v for k_, v in st_f.items()},
-                       hist_from=me.index[0].strftime("%Y-%m"), hist_to=me.index[-1].strftime("%Y-%m"), generated_utc=gen["generated_utc"], digest_utc=gen["digest_utc"], **s))
+                       hist_from=me.index[0].strftime("%Y-%m"), hist_to=me.index[-1].strftime("%Y-%m"), generated_utc=gen["generated_utc"], digest_utc=gen["digest_utc"],
+                       actual_from=act[0]["ym"] if act else "", actual_to=act[-1]["ym"] if act else "", actual_months=len(act), actual_cum=act_cum, actual_n=int(sum(r_["n"] for r_ in act)), **s))
 os.makedirs("results", exist_ok=True)
 json.dump(dict(rows=rows_a, **gen), open("results/account_cards_accounts.json", "w", encoding="utf-8"), ensure_ascii=False, indent=0)
 json.dump(dict(rows=rows_m, **gen), open("results/account_cards_monthly.json", "w", encoding="utf-8"), ensure_ascii=False, indent=0)
