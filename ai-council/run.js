@@ -118,7 +118,10 @@ const result = await runCouncil({ config, chat: openrouter, mode, question, port
 // 新規開拓会議の候補を explored.md に足す(ワークフローがコミットする。次回からの蒸し返しを防ぐ)
 if (mode === "explore" && key) {
   const found = extractCandidates(result.final);
-  const lines = found.length ? found.map((c) => `- ${today} ${c}`) : [`- ${today} (検証に回す候補なし)`];
+  // まとめ役の答えが途中で切れて「候補一覧」が無いときは、候補なしと区別して記録する
+  const lines = found.length
+    ? found.map((c) => `- ${today} ${c}`)
+    : [`- ${today} ${/##\s*候補一覧/.test(result.final ?? "") ? "(検証に回す候補なし)" : "(候補一覧を取り出せなかった。Discord の全文を見て手で記録する)"}`];
   appendFileSync(exploredFile, `${lines.join("\n")}\n`);
   console.log(`explored.md に ${found.length} 件を記録`);
 }
