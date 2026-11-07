@@ -7,9 +7,9 @@
 // 購入・出品は SORARE_TRADE=true と SORARE_PRIVATE_KEY(ウォレットの秘密鍵)がある時だけ、config の trade の上限内で行う。
 // それ以外は「購入予定・出品予定」をリンク付きで送るだけ(試し運転)。
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
-import { createClient, setRates } from "./src/api.js";
-import { market, upcoming, clubs, player, nbaPlayer, fixtureGames, nbaStars, myCards, submitLineup } from "./src/data.js";
-import { teamForm, project, bestLineup, nbaProject, bestNbaLineup, sellCandidates, sellPrice, swapCandidates } from "./src/model.js";
+import { createClient, setRates, usd } from "./src/api.js";
+import { market, upcoming, pastFixture, fixtureResults, clubs, player, nbaPlayer, fixtureGames, nbaStars, myCards, submitLineup } from "./src/data.js";
+import { teamForm, project, bestLineup, nbaProject, bestNbaLineup, sellCandidates, sellPrice, swapCandidates, resultText } from "./src/model.js";
 import { createTrader, planBuys, planSells, spentInWeek } from "./src/trade.js";
 
 const cfg = JSON.parse(readFileSync(new URL("./config.json", import.meta.url)));
@@ -40,6 +40,14 @@ async function pool(items, n, fn) {
 // 済んだ大会の記録(節の slug:大会名)。GitHub Actions のキャッシュで実行をまたいで残す(リポジトリには書かない)。
 // 定期実行は 1 日に何回も動くので、その節で済んだ大会は 2 回目から何もしない(通知も送らない)
 const STATE = new URL("./state/done.json", import.meta.url);
+
+async function discord(text) {
+  if (!env.SORARE_DISCORD_WEBHOOK) return;
+  for (const content of chunks(text, 1990)) {
+    const r = await fetch(env.SORARE_DISCORD_WEBHOOK, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content }) });
+    if (!r.ok) console.error(`Discord 送信失敗 HTTP ${r.status}`);
+  }
+}
 function loadDone() { try { return JSON.parse(readFileSync(STATE, "utf8")); } catch { return []; } }
 function saveDone(done) { mkdirSync(new URL("./state/", import.meta.url), { recursive: true }); writeFileSync(STATE, JSON.stringify(done.slice(-100))); }
 
@@ -57,7 +65,13 @@ async function main() {
     else if (env.SORARE_FORCE || (hours <= cfg.runWithinHours && hours >= 0.25)) targets.push(t);
     else console.log(`${t.name}: ${fixture.slug} の締切まで ${hours.toFixed(1)} 時間(${cfg.runWithinHours} 時間以内で動く)`);
   }
-  if (!targets.length) return console.log("今日動く大会は無い。終了");
+  // 終わった節の結果(順位・点数・賞金)を、確定(closed)した後の最初の実行で 1 回だけ送る
+  const results = [];
+  for (const sport of new Set((cfg.targets || []).filter((t) => t.enabled !== false).map(sportOf))) {
+    const fx = await pastFixture(api.gql, sport);
+    if (fx?.aasmState === "closed" && !done.includes(`result:${fx.slug}`)) results.push(fx.slug);
+  }
+  if (!targets.length && !results.length) return console.log("今日動く大会も、送る結果も無い。終了");
 
   if (env.SORARE_EMAIL && env.SORARE_PASSWORD) {
     const me = await api.signIn({ email: env.SORARE_EMAIL, password: env.SORARE_PASSWORD, otpSecret: env.SORARE_OTP_SECRET || "" });
@@ -67,6 +81,16 @@ async function main() {
 
   // ユーロ・ETH の換算レート(ETH 建ての出品を USD で比べるため)
   try { setRates((await api.gql("{ config { exchangeRate { rates } } }")).config.exchangeRate.rates); } catch { /* 読めなければユーロ 1.1・ETH は換算しない */ }
+
+  for (const slug of api.authed ? results : []) {
+    try {
+      const text = resultText(await fixtureResults(api.gql, slug), usd);
+      if (text) { console.log(text); await discord(text); }
+      else console.log(`${slug}: この節には出ていない`);
+      done.push(`result:${slug}`); saveDone(done);
+    } catch (e) { console.error(`${slug} の結果を読めない: ${e.message}`); }
+  }
+  if (!targets.length) return;
 
   // 直近 7 日の購入額は、全大会のランクの手持ちから数え、この実行で買った分を足していく
   const shared = { spent: null };
@@ -90,12 +114,7 @@ async function main() {
     console.log(text);
     appendFileSync(new URL("./out/summary.md", import.meta.url), text + "\n\n");
     if (env.GITHUB_STEP_SUMMARY) appendFileSync(env.GITHUB_STEP_SUMMARY, text + "\n\n");
-    if (env.SORARE_DISCORD_WEBHOOK) {
-      for (const content of chunks(text, 1990)) {
-        const r = await fetch(env.SORARE_DISCORD_WEBHOOK, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ content }) });
-        if (!r.ok) console.error(`Discord 送信失敗 HTTP ${r.status}`);
-      }
-    }
+    await discord(text);
   }
   if (failed) process.exitCode = 1;
 }
