@@ -2811,6 +2811,23 @@
     "research/results/q165_mon4_session_exit20_levels.csv"
    ],
    "result": "改良系 不成立: Sharpe は IS 1.73→2.78・OOS 1.23→2.77 と両方改善だが IS 最悪月 −0.82→−1.59%(2024-08)で悪化。標準は前窓 58%・IS p 1.5e-4(α 5.0e-6 未達)。配備形との相関 0.90。提案(要登録): 分割建て + 出口 20 UTC の改良系 1 セル"
+  },
+  {
+   "id": "Q166",
+   "slug": "mon4_split_entry_exit20",
+   "title": "Mon4 の分割建て + 出口 20 UTC(GBPJPY・EURJPY・AUDJPY・USDJPY 等ウェイト、月曜 4/6/8/10 UTC 建て → 同日 20 UTC 決済 LONG・4 ショット平均)— 配備形 Mon4 24h に対する出口改良(改良系 1 セル)",
+   "status": "pending",
+   "cells": 1,
+   "order": 39,
+   "registered": "2026-11-08",
+   "program": "ユーザー 2026-11-08「Q165 の分割建て + 出口 20 UTC を登録」(docs/403 §4 提案 (a))",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/403_q165_mon4_session_exit20.md"
+   ],
+   "note": "事前固定: 系列 = q114_mon_index_intraday.shot(sym, h, 20)(月曜 h UTC 足始値で建て・同日 20 UTC 足始値で決済・往復 3pip・q_common)を h ∈ {4,6,8,10} で平均し、4 通貨 0.25 ずつ合成(docs/332 §2 の 6J 日中版 MonJpyIntra6J を 4 通貨に広げた形)。比較対象 = 配備形 Mon4(base.mon_cell × 0.25・各ショット 24h)。判定 = §1 改良系(IS 2021-10〜2024-12 と OOS 2025〜 の両方で Sharpe が配備形を上回り、最悪月が配備形より悪くない)。参考記録(判定に使わない): 前窓 2016-01〜2021-09 の +月率、配備形との週次相関、通貨別・ショット別の寄与、Q165 セッション形(日曜 22 UTC 一括建て)との比較(2024-08 の最悪月が分割建てで緩むか)。通過 → 紙上候補(配備形 Mon4 の出口を 20 UTC に前倒す案)として CANDIDATES に追加するだけで EA・config は変えない。EA 側の含意: InpMonHoldHours 24 → 出口時刻固定(20 UTC)。通過時は Fintokei サーバー時刻オフセットと FTMO 日次リセット(CE(S)T 0 時)との整合、日次ガードとの関係(損益が月曜 1 日に集中)を docs に書く。データは手元 H1 で足りるため Dukascopy 不通でも実行可。実行順は Q163 の後(Q164 がデータ待ちなら前倒し可)"
   }
  ],
  "runs": [
