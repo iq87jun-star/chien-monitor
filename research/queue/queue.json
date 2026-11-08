@@ -2850,6 +2850,28 @@
     "docs/244_morning_research_queue.md"
    ],
    "note": "事前固定: 検定ではなく配備判断の MC(docs/244 §1 の累積セルは増やさない)。系列: (a) Hold JP225 = recentfit_screen.hold_cell('JP225')(Q89/Q90 と同一・Yahoo 日足 ^N225 凍結窓 2016-01-04〜2026-07-29・月初ロール費 5 bps・災害 SL 15% 固定は Q90 で結果不変のため無し)。(b) MonIdxIntra JP225 = q114_mon_index_intraday.shot('JP225', 13, 20)(月曜 13 UTC 建て → 同日 20 UTC 決済・IDX_COST・data_dukascopy JP225_hour.csv.gz・2016〜2026-08)。JP 休場日(data_ext の祝日 CSV)は (a)(b) とも行なし = 建てない。対象口座と重み: (a) は Hold レグを持つ口座(14166201 の Hold UK100/WTI、531466484・531343523・14074882 の Hold XAUUSD)に、その口座の既存 Hold レグと同じ重みで追加。(b) は 指数 Mon レグを持つ口座(11988011 の nas/spx 0.5、6104739 の nas/spx 1.0)に、同じ重みで追加。各口座について 3 通りを並べる: 現状(account_cards.py の EA_LEGS)/ 単純追加(他レグ不変)/ 規約揃え(追加後に日次限度・最大 DD が規約内に収まる倍率 s へ再スケール・account_cards の rule と同じ解法)。MC は account_cards.mc(portfolio_sim・N=6000・seed 44・30 か月)で、到達・失格・出金額・最悪日の分布を出す。参考記録: Hold JP225 と既存レグの日次相関(Mon4・Hold XAU・Hold UK100・nas/spx)、Hold JP225 の 2016〜 Sharpe と最悪月、MonIdxIntra JP225 の IS/OOS Sharpe(docs/333 の 0.98/1.52 の再現確認)。判定は無し(配備は「切替」)。結論は口座別に「足すと到達/失格がどちらへ何 pt 動くか」を 1 表にし、docs/407 に記す。実行は手元データのみで可(Dukascopy 不要)。所要 ≈ 口座 6 × 3 通りの MC ≈ 15 分。実行順は Q163 の後(Q164 がデータ待ちなら前倒し可)。EA 側の含意(通過時でなく採用時に書く): Hold JP225 は祝日スキップ(Q63)と JP225 の取引時間(Fintokei/FTMO の日中・夜間セッションの別)を EA 化で要確認、MonIdxIntra JP225 は 11988011 の v1.17 に 13→20 UTC の出口固定レグを足す形"
+  },
+  {
+   "id": "Q170",
+   "slug": "mon4_session_rule_mc",
+   "status": "done",
+   "cells": 0,
+   "order": 39.5,
+   "registered": "2026-11-08",
+   "title": "配備形 Mon4 と Q165 セッション形(日曜 22 UTC 寄り → 月曜 20 UTC)の規約揃え MC(セル 0): Mon レグだけ置換し、同倍率 / 規約揃えで到達・失格・出金を口座別に比較(実スプレッド版を含む)",
+   "program": "ユーザー 2026-11-08「(a) を登録して今行って」(165 は IS と OOS の高さで欠点を補えるかの問い)",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/407_q170_mon4_session_rule_mc.md"
+   ],
+   "note": "事前固定: 対象 = EA_LEGS に mon:GBPJPY/EURJPY/AUDJPY/USDJPY を持つ 9 口座。形 = 配備形 / Q165 置換(bid 同士 + 3pip)/ Q165 実スプレッド(data_dukascopy の日曜寄り ASK 建て・月曜 20 UTC BID 決済・追加コスト無し)。倍率 = 同倍率 / 規約揃え(account_cards の rule と同じ解法)。MC = account_cards.mc(N=6000・種 44・30 か月)。判定無し",
+   "results": [
+    "research/results/q170_mon4_session_rule_mc.csv",
+    "research/results/q170_series_compare.csv"
+   ],
+   "result": "3pip 仮定では全 9 口座で改善(同倍率: 失格 −2〜22pt・30 か月出金 1.5〜2.0 倍)。実スプレッド(週明け寄り bid-ask 平均 GBPJPY 8.2 / EURJPY 5.4 / AUDJPY 8.3 / USDJPY 4.0 bps・日中の 6〜14 倍)では Q165 の IS Sharpe 2.78→1.77・bps 18.6→11.8・最悪月 −1.78%(配備形 1.73 / 10.8 / −0.82%)に縮み、同倍率の改善は +0〜15%、規約揃えでは倍率が 0.65 倍になり FTMO 50k・パール・宝くじ・ルビー・1-Step で出金期待が半減以下。切替は推奨せず。Sun 22 UTC 建て系は今後 ask 建てで判定"
   }
  ],
  "runs": [
@@ -4159,6 +4181,14 @@
    "cells": 1,
    "doc": "docs/404_q166_mon4_split_entry_exit20.md",
    "note": "ユーザー「Q166 もこのまま検証してください」で同日実行(日曜)"
+  },
+  {
+   "date": "2026-11-08",
+   "slot": "adhoc",
+   "item": "Q170",
+   "cells": 0,
+   "doc": "docs/407_q170_mon4_session_rule_mc.md",
+   "note": "ユーザー「(a) を登録して今行って」で登録即実行(日曜)"
   }
  ],
  "external_checks": [

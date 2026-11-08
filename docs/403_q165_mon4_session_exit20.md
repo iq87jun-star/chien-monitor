@@ -1,6 +1,7 @@
 # 403. Q165 Mon4 セッション形(4 通貨合成・日曜 22 UTC 寄り → 月曜 20 UTC)— 改良系 1 セル → 不成立(Sharpe は IS・OOS とも改善、IS の最悪月が悪化)
 
 > 2026-11-07(土)。ユーザー「登録」→「セッション形はこのまま検証してください」で同日実行。docs/244 2026-11-07 節(Q165)。スクリプト `research/queue/q165_mon4_session_exit20.py`、結果 `research/results/q165_mon4_session_exit20.csv`(標準基準行)・`_levels.csv`(窓別・通貨別)。累積セル 10,060 → **10,061**(α = 4.97×10⁻⁶)。データ・コストは Q128(docs/347)と同じ(q_common・H1・往復 3pip)。
+> **2026-11-08 追記(docs/407 Q170)**: 本 docs の系列は bid 同士 + 往復 3pip で、週明け寄り(日曜 22 UTC)の bid-ask スプレッド(2016〜26 平均 GBPJPY 8.2 / EURJPY 5.4 / AUDJPY 8.3 / USDJPY 4.0 bps・日中の 6〜14 倍)を含まない。ASK 建て・BID 決済で測り直すと IS Sharpe 2.78 → 1.77・平均 18.6 → 11.8 bps・最悪月 −1.59 → −1.78%、OOS 2.77 → 1.67・15.6 → 9.3 bps で、配備形 Mon4(1.73 / 10.8 / −0.82%)との差はほぼ消える。改良系の不成立は変わらず、理由にコストが加わる。
 
 ## 1. セル
 - **セッション形 Mon4**: GBPJPY・EURJPY・AUDJPY・USDJPY を 0.25 ずつ。日曜 22 UTC 前後 2 時間の最初の足で建て、月曜 20 UTC 足の始値で決済する LONG(`q_session.session(sym, 0, "open")`・Q128 の USDJPY セルと同じ実装)。
