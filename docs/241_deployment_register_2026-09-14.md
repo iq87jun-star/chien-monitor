@@ -292,4 +292,5 @@ MC(docs/349 §6c): 1-Step 81 / 19%・+2σ 2027-05-19、宝くじ 48 / 52%・2027
 - **要・手作業(1 回)**: 14074882 の端末で ツール → オプション → エキスパートアドバイザ「WebRequest を許可する URL」に `https://cdn-api.cboe.com` を追加(script.google.com と同じ欄)。追加するまでは `[SKEW GATE] 取得失敗 code=-1 err=4014` が月曜に最大 6 回出て、取引は従来どおり。
 - manifest: `ensure` を v1.14 に、`remove` に v1.13 を追加。毎時タスクで反映(コンパイル → 旧 EA 除去 → 新 EA 装着 → 端末再起動)。確認は次のダイジェスト: attached_eas が v1.14、`[INIT SkewGate v1.14]` 行。
 - 直近の判定: 11/6(金)の SKEW 153.6 = 252 日分位 0.90 → **11/9(月)は見送り**。ただし許可 URL の追加が 11/9 の 4:12 UTC(13:12 JST)より前に済まない限り、11/9 は従来どおり建つ。
+- **反映確認 2026-11-08 15:00 UTC(status.json)**: 14074882 の attached_eas = v1.14@EURJPY、compiled ok、last_init に `[INIT SkewGate v1.14] enable=true q=0.80 win=252 maxAge=4` を確認(ユーザー「できました」・許可 URL は手作業済みの申告。実際の取得可否は 11/9 13:12 JST の `[SKEW GATE]` 行で確認)。
 - 研究 spec(config/portfolio_current.json)と口座カードの EA_LEGS は Mon3 のまま(門は MC の系列に入れていない。docs/409 §5 の値が門ありの参考値)。
