@@ -2834,6 +2834,22 @@
     "research/results/q166_mon4_split_entry_exit20_levels.csv"
    ],
    "result": "改良系 不成立: Sharpe は IS 1.73→1.95・OOS 1.23→1.90 と改善だが IS 最悪月 −0.82→−1.25%(2022-01)で悪化、平均 bps は IS 10.8→8.7 と低下(分散縮小による改善)。前窓 45%・IS p 0.012。出口 20 UTC 系は打ち切り。残る余地は建て時刻(日曜 22 UTC 一括 + 24h 保有 / 日曜 22 + 月曜 4 の 2 分割)で要登録"
+  },
+  {
+   "id": "Q169",
+   "slug": "jp225_deploy_mc",
+   "status": "pending",
+   "cells": 0,
+   "order": 40,
+   "registered": "2026-11-08",
+   "title": "日経 2 本の配備 MC(セル 0): (a) Hold JP225(通過セル・Hold 6 の 1 本)を Hold レグのある口座に足す場合、(b) MonIdxIntra JP225(月曜 13→20 UTC・Q114 改良系)を 指数 Mon レグのある口座に足す場合の、口座別 到達/失格/出金 の変化",
+   "program": "ユーザー 2026-11-08「登録」(日経の検討可否の問いへの提案 (a)(b))",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "note": "事前固定: 検定ではなく配備判断の MC(docs/244 §1 の累積セルは増やさない)。系列: (a) Hold JP225 = recentfit_screen.hold_cell('JP225')(Q89/Q90 と同一・Yahoo 日足 ^N225 凍結窓 2016-01-04〜2026-07-29・月初ロール費 5 bps・災害 SL 15% 固定は Q90 で結果不変のため無し)。(b) MonIdxIntra JP225 = q114_mon_index_intraday.shot('JP225', 13, 20)(月曜 13 UTC 建て → 同日 20 UTC 決済・IDX_COST・data_dukascopy JP225_hour.csv.gz・2016〜2026-08)。JP 休場日(data_ext の祝日 CSV)は (a)(b) とも行なし = 建てない。対象口座と重み: (a) は Hold レグを持つ口座(14166201 の Hold UK100/WTI、531466484・531343523・14074882 の Hold XAUUSD)に、その口座の既存 Hold レグと同じ重みで追加。(b) は 指数 Mon レグを持つ口座(11988011 の nas/spx 0.5、6104739 の nas/spx 1.0)に、同じ重みで追加。各口座について 3 通りを並べる: 現状(account_cards.py の EA_LEGS)/ 単純追加(他レグ不変)/ 規約揃え(追加後に日次限度・最大 DD が規約内に収まる倍率 s へ再スケール・account_cards の rule と同じ解法)。MC は account_cards.mc(portfolio_sim・N=6000・seed 44・30 か月)で、到達・失格・出金額・最悪日の分布を出す。参考記録: Hold JP225 と既存レグの日次相関(Mon4・Hold XAU・Hold UK100・nas/spx)、Hold JP225 の 2016〜 Sharpe と最悪月、MonIdxIntra JP225 の IS/OOS Sharpe(docs/333 の 0.98/1.52 の再現確認)。判定は無し(配備は「切替」)。結論は口座別に「足すと到達/失格がどちらへ何 pt 動くか」を 1 表にし、docs/407 に記す。実行は手元データのみで可(Dukascopy 不要)。所要 ≈ 口座 6 × 3 通りの MC ≈ 15 分。実行順は Q163 の後(Q164 がデータ待ちなら前倒し可)。EA 側の含意(通過時でなく採用時に書く): Hold JP225 は祝日スキップ(Q63)と JP225 の取引時間(Fintokei/FTMO の日中・夜間セッションの別)を EA 化で要確認、MonIdxIntra JP225 は 11988011 の v1.17 に 13→20 UTC の出口固定レグを足す形"
   }
  ],
  "runs": [
