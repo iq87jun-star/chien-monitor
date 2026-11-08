@@ -26,7 +26,7 @@ def universe():
 
 # docs/229 §4 事前登録の候補セル(2026-10〜2027-03 の 6 ヶ月判定)。universe() には含めない(既知セル集合を変えないため)
 CANDIDATES = [("Thu", "XAUUSD", 3, False)] + [("MonExHol", s, 0, False) for s in ("EURJPY", "GBPJPY", "USDJPY", "NZDJPY", "CHFJPY")] \
-    + [("MonExAUNZ", s, 0, False) for s in ("AUDJPY", "NZDJPY")] + [("MonExJpTue", s, 0, False) for s in ("USDJPY", "EURJPY", "GBPJPY", "AUDJPY", "NZDJPY", "CADJPY", "CHFJPY")] + [("MonExGotobi", "Mon7", 0, False)] + [("HoldSL10", "BTCUSD", 0, False)] + [("MonIdxIntra", s, 0, False) for s in ("US30", "JP225")] + [("MonJpyIntra6J", "USDJPY", 0, False)] + [("MonIdxSession0", s, 0, False) for s in ("US500", "NAS100", "US30")] + [("MonJpySession6J", "USDJPY", 0, False)] + [("RollGateB2", "Roll5", 0, False)]   # 2026-10-26 docs/378 Q147: Roll 5 本等分に通貨別政策金利差 ≥ 2.0% のゲート(改良系通過・現在は非拘束・紙上のみ)   # 2026-10-11 docs/344・347: セッション版(月曜 0 UTC / 日曜 22 UTC 建て → 20 UTC・標準未通過・紙上のみ)   # 2026-10-11 docs/338 Q119: Mon USDJPY 4 ショット(4/6/8/10 UTC)→ 同日 20 UTC(6J 日中版・前窓 48% で紙上のみ)   # 2026-10-09 docs/333 Q114: Mon 指数の日中版(13→20 UTC・改良系通過・紙上のみ)   # 2026-10-09 docs/330 Q90: Hold BTCUSD の災害 SL 10%(改良系通過・差は僅少・紙上のみ)   # 2026-09-26 docs/304 Q56   # 2026-09-26 docs/303 Q53: 祝日月曜スキップ(改良系通過・紙上のみ)   # 2026-09-18 docs/249: 曜日 SHORT 候補 4 本(MonS EURGBP / FriS NZDUSD / WedS CADCHF / TueS CADCHF)はコスト符号バグの産物のため削除
+    + [("MonExAUNZ", s, 0, False) for s in ("AUDJPY", "NZDJPY")] + [("MonExJpTue", s, 0, False) for s in ("USDJPY", "EURJPY", "GBPJPY", "AUDJPY", "NZDJPY", "CADJPY", "CHFJPY")] + [("MonExGotobi", "Mon7", 0, False)] + [("HoldSL10", "BTCUSD", 0, False)] + [("MonIdxIntra", s, 0, False) for s in ("US30", "JP225")] + [("MonJpyIntra6J", "USDJPY", 0, False)] + [("MonIdxSession0", s, 0, False) for s in ("US500", "NAS100", "US30")] + [("MonJpySession6J", "USDJPY", 0, False)] + [("RollGateB2", "Roll5", 0, False)] + [("MonSkewGate", "Mon4", 0, False)]   # 2026-11-08 docs/409 Q173: Mon4 の SKEW 門(改良系通過・紙上のみ)   # 2026-10-26 docs/378 Q147: Roll 5 本等分に通貨別政策金利差 ≥ 2.0% のゲート(改良系通過・現在は非拘束・紙上のみ)   # 2026-10-11 docs/344・347: セッション版(月曜 0 UTC / 日曜 22 UTC 建て → 20 UTC・標準未通過・紙上のみ)   # 2026-10-11 docs/338 Q119: Mon USDJPY 4 ショット(4/6/8/10 UTC)→ 同日 20 UTC(6J 日中版・前窓 48% で紙上のみ)   # 2026-10-09 docs/333 Q114: Mon 指数の日中版(13→20 UTC・改良系通過・紙上のみ)   # 2026-10-09 docs/330 Q90: Hold BTCUSD の災害 SL 10%(改良系通過・差は僅少・紙上のみ)   # 2026-09-26 docs/304 Q56   # 2026-09-26 docs/303 Q53: 祝日月曜スキップ(改良系通過・紙上のみ)   # 2026-09-18 docs/249: 曜日 SHORT 候補 4 本(MonS EURGBP / FriS NZDUSD / WedS CADCHF / TueS CADCHF)はコスト符号バグの産物のため削除
 
 
 def candidate_series(fam, sym, dow, short):
@@ -40,6 +40,9 @@ def candidate_series(fam, sym, dow, short):
         sys.path.insert(0, os.path.join(ROOT, "queue")); from q147_roll_rate_diff_gate import leg, family, PAIRS, rate_series
         legs = {x: leg(x) for x in PAIRS}; days = pd.DatetimeIndex(sorted(set().union(*[set(legs[x].index) for x in PAIRS]))); jp = rate_series("JPY", days)
         return family(legs, {x: (rate_series(x[:3], days) - jp >= 2.0) for x in PAIRS})
+    if fam == "MonSkewGate":   # docs/409 Q173(2026-11-08): 配備形 Mon4(等ウェイト)から前金曜の CBOE SKEW が 252 日 80 分位超の月曜を除く(改良系通過・紙上のみ・EA は SKEW を参照できないため運用側で週次設定が必要)
+        sys.path.insert(0, os.path.join(ROOT, "queue")); from q173_skew_vvix_gate import mon4_skew_gated
+        return mon4_skew_gated(0.8)
     if fam == "MonIdxIntra":   # docs/333 Q114: 月曜 13 UTC 建て → 同日 20 UTC 決済(H1)
         sys.path.insert(0, os.path.join(ROOT, "queue")); from q114_mon_index_intraday import shot
         return shot(sym, 13, 20)

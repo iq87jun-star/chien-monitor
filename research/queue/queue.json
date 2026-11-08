@@ -1,6 +1,6 @@
 {
- "cumulative_cells": 10073,
- "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062 / 2026-11-08 Q171 +6 → 10,068 / Q172 +5 → 10,073",
+ "cumulative_cells": 10079,
+ "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062 / 2026-11-08 Q171 +6 → 10,068 / Q172 +5 → 10,073 / Q173 +6 → 10,079",
  "items": [
   {
    "id": "Q1",
@@ -2915,6 +2915,28 @@
     "research/results/q172_pairs_reversion.csv"
    ],
    "result": "0/5・判定可能 0(年 5〜8 建てで IS 月数 16〜22)。GBPJPY/EURJPY(= EURGBP の z 逆張り)のみ 3 窓同符号(前窓 70%・IS 19/22 p 4.3e-4・OOS 6/9 +10.5 bps・全期間 67%・+18.6 bps/建て)だが閾値に 2 桁不足。XAU/XAG は OOS −145 bps(2025 銀急騰)。残り物は EURGBP 単独 1 セル(取引単位判定を事前固定・要登録・見込み弱)"
+  },
+  {
+   "id": "Q173",
+   "slug": "skew_vvix_gate",
+   "status": "done",
+   "cells": 6,
+   "order": 43,
+   "registered": "2026-11-08",
+   "title": "オプション市場の門(改良系・6 セル): 前金曜の CBOE SKEW / VVIX が 252 日 80 分位超の月曜を見送る規則 × 配備形 Mon US500 24h・Mon NAS100 24h・Mon4 円クロス",
+   "program": "ユーザー 2026-11-08「SKEW/VVIX 門を登録して今行って」(データ取得の問い → CBOE SKEW/VVIX を data_ext に取得)",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/409_q173_skew_vvix_gate.md"
+   ],
+   "note": "事前固定: 門 = 前金曜(月曜 −3 日・無ければ直前)の SKEW/VVIX 終値の 252 日分位 > 0.8 で skip。対象 = 配備形 3 系列(q114.shot(sym,13,None)・base.mon_cell 等ウェイト)。判定 = §1 改良系。参照 = half・90 分位・VIX>25。データ = data_ext/SKEW_History.csv・VVIX_History.csv(CBOE・2026-11-06 まで)",
+   "results": [
+    "research/results/q173_skew_vvix_gate.csv",
+    "research/results/q173_skew_vvix_gate_levels.csv"
+   ],
+   "result": "改良成立 1/6: Mon4 × SKEW(IS Sharpe 1.73→2.24・最悪月 −0.82→−0.68%、OOS 1.23→1.35・−0.85→−0.82%。half・90 分位でも成立)。見送り 63/251 週の平均 +3.4 bps 対 残り +11.4 bps。累積は IS 19.9→17.5% と期待 −12%。VVIX・VIX>25 は Mon4 で最悪月悪化。指数 Mon は門で改善せず(リスク指標の高い週明けは米指数が強い)。紙上候補 MonSkewGate 追加・配備不変・EA は SKEW を参照できないため運用側フラグが必要"
   }
  ],
  "runs": [
@@ -4240,6 +4262,14 @@
    "cells": 11,
    "doc": "docs/408_q171_q172_cross_asset_pairs.md",
    "note": "ユーザー「登録実行お願いします」で登録即実行(日曜)"
+  },
+  {
+   "date": "2026-11-08",
+   "slot": "adhoc",
+   "item": "Q173",
+   "cells": 6,
+   "doc": "docs/409_q173_skew_vvix_gate.md",
+   "note": "ユーザー「SKEW/VVIX 門を登録して今行って」で登録即実行(日曜)"
   }
  ],
  "external_checks": [
