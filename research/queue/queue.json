@@ -2937,6 +2937,22 @@
     "research/results/q173_skew_vvix_gate_levels.csv"
    ],
    "result": "改良成立 1/6: Mon4 × SKEW(IS Sharpe 1.73→2.24・最悪月 −0.82→−0.68%、OOS 1.23→1.35・−0.85→−0.82%。half・90 分位でも成立)。見送り 63/251 週の平均 +3.4 bps 対 残り +11.4 bps。累積は IS 19.9→17.5% と期待 −12%。VVIX・VIX>25 は Mon4 で最悪月悪化。指数 Mon は門で改善せず(リスク指標の高い週明けは米指数が強い)。紙上候補 MonSkewGate 追加・配備不変・EA は SKEW を参照できないため運用側フラグが必要"
+  },
+  {
+   "id": "Q174",
+   "slug": "skew_gate_other_legs",
+   "status": "pending",
+   "cells": 5,
+   "order": 44,
+   "registered": "2026-11-08",
+   "title": "SKEW 門の他レグへの適用(改良系 5 セル): (a) Mon3 円クロス(14074882 形)・instG 円クロス部分(11988011 形)× 前金曜 SKEW 80 分位超の月曜を見送り、(b) Roll4 × 前日(火曜)SKEW 80 分位超の週のみ建てる / その週は ×2、(c) Thu XAUUSD(紙上候補)× 前日(水曜)SKEW 80 分位超の週のみ建てる",
+   "program": "ユーザー 2026-11-08「門として別手法にも採用できますか」→「登録」(docs/409 の派生)",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "note": "事前固定: 門 = q173_skew_vvix_gate.PR['SKEW'](CBOE SKEW 終値の 252 日分位)。参照日は建て日 − 3 日(月曜建て → 前金曜)または − 1 日(水曜・木曜建て → 前日)、無ければ直前営業日(ffill)。閾値 0.8 固定(0.9・half は参照として記録するだけ)。系列: (a1) Mon3 = base.mon_cell の EURJPY 0.333 + USDJPY 0.333 + NZDJPY 0.334(14074882 の EA 実レグ比)、(a2) instG 円 = base.mon_cell の GBPJPY 0.537 + AUDJPY 0.463(11988011 の EA 実レグ比・指数は含めない)、門 = 見送り(skip)。(b1) Roll4 = forward/account_cards.S('roll4')(水曜 20 UTC 円クロス 4 本 SHORT 4h・CADJPY 抜き)を門の開いた週のみ建てる(only)、(b2) 同系列を門の開いた週 ×2・他 ×1(size)。(c) Thu XAUUSD = paper_forward.candidate_series('Thu','XAUUSD',3,False)(木曜 o2o LONG)を門の開いた週のみ建てる(only)。判定 = §1 改良系(q114.improved: IS 2021-10〜2024-12 と OOS 2025〜 の両方で Sharpe が基準系列を上回り、最悪月が悪化しない)。(b1)(c) の only は取引数が 1/4 になるため、Sharpe に加えて累積リターンも併記し「累積が基準の 1/2 未満なら成立でも採用候補にしない」を事前に定める。参考記録: 門の開いた週と閉じた週の平均 bps、年別の発動率(docs/409 §5)。通過 → 紙上候補(MonSkewGate3 / MonSkewGateG / RollSkewOnly / RollSkewX2 / ThuXauSkew)に追加するだけで配備・EA・config は変えない。EA 側の含意は Q173 と同じ(SKEW は MT5 で参照不可・運用側の週次フラグが必要)。データは手元(data_ext/SKEW_History.csv・H1・Yahoo 日足凍結窓)で実行可。事前の見込み: (a) 中(Mon4 と同じ円要因の確認)、(b)(c) 低〜中(向きが逆の門・増し玉条件)。実行順は Q169 の後"
   }
  ],
  "runs": [
