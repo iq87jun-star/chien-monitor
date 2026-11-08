@@ -2965,6 +2965,40 @@
     "research/results/q174_skew_gate_other_legs_levels.csv"
    ],
    "result": "成立 2/5・採用候補 1: Mon3 円クロス skip(IS 1.57→2.15・最悪月 −1.11→−0.85、OOS 0.69→0.83・−0.99→−0.89、90 分位・半減でも成立)→ 紙上 MonSkewGate3。instG は OOS 最悪月 −0.84→−1.03 で不成立(90 分位なら成立)。Roll4 only は Sharpe 改善だが累積 1/2 未満で事前規則により除外、Roll4 ×2 は IS 最悪月 0.01pt 悪化(90 分位なら成立)。Thu XAU 不成立。門の週の Roll は +3.8 対 +2.1 bps と強い"
+  },
+  {
+   "id": "Q176",
+   "slug": "mon_leg_h1_timing_fix",
+   "status": "pending",
+   "cells": 0,
+   "order": 30.5,
+   "registered": "2026-11-09",
+   "title": "【修正・優先】帳簿の Mon 系列を EA 実時刻(H1・月曜 4/6/8/10 UTC 建て → 24h 後決済・往復 3pip)に置換し、MC・口座カード・紙上候補・規約揃えを取り直す(セル 0)",
+   "program": "ユーザー 2026-11-09「登録」(docs/409 §8a: recentfit_screen.mon_cell = Yahoo 日足 00→翌 00 UTC は EA 実時刻と週次相関 0.50・最悪月 −0.82 対 −1.50・2022-12-19 週 +51 対 −277 bps)",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/409_q173_skew_vvix_gate.md"
+   ],
+   "note": "事前固定: (1) 新系列 = q_common.load(sym) の H1 始値で 月曜 {4,6,8,10} UTC 建て → +24h 決済の 4 ショット平均・trades()(往復 3pip)・暦日(月曜)に置く(docs/409 §8 の mon_h1 と同一・NZDJPY/CADJPY/CHFJPY も同じ)。H1 の無い期間(2016-01 より前)は無し。(2) 置換箇所 = deployed_book.CELL_FN['Mon'](→ portfolio_sim.L('Mon')・account_cards.S('mon:SYM')・paper_forward の Mon 系)。旧 base.mon_cell は 'MonDaily' として残し比較に使う。v4・Hold・指数 Mon(nas/spx = base.mon_cell('NAS100'/'US500')= 日足)は本項目では触らない(指数 Mon は EA が 13 UTC 建て → 24h で日足 o2o とずれるが別件・Q177 候補として記録のみ)。(3) 取り直すもの: portfolio_sim.run_portfolio(帳簿期待・失格)、account_cards(口座カード 2 JSON → ダッシュボード再アップロード)、docs/402 §7 の E 案格子(f=1.0/0.8 の 2 点)、docs/409 §5 の SKEW 門 MC(現状/門あり・同倍率)、紙上フォワードの Mon 候補行。(4) 出力: 口座別の 現行 MC(日足)→ 新 MC(H1)の到達・失格・出金・最悪月の対比表 1 枚と、Mon4/Mon3/Mon2(instG)/B 案 の 5 年 Sharpe・最悪月・MDD の新旧対比。判定は無し(修正)。配備・倍率・config の数値は変えない(倍率の見直しが要るなら提案として書き「切替」待ち)。所要: 系列置換 10 分 + MC 15 分 + 口座カード 6 分。実行は Q169・Q175 より先(order 30.5)。Dukascopy 不要(手元 H1)"
+  },
+  {
+   "id": "Q175",
+   "slug": "boj_tuesday_exit20",
+   "status": "pending",
+   "cells": 1,
+   "order": 45,
+   "registered": "2026-11-09",
+   "title": "日銀決定日(火曜)の前日 20 UTC 手仕舞い(改良系 1 セル・H1 実時刻): Mon4 の月曜ショットを、翌火曜が日銀決定日の週だけ同日 20 UTC で決済する",
+   "program": "ユーザー 2026-11-09「登録」(docs/409 §8c。最悪週 2022-12-19 を見た後の設計のため正式登録で判定)",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/409_q173_skew_vvix_gate.md"
+   ],
+   "note": "事前固定: 基準系列 = Q176 の H1 実時刻 Mon4(4 通貨等ウェイト・4/6/8/10 UTC → +24h・往復 3pip)。変種 = data_ext/events_boj.csv の決定日が火曜である週の月曜ショットだけ q114.shot(sym,h,20)(同日 20 UTC 決済・往復 3pip)に置換、他の週は基準と同一。判定 = §1 改良系(IS 2021-10〜2024-12 と OOS 2025〜 の両方で Sharpe が基準を上回り最悪月が悪化しない)。参照(判定に使わない): 前窓 2016-01〜2021-09、決定日が水〜金の週(対象外)の夜間平均、Mon3(14074882)・instG(11988011)への同じ置換、決定日当日の夜間 bps の分布。通過 → 紙上候補 MonBojExit20 に追加。EA 実装は InpJpHolidayMondays と同じ日付リスト(InpBojTuesdays・日銀公表日程を年 1 回更新・該当月曜のショットの保有時間を 20 UTC までに短縮)。配備は「切替」。2016〜 で該当 20 回・IS 内 6 回のため標準基準の n は満たさず改良系のみ。docs/409 §8c の事前値: 前窓 0.28→0.31・IS 1.37→1.67・OOS 1.10→1.19(登録前に見た値であることを docs に明記)。実行は Q176 の後"
   }
  ],
  "runs": [
