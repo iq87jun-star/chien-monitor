@@ -22,7 +22,8 @@ import recentfit_nonfx_screen as nfx          # v4_cell_nonfx とユニバース
 import recentfit_portfolio_compare as pc      # mon_cell_dow / rsi2_cell(A案の構築式)
 
 APPROX = [
-    "S1/S2/Mon = 月曜o2o(実EAは12h保有・24hのものもある)",
+    "S1/S2 = 月曜o2o(実EAは12h保有・24hのものもある)",
+    "Mon = Dukascopy H1 月曜 4/6/8/10 UTC → +24h の 4 ショット平均・往復 3pip(docs/411 Q176。旧日足 o2o は MonDaily)",
     "S3 = 木曜o2o SHORT(実EAは16UTC+6h)",
     "S4/S5 = RSI(2)逆張りをD1で再現",
     "A案は各スリーブ等リスク(1.25%/回)を等ウェイト0.2で近似",
@@ -30,9 +31,33 @@ APPROX = [
     "Yahoo日足近似・実口座成績ではない",
 ]
 
+_H1_MON = {}
+def mon_cell_h1(nm, hours=(4, 6, 8, 10)):
+    """Mon レグの EA 実時刻版(docs/411 Q176・2026-11-09)。Dukascopy H1 の始値で 月曜 {4,6,8,10} UTC 建て → +24h 決済(火曜 00〜10 UTC を保有)の
+    4 ショット平均・往復 3pip(q_common.trades)・暦日(月曜)に置く。旧 base.mon_cell(Yahoo 日足 o2o = 月曜 00 → 火曜 00 UTC・往復 2pip)は EA と週次相関 0.50 で
+    楽観的だった(docs/409 §8a)。H1 が無い日付(NZDJPY/CADJPY/CHFJPY の 2026-01 以降・2016-01 より前)は旧日足で補完し、H1 ファイルが無い銘柄は旧日足のまま。"""
+    key = (nm, hours)
+    if key in _H1_MON: return _H1_MON[key]
+    daily = base.mon_cell(nm)
+    try:
+        sys.path.insert(0, os.path.join(HERE, "queue")); import q_common as q
+        o = q.load(nm)["open"]
+    except (FileNotFoundError, OSError):
+        _H1_MON[key] = daily; return daily
+    out = None
+    for h in hours:
+        t = o.index[(o.index.dayofweek == 0) & (o.index.hour == h)]; t2 = t + pd.Timedelta(hours=24); ok = t2.isin(o.index); t, t2 = t[ok], t2[ok]
+        r = q.trades(nm, t, o.reindex(t).values, np.ones(len(t)), o.reindex(t2).values); r.index = r.index.normalize()
+        out = r if out is None else out.add(r, fill_value=0.0)
+    out = (out / len(hours)).sort_index()
+    gap = daily[daily.index > out.index.max()]                       # H1 の末尾欠損は日足で補完(件数は docs/411 §1 に記載)
+    out = pd.concat([out, gap]).sort_index() if len(gap) else out
+    _H1_MON[key] = out; return out
+
 # 生成式のディスパッチ
 CELL_FN = {
-    "Mon":   base.mon_cell,
+    "Mon":   mon_cell_h1,                                        # 2026-11-09 docs/411 Q176: 日足 o2o → EA 実時刻 H1(旧は MonDaily)
+    "MonDaily": base.mon_cell,                                   # 旧 Mon(Yahoo 日足 o2o)。比較用に残す
     "Hold":  base.hold_cell,
     "TSMOM": base.tsmom_cell,
     "v4":    base.v4_cell,

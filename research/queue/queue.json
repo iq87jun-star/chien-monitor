@@ -2969,19 +2969,22 @@
   {
    "id": "Q176",
    "slug": "mon_leg_h1_timing_fix",
-   "status": "pending",
+   "status": "done",
    "cells": 0,
    "order": 30.5,
    "registered": "2026-11-09",
    "title": "【修正・優先】帳簿の Mon 系列を EA 実時刻(H1・月曜 4/6/8/10 UTC 建て → 24h 後決済・往復 3pip)に置換し、MC・口座カード・紙上候補・規約揃えを取り直す(セル 0)",
    "program": "ユーザー 2026-11-09「登録」(docs/409 §8a: recentfit_screen.mon_cell = Yahoo 日足 00→翌 00 UTC は EA 実時刻と週次相関 0.50・最悪月 −0.82 対 −1.50・2022-12-19 週 +51 対 −277 bps)",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
     "docs/244_morning_research_queue.md",
-    "docs/409_q173_skew_vvix_gate.md"
+    "docs/409_q173_skew_vvix_gate.md",
+    "docs/411_q176_mon_h1_timing_fix.md"
    ],
-   "note": "事前固定: (1) 新系列 = q_common.load(sym) の H1 始値で 月曜 {4,6,8,10} UTC 建て → +24h 決済の 4 ショット平均・trades()(往復 3pip)・暦日(月曜)に置く(docs/409 §8 の mon_h1 と同一・NZDJPY/CADJPY/CHFJPY も同じ)。H1 の無い期間(2016-01 より前)は無し。(2) 置換箇所 = deployed_book.CELL_FN['Mon'](→ portfolio_sim.L('Mon')・account_cards.S('mon:SYM')・paper_forward の Mon 系)。旧 base.mon_cell は 'MonDaily' として残し比較に使う。v4・Hold・指数 Mon(nas/spx = base.mon_cell('NAS100'/'US500')= 日足)は本項目では触らない(指数 Mon は EA が 13 UTC 建て → 24h で日足 o2o とずれるが別件・Q177 候補として記録のみ)。(3) 取り直すもの: portfolio_sim.run_portfolio(帳簿期待・失格)、account_cards(口座カード 2 JSON → ダッシュボード再アップロード)、docs/402 §7 の E 案格子(f=1.0/0.8 の 2 点)、docs/409 §5 の SKEW 門 MC(現状/門あり・同倍率)、紙上フォワードの Mon 候補行。(4) 出力: 口座別の 現行 MC(日足)→ 新 MC(H1)の到達・失格・出金・最悪月の対比表 1 枚と、Mon4/Mon3/Mon2(instG)/B 案 の 5 年 Sharpe・最悪月・MDD の新旧対比。判定は無し(修正)。配備・倍率・config の数値は変えない(倍率の見直しが要るなら提案として書き「切替」待ち)。所要: 系列置換 10 分 + MC 15 分 + 口座カード 6 分。実行は Q169・Q175 より先(order 30.5)。Dukascopy 不要(手元 H1)"
+   "note": "事前固定: (1) 新系列 = q_common.load(sym) の H1 始値で 月曜 {4,6,8,10} UTC 建て → +24h 決済の 4 ショット平均・trades()(往復 3pip)・暦日(月曜)に置く(docs/409 §8 の mon_h1 と同一・NZDJPY/CADJPY/CHFJPY も同じ)。H1 の無い期間(2016-01 より前)は無し。(2) 置換箇所 = deployed_book.CELL_FN['Mon'](→ portfolio_sim.L('Mon')・account_cards.S('mon:SYM')・paper_forward の Mon 系)。旧 base.mon_cell は 'MonDaily' として残し比較に使う。v4・Hold・指数 Mon(nas/spx = base.mon_cell('NAS100'/'US500')= 日足)は本項目では触らない(指数 Mon は EA が 13 UTC 建て → 24h で日足 o2o とずれるが別件・Q177 候補として記録のみ)。(3) 取り直すもの: portfolio_sim.run_portfolio(帳簿期待・失格)、account_cards(口座カード 2 JSON → ダッシュボード再アップロード)、docs/402 §7 の E 案格子(f=1.0/0.8 の 2 点)、docs/409 §5 の SKEW 門 MC(現状/門あり・同倍率)、紙上フォワードの Mon 候補行。(4) 出力: 口座別の 現行 MC(日足)→ 新 MC(H1)の到達・失格・出金・最悪月の対比表 1 枚と、Mon4/Mon3/Mon2(instG)/B 案 の 5 年 Sharpe・最悪月・MDD の新旧対比。判定は無し(修正)。配備・倍率・config の数値は変えない(倍率の見直しが要るなら提案として書き「切替」待ち)。所要: 系列置換 10 分 + MC 15 分 + 口座カード 6 分。実行は Q169・Q175 より先(order 30.5)。Dukascopy 不要(手元 H1)",
+   "done": "2026-11-09",
+   "result": "置換完了(deployed_book.mon_cell_h1・旧は MonDaily)。帳簿 MC ほぼ不変(270 → 274 万/月)、5 年 Sharpe −0.3〜0.5、最悪日 倍近く(Mon4 −1.49 → −2.77%)、規約揃え倍率 現行の 11〜36%。SKEW 門の失格改善は 0〜3pt に縮小。E 案格子は制約基準が壊れ再設計要(Q178 候補)。指数 Mon は Q177 候補。配備・倍率は変更なし"
   },
   {
    "id": "Q175",
@@ -4348,6 +4351,15 @@
    "cells": 1,
    "doc": "docs/406_q161_xau_friday_window_long.md",
    "note": "Q158 は Dukascopy 429 で実行不能のため Q161。棄却"
+  },
+  {
+   "date": "2026-11-09",
+   "items": [
+    "Q176"
+   ],
+   "cells": 0,
+   "cumulative_cells": 10085,
+   "note": "修正・セル 0・docs/411"
   }
  ],
  "external_checks": [
