@@ -140,7 +140,7 @@ def mc(a):
     has = (paid > 0).any(axis=1); first = np.where(has, np.argmax(paid > 0, axis=1), -1); fm = first[has]; fa = paid[has, fm]
     cum12 = np.array([paid[i, first[i]:first[i] + 12].sum() for i in np.where(has)[0]]); fits = fm <= MONTHS - 12
     q = lambda x, p: float(np.quantile(x, p)) if len(x) else float("nan")
-    def ym(m): return (start + pd.Timedelta(days=int(round((m + 1) * 21 * 365 / 250)))).strftime("%Y-%m")
+    def ym(m): return "" if (m is None or np.isnan(m)) else (start + pd.Timedelta(days=int(round((m + 1) * 21 * 365 / 250)))).strftime("%Y-%m")   # 出金ゼロの経路(規約揃えで極小倍率)では NaN → 空文字(2026-11-08 Q170)
     fd = fund_day[funded & (fund_day >= 0)]
     return dict(p_pay=float(has.mean()), p_fail=float(failed.mean()), p_reach=float(funded.mean()), reach_med=(ym(q(fd, .5) / 21 - 1) if (not fn and len(fd)) else ""),
                 t_med_m=q(fm, .5) + 1, t_lo_m=q(fm, .023) + 1, t_hi_m=q(fm, .977) + 1, t_med=ym(q(fm, .5)), t_lo=ym(q(fm, .023)), t_hi=ym(q(fm, .977)),
