@@ -1,6 +1,6 @@
 {
- "cumulative_cells": 10062,
- "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062",
+ "cumulative_cells": 10073,
+ "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062 / 2026-11-08 Q171 +6 → 10,068 / Q172 +5 → 10,073",
  "items": [
   {
    "id": "Q1",
@@ -2872,6 +2872,49 @@
     "research/results/q170_series_compare.csv"
    ],
    "result": "3pip 仮定では全 9 口座で改善(同倍率: 失格 −2〜22pt・30 か月出金 1.5〜2.0 倍)。実スプレッド(週明け寄り bid-ask 平均 GBPJPY 8.2 / EURJPY 5.4 / AUDJPY 8.3 / USDJPY 4.0 bps・日中の 6〜14 倍)では Q165 の IS Sharpe 2.78→1.77・bps 18.6→11.8・最悪月 −1.78%(配備形 1.73 / 10.8 / −0.82%)に縮み、同倍率の改善は +0〜15%、規約揃えでは倍率が 0.65 倍になり FTMO 50k・パール・宝くじ・ルビー・1-Step で出金期待が半減以下。切替は推奨せず。Sun 22 UTC 建て系は今後 ask 建てで判定"
+  },
+  {
+   "id": "Q171",
+   "slug": "cross_asset_leadlag",
+   "status": "done",
+   "cells": 6,
+   "order": 41,
+   "registered": "2026-11-08",
+   "title": "クロスアセットの先行・遅行(新規 6 セル): USTBOND→USDJPY/GBPJPY・WTI→CADJPY/USDCAD・US500→AUDJPY/NZDJPY、X の 24h 変化(20 UTC)の符号で翌 24h の Y(21 UTC 建て)を事前固定方向に",
+   "program": "ユーザー 2026-11-08「登録実行お願いします」(新しい足の探索・docs/408)",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/408_q171_q172_cross_asset_pairs.md"
+   ],
+   "note": "事前固定: 信号 = X の 20 UTC 足始値 → 翌 20 UTC の変化(CFD は 21 UTC 足が無い日が多い)、取引 = Y の 21 UTC 建て → 翌 21 UTC 決済、全日・閾値なし、方向は仕組みから固定(USTBOND↓=利回り↑→円安、WTI↑→CAD 高、US500↑→資源国円クロス高)。往復 3pip。判定 §1 標準。参考記録: 粗利・大信号(|ΔX| 上位 1/3)・ΔX と翌日 Y の相関",
+   "results": [
+    "research/results/q171_cross_asset_leadlag.csv",
+    "research/results/q171_cross_asset_leadlag_levels.csv"
+   ],
+   "result": "0/6・p<0.05 0。IS 粗利は USTBOND→USDJPY +6.0・WTI→CADJPY +8.8 bps/日だが前窓・OOS で消え、相関は IS −0.11/+0.14・他窓ほぼ 0。米金利・原油の前日の動きは翌日の為替に遅行しない。族を閉じる"
+  },
+  {
+   "id": "Q172",
+   "slug": "pairs_reversion",
+   "status": "done",
+   "cells": 5,
+   "order": 42,
+   "registered": "2026-11-08",
+   "title": "ペア回帰(新規 5 セル): ln(A/B) の 60 日 z>2 逆張り・0 横切り or 10 日決済・各 0.5 名目(GBPJPY/EURJPY・AUDJPY/NZDJPY・US500/NAS100・GER40/EUSTX50・XAUUSD/XAGUSD)",
+   "program": "ユーザー 2026-11-08「登録実行お願いします」(新しい足の探索・docs/408)",
+   "sessions_planned": 1,
+   "sessions_done": 1,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/408_q171_q172_cross_asset_pairs.md"
+   ],
+   "note": "事前固定: 日次 = 各市場の最終足(FX 21・米指数/金属 20・欧州指数 19 UTC)の始値、WIN 60・Z 2.0・MAXD 10、重複建てなし、損益は建て日に置く。コストは各レグ q_common.cost。判定 §1 標準(低頻度のため IS 月数 24 に届かない可能性を登録時に承知)",
+   "results": [
+    "research/results/q172_pairs_reversion.csv"
+   ],
+   "result": "0/5・判定可能 0(年 5〜8 建てで IS 月数 16〜22)。GBPJPY/EURJPY(= EURGBP の z 逆張り)のみ 3 窓同符号(前窓 70%・IS 19/22 p 4.3e-4・OOS 6/9 +10.5 bps・全期間 67%・+18.6 bps/建て)だが閾値に 2 桁不足。XAU/XAG は OOS −145 bps(2025 銀急騰)。残り物は EURGBP 単独 1 セル(取引単位判定を事前固定・要登録・見込み弱)"
   }
  ],
  "runs": [
@@ -4189,6 +4232,14 @@
    "cells": 0,
    "doc": "docs/407_q170_mon4_session_rule_mc.md",
    "note": "ユーザー「(a) を登録して今行って」で登録即実行(日曜)"
+  },
+  {
+   "date": "2026-11-08",
+   "slot": "adhoc",
+   "item": "Q171+Q172",
+   "cells": 11,
+   "doc": "docs/408_q171_q172_cross_asset_pairs.md",
+   "note": "ユーザー「登録実行お願いします」で登録即実行(日曜)"
   }
  ],
  "external_checks": [
