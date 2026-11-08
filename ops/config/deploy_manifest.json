@@ -67,7 +67,7 @@
    "apply": true,
    "ensure": [
     {
-     "ea": "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.13.mq5",
+     "ea": "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.14.mq5",
      "symbol": "EURJPY",
      "period": "H1"
     }
@@ -76,9 +76,10 @@
     "RecentFit_Mon3x5+HoldXAU0.5",
     "季節RG3",
     "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.10",
-    "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.11"
+    "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.11",
+    "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.13"
    ],
-   "note": "2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
+   "note": "2026-11-08 ユーザー「切替」(docs/241 §1al・docs/409 Q173・docs/410 Q174): v1.14 = SKEW 門(前金曜の CBOE SKEW 252 日 80 分位超の月曜は Mon レッグを建てない・WebRequest で CSV 取得・取得不可は建てる)。倍率・ガード・Magic・他入力不変。端末の WebRequest 許可 URL に https://cdn-api.cboe.com の追加が必要(未追加の間は従来どおり建つ)。 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
    "terminal": "FundedNext",
    "prepare_profile": true
   },
