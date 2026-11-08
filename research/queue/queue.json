@@ -1,6 +1,6 @@
 {
- "cumulative_cells": 10084,
- "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062 / 2026-11-08 Q171 +6 → 10,068 / Q172 +5 → 10,073 / Q173 +6 → 10,079 / Q174 +5 → 10,084",
+ "cumulative_cells": 10085,
+ "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062 / 2026-11-08 Q171 +6 → 10,068 / Q172 +5 → 10,073 / Q173 +6 → 10,079 / Q174 +5 → 10,084 / 2026-11-09 Q161 +1 → 10,085",
  "items": [
   {
    "id": "Q1",
@@ -2723,9 +2723,9 @@
    "result": "月次ロール(E2・現行 MC)を維持: 2 年で総価値 41.7%/年・失格 24%。年 1 回全額 35.4%/年・失格 35%、半年〜月次の全額請求は失格 47〜67%。感度: ロール分が 80% 再分配なら出金 17.2→5.2(FAQ 要確認)、空白 5 営業日で −16%。EA8 v1.40 / EA3 v1.22 に InpPayoutMode(FTMO ロール方式の [PAYOUT] 行)を別ファイルで用意。manifest・docs/241 不変"
   },
   {
-   "status": "pending",
+   "status": "done",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "registered": "2026-11-06",
    "program": "docs/244 週次アイデア束 #3(ai-council 11/6・CFD)",
    "id": "Q161",
@@ -2734,9 +2734,15 @@
    "cells": 1,
    "order": 34,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/406_q161_xau_friday_window_long.md"
    ],
-   "note": "ai-council 2026-11-06 ①(XAU 金曜窓 LONG)。仮説: 週末の地政学リスクに備える買いが金曜の金を押し上げる。判定は docs/244 §1 の標準基準(Bonferroni・IS 2021-10〜2024-12・OOS 2025-01〜・コスト XAUUSD 5bps・前窓は XAU H1 が 2021 開始のため Q16 と同じく免除)。窓は 1 つに固定し、前後 ±1 時間(17/19 UTC 建て・16/18 UTC 決済)は頑健性の記録のみで選ばない。参考記録(判定には使わない): (1) Hold XAU(日次 close→close)との日次相関 — 高ければ Hold XAU の無い口座(FTMO 50k A/B・Fintokei)向けの候補と記す、(2) 米雇用統計の金曜(第 1 金曜・BLS 日程で確認)を除いた結果、(3) 紙上候補 Thu XAUUSD(木曜 o2o 24h・docs/230)との重なり分解: 木 18→24 UTC と 金 00→17 UTC の 2 区間の寄与、および Thu XAUUSD との日次相関。通過しても Thu XAUUSD と同時には CANDIDATES に入れず、どちらを残すかを提案(2 本とも残すなら理由を書く)。データ: data_dukascopy/XAUUSD_hour.csv.gz(2021-01〜2025-12・週末埋め足あり → 週末行は除外して使う)。2026 年分は candidate_interim.ensure_months で足せたら足す(不通なら 2025-12 末尾で判定し注記)。棄却は正常な結果。実行後に main の ai-council/explored.md の該当行(2026-11-06 ① XAU 金曜窓)へ結果を書き足す PR を main 向けに作る(Q160 の行には「→ 登録せず(Q16 と重複)」を併記)。EA・manifest・config は変更しない"
+   "note": "ai-council 2026-11-06 ①(XAU 金曜窓 LONG)。仮説: 週末の地政学リスクに備える買いが金曜の金を押し上げる。判定は docs/244 §1 の標準基準(Bonferroni・IS 2021-10〜2024-12・OOS 2025-01〜・コスト XAUUSD 5bps・前窓は XAU H1 が 2021 開始のため Q16 と同じく免除)。窓は 1 つに固定し、前後 ±1 時間(17/19 UTC 建て・16/18 UTC 決済)は頑健性の記録のみで選ばない。参考記録(判定には使わない): (1) Hold XAU(日次 close→close)との日次相関 — 高ければ Hold XAU の無い口座(FTMO 50k A/B・Fintokei)向けの候補と記す、(2) 米雇用統計の金曜(第 1 金曜・BLS 日程で確認)を除いた結果、(3) 紙上候補 Thu XAUUSD(木曜 o2o 24h・docs/230)との重なり分解: 木 18→24 UTC と 金 00→17 UTC の 2 区間の寄与、および Thu XAUUSD との日次相関。通過しても Thu XAUUSD と同時には CANDIDATES に入れず、どちらを残すかを提案(2 本とも残すなら理由を書く)。データ: data_dukascopy/XAUUSD_hour.csv.gz(2021-01〜2025-12・週末埋め足あり → 週末行は除外して使う)。2026 年分は candidate_interim.ensure_months で足せたら足す(不通なら 2025-12 末尾で判定し注記)。棄却は正常な結果。実行後に main の ai-council/explored.md の該当行(2026-11-06 ① XAU 金曜窓)へ結果を書き足す PR を main 向けに作る(Q160 の行には「→ 登録せず(Q16 と重複)」を併記)。EA・manifest・config は変更しない",
+   "results": [
+    "research/results/q161_xau_friday_window_long.csv",
+    "research/results/q161_xau_friday_window_long_levels.csv"
+   ],
+   "result": "棄却: IS 24/39(62%)+4.6 bps・Sharpe 0.35・p 0.10、OOS 2025 8/12 +5.0 bps、前窓 2021-01〜09 4/9。±1h 変種も同水準。Hold XAU の同じ金曜と日次相関 0.97(= Hold の金曜分)、Thu XAUUSD とは 0.01・重なりの木曜夜は IS −2.3 bps。XAU の曜日窓はこれで出そろい、金は Hold のみ"
   },
   {
    "id": "Q162",
@@ -4300,6 +4306,14 @@
    "cells": 5,
    "doc": "docs/410_q174_skew_gate_other_legs.md",
    "note": "ユーザー「実行」で同日実行(日曜)"
+  },
+  {
+   "date": "2026-11-09",
+   "slot": "morning",
+   "item": "Q161",
+   "cells": 1,
+   "doc": "docs/406_q161_xau_friday_window_long.md",
+   "note": "Q158 は Dukascopy 429 で実行不能のため Q161。棄却"
   }
  ],
  "external_checks": [
