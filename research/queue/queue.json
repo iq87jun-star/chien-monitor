@@ -1,6 +1,6 @@
 {
- "cumulative_cells": 10079,
- "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062 / 2026-11-08 Q171 +6 → 10,068 / Q172 +5 → 10,073 / Q173 +6 → 10,079",
+ "cumulative_cells": 10084,
+ "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062 / 2026-11-08 Q171 +6 → 10,068 / Q172 +5 → 10,073 / Q173 +6 → 10,079 / Q174 +5 → 10,084",
  "items": [
   {
    "id": "Q1",
@@ -2941,18 +2941,24 @@
   {
    "id": "Q174",
    "slug": "skew_gate_other_legs",
-   "status": "pending",
+   "status": "done",
    "cells": 5,
    "order": 44,
    "registered": "2026-11-08",
    "title": "SKEW 門の他レグへの適用(改良系 5 セル): (a) Mon3 円クロス(14074882 形)・instG 円クロス部分(11988011 形)× 前金曜 SKEW 80 分位超の月曜を見送り、(b) Roll4 × 前日(火曜)SKEW 80 分位超の週のみ建てる / その週は ×2、(c) Thu XAUUSD(紙上候補)× 前日(水曜)SKEW 80 分位超の週のみ建てる",
    "program": "ユーザー 2026-11-08「門として別手法にも採用できますか」→「登録」(docs/409 の派生)",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/410_q174_skew_gate_other_legs.md"
    ],
-   "note": "事前固定: 門 = q173_skew_vvix_gate.PR['SKEW'](CBOE SKEW 終値の 252 日分位)。参照日は建て日 − 3 日(月曜建て → 前金曜)または − 1 日(水曜・木曜建て → 前日)、無ければ直前営業日(ffill)。閾値 0.8 固定(0.9・half は参照として記録するだけ)。系列: (a1) Mon3 = base.mon_cell の EURJPY 0.333 + USDJPY 0.333 + NZDJPY 0.334(14074882 の EA 実レグ比)、(a2) instG 円 = base.mon_cell の GBPJPY 0.537 + AUDJPY 0.463(11988011 の EA 実レグ比・指数は含めない)、門 = 見送り(skip)。(b1) Roll4 = forward/account_cards.S('roll4')(水曜 20 UTC 円クロス 4 本 SHORT 4h・CADJPY 抜き)を門の開いた週のみ建てる(only)、(b2) 同系列を門の開いた週 ×2・他 ×1(size)。(c) Thu XAUUSD = paper_forward.candidate_series('Thu','XAUUSD',3,False)(木曜 o2o LONG)を門の開いた週のみ建てる(only)。判定 = §1 改良系(q114.improved: IS 2021-10〜2024-12 と OOS 2025〜 の両方で Sharpe が基準系列を上回り、最悪月が悪化しない)。(b1)(c) の only は取引数が 1/4 になるため、Sharpe に加えて累積リターンも併記し「累積が基準の 1/2 未満なら成立でも採用候補にしない」を事前に定める。参考記録: 門の開いた週と閉じた週の平均 bps、年別の発動率(docs/409 §5)。通過 → 紙上候補(MonSkewGate3 / MonSkewGateG / RollSkewOnly / RollSkewX2 / ThuXauSkew)に追加するだけで配備・EA・config は変えない。EA 側の含意は Q173 と同じ(SKEW は MT5 で参照不可・運用側の週次フラグが必要)。データは手元(data_ext/SKEW_History.csv・H1・Yahoo 日足凍結窓)で実行可。事前の見込み: (a) 中(Mon4 と同じ円要因の確認)、(b)(c) 低〜中(向きが逆の門・増し玉条件)。実行順は Q169 の後"
+   "note": "事前固定: 門 = q173_skew_vvix_gate.PR['SKEW'](CBOE SKEW 終値の 252 日分位)。参照日は建て日 − 3 日(月曜建て → 前金曜)または − 1 日(水曜・木曜建て → 前日)、無ければ直前営業日(ffill)。閾値 0.8 固定(0.9・half は参照として記録するだけ)。系列: (a1) Mon3 = base.mon_cell の EURJPY 0.333 + USDJPY 0.333 + NZDJPY 0.334(14074882 の EA 実レグ比)、(a2) instG 円 = base.mon_cell の GBPJPY 0.537 + AUDJPY 0.463(11988011 の EA 実レグ比・指数は含めない)、門 = 見送り(skip)。(b1) Roll4 = forward/account_cards.S('roll4')(水曜 20 UTC 円クロス 4 本 SHORT 4h・CADJPY 抜き)を門の開いた週のみ建てる(only)、(b2) 同系列を門の開いた週 ×2・他 ×1(size)。(c) Thu XAUUSD = paper_forward.candidate_series('Thu','XAUUSD',3,False)(木曜 o2o LONG)を門の開いた週のみ建てる(only)。判定 = §1 改良系(q114.improved: IS 2021-10〜2024-12 と OOS 2025〜 の両方で Sharpe が基準系列を上回り、最悪月が悪化しない)。(b1)(c) の only は取引数が 1/4 になるため、Sharpe に加えて累積リターンも併記し「累積が基準の 1/2 未満なら成立でも採用候補にしない」を事前に定める。参考記録: 門の開いた週と閉じた週の平均 bps、年別の発動率(docs/409 §5)。通過 → 紙上候補(MonSkewGate3 / MonSkewGateG / RollSkewOnly / RollSkewX2 / ThuXauSkew)に追加するだけで配備・EA・config は変えない。EA 側の含意は Q173 と同じ(SKEW は MT5 で参照不可・運用側の週次フラグが必要)。データは手元(data_ext/SKEW_History.csv・H1・Yahoo 日足凍結窓)で実行可。事前の見込み: (a) 中(Mon4 と同じ円要因の確認)、(b)(c) 低〜中(向きが逆の門・増し玉条件)。実行順は Q169 の後",
+   "results": [
+    "research/results/q174_skew_gate_other_legs.csv",
+    "research/results/q174_skew_gate_other_legs_levels.csv"
+   ],
+   "result": "成立 2/5・採用候補 1: Mon3 円クロス skip(IS 1.57→2.15・最悪月 −1.11→−0.85、OOS 0.69→0.83・−0.99→−0.89、90 分位・半減でも成立)→ 紙上 MonSkewGate3。instG は OOS 最悪月 −0.84→−1.03 で不成立(90 分位なら成立)。Roll4 only は Sharpe 改善だが累積 1/2 未満で事前規則により除外、Roll4 ×2 は IS 最悪月 0.01pt 悪化(90 分位なら成立)。Thu XAU 不成立。門の週の Roll は +3.8 対 +2.1 bps と強い"
   }
  ],
  "runs": [
@@ -4286,6 +4292,14 @@
    "cells": 6,
    "doc": "docs/409_q173_skew_vvix_gate.md",
    "note": "ユーザー「SKEW/VVIX 門を登録して今行って」で登録即実行(日曜)"
+  },
+  {
+   "date": "2026-11-08",
+   "slot": "adhoc",
+   "item": "Q174",
+   "cells": 5,
+   "doc": "docs/410_q174_skew_gate_other_legs.md",
+   "note": "ユーザー「実行」で同日実行(日曜)"
   }
  ],
  "external_checks": [
