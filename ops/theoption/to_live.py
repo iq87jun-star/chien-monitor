@@ -22,7 +22,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.9"
+VERSION = "1.10"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -255,7 +255,7 @@ def append_csv(path, header, row):
 
 # v1.6 (追補37・ユーザー裁定 B): 実口座に切り替えても、未検証の脚はお試し口座に残す。既定は月曜 07:00 の 3 本(11/9 の再試行経路の確認待ち)と仲値 3 本(11/5・11/10・11/13 のデモ検証待ち)。
 # to_config.json の "demo_legs": [...] で上書き([] なら全脚が実口座)。検証が済んだ脚から外す。
-DEMO_LEGS_DEFAULT = ["EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6", "USDJPY_NK", "EURJPY_NK", "GBPJPY_NK", "CHFJPY_NK", "CADJPY_NK"]   # v1.8: 追加 2 本もお試しから
+DEMO_LEGS_DEFAULT = ["USDJPY_NK", "EURJPY_NK", "GBPJPY_NK", "CHFJPY_NK", "CADJPY_NK"]   # v1.10 (追補56・ユーザー「試運転後は本番に」): 月曜 3 本は 11/9 のお試しで再試行経路・約定・判定を確認済み → 実口座へ。仲値 5 本は 11/10・11/13 の確認後に外す
 
 def load_config():
     cfg = {}

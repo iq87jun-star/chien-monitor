@@ -248,8 +248,8 @@ def test_v16_per_leg_account_routing(monkeypatch):
         assert L.main(["--out", tmp]) == 0 and runs == [("real", REAL, ("EURGBP_N6L",))]
         runs.clear(); FakeDT.t = dt.datetime(2026, 11, 4, 1, 58, tzinfo=L.JST)   # 水曜 01:58 → 02:00 AUDJPY プール脚は実口座
         assert L.main(["--out", tmp]) == 0 and runs == [("real", REAL, ("AUDJPY_02",))]
-        runs.clear(); FakeDT.t = dt.datetime(2026, 11, 9, 6, 58, tzinfo=L.JST)   # 月曜 06:58 → 3 本はお試しのまま
-        assert L.main(["--out", tmp]) == 0 and runs == [("demo", DEMO, ("AUDJPY_N6", "EURJPY_N6", "NZDJPY_N6"))]
+        runs.clear(); FakeDT.t = dt.datetime(2026, 11, 9, 6, 58, tzinfo=L.JST)   # 月曜 06:58 → v1.10: 3 本は実口座
+        assert L.main(["--out", tmp]) == 0 and runs == [("real", REAL, ("AUDJPY_N6", "EURJPY_N6", "NZDJPY_N6"))]
         runs.clear(); FakeDT.t = dt.datetime(2026, 11, 5, 9, 54, tzinfo=L.JST)   # ゴトー日 09:54 → 仲値 5 本もお試し
         assert L.main(["--out", tmp]) == 0 and runs == [("demo", DEMO, ("CADJPY_NK", "CHFJPY_NK", "EURJPY_NK", "GBPJPY_NK", "USDJPY_NK"))]
         # demo_legs を空にすると全脚が実口座
