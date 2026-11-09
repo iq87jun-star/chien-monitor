@@ -26,8 +26,10 @@ def mon_skew(sym):
     if k not in _c:
         s = S_orig("mon:" + sym).copy(); mon = s.index[s.index.dayofweek == 0]; prev = PR["SKEW"].reindex(mon - pd.Timedelta(days=3), method="ffill").values; s.loc[mon[prev > 0.8]] = 0.0; _c[k] = s
     return _c[k]
+BOJ_ON = [False]   # True のとき mon:SYM を Q175 適用後の系列に差し替える(キー名を変えないので rescale/portfolio の分類がそのまま効く)
 def S2(key):
     fam, _, sym = key.partition(":")
+    if fam == "mon" and BOJ_ON[0]: return mon_boj(sym)
     if fam == "mbj": return mon_boj(sym)
     if fam == "msk": return mon_skew(sym)
     if key == "mij:JP225":
@@ -43,16 +45,15 @@ def stage_legs(a, stage):
     if stage == 0:
         if aid == "14074882": ev, fd = remap(ev, "msk"), remap(fd, "msk")
         return ev, fd
-    ev, fd = remap(ev, "mbj"), remap(fd, "mbj")
     if stage >= 2:
         if aid == "6104739": ev, fd = add(ev, "mij:JP225", ev["nas"]), add(fd, "mij:JP225", fd["nas"])
         if aid == "14166201": ev, fd = add(ev, "hold:JP225", 0.35), add(fd, "hold:JP225", 0.35)
         if aid == "14074882": ev, fd = add(ev, "hold:JP225", 0.4), add(fd, "hold:JP225", 0.4)
     if stage >= 3 and aid in FINTOKEI:
         sw = a.get("swap_xau_bps_m", 0.0); fn_ = a.get("funded_now", False); lg = fd if fn_ else ev
-        w = min(solve_w2(lg, 0.9, sw), 1.0)
+        w = min(solve_w2(lg, 0.9, sw), 1.0)   # Hold 重み上限 1.0(= UK100 0.49 / WTI 0.15)
         if fn_: ev = fd = rescale(lg, 0.9, w)
-        else: ev = rescale(ev, 0.9, w); fd = rescale(fd, 0.9, w * (list(fd.values())[0] / list(ev.values())[0]) if False else w)   # 資金化後も同じ Hold 重み(Mon は EL の比率のまま ×0.9)
+        else: ev = rescale(ev, 0.9, w); fd = rescale(fd, 0.9, w)   # 資金化後も同じ Hold 重み・Mon は ×0.9
     return ev, fd
 def hist(rd):
     m = (1 + rd).resample("ME").prod() - 1; eq = (1 + m).cumprod()
@@ -60,7 +61,7 @@ def hist(rd):
 STAGES = {0: "現状", 1: "第1弾(Q175+門無効)", 2: "第1+2弾(+日経)", 3: "第1+2+3弾(+E案0.9)"}
 rows, prow = [], []
 for st, nm in STAGES.items():
-    d = {}
+    BOJ_ON[0] = st >= 1; _c.clear(); ac["_S"].clear() if "_S" in ac else None; d = {}
     for a in cfg["accounts"]:
         ev, fd = stage_legs(a, st); fn_ = a.get("funded_now", False); sw = a.get("swap_xau_bps_m", 0.0); d[a["name"]] = fd if fn_ else ev
         b = copy.deepcopy(a); b["eval"], b["funded"] = ev, fd; r = mc(b); h = hist(daily_window(ea_book(d[a["name"]], sw)))
