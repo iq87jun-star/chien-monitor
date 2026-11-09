@@ -166,6 +166,7 @@ def apply(terminal_path, data_path, acct_cfg, inv, compiled, backup_root):
     eol = "\r\n"
     # 1) remove
     for pat in acct_cfg.get("remove", []):
+        pat = re.sub(r"\.(mq5|ex5)$", "", pat)   # 1.9b(docs/241 §1an): ".mq5" 付きでも ex5 パスに一致させる
         for p, rec in files.items():
             c, s, enc, ch = rec
             for e in sorted(c["experts"], key=lambda e: -e["span"][0]):

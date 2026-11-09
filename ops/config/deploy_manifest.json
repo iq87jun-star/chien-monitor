@@ -19,9 +19,9 @@
     "【FTMO50k_口座521100397】EA8_Mon4_3.3倍+GER40ブレイク_2.0倍_v1.35",
     "【FTMO50k_口座521100397】EA8_Mon4_6.0倍+GER40ブレイク_2.0倍_dyn1_v1.37",
     "【FTMO50k_口座521100397】EA8_Mon4_6.0倍+GER40ブレイク_2.0倍_dyn1_v1.38",
-    "【FTMO50k_口座521100397】EA8_Mon4_6.0倍+GER40ブレイク_2.0倍_dyn1_v1.39.mq5"
+    "【FTMO50k_口座521100397】EA8_Mon4_6.0倍+GER40ブレイク_2.0倍_dyn1_v1.39"
    ],
-   "note": "2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.39 → v1.41(v1.40 の [PAYOUT] ログ行・docs/401 Q159・ログのみ を含む) = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
+   "note": "2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.39 → v1.41(v1.40 の [PAYOUT] ログ行・docs/401 Q159・ログのみ を含む) = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
    "terminal": "FTMO",
    "prepare_profile": true
   },
@@ -39,9 +39,9 @@
     "【FTMO50k_口座531407058】EA3_Mon4_3.3倍_v1.17",
     "【FTMO50k_口座531407058】EA3_Mon4_6.0倍_dyn1_v1.19",
     "【FTMO50k_口座531407058】EA3_Mon4_6.0倍_dyn1_v1.20",
-    "【FTMO50k_口座531407058】EA3_Mon4_6.0倍_dyn1_v1.21.mq5"
+    "【FTMO50k_口座531407058】EA3_Mon4_6.0倍_dyn1_v1.21"
    ],
-   "note": "2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.21 → v1.23(v1.22 の [PAYOUT] ログ行・docs/401 Q159・ログのみ を含む) = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
+   "note": "2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.21 → v1.23(v1.22 の [PAYOUT] ログ行・docs/401 Q159・ログのみ を含む) = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
    "terminal": "FTMO",
    "prepare_profile": true,
    "restart_token": "20261021-halt"
@@ -60,9 +60,9 @@
     "RecentFit_Mon3x",
     "季節RG3",
     "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1_v1.16",
-    "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1_v1.17.mq5"
+    "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1_v1.17"
    ],
-   "note": "2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.17 → v1.18 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-10-23 ユーザー「切替」(docs/241 §1ac): v+0.01(未接続・equity 0 ではガードを判定しない・docs/328 §9m)。ロジック・入力・Magic 不変。 2026-10-17 ユーザー「停止完了」(MQL5 VPS 全停止)→ apply:true・自前 VPS に配備(docs/328 §9f)。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1.mq5。 旧 同名ファイルの再コンパイル = v1.15 へ更新(同 Magic 943200 系なので建玉は引き継ぐ)",
+   "note": "2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.17 → v1.18 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-10-23 ユーザー「切替」(docs/241 §1ac): v+0.01(未接続・equity 0 ではガードを判定しない・docs/328 §9m)。ロジック・入力・Magic 不変。 2026-10-17 ユーザー「停止完了」(MQL5 VPS 全停止)→ apply:true・自前 VPS に配備(docs/328 §9f)。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1.mq5。 旧 同名ファイルの再コンパイル = v1.15 へ更新(同 Magic 943200 系なので建玉は引き継ぐ)",
    "terminal": "FundedNext",
    "prepare_profile": true
   },
@@ -81,9 +81,9 @@
     "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.10",
     "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.11",
     "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.13",
-    "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.14.mq5"
+    "【FN100k_口座14074882】RecentFit_Mon3x4+HoldXAU0.4_ギャンブル_v1.14"
    ],
-   "note": "2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.14 → v1.15 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)+ SKEW 門を無効化(InpSkewGateEnable=false)。ロジック・倍率・Magic 不変。| 2026-11-08 ユーザー「切替」(docs/241 §1al・docs/409 Q173・docs/410 Q174): v1.14 = SKEW 門(前金曜の CBOE SKEW 252 日 80 分位超の月曜は Mon レッグを建てない・WebRequest で CSV 取得・取得不可は建てる)。倍率・ガード・Magic・他入力不変。端末の WebRequest 許可 URL に https://cdn-api.cboe.com の追加が必要(未追加の間は従来どおり建つ)。 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
+   "note": "2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.14 → v1.15 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)+ SKEW 門を無効化(InpSkewGateEnable=false)。ロジック・倍率・Magic 不変。| 2026-11-08 ユーザー「切替」(docs/241 §1al・docs/409 Q173・docs/410 Q174): v1.14 = SKEW 門(前金曜の CBOE SKEW 252 日 80 分位超の月曜は Mon レッグを建てない・WebRequest で CSV 取得・取得不可は建てる)。倍率・ガード・Magic・他入力不変。端末の WebRequest 許可 URL に https://cdn-api.cboe.com の追加が必要(未追加の間は従来どおり建つ)。 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
    "terminal": "FundedNext",
    "prepare_profile": true
   },
@@ -123,9 +123,9 @@
     "【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_8.0倍+GER40ブレイク_4.8倍+HoldXAU0.7_v1.04",
     "【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_10.0倍+GER40ブレイク_6.0倍+HoldXAU0.9_v1.05",
     "【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_10.0倍+GER40ブレイク_6.0倍+HoldXAU0.9_v1.06",
-    "【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_10.0倍+GER40ブレイク_6.0倍+HoldXAU0.9_v1.07.mq5"
+    "【FTMO100k_口座531343523_宝くじ】EA10L_Mon4_10.0倍+GER40ブレイク_6.0倍+HoldXAU0.9_v1.07"
    ],
-   "note": "2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.07 → v1.08 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
+   "note": "2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.07 → v1.08 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
    "terminal": "FTMO",
    "prepare_profile": true
   },
@@ -143,9 +143,9 @@
     "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_2.5倍_v1.03",
     "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.04",
     "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.05",
-    "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.06.mq5"
+    "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.06"
    ],
-   "note": "2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.06 → v1.07 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
+   "note": "2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.06 → v1.07 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
    "terminal": "FTMO",
    "prepare_profile": true
   },
@@ -164,9 +164,9 @@
     "【Fintokeiパール500万】RecentFit_8.0倍_dyn1_v1.10",
     "【Fintokeiパール500万】RecentFit_8.0倍_dyn1_v1.11",
     "【Fintokeiパール500万】RecentFit_8.0倍_dyn1_v1.12",
-    "【Fintokeiパール500万】RecentFit_8.0倍_dyn1_v1.13.mq5"
+    "【Fintokeiパール500万】RecentFit_8.0倍_dyn1_v1.13"
    ],
-   "note": "2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.13 → v1.14 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
+   "note": "2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.13 → v1.14 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
    "terminal": "Fintokei",
    "prepare_profile": true
   },
@@ -198,9 +198,9 @@
     "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.04",
     "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.05",
     "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.06",
-    "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.07.mq5"
+    "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.07"
    ],
-   "note": "2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.07 → v1.08 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
+   "note": "2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.07 → v1.08 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
    "terminal": "Fintokei",
    "prepare_profile": true
   },
@@ -221,9 +221,9 @@
     "【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x8.0+IdxMon1.0_dyn1_v1.17",
     "【Fintokeiスイング_トパーズ3500万_口座6104739】Util_孤児建玉決済+指数銘柄診断_v1.00",
     "【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x8.0+IdxMon1.0_dyn1_v1.18",
-    "【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x8.0+IdxMon1.0_dyn1_v1.20.mq5"
+    "【Fintokeiスイング_トパーズ3500万_口座6104739】EA11_Mon4x8.0+IdxMon1.0_dyn1_v1.20"
    ],
-   "note": "2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.20 → v1.21 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。 トパーズは v1.19(IsIdx 桁数判定・指数 Mon 不発の修正・docs/241 §1aj)を含む v1.20 へ。次の指数 Mon は 11/9 14:38 UTC。",
+   "note": "2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.20 → v1.21 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。 トパーズは v1.19(IsIdx 桁数判定・指数 Mon 不発の修正・docs/241 §1aj)を含む v1.20 へ。次の指数 Mon は 11/9 14:38 UTC。",
    "terminal": "Fintokei",
    "prepare_profile": true
   }
