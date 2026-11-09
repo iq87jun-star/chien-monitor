@@ -13,7 +13,7 @@
   python to_summarize.py out\\probe_YYYYMMDD.jsonl   # 記録の要約
 既定はお試し環境(apidemo / gatewaydemo)。--env live は本番ホスト(キーも本番用が要る)。"""
 import argparse, asyncio, datetime as dt, json, os, sys, time, urllib.request, urllib.error
-VERSION = "1.4"
+VERSION = "1.5"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc
 JST = dt.timezone(dt.timedelta(hours=9))
@@ -63,7 +63,8 @@ EXTRA_TASKS = [("chien_theoption_thursday", "THU", "04:55", "thursday"),
                ("chien_theoption_live_0200_tue", "TUE", "01:58", "live"), ("chien_theoption_live_0200_thu", "THU", "01:58", "live"),
                ("chien_theoption_live_0200_fri", "FRI", "01:58", "live"),
                ("chien_theoption_live_0955", None, "09:54", "live"),   # v1.5: 仲値脚(ゴトー日 09:55 建て 15M LOW ×3)。ゴトー日でなければ空振り
-               ("chien_theoption_live_settle", None, "06:45", "live_settle")]   # 前日までの取引結果を live_trades_<口座>.csv へ
+               ("chien_theoption_live_settle", None, "06:45", "live_settle"),   # 前日までの取引結果を live_trades_<口座>.csv へ
+               ("chien_theoption_live_settle_0610", None, "06:10", "live_settle")]   # v1.5: 06:30 の朝ダイジェストに間に合わせる(06:00 判定の直後。取込は冪等なので 06:45 と重複しても無害)
 
 def ensure_tasks():
     if os.name != "nt": return []
