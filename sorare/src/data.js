@@ -56,6 +56,32 @@ export async function walletUsd(gql) {
   } catch { return null; }
 }
 
+// 大会の入賞ライン: 賞金(現金)が出る最後の順位と、その順位の点数、参加チーム数。大会が無ければ null
+export async function leaderboardCutoff(gql, slug, rankOf) {
+  let lb;
+  try { lb = (await gql(`query($s: String!) { so5 { so5Leaderboard(slug: $s) { so5LineupsCount rewardsConfig { ranking { toRank usdAmount ethAmount } } } } }`, { s: slug }, { retries: 1 })).so5.so5Leaderboard; }
+  catch { return null; }
+  const rank = rankOf(lb?.rewardsConfig?.ranking);
+  if (!lb || !rank) return null;
+  let after = null, seen = 0;
+  for (let i = 0; i < 30; i++) {   // 100 件ずつ、最大 3000 位まで
+    const r = (await gql(`query($s: String!, $a: String) { so5 { so5Leaderboard(slug: $s) { so5Rankings(first: 100, after: $a) { nodes { ranking score } pageInfo { endCursor hasNextPage } } } } }`,
+      { s: slug, a: after })).so5.so5Leaderboard.so5Rankings;
+    const hit = r.nodes.filter((n) => n.ranking <= rank).at(-1);
+    seen += r.nodes.length;
+    if (seen >= rank || !r.pageInfo.hasNextPage) return hit ? { rank, score: hit.score, teams: lb.so5LineupsCount } : null;
+    after = r.pageInfo.endCursor;
+  }
+  return null;
+}
+
+// サッカーの選手の、ある節の実際の点数(その節の試合が無ければ null)
+export async function fixtureScore(gql, playerSlug, fixtureSlug) {
+  const p = (await gql(`query($s: String!) { anyPlayer(slug: $s) { ... on Player { so5Scores(last: 3) { score game { so5Fixture { slug } } } } } }`, { s: playerSlug })).anyPlayer;
+  const hit = (p?.so5Scores || []).find((x) => x.game?.so5Fixture?.slug === fixtureSlug);
+  return hit ? hit.score || 0 : null;
+}
+
 // 一番最近終わった節。aasmState が closed なら順位と賞金が確定している
 export async function pastFixture(gql, sport = "FOOTBALL") {
   return (await gql(`{ so5 { so5Fixture(type: PAST${sport === "NBA" ? ", sport: NBA" : ""}) { slug aasmState } } }`)).so5.so5Fixture;
