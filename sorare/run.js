@@ -8,9 +8,10 @@
 // それ以外は「購入予定・出品予定」をリンク付きで送るだけ(試し運転)。
 import { readFileSync, writeFileSync, mkdirSync, appendFileSync } from "node:fs";
 import { createClient, setRates, usd } from "./src/api.js";
-import { market, walletUsd, upcoming, pastFixture, fixtureResults, clubs, player, nbaPlayer, fixtureGames, nbaStars, myCards, submitLineup } from "./src/data.js";
+import { market, walletUsd, leaderboardCutoff, fixtureScore, upcoming, pastFixture, fixtureResults, clubs, player, nbaPlayer, fixtureGames, nbaStars, myCards, submitLineup } from "./src/data.js";
 import { teamForm, project, bestLineup, nbaProject, bestNbaLineup, sellCandidates, sellPrice, swapCandidates, resultText } from "./src/model.js";
 import { createTrader, planBuys, planSells, spentInWeek, pickPlan } from "./src/trade.js";
+import { emptyLearn, calibration, cutoffLine, reach, sellSignal, addPrice, cashRank } from "./src/learn.js";
 
 const cfg = JSON.parse(readFileSync(new URL("./config.json", import.meta.url)));
 const env = process.env;
@@ -48,6 +49,33 @@ async function discord(text) {
     if (!r.ok) console.error(`Discord 送信失敗 HTTP ${r.status}`);
   }
 }
+const LEARN = new URL("./state/learn.json", import.meta.url);
+function loadLearn() { try { return { ...emptyLearn(), ...JSON.parse(readFileSync(LEARN, "utf8")) }; } catch { return emptyLearn(); } }
+function saveLearn(l) { mkdirSync(new URL("./state/", import.meta.url), { recursive: true }); l.samples = l.samples.slice(-3000); writeFileSync(LEARN, JSON.stringify(l)); }
+
+// 終わった節から学ぶ: 各大会の入賞ライン(全大会、出ていなくても)と、予想した選手の実際の点数(サッカー)
+async function learnFromFixture(api, learn, slug, sport) {
+  const notes = [];
+  for (const t of (cfg.targets || []).filter((t) => t.enabled !== false && sportOf(t) === sport)) {
+    const c = await leaderboardCutoff(api.gql, `${slug}-${t.leaderboard}`, cashRank);
+    if (!c) continue;
+    (learn.cutoffs[t.name] ||= []).push({ fixture: slug, ...c });
+    learn.cutoffs[t.name] = learn.cutoffs[t.name].slice(-20);
+    notes.push(`${t.name}: 賞金は ${c.rank} 位まで、${c.rank} 位は ${c.score.toFixed(1)} 点(${c.teams} チーム)`);
+  }
+  const pend = learn.pending[slug];
+  if (pend && sport === "FOOTBALL") {
+    let n = 0;
+    for (const [player, [pos, proj]] of Object.entries(pend.players)) {
+      try { const actual = await fixtureScore(api.gql, player, slug); if (actual != null) { learn.samples.push({ pos, proj, actual }); n++; } } catch { /* 読めない選手は飛ばす */ }
+    }
+    notes.push(`予想と実際の点数を ${n} 人分記録(予想の補正に使う)`);
+  }
+  delete learn.pending[slug];
+  saveLearn(learn);
+  return notes;
+}
+
 function loadDone() { try { return JSON.parse(readFileSync(STATE, "utf8")); } catch { return []; } }
 function saveDone(done) { mkdirSync(new URL("./state/", import.meta.url), { recursive: true }); writeFileSync(STATE, JSON.stringify(done.slice(-100))); }
 
@@ -82,11 +110,14 @@ async function main() {
   // ユーロ・ETH の換算レート(ETH 建ての出品を USD で比べるため)
   try { setRates((await api.gql("{ config { exchangeRate { rates } } }")).config.exchangeRate.rates); } catch { /* 読めなければユーロ 1.1・ETH は換算しない */ }
 
+  const learn = loadLearn();
   for (const slug of api.authed ? results : []) {
     try {
+      const notes = await learnFromFixture(api, learn, slug, slug.startsWith("nba-") ? "NBA" : "FOOTBALL");
       const text = resultText(await fixtureResults(api.gql, slug), usd);
-      if (text) { console.log(text); await discord(text); }
-      else console.log(`${slug}: この節には出ていない`);
+      const full = text && [text, "", "**学習(入賞ライン)**", ...notes.map((x) => "- " + x)].join("\n");
+      if (full) { console.log(full); await discord(full); }
+      else console.log(`${slug}: この節には出ていない / ${notes.join(" / ")}`);
       done.push(`result:${slug}`); saveDone(done);
     } catch (e) { console.error(`${slug} の結果を読めない: ${e.message}`); }
   }
@@ -94,7 +125,7 @@ async function main() {
 
   // 直近 7 日の購入額は、全大会のランクの手持ちから数え、この実行で買った分を足していく
   // 残高: 自動購入はこの範囲だけ(賞金・売却で増えたら、config の targets の順に広がる)。購入するたびに減らしていく
-  const shared = { spent: null, balance: null };
+  const shared = { spent: null, balance: null, learn };
   if (api.authed) {
     shared.balance = await walletUsd(api.gql);
     console.log(`ウォレット残高: ${shared.balance != null ? "$" + shared.balance.toFixed(2) : "読めない"}`);
@@ -111,6 +142,7 @@ async function main() {
       text = await runTarget(api, t, shared);
       // 自動購入で 5 枚そろわなかった時は済みにしない(次の実行で買い直す)。エラーの時も同じ
       if (!t.retry && !done.includes(t.doneKey)) { done.push(t.doneKey); saveDone(done); }
+      saveLearn(learn);
     }
     catch (e) { console.error(e); failed = true; text = `⚠️ Sorare 自動化でエラー(${t.name}): ${String(e.message).slice(0, 1800)}`; }
     if (!text) continue;
@@ -147,7 +179,8 @@ async function runTarget(api, t, shared) {
     }));
     const avgGf = cl.reduce((s, c) => s + form[c.name].gf, 0) / cl.length;
     getPlayer = (s) => player(api.gql, s, t.rarity);
-    proj = (p) => project(p, { form, next, avgGf });
+    // 過去の節の「実際 ÷ 予想」で、ポジションごとに補正する(記録が少ないうちはほぼ 1)
+    proj = (p) => { const r = project(p, { form, next, avgGf }); return { ...r, proj: r.proj * calibration(shared.learn.samples, p.pos) }; };
     optimize = (c, o = {}) => bestLineup(c, { maxPerClub: t.maxPerClub, budget: o.budget ?? Infinity });
   }
 
@@ -214,12 +247,28 @@ async function runTarget(api, t, shared) {
   }
   if (plans.length === 2) lines.push(`→ プラスアルファは +$${(plans[1].cost - plans[0].cost).toFixed(2)} で予想 +${(plans[1].pts - plans[0].pts).toFixed(0)} 点`);
 
+  // 学習: 入賞ラインの目安と、今の予想で届きそうか。記録が 2 節以上あって 8 割に届かない大会は、購入を見送る(残高を届く大会に回す)
+  const line = cutoffLine(shared.learn.cutoffs[t.name]);
+  const ptsNow = best?.pts ?? plans[0]?.pts ?? 0;
+  const rr = reach(ptsNow, line, cfg.learn?.minCutoffs ?? 2);
+  if (line) lines.push("", `**入賞ライン(学習)**: 賞金 ${line.rank} 位まで・目安 ${line.score.toFixed(0)} 点(過去 ${line.n} 節) / 予想 ${ptsNow.toFixed(0)} 点${rr != null ? `(${Math.round(rr * 100)}%)` : ""}`);
+  const farOff = rr != null && rr < (cfg.learn?.skipBelowReach ?? 0.8);
+  // 予想を記録しておき、節が終わったら実際の点数と比べる(サッカーの予想の補正に使う)
+  if (!nba) {
+    const pool = [...owned, ...(mktCache || [])].filter((c) => c.proj > 0).sort((a, b) => b.proj - a.proj).slice(0, 60);
+    const pend = (shared.learn.pending[fixture.slug] ||= { sport: "FOOTBALL", players: {} });
+    for (const c of pool) pend.players[c.id] = [c.pos, +(c.proj / calibration(shared.learn.samples, c.pos)).toFixed(2)];
+  }
+
   // 自動購入: buyPlan のプランを、1 枚と週の上限の範囲で買う。手持ちにある選手は買わない
   // プランは残高に合わせて選ぶ(buyPlan: cheap / plus / auto)。足りなければこの節は見送り、締切前に何度も通知しないよう済みにする
   const have0 = new Set(owned.map((c) => c.id));
   const pick = api.authed && trading ? pickPlan(plans, t.buyPlan ?? tr.buyPlan, shared.balance, tr.reserveUsd || 0, have0) : { plan: plans.find((p) => p.title.startsWith((t.buyPlan ?? tr.buyPlan) === "plus" ? "プラスアルファ" : "最安")) || plans[0] };
   const plan = pick.plan;
-  if (plans.length && api.authed && !plan && t.autoBuy !== false) {
+  if (plans.length && api.authed && farOff && t.autoBuy !== false) {
+    lines.push("", `**自動購入**: 見送り(入賞ラインの ${Math.round(rr * 100)}% しか届かない見込み)。残高は届きそうな大会に回します`);
+    t.skipped = true;
+  } else if (plans.length && api.authed && !plan && t.autoBuy !== false) {
     lines.push("", `**自動購入**: 見送り(${pick.why})。賞金やカードの売却で残高が増えたら、自動で始めます`);
     t.skipped = true;
   } else if (plan && api.authed && t.autoBuy === false) {
@@ -283,6 +332,16 @@ async function runTarget(api, t, shared) {
   // 売却候補: 条件に当てはまるカードを、ラインナップ・保有期間・買値を確かめてから出品する
   if (owned.length) {
     const sell = sellCandidates(owned, cfg.sell).map((c) => ({ ...c, ask: sellPrice(c.floor, cfg.sell.undercutPct) }));
+    // 学習: 手持ちカードの値動きを記録し、値上がりの後に下がり始めたら売る(最高値から dropPct% 下がり、まだ買値から +minGainPct% 以上ある時)
+    const now = Date.now();
+    for (const c of owned) {
+      if (c.floor == null) continue;
+      shared.learn.prices[c.card] = addPrice(shared.learn.prices[c.card], now, c.floor);
+      const sig = sellSignal(shared.learn.prices[c.card], c.cost, cfg.learn?.sellTiming);
+      if (!sig) continue;
+      const s = sell.find((x) => x.card === c.card);
+      if (s) s.reasons.push(sig); else sell.push({ ...c, reasons: [sig], ask: sellPrice(c.floor, cfg.sell.undercutPct) });
+    }
     for (const c of owned.filter((c) => swapOut.has(c.card))) {
       const s = sell.find((x) => x.card === c.card);
       if (s) s.reasons.push("入れ替え");
