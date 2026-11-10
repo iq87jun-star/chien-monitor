@@ -238,7 +238,7 @@ input string InpAuNzHolidayMondays = "2026.10.05,2026.10.26,2026.12.28,2027.01.0
 
 input group "=== SL リスク合計上限(FN Risk Limit 3%・docs/241 §1ao) ==="
 input double InpTotalMaxOpenRiskPct = 2.4;    // 口座内の全建玉(他 EA・手動も含む)の SL までの損失合計が初期残高のこの%に収まるよう新規ロットを縮小。最小ロットでも超えるなら見送り(0=無効)
-input bool   InpRiskCountFloatProfit = true;  // true=含み益のある玉は「現在値→SL」で数える(保守側。FN の算定が「建値→SL」と確認できたら false)
+input bool   InpRiskCountFloatProfit = false; // false=建値→SL で数える(FN の算定と一致: 11/9 ダッシュボード 5.29% / 建値→SL 実測 5.24%・docs/241 §1ao)。true=含み益のある玉を「現在値→SL」で数える保守側
 
 input group "=== 共通 ==="
 input double InpMinLot = 0.01;

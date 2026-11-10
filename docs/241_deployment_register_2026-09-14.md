@@ -324,4 +324,5 @@ MC(docs/349 §6c): 1-Step 81 / 19%・+2σ 2027-05-19、宝くじ 48 / 52%・2027
 - 期限: 次の建玉は 11/16(月)。それまでに v1.19 を配備する(マニフェスト変更は月曜 12:00 JST より前)。
 - 【2026-11-11 08:07 JST ダッシュボード確認(ユーザーのスクリーンショット 3 枚)・上の「他の FN 口座」を訂正】**14074882 は「Stellar-2-Step $100K CHALLENGE • P1」= チャレンジ段階**(資金提供後ではない。上の記述は誤り)。Clarity Card の Risk limit は 14074882・14166201 とも灰色の「3% No Impact」= 非適用。RFHold_XAUUSD(SL リスク 5.85%)は現時点で違反にならない。両口座とも資金提供後は対象になる。
   - 11988011: Risk limit「3% **Warning**」、Withdrawable amount **$0.00**(70%)、Tier 1「Require Progress to Tier 2 1/10・Minimum one payout・Account growth 0%」、Max loss limit 残り $1,329.65(床 $19,008.72)、Trading Cycle「Jul 16, 2026 to Nov 21, 2026」。**News time trading = 3**(指標前後 ±5 分の取引として 3 件計上。News Profit Split では該当取引の利益の 40% だけが計上される)→ 明細(Show details)で対象取引を確認する。
-  - 「Highest Risk at a Time」は Show details を開かないと表示されないため未確認。確認できるまで v1.19 の `InpRiskCountFloatProfit` は true(保守側)のままにする。
+  - 【08:14 JST Show details】**Highest risk at a time 5.29%**・High risk profit $476.87 → こちらの建値→SL 実測 5.24% と一致(差 0.05pt)。FN の算定は建値→SL と確定 → v1.19 の `InpRiskCountFloatProfit` 既定を **false** に変更(上限 2.4% は据え置き・3% まで 0.6pt の余白)。
+  - News time trading 3 件: Profit from news $68.03・40% Eligible profit $27.21(= $40.82 が報酬計算から除外)。対象取引は合計額だけでは特定できない(3 本の組合せが多数)。9/28 の v1.14 以降は建てが hh:12 と寄り +8 分で指標窓(毎正時・30 分 ±5 分)の外なので、それ以前の正時建て(〜9/21)の分とみるのが自然。Trade Details で確定できる。
