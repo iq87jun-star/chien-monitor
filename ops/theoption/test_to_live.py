@@ -1,7 +1,13 @@
 # -*- coding: utf-8 -*-
 """to_live の安全装置と契約選択のテスト(ネットワーク不要): python -m pytest -q test_to_live.py"""
 import base64, json, datetime as dt, os, tempfile
+import pytest
 import to_live as L
+
+@pytest.fixture(autouse=True)
+def _no_network_skew(monkeypatch):   # v1.11: テストは CBOE へ取りに行かない(取得失敗 = 記録に error、発注は続く)
+    def boom(timeout=12): raise OSError("offline")
+    monkeypatch.setattr(L, "fetch_skew_csv", boom)
 
 def jwt(payload):
     e = lambda b: base64.urlsafe_b64encode(b).decode().rstrip("=")
@@ -283,3 +289,26 @@ def test_v17_gotobi_kind_and_stake():
     assert L.stake_for(nk, "2.0", dt.date(2026, 11, 25)) == 15800                                         # BOOST ×1.5 と重なれば 7000×1.5×1.5=15,750 → 100 円丸め
     assert L.stake_for(mon, "1.95", dt.date(2026, 11, 30)) == 21300                                       # 23H 脚は影響なし
     assert 72700 + 5 * 10500 <= L.DAILY_STAKE_CAP and 72700 * L.BOOST_MULT + 5 * 10500 <= L.DAILY_STAKE_CAP   # 25 日が月曜でも日次上限内(v1.8)
+
+
+def test_skew_gate_record_only(monkeypatch):
+    """v1.11: SKEW 門は記録のみ。分位は直前 251 営業日のうち当日値より小さい割合、門 = 0.8 超。月曜 3 本にだけ記録し、失敗しても発注は変えない。"""
+    d0 = dt.date(2025, 1, 1); days = []; d = d0
+    while len(days) < 300:
+        if d.weekday() < 5: days.append(d)
+        d += dt.timedelta(days=1)
+    fri = [x for x in days if x.weekday() == 4][-1]; mon = fri + dt.timedelta(days=3)
+    def csv_for(v_fri): return "DATE,SKEW\n" + "\n".join(f"{x:%m/%d/%Y},{(v_fri if x == fri else 100 + (i % 100)):.2f}" for i, x in enumerate(days))
+    st = L.skew_gate_state(csv_for(250.0), mon); assert st["ref_date"] == str(fri) and st["pct"] == 1.0 and st["on"] is True and st["stale_days"] == 0
+    st = L.skew_gate_state(csv_for(50.0), mon); assert st["pct"] == 0.0 and st["on"] is False
+    st = L.skew_gate_state(csv_for(179.5), mon); assert 0.7 < st["pct"] <= 0.8 and st["on"] is False     # 80 分位「超」だけ ON
+    with pytest.raises(ValueError): L.skew_gate_state("DATE,SKEW\n01/02/2025,120\n", mon)
+    legs_mon = [l for l in L.MENU if l["id"] in L.SKEW_LEGS]; legs_other = [l for l in L.MENU if l["id"] == "EURGBP_N6L"]
+    with tempfile.TemporaryDirectory() as tmp:
+        log = L.Log(os.path.join(tmp, "l.jsonl"))
+        assert L.record_skew_gate(mon, legs_other, tmp, log) is None and not os.path.exists(os.path.join(tmp, "skew_gate_log.csv"))
+        st = L.record_skew_gate(mon, legs_mon, tmp, log); assert "error" in st                                  # 取得失敗でも例外にしない
+        monkeypatch.setattr(L, "fetch_skew_csv", lambda timeout=12: csv_for(250.0))
+        st = L.record_skew_gate(mon, legs_mon, tmp, log); assert st["on"] is True
+        rows = open(os.path.join(tmp, "skew_gate_log.csv"), encoding="utf-8").read().splitlines()
+        assert rows[0] == "date,ref_date,skew,pct,on,error" and len(rows) == 3 and rows[2].startswith(f"{mon},{fri},250.0,1.0,True,")
