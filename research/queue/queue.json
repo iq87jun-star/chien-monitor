@@ -1,5 +1,5 @@
 {
- "cumulative_cells": 10086,
+ "cumulative_cells": 10090,
  "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062 / 2026-11-08 Q171 +6 → 10,068 / Q172 +5 → 10,073 / Q173 +6 → 10,079 / Q174 +5 → 10,084 / 2026-11-09 Q161 +1 → 10,085",
  "items": [
   {
@@ -2768,17 +2768,19 @@
    "id": "Q163",
    "slug": "hold_eu_indices",
    "title": "欧州指数 4 本(NLD25・ESP35・FRA40・SUI20)の Hold(連続 LONG・日次 close→close・Q89 と同一構成)— 新規 4 セル",
-   "status": "pending",
+   "status": "done",
    "cells": 4,
    "order": 36,
    "registered": "2026-11-07",
    "program": "ユーザー 2026-11-07「登録」(docs/244 2026-11-07 節の残り未検定 (b))",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/417_q163_euro_index_hold.md"
    ],
-   "note": "事前固定: Q89(docs/329)の hold_cell と同一構成(日次終値→終値の連続 LONG・費用は指数 IDX_COST 相当・週末持ち越し)。銘柄は別枝 Q145 で Mon 指数形を検定した欧州 4 指数(ITA40 は 3 社に取扱なしのため除外、CHI50/IND50 は OOS が無く判定不能のため除外)。判定は §1 標準(IS 2021-10〜2024-12 月次二項 p < 0.05/累積・OOS 2025〜 平均 > 0・前窓 2016〜2021-09 の +月率 ≥ 50%)。参考記録(判定に使わない): 既存 Hold UK100 / Hold XAU・Mon 指数との日次相関。データ: Dukascopy H1(NLDIDXEUR / ESPIDXEUR / FRAIDXEUR / CHEIDXCHF・別枝 fetch_new.py の対応)から日足を作る。Dukascopy 不通なら Yahoo 日足(^AEX ^IBEX ^FCHI ^SSMI・Q89 と同じ出所)で代替し、出所を結果に明記。通過しても紙上フォワードの CANDIDATES に入れるだけで配備・config は変えない。事前の見込み: Q89 の指数 Hold(HK50・AUS200・EU50)が全棄却で弱い(登録時に当方は推奨せずと記録・ユーザー判断で登録)"
+   "note": "事前固定: Q89(docs/329)の hold_cell と同一構成(日次終値→終値の連続 LONG・費用は指数 IDX_COST 相当・週末持ち越し)。銘柄は別枝 Q145 で Mon 指数形を検定した欧州 4 指数(ITA40 は 3 社に取扱なしのため除外、CHI50/IND50 は OOS が無く判定不能のため除外)。判定は §1 標準(IS 2021-10〜2024-12 月次二項 p < 0.05/累積・OOS 2025〜 平均 > 0・前窓 2016〜2021-09 の +月率 ≥ 50%)。参考記録(判定に使わない): 既存 Hold UK100 / Hold XAU・Mon 指数との日次相関。データ: Dukascopy H1(NLDIDXEUR / ESPIDXEUR / FRAIDXEUR / CHEIDXCHF・別枝 fetch_new.py の対応)から日足を作る。Dukascopy 不通なら Yahoo 日足(^AEX ^IBEX ^FCHI ^SSMI・Q89 と同じ出所)で代替し、出所を結果に明記。通過しても紙上フォワードの CANDIDATES に入れるだけで配備・config は変えない。事前の見込み: Q89 の指数 Hold(HK50・AUS200・EU50)が全棄却で弱い(登録時に当方は推奨せずと記録・ユーザー判断で登録)",
+   "result": "全 4 セル棄却(IS +月率 49〜54%・p 0.37〜0.63・閾値 4.96e-6)。データは Yahoo 日足で代替(Dukascopy 429)。既存 Hold UK100 と相関 0.74〜0.78。変更なし"
   },
   {
    "id": "Q164",
@@ -4420,6 +4422,15 @@
    "cells": 0,
    "cumulative_cells": 10086,
    "note": "配備 MC・セル 0・docs/414"
+  },
+  {
+   "date": "2026-11-10",
+   "items": [
+    "Q163"
+   ],
+   "cells": 4,
+   "cumulative_cells": 10090,
+   "note": "夕・全棄却・docs/417・Yahoo 日足代替"
   }
  ],
  "external_checks": [

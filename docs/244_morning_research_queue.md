@@ -149,7 +149,7 @@ AI 会議(main `ai-council/explored.md` 2026-11-06 ①②)の候補。判定は 
 - **追記(同日)ユーザー「登録」**: 上の残り未検定 (a)(b) を事前固定で登録した(当方の「推奨しない」は記録のうえ、ユーザー判断)。(c) は棄却済みのため登録しない。
 | 項目 | 内容 | セル | 備考 |
 |---|---|---|---|
-| Q163(order 36) | 欧州指数 NLD25・ESP35・FRA40・SUI20 の Hold(Q89 と同一構成・日次 close→close 連続 LONG) | 4 | ITA40 は 3 社に無し、CHI50/IND50 は OOS 無しで除外。データは Dukascopy H1 → 日足、不通なら Yahoo 日足(^AEX ^IBEX ^FCHI ^SSMI)で代替し出所を明記 |
+| Q163(order 36)**済 11/10 夕・全 4 棄却・docs/417** | 欧州指数 NLD25・ESP35・FRA40・SUI20 の Hold(Q89 と同一構成・日次 close→close 連続 LONG) | 4 | ITA40 は 3 社に無し、CHI50/IND50 は OOS 無しで除外。データは Dukascopy H1 → 日足、不通なら Yahoo 日足(^AEX ^IBEX ^FCHI ^SSMI)で代替し出所を明記 |
 | Q164(order 37) | 別枝 Q145 の 25 銘柄 × 火〜金 × LONG/SHORT の o2o(非指数 4/6/8/10 UTC 4 ショット平均 24h・指数 13 UTC 24h・実行値コスト) | 200 | 月曜は Q145 で済・含めない。データは Dukascopy H1 BID/ASK を再取得(別枝の取得物は未コミット)。不通の間はデータ待ち(Q158 と同じ) |
 - 順序: 11/9 朝は Q158(Dukascopy 復旧時)または Q161 → 以後 Q163 → Q164。Q164 は Dukascopy 復旧が前提。累積セルは実行時に加算(10,060 → 10,064 → 10,264)。11/7 20 UTC 時点で Dukascopy(無応答)・Yahoo(429)とも不通のため、Q163 の代替データも当面取れない。
 
