@@ -22,7 +22,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.10"
+VERSION = "1.11"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -76,6 +76,38 @@ def rest(base, path, key, body=None, timeout=15):
     except Exception as e: return None, {"error": repr(e)}
 
 def err_codes(resp): return [e.get("errorCode") for e in (resp or {}).get("errors", []) if isinstance(e, dict)]
+
+# ---- v1.11 (追補59): SKEW 門の「記録のみ」----
+# 前金曜(建て日 − 3 日、無ければ直前営業日)の CBOE SKEW 終値が直近 252 営業日の 80 分位「超」かどうかを、月曜 07:00 の 3 本を建てる前に記録する。
+# 発注は変えない(門が ON でも建てる)。取得・計算に失敗しても記録に error を残すだけで、発注には影響しない。分位の定義はプロップ側 q173 と同じ。
+SKEW_URL = "https://cdn.cboe.com/api/global/us_indices/daily_prices/SKEW_History.csv"
+SKEW_WIN = 252; SKEW_Q = 0.8; SKEW_LEGS = ("EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6")
+def fetch_skew_csv(timeout=12):
+    req = urllib.request.Request(SKEW_URL, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=timeout) as r: return r.read().decode("utf-8", "replace")
+def skew_gate_state(text, day):
+    """CSV(DATE,SKEW)と建て日から {ref_date, skew, pct, on} を返す。ref = day−3 日以前で最も新しい行。直前 251 営業日のうち当日値より小さい割合が pct。"""
+    rows = []
+    for line in text.splitlines()[1:]:
+        p = line.strip().split(",")
+        try: rows.append((dt.datetime.strptime(p[0], "%m/%d/%Y").date(), float(p[1])))
+        except Exception: continue
+    rows.sort(); cut = day - dt.timedelta(days=3)
+    idx = max((i for i, (d, _) in enumerate(rows) if d <= cut), default=None)
+    if idx is None or idx < SKEW_WIN - 1: raise ValueError("SKEW の履歴が足りない")
+    d, v = rows[idx]; w = [x for _, x in rows[idx - (SKEW_WIN - 1):idx]]
+    pct = sum(1 for x in w if x < v) / len(w)
+    return {"ref_date": str(d), "skew": v, "pct": round(pct, 4), "on": pct > SKEW_Q, "stale_days": (cut - d).days}
+def record_skew_gate(day, legs, out_dir, log):
+    if not any(l["id"] in SKEW_LEGS for l in legs): return None
+    try: st = skew_gate_state(fetch_skew_csv(), day)
+    except Exception as e: st = {"error": repr(e)[:200]}
+    log.write("skew_gate", dict(st, day=str(day), mode="record_only"))
+    log.say("SKEW 門(記録のみ):", st)
+    try: append_csv(os.path.join(out_dir, "skew_gate_log.csv"), ["date", "ref_date", "skew", "pct", "on", "error"],
+                    [str(day), st.get("ref_date", ""), st.get("skew", ""), st.get("pct", ""), st.get("on", ""), st.get("error", "")])
+    except Exception as e: log.write("error", repr(e))
+    return st
 
 def deep_find(obj, key):
     if isinstance(obj, dict):
@@ -308,6 +340,7 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     need = sum(l["stake"] * BOOST_MULT for l in legs)
     if bal is None or float(bal) < need: log.say(f"残高 {bal} < 必要 {need:.0f} → 発注しない"); log.write("guard", {"balance": bal, "need": need}); return 1
     today_total = sum(v.get("stake", 0) for v in done.values())
+    record_skew_gate(day, legs, out_dir, log)   # v1.11: 記録のみ。発注は変えない
     fast = legs[0]["kind"] == "15M"; entry0 = jst(day, legs[0]["entry"])
     if fast:   # v1.5/v1.6a: 定刻 −25 秒から購読し、目的の契約が全部そろった瞬間に打ち切る(15M の枠は開場の直前〜同時にしか配信されない: 11/2 09:51 の実見で 09:55 枠は未配信)。
         sleep_until(entry0 - dt.timedelta(seconds=FAST_PRESCAN_SECS)); scan_secs = FAST_PRESCAN_SECS + FAST_LATE_SCAN_SECS
