@@ -61,9 +61,12 @@ const splitItems = splits.map((s) => {
   const nx = open[0];
   const chip = late.length ? ["ng", `${late.length}回遅れ`] : unread[s.id] ? ["warn", `新着 ${unread[s.id]}`] : nx && nx.due_on <= addDays(today, 3) ? ["warn", `${md(nx.due_on)} 支払日`] : ["ok", "支払い中"];
   const todo = late.length ? `${md(late[0].due_on)}分の入金を確認・連絡` : unread[s.id] ? "お客様ページのメッセージに返信" : !s.portal ? "お客様ページのリンクを作って送る" : "";
+  const mediated = /^【仲介】/.test(s.memo ?? "");
+  // 予定表(済み・遅れ・次回が分かるように)
+  const table = `<table class='sched'>${s.pays.map((p, k) => `<tr class='${p.paid_on ? "paid" : p.due_on < today ? "late" : p === nx ? "nx" : ""}'><td>${k + 1}回目</td><td>${md(p.due_on)}</td><td class='r'>${yen(p.amount)}</td><td class='r'>${p.paid_on ? `済 ${md(p.paid_on)}` : p.due_on < today ? "遅れ" : p === nx ? "次回" : "予定"}</td></tr>`).join("")}</table>`;
   return {
-    t: `No.${s.id} ${s.buyer}さん`, chip, pay: [paid, s.total],
-    body: dl([["次回", nx ? `${md(nx.due_on)} ${yen(nx.amount)}` : "なし"], ["残り回数", `${open.length}回`], ["最終回", open.length ? md(open[open.length - 1].due_on) : "—"], ["お客様ページ", s.portal ? "作成済み" : "未作成"]]) + (todo ? next(todo) : ""),
+    t: `No.${s.id} ${s.buyer}さん${mediated ? "(仲介)" : ""} ${nx ? `${md(nx.due_on)} ${(nx.amount / 10000).toLocaleString("ja-JP", { maximumFractionDigits: 1 })}万` : "完済"}`, chip, pay: [paid, s.total],
+    body: table + dl([["次回", nx ? `${md(nx.due_on)} ${yen(nx.amount)}` : "なし"], ["残り回数", `${open.length}回`], ["最終回", open.length ? md(open[open.length - 1].due_on) : "—"], ["お客様ページ", s.portal ? "作成済み" : "未作成"]]) + (todo ? next(todo) : ""),
   };
 });
 const splitLeft = splits.reduce((n, s) => n + s.total - s.pays.filter((p) => p.paid_on).reduce((a, p) => a + p.amount, 0), 0);
@@ -147,9 +150,11 @@ const KPIS = [
   ["代理出品", `販売中 ${selling.length}件`],
   ["要返信", `${reply}件`],
 ];
+const WD = "日月火水木金土";
+const todayLabel = `今日 ${now.getUTCMonth() + 1}月${now.getUTCDate()}日(${WD[now.getUTCDay()]})`;
 const asof = `${now.getUTCFullYear()}年${now.getUTCMonth() + 1}月${now.getUTCDate()}日 ${String(now.getUTCHours()).padStart(2, "0")}:${String(now.getUTCMinutes()).padStart(2, "0")}`;
 const tpl = fs.readFileSync(new URL("./template.html", import.meta.url), "utf8");
 // JSON を <script> に埋めるので、</ を崩しておく
 const js = (v) => JSON.stringify(v).replace(/</g, "\\u003c");
-fs.writeFileSync(out, tpl.replace("__BRANCHES__", js(BRANCHES)).replace("__KPIS__", js(KPIS)).replace("__ASOF__", asof));
+fs.writeFileSync(out, tpl.replace("__BRANCHES__", js(BRANCHES)).replace("__KPIS__", js(KPIS)).replace("__ASOF__", asof).replace("__TODAY__", todayLabel));
 console.log(`${out} を作りました(${asof})`);
