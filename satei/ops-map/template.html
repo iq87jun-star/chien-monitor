@@ -1,0 +1,249 @@
+<title>メルル運営マップ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+  /* レイアウト: 中央の「メルル」から左右に枝分かれする横長マップ。枝を押すと項目が開き、項目を押すと右(スマホは下)に詳細が出る */
+  :root {
+    --bg: #fff8fb; --surface: #ffffff; --fg: #2b2230; --sub: #6e6176; --line: #efdbe6; --soft: #fdeef5;
+    --accent: #e8508b;
+    --b-stock: #f06e9f; --b-split: #f3a23a; --b-consign: #5aa9e6; --b-buy: #8b7be8;
+    --b-ads: #3fb8a8; --b-safe: #e46a5a; --b-site: #8a9bb0; --b-todo: #d9a400;
+    --ok: #1f8a5b; --ok-bg: #e2f6ec; --warn: #b26a00; --warn-bg: #fff2da; --ng: #c2334a; --ng-bg: #fde6ea;
+    --wire: #d9c3d0;
+    --f-display: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Noto Sans JP", sans-serif;
+    --f-body: "Noto Sans JP", "Hiragino Sans", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1c1620; --surface: #262029; --fg: #f3ecf6; --sub: #b6a8bf; --line: #3a2f42; --soft: #33252f;
+      --accent: #ff7ead; --wire: #4a3d52;
+      --ok: #6fe0a8; --ok-bg: #173327; --warn: #ffc56b; --warn-bg: #3a2c16; --ng: #ff8f9c; --ng-bg: #3a1b21;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1c1620; --surface: #262029; --fg: #f3ecf6; --sub: #b6a8bf; --line: #3a2f42; --soft: #33252f;
+    --accent: #ff7ead; --wire: #4a3d52;
+    --ok: #6fe0a8; --ok-bg: #173327; --warn: #ffc56b; --warn-bg: #3a2c16; --ng: #ff8f9c; --ng-bg: #3a1b21;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--f-body); font-size: 15px; line-height: 1.6; }
+  .app { height: 100%; display: flex; flex-direction: column; padding-block: 12px 0; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding-bottom: 10px; }
+  h1 { font-family: var(--f-display); font-weight: 900; font-size: 22px; margin: 0; letter-spacing: .02em; }
+  .asof { color: var(--sub); font-size: 13px; }
+  .kpis { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+  .kpi { background: var(--surface); border: 1px solid var(--line); border-radius: 999px; padding: 3px 12px; font-size: 13px; white-space: nowrap; }
+  .kpi b { font-variant-numeric: tabular-nums; }
+  .tools { display: flex; gap: 6px; }
+  .tools button, .close { font: inherit; font-size: 13px; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--fg); cursor: pointer; }
+  .tools button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  .main { flex: 1; min-height: 0; display: flex; gap: 12px; padding-bottom: max(12px, env(safe-area-inset-bottom, 0px)); }
+  .stage { flex: 1; min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; overflow: auto; position: relative; }
+  svg { display: block; width: 100%; height: 100%; min-height: 520px; }
+  .wire { fill: none; stroke-width: 2.4; opacity: .55; }
+  .node { cursor: pointer; }
+  .node rect { transition: filter .15s; }
+  .node:hover rect, .node:focus-visible rect { filter: brightness(1.06) drop-shadow(0 2px 6px rgba(0,0,0,.18)); }
+  .node text { font-family: var(--f-body); font-size: 15px; font-weight: 700; dominant-baseline: central; text-anchor: middle; pointer-events: none; }
+  .node.branch text { font-family: var(--f-display); font-size: 18px; font-weight: 900; }
+  .node.root text { font-family: var(--f-display); font-size: 22px; font-weight: 900; }
+  .node.leaf.sel rect { stroke: var(--fg); stroke-width: 2.5; }
+  .dot { pointer-events: none; }
+  .panel { width: 360px; flex: none; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 18px 18px 20px; overflow-y: auto; }
+  .panel .eyebrow { font-size: 12px; letter-spacing: .08em; color: var(--sub); display: flex; align-items: center; gap: 6px; }
+  .panel .sw { width: 10px; height: 10px; border-radius: 3px; }
+  .panel h2 { font-family: var(--f-display); font-weight: 900; font-size: 20px; margin: 4px 0 8px; text-wrap: balance; }
+  .chip { display: inline-block; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; margin: 0 4px 6px 0; }
+  .chip.ok { background: var(--ok-bg); color: var(--ok); } .chip.warn { background: var(--warn-bg); color: var(--warn); } .chip.ng { background: var(--ng-bg); color: var(--ng); } .chip.info { background: var(--soft); color: var(--fg); }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin: 10px 0; font-size: 14px; }
+  dt { color: var(--sub); white-space: nowrap; } dd { margin: 0; min-width: 0; font-variant-numeric: tabular-nums; }
+  .panel p, .panel li { font-size: 14px; }
+  .panel ul { margin: 6px 0; padding-left: 18px; }
+  .next { background: var(--warn-bg); color: var(--fg); border-radius: 12px; padding: 10px 12px; font-size: 14px; margin-top: 10px; }
+  .next b { color: var(--warn); }
+  .bar { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; margin: 6px 0 2px; } .bar i { display: block; height: 100%; background: var(--b-split); }
+  .hint { color: var(--sub); font-size: 14px; }
+  .close { display: none; }
+  .outline { display: none; padding: 8px 4px; }
+  .outline section { margin-bottom: 14px; }
+  .outline h3 { font-family: var(--f-display); font-size: 16px; margin: 0 0 6px; display: flex; align-items: center; gap: 8px; }
+  .outline button { font: inherit; text-align: left; width: 100%; background: var(--soft); border: 0; border-radius: 10px; padding: 8px 12px; margin-bottom: 6px; color: var(--fg); cursor: pointer; display: flex; justify-content: space-between; gap: 8px; }
+  .outline button small { color: var(--sub); white-space: nowrap; }
+  .app.list .outline { display: block; } .app.list svg { display: none; }
+  @media (max-width: 820px) {
+    .main { flex-direction: column; }
+    .panel { position: fixed; left: 0; right: 0; bottom: 0; width: auto; max-height: 62vh; border-radius: 18px 18px 0 0; z-index: 20; padding-bottom: max(20px, env(safe-area-inset-bottom, 0px)); padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px)); box-shadow: 0 -8px 30px rgba(0,0,0,.18); }
+    .panel.empty { display: none; }
+    .close { display: inline-block; float: right; }
+    .kpis { margin-left: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="app" id="app">
+  <header>
+    <h1>メルル運営マップ</h1>
+    <span class="asof">__ASOF__ 時点</span>
+    <div class="kpis" id="kpis"></div>
+    <div class="tools">
+      <button type="button" id="openAll">すべて開く</button>
+      <button type="button" id="closeAll">すべて閉じる</button>
+      <button type="button" id="listBtn" aria-pressed="false">一覧表示</button>
+    </div>
+  </header>
+  <div class="main">
+    <div class="stage" id="stage">
+      <svg id="map" role="img" aria-label="メルルの運営状況のマインドマップ"></svg>
+      <div class="outline" id="outline"></div>
+    </div>
+    <aside class="panel empty" id="panel" aria-live="polite">
+      <p class="hint">枝(大きい丸)を押すと項目が開きます。項目を押すと、ここに詳しい内容が出ます。</p>
+    </aside>
+  </div>
+</div>
+
+<script>
+// build.mjs が管理画面のデータから作る(数字は作った時点の値)
+const BRANCHES = __BRANCHES__;
+
+const $ = (id) => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+const open = new Set(BRANCHES.map((b) => b.id)); // 最初はすべて開いた状態
+let selected = null;
+try { const s = JSON.parse(localStorage.getItem("meruru-map-open") || "null"); if (Array.isArray(s)) { open.clear(); s.forEach((x) => open.add(x)); } } catch {}
+const save = () => { try { localStorage.setItem("meruru-map-open", JSON.stringify([...open])); } catch {} };
+
+// 上の数字
+const KPIS = __KPIS__;
+$("kpis").innerHTML = KPIS.map(([k, v]) => `<span class="kpi">${k} <b>${v}</b></span>`).join("");
+
+function el(tag, attrs = {}, parent) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (parent) parent.append(e);
+  return e;
+}
+// 文字の幅に合わせた丸い札を作る
+function pill(g, x, y, text, { fill, color = "#fff", padX = 14, h = 30, cls = "" } = {}) {
+  const node = el("g", { class: `node ${cls}`, tabindex: 0, role: "button" }, g);
+  const rect = el("rect", { y: y - h / 2, rx: h / 2, height: h }, node);
+  rect.style.fill = fill;
+  const t = el("text", { x, y }, node);
+  t.style.fill = color;
+  t.textContent = text;
+  const w = Math.max(t.getComputedTextLength() + padX * 2, h);
+  rect.setAttribute("x", x - w / 2);
+  rect.setAttribute("width", w);
+  node.dataset.w = w;
+  return node;
+}
+function curve(g, x1, y1, x2, y2, stroke) {
+  const mx = (x1 + x2) / 2;
+  el("path", { class: "wire", d: `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}` }, g).style.stroke = stroke;
+}
+
+function draw() {
+  const svg = $("map");
+  svg.innerHTML = "";
+  const g = el("g", {}, svg);
+  const ROW = 42, GAP = 20, BX = 240, LX = 420;
+  // 左右それぞれ、枝ごとの高さを合計して縦に並べる
+  const sides = { L: BRANCHES.filter((b) => b.side === "L"), R: BRANCHES.filter((b) => b.side === "R") };
+  const heightOf = (b) => (open.has(b.id) ? Math.max(1, b.items.length) * ROW : ROW);
+  const total = (list) => list.reduce((n, b) => n + heightOf(b), 0) + GAP * (list.length - 1);
+  const H = Math.max(total(sides.L), total(sides.R));
+  const wires = el("g", {}, g), nodes = el("g", {}, g);
+  for (const [side, list] of Object.entries(sides)) {
+    const dir = side === "L" ? -1 : 1;
+    let y = -total(list) / 2;
+    for (const b of list) {
+      const h = heightOf(b);
+      const by = y + h / 2;
+      curve(wires, 0, 0, dir * BX, by, b.color);
+      if (open.has(b.id)) {
+        b.items.forEach((it, i) => {
+          const iy = y + ROW * i + ROW / 2;
+          curve(wires, dir * BX, by, dir * LX, iy, b.color);
+          const leaf = pill(nodes, 0, iy, it.t, { fill: "var(--surface)", color: "var(--fg)", h: 30, cls: "leaf" });
+          const w = +leaf.dataset.w;
+          leaf.setAttribute("transform", `translate(${dir * (LX + w / 2)},0)`);
+          leaf.querySelector("rect").style.stroke = b.color;
+          leaf.querySelector("rect").style.strokeWidth = "2";
+          if (it.chip) {
+            const c = { ok: "var(--ok)", warn: "var(--warn)", ng: "var(--ng)", info: "var(--sub)" }[it.chip[0]];
+            el("circle", { class: "dot", cx: w / 2 - 8, cy: iy - 11, r: 5 }, leaf).style.fill = c;
+          }
+          if (selected && selected.b === b.id && selected.i === i) leaf.classList.add("sel");
+          const act = () => show(b, i);
+          leaf.addEventListener("click", act);
+          leaf.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); act(); } });
+        });
+      }
+      const br = pill(nodes, dir * BX, by, `${b.name}${open.has(b.id) ? "" : `(${b.items.length})`}`, { fill: b.color, h: 40, padX: 18, cls: "branch" });
+      br.setAttribute("aria-expanded", open.has(b.id));
+      const tog = () => { open.has(b.id) ? open.delete(b.id) : open.add(b.id); save(); draw(); };
+      br.addEventListener("click", tog);
+      br.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); tog(); } });
+      y += h + GAP;
+    }
+  }
+  const root = pill(nodes, 0, 0, "メルル", { fill: "var(--accent)", h: 64, padX: 30, cls: "root" });
+  const sub = el("text", { x: 0, y: 46, "text-anchor": "middle", "font-size": 12 }, root);
+  sub.style.fill = "var(--sub)";
+  sub.textContent = "game-souba.com";
+  root.addEventListener("click", () => { show(null); });
+  // 中身に合わせて表示範囲を決める
+  const bb = g.getBBox();
+  const pad = 24;
+  svg.setAttribute("viewBox", `${bb.x - pad} ${Math.min(bb.y, -H / 2) - pad} ${bb.width + pad * 2} ${Math.max(bb.height, H) + pad * 2}`);
+}
+
+function show(b, i) {
+  const panel = $("panel");
+  if (!b) {
+    selected = null;
+    panel.classList.add("empty");
+    panel.innerHTML = `<p class="hint">枝(大きい丸)を押すと項目が開きます。項目を押すと、ここに詳しい内容が出ます。</p>`;
+    draw();
+    return;
+  }
+  selected = { b: b.id, i };
+  const it = b.items[i];
+  panel.classList.remove("empty");
+  panel.innerHTML = `<button type="button" class="close" id="closeP">閉じる</button>
+    <div class="eyebrow"><span class="sw" style="background:${b.color}"></span>${b.name}</div>
+    <h2>${it.t}</h2>
+    ${it.chip ? `<span class="chip ${it.chip[0]}">${it.chip[1]}</span>` : ""}
+    ${it.pay ? `<div class="bar"><i style="width:${Math.round((it.pay[0] / it.pay[1]) * 100)}%"></i></div><p class="hint" style="margin:0">${it.pay[0].toLocaleString()}円 / ${it.pay[1].toLocaleString()}円(残り ${(it.pay[1] - it.pay[0]).toLocaleString()}円)</p>` : ""}
+    ${it.body}`;
+  $("closeP")?.addEventListener("click", () => show(null));
+  draw();
+}
+
+function outline() {
+  $("outline").innerHTML = BRANCHES.map((b) => `<section><h3><span class="sw" style="display:inline-block;width:12px;height:12px;border-radius:4px;background:${b.color}"></span>${b.name}</h3>
+    ${b.items.map((it, i) => `<button type="button" data-b="${b.id}" data-i="${i}"><span>${it.t}</span>${it.chip ? `<small>${it.chip[1]}</small>` : ""}</button>`).join("")}</section>`).join("");
+}
+$("outline").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-b]");
+  if (btn) show(BRANCHES.find((b) => b.id === btn.dataset.b), +btn.dataset.i);
+});
+$("openAll").addEventListener("click", () => { BRANCHES.forEach((b) => open.add(b.id)); save(); draw(); });
+$("closeAll").addEventListener("click", () => { open.clear(); save(); draw(); });
+$("listBtn").addEventListener("click", () => {
+  const on = !$("app").classList.contains("list");
+  $("app").classList.toggle("list", on);
+  $("listBtn").setAttribute("aria-pressed", on);
+});
+// 狭い画面では最初から一覧表示
+if (matchMedia("(max-width: 600px)").matches) { $("app").classList.add("list"); $("listBtn").setAttribute("aria-pressed", "true"); }
+outline();
+draw();
+document.fonts?.ready.then(draw);
+</script>
