@@ -2701,7 +2701,7 @@
     "docs/244_morning_research_queue.md",
     "docs/398_q109_hold_reentry_cost.md"
    ],
-   "note": "docs/398 §4 Q 候補 D・docs/323 §5。data_dukascopy/WTI_hour.csv.gz(2026-08 まで)+ 月次 H1(candidate_interim.ensure_months)で日足終値を作り、hold_cell と同じ式で 5 年スコア(docs/290 の列)と 14166201 の保有区間(docs/398 §2 d)の実 vs 系列を再計算。差が基差で説明できるか、研究の Hold WTI 期待値をいくら下げるかを書く。Dukascopy が 503 / 接続断ならデータ待ちで次へ送る(11/5 は取得不可)\n【2026-11-06 夕】Dukascopy datafeed 不通(トンネル切断)のため再びデータ待ちで次へ送った(Q159 を実行)"
+   "note": "docs/398 §4 Q 候補 D・docs/323 §5。data_dukascopy/WTI_hour.csv.gz(2026-08 まで)+ 月次 H1(candidate_interim.ensure_months)で日足終値を作り、hold_cell と同じ式で 5 年スコア(docs/290 の列)と 14166201 の保有区間(docs/398 §2 d)の実 vs 系列を再計算。差が基差で説明できるか、研究の Hold WTI 期待値をいくら下げるかを書く。Dukascopy が 503 / 接続断ならデータ待ちで次へ送る(11/5 は取得不可)\n【2026-11-06 夕】Dukascopy datafeed 不通(トンネル切断)のため再びデータ待ちで次へ送った(Q159 を実行) 【2026-11-13 朝】Dukascopy datafeed は既定クライアントで 429 のまま(USDJPY・LIGHTCMDUSD とも)→ データ待ち継続。Q164 も同じ。Q111・Q117 はユーザー側の手続き待ちで、実行できる項目なし"
   },
   {
    "status": "done",
@@ -4757,6 +4757,13 @@
    "cells": 0,
    "cumulative_cells": 10116,
    "note": "ユーザー「登録して実行」・診断 2 本・docs/430・EA 変更なし"
+  },
+  {
+   "date": "2026-11-13",
+   "items": [],
+   "cells": 0,
+   "cumulative_cells": 10116,
+   "note": "朝の定例: 実行できる項目なし(Q158・Q164 = Dukascopy 429 でデータ待ち、Q111・Q117 = ユーザー側の手続き待ち)。再探索の候補はトパーズ評価中 ×1.25(11/9・11/10 と同じ・docs/349 §9c に記録済み)"
   }
  ],
  "external_checks": [
