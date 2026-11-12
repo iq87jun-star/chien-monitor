@@ -21,7 +21,7 @@ META = {  # 口座番号 → 会社・表示名・採用 EA(docs/241 §1ak 時�
     "6104739": ("Fintokei", "スイング トパーズ 3,500万", "EA11 Mon4×8.0+IdxMon1.0 dyn1 v1.20"),
     "521100397": ("FTMO", "50k 2-Step 資金化済", "EA8 Mon4 6.0倍+GER40ブレイク 2.0倍 dyn1 v1.39"),
     "531407058": ("FTMO", "50k 2-Step 資金化済", "EA3 Mon4 6.0倍 dyn1 v1.21"),
-    "6071612": ("Fintokei", "スイング パール 500万 資金化済", "RecentFit B案 8.0倍 v1.13"),
+    "6071612": ("Fintokei", "スイング パール 500万 P1 評価中", "RecentFit B案 8.0倍 v1.16"),
     "14074882": ("FundedNext", "100k 資金化済", "RecentFit Mon3×4+HoldXAU0.4 v1.13"),
     "11988011": ("FundedNext", "Instant 20k", "RecentFit G Mon2×4+MonNAS100/US500×1 v1.17"),
 }
