@@ -120,13 +120,17 @@
     "mon4": 6.0
    },
    "e0": 1.044,
-   "targets": [],
+   "targets": [
+    0.1,
+    0.05
+   ],
    "mdd": 0.1,
    "dll": 0.04,
-   "funded_now": true,
+   "funded_now": false,
    "balance_jpy": 7900000,
    "k": 1.5,
-   "rule": "ftmo2step"
+   "rule": "ftmo2step",
+   "_stage_note": "2026-11-12 FTMO の画面で『FTMO チャレンジ』(2 ステップの第 1 段階・目標 +10% → Verification +5%)と確認。以前の『本口座』は誤り(docs/241 §1aq)"
   },
   {
    "name": "FTMO 50k 531407058",
@@ -137,13 +141,17 @@
     "mon4": 6.0
    },
    "e0": 1.034,
-   "targets": [],
+   "targets": [
+    0.1,
+    0.05
+   ],
    "mdd": 0.1,
    "dll": 0.04,
-   "funded_now": true,
+   "funded_now": false,
    "balance_jpy": 7900000,
    "k": 1.5,
-   "rule": "ftmo2step"
+   "rule": "ftmo2step",
+   "_stage_note": "2026-11-12 FTMO の画面で『FTMO チャレンジ』(2 ステップの第 1 段階・目標 +10% → Verification +5%)と確認。以前の『本口座』は誤り(docs/241 §1aq)"
   },
   {
    "name": "パール 6071612",
@@ -172,13 +180,17 @@
     "holdxau": 0.4
    },
    "e0": 0.947,
-   "targets": [],
+   "targets": [
+    0.08,
+    0.05
+   ],
    "mdd": 0.1,
    "dll": 0.04,
-   "funded_now": true,
+   "funded_now": false,
    "k": 0.0,
    "balance_jpy": 15800000,
-   "swap_xau_bps_m": -76.0
+   "swap_xau_bps_m": -76.0,
+   "_stage_note": "2026-11-11 FN の画面で『CHALLENGE・P1』(目標 +8% → P2 +5%)と確認。以前の『本口座』は誤り(docs/241 §1ao・§1aq)"
   },
   {
    "name": "FN Instant 11988011",
