@@ -134,7 +134,7 @@
    "apply": true,
    "ensure": [
     {
-     "ea": "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.07.mq5",
+     "ea": "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.08.mq5",
      "symbol": "XAUUSD",
      "period": "H1"
     }
@@ -144,9 +144,10 @@
     "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100_2.5倍_v1.03",
     "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.04",
     "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.05",
-    "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.06"
+    "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.06",
+    "【FTMO100k_1Step_口座531466484】EA9_A案_HoldXAU+MonGBPJPY+MonNAS100+Mon3_3.0倍_v1.07"
    ],
-   "note": "2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.06 → v1.07 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
+   "note": "2026-11-12 ユーザー「切替」(docs/241 §1ap・docs/424): v1.07 → v1.08 = 月曜レグの 1 日リスク上限 2.5%(建玉中の SL リスク + 当日の確定損。InpMonDayRiskCapPct)+ ガード発動時の滑りログ。他のロジック・入力・Magic 不変(Hold XAU の建玉は引き継ぐ)。| 2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.06 → v1.07 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
    "terminal": "FTMO",
    "prepare_profile": true
   },
