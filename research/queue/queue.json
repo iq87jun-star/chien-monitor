@@ -1,6 +1,6 @@
 {
- "cumulative_cells": 10090,
- "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062 / 2026-11-08 Q171 +6 → 10,068 / Q172 +5 → 10,073 / Q173 +6 → 10,079 / Q174 +5 → 10,084 / 2026-11-09 Q161 +1 → 10,085",
+ "cumulative_cells": 10096,
+ "cumulative_note": "docs/229 462 + docs/232 1296 + docs/233 946 + docs/234 696 / 2026-11-07 Q165 +1 → 10,061 / 2026-11-08 Q166 +1 → 10,062 / 2026-11-08 Q171 +6 → 10,068 / Q172 +5 → 10,073 / Q173 +6 → 10,079 / Q174 +5 → 10,084 / 2026-11-09 Q161 +1 → 10,085 / 2026-11-12 Q181 +6 → 10,096",
  "items": [
   {
    "id": "Q1",
@@ -3072,36 +3072,42 @@
   {
    "id": "Q181",
    "slug": "ffaj_long_ratio_gate",
-   "status": "pending",
+   "status": "done",
    "cells": 6,
    "order": 31.7,
    "registered": "2026-11-12",
    "title": "協会統計(店頭 FX 月次)の買い比率による月曜円クロスの見送りフィルター — 3 帳簿 × {買い上位 2 割で見送り・下位 2 割で見送り} = 改良系 6 セル",
    "program": "ユーザー 2026-11-12「登録して実行してください」(docs/421 §4 の Q181 案)",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
     "docs/244_morning_research_queue.md",
-    "docs/421_q180_positioning_data_inventory.md"
+    "docs/421_q180_positioning_data_inventory.md",
+    "docs/422_q181_ffaj_long_ratio_gate.md"
    ],
-   "note": "事前固定: 信号 = 金融先物取引業協会 trading_vol_and_position.xls(2026-11-12 取得・results/q180_ffaj_positions.csv)のペア別 買建 ÷(売建 + 買建)・月末値 L(M)。既知の時点 = 翌月 21 日(M+1 の 21 日〜M+2 の 20 日の月曜に適用。公表は翌月 15 日ごろ)。順位 = 直近 36 か月(M−35〜M)の中で L(M) 以下の月の割合。高 = 0.8 以上、低 = 0.2 以下。見送りはペア単位(そのペアの信号が立っている月曜は、そのペアの 4 ショットを建てない)。系列 = deployed_book.mon_cell_h1(EA 実時刻 H1・4/6/8/10 UTC 建て 24h・往復 3pip)。帳簿 = Mon4(AUDJPY/EURJPY/GBPJPY/USDJPY 各 .25)・Mon3(EURJPY .333/USDJPY .333/NZDJPY .334)・Mon2 instG(GBPJPY .537/AUDJPY .463)。セル = 3 帳簿 × {高で見送り, 低で見送り} = 6。判定 = §1 改良系(q114.improved: IS・OOS の両方で Sharpe 改善 かつ 最悪月が悪化しない)。累積 Bonferroni は 10,090 + 6。参照(判定に使わない)= 閾値 0.9 / 0.1、半分サイズ。修正報告による過去値の改訂は考慮しない(取得時点の値)。成立しても紙上フォワードの CANDIDATES に入れるだけ(配備は「切替」後)。当方の事前の見込み: 弱い(COT は門・単独とも不採用、月次の粗さ、信号の立つ月が少ない)"
+   "note": "事前固定: 信号 = 金融先物取引業協会 trading_vol_and_position.xls(2026-11-12 取得・results/q180_ffaj_positions.csv)のペア別 買建 ÷(売建 + 買建)・月末値 L(M)。既知の時点 = 翌月 21 日(M+1 の 21 日〜M+2 の 20 日の月曜に適用。公表は翌月 15 日ごろ)。順位 = 直近 36 か月(M−35〜M)の中で L(M) 以下の月の割合。高 = 0.8 以上、低 = 0.2 以下。見送りはペア単位(そのペアの信号が立っている月曜は、そのペアの 4 ショットを建てない)。系列 = deployed_book.mon_cell_h1(EA 実時刻 H1・4/6/8/10 UTC 建て 24h・往復 3pip)。帳簿 = Mon4(AUDJPY/EURJPY/GBPJPY/USDJPY 各 .25)・Mon3(EURJPY .333/USDJPY .333/NZDJPY .334)・Mon2 instG(GBPJPY .537/AUDJPY .463)。セル = 3 帳簿 × {高で見送り, 低で見送り} = 6。判定 = §1 改良系(q114.improved: IS・OOS の両方で Sharpe 改善 かつ 最悪月が悪化しない)。累積 Bonferroni は 10,090 + 6。参照(判定に使わない)= 閾値 0.9 / 0.1、半分サイズ。修正報告による過去値の改訂は考慮しない(取得時点の値)。成立しても紙上フォワードの CANDIDATES に入れるだけ(配備は「切替」後)。当方の事前の見込み: 弱い(COT は門・単独とも不採用、月次の粗さ、信号の立つ月が少ない)",
+   "done": "2026-11-12",
+   "result": "棄却(改良成立 0 / 6・通過 0・p<0.05 0)。OOS の Sharpe は 6 セルすべてで低下。見送った月曜の平均損益は全セルでプラス(+1.6〜+9.1 bps)。参照(0.9 / 0.1・半分サイズ)も成立なし。建玉の偏りを月曜の見送りに使う方向は閉じる(COT・SKEW・協会統計の 3 系統が不採用)。累積 10,096"
   },
   {
    "id": "Q182",
    "slug": "fxcm_series_extension",
-   "status": "pending",
+   "status": "done",
    "cells": 0,
    "order": 31.8,
    "registered": "2026-11-12",
    "title": "FXCM 公開ローソク足(H1・BID/ASK)による主要通貨ペアの系列継ぎ足し — Dukascopy が止まっている 2026-09 以降の補完(工学・セル 0)",
    "program": "ユーザー 2026-11-12「登録して実行してください」(docs/420 §5 提案 1)",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
     "docs/244_morning_research_queue.md",
-    "docs/420_q179_alt_data_sources.md"
+    "docs/420_q179_alt_data_sources.md",
+    "docs/423_q182_fxcm_series_extension.md"
    ],
-   "note": "事前固定: (a) research/fetch_fxcm.py を追加。candledata.fxcorporate.com の週次 H1 ファイルから、既存 data_dukascopy にあり FXCM にもあるペアの BID / ASK を取得し、Dukascopy と同じ列(timestamp,open,high,low,close,volume)で research/data_fxcm/<SYM>_hour.csv.gz・_hour_ask.csv.gz に保存(data*/ は git 管理外)。既定のクライアント名で取得し、間隔を空ける。(b) 継ぎ足しの関数 load_spliced(sym, ask=False): Dukascopy を 2026-08-31 23:00 まで、以降を FXCM。既存の読み込み関数・既存の検定結果・配備は変更しない(継ぎ足し系列を使うのは 2026-09 以降の月次採点・紙上フォワードの補完だけ)。(c) 検証: 重複期間(2026-06〜08)の H1 リターン相関・中値の差・スプレッド差をペア別に表にし、2026-09〜直近の本数と欠損を出す。(d) 2026-09・10 月の Mon4 / Mon3 / Mon2 の月次損益を継ぎ足し系列で出し、実口座の同月の符号と突き合わせる(記述のみ)。FXCM に無いペア(CHFJPY ほか)と指数・金属・原油は対象外のまま"
+   "note": "事前固定: (a) research/fetch_fxcm.py を追加。candledata.fxcorporate.com の週次 H1 ファイルから、既存 data_dukascopy にあり FXCM にもあるペアの BID / ASK を取得し、Dukascopy と同じ列(timestamp,open,high,low,close,volume)で research/data_fxcm/<SYM>_hour.csv.gz・_hour_ask.csv.gz に保存(data*/ は git 管理外)。既定のクライアント名で取得し、間隔を空ける。(b) 継ぎ足しの関数 load_spliced(sym, ask=False): Dukascopy を 2026-08-31 23:00 まで、以降を FXCM。既存の読み込み関数・既存の検定結果・配備は変更しない(継ぎ足し系列を使うのは 2026-09 以降の月次採点・紙上フォワードの補完だけ)。(c) 検証: 重複期間(2026-06〜08)の H1 リターン相関・中値の差・スプレッド差をペア別に表にし、2026-09〜直近の本数と欠損を出す。(d) 2026-09・10 月の Mon4 / Mon3 / Mon2 の月次損益を継ぎ足し系列で出し、実口座の同月の符号と突き合わせる(記述のみ)。FXCM に無いペア(CHFJPY ほか)と指数・金属・原油は対象外のまま",
+   "done": "2026-11-12",
+   "result": "工学・セル 0。research/fetch_fxcm.py(取得・load_spliced)を追加。20 ペアの 2026-09-01〜11-06 を補完(欠損日 0)。重複 2026-08-09〜31 の H1 相関 0.96〜0.996。アーカイブの 2026 年 20〜31 週は欠け(登録の重複期間 6〜8 月は 8 月のみで代替)。月曜帳簿 2026-09 −1.1〜−1.2%・10 月 +0.35〜+0.44%、実口座と符号一致 5 / 5。提案: 月次採点・紙上フォワードの円クロスを継ぎ足し系列で読む切替(登録待ち)"
   }
  ],
  "runs": [
@@ -4513,6 +4519,16 @@
    "cells": 0,
    "cumulative_cells": 10090,
    "note": "ユーザー「今行って」・診断 2 本・docs/420・421"
+  },
+  {
+   "date": "2026-11-12",
+   "items": [
+    "Q181",
+    "Q182"
+   ],
+   "cells": 6,
+   "cumulative_cells": 10096,
+   "note": "ユーザー「登録して実行してください」・Q181 棄却 0/6(docs/422)・Q182 工学(docs/423)"
   }
  ],
  "external_checks": [
