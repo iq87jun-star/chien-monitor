@@ -3068,6 +3068,40 @@
    "note": "事前固定: (a) 国内の公開統計(東京金融取引所 くりっく365、金融先物取引業協会の店頭 FX 統計)について、通貨ペア別の売建玉・買建玉が『日次 / 週次 / 月次』のどれで・何年分・どの形式(CSV / PDF / 画面のみ)で公表されているかを表にする。対象ペアは配備中の Mon レグ(GBPJPY AUDJPY USDJPY EURJPY NZDJPY CADJPY CHFJPY)を優先。(b) FX 会社・集計サイトの売買比率(外為どっとコム、みんかぶ FX、GMO クリック、IG、Myfxbook、FXSSI、Dukascopy SWFX ほかこの環境から到達できるもの)について、到達可否・過去値の有無と深さ・更新頻度・利用規約上の自動取得の可否を表にする。規約で自動取得を禁じているものは取得しない(可否の記載のみ)。(c) 過去値が 3 年以上・週次以上の頻度で取れる系列があれば、取得して research/data_ext/ に置き、Mon4 の週次損益との同時相関と、偏りの上位・下位 2 割の月曜の平均損益を『記述統計として』出す(検定・採否判定はしない。セル 0)。(d) 過去値が取れない系列は、毎日 1 回の記録を自動化する案(記録する項目・保存先・実行する仕組み)を書く。記録の開始はユーザーの了承後。(e) フィルターとしての検定は別項目で登録する(セル数・閾値・対象レグを事前固定。基準は改良系 = IS・OOS の両方で Sharpe 改善 かつ 最悪月が悪化しない)。本項目では『検定に進める系列があるか・何セルで登録するか』の提案までを書く。参考: CFTC COT は docs/203(門)・docs/277(単独)で不採用、SKEW 門は docs/409・410 で口座 MC では不採用。OANDA は API 条件と過去オーダーブック非提供のため見送り(docs/244 2026-11-12)",
    "done": "2026-11-12",
    "result": "診断・セル 0。売買別の建玉が履歴つきで取れるのは金融先物取引業協会の月次統計のみ(11 ペア・2008-11〜2026-09・翌月 15 日ごろ公表)。くりっく365 の日次は建玉合計のみ。FX 会社の売買比率は過去値が取れない / 自動取得不可。損益との関係は未計算(後付け防止)。提案: Q181 = 買い比率の月次フィルター 6 セル(登録待ち・見込みは弱い)"
+  },
+  {
+   "id": "Q181",
+   "slug": "ffaj_long_ratio_gate",
+   "status": "pending",
+   "cells": 6,
+   "order": 31.7,
+   "registered": "2026-11-12",
+   "title": "協会統計(店頭 FX 月次)の買い比率による月曜円クロスの見送りフィルター — 3 帳簿 × {買い上位 2 割で見送り・下位 2 割で見送り} = 改良系 6 セル",
+   "program": "ユーザー 2026-11-12「登録して実行してください」(docs/421 §4 の Q181 案)",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/421_q180_positioning_data_inventory.md"
+   ],
+   "note": "事前固定: 信号 = 金融先物取引業協会 trading_vol_and_position.xls(2026-11-12 取得・results/q180_ffaj_positions.csv)のペア別 買建 ÷(売建 + 買建)・月末値 L(M)。既知の時点 = 翌月 21 日(M+1 の 21 日〜M+2 の 20 日の月曜に適用。公表は翌月 15 日ごろ)。順位 = 直近 36 か月(M−35〜M)の中で L(M) 以下の月の割合。高 = 0.8 以上、低 = 0.2 以下。見送りはペア単位(そのペアの信号が立っている月曜は、そのペアの 4 ショットを建てない)。系列 = deployed_book.mon_cell_h1(EA 実時刻 H1・4/6/8/10 UTC 建て 24h・往復 3pip)。帳簿 = Mon4(AUDJPY/EURJPY/GBPJPY/USDJPY 各 .25)・Mon3(EURJPY .333/USDJPY .333/NZDJPY .334)・Mon2 instG(GBPJPY .537/AUDJPY .463)。セル = 3 帳簿 × {高で見送り, 低で見送り} = 6。判定 = §1 改良系(q114.improved: IS・OOS の両方で Sharpe 改善 かつ 最悪月が悪化しない)。累積 Bonferroni は 10,090 + 6。参照(判定に使わない)= 閾値 0.9 / 0.1、半分サイズ。修正報告による過去値の改訂は考慮しない(取得時点の値)。成立しても紙上フォワードの CANDIDATES に入れるだけ(配備は「切替」後)。当方の事前の見込み: 弱い(COT は門・単独とも不採用、月次の粗さ、信号の立つ月が少ない)"
+  },
+  {
+   "id": "Q182",
+   "slug": "fxcm_series_extension",
+   "status": "pending",
+   "cells": 0,
+   "order": 31.8,
+   "registered": "2026-11-12",
+   "title": "FXCM 公開ローソク足(H1・BID/ASK)による主要通貨ペアの系列継ぎ足し — Dukascopy が止まっている 2026-09 以降の補完(工学・セル 0)",
+   "program": "ユーザー 2026-11-12「登録して実行してください」(docs/420 §5 提案 1)",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md",
+    "docs/420_q179_alt_data_sources.md"
+   ],
+   "note": "事前固定: (a) research/fetch_fxcm.py を追加。candledata.fxcorporate.com の週次 H1 ファイルから、既存 data_dukascopy にあり FXCM にもあるペアの BID / ASK を取得し、Dukascopy と同じ列(timestamp,open,high,low,close,volume)で research/data_fxcm/<SYM>_hour.csv.gz・_hour_ask.csv.gz に保存(data*/ は git 管理外)。既定のクライアント名で取得し、間隔を空ける。(b) 継ぎ足しの関数 load_spliced(sym, ask=False): Dukascopy を 2026-08-31 23:00 まで、以降を FXCM。既存の読み込み関数・既存の検定結果・配備は変更しない(継ぎ足し系列を使うのは 2026-09 以降の月次採点・紙上フォワードの補完だけ)。(c) 検証: 重複期間(2026-06〜08)の H1 リターン相関・中値の差・スプレッド差をペア別に表にし、2026-09〜直近の本数と欠損を出す。(d) 2026-09・10 月の Mon4 / Mon3 / Mon2 の月次損益を継ぎ足し系列で出し、実口座の同月の符号と突き合わせる(記述のみ)。FXCM に無いペア(CHFJPY ほか)と指数・金属・原油は対象外のまま"
   }
  ],
  "runs": [
