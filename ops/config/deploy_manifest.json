@@ -200,7 +200,7 @@
    "apply": true,
    "ensure": [
     {
-     "ea": "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍+Roll4.5_v1.09.mq5",
+     "ea": "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍+Roll4.5_v1.10.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -211,9 +211,10 @@
     "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.05",
     "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.06",
     "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.07",
-    "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.08"
+    "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍_v1.08",
+    "【Fintokeiスイング_ルビー1000万_口座6104736】RecentFit_B案_12.0倍+Roll4.5_v1.09"
    ],
-   "note": "2026-11-13 ユーザー「切替」(docs/241 §1au・docs/430 Q190): v1.08 → v1.09 = 水曜ロールを追加(トパーズ EA11 の Roll スリーブを移植・×4.5・金利差門 2.0pp・Magic 943115)。Mon・v4・ガード不変。| 2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.07 → v1.08 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
+   "note": "2026-11-13 ユーザー「切替 ルビーは現状で切替」(docs/241 §1aw・docs/436 Q197・docs/437 Q198): v1.09 → v1.10 = 月曜レグの数量に 2 つの縮小を追加((1) 直近の確定日足の終値が 200 日線以上の円クロスは 0.5 倍、(2) 損失枠の残りに比例・下限 0.5)。倍率 12 倍・v4・Roll・ガード・Magic 不変。| 2026-11-13 ユーザー「切替」(docs/241 §1au・docs/430 Q190): v1.08 → v1.09 = 水曜ロールを追加(トパーズ EA11 の Roll スリーブを移植・×4.5・金利差門 2.0pp・Magic 943115)。Mon・v4・ガード不変。| 2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.07 → v1.08 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。",
    "terminal": "Fintokei",
    "prepare_profile": true
   },
