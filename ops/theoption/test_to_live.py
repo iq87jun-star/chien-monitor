@@ -8,6 +8,7 @@ import to_live as L
 def _no_network_skew(monkeypatch):   # v1.11: テストは CBOE へ取りに行かない(取得失敗 = 記録に error、発注は続く)
     def boom(timeout=12): raise OSError("offline")
     monkeypatch.setattr(L, "fetch_skew_csv", boom)
+    monkeypatch.setattr(L, "snap_rates_sync", lambda wss, key, pairs, secs: {})   # v1.12: レート記録もネットワーク無し
 
 def jwt(payload):
     e = lambda b: base64.urlsafe_b64encode(b).decode().rstrip("=")
@@ -312,3 +313,22 @@ def test_skew_gate_record_only(monkeypatch):
         st = L.record_skew_gate(mon, legs_mon, tmp, log); assert st["on"] is True
         rows = open(os.path.join(tmp, "skew_gate_log.csv"), encoding="utf-8").read().splitlines()
         assert rows[0] == "date,ref_date,skew,pct,on,error" and len(rows) == 3 and rows[2].startswith(f"{mon},{fri},250.0,1.0,True,")
+
+
+def test_runup_record_only(monkeypatch):
+    """v1.12: 仲値 run-up は記録のみ。09:30 と発注直前のレート差(pip)と上げ/下げを残し、余裕が無ければ飛ばす。ゴトー日以外は 09:30 の記録もしない。"""
+    r0 = {"USDJPY": {"rate": 158.00}, "EURJPY": {"rate": 177.50}, "CADJPY": {"rate": 112.00}}
+    r1 = {"USDJPY": {"rate": 158.05}, "EURJPY": {"rate": 177.44}, "GBPJPY": {"rate": 212.0}, "CADJPY": {"rate": 112.00}}
+    assert L.runup_rows(r0, r1) == [("USDJPY", 158.0, 158.05, 5.0, True), ("EURJPY", 177.5, 177.44, -6.0, False), ("CADJPY", 112.0, 112.0, 0.0, False)]
+    assert L.runup_rows(None, r1) == [] and L.runup_rows(r0, {"_error": "x"}) == []
+    with tempfile.TemporaryDirectory() as tmp:
+        log = L.Log(os.path.join(tmp, "l.jsonl")); slept = []
+        monkeypatch.setattr(L, "sleep_until", lambda t: slept.append(t)); monkeypatch.setattr(L, "snap_rates_sync", lambda wss, key, pairs, secs: r0)
+        assert L.run_ratesnap("demo", DEMO, tmp, log, dt.datetime(2026, 11, 19, 9, 29, tzinfo=L.JST)) == 0 and slept == []            # 11/19 はゴトー日でない
+        assert L.run_ratesnap("demo", DEMO, tmp, log, dt.datetime(2026, 11, 20, 9, 29, tzinfo=L.JST)) == 0 and len(slept) == 1
+        assert json.load(open(L.runup_path(tmp), encoding="utf-8"))["2026-11-20"]["USDJPY"]["rate"] == 158.0
+        monkeypatch.setattr(L, "snap_rates_sync", lambda wss, key, pairs, secs: r1); day = dt.date(2026, 11, 20)
+        assert L.record_runup("wss://x", DEMO, day, dt.datetime.now(L.JST) + dt.timedelta(seconds=2), tmp, log) is None                 # 残り 5 秒未満 → 飛ばす
+        rows = L.record_runup("wss://x", DEMO, day, dt.datetime.now(L.JST) + dt.timedelta(seconds=30), tmp, log); assert len(rows) == 3
+        lines = open(os.path.join(tmp, "nk_runup_log.csv"), encoding="utf-8").read().splitlines()
+        assert lines[0] == "date,pair,rate_0930,rate_pre,pip,up" and lines[1] == "2026-11-20,USDJPY,158.0,158.05,5.0,True" and len(lines) == 4
