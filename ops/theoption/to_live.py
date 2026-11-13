@@ -22,7 +22,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.11"
+VERSION = "1.12"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -108,6 +108,68 @@ def record_skew_gate(day, legs, out_dir, log):
                     [str(day), st.get("ref_date", ""), st.get("skew", ""), st.get("pct", ""), st.get("on", ""), st.get("error", "")])
     except Exception as e: log.write("error", repr(e))
     return st
+
+# ---- v1.12 (追補64): 仲値の run-up(09:30 → 発注直前の上げ)の「記録のみ」----
+# ゴトー日の 09:30:00 と 09:54:50 頃に、仲値 5 通貨の業者レート(contract_data の asset.rate)を記録し、差(pip)と上げ/下げを残す。発注は変えない。
+# 10 年検証(追補64): 上げた日の LOW 68.3% / 上げなかった日 58.9%。配分に使うかは、このレートが外部ミッドと合うことを確認してから別の版で決める。
+RUNUP_PAIRS = ("USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY")
+async def snap_rates(wss, key, pairs, secs):
+    import websockets
+    hdr = {"Authorization": "Bearer " + key}; out = {}
+    try: conn = websockets.connect(wss, additional_headers=hdr, open_timeout=10, ping_interval=20, max_size=None)
+    except TypeError: conn = websockets.connect(wss, extra_headers=hdr, open_timeout=10, ping_interval=20, max_size=None)
+    async with conn as ws:
+        first = json.loads(await asyncio.wait_for(ws.recv(), 10))
+        if first.get("type") != "ready": return out
+        for i, p in enumerate(pairs): await ws.send(json.dumps({"type": "subscribe", "reqId": str(i + 1), "stream": "contract_data", "contract": f"{p}|FE|23H|HIGHLOW|HIGH"}))
+        t_end = time.time() + secs
+        while time.time() < t_end and len(out) < len(pairs):
+            try: fr = json.loads(await asyncio.wait_for(ws.recv(), max(0.2, t_end - time.time())))
+            except (asyncio.TimeoutError, ValueError): continue
+            pair = str(fr.get("key", "")).split("|")[0]; v = fr.get("values") or {}; a = v.get("asset")
+            if isinstance(a, str):
+                try: a = json.loads(a)
+                except ValueError: a = None
+            if pair in pairs and isinstance(a, dict) and a.get("rate") is not None and pair not in out:
+                try: out[pair] = {"rate": float(a["rate"]), "ts": a.get("timestamp")}
+                except (TypeError, ValueError): pass
+    return out
+def snap_rates_sync(wss, key, pairs, secs):
+    try: return asyncio.run(snap_rates(wss, key, pairs, secs))
+    except Exception as e: return {"_error": repr(e)[:200]}
+def runup_rows(r0, r1):
+    """09:30 のレート r0 と発注直前のレート r1({pair: {"rate": x}})から [(pair, r0, r1, pip, up)]。片方が無い通貨は除く。JPY クロスなので 1pip = 0.01。"""
+    rows = []
+    for p in RUNUP_PAIRS:
+        a = (r0 or {}).get(p); b = (r1 or {}).get(p)
+        if not isinstance(a, dict) or not isinstance(b, dict): continue
+        pip = round((b["rate"] - a["rate"]) * 100, 1); rows.append((p, a["rate"], b["rate"], pip, pip > 0))
+    return rows
+def runup_path(out_dir): return os.path.join(out_dir, "_diag", "nk_rates.json")
+def run_ratesnap(account, key, out_dir, log, now_jst):
+    """09:29 起動 → ゴトー日なら 09:30:00 のレートを記録して終了(発注しない)。"""
+    day = now_jst.date()
+    if not is_gotobi(day): log.say("ゴトー日でない → レート記録なし"); return 0
+    sleep_until(jst(day, "09:30")); _, wss = HOSTS[account]; r = snap_rates_sync(wss, key, RUNUP_PAIRS, 12)
+    log.write("nk_rate_0930", r); log.say("09:30 のレート:", {k: v.get("rate") for k, v in r.items() if isinstance(v, dict)})
+    path = runup_path(out_dir); os.makedirs(os.path.dirname(path), exist_ok=True)
+    try: st = json.load(open(path, encoding="utf-8"))
+    except Exception: st = {}
+    st = {k: v for k, v in st.items() if k >= str(day - dt.timedelta(days=40))}; st[str(day)] = r
+    json.dump(st, open(path, "w", encoding="utf-8"), ensure_ascii=False); return 0
+def record_runup(wss, key, day, entry0, out_dir, log):
+    """発注直前(先読みの後)に余裕があればレートを取り、09:30 との差を記録する。定刻 +1 秒の発注を遅らせない(残り 5 秒未満なら何もしない)。"""
+    try:
+        remain = (entry0 - dt.datetime.now(JST)).total_seconds()
+        if remain < 5: log.write("nk_runup", {"skipped": "no_time", "remain": round(remain, 1)}); return None
+        r1 = snap_rates_sync(wss, key, RUNUP_PAIRS, min(6.0, remain - 3))
+        try: r0 = json.load(open(runup_path(out_dir), encoding="utf-8")).get(str(day))
+        except Exception: r0 = None
+        rows = runup_rows(r0, r1); log.write("nk_runup", {"r0930": r0, "pre": r1, "rows": rows, "mode": "record_only"})
+        for p, a, b, pip, up in rows: append_csv(os.path.join(out_dir, "nk_runup_log.csv"), ["date", "pair", "rate_0930", "rate_pre", "pip", "up"], [str(day), p, a, b, pip, up])
+        log.say("仲値 run-up(記録のみ):", [(p, pip) for p, _, _, pip, _ in rows]); return rows
+    except Exception as e:
+        log.write("error", repr(e)); return None
 
 def deep_find(obj, key):
     if isinstance(obj, dict):
@@ -350,6 +412,7 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     try: frames = asyncio.run(scan_contracts(wss, key, scan_secs, stop_when))
     except Exception as e: frames = []; log.write("error", repr(e)); log.say("contracts 購読に失敗:", repr(e))
     log.write("scan", {"n": len(frames), "t_jst": dt.datetime.now(JST).strftime("%H:%M:%S.%f")[:-3]})
+    if fast and any(l.get("gotobi") for l in legs): record_runup(wss, key, day, entry0, out_dir, log)   # v1.12: 記録のみ(余裕が無ければ飛ばす)
     if fast: sleep_until(entry0 + dt.timedelta(seconds=FAST_BUY_DELAY))   # 定刻前にそろっていれば定刻 +1 秒まで待つ。定刻後に出たならすぐ発注
     csv_path = os.path.join(out_dir, f"live_entries_{account}.csv")
     hdr = ["date", "strategy_id", "pair", "direction", "payout_actual", "stake", "trade_id", "strike", "contract", "note"]
@@ -416,7 +479,7 @@ def run_settle(account, key, out_dir, log):
     log.say(f"settle: 新規 {n} 件を {os.path.basename(path)} に追記(履歴 {len(rows)} 件)"); return 0
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(); ap.add_argument("--settle", action="store_true"); ap.add_argument("--plan", action="store_true")
+    ap = argparse.ArgumentParser(); ap.add_argument("--settle", action="store_true"); ap.add_argument("--plan", action="store_true"); ap.add_argument("--ratesnap", action="store_true")
     ap.add_argument("--out", default=os.environ.get("THEOPTION_OUT") or os.path.join(HERE, "out")); a = ap.parse_args(argv)
     now = dt.datetime.now(JST); account, key = load_account(a.out); cfg = load_config()
     if a.plan:
@@ -424,6 +487,11 @@ def main(argv=None):
         for leg in MENU:
             if is_due_today(leg, day): print(f"  {leg['entry']} {leg['id']:14} {leg['pair']} {leg['sel']} 判定 {leg['judge']}{'(翌日)' if leg['next'] else ''} ¥{stake_for(leg, MIN_PAYOUT[leg['kind']], day):,}{'(' + (gotobi_kind(day) or '') + ' ×' + str(gotobi_mult(leg, day)) + ')' if leg.get('gotobi') else ''} [{account_for_leg(leg, account, cfg)}]")
         return 0
+    if a.ratesnap:   # v1.12: 09:30 のレート記録(お試し口座のキーで読むだけ。発注しない)
+        k = key_for("demo") or key; acc = "demo" if key_for("demo") else account
+        log = Log(os.path.join(a.out, f"live_{acc}_{now:%Y%m%d}.jsonl")); keep_awake()
+        if not k: log.say("API キーが無い → レート記録なし"); return 2
+        return run_ratesnap(acc, k, a.out, log, now)
     # v1.6: 口座ごとに分けて実行。--settle は鍵のある口座をすべて、発注はこの時間帯の脚を口座別に
     if a.settle: groups = {acc: None for acc in (("real", "demo") if account == "real" else ("demo",))}
     else:

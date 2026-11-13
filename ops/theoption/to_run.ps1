@@ -27,10 +27,10 @@ if ($Mode -eq "mtlogsync") {   # v0.6: MT5共有FilesのEAログ(ChienMT_log_*.c
   exit 0
 }
 $env:THEOPTION_OUT = $cfg.out; $env:PYTHONUTF8 = "1"
-if ($Mode -eq "live" -or $Mode -eq "live_settle" -or $Mode -eq "live_plan") {   # v1.0: 本番メニュー(追補18)の自動発注。既定はお試し口座(to_config.json の live_real=true + THEOPTION_API_KEY_REAL で実口座)
+if ($Mode -eq "live" -or $Mode -eq "live_settle" -or $Mode -eq "live_plan" -or $Mode -eq "live_ratesnap") {   # v1.0: 本番メニュー(追補18)の自動発注。既定はお試し口座(to_config.json の live_real=true + THEOPTION_API_KEY_REAL で実口座)
   if (-not $env:THEOPTION_API_KEY) { $env:THEOPTION_API_KEY = [Environment]::GetEnvironmentVariable("THEOPTION_API_KEY", "User") }
   if (-not $env:THEOPTION_API_KEY_REAL) { $env:THEOPTION_API_KEY_REAL = [Environment]::GetEnvironmentVariable("THEOPTION_API_KEY_REAL", "User") }
-  $a4 = @(if ($Mode -eq "live_settle") { "--settle" } elseif ($Mode -eq "live_plan") { "--plan" } else { "--out" })
+  $a4 = @(if ($Mode -eq "live_settle") { "--settle" } elseif ($Mode -eq "live_plan") { "--plan" } elseif ($Mode -eq "live_ratesnap") { "--ratesnap" } else { "--out" })
   if ($Mode -eq "live") { & python (Join-Path $here "to_live.py") 2>&1 | ForEach-Object { Log "$_" } }
   else { & python (Join-Path $here "to_live.py") @a4 2>&1 | ForEach-Object { Log "$_" } }
   Log "$(Get-Date -Format s) mode=$Mode exit=$LASTEXITCODE"
