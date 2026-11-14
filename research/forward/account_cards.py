@@ -45,7 +45,7 @@ EA_LEGS = {
     "531407058": dict(eval=m4(6.0), funded=m4(4.5), note="Mon4 は逆ボラ加重(帳簿は等ウェイト)。他は一致。本口座は 2026-11-14(docs/241 §1ax)で月曜 4.5 倍"),
     "6071612": dict(eval={"mon:GBPJPY": 0.374 * 8, "mon:AUDJPY": 0.322 * 8, "v4:USDJPY": 0.304 * 8}, funded={"mon:GBPJPY": 0.374 * 4.0, "mon:AUDJPY": 0.322 * 4.0}, note="評価中は帳簿 spec(bplan)と一致。本口座は 2026-11-14 切替(docs/241 §1ax・§1ay・docs/446): 月曜 2.78 倍・USDJPY の逆張りを外す(帳簿 spec の bplan は逆張り込みの近似)"),
     "14074882": dict(eval={"mon:EURJPY": 0.333 * 4, "mon:USDJPY": 0.333 * 4, "mon:NZDJPY": 0.334 * 4, "hold:XAUUSD": 0.4}, funded={"mon:EURJPY": 0.333 * 4, "mon:USDJPY": 0.333 * 4, "mon:NZDJPY": 0.334 * 4, "hold:XAUUSD": 0.4}, note="帳簿 spec(mon3 + holdxau)と一致"),
-    "11988011": dict(eval={"mon:GBPJPY": 0.537 * 4, "mon:AUDJPY": 0.463 * 4, "nas": 0.5, "spx": 0.5}, funded={"mon:GBPJPY": 0.537 * 4, "mon:AUDJPY": 0.463 * 4, "nas": 0.5, "spx": 0.5}, note="帳簿 spec(instG)と一致"),
+    "11988011": dict(eval={"mon:GBPJPY": 0.537 * 2, "mon:AUDJPY": 0.463 * 2, "nas": 0.25, "spx": 0.25}, funded={"mon:GBPJPY": 0.537 * 2, "mon:AUDJPY": 0.463 * 2, "nas": 0.25, "spx": 0.25}, note="帳簿 spec(instG 0.5)と一致。2026-11-15 切替(docs/241 §1az): v1.20 = 倍率 2.0 + 2 つの縮小"),
 }
 _S = {}
 def S(key):

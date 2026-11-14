@@ -52,7 +52,7 @@
    "apply": true,
    "ensure": [
     {
-     "ea": "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1_v1.19.mq5",
+     "ea": "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x2+MonNAS100_US500x0.5_v1.20.mq5",
      "symbol": "GBPJPY",
      "period": "H1"
     }
@@ -63,9 +63,10 @@
     "季節RG3",
     "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1_v1.16",
     "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1_v1.17",
-    "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1_v1.18"
+    "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1_v1.18",
+    "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1_v1.19"
    ],
-   "note": "2026-11-11 ユーザー「切替」(docs/241 §1ao): v1.18 → v1.19 = FN Risk Limit 対策。全建玉の SL リスク合計が初期残高の 2.4% に収まるよう新規 Mon ショットを縮小・超えるなら見送り(InpTotalMaxOpenRiskPct)。他のロジック・倍率・Magic 不変。| 2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.17 → v1.18 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-10-23 ユーザー「切替」(docs/241 §1ac): v+0.01(未接続・equity 0 ではガードを判定しない・docs/328 §9m)。ロジック・入力・Magic 不変。 2026-10-17 ユーザー「停止完了」(MQL5 VPS 全停止)→ apply:true・自前 VPS に配備(docs/328 §9f)。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1.mq5。 旧 同名ファイルの再コンパイル = v1.15 へ更新(同 Magic 943200 系なので建玉は引き継ぐ)",
+   "note": "2026-11-15 ユーザー「切替」(docs/241 §1az・docs/448 Q209): v1.19 → v1.20 = 倍率 4.0 → 2.0(円クロス 2.0 倍 + 指数 0.5 倍 = 合計 2.5 倍)+ 月曜レグの 2 つの縮小(200 日線以上の円クロス 0.5 倍・FN フロアまでの余裕に比例 下限 0.5)。ガード・時刻・SL・SL リスク合計上限・Magic 不変。| 2026-11-11 ユーザー「切替」(docs/241 §1ao): v1.18 → v1.19 = FN Risk Limit 対策。全建玉の SL リスク合計が初期残高の 2.4% に収まるよう新規 Mon ショットを縮小・超えるなら見送り(InpTotalMaxOpenRiskPct)。他のロジック・倍率・Magic 不変。| 2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.17 → v1.18 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-10-23 ユーザー「切替」(docs/241 §1ac): v+0.01(未接続・equity 0 ではガードを判定しない・docs/328 §9m)。ロジック・入力・Magic 不変。 2026-10-17 ユーザー「停止完了」(MQL5 VPS 全停止)→ apply:true・自前 VPS に配備(docs/328 §9f)。 2026-10-07 ユーザー「切り替えで」: 記録版(docs/327 Q111・InpLogUrl で VPS ログ送信・取引ロジック不変・同 Magic)へ。旧: 【FN_Instant20k_口座11988011】RecentFit_G_Mon2x4+MonNAS100_US500x1.mq5。 旧 同名ファイルの再コンパイル = v1.15 へ更新(同 Magic 943200 系なので建玉は引き継ぐ)",
    "terminal": "FundedNext",
    "prepare_profile": true
   },
