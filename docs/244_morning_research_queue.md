@@ -527,3 +527,4 @@ AI 会議(main `ai-council/explored.md` 2026-11-14 ①)の候補「RollCHF/EUR�
 - EUR の束の代替案(要「登録」。推奨しない): 門なし(全週)の EUR の束 1 セル。Q20 の門なしでも EURUSD −1.83 bps・EURGBP −2.62 bps・EURAUD −0.59 bps と負なので、通過は見込めない。Q204 の結果を見てから判断するのが良い。
 - Q204 の事前固定(詳細は queue.json): 束 = その週に門を満たし 20 時・24 時の足がある銘柄の等加重。コストは往復 3pip。AUDCHF・NZDCHF が取得できない場合は銘柄を減らさず「データ待ち」。参考記録 = ペア別・門を満たした週数・Roll5 との日次相関・欠け週の扱い・夏時間 / 冬時間別・門なし。
 - 通過しても紙上フォワードの CANDIDATES に入れるだけで、EA・manifest・config は変えない。実行後に main の `ai-council/explored.md` の該当行へ結果を書き足す。
+- 【2026-11-14 書き戻し】main の `ai-council/explored.md` の 2026-11-14 ① の行に「CHF の束 → 研究の Q204 に登録・EUR の束 → 登録せず(理由)」を書き足した(PR #214・変更は explored.md の 1 行のみ・CI 緑・マージ済み)。Q204 の実行後に、同じ行へ結果を追記する。
