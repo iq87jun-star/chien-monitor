@@ -34,16 +34,16 @@ MON4W = {"GBPJPY": 0.260, "EURJPY": 0.266, "AUDJPY": 0.215, "USDJPY": 0.258}   #
 def m4(x): return {f"mon:{s}": round(w * x, 4) for s, w in MON4W.items()}
 EA_LEGS = {
     "531466484": dict(eval={"mon:GBPJPY": 0.797 * 3, "mon:EURJPY": 0.167 * 3, "mon:AUDJPY": 0.167 * 3, "mon:USDJPY": 0.167 * 3, "nas": 0.25 * 3, "hold:XAUUSD": 0.12 * 3},
-                      funded={"mon:GBPJPY": 0.797 * 1.25, "mon:EURJPY": 0.167 * 1.25, "mon:AUDJPY": 0.167 * 1.25, "mon:USDJPY": 0.167 * 1.25, "nas": 0.25 * 1.25, "hold:XAUUSD": 0.12 * 1.25},
+                      funded={"mon:GBPJPY": 0.797 * 1.25, "mon:EURJPY": 0.167 * 1.25, "mon:AUDJPY": 0.167 * 1.25, "mon:USDJPY": 0.167 * 1.25, "nas": 0.25 * 1.25},   # 2026-11-14 切替(docs/241 §1ay・docs/447): 本口座では金の保有を外す
                       note="帳簿 spec(a9 3.0 + mon4 2.0)は XAU 名目 1.0・NAS 1.0 だが、EA は XAU 0.36・NAS 0.75・GBPJPY 2.39(docs/400 §2d)"),
-    "531343523": dict(eval={**m4(10.0), "brk": 6.0, "hold:XAUUSD": 0.9}, funded={**m4(5.0), "brk": 3.0, "hold:XAUUSD": 0.45}, note="EA は GER40 ブレイク ×6.0 を含む(帳簿 spec にない・試験運用)。Mon4 は逆ボラ加重"),
+    "531343523": dict(eval={**m4(10.0), "brk": 6.0, "hold:XAUUSD": 0.9}, funded={**m4(5.0)}, note="EA は GER40 ブレイク ×6.0 を含む(帳簿 spec にない・試験運用)。Mon4 は逆ボラ加重。本口座は 2026-11-14 切替(docs/241 §1ay・docs/447)でブレイクアウト・金の保有を外す"),
     "14166201": dict(eval={"hold:UK100": 0.491 * 2.22, "hold:WTI": 0.153 * 2.22, "roll4": 4.5}, funded={"hold:UK100": 0.491 * 2.22, "hold:WTI": 0.153 * 2.22, "roll4": 4.5},
                      note="Roll は金利差門 2.0pp で CADJPY が止まるため 4 本(帳簿 spec は 5 本・門なし)"),
-    "6104736": dict(eval={"mon:GBPJPY": 0.374 * 12, "mon:AUDJPY": 0.322 * 12, "v4:USDJPY": 0.304 * 12}, funded={"mon:GBPJPY": 0.374 * 6, "mon:AUDJPY": 0.322 * 6, "v4:USDJPY": 0.304 * 6}, note="帳簿 spec(bplan)と一致"),
-    "6104739": dict(eval={**m4(8.0), "nas": 1.0, "spx": 1.0}, funded={**m4(4.0), "nas": 0.5, "spx": 0.5}, note="指数 Mon は一致。Mon4 は逆ボラ加重(帳簿は等ウェイト)"),
-    "521100397": dict(eval={**m4(6.0), "brk": 2.0}, funded={**m4(6.0), "brk": 2.0}, note="EA は GER40 ブレイク ×2.0 を含む(帳簿 spec にない・試験運用)。Mon4 は逆ボラ加重"),
-    "531407058": dict(eval=m4(6.0), funded=m4(6.0), note="Mon4 は逆ボラ加重(帳簿は等ウェイト)。他は一致"),
-    "6071612": dict(eval={"mon:GBPJPY": 0.374 * 8, "mon:AUDJPY": 0.322 * 8, "v4:USDJPY": 0.304 * 8}, funded={"mon:GBPJPY": 0.374 * 8, "mon:AUDJPY": 0.322 * 8, "v4:USDJPY": 0.304 * 8}, note="帳簿 spec(bplan)と一致"),
+    "6104736": dict(eval={"mon:GBPJPY": 0.374 * 12, "mon:AUDJPY": 0.322 * 12, "v4:USDJPY": 0.304 * 12}, funded={"mon:GBPJPY": 0.374 * 4.5, "mon:AUDJPY": 0.322 * 4.5}, note="評価中は帳簿 spec(bplan)と一致。本口座は 2026-11-14 切替(docs/241 §1ax・§1ay・docs/446): 月曜 3.13 倍・USDJPY の逆張りを外す(帳簿 spec の bplan は逆張り込みの近似)"),
+    "6104739": dict(eval={**m4(8.0), "nas": 1.0, "spx": 1.0}, funded={**m4(3.0), "nas": 0.375, "spx": 0.375}, note="指数 Mon は一致。Mon4 は逆ボラ加重(帳簿は等ウェイト)。本口座は 2026-11-14(docs/241 §1ax)で月曜 3.0 倍・指数 0.375 倍"),
+    "521100397": dict(eval={**m4(6.0), "brk": 2.0}, funded={**m4(4.5)}, note="EA は GER40 ブレイク ×2.0 を含む(帳簿 spec にない・試験運用)。Mon4 は逆ボラ加重。本口座は 2026-11-14 切替(docs/241 §1ax・§1ay・docs/447): 月曜 4.5 倍・ブレイクアウトを外す"),
+    "531407058": dict(eval=m4(6.0), funded=m4(4.5), note="Mon4 は逆ボラ加重(帳簿は等ウェイト)。他は一致。本口座は 2026-11-14(docs/241 §1ax)で月曜 4.5 倍"),
+    "6071612": dict(eval={"mon:GBPJPY": 0.374 * 8, "mon:AUDJPY": 0.322 * 8, "v4:USDJPY": 0.304 * 8}, funded={"mon:GBPJPY": 0.374 * 4.0, "mon:AUDJPY": 0.322 * 4.0}, note="評価中は帳簿 spec(bplan)と一致。本口座は 2026-11-14 切替(docs/241 §1ax・§1ay・docs/446): 月曜 2.78 倍・USDJPY の逆張りを外す(帳簿 spec の bplan は逆張り込みの近似)"),
     "14074882": dict(eval={"mon:EURJPY": 0.333 * 4, "mon:USDJPY": 0.333 * 4, "mon:NZDJPY": 0.334 * 4, "hold:XAUUSD": 0.4}, funded={"mon:EURJPY": 0.333 * 4, "mon:USDJPY": 0.333 * 4, "mon:NZDJPY": 0.334 * 4, "hold:XAUUSD": 0.4}, note="帳簿 spec(mon3 + holdxau)と一致"),
     "11988011": dict(eval={"mon:GBPJPY": 0.537 * 4, "mon:AUDJPY": 0.463 * 4, "nas": 0.5, "spx": 0.5}, funded={"mon:GBPJPY": 0.537 * 4, "mon:AUDJPY": 0.463 * 4, "nas": 0.5, "spx": 0.5}, note="帳簿 spec(instG)と一致"),
 }
