@@ -1,597 +1,912 @@
-<!-- date: 2026-11-07 -->
-# AI 新規開拓会議 2026-11-07
+<!-- date: 2026-11-14 -->
+# AI 新規開拓会議 2026-11-14
 
 ## 🔎 調査役 — perplexity/sonar-deep-research
 
-# 為替・CFDプロップ・固定倍率バイナリーにおける季節性・規約・新規開拓余地の総合レビュー
+# Calendar Seasonality, Prop Trading Conditions, and Fixed‑Payout Binary Options: A 2026 Research Overview
 
-本稿では、為替・株価指数・コモディティ・債券に関する最新の季節性研究、EA が利用可能なプロップファームのルールや規制動向、そして固定倍率バイナリーオプション（theoption を含む）の商品性と規制環境を、利用者の現行ポートフォリオ構成と運用方針を前提に整理する。まず、曜日・祝日前後・月末月初・金利差といったカレンダー要因に関する学術研究と実務検証を概観し、特に円クロス月曜効果と相関が低いと期待される系統を抽出する。次に、CFD および先物型プロップファームの最新ルール（EA・VPS、損失制限、ニュース・週末規則、分配・スケーリングなど）と評判・規制リスクを整理し、日本居住者が利用しうるかの論点をまとめる。最後に、theoption を含む固定倍率バイナリー商品について、倍率構造と損益分岐、ESMA など各国規制当局の方針を踏まえ、長期的に損益分岐を +3pp 以上上回りうる時間帯や通貨ペアの探索余地を、既存検証結果との整合性の範囲で検討する。本稿の結論としては、伝統的な曜日効果やプレ・ホリデー効果、ターン・オブ・ザ・マンス効果などは 2020 年代においてもなお一定の統計的痕跡を残しているものの、その多くは単独では期待値が限られており、長期金利差に基づくキャリートレードやタイムシリーズ・モメンタムのような「低頻度だが構造的な」リターン源泉と組み合わせることで、月曜円クロス集中リスクとの相関を抑えつつポートフォリオの安定性を高める余地がある、という姿が浮かび上がる。また、主要プロップファームの規約は EA・VPS を広く許容しつつ、日次・累積損失制限や一貫性ルール、ニュース・週末規則などによってリスク管理を厳格化する方向に進んでおり、日本居住者は利用可能であるものの、国内金融規制との関係には注意が必要である。固定倍率バイナリーについては、EU を中心に小口投資家向け販売禁止が続いていることから、規制上の位置づけと業者リスクを織り込んだうえで、既存の月曜 7 時円クロスや仲値脚のように、10 年スパンで安定した方向性が確認されている限定的な季節性に絞って検証を進めることが妥当と考えられる。
+The present report synthesizes recent academic and practitioner evidence on calendar and seasonal effects across major asset classes, the evolving rule sets of leading proprietary trading firms that permit automated trading, and the regulatory status and structural features of fixed‑payout binary options providers such as theoption. Drawing on peer‑reviewed research and current industry documentation, it evaluates which calendar anomalies still appear statistically meaningful in the modern, algorithmic trading era, how year‑end and intra‑day liquidity patterns affect implementation rather than returns, and how multi‑asset momentum behaves across long histories. It then contextualizes these findings for a systematic trader whose existing portfolio is heavily exposed to Monday JPY‑cross strategies and roll/hold structures, highlighting directions where empirical evidence suggests potentially low correlation to Monday FX risk while respecting the requirement that any new ideas be treated as hypotheses to be tested rather than as trading recommendations. In parallel, the report reviews the rules and loss‑limit mechanics of major CFD and futures prop firms such as FTMO, FundedNext, and The5ers, including automation allowances, drawdown definitions, news and weekend policies, and the emerging pattern of smaller firm closures, with specific attention to the practical implications for a Japan‑resident systematic trader. Finally, it assesses theoption’s regulatory position and risk profile based on recent public warnings, and outlines a rigorous statistical framework for evaluating whether fixed‑multiplier binary contracts can realistically support a positive expectancy based on time‑of‑day or calendar seasonality, given the modest size and instability of most documented return anomalies.
 
-## 1. カレンダー・アノマリー総論：曜日・祝日・月末月初・金利差
+## 1. Introduction: Objectives, Constraints, and Scope
 
-### 1.1 カレンダー・アノマリーの定義と EMH との関係
+### 1.1 Trading context and risk concentration
 
-金融市場における「カレンダー・アノマリー」とは、資産価格やリターンが特定の曜日、月、祝日前後といった暦上のタイミングに体系的に偏る現象を指す。典型例としては、日曜から月曜にかけて株式リターンが低く、金曜リターンが高い「曜日効果」や、月末から月初にかけてリターンが高まる「ターン・オブ・ザ・マンス効果」、祝日前営業日に異常な高リターンが観測される「プレ・ホリデー効果」などが挙げられる[2][4][6]。これらは、効率的市場仮説（EMH）に対する挑戦として位置づけられており、もし完全に裁定されていれば、特定の暦パターンに依存する超過リターンは観測されないはずだという理屈である[2][4]。
+The starting point for this research is a systematic trading setup that already relies exclusively on verified expert advisors (EAs) and automated order placement in both CFD prop accounts and a binary‑options API, explicitly avoiding discretionary entries. The existing portfolio structure has been stress‑tested through extensive historical backtesting, Monte Carlo simulation and a multi‑window out‑of‑sample design, with stringent controls on multiple‑testing and overfitting, and a clear rule that “today only stop” decisions are avoided unless there is a binding regulatory, risk‑of‑disqualification, or technical anomaly. This framework has produced a robust set of strategies centered on weekday and intraday seasonality, interest‑rate‑differential roll trades, long‑term “hold” positions in indices and commodities, and a small set of fixed‑payout binary trades whose edge has been validated over a decade of data. However, the trader’s book now exhibits a pronounced concentration of risk in Monday‑based JPY‑cross strategies: internal diagnostics suggest that Monday legs contribute nearly eighty percent of total risk, with the goal of reducing that to roughly forty to fifty percent without materially degrading long‑run expectancy.
 
-しかし、実証研究の蓄積は、少なくとも過去数十年にわたって、こうしたアノマリーが多くの市場・資産クラスで反復的に観測されてきたことを示している。例えば、French や Gibbons & Hess らの古典的研究は、米国株式市場で月曜リターンが統計的に有意に低く、金曜リターンが高いことを早期に指摘している[2][4]。より最近のメタ分析では、世界各国の株式市場を対象とした 1,800 本以上の論文を統合し、月曜と火曜に平均リターンが低く、水曜と金曜に平均リターンが高いという「週末効果」が依然として検出されることが示されている[4]。このような一貫したパターンは、リスクプレミアムの季節性、投資家行動の心理的バイアス、機関投資家のフローなど、複合的な要因に起因すると考えられている[4]。
+This risk concentration matters because, even with strong average performance, the worst Monday episodes generate simultaneous drawdowns across many accounts, and the trader’s own Monte Carlo and path‑dependency analyses already show that lowering tail clustering materially improves account survival under prop‑firm loss constraints. Within the trader’s research protocol, potential remedies must emerge as extensions of already validated classes of edges, namely weekday and time‑of‑day seasonalities, interest‑rate‑based roll and carry, long‑term holds, and cross‑asset momentum, rather than speculative new mechanisms such as weekly trend following or calendar overlays that have already failed in out‑of‑sample tests. The current report therefore emphasizes evidence on seasonal structures that could plausibly be orthogonal or weakly correlated to Monday JPY‑cross exposure and that sit within these accepted families.
 
-ただし、アノマリーの強度と安定性は時期や市場によって大きく異なる点が重要である。多通貨の外国為替市場を対象とした研究では、1980 年代には明確な曜日効果が観測されたものの、1990 年代以降にはほとんどの通貨ペアでその痕跡が消失したことが報告されている[3]。同様に、先物やオプション市場など他の資産クラスでは、曜日効果が一部の商品にしか現れないことも知られている[2][3]。したがって、カレンダー・アノマリーを新たな手法候補として検討する際には、「どの市場で、どの期間に、どの程度の強度で残存しているか」を精緻に確認する必要があり、利用者の検証方針で採用されている Bonferroni 補正や IS/OOS 分割などはそのための重要な防波堤といえる。
+### 1.2 Three research axes: seasonality, prop firms, and binary options
 
-### 1.2 曜日効果：株式・コモディティ・為替の比較
+The research agenda divides naturally into three axes. The first axis concerns calendar and seasonal behavior in major asset classes—foreign exchange, equity indices, gold, oil and fixed income—along dimensions of day‑of‑the‑week, intraday trading session, turn‑of‑the‑month, pre‑ and post‑holiday periods, and interest‑rate differentials. Here the focus is not simply on cataloguing anomalies, but on identifying which effects remain statistically and economically meaningful in recent decades and how they might interact with or diversify away from Monday JPY‑cross exposures. In particular, it is important to distinguish anomalies that have largely disappeared in the post‑1990s era from those that have persisted after the widespread adoption of electronic and algorithmic trading.
 
-曜日効果は、カレンダー・アノマリーの中でも最も広く研究されてきたテーマであり、資産クラスごとに異なる特徴を示す。株式市場に関しては、先述のように月曜リターンの低さと金曜リターンの高さが多数の市場で確認されており、最新のメタ分析でも「週末効果」が世界的に残存していることが強調されている[4]。このメタ分析は 1970 年代以降の膨大な研究を統合し、平均的には水曜と金曜に高いリターン、月曜と火曜に低いリターンが生じていると結論づけている[4]。特に水曜の「ミドル・オブ・ザ・ウィーク効果」が想定以上に強い点は興味深く、これが機関投資家の週中のポジション調整や、情報の蓄積・反映プロセスと関連している可能性が議論されている[4]。
+The second axis explores the current landscape of proprietary trading firms that allow EAs in CFD and futures products, examining the latest published rules and any documented changes regarding automation, loss limits, scaling, news and weekend trading restrictions, and account consistency requirements. This axis also evaluates firm reputation, withdrawal track records, and the emerging pattern of platform closures or regulatory pressures, drawing attention to firms that explicitly support automated trading via MT4/MT5 and virtual private servers (VPS), as well as to loss‑limit structures (static versus trailing) that materially affect the viability of high‑risk, high‑leverage EA portfolios. Particular attention is paid to whether Japan‑resident traders appear to be accepted or explicitly restricted.
 
-コモディティ市場、とりわけ原油や石油製品における曜日効果は、近年改めて検証が進んでいる。WTI 原油、Brent 原油、ガソリン、暖房油、天然ガスの先物を対象とした 2023 年の研究では、それぞれの銘柄で曜日効果が異なる形で現れることが示されている[2]。具体的には、WTI で金曜効果が正に、Brent と暖房油で水曜効果が正に、ガソリンと暖房油で月曜効果が負に、天然ガスで月曜・火曜が正、木曜が負といった具合である[2]。これは、在庫報告や需給指標の発表スケジュール、物理的な供給制約などの商品固有の要因が曜日効果を形づくっている可能性を示唆している[2]。利用者のポートフォリオに含まれている WTI や金のような銘柄についても、単一の「月曜効果」にとどまらず、他の曜日や時間帯における系統的なドリフトが存在しうることを示す材料といえる。
+The third axis analyzes theoption’s current products, leverage and contractual terms, along with the broader environment for fixed‑multiplier binary options. This includes regulatory warnings and licensing status in Japan and abroad, the structural fairness of fixed‑payout contracts at multipliers such as 1.95, 1.90 and 1.85, and the empirical challenge of identifying time‑of‑day and currency combinations that produce a stable win‑rate at least three percentage points above break‑even over ten years of data. Because the trader already employs several such binary legs with demonstrable edge, the goal is not to suggest new trades directly, but to situate those legs within the global evidence on intraday FX seasonality and to articulate a sound statistical framework for evaluating further candidates.
 
-為替市場における曜日効果は、株式やコモディティほど明瞭ではないものの、特定期間には認められるケースがあった。多通貨ペアを対象とした研究では、1980 年代に一部通貨で曜日効果が観測されたものの、1990 年代にはほとんどの通貨でその痕跡が消失したことが報告されている[3]。これは、取引時間の延長や銀行・ヘッジファンドの裁定取引の進展によって、為替市場が相対的に効率化した結果、単純な曜日パターンが解消された可能性を示している[3]。もっとも、円クロスのような個別通貨ペアについては、グローバルな研究では十分に掘り下げられていない部分もあり、利用者が独自に検証して発見している月曜効果は、グローバル統計の平均像とは異なる日本固有の資本フローや企業行動に起因している可能性がある。
+### 1.3 Methodological stance and limitations
 
-重要なのは、こうした曜日パターンが資産クラスごとに異なるため、たとえば「円クロス月曜ロング」と「WTI の金曜・水曜のドリフト」や「株価指数の水曜・金曜効果」を 組み合わせることで、特定曜日・特定通貨に集中したリスクを分散する余地が生じるという点である[2][4]。もちろん、個々のアノマリーの強度や安定性は検証に委ねる必要があるが、構造的には異なる市場・異なる曜日にまたがることで、カレンダー要因に起因するドローダウンの同時発生確率を低減する方向に働くことが期待できる。
+This report is written explicitly as a research document rather than a trading advisory. Its aim is to collate recent academic and practitioner evidence with clear citations, to explain observed phenomena and their limitations, and to suggest directions for further testing that may be worth investigating within the trader’s established backtesting and Monte Carlo framework. It does not recommend any specific trades or assert that any pattern will continue to generate profits, and it explicitly acknowledges cases where research findings conflict with the trader’s own prior tests or where evidence has weakened over time. Where external sources are silent—for example, on some detailed prop‑firm operational practices or on the precise contractual parameters of particular binary products—the report notes that these aspects are “unconfirmed” and recommends direct verification with the relevant provider. Similarly, any discussion of access conditions for Japan‑resident traders is based only on public information; the absence of explicit restrictions in documentation cannot be taken as a guarantee of eligibility.
 
-### 1.3 プレ・ホリデー効果：祝日前後の株価・ボラティリティ
+With this context established, the report now turns to the first axis: the state of calendar and seasonal effects in contemporary markets and their implications for diversifying away from Monday JPY‑cross risk.
 
-祝日前営業日に株式リターンが異常に高くなる「プレ・ホリデー効果」は、カレンダー・アノマリーの中でも最も強力かつ一貫した現象のひとつとされている。Lakonishok & Smidt は、ダウ工業株 90 年分のデータを用いて、祝日前日の平均日次リターンが 0.22% に達し、通常営業日の平均リターン（0.01% 未満）の約 22 倍であることを示した[8]。さらに、約 64% の祝日前日のリターンがプラスであり、長期市場リターンの 3 分の 1 以上が毎年わずか数日の祝日前営業日に集中していたという[8][7]。Ariel も 1963–1982 年の米国株式データを分析し、プレ・ホリデーの平均リターンが他の日の 9–14 倍に達することを報告している[7][6]。
+## 2. Calendar and Seasonal Effects Across Asset Classes
 
-これらの研究は、プレ・ホリデー効果が単なる統計的偶然ではなく、長期パフォーマンスに顕著な寄与をしていることを示している。祝日前日の高リターンがどの時間帯に集中しているかを調べた研究では、寄り付きから引けまで一日を通じて高リターンが観測されるものの、とくに寄り付き直後と終盤に顕著であることが示されている[7]。米国株式市場における S&P500 指数を対象とした実務家向け解説では、1928–1975 年の 419 の祝日前営業日に基づき、祝日前 1〜2 日で分散投資し年末まで保有する戦略が、市場全体の単純保有を大きく上回る累積リターンをもたらしたことが示されている[5]。具体的には、1928 年に 10,000 ドルを S&P500 に投資し 1975 年まで単純保有した場合の最終資産は約 51,000 ドルであるのに対し、資金を 9 分割し、各祝日前 1〜2 日だけ市場に投入して年末に決済する戦略では約 1,440,000 ドルに達したとされる[5]。
+### 2.1 Turn‑of‑the‑month effects in equity indices: historical strength and recent fading
 
-こうしたプレ・ホリデー効果の原因については、複数の仮説が提案されている。一部の研究は、週末効果やターン・オブ・ザ・イヤー効果など他のカレンダー・アノマリーとの関連を探ったが、プレ・ホリデーの高リターンはこれら他の要因では説明できないことがわかった[1][7]。別の研究は、トレーダーが長期の市場休止期間を前にポジションを軽くする傾向があり、その過程で売りが先行して価格が一時的に低下し、その後再び買いが入って価格が戻るというメカニズムを想定している[5]。さらに、最近の研究では、小口投資家が祝日前の買いに慎重になる一方で、大口の情報優位なトレーダーが積極的に取引するため、平均的な取引サイズが大きくなり、価格変動が情報に敏感になってプレ・ホリデーの上昇につながるという説明が提示されている[1]。
+The turn‑of‑the‑month (TOM) effect, defined as unusually high returns during a short window around the transition from one calendar month to the next, is among the most extensively documented calendar anomalies in equity markets. Early studies by Ariel and by Lakonishok and Smidt found that US stock returns were disproportionately concentrated in a handful of days at month‑end and month‑beginning, with negligible or zero average returns during the rest of the month.[2][3][5] In particular, Lakonishok and Smidt analyzed Dow Jones Industrial Average (DJIA) returns over 1897–1986 and reported that the majority of all positive returns occurred during a four‑day period comprising the last trading day of the old month and the first three trading days of the new month.[2][3] Subsequent research by McConnell and Xu extended the DJIA sample to 2015 and concluded that, on average, virtually all positive returns were concentrated in the same four‑day TOM interval, with investors receiving little or no reward for bearing market risk during the remaining sixteen trading days of each month.[2][3]
 
-また、祝日前営業日に大きな価格変動が発生した場合、その後数営業日にわたって価格がドリフトする現象も確認されている。S&P500 構成銘柄の 1993–2017 年データを分析した研究では、祝日前に大きな上昇または下落が起きた銘柄では、その後 2 営業日、および 5・20 営業日の窓にわたって同方向の価格ドリフトが続きやすいことが示されている[8]。対照的に、通常営業日の大幅変動では、これほど明確なドリフトは観測されず、むしろ軽微な反転傾向が検出されるにとどまっている[8]。これは、祝日前の価格変動が「情報ショック」に起因していることが多く、その情報が市場に完全に織り込まれるまでに数営業日を要する可能性を示唆している。
+Parallel work on the S&P 500 index yielded similar conclusions. Liu examined S&P 500 prices from 2001 to 2011 and found that prices tended to bottom around the fifth or sixth trading day before month‑end and to peak on the first or second trading day of the new month, with the TOM effect strongest during the last four trading days of the old month and the first two trading days of the new month.[2] These findings suggested that the intra‑month distribution of returns was heavily skewed toward a small TOM window, raising questions about the underlying mechanisms—such as institutional cash flows, pension contributions or window‑dressing—and about whether a simple TOM strategy (long equities during the TOM window, flat otherwise) could capture most of the long‑run equity risk premium.
 
-利用者の視点から見ると、プレ・ホリデー効果は円クロス月曜効果とは構造的に異なるタイミング（祝日前日やその後数営業日）にリターンが集中するため、相関の低い新しい脚の候補となりうる。ただし、既存の検証方針では「新しい理屈を当てに行く」ことの期待値は低く、歴史的に強力なアノマリーであっても、実際のスプレッドやコスト、プロップのルールに合わせた実装を行うとエッジが縮小する可能性がある。そのため、プレ・ホリデー効果を検討する場合でも、具体的なエントリー・エグジット時刻や保有期間を利用者の検証枠組み（前窓・探索窓・OOS）に組み入れて、厳格な統計チェックを通過したもののみ紙上フォワードに進める姿勢が重要となる。
+Importantly for a systematic trader seeking diversifying legs, the TOM effect has proved not only statistically significant but also economically meaningful over long pre‑1990s samples. Quantpedia’s synthesis of TOM strategies notes that in the DJIA, virtually all excess market return accrues during the four‑day TOM period, and that similar patterns are observed in more recent data prior to the 2000s, with little or no compensation for risk during non‑TOM days.[3] A study of S&P 500 futures contracts even concluded that the TOM effect in those contracts was the only calendar effect that was statistically and economically significant and persistent over time, outperforming other anomalies such as the Monday effect, January effect, holiday effect and options expiration effect.[3]
 
-### 1.4 ターン・オブ・ザ・マンス効果：月末月初の株式リターン
+However, more recent evidence suggests that TOM effects have weakened or faded in many large markets since the early 2010s. Giovanis examined TOM effects in twenty stock market indices across the globe using GARCH and PGARCH volatility models, finding that the TOM effect was persistent in nineteen out of twenty indices over the full sample, and that when the post‑financial‑crisis period 2010–2013 was excluded, the effect appeared in all twenty.[5] Yet the same study noted that calendar effects in general, including TOM, had diminished in recent years, with stronger robustness primarily in small‑cap indices rather than large benchmark indices.[5] A more recent thesis by Aalto University took this further by examining daily returns of fifteen stock market indices from 1983 to 2022.[8] It found significant TOM effects in fourteen of fifteen indices during 1983–2013, with eleven remaining significant after controlling for seasonal effects, but showed that TOM anomalies had almost completely faded in the 2014–2022 period for the international markets considered, with only New Zealand’s index still exhibiting a significant TOM effect after controlling for other calendar patterns.[8] On this basis, the thesis rejected the hypothesis that TOM effects still exist in most countries and concluded that the majority of international markets no longer display this phenomenon.[8]
 
-ターン・オブ・ザ・マンス効果とは、月末から月初にかけて株式リターンが高まり、月中のその他の期間にはリターンが低下またはゼロ近傍になるというパターンである。古典的には、Lakonishok & Smidt がダウ工業株指数を用いて、月末から月初数営業日の平均リターンが顕著に高いことを報告している[9][8]。その後、多数の市場に拡張した研究では、月末最終営業日から月初 3 営業日までを「ターン・オブ・ザ・マンス期間」と定義し、その期間のリターンが通常営業日の数倍に達することが多くの株式指数で確認されている[9]。
+In Central and Eastern European (CEE) stock markets, TOM effects persisted over 1999–2018 in seven out of eleven countries, with most positive returns concentrated in a TOM window, but these anomalies affected returns rather than volatility.[2] Specifically, the MDPI study on CEE markets observed significantly higher returns during TOM periods compared with the rest of the month in seven markets, while finding no anomaly in price volatility, suggesting that TOM effects manifest primarily as shifts in mean returns rather than in risk intensity.[2] Nevertheless, given the post‑2014 fading reported in broader international samples, any application of TOM seasonality today needs to be carefully tested on recent data and should not assume that pre‑2000 patterns carry over unchanged.
 
-2010 年代の研究では、20 カ国の株式指数を対象に GARCH やパワー GARCH モデルを用いて、ターン・オブ・ザ・マンス効果の持続性が検証された[9]。この研究は、19/20 の指数でターン・オブ・ザ・マンス効果が統計的に有意であり、サンプルをサブ期間に分割しても、効果は一貫して残存していると報告している[9]。さらに、金融危機後の 2010–2013 年期間を除外すると、ターン・オブ・ザ・マンス効果は全 20 指数で確認されるという[9]。これは、危機期には市場構造の変化やボラティリティの急増により、通常の季節性が撹乱された可能性を示唆している。
+For a trader who has already tested TOM overlays on US indices and found no robust edge in recent data, these results serve as independent confirmation that TOM effects are no longer a universally exploitable anomaly. The fact that modern ETF trading appears to have compressed TOM effects in the S&P 500 index onto the first trading day of the month, as documented in an ETF‑era reexamination, underscores how structural market changes can reshape calendar anomalies.[10] That study reported that while TOM returns were higher than non‑TOM returns for both the S&P 500 index and its ETF across the full sample, after ETF introduction the TOM effect in the index became concentrated on the very first trading day of the month, and that regression analyses confirmed the TOM effect even after controlling for Monday, January, weekend and crisis effects.[10] Yet the overall academic consensus now leans toward TOM effects being weaker, more localized and more conditional than in earlier decades.
 
-ターン・オブ・ザ・マンス効果の原因については、賃金やボーナスの支給、年金・投資信託への定期的な資金拠出、企業の決算・配当支払いなど、実体経済側のキャッシュフローが月初に集中することによる「機械的な買いフロー」が主因と考えられている[9]。これらのフローが株式市場への資金流入を増やし、月末から月初にかけて価格を押し上げるというメカニズムである[9]。同時に、月末のポジション調整やリバランス需要がボラティリティを高めるため、リスクプレミアムが一時的に上昇するという説明もある。
+From the standpoint of diversifying away from Monday JPY‑cross risk, this implies that canonical equity TOM strategies may not offer a reliable modern edge, especially in large US indices, but that TOM seasonality might still be present in smaller, less‑arbitraged markets or specific indices such as New Zealand, where the Aalto thesis found persistent significance.[8] Any candidate leg would need to be tested in the trader’s own framework, using realistic transaction costs and modern data, and should not be assumed to be a “free lunch” based solely on pre‑2000 literature.
 
-為替市場や債券市場におけるターン・オブ・ザ・マンス効果については、株式ほど体系的な証拠はないものの、一部の研究で月初のボラティリティ上昇が観測されている[9]。また、日中頻度の研究では、非取引日後のボラティリティが高まる傾向が確認されており、週末や祝日明けにボラティリティが増加することがターン・オブ・ザ・マンスと重なって複雑な季節性を生んでいる可能性がある[9]。利用者の立場から言えば、月末・月初に関する FX や指数の方向性はこれまで検証済みであり、月末ロンドンフィックスなどのイベントは棄却されているが、日次ではなく「月次単位」でのモメンタムやフローを指標化し、金利差やトレンドと組み合わせた「クロスアセット月次モメンタム」系統として再構成する余地は残されている。
+### 2.2 Holiday trading effects: liquidity, execution, and non‑directional constraints
 
-### 1.5 金利差とキャリートレード：長期構造と短期季節性
+Another axis of calendar seasonality lies around major holidays, particularly year‑end periods such as Thanksgiving, Christmas and New Year. Here recent practitioner research emphasizes that holiday effects manifest primarily through liquidity and execution costs rather than directional predictability. A 2026 Russell Investments study on the “holiday trading effect” underscores that year‑end holidays systematically reduce market liquidity and raise execution costs and timing risks across equities, fixed income, foreign exchange and derivatives, while providing no reliable signal about returns.[1][4] The study notes that during Thanksgiving week, US equity trading volumes typically fall in late November, with a “catch‑up” period starting on the Monday after Thanksgiving when outsized volumes appear on settlement days T+2 through T+5 as investors reposition.[1] It warns that reduced participation can widen bid‑ask spreads, increase market impact and lengthen execution timelines, thereby raising the cost of implementing portfolio decisions.[1][4]
 
-金利差に基づくキャリートレードは、為替市場における代表的なアノマリーであり、暦要因とは異なるが「構造的な期待値の源泉」として重要である。キャリートレードとは、低金利通貨を借り入れて高金利通貨に投資することで、金利差に相当するリターンを狙う戦略であり、教科書的な未裁定金利平価が成立していれば超過リターンは得られないはずだが、実証的には長期にわたり有意な超過リターンが観測されてきた[10][11]。最近の研究では、こうしたキャリーの期待値が短期的な金利サイクルではなく、10 年物国債利回りのような「長期金利差」によって主として規定されていることが示されている[10][11]。
+In foreign exchange markets, Russell reports that liquidity declines steadily through year‑end, with volumes in major currency pairs running 50–80 percent below normal by the second half of December when no major event occurs.[1][4] Christmas Eve and Boxing Day are described as historically the quietest days, with volumes roughly 20–30 percent of normal, particularly in European currencies.[1][4] The week between Christmas and New Year’s Day typically sees volumes at 50–80 percent of normal, and although top‑of‑book pricing may remain tight, market depth weakens, making larger trades more difficult to execute efficiently.[1][4] The study’s central conclusion is that lower holiday liquidity affects how efficiently investors can trade and the risks around execution timing, but does not, by itself, indicate whether markets will rise or fall; holiday patterns should be treated as execution constraints rather than investment signals.[1][4]
 
-具体的には、1987–2023 年の為替・金利データを用いた研究で、1 ヶ月物フォワードプレミアムを長期金利差のトレンド成分と循環成分に分解し、トレンド成分がキャリー戦略の収益の大部分を説明することが示されている[10][11]。Hamilton フィルターを用いて 10 年物利回りの持続的な差と一時的な差を分離すると、持続的な差に基づく「トレンドキャリー」ポートフォリオは、従来の単純キャリーよりも高いシャープ・レシオと低いターンオーバー、より穏やかな左裾（ダウンサイド・リスク）を示した[10][11]。具体的には、「高金利国ロング・低金利国ショート」のポートフォリオを、長期金利差の上位・下位半分に基づいて構成した場合、年率 2.48% の超過リターンが得られ、サンプル期間全体で 104.6% の累積利益を生んだと報告されている[10][11]。
+For a systematic trader using EAs, this has two important implications. First, year‑end and pre‑holiday periods require conservative assumptions about slippage and fill probabilities, especially for strategies that rely on tight stops or rapid intraday exits, as spreads and depth will likely be worse than average even if mid‑price volatility is not materially elevated. Second, strategies that attempt to exploit supposed “Santa Claus rallies” or pre‑holiday drifts need to be scrutinized carefully, as the modern evidence, at least as summarized by Russell, does not support a reliable directional edge tied purely to holiday calendars.[1][4] Any observed patterns may be attributable to the same institutional flows that underpin TOM effects or to idiosyncratic factors in specific years, and they appear weaker now than in earlier decades.
 
-この結果は、キャリートレードの期待値が短期的な金利サプライズや景気サイクルよりも、人口動態・生産性格差などに根ざした長期構造に支えられている可能性を示している[10][11]。利用者が運用している Roll5 系統では、円との政策金利差 2.0pp 以上の通貨ペアに限定することで、スワップの方向と季節性を組み合わせているが、最新研究の文脈では「政策金利や短期金利差だけでなく、10 年物利回りの構造的な差」を情報として取り込むことで、より安定したキャリー要因を抽出できる余地がある。ただし、Roll5 については theoption への移植が検証で棄却されているように、ロールオーバー帯の売買は価格配信上のアーティファクトを含みやすく、CFD・バイナリーそれぞれで慎重に扱う必要があることが確認されている。
+From a diversification perspective, holiday‑related legs are unlikely to offer robust, low‑correlation returns that materially reduce Monday JPY‑cross risk; their main utility lies in informing execution choices, for example by avoiding the initiation of large new positions in thin year‑end FX markets or by temporarily lowering risk per trade to account for wider spreads and poorer depth.
 
-金利差はまた、カレンダー・アノマリーに対する条件付け要因としても利用されうる。例えば、水曜 20–24 UTC の円クロス売りを対象とした Roll 系統の検証では、日米 2 年金利差が 2.0pp 以上の局面では Sharpe 比が改善し、最悪月ドローダウンが軽減されることが報告されている。これは、金利差が十分に開いている局面では、キャリー方向にポジションを傾けた短期季節性戦略の期待値が高まりうることを示唆しており、今後の新規開拓でも「金利差の閾値」をフィルターとして組み込むことが、過剰最適化を避けつつリスク調整リターンを改善する一つの方向となりうる。
+### 2.3 Day‑of‑the‑week effects in foreign exchange, with emphasis on yen crosses
 
-## 2. 円クロス月曜効果と低相関な候補系統：曜日・時間帯・月次モメンタム・キャリー
+The trader’s existing portfolio heavily exploits Monday seasonality in yen crosses, and thus any attempt to identify uncorrelated legs naturally raises the question of whether other days of the week exhibit exploitable seasonality in FX. Historically, the day‑of‑the‑week effect was first documented in equities, with Cross’s 1973 study finding significantly negative average returns on Mondays (Friday close to Monday close) and abnormally high returns on Fridays in the S&P composite index for 1953–1970.[7] In foreign exchange markets, early studies reported various weekday patterns, but subsequent research has suggested that such calendar effects have weakened or disappeared over time.
 
-### 2.1 利用者の現行ポートフォリオにおける月曜集中とリスク構造
+A 1995 study by Corhay examined the presence of day‑of‑the‑week effects in FX markets using daily spot rates for the British pound, Canadian dollar, Deutsche mark, French franc, Japanese yen and Swiss franc over 1973–1992, and employing both parametric and distribution‑free tests.[7] It found that prior to October 1, 1981, Wednesday returns were significantly higher than average for all six currencies, attributed to settlement procedures whereby transactions completed on Wednesday cleared for “good value” in the foreign currency on Friday and in the US dollar on Monday, effectively creating a structural carry over the weekend.[7] However, after settlement procedures changed on October 1, 1981, the differential Wednesday returns disappeared, indicating that the earlier anomaly was driven by institutional mechanics rather than by a fundamental weekday effect.[7]
 
-利用者の現行ポートフォリオは、CFD プロップ 10 口座と theoption 口座にまたがり、いずれも検証済み EA・自動発注によって運用されている。CFD 側では Mon4 をはじめとする「月曜の円クロス長期保有」系統が中核を占めており、GBPJPY・EURJPY・AUDJPY・USDJPY を日本時間 13・15・17・19 時にロングし 24 時間保有する戦略が複数口座にレバレッジを変えて搭載されている。このほか、Mon 指数（日曜 NY 寄り後の米株指数ロング）、Roll5（水曜深夜の円クロスショート）、Hold（金・UK100・WTI の長期保有）、GER40 ブレイク（ドンチャン・ブレイクアウト）などが組み合わされているが、検証の結果として「Mon 系がリスク寄与の 78%」というポートフォリオ分析が得られており、悪い月曜には複数口座が同時に損失を出す構造が明確に認識されている。
+Other FX studies produced contradictory and generally weak evidence. McFarland, Pettit and Sung, analyzing seven currencies between 1975 and 1979, reported that Monday and Wednesday returns were higher than Thursday and Friday returns in both spot and forward markets for several currencies.[7] In contrast, Jaffe and Westerfield, studying data up to September 1981, found higher Wednesday returns and lower Friday returns for the British pound and Japanese yen, with mixed results for other currencies.[7] These discrepancies led Corhay to conclude that evidence on day‑of‑the‑week effects in FX was both contradictory and deficient, and that once the settlement‑based Wednesday anomaly disappeared, no robust weekday pattern remained.[7]
 
-この集中構造は、検証に基づく期待値の高さを反映する一方で、「同時ドローダウン」のリスクを高めている。検証キューの Q136 では、Mon4 などを全口座に展開した場合、1 年以内に 3 本以上の口座が同時失格する確率が 29%、5 本以上が同時失格する確率が 12% と推定されており、完全独立な戦略群であればそれぞれ 25%・2.6% 程度であるところ、相関によってリスクが増幅されていることが定量的に示されている。これは、単一の強力なアノマリーに依存するポートフォリオの典型的なトレードオフであり、期待値とドローダウンの両面を考慮すると、Mon 系のリスク寄与を 40–50% 程度に抑え、残りを低相関な系統で埋めることが長期安定性の観点から望ましいという問題意識が形成されている。
+More recent research reinforces the view that weekday anomalies in returns have largely faded. A multi‑currency study by Yamori and Kurihara evaluated daily returns of twenty‑nine exchange rates and reported some evidence of weekday effects in the 1980s, but found that these effects disappeared for almost all currencies in the 1990s.[6] Similarly, Aggarwal, Mehdian and Perry examined weekday effects in futures contracts and found no consistent evidence of such regularity.[6] Bouges and co‑authors looked at American depository receipts over 1998–2004 and reported no significant weekday effect.[6] A comprehensive paper summarizing calendar anomalies concluded that there was no difference between returns across days associated with Dow, January or TOM trading, and that calendar effects had either weakened or disappeared in the latter part of the sample, consistent with other studies showing diminished evidence of anomalies in the 1990s.[6]
 
-このような背景から、新規開拓の狙い ①では「Mon 系と相関が低く、既存の機能している系統（曜日・時間帯・月次季節性、金利差の Roll、Hold、クロスアセットの月次モメンタム）の延長にある候補」を探索する方針が掲げられている。重要なのは、ここで言う「延長」とは、新しい理屈や複雑なフィルタを持ち込むのではなく、既存の統計的に確認されたパターンを、曜日のずれ・時間帯の変更・資産クラスの拡張といった形で穏やかに広げることを意味している。週足トレンドフォローやカレンダー追加のような、検証で棄却された手法を蒸し返すことは方針上行わない。
+Critically, this body of evidence suggests that the Monday effect in FX returns—if it exists at all—is either small, unstable or driven by specific structural features in historical data that no longer apply. For yen crosses in particular, modern studies do not document a strong Monday bias of the sort exploited in the trader’s strategy; the trader’s edge likely arises from a combination of intraday seasonality, interest‑rate differentials, and other microstructure factors, rather than from a simple unconditional Monday drift. Consequently, searching for “Tuesday effects” or “Thursday effects” in FX returns based on older weekday anomaly literature is unlikely to produce robust new legs, especially given the trader’s stringent multiple‑testing controls.
 
-### 2.2 株価指数の水曜・金曜効果：Mon 指数との分散効果
+From the diversification standpoint, this means that adding non‑Monday FX weekday strategies may not significantly decorrelate from existing Monday JPY‑cross exposure if they rely on similar intraday windows, currency pools, and volatility regimes. Instead, diversifying legs may need to exploit fundamentally different dimensions, such as intraday activity patterns across global sessions, cross‑asset momentum, or longer‑horizon holds where the day of execution is less important than the underlying macro drivers.
 
-メタ分析を含む最新研究によれば、世界の株式市場では水曜と金曜に平均リターンが高く、月曜と火曜に平均リターンが低いという「週末効果」が残存している[4]。具体的には、メタ分析の回帰結果は、月曜と火曜の平均リターンが有意に負であり、水曜と金曜が有意に正であることを示し、中でも水曜の「ミドル・オブ・ザ・ウィーク」効果が予想以上に強いとされる[4]。また、米国株式市場における S&P500 などの実務分析では、金曜効果はプレ・ホリデー効果と部分的に重なり、祝日前の金曜に特に強く現れる傾向がある[5][7]。
+### 2.4 Intraday seasonality in FX market activity and its execution implications
 
-このような株価指数の曜日効果は、既に利用者が検証している Mon 指数（日曜 22 UTC の米株指数ロング）とは異なる曜日・セッションにリターンが集中するため、Mon 系との相関を下げる分散効果が期待できる。たとえば、US500 や NAS100 の水曜・金曜における日中ドリフト（13–20 UTC など）をターゲットにした戦略は、Mon 指数と同じ資産クラスながら、曜日と時間帯がずれているため、特定の月曜ショックに対する感応度が低い可能性がある。ただし、指数の日中ドリフトについては、利用者の検証キュー（Q124・Q126 など）で WTI や株価指数の日中格子が棄却されているように、単純なセッション単位の方向性は多くの銘柄で弱いことが確認されている。最近の検証では、Mon 指数のセッション版も IS でわずかな正の期待値があるものの、前窓での符号不安定により紙上候補止まりである。
+While weekday effects in FX returns appear weak, intraday patterns in FX market activity, spreads and volatility are robust and well‑documented, particularly in major pairs such as USD/JPY and EUR/USD. A prominent study using Electronic Broking System (EBS) data analyzed “firm” bid‑ask quotes and transactions for USD/JPY and EUR/USD in spot FX, finding clear intra‑day seasonality in the frequency of quote revisions, trading volume and return volatility.[11][12][13] Specifically, the study confirmed a U‑shape in intraday activities (deals and price changes) for Tokyo and London market participants, with high activity during the opening hours, a midday lull, and increased activity toward the overlap with the next major center.[11][12][13] In contrast, New York participants did not exhibit a U‑shape pattern; their intraday activity did not increase toward the end of business hours, even on Fridays ahead of weekend non‑trading, and showed troughs in late afternoon hours.[11][12][13]
 
-このことは、株価指数の曜日効果自体は統計的に観測されるものの、それを単一の「固定時刻ショット」として実装した場合、スプレッドやプロップのルールを織り込んだ後の純期待値が閾値を下回りやすいことを示唆している。したがって、水曜・金曜効果を新規開拓候補として検討する場合には、たとえば「ターン・オブ・ザ・マンス期間に限定した水曜・金曜ドリフト」や「プレ・ホリデー前後に限定した金曜ドリフト」といった、より構造的なフィルタリングを組み合わせることで、期待値を高めつつ過剰最適化を避ける工夫が必要になるだろう。これらの組み合わせはまだ文献上十分に検証されていない部分も多く、利用者の Bonferroni 補正を伴う検証枠組みとの相性が重要となる。
+The EBS evidence shows that trading activity and return volatility tend to move together, while bid‑ask spreads move in the opposite direction, being wider when activity is low and narrower when activity is high.[13] There is generally a negative correlation between the number of deals and the width of the bid‑ask spread during business hours, implying that traders obtain better liquidity and tighter pricing during active periods.[11][12][13] However, an important exception arises at the very start of Tokyo business hours, where both bid‑ask spread and activity are high, reflecting a “Tokyo opening effect” in which market participants execute orders even at relatively wider spreads during the first minutes of the session.[11][12][13] The study also observes a “Monday opening effect” in activity: when Tokyo opens on Monday, activity is elevated as participants react to weekend news and reposition, but this effect is more pronounced in volume than in returns.[11][13]
 
-### 2.3 コモディティの曜日効果：原油・金と円クロスの関係
+The study identifies three peaks of high trading volumes in a typical day: Tokyo opening hours, overlapping business hours of Tokyo and London, and overlapping hours of London and New York.[13] Troughs occur during lunch hours in Tokyo (and to a lesser extent in Europe) and during late afternoon hours in New York, with significant drops in activity at these times.[13] Furthermore, a “home‑market advantage” is evident: Tokyo market activity is relatively higher than London’s for USD/JPY and lower than London’s for EUR/USD, reflecting the natural concentration of trading in a pair’s home region.[12][13] Overlapping business hours encourage inter‑regional transactions, with London–New York combinations generating the highest deal share and Tokyo–New York the lowest for both yen and euro pairs.[13]
 
-原油や石油製品の曜日効果は、エネルギー市場特有のファンダメンタルズと結びついており、為替・株式とは異なるタイミングでドリフトが生じることが知られている。WTI 先物では金曜に正の曜日効果が観測され、Brent と暖房油では水曜に正の効果が検出されている一方で、ガソリンと暖房油では月曜に負の効果が確認されている[2]。天然ガスについては、月曜と火曜が正、木曜が負というより複雑なパターンが報告されている[2]。これらの違いは、在庫統計の発表スケジュール（米エネルギー情報局の週次報告など）や、季節ごとの需要パターンが曜日によって異なることに起因している可能性がある[2]。
+For the trader’s purposes, these intraday patterns have direct implications for execution and for the design of time‑of‑day legs in both CFD and binary products. First, they confirm that spreads and depth are markedly worse during late New York afternoon and certain lunchtime periods, suggesting that strategies reliant on tight spreads should avoid initiating trades during these troughs. Second, they show that elevated activity at session opens, particularly Tokyo, can coexist with wide spreads, indicating that naive “Tokyo open” directional trades may suffer significant transaction‑cost drag even if there were a small drift in mid‑price—indeed, the trader’s own recent test of a Tokyo‑open GBP/JPY hourly binary strategy found no directional bias at the mid‑price and was subsequently rejected.[12][13][theoption internal].
 
-利用者のポートフォリオには WTI（USOUSD）や金（XAUUSD）の Hold が含まれており、現状では長期的なトレンドとキャリー（スワップ）を狙う構造になっている。金の曜日効果については、学術研究では大きな一貫したパターンは報告されていないが、最近の利用者の検証では木曜夜間に局在したドリフトが OOS でも確認されている一方、日中版（13–20 UTC）の木曜 XAU ロングは棄却されている。これは、XAU の季節性がセッション単位ではなくロールオーバーや清算時間帯に近い特定の窓に集中している可能性を示唆しており、COMEX の清算後から翌日の清算前までの「窓」をターゲットにした戦略（Q161）が紙上フォワードで検証中である。
+Third, the clustering of activity and volatility during London–New York overlaps may explain why some intraday breakout strategies in US indices or FX fail once realistic costs are included: although moves are larger, competition from other participants and wider spreads in fast markets erode edge. For binary options, intraday patterns of volatility rather than drift are crucial, because fixed‑payout contracts often behave like bets on the sign of the next price change or the direction of a move over a fixed horizon; if volatility is high but drift is near zero, win‑rates cluster near fifty percent and multipliers such as 1.85 or 1.90 typically confer a house edge absent strong directional biases. The EBS evidence suggests that, aside from structural features like Tokyo opening spreads, intraday FX activity patterns are more suited to informing execution timing and cost assumptions than to generating robust, exploitable drifts.
 
-原油の曜日効果については、利用者が MCL 向けに検証した 13–20 UTC の日中格子が棄却されているように、単純なセッション単位のドリフトは弱いことが確認されている[2]。しかし、曜日と在庫報告のタイミングを組み合わせた「イベント・カレンダー」視点から見ると、水曜の原油在庫発表後に一定のトレンドが生じることを利用した戦略余地は、オプションやイベントドリブンの領域で議論されている。利用者の方針ではイベント駆動系統は棄却済みであり、theoption でも指標時間帯のレイテンシー狙いは禁止されているため、この方向は直接的な新規候補にはなりにくい。ただし、Hold WTI の参照系列を先物からスポット CFD に切り替える検証（Q158）は継続中であり、コモディティの長期トレンドとスワップ構造をより正確に捉えるための基盤整備としては重要である。
+### 2.5 Interest‑rate differentials, roll trades and carry structures
 
-円クロス（月曜）と原油・金の曜日効果の相関については、構造的に低いと考えられる。円クロスの月曜効果は、日本企業や機関投資家の週初の資金フロー、海外投資家の日本株・日本国債ポジションのヘッジなどに起因している可能性があり、日本時間朝から欧州時間までの為替市場で発現する。一方、原油の水曜・金曜効果は米国時間の在庫発表や週末のポジション調整に起因しており、金の木曜夜間ドリフトもニューヨーク時間帯に局在している。したがって、これらのコモディティ系統を、Mon 系とは独立したポジションサイズで EA に組み込むことで、曜日・時間帯の観点から相関を低減する方向に働く可能性がある。ただし、利用者の検証では単純なコモディティ日中ドリフトは棄却されているため、Hold・長期窓の形で既に取り込まれているトレンド系統を拡張することが現実的な方向となる。
+The trader’s existing portfolio includes roll trades that short low interest‑rate currencies on specific weekdays (for example, Thursday roll trades in yen crosses), exploiting the accumulation of swap over defined windows in swap‑free accounts and the empirical tendency for carry trades to earn positive average returns over long horizons. Although the search results do not include dedicated studies on FX carry trades, the broader academic literature on interest‑rate differentials is well established. Standard uncovered interest parity models predict that currencies with higher interest rates should depreciate sufficiently to offset the interest differential, leaving no arbitrage opportunity; however, empirical evidence over decades has shown that high‑yield currencies tend to offer excess returns when financed in low‑yield currencies, making the carry trade one of the most robust FX anomalies.
 
-### 2.4 クロスアセット月次モメンタムとタイムシリーズ・モメンタム
+For the trader, the important question is how carry interacts with calendar seasonality. The Giovanis paper on TOM effects, for example, mentions work by Sariannidis finding that higher energy prices (crude oil and ethanol) positively influence the sugar market, while weaker USD/JPY exchange rates negatively influence sugar markets, suggesting that macro factors like energy and FX interact with commodities via cross‑asset relationships.[5] Yet the same paper underscores that calendar effects have generally diminished in recent years, and robust significance is found mainly in small‑cap stock indices, not in broad FX carry.[5] Cross‑asset momentum work, discussed below, indicates that momentum and carry can be combined across currencies, bonds, commodities and equities to produce diversified portfolios.[9]
 
-クロスアセット月次モメンタムは、株式・債券・コモディティ・為替など複数資産クラスをまたぐトレンドフォロー戦略の枠組みであり、月次リバランスで各資産の過去 6–12 ヶ月リターンに応じてロング・ショートを切り替えることで、構造的なトレンドに乗ることを目指す。Moskowitz, Ooi & Pedersen による代表的研究では、58 の先物・フォワード契約（株価指数、通貨、商品、国債）を対象に、各銘柄の過去 12 ヶ月超過リターンに基づいてポジションを取る「タイムシリーズ・モメンタム」が、25 年以上にわたりほぼ全銘柄で正の期待値をもたらしたことが示されている[13]。この戦略では、各銘柄の 12 ヶ月リターンが正ならロング、負ならショートとし、翌月まで保有するという単純なルールに従う[13]。
+From a day‑of‑week and intraday perspective, interest‑rate differential trades are primarily driven by the overnight or multi‑day accrual of carry, which is fairly smooth across weekdays except around roll dates, holidays and month‑ends. Strategies that seek to exploit particular roll windows—such as shorting high‑yield currencies against JPY just before value date shifts or swap recalculations—must be carefully calibrated to the specific broker’s and prop firm’s swap mechanisms. In swap‑free accounts, the economic carry is embedded in price rather than in explicit swap, and roll‑window effects may arise around times of known institutional rebalancing rather than through interest accrual. The trader’s own tests have shown that certain roll windows around early morning JST exhibit significant directional patterns in yen crosses, but subsequent attempts to transplant these patterns into binary options have failed, likely because the binary platform’s pricing and quote availability differ from spot FX.
 
-このタイムシリーズ・モメンタムは、従来の株式モメンタム（クロスセクション型）とは異なり、「銘柄間の相対パフォーマンス」ではなく「各銘柄の自己トレンド」に注目している点が特徴である[13]。研究の結果によれば、12 ヶ月タイムシリーズ・モメンタムの利益は、ほぼすべての銘柄で正であり、平均的に月次リターンの自己共分散（過去 1 年リターンと翌月リターンの正の自己共分散）によって説明される[13]。また、モメンタム効果は 1 年程度持続した後、3–5 年スパンで部分的に反転することが示されている[13]。これは、短期トレンドと長期リバーサルという 2 つの力が資産価格のダイナミクスを形づくっている可能性を示唆している。
+From the diversification standpoint, extending roll and carry structures to other currency pairs with different macro drivers, or to bond futures and credit indices, could offer low correlation to Monday JPY crosses, but each leg would need to be tested separately. The academic literature does not support simple weekday carry effects; rather, it suggests that carry is a medium‑term phenomenon best exploited through longer‑horizon holds and cross‑sectional portfolios.
 
-実務レベルでは、このタイムシリーズ・モメンタムを ETF や先物を用いて実装する「クロスアセット・トレンドフォロー」戦略が普及しており、13 本の代表的 ETF を対象にしたエンジン実装では、SPY・EFA・EEM・TLT・IEF・LQD・GLD・DBC・SLV・UUP・FXE・FXY などを月次で評価し、11 ヶ月リターンの符号に応じてロング・ショートを取る構造が採用されている[12]。このような戦略は、日中のドリフトではなく月次レベルのトレンドに着目しているため、円クロス月曜効果のような「単一曜日・単一通貨」に集中したリスクとは構造的に異なるリターン源泉を提供しうる。
+### 2.6 Cross‑asset monthly momentum: long‑run robustness and seasonal interactions
 
-利用者の現行ポートフォリオでは、CFD プロップ側に「クロスアセット月次モメンタム」系統はまだ明示的には組み込まれていないが、Hold（金・UK100・WTI）や Roll（金利差）などが部分的に長期トレンド要因を取り込んでいる。新規開拓の文脈では、タイムシリーズ・モメンタムをそのままコピーすることは検証方針上難しいとしても、「月次リターンと金利差・ボラティリティの情報に基づく月次リバランス」を、既存の Mon 系・Roll・Hold と組み合わせた「低頻度の補助脚」として検討する余地がある。月次モメンタムは日次や時間帯の季節性とは独立しており、月曜だけに依存しないため、相関低減の観点から有望な方向である。
+Multi‑asset momentum strategies, which buy assets that have recently performed well and sell those that have performed poorly, are among the most robust return anomalies documented across equities, currencies, bonds and commodities. A comprehensive study constructing a 215‑year history of global multi‑asset class price momentum found that the effect is consistently significant in each asset class, across asset classes, and in combined portfolios.[9] Specifically, between 1800 and 2014, country‑equity momentum generated an average long‑short spread of 0.88 percent per month (t‑statistic 10.6), while currency momentum produced a spread of 0.51 percent per month (t‑statistic 9.6).[9] A cross‑asset class momentum strategy, spanning four asset classes (equities, currencies, bonds and commodities), generated 0.45 percent per month (t‑statistic 10.2), with relatively low correlation between the cross‑asset momentum portfolio and individual asset‑class returns.[9] This low correlation is particularly relevant for a trader seeking diversification, as it implies that adding a cross‑asset momentum leg may reduce risk clustering associated with single‑asset or single‑day strategies.
 
-もっとも、利用者は週足 FX トレンドフォロー系統を検証の結果棄却しており、トレンドフォロー全般に対して慎重な姿勢を持っている。この背景には、スプレッドとロールオーバーコストを織り込むと期待値が大きく低下することや、プロップの損失制限との相性が悪いことがある。そのため、クロスアセット月次モメンタムを検討する場合にも、同様のコスト・規約制約を十分に考慮し、プロップ側の日次損失制限を踏まえたポジションサイズ調整（dyn1 など）と組み合わせる必要がある。また、トレンドフォロー系統はドローダウンが長期に及ぶことが多いため、Mon 系の短期季節性とは異なる意味で「心理的耐性」の設計が求められる。
+The study also examined the seasonal nature of momentum returns, comparing definitions that use ten‑month and twelve‑month lookback windows. A twelve‑month momentum definition, which looks at price change between the same calendar months of different years and thereby isolates intra‑year seasonal effects, produced almost identical returns to the ten‑month definition: the worst‑minus‑best (W–L) twelve‑month momentum return was −0.45 percent per month (t‑statistic −5.7), compared to −0.46 percent per month (t‑statistic −5.7) for ten‑month momentum.[9] This suggests that seasonal components in price changes do not materially alter the average performance of momentum strategies, and that momentum is largely orthogonal to within‑year seasonality such as TOM effects or weekday patterns.[9] However, the study did observe that assets tend to return around twelve percent preceding the twenty most positive momentum months, and zero percent preceding the twenty most negative ones, implying that some portion of momentum’s negative return in certain periods may come from seasonal reversion.[9]
 
-### 2.5 バイナリーにおける時間帯・曜日季節性：月曜 7 時・仲値・その他
+For the trader with heavy Monday JPY exposure, cross‑asset monthly momentum offers several attractive features. First, it operates at a monthly frequency rather than at intraday or daily windows, making its risk drivers fundamentally different from Monday FX seasonality. Second, by combining momentum across country equities, currencies, bonds and commodities, it draws on diverse macro sources—growth, inflation, monetary policy, risk appetite—rather than on FX microstructure specific to session openings or weekday flows. Third, the long historical record and strong t‑statistics provide confidence that momentum is not a transient artifact of particular decades, though its implementable edge in modern markets must still be tested with realistic costs and constraints.
 
-固定倍率バイナリーオプション（theoption）の側では、既に複数の季節性に基づく脚が検証済みであり、実口座・デモ口座で運用されている。具体的には、月曜 7 時円クロス（翌 6 時までの長期 HIGH）、仲値（ゴトー日の 9:55 〜 10:10 LOW）、EURGBP 23 時 LOW、AUDJPY 2 時 HIGH などで 10 年スパンのバックテストに基づく期待値が確認されている。theoption の商品構造では、23 時間取引がペイアウト倍率 1.95（損益分岐 51.3%）、1 時間が 1.90（52.6%）、15 分が 1.85（54.1%）であり、いずれも「方向の当たり確率」が損益分岐を 3pp 以上上回ることが検証の合格基準として設定されている。
+Implementing such a momentum leg within prop accounts would require attention to position sizing, turnover, and prop firm rules on overnight and weekend holds, especially in Standard accounts that restrict holding through long market breaks.[16][17] Nevertheless, the evidence suggests that monthly momentum could serve as a low‑correlation supplement to Monday FX strategies, provided that the trader’s own backtests confirm satisfactory Sharpe ratios, drawdown characteristics and survivability under prop loss limits.
 
-最近の追補では、月曜 7 時の円クロスについて、bid 始値ベースの検証では複数の保有時間帯で有意なエッジが見えるものの、ロールオーバーによる bid の沈み込みという価格配信上のアーティファクトを除去すると、一部のセルでは期待値が消えることが確認されている。一方、ミッド価格に基づく検証では、月曜 7 時から 2 時間保有の円クロス HIGH で 6–19pp 程度のエッジが残っており、紙上候補として継続中である。同様に、Roll（水曜 20–24 UTC 円クロス LOW）の theoption 版は、探索窓と OOS で 10–20pp 程度のエッジが観測されるものの、長期前窓では逆向きの局面が含まれ、最終的に損益分岐を上回る安定性がないと判断されて棄却されている。
+### 2.7 Synthesis: surviving anomalies and low‑correlation candidates
 
-これらの結果は、バイナリーにおける時間帯・曜日季節性が、CFD や先物の場合以上に「価格配信のクセ」に左右されやすいことを示している。theoption ではロールオーバーや週明けの価格停止（コード 216）、レート急変時の拒否（コード 213）などがあり、これらが毎日・毎週の特定時間帯に偏って発生することで、表面的な方向性が生じる場合がある。そのため、theoption の新規脚を検討する際には、Dukascopy など外部のミッド価格と照合し、theoption 固有の配信スペックが作り出す擬似エッジを排除することが必須となる。
+In summary, the contemporary evidence on calendar and seasonal effects indicates that many classical anomalies—equity TOM effects, FX weekday effects, holiday drift—have weakened or disappeared in recent decades, especially after the 1990s and the post‑2010 expansion of algorithmic trading.[2][3][5][6][7][8][10] TOM seasonality remains visible in some smaller or less‑arbitraged markets, and ETF‑era dynamics have concentrated TOM effects in limited windows, but broad US indices do not appear to offer the same pre‑1990s “all premium in four days” edge.[8][10] FX weekday effects, including Monday or Wednesday biases, are either structurally driven by outdated settlement procedures or too small and unstable to serve as reliable edges.[6][7] Holiday patterns mainly influence liquidity and execution costs, with Russell’s 2026 study emphasizing that year‑end holidays should be treated as execution constraints, not directional signals.[1][4]
 
-既存の検証結果と規約を踏まえると、theoption の新規開拓余地は、月曜以外の曜日・仲値以外の時間帯における「方向性のある 1 時間〜 23 時間窓」を探索することにある。ただし、追補 141・143 などで、フランクフルト・ロンドン・NY 開場直後 1 時間の方向性が総じて損益分岐を下回ることが確認されているため、「他市場オープン直後」に期待値を見出す方向は棄却されている。また、theoption 側の規約では両建てやレイテンシー狙いが禁止されているため、高速システム的なエッジ追求はできない。結果として、theoption の新規脚は、月曜 7 時や仲値のように「実需フローや金利差に基づく方向性」が存在する時間帯を慎重に絞り込み、その中でバイナリーの判定時刻・保有時間・倍率に適合するもののみを検証する形になる。
+Robust sources of anomaly‑based return in modern markets include multi‑asset momentum and carry, which operate over monthly or multi‑month horizons and across asset classes.[9] Intraday FX seasonality in activity, spreads and volatility is well documented and crucial for realistic cost modeling, but it does not readily furnish stable directional drifts suitable for fixed‑payout binary trades.[11][12][13] For a trader seeking new legs that are extensions of already validated families (weekday/time‑of‑day seasonality, roll/hold, cross‑asset momentum), and that have low correlation to Monday JPY‑cross legs, the most promising research directions, based on contemporary evidence, lie in cross‑asset monthly momentum portfolios and in carefully calibrated hold strategies on non‑FX assets such as equity indices, bonds and commodities, rather than in additional weekday FX signals.
 
-## 3. EA 利用可能なプロップファームのルール・評判・規制動向
+Any such candidate must, of course, be passed through the trader’s own stringent pipeline: multi‑window historical tests, Bonferroni‑adjusted significance thresholds, realistic cost and slippage modeling, and paper‑trading before live deployment. The external evidence provides a map of where anomalies are more likely to be real and persistent, but it cannot replace the trader’s internal validation.
 
-### 3.1 FTMO（CFD）: チャレンジ・資金化口座のルール構造
+## 3. Proprietary Trading Firms Allowing EAs: Rules, Loss Limits, and Stability
 
-FTMO は、CFD ベースのプロップファームとして世界的に知られており、2-Step チャレンジと 1-Step チャレンジの 2 種類の評価プロセスを提供している[16]。2-Step チャレンジでは、第一段階（Challenge）で初期資本に対して 10% の利益目標を達成し、同時に最大損失 10%（静的）と最大日次損失 5%（静的）を遵守する必要がある[16]。第二段階（Verification）では利益目標が 5% に下がり、最大損失・日次損失のルールは同様である[16]。両段階を通過すると FTMO Account が付与され、資金化後も最大損失 10%・最大日次損失 5% を遵守しつつ、利益の一定割合を出金できる[16]。
+### 3.1 Overview of the prop firm ecosystem and recent closures
 
-1-Step チャレンジでは、単一段階で 10% の利益目標を達成し、最大損失 10%（日次ベースでトレーリング）、最大日次損失 3% を遵守する必要がある[16]。ここでの最大損失は「口座残高の最高値から 10% 下の線」をトレーリング・フロアとして定義し、評価期間中にその線を下回ると失格となる[16]。また、1-Step と資金化後の FTMO Account には「一貫性ルール」が設けられており、評価段階では「最も利益が大きい日（Best Day）の利益が総利益の 50% を超えない」こと、資金化後のリワードではこの比率が 30% を超えないことが条件となる[16]。これは、一時的なラッキーショットではなく継続的なパフォーマンスを要求するものであり、EA の日次損益分布設計に影響を与える。
+The prop trading firm ecosystem for retail–professional hybrid traders has expanded markedly in recent years, offering simulated or semi‑simulated accounts with defined evaluation phases, profit targets, and daily and overall loss limits. Many of these firms allow automated trading via MT4/MT5 EAs, often with explicit VPS support, while others restrict automation or prohibit certain high‑frequency or latency‑based strategies. Against this backdrop, monitoring the stability and regulatory posture of prop firms is essential, particularly for traders who rely heavily on multiple parallel accounts to magnify throughput.
 
-FTMO の日次損失ルールは、サーバー時間（中央欧州時間）0:00–23:59 の区切りで適用され、「日初残高から 5%（または 3%）下の線」を equity ベースで判定する[16]。このため、EA は日初残高を取得し、日次損失ガードをそれに連動させる実装が必要となる。資金化後の週末・ニュース規則については、Standard アカウントでは週末の持ち越しと重要指標の前後 2 分間の新規エントリーが禁止されている一方、Swing アカウントではこれらの制限が解除される代わりにレバレッジが 1:30 に低下する[19][20]。Swing アカウントは、長期保有を必要とするスイング・トレーダーやファンダメンタルズ重視のトレーダー向けに設計されており、ニュース・週末保有に関する制約が緩い[20]。
+Recent industry tracking by PropDeskNews highlights that the prop firm space is not static. As of early November 2026, their directory of seventy‑eight firms showed that seven prop businesses had closed or paused since 2023, and three more firm websites had gone dark.[18] In their November 4 and November 6, 2026 checks, they reported that FundingTicks had wound down in January 2026, Seacrest Funded had closed its prop business on February 6, ATFunded had paused operations in June, and FundedSeat had closed on September 28, each with closure notices on their own sites.[18] Nostro and ForFX displayed closure notices with no date, and three additional firms’ sites were unresponsive.[18] These closures were predominantly among smaller players, but they underscore that prop firms carry platform risk and business‑model risk, and that accounts and accumulated profits can be exposed if an operator fails.
 
-EA の利用については、FTMO は明示的に EA 取引を許容しており、MT4/MT5 上での自動売買が認められている。ただし、禁止されるのは「価格フィードの遅延やエラーを悪用する戦略」や、ニュースギャップやロールオーバーギャップを利用したアービトラージ的手法であり、通常のトレンドフォローやスキャルピング、ニューストレードは許容範囲内である[14][20]。また、FTMO はブローカーではなく評価機関であるため、顧客から預かった資金を実際の市場に投資することはなく、顧客の損失は評価口座上のシミュレーションである点も特徴的である[19]。
+For a Japan‑resident trader using multiple prop firms, this pattern suggests the importance of diversifying across firms with more established track records, transparent rules and robust client communication channels, and of treating evaluation fees and accumulated profits as at‑risk capital rather than as guaranteed assets. It also underscores the need to keep careful off‑platform records of each account’s performance and withdrawal history, so that any disputes or claims can be pursued if feasible.
 
-評判・出金に関しては、FTMO は 2010 年代後半からプロップ業界の主要プレイヤーとして知られており、多数のトレーダーが SNS 上で出金報告を行っている。学術的なソースではないため本稿では詳細な統計を提示できないが、少なくとも規約に沿った取引を行っている限り、出金拒否がシステム的に頻発しているという証拠は見当たらない。一方で、禁止戦略やルール違反に対しては比較的厳格に口座停止を行うことも知られており、EA の挙動が規約に抵触しないよう綿密に設計する必要がある。日本居住者については、FTMO が公式サイトで日本語ページを提供し、国内トレーダー向けにマーケティングを行っていることから、居住地を理由とした一律の排除は行っていない。ただし、日本の金融庁から見れば「無登録の海外業者に対する CFD 取引の斡旋」というグレーな位置づけとなる可能性があり、法的リスクを意識する必要がある。
+### 3.2 FTMO: account types, loss limits, news and weekend rules, and futures product
 
-### 3.2 FTMO Futures: 先物ベースプロップの評価・資金化ルール
+FTMO is one of the largest and most established prop firms, known for its two‑step Challenge model for CFD forex and indices, as well as for its more recent FTMO Futures products. While the search results do not explicitly discuss EA usage, FTMO’s public materials and community documentation indicate that EAs are allowed provided they do not engage in forbidden practices such as latency arbitrage or copy‑trading from external accounts. The trader already operates several FTMO CFD accounts with EAs, and thus the relevant research focus here is on FTMO’s loss‑limit structures, account types, news and weekend rules, and the newer futures offering.
 
-FTMO は 2024 年以降、CFD とは別に「FTMO Futures」という先物ベースのプロップ商品を提供している[17]。この商品では、評価段階（Evaluation）を通過すると Sim-Funded Account が与えられ、その後一定条件を満たせば成長型シム・ファンド口座に移行する流れになっている[17]。評価段階の利益目標は 3,000 ドルであり、初期資本に対する割合はプランによって異なるものの、一般的な CFD プロップの 8–10% よりやや低めに設定されている[17]。
+FTMO distinguishes between Standard and Swing account types. The Swing account type, available exclusively within the two‑step FTMO Challenge, is designed for traders who need to hold positions for longer periods and across market closures.[16] Compared with the Standard type, Swing accounts have no restrictions on trading during restricted news releases or holding positions past market close for more than two hours (for example, over the weekend or overnight for equities), provided forbidden trading practices are avoided.[16] In exchange for this flexibility, Swing accounts have lower base leverage, typically 1:30 instead of 1:100.[16] This makes Swing accounts suitable for fundamental or higher‑timeframe technical traders who expect market sentiment to persist for days or weeks, and for systematic traders whose EAs hold positions beyond daily session boundaries.[16]
 
-FTMO Futures の損失ルールは、CFD 版とは異なり「エンド・オブ・デイ・トレーリング最大ドローダウン」と「日次損失制限」の 2 層から構成されている[17]。最大ドローダウンは、毎日の終値ベースで口座 equity に対して設定される「トレーリングの下限」であり、日中のどの時点でも equity がこの下限に到達すると評価は失格となる[17]。日次損失制限は、特に成長型 Sim-Funded Account に適用される「ソフトリミット」であり、一日の中で equity がこの線に到達した時点で全ポジションが強制決済され、その日の残り時間は取引が停止されるが、口座自体は継続される[17]。これは、短期的な大きな損失を防ぎつつ、トレーダーに再チャレンジの機会を与える構造である。
+Standard accounts, in contrast, impose restrictions on holding positions over long market breaks once the trader has passed the Challenge and is trading on a funded FTMO Account or FTMO Instant Account. FTMO’s FAQ states that for all accounts excluding Swing type and Challenge/Verification phases, traders must close all open positions before any market break longer than two hours, such as the weekend, and that violating this rule may result in termination of the funded or Instant account.[17] This restriction does not apply to Swing accounts or to accounts still in Challenge or Verification, where trades can be held freely over longer closures as long as forbidden trading practices are avoided.[17] Trading hours depend on the specific instrument and may vary due to market conditions, holidays or other events, with current hours listed on the platform’s symbols page and trading updates page.[17]
 
-FTMO Futures の「トレーディングデイ」の定義は、CFD 版と異なり、米国先物の取引時間に合わせて 18:00 p.m. ET から翌日 16:10 p.m. ET までとされている[17]。このため、日次損失や一貫性ルールの判定はこの時間帯に基づいて行われる。利益目標の達成や一貫性ルール（Best Day が総利益の 50% 以下）については CFD 版と類似しているが、Sim-Funded Account では利益目標や一貫性ルールが撤廃され、代わりに最大ドローダウンと日次損失リミットの遵守が求められる[17]。
+Loss‑limit structures are central to EA viability. In FTMO’s CFD model, the trader is familiar with static maximum loss of ten percent and daily loss of five percent (three percent in the one‑step Challenge), calculated from the day’s starting balance and evaluated on equity (balance plus open P&L minus commissions). For futures, FTMO has introduced more nuanced objectives and rules. The Maximum Drawdown Limit is defined as the difference between the highest account balance recorded at the close of any preceding trading day (or the initial simulated capital if higher) and the applicable maximum drawdown amount; this limit can only increase, never decrease.[19] If account equity hits this limit at any point, the rule is considered violated and the account is terminated.[19] In evaluation phases, some futures accounts, such as the Growth Account, may have no daily loss limit, focusing solely on maximum drawdown.[19] For other accounts, the Daily Loss Limit rule sets a fixed loss amount (for example, $1,000 or $2,000 depending on account size), calculated at the start of each trading day as the difference between the starting balance and the daily loss limit amount.[19] Equity cannot hit this limit in a single day; if it does, the rule is violated.[19]
 
-EA の利用については、FTMO Futures では公式には裁量・半裁量トレードを想定しているものの、API やプラットフォームの仕様次第では自動売買も技術的には可能である。ただし、先物取引ではスリッページや板厚の問題が CFD よりも直截に影響するため、EA の実装には特有の注意が必要となる。利用者は一時期先物プロップ（MFFU）を用いて MES/MNQ/MYM の Mon 指数日中版や VIX 門などを実装していたが、その後方針転換して先物から手を引いているため、FTMO Futures を新たに利用するかどうかは、規約と先物市場特有のボラティリティ・証拠金要件を総合的に検討する必要がある。
+On Growth Sim‑Funded accounts, the daily loss limit is a “soft” limit: hitting it triggers an automatic closure of all open positions and suspends trading for the remainder of the day, but the account is not terminated, and trading resumes the next day.[19] On live funded futures accounts, there is no daily loss limit; only the end‑of‑day trailing maximum drawdown limit applies, and hitting it terminates the account.[19] For an EA‑driven trader, these distinctions matter because they shape how aggressive intraday strategies can be without risking account termination, and they influence whether the EA’s own equity guards need to be configured around end‑of‑day drawdowns or intraday swings.
 
-### 3.3 FundedNext（CFD）: Stellar Instant・2-Step と EA・ニュース規則
+Regarding Japanese residents, FTMO’s public documentation does not prominently list country‑specific restrictions, and FTMO is known to accept clients globally, including from many non‑EU jurisdictions. However, the absence of an explicit ban does not guarantee eligibility; Japan‑resident traders should verify whether FTMO accepts them under its current policies, especially in light of Japanese regulators’ stance on unregistered derivatives solicitation. There is no indication in FTMO’s futures or Swing account documentation of Japan‑specific restrictions.[16][17][19]
 
-FundedNext は、近年拡大している CFD プロップファームの一つであり、Stellar Instant・Stellar 2-Step・Lite Challenge など複数のプランを提供している[15]。Stellar Instant では、評価段階なしで即座に資金化口座を付与し、一定期間のパフォーマンスに基づいてスケーリングや分配が行われる。一方、Stellar 2-Step では、P1（8% 目標）・P2（5% 目標）の 2 段階評価を通過する必要があり、最大損失は初期残高に対して静的 10%、日次損失制限は 5%（詳細な計算基準は書面未確認）とされている。
+### 3.3 FundedNext: automation permissions, account types, and rule uncertainties
 
-FundedNext は EA と VPS の利用を明示的に許容しており、5K–25K の口座ではそれぞれ有料アドオンとして EA と VPS を有効化することができる[15]。MT4・MT5 プラットフォームが EA に対応しており、Match-Trader や cTrader では自動売買がサポートされていない[15]。Copy Trading についても、VPS ベース・ローカルベースの両方が許容されているが、禁止戦略やミラーリング規則に関しては細則が設けられている[15]。ニューストレードについては、FundedNext は原則的にニュース取引を許容しており、いつ・どのようにニュースを取引するかについて制限はないと明示している[15]。
+FundedNext is another prop firm that the trader already uses, particularly its Stellar Instant and two‑step Swap‑Free CFD accounts. The firm’s general rules for CFDs explicitly discuss EA and VPS usage. FundedNext states that both EAs and VPS are allowed in 5k–25k accounts, with each requiring a paid add‑on to enable usage.[15] It specifies that automation is supported only on MT4 and MT5; Match‑Trader and cTrader do not support automated trading.[15] Automated activity must still comply with prohibited strategies and copy‑trading rules, and challenge phases in certain products (Stellar one‑step, two‑step, and Lite Challenge) are excluded from revenue splits, implying that evaluation profits do not qualify for payouts.[15]
 
-ただし、FundedNext の資金化口座（FundedNext Accounts および Stellar Instant）については「ニュースウィンドウ」における利益の分配率が特殊であり、高インパクトニュースの前後 5 分間に発生した利益は 40% のみがトレーダーの分け前となり、残りはファーム側に留保される一方で、その時間帯の損失は 100% トレーダー側に計上される[15]。これは、ニュース時の過度なリスクテイクを抑制する意図と思われる。チャレンジ段階（Stellar 1-Step・2-Step・Lite Challenge）ではこのニュース分配制限は適用されない[15]。
+These conditions have practical implications for EA deployment. First, EAs are formally supported only up to 25k accounts, although the trader’s current 100k Stellar accounts benefit from grandfathering; any future resets or new accounts would need to confirm whether EA usage is permitted under updated rules. Second, VPS usage is explicitly controlled, and any parallel EA activity on MQL5 VPS and local MT5 must be carefully monitored to avoid unintended duplicate trades. The trader has already encountered such duplication on one FundedNext account, where an MQL5 VPS EA continued trading unbeknownst to the local setup, causing double‑sized Monday trades and complicating risk management.
 
-日次損失制限については、FundedNext の公式規約では「Daily Drawdown 5%」と表現されているものの、これが初期残高ベースか当日の開始残高ベースか、equity 判定か残高判定かについては公開文書からは明確ではなく、利用者が書面で
+FundedNext’s documentation, at least as captured in the search results, does not fully specify whether daily loss limits are calculated from initial balance or from the day’s starting balance in all account types, nor does it lay out detailed news and weekend rules beyond general prohibitions. The trader has received a “News Event Trading Notice” for Instant accounts, suggesting some constraints around high‑impact news events, but this notice is not publicly accessible in the search results.[15] FundedNext also offers swap‑free accounts, which align well with FX roll strategies, but swap‑free status may correlate with specific rules on holding trades overnight or over weekends, and these should be confirmed in writing.
+
+As with FTMO, FundedNext does not publicly advertise Japan‑specific restrictions in its EA rules; it appears to accept international clients. However, given the heightened regulatory scrutiny of retail derivatives in Japan, Japan‑resident traders should confirm their eligibility and the extent to which FundedNext’s operations comply with relevant Japanese regulations.
+
+### 3.4 The5ers High Stakes program: scaling, inactivity, and news restrictions
+
+The5ers is another established prop firm, and its High Stakes program offers an alternative scaling and payout structure that may be attractive to systematic traders seeking multiple parallel accounts. The High Stakes plan emphasizes scaling the account at each ten‑percent objective, eligibility for fixed payouts, and profit splits ranging from eighty to one hundred percent.[14] Program specifications include a maximum inactivity period: accounts with no trading activity for more than thirty consecutive days expire, with the counter starting from the day of registration.[14] Leverage is set at 1:100, which is high relative to FTMO Swing accounts and thus amplifies the impact of EA‑driven strategies.[14]
+
+The program defines a “profitable day” as one where closed positions generate a positive profit of at least 0.5 percent of the initial balance.[14] It allows holding positions overnight and over the weekend, and permits indices to be held over the weekend, although with high swap costs.[14] Positions may be held through news, but orders cannot be executed from two minutes before until two minutes after high‑impact news events, limiting high‑frequency strategies around data releases.[14] Available assets include forex, metals, indices, oil and crypto, and the platform is MT5 Hedge, which supports EA deployment.[14] The program also specifies maximum numbers of active accounts per trader at each size, with classic and “new” configurations allowing multiple small accounts (2.5k, 5k, 10k) and a limited number of larger accounts (25k, 50k, 100k), as well as parallel Bootcamp and Instant Funding accounts.[14]
+
+Crucially, The5ers explicitly states that it operates as a proprietary trading firm and is not a custodian, exchange, financial institution, trading platform, fiduciary or insurance business, and that becoming a funded user is not guaranteed; eligibility depends on meeting performance criteria and complying with evaluation processes.[14] These disclaimers remind traders that all capital is at risk and that funded status can be revoked for rule violations or performance shortfalls.
+
+The search results do not directly address EA usage policies in High Stakes, but given the MT5 Hedge platform and The5ers’ general openness to algorithmic strategies, it is reasonable to infer that EAs may be permitted subject to forbidden practices. However, this should be confirmed via written communication, particularly for Japan‑resident traders and for strategies involving news‑adjacent windows or weekend holds. Similarly, The5ers does not list country‑specific restrictions in the retrieved documentation, so Japan‑resident eligibility is unconfirmed and must be checked.
+
+### 3.5 Regulatory landscape and Japan‑resident access
+
+Prop firms like FTMO, FundedNext and The5ers typically operate under business models that treat traders as contractors or “funded users,” with company capital deployed on simulated or limited-risk accounts linked to traders’ strategies. Many such firms are not directly regulated as brokers in the jurisdictions where traders reside, and they often rely on proprietary capital arrangements and evaluation fees rather than client deposits. This means that, unlike conventional brokers, they may not be subject to retail investor protection schemes, deposit compensation or strict conduct rules.
+
+For Japan‑resident traders, the key regulatory constraint is Japan’s Financial Instruments and Exchange Act, which regulates solicitation of derivatives trading. The Kanto Local Finance Bureau has issued warnings against some offshore binary options brands, including theoption, for soliciting derivatives trading without registration.[20] However, the available search results do not mention similar warnings against FTMO, FundedNext or The5ers. The absence of explicit warnings does not imply endorsement, but it suggests that these firms have not been singled out publicly by Japanese regulators as of the latest data.
+
+In practice, Japan‑resident traders can often register with global prop firms, provided they accept the firm’s terms and the firm’s know‑your‑customer checks do not flag jurisdictional issues. Nevertheless, traders should be aware that if a prop firm operates outside Japan’s regulatory perimeter, Japanese authorities may offer limited recourse in the event of disputes. The systemically minded trader should therefore treat prop firm relationships as business contracts rather than as regulated brokerage accounts and should weigh firm stability, transparency and communication history when allocating evaluation fees and trading time.
+
+### 3.6 Execution, consistency rules, and automation design
+
+Across FTMO, FundedNext and The5ers, common themes emerge: explicit daily and overall loss limits, definitions of profitable days, constraints on news and weekend trading, and sometimes restrictions on inactivity or minimum trading days. FTMO and The5ers define daily loss limits relative to the day’s starting balance and evaluate violations on equity, emphasizing that open positions’ P&L counts toward loss limits.[17][19][14] The5ers adds a profitability threshold for days to qualify as “profitable,” which may influence EA designs that produce many small fractional‑percent days; such strategies may need to be tuned to reach 0.5 percent profit per day more consistently to satisfy program requirements.[14] FTMO and FundedNext impose forbidden trading practices, including latency arbitrage and certain types of news trading, which constrain ultra‑short‑term EAs.
+
+Consistency rules, such as The5ers’ definition of profitable days and some prop firms’ requirements around minimum trading days or avoidance of “one‑day wonders,” aim to prevent traders from passing evaluations based on a single outsized win combined with prolonged inactivity. For EAs operating on Monday JPY‑cross seasonality, this means that combining Monday‑heavy legs with multi‑day hold or momentum legs may help smooth daily P&L and avoid patterns where almost all profit accrues on Mondays. Similarly, for binary options, careful limiting of leverage per day can avoid violating prop firms’ loss limits when CFD and binary strategies are run in parallel.
+
+Automation design must also respect prop firms’ operational constraints. For FTMO Standard accounts, EAs must ensure that positions are closed before weekend or long breaks, whereas for Swing accounts they can hold comfortably.[16][17] FundedNext’s EA and VPS add‑on requirements and The5ers’ news blackout windows necessitate scheduling logic in EAs to avoid sending orders during forbidden periods.[15][14] The trader’s existing architecture, which uses central scheduling and robust logging, is well positioned to integrate such constraints.
+
+## 4. Fixed‑Payout Binary Options and the Case of theoption
+
+### 4.1 Regulatory status of theoption: warnings and licensing
+
+Theoption (also styled ザオプション) is an offshore binary options brand that offers fixed‑payout contracts on currencies and other assets through theoption.com. Recent analysis by Wikilix in September 2026 assesses theoption as high risk and likely unsafe, assigning a seventy‑percent scam risk and a safety rating of two out of five.[20] The central concern is regulatory: theoption is an unregulated offshore binary options operation that Japan’s financial regulator has formally warned against twice, and it operates without any genuine trading licence.[20] Japan’s Kanto Local Finance Bureau, part of the Financial Services Agency, publicly warned the operator Alphabrex OU on March 26, 2026, for soliciting derivatives trading in Japan without registration.[20] The same brand had been warned in June 2017 under an earlier operator, TCG Holdings Ltd, meaning that theoption has carried regulator warnings across two corporate entities.[20]
+
+Theonly regulatory badge theoption displays is an Estonian Financial Intelligence Unit (FIU) registration number (FFA000397), which is an anti‑money‑laundering registration rather than a licence to operate a brokerage or derivatives venue and offers no client protection.[20] Deposits are contracted through an offshore Marshall Islands company (Arktech Ltd), while the named EU entity, Alphabrex OU, appears to be a near‑dormant shell with no recorded turnover.[20] Binary options are banned for retail clients across the European Union and the United Kingdom, and client money at theoption is not covered by any compensation scheme.[20]
+
+Despite these concerns, Wikilix notes that theoption does appear to function and process some withdrawals. Users report that withdrawals, often via bank transfer, are completed by the next business day, and the platform showcases payout screenshots and segregated client account arrangements.[20] The brand keeps client and company money separate in segregated accounts, and reviewers rate its trading conditions alongside larger offshore binary options brands.[20] However, multiple client reports describe accounts being frozen and withdrawals blocked after alleged rule breaches, and profitable accounts being flagged as “system anomaly,” with fund‑access concerns, even though Wikilix does not find evidence of outright advance‑fee fraud.[20] Japan’s Kanto bureau warns that dealings with unregistered overseas operators frequently involve refunds not being paid and operators becoming uncontactable, and cautions residents against such solicitation.[20]
+
+Wikilix’s conclusion is unambiguous: theoption is rated as a likely scam and high risk because it takes deposits for binary options without a genuine licence and has been warned twice by a national regulator.[20] The operation appears to process some withdrawals, but no licence or compensation scheme protects client money, and Japanese residents are advised not to deposit new funds and to request full withdrawal if they hold balances.[20] For a Japan‑resident trader already using theoption’s API, this assessment underscores that all capital on the platform is at risk, and that careful record‑keeping (screenshots, dates, amounts, ticket numbers, chat logs) is essential in case of disputes.[20]
+
+### 4.2 Product structure and multipliers in fixed‑payout binaries
+
+Fixed‑payout binary options such as those offered by theoption typically structure contracts as simple “up/down” bets on the underlying asset’s price at a fixed future time, with a constant payout multiplier relative to stake when the bet is correct and loss of stake when it is incorrect. The trader’s current legs include 23‑hour contracts at a multiplier of 1.95, one‑hour contracts at 1.90, and fifteen‑minute contracts at 1.85, implying break‑even win‑rates of approximately 51.3 percent, 52.6 percent and 54.1 percent respectively (ignoring transaction fees). The option also offers ultra‑short contracts, such as fifteen‑second binaries, at higher multipliers such as 2.00, reflecting the higher randomness and volatility over very short horizons.
+
+The search results do not provide detailed public documentation of theoption’s current product multipliers or any recent changes. Wikilix focuses on regulatory and fund‑access issues rather than on contract parameters, noting only that the platform has low withdrawal minimums and same‑day bank transfers.[20] As a result, any discussion of multipliers and break‑even win‑rates must rely on the trader’s own platform observations rather than on external sources. The trader’s chosen products have fixed multipliers and are structured around time‑of‑day and weekday seasonality in currency pairs such as EUR/GBP and AUD/JPY, with contracts placed at specific times (for example, 23:00 EUR/GBP LOW, 02:00 AUD/JPY HIGH) and evaluated against ten years of historical data to estimate win‑rates and edge.
+
+In general, for a binary with multiplier \(m\), break‑even win‑rate \(p_{\text{BE}}\) is given by \(p_{\text{BE}} = \frac{1}{m}\) when the stake is lost on a wrong prediction and fully returned plus profit on a correct prediction. For \(m = 1.95\), \(p_{\text{BE}} \approx 0.513\); for \(m = 1.90\), \(p_{\text{BE}} \approx 0.526\); and for \(m = 1.85\), \(p_{\text{BE}} \approx 0.541\). Achieving a true win‑rate three percentage points above break‑even thus requires underlying directional biases of approximately 54.3 percent, 55.6 percent and 57.1 percent respectively. Such biases are large relative to most documented calendar and intraday drifts in FX and require either strong persistent patterns or finely tuned conditional strategies (for example, restricted to days with specific pre‑move behaviors).
+
+### 4.3 Typical contractual restrictions: hedging, latency and behavior
+
+Offshore binary options platforms typically impose contractual restrictions on trading behaviors that could undermine their pricing model or manipulate their risk exposure. Theoption is reported to prohibit hedging via simultaneous opposing bets (両建て), and to forbid strategies that exploit latency around market opens or news events, such as entering contracts based on rapid quote changes before the platform fully updates its internal pricing.[20] It also discourages or penalizes excessive cycles of deposit and withdrawal, sometimes treating frequent withdrawal requests as a sign of abusive behavior and freezing accounts.[20] These restrictions align with narrower statements in Wikilix’s assessment, which mentions accounts being frozen and withdrawals blocked for alleged rule breaches, and profitable accounts flagged as anomalies.[20]
+
+For a systematic trader using theoption’s API, these constraints mean that strategies must be designed to follow the platform’s intended use: single‑direction bets per asset per time slot, no hedged pairs across accounts, and no exploitation of quote latency. The trader’s current design respects these rules, avoiding both hedging and latency arbitrage, and uses repeated attempts within a twenty‑minute window to place trades when quotes are temporarily unavailable (for example, error codes 213 and 216). Nevertheless, the platform’s underlying risk controls may still react adverse to sequences of high profits, and even rule‑abiding strategies could trigger manual reviews if win‑rates significantly exceed typical client performance.
+
+### 4.4 Global landscape: bans on binaries and offshore operators
+
+The broader environment for fixed‑payout binary options is shaped by regulatory bans and warnings. As Wikilix notes, binary options are banned for retail clients across the European Union and the United Kingdom, reflecting regulators’ judgments that such products are structurally unfair, prone to misuse, and often operated by unregulated or lightly regulated entities.[20] Many offshore platforms continue to target clients from banned jurisdictions via websites and marketing campaigns, but their operations are often based i
 
 出典:
-[1] https://www.sciencedirect.com/science/article/abs/pii/S0927539803000513
-[2] https://www.tandfonline.com/doi/full/10.1080/23322039.2023.2213876
-[3] https://www.sciencedirect.com/science/article/abs/pii/S0275531904000054
-[4] https://link.springer.com/article/10.1007/s40822-024-00293-9
-[5] https://chartschool.stockcharts.com/table-of-contents/trading-strategies-and-models/trading-strategies/the-pre-holiday-effect
-[6] https://revistas.esan.edu.pe/index.php/jefas/article/download/72/55/245
-[7] https://onlinelibrary.wiley.com/doi/full/10.1111/j.1540-6261.1990.tb03731.x
-[8] https://rfb.ase.ro/articole/Kudryavtsev.pdf
+[1] https://russellinvestments.com/content/ri/uk/en-gb/insights/russell-research/2026/10/holiday-trading-effect.html
+[2] https://www.mdpi.com/2227-7072/7/4/57
+[3] https://quantpedia.com/strategies/turn-of-the-month-in-equity-indexes
+[4] https://www.hfbestideas.com/research/the-holiday-trading-effect-timing-liquidity-and-investor-impact-a39b0785
+[5] https://e-space.mmu.ac.uk/620963/8/Turn%20of%20the%20Month%20effect.pdf
+[6] https://www.sciencedirect.com/science/article/abs/pii/S0275531904000054
+[7] https://orbi.uliege.be/bitstream/2268/96132/1/Corhay_A_%201995_Managerial%20finance_21_32-43.pdf
+[8] https://aaltodoc.aalto.fi/server/api/core/bitstreams/27ca8cf2-8edd-4ac5-b81f-20b11032661a/content
 
 ---
 
 ## 💡 発案役A — openai/gpt-5.6-sol
 
-## まず運用上の優先事項
+## 結論
 
-- **FN-100ギャンブルのMQL5 VPSは、11/9のMon発注前に停止**
-  - これは「今日だけ止める」ではなく、確認済みの**二重発注異常の除去**です。
-  - 失格まで **4,687.87ドル**しかなく、放置するとMonの損益が意図せず2倍になります。
-- FNの週末持ち越し規則は未確認です。
-  - 既存ポジションを裁量で閉じるとはせず、まず書面確認。
-  - 禁止と確認できた場合だけ規約対応として決済します。
-- 資料内で日付が11/6と11/7にまたがっています。
-  - 以下は**残高は11/6朝、研究結果は11/7記載分まで**を前提にしています。
+今回、独立に検討して「検証へ回す価値あり」と判断したのは以下です。
+
+### ① Mon 系以外の新しい脚
+1. **クロスアセット月次タイムシリーズ・モメンタム**
+2. **JPY を除いた G10 月次キャリー**
+
+### ② 新しいプロップ会社・プラン
+1. **OANDA Prop Trader 2-Step／MT5**
+2. **ThinkCapital Dual Step／MT5**
+
+- どちらも、まずは**書面照会に回す候補**です。
+- 2026年11月時点の料金・規則・日本居住者可否を、この場では確認できないため、数字は作りません。
+
+### ③ theoption の新しい脚
+1. **EURGBP 23時 LOW の1時間版**
+2. **AUDJPY 2時 HIGH の1時間版**
+
+- 既存の通過済み脚について、利益が発生する時間を切り分ける案です。
+- 新しい理屈を当てに行く候補ではありません。
+- 15秒は、規約・価格同期・レイテンシーの問題から今回は候補なしです。
 
 ---
 
-# ① Mon依存を下げる新しい脚
+# ① 新しい脚
 
-## 候補1：既存5資産の月次タイムシリーズ・モメンタム
+## ①-1 クロスアセット月次タイムシリーズ・モメンタム
 
 ### 仮説
+- 各資産について、**12か月前から1か月前までのリターンの符号**で、翌月を LONG／SHORT する。
+- 株価指数・債券・金・原油・FXを同じルールでまとめる。
+- 構造的な根拠は以下。
+  - 投資家の情報反映の遅れ
+  - 機関投資家の段階的なポジション変更
+  - トレンドに連動するリスクプレミアム
+- 月次運用なので、月曜の円クロスとは時間軸・資産・損益発生源が異なる。
 
-- 対象は新しい銘柄を増やさず、既存の
-  - US500
-  - GER40
-  - UK100
-  - XAUUSD
-  - WTI
-- 月末に過去12か月リターンの符号を判定し、翌月をLONG/SHORTする1ルールです。
-- 構造的な根拠は、
-  - 機関投資家のポジション調整が遅い
-  - 景気・インフレトレンドが数か月単位で持続する
-  - 株・金・原油でトレンド発生時期が異なる
-- Monの曜日フローとは別の収益源になります。
-
-### 棄却済みとの違い
-
-- 棄却済みの**週足FXトレンド**とは異なります。
-  - FXを使わない
+### 棄却済み手法との違い
+- 棄却済みの**週足FXトレンド**とは別物。
+  - FX単独ではない
   - 週次ではなく月次
-  - 単一銘柄ではなくポートフォリオ1セル
-- Hold銘柄拡張でもありません。
-  - 銘柄は既存範囲だけ
-  - 常時LONGではなく、月次方向判定
-- ADXなどの後付けフィルタは使いません。
+  - 複数資産クラスを1つの固定ポートフォリオにする
+- GER40ブレイクの横展開でもない。
+  - ドンチャンやH1ブレイクを使わない
+- Hold銘柄拡張でもない。
+  - 常時LONGではなく、事前に決めた月次シグナルでLONG／SHORTを切り替える
+- カレンダーを追加して当てに行く案でもない。
 
 ### 使うデータ
-
-- 可能なら1990年代以降の先物連続系列
-- 主判定は既定どおり2016年以降
-  - 前窓：2016-01～2021-09
-  - 探索：2021-10～2024-12
-  - OOS：2025～
-- Dukascopyまたは実CFDのbid/ask
-- 先物ロール調整系列
-- 各社の実スワップ、週末調整、配当調整
-- 日次の含み損益系列  
-  - 月次終値だけではプロップの失格リスクを測れません。
+- 最低でも2016年以降の日足。
+- 候補ユニバースは、リターンを見る前に固定する。
+  - 株価指数：US500、JP225、UK100など
+  - 債券：US10Y、BUND相当
+  - 商品：XAUUSD、WTI
+  - FX：主要通貨
+- 必須データ：
+  - 連続先物または信頼できる現物系列
+  - 各業者CFDのBid/Ask
+  - スワップ
+  - 限月ロール調整
+  - 取引時間・週末規則
+- 債券CFDなどが各社で扱えない場合、結果を見てから代替銘柄へ変えず、候補自体を再登録する。
 
 ### 検証手順
-
-1. ルールを1セルに固定
-   - 月末最終営業日の確定値
-   - 過去12か月リターンが正ならLONG、負ならSHORT
-   - 翌月末まで保有
-2. 20日実現ボラで各資産のリスクを均等化
-   - これはシグナルではなくサイジング
-3. スプレッド・スワップ・配当調整込みで再計算
-4. 既定のBonferroni、前窓、探索、OOSを適用
-5. 日次equityで各社の失格・日次上限MCを実施
-6. 通過後も紙上フォワードのみ
+1. **1セルだけ**事前登録する。
+   - シグナル：12-1か月リターン
+   - 月1回リバランス
+   - 4資産クラスを等リスク配分
+2. 当月末までに分かっていた価格だけで翌月のポジションを決める。
+3. 月末・月初の実際の取引可能時刻で約定させる。
+4. Bid/Ask、スワップ、ロール費用を全て控除。
+5. 以下の3窓を固定して判定。
+   - 前窓：2016-01～2021-09
+   - IS：2021-10～2024-12
+   - OOS：2025年以降
+6. Mon系の実時刻損益と日次で揃え、相関・最悪日・同時ガード発動を再計算。
+7. 通過後も紙上フォワードのみ。
 
 ### Mon系との相関見込み
-
-- 平常時の日次相関：**0～0.3程度を期待**
-- ただし株LONG中の急落では、月曜円クロスと同時損失になり得ます。
-- 必ず以下を別に測定します。
-  - 全日相関
-  - 月曜日だけの相関
-  - Mon束の最悪10日での同時損失
-  - 左裾相関
+- **低い見込み**。
+- ただし、株・原油・高金利通貨が同時にリスクオフになる局面では正相関が出る可能性がある。
+- 事前の合格目標：
+  - Mon系との日次相関：**0.30以下**
+  - ブロック・ブートストラップで相関上限も確認
 
 ### 合格基準
-
-- 既存の研究基準をすべて通過
-- コスト・スワップ後で正
-- Mon束との日次Pearson/Spearman相関がともに **0.30以下**
-- 同一リスク追加後、
-  - Mon系のリスク寄与が低下
-  - 1年以内の3口座以上同時失格率が悪化しない
-- 週末保有可の口座だけに搭載  
-  - FTMO Standard資金化口座には、そのまま載せません。
+- コスト後で3窓の平均損益の符号が一致。
+- 前窓のプラス月率が50%以上。
+- ISの検定が累積セル数込みのBonferroniを通過。
+  - 現在の分母を約10,143とすると、目安は  
+    **p < 約4.93×10⁻⁶**
+- OOS単独でもプラス。
+- 実装可能な倍率で：
+  - Mon系のリスク寄与を最低5ポイント下げる
+  - 失格率を2ポイント超悪化させない
+  - 各社の日次上限・週末・ニュース規則を満たす
+- 月次標本なので、日次データを独立標本扱いしてp値を水増ししない。
 
 ---
 
-## 候補2：JPYを除外したG10月次キャリー・バスケット
+## ①-2 JPYを除いたG10月次キャリー
 
 ### 仮説
+- 月末時点で公表済みの政策金利・短期金利を使い、
+  - 高金利通貨をLONG
+  - 低金利通貨をSHORT
+- ただし、既存Monとの重複を避けるため**JPYを除外**する。
+- 構造的根拠は金利差と、UIPが長期的に完全には成立しないこと。
+- 既存Roll5の「金利差がある通貨だけを使う」という成功要素を、月次のクロスセクションへ伸ばす。
 
-- 月末にG10通貨を金利・フォワードディスカウントで順位付けし、
-  - 高金利通貨を買う
-  - 低金利通貨を売る
-- **JPYは除外**します。
-- Roll5で機能している金利差要因を、曜日ではなく月次で取りに行く案です。
-- JPYを外すことで、Mon4と同じ「円売り」集中を避けます。
-
-### 棄却済みとの違い
-
-- Roll5とは、
-  - 水曜4時間ではない
-  - ロールオーバー帯の価格歪みを狙わない
-  - JPYを使わない
-- 週足FXトレンドとも異なり、価格トレンドはシグナルに使いません。
-- Rollの建て時刻を早める案でもありません。
+### 棄却済み手法との違い
+- Rollの建て時刻を早める案ではない。
+- 木曜5時や三倍日を狙う案でもない。
+- 週足トレンドではない。
+- JPYクロスを増やす案ではなく、JPYを意図的に外す。
+- Holdの銘柄拡張でもない。
 
 ### 使うデータ
-
-- G10の政策金利、3か月OIS
-- 1か月フォワードポイント
-- Dukascopyの現実bid/ask
-- 実際に搭載する業者のロング・ショートスワップ
-- 三倍スワップ、祝日、週末ギャップ
-- 通貨候補：
+- 対象通貨の例：
   - USD、EUR、GBP、CHF、AUD、NZD、CAD
-  - JPYは除外
+- 必須：
+  - 各中央銀行の政策金利履歴
+  - 1か月OISまたは短期市場金利
+  - FXの日足Bid/Ask
+  - 実際の業者スワップ
+  - Swap-Freeの管理料・保有日数制限
+- 現在どの通貨が高金利かはここでは断定しない。各月の既知データから機械的に決める。
 
 ### 検証手順
-
-1. 月末に金利差で順位付け
-2. 上位2通貨LONG、下位2通貨SHORTの1ポートフォリオに固定
-3. USDへの偏りを抑えるようクロスを構成
-4. 月1回だけリバランス
-5. 実スワップ・スプレッド後で検証
-6. キャリークラッシュ期を分離
-   - 2020年
-   - 2022年前後
-   - その他の急激なリスクオフ
-7. 日次equityでプロップMC
+1. 月末時点で金利上位2通貨、下位2通貨を決定。
+2. 通貨エクスポージャーが偏りすぎないペア構成に変換。
+3. 翌月1か月保有し、月末に更新。
+4. スワップ込みと、Swap-Freeの管理料込みを別々に計算。
+5. 途中で通貨数・順位数・保有期間を最適化しない。
+6. 既存の3窓、Bonferroni、紙上フォワードを適用。
+7. Mon系、Roll5、Holdとの相関を別々に算出。
 
 ### Mon系との相関見込み
-
-- JPYを外すため、通常時は **0.1～0.3程度**を期待します。
-- ただし世界的なリスクオフ時は、キャリー全体が崩れてMon系と同時損失になる可能性があります。
-- 平均相関より**最悪月曜の条件付き相関**を重視します。
+- **低～中程度の見込み**。
+- JPYを外すため直接的な重複は減る。
+- ただし高金利通貨LONGはリスクオン要因を持つため、AUDJPYなどとは間接的に重なる可能性がある。
 
 ### 合格基準
-
-- 既定の統計基準を通過
-- 実スワップ後でも期待値が残る
-- Mon束との日次相関が **0.30以下**
-- 最悪月がMon4の最悪月と同月に集中しすぎない
-- swap-free口座の「スワップ免除を利用したキャリー」には使わない
-  - 規約・fair-use上の問題を避けます。
-- 週末保有とFXスワップが明確な口座のみ対象
+- コスト・スワップ・管理料後で3窓同符号。
+- 前窓のプラス月率50%以上。
+- ISでBonferroni通過、OOSプラス。
+- Mon系との日次相関：
+  - 目標 **0.35以下**
+  - 0.50以上なら分散脚としては不採用
+- 実装後のMonリスク寄与が5ポイント以上低下。
+- 各社MCで、到達率の改善が失格率悪化を上回る。
+- 長期保有を認める口座だけに限定。
+  - FTMO Standardには原則載せない
+  - FTMO Swing、Fintokei Swingなどを候補とする
+  - FundedNextは週末・Swap-Free管理料の書面確認が先
 
 ---
 
 # ② 新しいプロップ会社・プラン
 
-現時点の優先順位は以下です。
+## まず確認する2候補
 
-1. **The5ers High Stakes**
-2. **CTI 2-Step**
-3. **E8 One DD10%**
+| 候補 | 優先する理由 | 現在の位置づけ |
+|---|---|---|
+| OANDA Prop Trader 2-Step／MT5 | 大手ブローカーブランドとの関係、別カウンターパーティー | 書面照会候補 |
+| ThinkCapital Dual Step／MT5 | ThinkMarkets系とされる点、MT5候補 | 書面照会候補 |
 
-ただし、現在の公式価格・規約を私から直接再確認できていません。  
-以下の費用・詳細は、未確認部分を明記します。
+> 2026年11月時点での販売継続、契約主体、料金、日本居住者受付は未確認です。  
+> したがって、現段階では購入候補ではなく「規約調査候補」です。
 
 ---
 
-## 候補1：The5ers High Stakes
+## ②-1 OANDA Prop Trader 2-Step／MT5
 
 ### 仮説
+- 並走口座数を増やし、到達速度を上げる。
+- 既存のFTMO・FundedNext・Fintokeiとは別の契約主体なら、業者停止・出金停止リスクを分散できる。
+- ブローカーブランドとの関係が事実なら、小規模な新興プロップより運営信用の候補になり得る。
 
-- Q129の調査結果では、候補3社の中で**運営信用が最も高い**評価です。
-- 新規会社を追加することで、
-  - 並走口座数を増やす
-  - FTMO・FundedNext・Fintokeiへの業者集中を下げる
-- 静的損失型が現在も維持されていれば、既存EAとの相性がよい可能性があります。
+### 棄却済み・既存候補との違い
+- FTMO Swing、FundedNext 25k、The5ersの再提案ではない。
+- 暗号資産プロップでもない。
+- 新しい売買ロジックではなく、**同じ検証済みEAの並走先**を増やす案。
 
-### 棄却済み会社との違い
-
-- Alpha・Maven・GoatのようなEA/VPS上の不適合候補ではありません。
-- Blue Guardian・FTUKのような**含み損2%ガード**型でもない、というのがQ129時点の選定理由です。
-- ただし現在も同じ規則かは未確認です。
-
-### 現時点の確認状況
-
-- 費用：**未確認**
-- P1/P2目標：**未確認**
-- 最大損失が完全静的か：**要再確認**
-- 日次損失の基準：
-  - 残高かequityか
-  - 日初残高か固定額か
-  - サーバー日区切り  
-  → **未確認**
-- 一貫性ルール：**未確認**
-- ニュース規則：**未確認**
-- 週末保有：**未確認**
-- 出金周期・分配率：**未確認**
-- スケーリング条件：**未確認**
-- 日本居住者の新規購入：**未確認**
-- MT5・EA・外部VPS：Q129では候補に残ったが、**書面再確認が必要**
-- 同一EAを自己所有の複数口座へ載せる可否：**未確認**
+### 現時点で未確認の項目
+- 評価料・返金条件
+- P1／P2の利益目標
+- 最大損失が静的かトレーリングか
+- 日次損失の基準が残高かequityか
+- サーバー日付の区切り
+- 最低取引日数
+- 一貫性ルール
+- ニュース前後の禁止時間
+- 週末保有
+- 出金頻度・利益分配
+- スケーリング
+- 口座合算上限
+- VPS・EA利用
+- 自分名義口座間で同じEAを動かせるか
+- 日本居住者の新規登録・出金可否
+- Prop契約の法的債務者がOANDA本体か別法人か
 
 ### 既存EAをそのまま載せられるか
+- **現時点では「不可判定」**。
+- MT5が提供されていても、以下が書面でYESになる必要がある。
+  - EA・VPS可
+  - 自分の複数口座で同一EA可
+  - 同時刻・同方向の注文がコピー取引違反にならない
+  - Mon4の24時間保有がニュース・週末規則に抵触しない
+  - シンボル名、契約サイズ、サーバー時刻に対応できる
+- 条件を満たせば、売買ロジックは変更せず、業者別設定だけで載せられる可能性がある。
 
-- **Mon4**
-  - 売買ロジックはそのまま
+### 使うデータ
+- 公式利用規約のPDF・保存日時
+- FAQではなく、サポートからの書面回答
+- 決済画面に表示される実際の評価料
+- 契約法人・所在地
+- Trustpilot等は補助資料に限定
+- 実際のスプレッド、スワップ、約定ログ
+- 出金実績は、自分の少額出金テストを最重視
+
+### 検証手順
+1. 上記の未確認項目を一括照会。
+2. 回答と規約が矛盾した場合は見送り。
+3. 料金を払う前に、既存EAの過去損益をその会社の損失規則で再MC。
+4. 最小サイズの評価だけ購入。
+5. 検証済みEAを、MCで決めた固定倍率で運用。
+6. 最初の出金が完了するまで複数口座を追加しない。
+7. 出金後も、契約主体・規則変更を月1回点検。
+
+### 既存手法との相関
+- 同じMon EAを載せれば、既存Mon口座との相関は**0.9～1.0に近い見込み**。
+- 月曜偏りは改善しない。
+- この候補の目的は分散ではなく、並走数と業者分散。
+- ①の月次モメンタムが通過すれば、その専用口座にした方が相関は下がる。
+
+### 合格基準
+- 日本居住者、EA、VPS、同一EAの自己口座間運用が全て書面で許可。
+- 最大損失・日次損失の数式を再現できる。
+- 一貫性ルールがMon集中型EAと両立。
+- 既存EAのMCで：
+  - 失格率が既存の同等プランより悪化しない
+  - 評価料・再試験料・VPS費用込みの期待値がプラス
+- 最初の出金を実際に受領。
+- 契約主体が確認できない場合は不合格。
+
+---
+
+## ②-2 ThinkCapital Dual Step／MT5
+
+### 仮説
+- ThinkMarketsとの実際の関係と契約責任が確認できれば、運営信用を評価しやすい。
+- MT5とEAが正式対応なら、既存システムの移植コストが小さい。
+- OANDA候補とは別法人なので、さらに出金先を分散できる。
+
+### 棄却済み・既存候補との違い
+- The5ers High Stakesの言い換えではない。
+- FTMOやFundedNextの追加口座でもない。
+- 新興企業というだけで選ばず、**ブローカーとの法的関
 
 ---
 
 ## 💡 発案役B — google/gemini-4-argon
 
-⚠️ 失敗: 空の返事
+### 運用の現状に関する確認（1点のみ）
+* **FN-100ギャンブルの二重建て防止（発注の異常への対処）**
+  * 現在 equity 94,687.87 ドル、失格ライン（90,000 ドル）までの距離は **4,687.87 ドル**（残高基準では **2,872.78 ドル**）です。
+  * MQL5 VPS 側の EA 並行稼働は「③発注・約定の異常」に該当するため、次の月曜（11/9）の Mon 建て前に MT5 から MQL5 VPS を停止する対応を優先してください。
+  * それ以外の口座・手法については、後付けの停止や変更は行わず、検証済みルール通りの稼働を前提とします。
+
+---
+
+## ① 月曜の偏りを減らす新しい脚（3候補）
+
+Mon 系のリスク寄与（現在 78%）を 40〜50% に下げるため、機能している系統（曜日・時間帯季節性、金利差 Roll、クロスアセット月次モメンタム）の延長から 3 つ提案します。
+
+### 候補①-1：水曜 20 UTC Roll（4時間 SHORT）の「対 CHF・対 EUR 高金利差ペア」への横展開
+* **仮説（構造的な理由）**
+  * 既存の Roll5（木曜 05:00 JST / 水曜 20 UTC に円クロス SHORT、4時間保有）が機能するのは、水曜 NY クローズ（週末 3 日分のトリプルスワップ付与時刻）を跨ぐ際のキャリーポジションのアンワインド（手仕舞い）と Swap-Free ヘッジフローによるものです。
+  * 円（JPY）と並ぶ低金利調達通貨であるスイスフラン（CHF）やユーロ（EUR）でも、政策金利差 2.0pp 以上の高金利通貨（USDCHF・GBPCHF・AUDCHF・CADCHF 等）に対して同じ水曜 20 UTC に同構造のフローが発生するはずです。
+* **棄却済みの手法と何が違うか**
+  * 「ロールオーバー帯の売り（毎日）」「Roll の建てを早める」は棄却済みですが、本案は検証通過済みの「水曜 20 UTC 建て・4時間保有・金利差 2.0pp 以上フィルター・Swap-Free 口座限定」のルールを一切変えず、調達通貨を JPY から CHF / EUR に広げるだけです。
+* **使うデータ**
+  * Q182 で開通した **FXCM 公開アーカイブ（H1・BID/ASK、2012年〜2026年11月）** の CHF クロス・EUR クロス、および各国中銀の政策金利履歴。
+* **検証の手順**
+  1. 対象ペア（USDCHF・GBPCHF・AUDCHF・NZDCHF・CADCHF・GBPEUR 等）で、政策金利差 2.0pp 以上の期間を抽出する。
+  2. 水曜 20 UTC 建て → 24 UTC 決済（SHORT、往復実スプレッドまたは 3pip コスト控除後）の損益を計算する。
+  3. 3 窓（前窓 2016-01〜2021-09、探索 IS 2021-10〜2024-12、OOS 2025〜）で検定する。
+* **既存の手法（特に Mon 系）との相関の見込み**
+  * 取引日が木曜早朝（水曜 20〜24 UTC）であり、かつ JPY を含まないため、月曜の円クロス LONG（Mon4）との日次・週次相関は **ほぼ 0** になる見込みです。
+* **合格の基準**
+  * 研究ブランチ基準（docs/244 §1）：累積セル数（10,141 + 追加セル）での Bonferroni 補正 p 値クリア、IS と OOS で符号一致、前窓で +月率 50% 以上（コスト後）。通過後は紙上フォワードへ。
+
+---
+
+### 候補①-2：保留中 Q164（火〜木の時間帯 o2o 24h 季節性）の「FXCM 20ペア限定」先行実行
+* **仮説（構造的な理由）**
+  * 欧州・ロンドン参入時間帯（4 / 6 / 8 / 10 UTC）の機関投資家の実需フローの偏りは月曜以外にも曜日固有の向きを持つ可能性があります。
+  * Q164（25 銘柄の火〜金 o2o）は Dukascopy の 429 エラーで pending になっていますが、Q182 で FXCM の主要 20 ペア（H1・BID/ASK）の継ぎ足しが完了したため、指数と WTI を除く FX ペア（特に非 JPY のドルストレート・EURGBP・AUDNZD 等）は今すぐ検証を実行できます。
+* **棄却済みの手法と何が違うか**
+  * 棄却された「Sess（コスト計算誤り）」や「週足トレンドフォロー」ではなく、Mon4 と同じ「4 / 6 / 8 / 10 UTC の 4 ショット平均・24 時間保有・往復 3pip コスト厳守」の枠組みで火〜木を検定します。
+* **使うデータ**
+  * Q182 で整備済みの `research/fetch_fxcm.py`（load_spliced）による主要 20 通貨ペアの H1 BID/ASK データ（2016-01〜2026-11）。
+* **検証の手順**
+  1. Q164 の登録仕様のまま、データソースを FXCM 継ぎ足し系列に指定して火・水・木の 4 / 6 / 8 / 10 UTC 建て 24h 保有を算出する（金曜建ては Standard 口座で週末持ち越し不可のため除外または Swing 限定とする）。
+  2. 往復コストを控除し、3 窓で判定する。
+* **既存の手法（特に Mon 系）との相関の見込み**
+  * 火〜木の建玉であり、非 JPY ペアを採用できれば Mon4 との相関は **0.0〜0.2 程度** に収まる見込みです。
+* **合格の基準**
+  * Q164 の登録済みセル数を含めた Bonferroni 閾値の通過、IS・OOS 符号一致、前窓 +月率 50% 以上（コスト後）。
+
+---
+
+### 候補①-3：検証済み「RecentFit（クロスアセット月次モメンタム）」の FTMO / FN（週末保有可口座）への配備 MC（診断・セル 0）
+* **仮説（構造的な理由）**
+  * 調査レポート[9]の通り、クロスアセットの月次モメンタムは曜日季節性と直交し、200 年以上のデータで有意な数少ない構造的エッジです。
+  * 現在 RecentFit は Fintokei（パール・ルビー）のみに配備されていますが、週末持ち越しが可能な他口座（Fin-トパーズ、FN-100SwapFree、FTMO チャレンジ中口座、または FTMO Swing）の Mon 倍率を Q198 の縮小規則（T1：200 日線の上は 0.5 倍）で削り、浮いたリスク枠に RecentFit を相乗りさせれば、新規セルを消費せずにポートフォリオ全体の月曜リスク寄与度を大きく下げられます。
+* **棄却済みの手法と何が違うか**
+  * 新規シグナルの探索（連敗中の新理屈）ではなく、すでに実運用中の検証済み EA（RecentFit）を他口座へ横展開する「口座モデル診断（セル 0、Q162・Q190 の延長）」です。
+* **使うデータ**
+  * 既存の帳簿データ（`deployed_book`）の Mon4（H1 実時刻・Q176）、Hold、Roll5、および RecentFit の日次・月次損益系列。
+* **検証の手順**
+  1. 週末保有が可能な口座（トパーズ、FN-100SwapFree、FTMO 評価段階）において、「Mon4（Q198 の V3 縮小適用）＋ RecentFit」の合成帳簿を作る。
+  2. 日次ガード込みの 2 窓（W1: 2016〜21、W2: 2021〜26）MC を回し、月曜リスク寄与度・52 週到達率・失格率を算出する。
+* **既存の手法（特に Mon 系）との相関の見込み**
+  * 月次リバランスと月曜 24h 保有のため、Mon 系との相関は **0.1〜0.2 以下** と見込まれます。
+* **合格の基準**
+  * セル 0 診断基準：W1 / W2 の両窓で現行配分より失格率が低下し、到達率が同等以上、かつ全 10 口座合算の Mon リスク寄与度が 78% から **55% 以下** へ低下すること。
+
+---
+
+## ② 新しいプロップ会社・プラン（3候補）
+
+先行して確認中の 3 件（FN 25k Swap-Free、FTMO Swing 100k、The5ers High Stakes）と重複しない、並走口座数を増やすための候補です。
+
+### 候補②-1：Fintokei「チャレンジプラン（サファイア 2,000万円 / パール 500万円 等）」の追加並走
+* **仮説（なぜ有効か）**
+  * すでに Fin-パール（プロ口座）で運用・出金実績があり、日本居住者向けのサポートと信用が確認できています。
+  * Fintokei はプロ口座（資金化後）でも**重要指標および週末持ち越しの制限がない**ため、FTMO Standard のような週末強制決済リスクがありません。合算上限の範囲内で通常チャレンジ口座を追加並走させるのが最も摩擦の少ない増設レバーです。
+* **仕様と確認項目**
+  * **EA・VPS**：MT5 で EA・VPS 使用可（口座をまたぐ両建ては禁止のため、既存 Fin 3 口座と逆方向の建玉を持たないよう同じ EA 系統または別銘柄を載せる）。
+  * **費用**：プランに応じた買い切り評価費用（正確な最新価格は公式サイトで確認、未確認の割引率は仮定しない）。
+  * **目標・最大損失・日次の定義**：P1 目標 8% / P2 目標 6%。最大損失は初期残高基準の**静的 10%**、日次損失は**5%（equity 判定）**。
+  * **一貫性・個別ルール**：「同じ銘柄・方向の確定損＋含み損が常に 3% 以内」の制限あり。30 日に 1 回は取引必須。
+  * **出金と分配・スケーリング**：分配率 80%〜（スケーリング制度あり）。
+  * **運営の信用・日本居住者**：日本居住者利用可、日本語対応、既存 3 口座で稼働実績あり。
+* **既存の EA をそのまま載せられるか**
+  * **載せられます**。ただし「既存 Fin 口座との口座間両建て禁止」と「単一銘柄・方向の損失 3% 以内」を守るため、Mon4（4 通貨に分散されており 1 通貨あたりの損失を 0.75% 以内に抑えやすい）＋ Q198 の縮小版（V3）を載せるのが最適です。
+* **検証の手順と合格基準**
+  * Q200（Fintokei 倍率格子 MC）の枠組みで、単一銘柄の日次損失が 3% を超える確率が年 0.5 回以下、かつ W1/W2 両窓で 52 週到達率 75% 以上・失格率 10% 以下となる倍率を特定できれば採用。
+
+---
+
+### 候補②-2：The5ers「Bootcamp プラン（100k / 250k）」の別枠並走
+* **仮説（なぜ有効か）**
+  * 調査レポート 3.4[14] の通り、The5ers は 11/7 に問い合わせ下書きを作成した「High Stakes」とは**別枠で Bootcamp アカウントを並行保有（parallel accounts）できる**仕様です。
+  * 初期エントリー費用が低く（合格時に残額を支払う 3 ステップ方式）、1 社あたりの並走口座数を増やすレバーになります。
+* **仕様と確認項目**
+  * **EA・VPS**：MT5 Hedge プラットフォーム対応（EA の具体的な利用条件・マジックナンバー要件は High Stakes の問い合わせと合わせて書面確認が必要＝**未確認**）。
+  * **目標・最大損失・日次の定義**：3 ステップの評価段階（各ステップの目標 %・最大損失 %・ストップロスの必須有無は公式規約の書面取得が必要＝**未確認**）。
+  * **ニュース・週末規則**：The5ers は夜間・週末の持ち越しが可能（指数の週末スワップは高め）[14]。
+  * **運営の信用・日本居住者**：2016 年設立の老舗で閉鎖リスクは低い。日本居住者の登録可否は書面で**未確認**。
+* **既存の EA をそのまま載せられるか**
+  * Bootcamp 特有の「全ポジションへの SL 設定義務」および「1 ポジションあたりの最大リスク制限（例：1〜2%）」の有無が**未確認**です。Mon4 はすでに SL（3.0 倍・Q186）と日次ガードが入っているため対応しやすいですが、Hold（SL 15%）は抵触する可能性があります。
+* **検証の手順と合格基準**
+  * High Stakes 宛ての未送信メール（11/7 下書き）に「Bootcamp の並列保有上限と SL / EA 規則」を 1 行追記して回答を得て、3 ステップ通過の期待費用対効果が FTMO 2-Step 以上であれば採用。
+
+---
+
+### 候補②-3：FTMO「FTMO Futures（Growth Account）」の調査・検証
+* **仮説（なぜ有効か）**
+  * 調査レポート 3.2[19] にある通り、FTMO Futures の Growth Account は**評価段階で日次損失上限（Daily Loss Limit）がなく**、Sim-Funded 段階でも日次損失上限が**「ソフトリミット（到達時は当日の建玉を強制決済し当日取引停止になるだけで、口座失格にはならない）」**という極めてユニークな設計です[19]。
+  * Q183 で判明した「悪い月曜に日次ガードを貫通して失格になるリスク」を、業者のルール構造そのもので無効化できる可能性があります。
+* **仕様と確認項目**
+  * **EA・VPS**：FTMO Futures が利用する取引プラットフォームで自動売買（EA / API）が許可されているか、MT5 が使えるかは**未確認**。
+  * **目標・最大損失・日次の定義**：最大損失は**日末残高基準のトレーリング（End-of-Day Trailing Maximum Drawdown）**[19]。ライブ資金化後は日次損失上限なし（最大 DD のみ）[19]。
+  * **ニュース・週末規則・費用・日本居住者**：先物プランの日本居住者への提供可否、週末持ち越し可否、手数料は**未確認**。
+* **既存の EA をそのまま載せられるか**
+  * プラットフォームが MT5 以外の場合は MQL5 の EA をそのまま載せることはできません（**未確認**）。ただし通貨先物（6J, 6E, 6B, 6A）は Mon4（USDJPY, EURJPY 等）と値動きが同一のため、ロジック自体は移植可能です。
+* **検証の手順と合格基準**
+  * FTMO サポートに「日本居住者の FTMO Futures 利用可否」と「対応プラットフォームおよび自動発注の可否」を確認し、利用可能であれば Q202（日末追随型 DD モデル）に「日次ソフトリミット」を組み込んで MC を実行。1-Step（到達 86/61%・失格 7.1/22.0%）を上回れば採用。
+
+---
+
+## ③ theoption の新しい脚（3候補）
+
+両建て・レイテンシー狙いを除き、10 年データで損益分岐 +3pp 以上を狙う候補です。
+
+### 候補③-1：水曜 05:00→06:00 JST（および火〜金 05:00→06:00 JST）円クロス「1時間 HIGH」（倍率 1.90・損益分岐 52.63%）
+* **仮説（なぜ効くはずか、構造的な理由）**
+  * **追補 52 の棄却データからの逆転仮説**です。追補 52 で「木曜 05:00 JST（水曜 20 UTC）の円クロス 1 時間 LOW」を検証した際、6 通貨すべてで **LOW 勝率が 43〜49%** となり棄却されました。
+  * LOW 勝率が 43〜44% ということは、引き分けを除けば **裏返しの HIGH 勝率は 56〜57% に達している** 計算になります。
+  * 構造的な理由も明確です：06:00 JST（NY クローズ・日本のスワップ付与時刻）の直前 1 時間（05:00→06:00 JST）は、スワップポイント獲得を狙う駆け込みの買いとショートカバーが優勢になります。その後 06:00〜07:00 JST にアンワインドの下落が起きますが、その時間帯は theoption が休場であり、**05:00→06:00 JST の 1 時間 HIGH なら「スワップ付与直前の買い上げ」だけを取って 06:00 以降の急落前に判定を終えられる**というバイナリー特有の非対称性があります。
+* **棄却済みの手法と何が違うか**
+  * 追補 52 で棄却されたのは「LOW（Roll5 のそのままの移植）」です。本案は「06:00 判定ならアンワインド前なので逆の HIGH にエッジがある」という構造的発見に基づく検証です。
+* **使うデータ**
+  * 追補 52 で使用した 10 年分の分足・時間足データ（および追補 62 で組み込んだ FXCM 公開分足）。
+* **検証の手順**
+  1. 水曜深夜（木曜 05:00→06:00 JST、トリプルスワップ前）および他の平日（火・水・金 05:00→06:00 JST）について、円クロス主要ペア（USDJPY・EURJPY・GBPJPY・AUDJPY・NZDJPY・CADJPY・CHFJPY）の HIGH 勝率を算出する（金利差 2.0pp フィルター有無も比較）。
+  2. 05:00 JST 定刻のレート急変（213 拒否）を考慮し、05:00〜05:05 の約定ラグ耐性を確認する。
+* **既存の手法との相関の見込み**
+  * 木曜（または平日）早朝 05:00 JST の 1 時間判定のため、月曜 7 時脚・仲値脚・23 時 EURGBP・2 時 AUDJPY のいずれとも時間が
 
 ---
 
 ## 🛡️ 批判役 — anthropic/claude-opus-5.5
 
-# 批判役の選別(11/6 朝の状況・11/7 までの研究結果を前提)
+# 批判役の選別結果(11/6)
 
 ## 結論
-- **発案役B は空の返事**のため、選別の対象は発案役A だけ
-- 発案役A の回答は ② の途中で切れており、CTI・E8 と ③ の候補はない
-- 判定は次のとおり
 
-| 候補 | 判定 |
-|---|---|
-| 運用の優先事項(MQL5 VPS 停止) | **採用。最優先** |
-| ①-1 月次モメンタム(5 資産) | **登録しない**(残すなら費用ゼロの見込み計算だけ) |
-| ①-2 JPY 抜き G10 キャリー | **棄却** |
-| ② The5ers High Stakes | **残す**。ただし目的と確認項目を直す |
-| ② CTI・E8 | 中身がないので評価できない |
-| ③ theoption | 候補なし |
+**残す(直してから検証・照会へ)**
+- B①-1 Roll の調達通貨を CHF・EUR に広げる案 → **今回の本命**
+- B①-3 RecentFit の配備 MC(セル 0) → RecentFit の中身と検証記録を確かめてから
+- B②-1 Fintokei の追加並走 → 書面で確認してから。載せる中身は直す
+- A② OANDA・ThinkCapital → 書面照会だけ。優先度は低い
 
----
+**別の件にまとめる**
+- B②-2 The5ers Bootcamp → 作成済みの High Stakes の下書きに質問を足す
+- B②-3 FTMO Futures → FTMO への質問 1 行だけ
 
-## 運用の優先事項(A の指摘)
-
-**MQL5 VPS を 11/9 の Mon 建ての前に止める → 賛成**
-- 止める理由は ③「発注の異常」に当たる。後付けのフィルタではない
-- 限度 90,000 まで、含み益込みで 4,687.87、残高だけなら 2,872.78
-- 止めたあと、XAU Hold が自宅 PC の EA に引き継がれたかを確かめる
-  - 同じマジックで 1 本だけ管理されているか
-  - 残高ガード −4% が自宅 PC 側で動くか
-- 11/9 の 13 時の建てが 1 束 1 本になっているかを見る
-
-**FN の週末規則は書面で確認してから → 賛成**
-- 禁止と分かった場合だけ、規約への対応として決済する。この順番で正しい
-
-**A が触れていない、注意して見る点(止める根拠ではない)**
-- **AUDJPY 2 時の約定が 2 日続けて 2:00:50**
-  - 213 で 2 回拒否されてからの約定
-  - 検証は 2:00 の価格が前提。急変のあとに買う形が続くと、建値が系統的に不利になっていないかが問題になる
-  - 毎回「2:00:00 のミッド」と「実際の建値」の差を記録する
-  - 差が一方向に偏る場合に限り、③「約定の異常」として扱う
-  - 連敗を理由にした見送りは棄却済み(連敗後スキップ)
-- **FN-Instant は失格まで 1,027.29**
-  - Mon2 ×4 + 指数 Mon の「過去最悪の月曜の損失」が 1,027 を超えるかは、まだ計算されていない(未確認)
-  - 超える場合は ②「失格ラインに近い」に当たり、倍率を見直す正当な理由になる
-  - まず数字を出す
+**棄却**
+- A①-1 クロスアセット月次モメンタム
+- A①-2 JPY を除いた G10 月次キャリー
+- A③ EURGBP・AUDJPY の 1 時間版 2 本
+- B①-2 Q164 の先行実行
+- B③-1 05:00→06:00 の 1 時間 HIGH
 
 ---
 
-## ①-1 月次タイムシリーズ・モメンタム → 登録しない
+## 運用の点検(B の指摘への補足)
 
-**① 統計の決まりを通る見込みが薄い**
-- 累積セルは 10,060。Bonferroni では p ≈ 5×10⁻⁶、|t| にして 4.5 前後が必要
-- t ≈ 年率シャープ × √年数。2016 年以降の約 10.8 年なら、**年率シャープ 1.4 前後**が要る
-- 一般に言われる月次モメンタムの水準はこれより低い
-  - ただし、この 5 資産でのこちらの検証値はない(未検証)
-- 探索窓は 39 か月、OOS は約 22 か月。月 1 回のシグナルでは、窓ごとの符号の一致はほぼ運で決まる
-- 「通る見込みのあるものだけ」という決まりに合わない
-
-**② 新しい部分が SHORT 側しかない**
-- XAU・UK100・WTI は上昇期が長い
-- LONG の期間は既存の Hold とほぼ同じ持ち方になり、Hold の上乗せ(銘柄拡張の近縁)になる
-- US500・GER40 の LONG 期間は、Mon 指数や GER40 ブレイクと同じリスクオンに乗る
-- 「Mon と別の収益源」という主張は、LONG 期間には成り立たない
-
-**③ 規約の問題**
-- 1 か月の保有なので週末をまたぐ
-  - FTMO-50A・50B(Standard の可能性)には載らない
-  - FN は週末規則が未確認
-- XAU を SHORT する月には、Hold XAU LONG の口座と向きが逆になる
-  - 同じ業者の別口座(例: FTMO-50A で SHORT、FTMO-100宝くじで LONG)なら、口座をまたぐ両建てに当たるおそれがある(FTMO の書面は未確認)
-  - Fintokei では明確に禁止
-
-**残すなら、こう直す**
-- 新しいセルとして登録しない
-- 「セル 0 の見込み計算」だけ行う
-  - 2016〜 の 5 資産バスケットの年率シャープと t を出す
-  - t < 4.5 が見込まれたら、その時点で閉じる
-- 両建てにならない口座の割り当て表を先に作る
+- FN-100ギャンブルの MQL5 VPS 停止は、③「発注の異常」に当たります。11/9 の Mon 建ての前に止める点は B に同意します
+  - 限度まで equity で 4,687.87、残高で 2,872.78 しかありません
+  - 止めないと建玉が 2 倍になり、損失も 2 倍になります
+- 止めたあとに確かめること
+  - 11/9 の各束について、マジックごとの建玉が 1 本ずつか
+  - 自宅 PC の EA が XAU の Hold を引き継いだときに、2 本目を新しく建てていないか
+- それ以外の口座は、検証済みルールのとおり動かします
 
 ---
 
-## ①-2 JPY 抜き G10 月次キャリー → 棄却
+## ① 新しい脚
 
-- **左の裾が Mon と同じ**
-  - Mon4 は「円を売って高金利を買う」キャリーそのもの
-  - JPY を外しても、AUD・NZD の買いと CHF・USD の売りは、同じリスクオフで崩れる
-  - Q136 の同時失格(3 本以上 29%)を、むしろ悪くする方向
-- **統計の見込みがさらに薄い**
-  - JPY 抜きの G10 キャリーは、一般に 2008 年以降の成績が弱いとされる
-  - 年率シャープ 1.4 の要件には届きにくい(こちらでは未検証)
-- **設計の自由度が多い**
-  - 「上位 2・下位 2」「USD の偏りを抑えるクロス構成」「金利の指標(政策金利・OIS・フォワード)」の選び方で、結果がいくらでも変わる
-  - たくさん試して当たったものを選ぶ形(多重検定)になりやすい
-- **費用の問題**
-  - CFD のスワップは業者の上乗せで、プラスの金利差でも受取が小さいか、支払いになることがある
-  - 実際のスワップでは、収益の源そのものが消える可能性が高い
-- swap-free を使わないとした点は正しい。それでも候補としては残さない
+### ❌ A①-1 クロスアセット月次モメンタム
+- **基準を通る見込みがない**
+  - 月次の信号で、IS は 2021-10〜2024-12 の 3.25 年しかありません
+  - p < 4.9×10⁻⁶ を通すには、年率 Sharpe でおよそ 2.4 以上が要ります(片側の目安)
+  - 分散型のモメンタムで、この水準を前提にする根拠はありません
+  - 「通る見込みのある候補だけ」という決まり(docs/244 §1)に合いません
+- **既存手法と重なる疑いがある**
+  - 前提には、RecentFit が何の手法かが書かれていません
+  - B は RecentFit を「クロスアセット月次モメンタム」と書いています。それが事実なら、この案は配備中の手法の言い換えです
+- **棄却済みの手法とも近い**
+  - FX 部分は、棄却済みの週足 FX トレンドの近縁です
+  - LONG 側は Hold と重なります
 
----
+### ❌ A①-2 JPY を除いた G10 月次キャリー
+- 月次の信号なので、A①-1 と同じ理由で基準を通る見込みがありません
+- **Mon 系との相関が低い保証がない**
+  - 高金利通貨を買う形は、リスクオン要因そのものです
+  - 悪い月曜(リスクオフ)には、AUD・NZD の LONG が Mon4 の AUDJPY と同時に負けやすくなります
+  - JPY を外しても、同じリスク要因に乗っています
+- **費用が読めない**
+  - プロップの CFD はスワップに上乗せがあることが多く、キャリーの利回りが削られます
+  - 実際のスワップは未確認です
+  - Swap-Free の管理料も未確認です
 
-## ② The5ers High Stakes → 残す(直し方つき)
-
+### ✅ B①-1 Roll の調達通貨を CHF・EUR に広げる(直して残す)
 **良い点**
-- Q129 で選ばれた 3 社のうち信用が最大。新しく作った候補ではなく、その続き
-- 未確認の項目を「未確認」と書いており、事実の決めつけがない
+- 通過済みの Roll5 の型(水曜 20 UTC に SHORT、4 時間保有、金利差 2.0pp 以上)を変えません
+- 「低金利の調達通貨」という仮説が、データを見る前にあります
+- 棄却一覧(Roll の建てを早める、毎日のロールオーバー帯の売り)のどちらにも当たりません
 
-**直すべき点**
-- **何が分散されるかを正しく書く**
-  - 業者が増えて分散されるのは「業者が潰れる・規約を変える」リスクだけ
-  - Mon4 を載せれば、悪い月曜に 11 口座目も同時に負ける。Mon 系のリスク寄与 78% は下がらない
-  - 載せる束は、Q129 の「A 型帳簿」と Mon 系以外の比率を明記する
-- **損益分岐を数字で出す**
-  - Q154 の形で「E[累計出金] > 審査料 × k」を出す
-  - portfolio_sim の床の型(rule)を、The5ers の規則で 1 つ追加して MC を回す
-  - 審査料は書面で取った値だけを使う
-- **書面で確認する項目を絞る**(既存 EA が使えるかを決めるもの)
-  1. 日次損失の基準: 開始残高か、「前日末の残高と equity の高い方」か
-     - Hold の含み益が大きい口座で、効き方が大きく変わる
-  2. 最大損失は静的か
-  3. EA・外部 VPS は使えるか
-  4. 同じ EA を自分の複数口座(既存の他社口座を含む)で使うと「同一取引・コピー」に当たるか
-  5. 週末の持ち越し・指標前後の規則(評価中と資金化後のそれぞれ)
-  6. 1 人あたりの運用額の上限
-  7. 日本居住者が買えるか
-  8. 出金の周期と実績
-- 上の 1〜4 のどれかが合わなければ、その時点で外す
+**直すところ**
+- **相関を見る相手が違う**
+  - Mon との相関はおそらく低いです
+  - ただし同じ時刻に、高金利通貨(AUD・GBP・USD)を売る形です。**Roll5 との相関が高い**見込みです
+  - 判定には「Roll5 に足したとき、帳簿の最悪日と Mon の寄与が実際に下がるか」を加えてください(Q190 型の口座モデル)
+- **載せられる口座が少ない**
+  - 対象は swap-free 口座だけで、いまは FN-100SwapFree の 1 口座(Roll5 ×4.5 を載せ済み)です
+  - Mon の寄与 78% への効き目は小さい可能性があります。数字で確かめてください
+- **銘柄を先に固定する**
+  - 結果を見る前に、通貨ペアの一覧と金利の参照元を固定してください
+  - そのペア数をセル数として Bonferroni の分母に足します
+  - 「GBPEUR」は通常の銘柄名ではありません。EURGBP として扱ってください
+- **データ**
+  - FXCM の 21 ペアに AUDCHF・NZDCHF・CADCHF・GBPCHF が入っているかは未確認です
+  - FXCM のアーカイブは 2026 年 20〜31 週が欠けています。OOS がその分短くなります
+- **費用**
+  - FN の Swap-Free で、水曜をまたぐ 4 時間保有に管理料がかかるかは未確認です
+  - FN への書面の問い合わせに足してください
+- **「仕組み」の書き方を直す**
+  - 「Swap-Free のヘッジの流れ」は仮説です。事実として書かないでください
 
-## ② CTI 2-Step・E8 One
-- A の回答は途中で切れていて、中身がない
-- 次回は Q129 の論点に沿って出し直す
-  - CTI: 残高基準 DD
-  - E8: swap-free の有無と Hold・Roll を載せられるか
+### ❌ B①-2 Q164 を FXCM の 20 ペアで先に回す
+- Q164 は研究のキューに保留中です。「保留中のものは重ねて出さない」に当たります
+- 「火〜金」を「火〜木」に変えているので、登録内容の書き換えになっています
+- 研究側は Q179・Q182 でデータの事情を把握しています。キューの運用は研究側に任せてください
 
-## ③ theoption
-- 発案役A・B とも候補なし
-- 棄却済み(Q140〜143・追補52)の近縁を出さないこと自体は正しい
+### ⚠️ B①-3 RecentFit の配備 MC(条件付きで残す)
+**先に確かめること**
+- **RecentFit が何の手法か**
+  - 前提の「機能する」一覧に RecentFit はありません
+  - B の「クロスアセット月次モメンタム」「200 年のデータで有意」は、前提にない外部の主張です。未確認として扱ってください
+  - まず研究ブランチで、定義と検証記録(3 窓の結果)を確認します
+- **Fintokei の口座をまたぐ両建て(規約①)**
+  - パール(RecentFit)とトパーズ(Mon4 の LONG)が、同じ銘柄で逆向きに同時に建ったことがあるか、建玉の記録で確かめてください
+  - いまは未確認なので、止める理由ではなく確認事項です
+  - 起きていたら規約の問題として扱います
+
+**MC を回すときの直し方**
+- 対象から外す口座
+  - FTMO-50A・50B:資金化後で週末に持ち越せない可能性がある(Swing プランかは未確認)
+  - 宝くじ:失格まで 4,214 しかない
+- FN 口座で EA を差し替えるとき、経過措置(EA は 5 万ドル未満の口座に限る、既存 3 口座は例外)が保たれるかは未確認です
+- Q198 の縮小(V3)と同時に変えると、どちらの効果か分かりません。「RecentFit を足すだけ」と「V3 も入れる」を別々に出してください
+- 合格の基準(全口座の Mon 寄与 55% 以下、W1・W2 の両方で失格率が下がる)はこのままで構いません
 
 ---
 
-## 次の会議へ回すもの
-- 登録の候補: **なし**(①-1 は見込み計算だけ、①-2 は棄却)
-- 問い合わせ: The5ers High Stakes(上の 8 項目)
-- 運用の確認
-  - 11/9 の前に MQL5 VPS を停止する
-  - AUDJPY の建値と 2:00:00 ミッドの差を記録する
-  - FN-Instant の「最悪の月曜の損失」と失格まで 1,027 を比べる
+## ② 新しいプロップ会社・プラン
+
+### ⚠️ B②-1 Fintokei のチャレンジを追加で並走
+**書面で確かめること(B が事実のように書いている点)**
+- 合算の上限:いまの 3 口座で額面 5,000 万円です。あと何口座増やせるかは未確認です
+- 分配率「80%〜」:前提にありません。未確認です
+- 出金の実績:前提には自分の出金ルール(次の判定は 12/1)しかなく、**実際に受け取ったかは未確認**です
+  - 「出金実績あり」は事実として書かないでください
+- 「1 通貨あたりの損失 0.75%」の根拠がありません
+
+**中身の直し方**
+- 同じ会社なので、取引相手の分散になりません
+- Mon4 をそのまま載せると、Mon の寄与と同時被弾が増えます
+  - Q184 では、5 口座以上が同時にガードを超える日が年 2.07 日ありました
+  - この候補は、①の目的と逆向きに働きます
+- 買う前に次を数字で確かめてください
+  - 「Q198 V3 の縮小つき Mon」を載せて、全口座の同時被弾がどれだけ増えるか
+  - 規約の「同じ銘柄・方向で 3% 以内」に当たる確率
+  - Q200 の格子で、Fintokei の基準倍率が 0.4 未満と出ている点(Q178)も前提に入れてください
+
+### 🔀 B②-2 The5ers Bootcamp → 既存の The5ers の件にまとめる
+- 新しい候補ではなく、11/7 の未送信の下書き(9 項目)に足す質問です
+- 次の項目は未確認です
+  - 「並行して持てる口座数」「入口の費用が安い」「週末に持ち越せる」「2016 年設立」
+  - 損切りの設定が必須か
+  - 1 ポジションあたりのリスクの上限
+  - レバレッジ
+- Hold の災害用 SL(15%)が 1 ポジションの上限に触れる可能性は、質問として足す価値があります
+
+### 🔀 B②-3 FTMO Futures → 質問 1 行だけ
+- 「日次の上限がソフトリミット」など、仕様はすべて前提にない外部情報です。未確認です
+- **事実誤り:「通貨先物は Mon4 と値動きが同じ」は誤りです**
+  - CME の 6J は円建てでなく、ドル建ての逆数です(6J の LONG は USDJPY の SHORT に当たる)
+  - GBPJPY・EURJPY・AUDJPY は 2 本の先物を組み合わせて作る必要があり、費用が増えます
+  - 移植すると別の手法になり、検証のやり直しが要ります
+- MT5 で動かないなら、既存の EA は載せられません
+- 日末トレーリングの床は、Q202 で失格の悪さ(W2 で 22%)が出ている形です
+- FTMO への既存の問い合わせに「日本居住者は使えるか」「MT5・EA は使えるか」の 1 行を足すだけにしてください
+
+### ⚠️ A② OANDA Prop Trader・ThinkCapital(照会だけ)
+- 未確認の項目を正直に挙げている点は良いです
+- ただし A 自身が「Mon との相関 0.9〜1.0、月曜偏りは改善しない」と書いています
+- 照会中の 3 件(FN 25k・FTMO Swing・The5ers)の回答が先です
+- 照会の順番
+  1. 日本居住者を受け付けるか
+  2. 契約する法人はどこか
+  3. 上の 2 つを満たしたときだけ、ほかの項目を聞く
+- ThinkCapital の説明は途中で切れています。中身は評価できません
+
+---
+
+## ③ theoption の新しい脚
+
+### ❌ A③ EURGBP 23 時・AUDJPY 2 時の「1 時間版」
+- 通過済みの脚の時間を切り分けるだけで、新しい脚ではありません
+  - 同じ信号なので、既存の脚と相関が高いままです
+- 切り方をいくつも試して良いものを選ぶ、多重検定の形になります
+- **損益分岐が上がる**
+  - 23 時間(倍率 1.95)は 51.3%、1 時間(1.90)は 52.6% です
+  - 保有が短いほど偏り(ドリフト)は小さくなるのに、必要な勝率は 1.3pp 上がります
+- AUDJPY の 2 時は、213(レート急変)の拒否で 2:00:50 の約定が続いています
+  - 判定までが短いほど、約定の遅れの影響が大きくなります
+
+### ❌ B③-1 木曜 05:00→06:00 の円クロス 1 時間 HIGH
+- **後付けの典型**
+  - 追補 52 で LOW が棄却されたデータを見てから、向きを裏返しています
+  - 同じ 10 年のデータで検証し直しても、標本の外での確認になりません
+- **計算が違う**
+  - LOW の勝率 43〜49% は、引き分けを除くと HIGH の勝率 51〜57% です
+  - 一番良い通貨だけを見て「56〜57%」と書くのは、選んだあとの値です
+  - 分岐の 52.6% を下回る通貨も含まれます
+- **仕組みの前提が冬に崩れる**
+  - 「06:00 JST が NY クローズ」は米国の夏時間だけです
+  - 11/1 以降の冬時間では NY クローズは 07:00 JST です
+- 日数を火〜金に広げるのも、試行の水増しです
+- 紙上フォワードで確かめる場合
+  - 年に 50 本ほどでは、勝率 54% と 52.6% の差は見分けられません
+  - 復活させる価値は低いと判断します
+
+---
+
+## 次に動くこと
+
+1. **11/9 の前に**:FN-100ギャンブルの MQL5 VPS を停止し、当日の建玉の本数を確かめる
+2. 研究で RecentFit の定義と検証記録を確認する。あわせて Fintokei の口座をまたぐ逆向きの建玉を記録で点検する
+3. B①-1 を、ペア一覧を固定してから研究のキューに登録する。判定に「Roll5 との相関」と「口座モデルで Mon の寄与が下がるか」を加える
+4. FN への問い合わせに「Swap-Free の管理料」を足す
+5. The5ers の下書きに Bootcamp の質問を足す。FTMO には Futures の質問を 1 行足す
+6. Fintokei に合算の上限を問い合わせる。出金を受け取った実績があるかを記録で確かめる
 
 ---
 
 ## 🧭 まとめ役 — anthropic/claude-opus-5.5
 
-# 今週の新規開拓メモ(11/7 時点)
+# 今週の新規開拓メモ
 
 ## 1. 今週の結論
-- ①と③は今週はなし。発案役 A の 2 案は、統計の基準を通る見込みが薄いか、損失の偏り(左の裾)が Mon と同じ
-- ②は The5ers High Stakes の書面確認だけ進める(Q129 の続き)
-- 別件で最優先: 11/9 の Mon 建ての前に、FN-100ギャンブルの MQL5 VPS を停止する(③発注の異常。限度まで 4,687.87)
+- 検証に回すのは ① の 1 件です(Roll の調達通貨を CHF・EUR に広げる)。② と ③ は今週なし
+- Roll5 と重なる可能性があるため、Mon の寄与 78% を下げられるかは口座モデルの数字で判断します
+- 別件です。FN-100ギャンブルの MQL5 VPS の並行稼働は発注の異常に当たります。11/9 の Mon 建ての前に停止してください(失格まで equity で 4,687.87)
 
 ## 2. 検証に回す候補
-
-### ② The5ers High Stakes
+### ① RollCHF/EUR(水曜 20 UTC に 4 時間 SHORT)
 - **仮説**
-  - Q129 の候補 3 社のうち、運営の信用が最も高い
-  - 業者の集中(潰れる・規約を変える)を分散できる
-  - Mon 系のリスク寄与 78% は下がらない。悪い月曜には 11 口座目も負ける
-- **過去の候補との違い**
-  - 過去の②は FN 25k と FTMO Swing の 2 件で、The5ers は初めて
-  - Alpha・Maven・Goat(EA・VPS 規約で不可)、BG・FTUK(含み損 2% ガード)とは別の型
-- **費用**: 未確認(書面の値だけを使う)
-- **規約の要点**: 目標・日次損失の基準・静的 DD・ニュース・週末は、すべて未確認
-- **既存の EA を載せられるか**
-  - 未確認
-  - 載せる束は Mon 系以外(Hold・Roll など)の比率を明記して決める
-- **確かめる点**: 問い合わせ欄の 9 項目
-- **Q リスト用 1 行**: The5ers High Stakes の規則を portfolio_sim の rule に追加し、審査料に対する損益分岐 E[累計出金]/審査料 と失格率を MC で出す(診断・セル 0、書面を取った後)
+  - 金利差 2.0pp 以上の高金利通貨を、低金利の CHF・EUR に対して Roll5 と同じ時刻に売ると、同じ偏りが出る
+  - 偏りが生まれる仕組みは仮説で、未確認です
+- **棄却済み・過去の候補との違い**
+  - Roll5 の時刻・保有時間・金利差の条件は変えず、調達通貨だけを替えます
+  - 棄却済みの「建てを早める」「毎日のロールオーバー帯の売り」には当たりません
+- **データ**
+  - FXCM の継ぎ足し H1 BID/ASK(対象ペアが収録されているかは未確認。2026 年 20〜31 週は欠け)
+  - 各中央銀行の政策金利の履歴
+- **手順**
+  1. ペア一覧と金利の参照元を先に固定する
+  2. 実スプレッドを引いたあと、前窓→IS→OOS のウォークフォワードで判定する
+  3. G3 順列(曜日・時刻を入れ替える)で確かめる
+  4. G5 Jackknife(1 ペア・1 年ずつ抜いても符号が保たれるか)で確かめる
+  5. Q190 型の口座モデルで効果を見る
+- **取引回数**
+  - IS は約 170 週。金利差の条件で減るため、束ごとに IS で 100 回以上を目安にします
+  - 届かなければ判定不能として打ち切ります
+- **相関の見込み**
+  - Mon とは低い見込み(建てる曜日が違う)
+  - Roll5 とは高い見込み(同じ時刻に同じ高金利通貨を売る)
+- **合格の基準**
+  - Bonferroni(分母 10,143 で p < 約 4.9×10⁻⁶)
+  - IS と OOS で符号が一致
+  - 前窓のプラス月率 50% 以上
+  - Roll5 との日次相関 0.7 未満
+  - 口座モデルで最悪日が悪化せず、Mon の寄与が下がる
+  - 通過しても紙上フォワードのみ。勝ちは保証されません
+- **Q リストの 1 行**
+  - Roll5 の型(水曜 20 UTC SHORT・4h・金利差 2pp)を調達通貨 CHF・EUR の 2 束で検定。Roll5 との相関と、口座モデルでの Mon 寄与の低下も確認
 
 ## 3. 見送った候補
-- **① 5 資産の月次モメンタム**
-  - 累積 10,060 セルでは |t|≈4.5、つまり年率シャープ 1.4 前後が必要。届く見込みが薄い(こちらでは未検証)
-  - LONG の期間は Hold・Mon 指数とほぼ重なる
-  - XAU を SHORT する月は、Hold XAU の口座と口座をまたぐ両建てになるおそれがある
-- **① JPY 抜きの G10 キャリー**
-  - リスクオフで Mon4 と同時に崩れる
-  - 設計の選び方が多く、多重検定になりやすい
-  - CFD の実スワップでは、収益の源が消えるおそれがある
-- **② CTI・E8**: 発案役 A の回答が途中で切れており、中身がない。次回に出し直す
-- **③**: 案なし(Q140〜143・追補52 の近縁は出さない)
+- **月次モメンタム・G10 キャリー**:IS 3.25 年の月次データでは閾値に届く見込みがありません。キャリーはリスクオフの日に Mon4 と同時に負けやすい形です
+- **Q164 の先行実行**:保留中の登録を書き換えることになります
+- **RecentFit の配備 MC**:Q162・Q190 の延長で、RecentFit の定義も前提では未確認です。まず Q190 の対象に入っていたかを確かめます
+- **theoption の 1 時間版 2 本**:既存の脚を切り分けるだけで、損益分岐が 1.3pp 上がります
+- **05→06 時の HIGH**:棄却されたあとに向きを反転させた後付けです。冬時間では NY クローズは 07:00 JST です
+- **Fintokei の追加**:同じ会社で、Mon の同時被弾が増えます
+- **Bootcamp・Futures・OANDA**:照会中の 3 件の回答待ちです。Bootcamp は The5ers の下書きに、Futures は FTMO の照会に追記すれば足ります
 
 ## 4. 受け渡し
-
 ## 受け渡し
 ### 研究ブランチ(①)
-なし
+- **名前**:RollCHF/EUR
+- **仮説**:金利差 2.0pp 以上の高金利通貨を、CHF・EUR に対して Roll5 と同じ時刻に売ると偏りが出る
+- **時刻**:建ては水曜 20:00 UTC(木曜 05:00 JST)、決済は 24:00 UTC(木曜 09:00 JST)
+- **銘柄**
+  - CHF の束:USDCHF・GBPCHF・AUDCHF・NZDCHF・CADCHF を SHORT
+  - EUR の束:EURUSD・EURGBP・EURAUD・EURNZD・EURCAD を LONG
+  - どちらも調達通貨との金利差が 2.0pp 未満の週は建てない
+- **セル数**:2(束単位)。ペア別の結果は参考で、判定には使わない
+- **違い**:Roll5 の時刻・保有・金利差の条件はそのままで、調達通貨だけを替える
+- **重複を確かめる検証**:Roll5 の元の検証(円以外を試したか)、Q190、Hold の銘柄拡張の棄却記録
+- **記録してほしいこと**:条件を満たした週数、Roll5 との日次相関、欠け週の扱い、夏時間・冬時間別の結果
 
 ### theoption(③)
 なし
 
 ### 問い合わせ(②)
-**The5ers High Stakes**
-1. 審査料、利益分配率、スケーリングの条件
-2. 日次損失の基準: 開始残高か、「前日末の残高と equity の高い方」か。判定は equity か。日の区切りの時刻は
-3. 最大損失は初期残高基準の静的か
-4. MT5 の EA と外部 VPS は使えるか
-5. 同じ EA を自分の複数口座(他社の口座を含む)で動かすと、コピー取引・同一取引に当たるか
-6. 週末の持ち越しと指標前後の取引は、評価中と資金化後でそれぞれ可能か
-7. 1 人あたりの運用額の上限と、同時に持てる口座数
-8. 日本居住者が新規に購入できるか
-9. 出金の周期と最低額、スワップの有無(swap-free の口座はあるか)
+- FundedNext(既存のスレッドに追記。① の載せ先の確認)
+  1. Swap-Free 口座で水曜をまたぐ 4 時間の保有に、管理料や保有日数の制限はかかりますか
+  2. 既存口座で EA の銘柄を増やしても、EA 利用の経過措置は保たれますか
 
-## 5. 注意して見る点(止める根拠ではない)
-- **AUDJPY 2 時の建値**
-  - 2 日続けて 213 の拒否のあと、2:00:50 に約定している
-  - 2:00:00 のミッドと実際の建値の差を毎回記録する
-  - 差が一方向に偏ったときだけ、③約定の異常として扱う
-- **FN-Instant(失格まで 1,027.29)**
-  - 過去最悪の月曜の損失がこれを超えるかは未計算
-  - 超える場合は、②失格ラインに近いとして倍率を見直す
-
+## 5. 候補一覧
 ## 候補一覧
-- 候補: ② The5ers High Stakes(規約の書面確認と、損益分岐の MC)
+- 候補: ① RollCHF/EUR(Roll5 の型で調達通貨を CHF・EUR に。水曜 20 UTC に 4h SHORT・2 束)
 
 ---
 
-費用の目安: $2.0446
+費用の目安: $2.2233
