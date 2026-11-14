@@ -132,7 +132,7 @@ export async function player(gql, slug, rarity) {
   if (!p) return null;
   return {
     id: p.slug, name: p.displayName, age: p.age, pos: p.position, l15: p.averageScore || 0,
-    start: startRate(p.so5Scores), club: p.activeClub?.name, league: p.activeClub?.domesticLeague?.slug,
+    start: startRate(p.so5Scores), scores: (p.so5Scores || []).map((s) => s.score || 0), club: p.activeClub?.name, league: p.activeClub?.domesticLeague?.slug,
     // ケガ・出場停止・移籍は Sorare のデータ(今のもの)から。joined は今のクラブに入った日(移籍したばかりかを見る)
     injury: p.activeInjuries?.[0]?.status || null, suspended: !!p.activeSuspensions?.length,
     joined: (p.memberships || []).filter((m) => !m.endDate).map((m) => m.startDate).sort().at(-1) || null,
