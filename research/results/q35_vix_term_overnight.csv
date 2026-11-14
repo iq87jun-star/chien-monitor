@@ -1,0 +1,10 @@
+family,symbol,spec,is_plus,is_n,is_rate,is_mean_bps,is_trades,p,oos_plus,oos_n,oos_mean_bps,pre_n,pre_rate,passed
+VIX 期間構造,US500,c) after backwardation 5bd L (nonoverlap),10,11,0.909,254.63,11,0.005859375,4,6,29.54,23,0.609,False
+VIX 期間構造,US30,c) after backwardation 5bd L (nonoverlap),10,11,0.909,250.33,11,0.005859375,4,6,2.05,18,0.611,False
+VIX 期間構造,NAS100,c) after backwardation 5bd L (nonoverlap),8,10,0.8,282.82,10,0.0546875,3,5,56.58,11,0.636,False
+VIX 期間構造,US30,b) backwardation(s>1) O/N 20→14 L,8,11,0.727,29.85,23,0.11328125,3,6,-8.65,17,0.647,False
+VIX 期間構造,US500,b) backwardation(s>1) O/N 20→14 L,7,11,0.636,23.14,23,0.2744140625,2,6,-1.87,22,0.636,False
+VIX 期間構造,NAS100,a) contango(s<1) O/N 20→14 L,17,31,0.548,3.83,626,0.360050065908581,6,13,-2.84,41,0.488,False
+VIX 期間構造,NAS100,b) backwardation(s>1) O/N 20→14 L,6,10,0.6,12.87,22,0.376953125,3,5,6.04,11,0.364,False
+VIX 期間構造,US500,a) contango(s<1) O/N 20→14 L,19,39,0.487,1.15,620,0.6253706876195793,10,20,-1.09,67,0.582,False
+VIX 期間構造,US30,a) contango(s<1) O/N 20→14 L,18,39,0.462,-0.85,620,0.7388013097515795,9,20,-1.06,44,0.523,False

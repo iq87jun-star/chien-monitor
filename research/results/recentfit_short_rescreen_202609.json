@@ -1,0 +1,455 @@
+{
+ "meta": {
+  "purpose": "D案(直近3ヶ月)2026-09月次再スクリーニング(docs/180 §2の窓ロール)",
+  "window_all": "2016-01-01..2026-08-31",
+  "sel": "2026-06-01",
+  "conf": "2026-07-21",
+  "w12": "2025-09-01",
+  "rule": "docs/180 §2(変更なし)",
+  "seed": 7,
+  "mult": {
+   "mult": 4.6,
+   "m_sel": 8.0,
+   "m_12m": 5.75,
+   "cap": 6.0
+  },
+  "inputs": {
+   "AUDJPY": "0fbee8d506025a8c",
+   "AUDUSD": "2ae6777df0b0e0a3",
+   "BTCUSD": "a5a470c0b752aaf3",
+   "CADJPY": "225ca088414df1fa",
+   "CHFJPY": "54fbb2250f2d4d66",
+   "ETHUSD": "1d90356a55b60368",
+   "EURJPY": "693436de3623920a",
+   "EURUSD": "054b4a4e10e0e4eb",
+   "FR40": "47f73f002f6cd0e8",
+   "GBPJPY": "0859517297c897e8",
+   "GBPUSD": "8c240dbe91674f14",
+   "GER40": "2f481082dd554c70",
+   "JP225": "84556c643f80ea44",
+   "NAS100": "fd7d28fc62a55914",
+   "NZDJPY": "72ed9a1b6dd333f3",
+   "NZDUSD": "887235be0910d454",
+   "UK100": "c9100abc0be1140f",
+   "US500": "e44903c987771872",
+   "USDCAD": "dd2cfb9f88eb6ec2",
+   "USDCHF": "45c9865798fac2bd",
+   "USDJPY": "8d06086c084c0d73",
+   "XAUUSD": "f97d0599971e42fe"
+  }
+ },
+ "ranking": {
+  "Mon_USDJPY": {
+   "family": "Mon",
+   "symbol": "USDJPY",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": 1.13,
+    "cum_conf": 0.11,
+    "cum_12m": -2.03,
+    "score": 2.49,
+    "std_active": 0.151,
+    "cum_full": 10.4
+   }
+  },
+  "v4_NZDUSD": {
+   "family": "v4",
+   "symbol": "NZDUSD",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": 1.01,
+    "cum_conf": 0.0,
+    "cum_12m": 1.99,
+    "score": 1.86,
+    "std_active": 0.181,
+    "cum_full": 11.5
+   }
+  },
+  "v4_GBPJPY": {
+   "family": "v4",
+   "symbol": "GBPJPY",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": 0.51,
+    "cum_conf": 0.36,
+    "cum_12m": 0.32,
+    "score": 1.16,
+    "std_active": 0.147,
+    "cum_full": 12.4
+   }
+  },
+  "Mon_GBPJPY": {
+   "family": "Mon",
+   "symbol": "GBPJPY",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": 1.13,
+    "cum_conf": -0.38,
+    "cum_12m": 6.75,
+    "score": 1.08,
+    "std_active": 0.35,
+    "cum_full": 33.0
+   }
+  },
+  "v4_AUDUSD": {
+   "family": "v4",
+   "symbol": "AUDUSD",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": 0.83,
+    "cum_conf": 0.0,
+    "cum_12m": 1.17,
+    "score": 1.07,
+    "std_active": 0.26,
+    "cum_full": 18.3
+   }
+  },
+  "TSMOM_BTCUSD": {
+   "family": "TSMOM",
+   "symbol": "BTCUSD",
+   "stats": {
+    "n_active": 59,
+    "cum_sel": 12.29,
+    "cum_conf": 1.89,
+    "cum_12m": 23.82,
+    "score": 0.82,
+    "std_active": 2.022,
+    "cum_full": 1620.2
+   }
+  },
+  "Mon_AUDJPY": {
+   "family": "Mon",
+   "symbol": "AUDJPY",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": 0.55,
+    "cum_conf": -0.06,
+    "cum_12m": 7.22,
+    "score": 0.7,
+    "std_active": 0.264,
+    "cum_full": 53.2
+   }
+  },
+  "Mon_EURJPY": {
+   "family": "Mon",
+   "symbol": "EURJPY",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": 0.47,
+    "cum_conf": -0.15,
+    "cum_12m": 2.36,
+    "score": 0.66,
+    "std_active": 0.239,
+    "cum_full": 29.1
+   }
+  },
+  "Hold_GER40": {
+   "family": "Hold",
+   "symbol": "GER40",
+   "stats": {
+    "n_active": 43,
+    "cum_sel": 1.32,
+    "cum_conf": 2.47,
+    "cum_12m": 5.94,
+    "score": 0.25,
+    "std_active": 0.924,
+    "cum_full": 132.4
+   }
+  },
+  "TSMOM_GER40": {
+   "family": "TSMOM",
+   "symbol": "GER40",
+   "stats": {
+    "n_active": 43,
+    "cum_sel": 1.32,
+    "cum_conf": 2.47,
+    "cum_12m": -13.18,
+    "score": 0.25,
+    "std_active": 0.924,
+    "cum_full": -25.5
+   }
+  },
+  "Mon_GER40": {
+   "family": "Mon",
+   "symbol": "GER40",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": 0.3,
+    "cum_conf": 0.11,
+    "cum_12m": 6.05,
+    "score": 0.21,
+    "std_active": 0.497,
+    "cum_full": 75.9
+   }
+  },
+  "Mon_JP225": {
+   "family": "Mon",
+   "symbol": "JP225",
+   "stats": {
+    "n_active": 8,
+    "cum_sel": 0.51,
+    "cum_conf": -1.0,
+    "cum_12m": 12.1,
+    "score": 0.11,
+    "std_active": 1.994,
+    "cum_full": 28.2
+   }
+  },
+  "TSMOM_ETHUSD": {
+   "family": "TSMOM",
+   "symbol": "ETHUSD",
+   "stats": {
+    "n_active": 59,
+    "cum_sel": -0.37,
+    "cum_conf": -0.68,
+    "cum_12m": -19.66,
+    "score": 0.1,
+    "std_active": 2.981,
+    "cum_full": -80.4
+   }
+  },
+  "TSMOM_XAUUSD": {
+   "family": "TSMOM",
+   "symbol": "XAUUSD",
+   "stats": {
+    "n_active": 21,
+    "cum_sel": -0.73,
+    "cum_conf": -0.73,
+    "cum_12m": 31.28,
+    "score": -0.09,
+    "std_active": 1.311,
+    "cum_full": 100.5
+   }
+  },
+  "Mon_CADJPY": {
+   "family": "Mon",
+   "symbol": "CADJPY",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": -0.15,
+    "cum_conf": -0.21,
+    "cum_12m": -2.11,
+    "score": -0.18,
+    "std_active": 0.274,
+    "cum_full": 14.1
+   }
+  },
+  "Mon_NZDJPY": {
+   "family": "Mon",
+   "symbol": "NZDJPY",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": -0.51,
+    "cum_conf": -0.46,
+    "cum_12m": 4.84,
+    "score": -0.42,
+    "std_active": 0.395,
+    "cum_full": 42.7
+   }
+  },
+  "Hold_JP225": {
+   "family": "Hold",
+   "symbol": "JP225",
+   "stats": {
+    "n_active": 42,
+    "cum_sel": -7.47,
+    "cum_conf": -4.22,
+    "cum_12m": 43.02,
+    "score": -0.46,
+    "std_active": 2.272,
+    "cum_full": 212.5
+   }
+  },
+  "Hold_US500": {
+   "family": "Hold",
+   "symbol": "US500",
+   "stats": {
+    "n_active": 41,
+    "cum_sel": -3.58,
+    "cum_conf": -1.71,
+    "cum_12m": 12.63,
+    "score": -0.61,
+    "std_active": 0.895,
+    "cum_full": 241.2
+   }
+  },
+  "TSMOM_US500": {
+   "family": "TSMOM",
+   "symbol": "US500",
+   "stats": {
+    "n_active": 41,
+    "cum_sel": -3.58,
+    "cum_conf": -1.71,
+    "cum_12m": -7.78,
+    "score": -0.61,
+    "std_active": 0.895,
+    "cum_full": -5.8
+   }
+  },
+  "Mon_NAS100": {
+   "family": "Mon",
+   "symbol": "NAS100",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": -3.2,
+    "cum_conf": -1.66,
+    "cum_12m": 1.33,
+    "score": -0.73,
+    "std_active": 1.44,
+    "cum_full": 126.8
+   }
+  },
+  "Mon_US500": {
+   "family": "Mon",
+   "symbol": "US500",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": -1.75,
+    "cum_conf": -0.95,
+    "cum_12m": 1.96,
+    "score": -0.77,
+    "std_active": 0.749,
+    "cum_full": 59.3
+   }
+  },
+  "Hold_BTCUSD": {
+   "family": "Hold",
+   "symbol": "BTCUSD",
+   "stats": {
+    "n_active": 59,
+    "cum_sel": -13.23,
+    "cum_conf": -2.03,
+    "cum_12m": -41.28,
+    "score": -0.84,
+    "std_active": 2.023,
+    "cum_full": 13713.2
+   }
+  },
+  "Mon_FR40": {
+   "family": "Mon",
+   "symbol": "FR40",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": -1.44,
+    "cum_conf": 0.01,
+    "cum_12m": -1.25,
+    "score": -0.88,
+    "std_active": 0.546,
+    "cum_full": 9.9
+   }
+  },
+  "Mon_UK100": {
+   "family": "Mon",
+   "symbol": "UK100",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": -1.44,
+    "cum_conf": 0.39,
+    "cum_12m": 1.7,
+    "score": -1.01,
+    "std_active": 0.476,
+    "cum_full": -3.7
+   }
+  },
+  "Hold_NAS100": {
+   "family": "Hold",
+   "symbol": "NAS100",
+   "stats": {
+    "n_active": 41,
+    "cum_sel": -9.47,
+    "cum_conf": -4.18,
+    "cum_12m": 13.3,
+    "score": -1.04,
+    "std_active": 1.429,
+    "cum_full": 367.9
+   }
+  },
+  "TSMOM_NAS100": {
+   "family": "TSMOM",
+   "symbol": "NAS100",
+   "stats": {
+    "n_active": 41,
+    "cum_sel": -9.47,
+    "cum_conf": -4.18,
+    "cum_12m": -10.77,
+    "score": -1.04,
+    "std_active": 1.429,
+    "cum_full": 68.2
+   }
+  },
+  "Hold_XAUUSD": {
+   "family": "Hold",
+   "symbol": "XAUUSD",
+   "stats": {
+    "n_active": 41,
+    "cum_sel": -11.62,
+    "cum_conf": 0.61,
+    "cum_12m": 15.52,
+    "score": -1.13,
+    "std_active": 1.636,
+    "cum_full": 252.2
+   }
+  },
+  "Mon_CHFJPY": {
+   "family": "Mon",
+   "symbol": "CHFJPY",
+   "stats": {
+    "n_active": 9,
+    "cum_sel": -0.94,
+    "cum_conf": -0.32,
+    "cum_12m": 0.18,
+    "score": -1.15,
+    "std_active": 0.272,
+    "cum_full": 11.6
+   }
+  },
+  "v4_USDCAD": {
+   "family": "v4",
+   "symbol": "USDCAD",
+   "stats": {
+    "n_active": 4,
+    "cum_sel": -0.68,
+    "cum_conf": 0.0,
+    "cum_12m": -0.68,
+    "score": -1.21,
+    "std_active": 0.282,
+    "cum_full": 5.8
+   }
+  }
+ },
+ "selected": {
+  "Mon_USDJPY": 0.442,
+  "v4_GBPJPY": 0.442,
+  "TSMOM_BTCUSD": 0.036,
+  "Hold_GER40": 0.08
+ },
+ "mc": {
+  "sel_3m": {
+   "p1_pass": 94.3,
+   "funded": 94.2,
+   "fail": 0.0,
+   "p1_days_med": 122,
+   "p1_days_p90": 197,
+   "funded_days_med": 193,
+   "funded_days_p90": 289
+  },
+  "recent12m": {
+   "p1_pass": 23.8,
+   "funded": 15.3,
+   "fail": 18.4,
+   "p1_days_med": 159,
+   "p1_days_p90": 231,
+   "funded_days_med": 274,
+   "funded_days_p90": 426
+  },
+  "full": {
+   "p1_pass": 68.9,
+   "funded": 58.7,
+   "fail": 28.6,
+   "p1_days_med": 90,
+   "p1_days_p90": 194,
+   "funded_days_med": 156,
+   "funded_days_p90": 286
+  }
+ }
+}

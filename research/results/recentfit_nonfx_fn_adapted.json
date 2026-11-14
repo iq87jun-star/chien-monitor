@@ -1,0 +1,335 @@
+{
+ "universe": [
+  "UK100",
+  "FR40",
+  "WTI",
+  "NATGAS",
+  "BTCUSD",
+  "ETHUSD"
+ ],
+ "selected": {
+  "v4_BTCUSD": 0.211,
+  "Hold_UK100": 0.491,
+  "Hold_WTI": 0.153,
+  "Mon_ETHUSD": 0.145
+ },
+ "mult": 1.48,
+ "corr_vs_book": {
+  "full": 0.118,
+  "12m": 0.103
+ },
+ "ranking": {
+  "v4_BTCUSD": {
+   "family": "v4",
+   "symbol": "BTCUSD",
+   "stats": {
+    "n_active_12m": 87,
+    "cum_12m": 54.99,
+    "cum_6m": 28.56,
+    "score_12m": 2.04,
+    "std_active_12m": 2.445,
+    "worst_day_12m": -5.89,
+    "cum_full": -93.1
+   }
+  },
+  "Hold_UK100": {
+   "family": "Hold",
+   "symbol": "UK100",
+   "stats": {
+    "n_active_12m": 251,
+    "cum_12m": 18.73,
+    "cum_6m": 6.38,
+    "score_12m": 1.56,
+    "std_active_12m": 0.72,
+    "worst_day_12m": -2.75,
+    "cum_full": 68.0
+   }
+  },
+  "TSMOM_UK100": {
+   "family": "TSMOM",
+   "symbol": "UK100",
+   "stats": {
+    "n_active_12m": 251,
+    "cum_12m": 18.73,
+    "cum_6m": 6.38,
+    "score_12m": 1.56,
+    "std_active_12m": 0.72,
+    "worst_day_12m": -2.75,
+    "cum_full": -25.4
+   }
+  },
+  "Mon_UK100": {
+   "family": "Mon",
+   "symbol": "UK100",
+   "stats": {
+    "n_active_12m": 48,
+    "cum_12m": 2.84,
+    "cum_6m": 0.22,
+    "score_12m": 0.76,
+    "std_active_12m": 0.542,
+    "worst_day_12m": -1.24,
+    "cum_full": -3.7
+   }
+  },
+  "Hold_WTI": {
+   "family": "Hold",
+   "symbol": "WTI",
+   "stats": {
+    "n_active_12m": 248,
+    "cum_12m": 21.22,
+    "cum_6m": 29.13,
+    "score_12m": 0.63,
+    "std_active_12m": 3.373,
+    "worst_day_12m": -16.41,
+    "cum_full": 115.6
+   }
+  },
+  "Hold_FR40": {
+   "family": "Hold",
+   "symbol": "FR40",
+   "stats": {
+    "n_active_12m": 253,
+    "cum_12m": 7.54,
+    "cum_6m": 3.16,
+    "score_12m": 0.58,
+    "std_active_12m": 0.9,
+    "worst_day_12m": -3.46,
+    "cum_full": 74.5
+   }
+  },
+  "TSMOM_BTCUSD": {
+   "family": "TSMOM",
+   "symbol": "BTCUSD",
+   "stats": {
+    "n_active_12m": 334,
+    "cum_12m": 15.72,
+    "cum_6m": 9.6,
+    "score_12m": 0.56,
+    "std_active_12m": 2.257,
+    "worst_day_12m": -12.52,
+    "cum_full": 1620.2
+   }
+  },
+  "Mon_BTCUSD": {
+   "family": "Mon",
+   "symbol": "BTCUSD",
+   "stats": {
+    "n_active_12m": 52,
+    "cum_12m": 5.81,
+    "cum_6m": 15.71,
+    "score_12m": 0.44,
+    "std_active_12m": 2.17,
+    "worst_day_12m": -4.61,
+    "cum_full": 383.8
+   }
+  },
+  "Mon_ETHUSD": {
+   "family": "Mon",
+   "symbol": "ETHUSD",
+   "stats": {
+    "n_active_12m": 52,
+    "cum_12m": 6.68,
+    "cum_6m": 36.65,
+    "score_12m": 0.38,
+    "std_active_12m": 3.573,
+    "worst_day_12m": -8.66,
+    "cum_full": 10.5
+   }
+  },
+  "Hold_NATGAS": {
+   "family": "Hold",
+   "symbol": "NATGAS",
+   "stats": {
+    "n_active_12m": 249,
+    "cum_12m": -12.8,
+    "cum_6m": -37.61,
+    "score_12m": 0.36,
+    "std_active_12m": 5.882,
+    "worst_day_12m": -47.48,
+    "cum_full": 9.5
+   }
+  },
+  "TSMOM_ETHUSD": {
+   "family": "TSMOM",
+   "symbol": "ETHUSD",
+   "stats": {
+    "n_active_12m": 304,
+    "cum_12m": -4.64,
+    "cum_6m": 3.28,
+    "score_12m": 0.24,
+    "std_active_12m": 3.664,
+    "worst_day_12m": -13.27,
+    "cum_full": -80.4
+   }
+  },
+  "TSMOM_WTI": {
+   "family": "TSMOM",
+   "symbol": "WTI",
+   "stats": {
+    "n_active_12m": 192,
+    "cum_12m": -1.98,
+    "cum_6m": 3.39,
+    "score_12m": 0.21,
+    "std_active_12m": 3.518,
+    "worst_day_12m": -16.41,
+    "cum_full": 100.6
+   }
+  },
+  "v4_FR40": {
+   "family": "v4",
+   "symbol": "FR40",
+   "stats": {
+    "n_active_12m": 27,
+    "cum_12m": 0.91,
+    "cum_6m": -0.85,
+    "score_12m": 0.2,
+    "std_active_12m": 1.023,
+    "worst_day_12m": -2.05,
+    "cum_full": 8.3
+   }
+  },
+  "v4_NATGAS": {
+   "family": "v4",
+   "symbol": "NATGAS",
+   "stats": {
+    "n_active_12m": 65,
+    "cum_12m": -4.83,
+    "cum_6m": 39.0,
+    "score_12m": 0.12,
+    "std_active_12m": 6.084,
+    "worst_day_12m": -11.65,
+    "cum_full": 51.7
+   }
+  },
+  "v4_ETHUSD": {
+   "family": "v4",
+   "symbol": "ETHUSD",
+   "stats": {
+    "n_active_12m": 81,
+    "cum_12m": -4.16,
+    "cum_6m": 8.02,
+    "score_12m": 0.04,
+    "std_active_12m": 3.795,
+    "worst_day_12m": -7.6,
+    "cum_full": -96.9
+   }
+  },
+  "TSMOM_NATGAS": {
+   "family": "TSMOM",
+   "symbol": "NATGAS",
+   "stats": {
+    "n_active_12m": 187,
+    "cum_12m": -41.08,
+    "cum_6m": -36.27,
+    "score_12m": -0.11,
+    "std_active_12m": 6.404,
+    "worst_day_12m": -47.48,
+    "cum_full": -92.3
+   }
+  },
+  "TSMOM_FR40": {
+   "family": "TSMOM",
+   "symbol": "FR40",
+   "stats": {
+    "n_active_12m": 234,
+    "cum_12m": -6.22,
+    "cum_6m": -5.43,
+    "score_12m": -0.42,
+    "std_active_12m": 0.87,
+    "worst_day_12m": -4.49,
+    "cum_full": -54.3
+   }
+  },
+  "Mon_FR40": {
+   "family": "Mon",
+   "symbol": "FR40",
+   "stats": {
+    "n_active_12m": 51,
+    "cum_12m": -3.84,
+    "cum_6m": 5.13,
+    "score_12m": -0.49,
+    "std_active_12m": 1.044,
+    "worst_day_12m": -2.77,
+    "cum_full": 9.9
+   }
+  },
+  "Hold_ETHUSD": {
+   "family": "Hold",
+   "symbol": "ETHUSD",
+   "stats": {
+    "n_active_12m": 363,
+    "cum_12m": -48.68,
+    "cum_6m": -22.18,
+    "score_12m": -0.68,
+    "std_active_12m": 3.472,
+    "worst_day_12m": -15.01,
+    "cum_full": 464.5
+   }
+  },
+  "v4_WTI": {
+   "family": "v4",
+   "symbol": "WTI",
+   "stats": {
+    "n_active_12m": 54,
+    "cum_12m": -23.35,
+    "cum_6m": -28.16,
+    "score_12m": -0.8,
+    "std_active_12m": 3.825,
+    "worst_day_12m": -10.87,
+    "cum_full": -4.5
+   }
+  },
+  "Hold_BTCUSD": {
+   "family": "Hold",
+   "symbol": "BTCUSD",
+   "stats": {
+    "n_active_12m": 363,
+    "cum_12m": -45.12,
+    "cum_6m": -18.96,
+    "score_12m": -1.17,
+    "std_active_12m": 2.268,
+    "worst_day_12m": -14.13,
+    "cum_full": 13713.2
+   }
+  },
+  "Mon_WTI": {
+   "family": "Mon",
+   "symbol": "WTI",
+   "stats": {
+    "n_active_12m": 48,
+    "cum_12m": -30.33,
+    "cum_6m": -32.55,
+    "score_12m": -1.37,
+    "std_active_12m": 3.481,
+    "worst_day_12m": -12.55,
+    "cum_full": -123.9
+   }
+  },
+  "Mon_NATGAS": {
+   "family": "Mon",
+   "symbol": "NATGAS",
+   "stats": {
+    "n_active_12m": 48,
+    "cum_12m": -42.23,
+    "cum_6m": -43.93,
+    "score_12m": -1.53,
+    "std_active_12m": 4.661,
+    "worst_day_12m": -12.2,
+    "cum_full": -25.2
+   }
+  },
+  "v4_UK100": {
+   "family": "v4",
+   "symbol": "UK100",
+   "stats": {
+    "n_active_12m": 50,
+    "cum_12m": -8.04,
+    "cum_6m": -5.43,
+    "score_12m": -1.75,
+    "std_active_12m": 0.667,
+    "worst_day_12m": -2.46,
+    "cum_full": 17.0
+   }
+  }
+ }
+}
