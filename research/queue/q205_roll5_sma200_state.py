@@ -23,6 +23,13 @@ def welch(a, b):
     a, b = np.asarray(a, float), np.asarray(b, float)
     if len(a) < 5 or len(b) < 5: return None
     return round(float((a.mean() - b.mean()) / np.sqrt(a.var(ddof=1) / len(a) + b.var(ddof=1) / len(b))), 2)
+def roll5_sma200(variant="B"):
+    """紙上候補 RollSma200B(docs/444): Roll5(門 2.0pp・5 本等分)で、200 日線の上の通貨 1.0 倍・下の通貨 0.5 倍(variant "A" は逆)。index = 建て日(水曜)。"""
+    L = {s: leg(s) for s in PAIRS}; days = pd.DatetimeIndex(sorted(set().union(*[set(L[s].index) for s in PAIRS]))); jp = rate_series("JPY", days); out = {}
+    for s in PAIRS:
+        lo, ok = below200(s, days); f = np.where(ok & (lo if variant == "B" else ~lo), 0.5, 1.0)
+        out[s] = L[s] * (rate_series(s[:3], days) - jp >= GATE).reindex(L[s].index).fillna(False).astype(float) * pd.Series(f, index=days).reindex(L[s].index)
+    return pd.DataFrame(out).fillna(0.0).sum(axis=1) / len(PAIRS)
 if __name__ == "__main__":
     cum = int(sys.argv[1]); N = 2; L = {s: leg(s) for s in PAIRS}; days = pd.DatetimeIndex(sorted(set().union(*[set(L[s].index) for s in PAIRS]))); jp = rate_series("JPY", days)
     G = {s: (rate_series(s[:3], days) - jp >= GATE) for s in PAIRS}; ST = {s: below200(s, days) for s in PAIRS}
@@ -30,6 +37,7 @@ if __name__ == "__main__":
         df = pd.DataFrame({s: L[s] * G[s].reindex(L[s].index).fillna(False).astype(float) * pd.Series(fac(*ST[s]), index=days).reindex(L[s].index) for s in PAIRS}).fillna(0.0); return df.sum(axis=1) / len(PAIRS)
     base_ = fam(lambda lo, ok: np.ones(len(lo)))
     A = fam(lambda lo, ok: np.where(ok & ~lo, 0.5, 1.0)); B = fam(lambda lo, ok: np.where(ok & lo, 0.5, 1.0)); rows = []
+    assert np.allclose(B.values, roll5_sma200("B").reindex(B.index).values) and np.allclose(A.values, roll5_sma200("A").reindex(A.index).values)
     for nm, v in (("A 下で売る(下 1.0・上 0.5)", A), ("B 上で売る(上 1.0・下 0.5)", B)):
         r = improved(base_, v); rows.append(dict(cell=nm, base_PRE=r["base_PRE"], var_PRE=r["var_PRE"], base_IS=r["base_IS"], var_IS=r["var_IS"], base_OOS=r["base_OOS"], var_OOS=r["var_OOS"], improved=r["ok"]))
     D = pd.DataFrame(rows); D.to_csv("results/q205_roll5_sma200_state.csv", index=False); pd.set_option("display.width", 300); pd.set_option("display.max_columns", 30); pd.set_option("display.max_rows", 300)
