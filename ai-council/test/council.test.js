@@ -238,3 +238,13 @@ test("新規開拓会議に検証結果を渡す", async () => {
   assert.match(seen.ideaA, /追補52 棄却/);
   assert.match(seen.chair, /## 受け渡し/);
 });
+
+import { isFundsError } from "../src/funds.js";
+
+test("クレジット切れの判定", () => {
+  assert.equal(isFundsError(402, ""), true);
+  assert.equal(isFundsError(403, '{"message":"Key limit exceeded"}'), true);
+  assert.equal(isFundsError(400, '{"message":"Insufficient credits. Add more using https://openrouter.ai/credits"}'), true);
+  assert.equal(isFundsError(429, '{"message":"Rate limit exceeded: too many requests"}'), false);
+  assert.equal(isFundsError(500, "upstream error"), false);
+});

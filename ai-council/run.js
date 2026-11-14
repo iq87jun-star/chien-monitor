@@ -10,8 +10,13 @@ import { runCouncil, transcript, splitMessage } from "./src/council.js";
 import { decryptStatus, statusText } from "./src/status.js";
 import { extractCandidates } from "./src/prompts.js";
 import { buildHandoffs, withoutHandoff, queueFeedback, readmeFeedback } from "./src/handoff.js";
+import { isFundsError, FUNDS_NOTICE } from "./src/funds.js";
+
+// クレジット切れを見つけたら、残りの AI は呼ばずに会議を終え、ワークフローが自動実行を止める
+let fundsOut = false;
 
 const config = JSON.parse(readFileSync(new URL("./config.json", import.meta.url)));
+if (process.env.AI_COUNCIL_ENDPOINT) config.endpoint = process.env.AI_COUNCIL_ENDPOINT; // 手元の試験用
 const UA = "chien-monitor-ai-council/0.1 (+https://github.com/iq87jun-star/chien-monitor)";
 const key = process.env.OPENROUTER_API_KEY;
 const question = (process.env.AI_COUNCIL_QUESTION ?? "").trim();
@@ -24,7 +29,7 @@ async function retry(fn, tries = 3) {
     try {
       return await fn();
     } catch (e) {
-      if (attempt >= tries) throw e;
+      if (e.noRetry || attempt >= tries) throw e;
       await new Promise((r) => setTimeout(r, 5000 * attempt));
     }
   }
@@ -54,6 +59,7 @@ async function openrouter(role, system, user) {
     console.log(`\n===== ${role}(${model})に渡す内容 =====\n${user}`);
     return { text: `(試しの実行: ${model} は呼んでいません)`, cost: 0 };
   }
+  if (fundsOut) throw Object.assign(new Error("クレジット切れのため呼んでいません"), { noRetry: true });
   return retry(async () => {
     const res = await fetch(config.endpoint, {
       method: "POST",
@@ -78,7 +84,12 @@ async function openrouter(role, system, user) {
       signal: AbortSignal.timeout(600_000),
     });
     const body = await res.json().catch(() => ({}));
-    if (!res.ok || body.error) throw new Error(`${model} ${res.status}: ${JSON.stringify(body.error ?? body).slice(0, 300)}`);
+    const errText = JSON.stringify(body.error ?? body).slice(0, 300);
+    if ((!res.ok || body.error) && isFundsError(res.status, errText)) {
+      fundsOut = true;
+      throw Object.assign(new Error(`クレジット切れ(${model} ${res.status}): ${errText}`), { noRetry: true });
+    }
+    if (!res.ok || body.error) throw new Error(`${model} ${res.status}: ${errText}`);
     const msg = body.choices?.[0]?.message ?? {};
     // 調査役(Perplexity)の出典は annotations / citations に入る
     const urls = [
@@ -135,7 +146,7 @@ const feedback = mode === "explore" ? feedbackText() : "";
 const result = await runCouncil({ config, chat: openrouter, mode, question, portfolio, live, calendar, overlaps, explored, feedback, today });
 
 // 新規開拓会議の候補を explored.md に足す(ワークフローがコミットする。次回からの蒸し返しを防ぐ)
-if (mode === "explore" && key) {
+if (mode === "explore" && key && !fundsOut) {
   const found = extractCandidates(result.final);
   // まとめ役の答えが途中で切れて「候補一覧」が無いときは、候補なしと区別して記録する
   const lines = found.length
@@ -153,7 +164,7 @@ const title = {
 const full = transcript({ title, ...result });
 
 // 新規開拓会議の全文をリポジトリに残す(土曜午後の定期タスクが読み、研究・theoption の各セッションへ受け渡す)
-if (mode === "explore" && key) {
+if (mode === "explore" && key && !fundsOut) {
   const dir = new URL("./explore/", import.meta.url);
   mkdirSync(dir, { recursive: true });
   writeFileSync(new URL(`${today}.md`, dir), full);
@@ -197,5 +208,13 @@ if (!webhook) {
   console.log(`Discord に送りました(受け渡し ${handoffs.length} 件)`);
 }
 
-// 全員失敗(キーの間違い・残高切れなど)は Actions を赤にして気づけるようにする
+// クレジット切れ: 知らせて、ワークフローの次の手順が自動実行を止める(funds_exhausted ファイルが合図)
+if (fundsOut) {
+  writeFileSync(new URL("./funds_exhausted", import.meta.url), `${today}\n`);
+  console.log("OpenRouter のクレジット切れ。自動実行を止める");
+  if (webhook) await post(FUNDS_NOTICE);
+  process.exit(0);
+}
+
+// 全員失敗(キーの間違いなど)は Actions を赤にして気づけるようにする
 if (key && result.steps.every((s) => s.error)) process.exit(1);

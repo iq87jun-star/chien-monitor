@@ -6,6 +6,8 @@
 #   - 手動実行: question に相談を書くと、その相談を検討する。空なら mode(点検 / 新規開拓)を動かす
 # 全員の発言は Actions の実行結果のまとめにも出る。
 #
+# OpenRouter のクレジットが尽きたら Discord に知らせて、このワークフローを無効にする(再開は Actions → ai-council → Enable workflow)。
+#
 # Secrets: OPENROUTER_API_KEY … OpenRouter の API キー(未設定なら AI を呼ばずに渡す内容だけ表示)
 #          AI_COUNCIL_DISCORD_WEBHOOK … 通知先(未設定ならログに出すだけ)
 #          AI_COUNCIL_STATUS_KEY … パソコンが書き出す口座データの鍵
@@ -56,6 +58,7 @@ jobs:
     timeout-minutes: 40
     permissions:
       contents: write
+      actions: write
     env:
       MODE: ${{ (github.event.schedule == '17 23 * * 5' || inputs.mode == '新規開拓') && 'explore' || 'brief' }}
     steps:
@@ -83,6 +86,12 @@ jobs:
           AI_COUNCIL_QUESTION: ${{ inputs.question }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           AI_COUNCIL_DISCORD_WEBHOOK: ${{ secrets.AI_COUNCIL_DISCORD_WEBHOOK }}
+      # OpenRouter のクレジットが尽きたら(run.js が funds_exhausted を書く)、このワークフローの自動実行を止める
+      - name: クレジット切れなら自動実行を止める
+        if: hashFiles('ai-council/funds_exhausted') != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow disable ai-council.yml --repo "${GITHUB_REPOSITORY}"
       - name: 新規開拓の候補を記録する
         if: env.MODE == 'explore' && inputs.question == ''
         run: |
