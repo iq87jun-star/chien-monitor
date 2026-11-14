@@ -3511,18 +3511,25 @@
   {
    "id": "Q204",
    "slug": "roll_chf_funding_bundle",
-   "status": "pending",
+   "status": "done",
    "cells": 1,
    "order": 38,
    "registered": "2026-11-14",
    "title": "RollCHF: 水曜 20→00 UTC に CHF 調達の 5 ペア(USDCHF・GBPCHF・AUDCHF・NZDCHF・CADCHF)を SHORT・政策金利差 2.0pp 以上の週のみ・束 1 セル(新規)",
    "program": "docs/244 週次アイデア束 #5(ai-council 2026-11-14 ① RollCHF/EUR・CFD)・ユーザー「登録」",
    "sessions_planned": 1,
-   "sessions_done": 0,
+   "sessions_done": 1,
    "docs": [
-    "docs/244_morning_research_queue.md"
+    "docs/244_morning_research_queue.md",
+    "docs/443_q204_roll_chf_funding_bundle.md"
    ],
-   "note": "ai-council 2026-11-14 ①。仮説: Roll5(水曜 20→00 UTC の円クロス売り)の偏りは円に固有ではなく、低金利の調達通貨一般に出る。事前固定: 建て = 水曜 20:00 UTC の H1 足始値、決済 = 木曜 00:00 UTC の足始値(4 時間・Roll5 と同じ)。銘柄 = USDCHF・GBPCHF・AUDCHF・NZDCHF・CADCHF を SHORT。門 = 相手通貨と CHF の政策金利差が 2.0pp 以上の週のみ(金利表は q20_wed_swap_carry.py の RATES・紙上 RollGateB2 と同じ流儀。2026 年の変更は実行時に公表値で追記し docs に明記)。束の損益 = その週に門を満たし、かつ 20 時と 24 時の足が両方ある銘柄の等加重平均(コスト後)。該当 0 本の週は取引なし。コスト = FX 往復 3pip(銘柄ごと)。判定は docs/244 §1 の標準基準のみ(束の月次で二項 p < 0.05 / 累積(実行時 10,141 + 1)・IS 2021-10〜2024-12 の月数 ≥ 24・OOS 2025-01〜 の平均 > 0 で同符号・前窓 2016-01〜2021-09 の +月率 ≥ 50%)。AI 側の基準は使わない。事前確認(金利表のみ・損益は未見): 門を満たす月 = 前窓 49/69・IS 33/39・OOS 19/19。データ: USDCHF・GBPCHF・CADCHF は data_dukascopy(+ FXCM 継ぎ足し・docs/422)、AUDCHF・NZDCHF は手元に無いので FXCM 公開アーカイブ(fetch_fxcm.py・H1・BID)から取得(2016 年分と 2024 年分の存在は確認済み)。取得できない場合は 3 銘柄で実行せず『データ待ち』とする(銘柄を減らして判定しない)。参考記録(判定には使わない): (1) ペア別の結果、(2) 門を満たした週数(束・ペア別・窓別)、(3) Roll5(5 円クロス等加重・同じ窓)との日次相関、(4) 欠け週の数と扱い、(5) 米国の夏時間 / 冬時間別の結果、(6) 門なし(全週)の結果。既知の関連結果: Q20(docs/265)で USDCHF の同じ窓・同じ向き(門 1pp)は IS 13/39・−1.21 bps・OOS 12/20・+0.02 bps で不通過、同 doc は『非円ペアでは効かない』と結論。束の 5 本中 4 本(GBPCHF・AUDCHF・NZDCHF・CADCHF)は未検定。EUR の束(EURUSD・EURGBP・EURAUD・EURNZD・EURCAD LONG)は登録しない(docs/244 同節)。通過しても紙上フォワードの CANDIDATES に入れるだけで EA・manifest・config は変えない。棄却は正常な結果。実行後に main の ai-council/explored.md の 2026-11-14 ① の行へ結果を書き足す"
+   "note": "ai-council 2026-11-14 ①。仮説: Roll5(水曜 20→00 UTC の円クロス売り)の偏りは円に固有ではなく、低金利の調達通貨一般に出る。事前固定: 建て = 水曜 20:00 UTC の H1 足始値、決済 = 木曜 00:00 UTC の足始値(4 時間・Roll5 と同じ)。銘柄 = USDCHF・GBPCHF・AUDCHF・NZDCHF・CADCHF を SHORT。門 = 相手通貨と CHF の政策金利差が 2.0pp 以上の週のみ(金利表は q20_wed_swap_carry.py の RATES・紙上 RollGateB2 と同じ流儀。2026 年の変更は実行時に公表値で追記し docs に明記)。束の損益 = その週に門を満たし、かつ 20 時と 24 時の足が両方ある銘柄の等加重平均(コスト後)。該当 0 本の週は取引なし。コスト = FX 往復 3pip(銘柄ごと)。判定は docs/244 §1 の標準基準のみ(束の月次で二項 p < 0.05 / 累積(実行時 10,141 + 1)・IS 2021-10〜2024-12 の月数 ≥ 24・OOS 2025-01〜 の平均 > 0 で同符号・前窓 2016-01〜2021-09 の +月率 ≥ 50%)。AI 側の基準は使わない。事前確認(金利表のみ・損益は未見): 門を満たす月 = 前窓 49/69・IS 33/39・OOS 19/19。データ: USDCHF・GBPCHF・CADCHF は data_dukascopy(+ FXCM 継ぎ足し・docs/422)、AUDCHF・NZDCHF は手元に無いので FXCM 公開アーカイブ(fetch_fxcm.py・H1・BID)から取得(2016 年分と 2024 年分の存在は確認済み)。取得できない場合は 3 銘柄で実行せず『データ待ち』とする(銘柄を減らして判定しない)。参考記録(判定には使わない): (1) ペア別の結果、(2) 門を満たした週数(束・ペア別・窓別)、(3) Roll5(5 円クロス等加重・同じ窓)との日次相関、(4) 欠け週の数と扱い、(5) 米国の夏時間 / 冬時間別の結果、(6) 門なし(全週)の結果。既知の関連結果: Q20(docs/265)で USDCHF の同じ窓・同じ向き(門 1pp)は IS 13/39・−1.21 bps・OOS 12/20・+0.02 bps で不通過、同 doc は『非円ペアでは効かない』と結論。束の 5 本中 4 本(GBPCHF・AUDCHF・NZDCHF・CADCHF)は未検定。EUR の束(EURUSD・EURGBP・EURAUD・EURNZD・EURCAD LONG)は登録しない(docs/244 同節)。通過しても紙上フォワードの CANDIDATES に入れるだけで EA・manifest・config は変えない。棄却は正常な結果。実行後に main の ai-council/explored.md の 2026-11-14 ① の行へ結果を書き足す",
+   "done": "2026-11-14",
+   "results": [
+    "research/results/q204_roll_chf_funding_bundle.csv",
+    "research/results/q204_roll_chf_funding_bundle_ref.csv"
+   ],
+   "result": "棄却(1 セル・累積 10,141 → 10,142)。束(門 2.0pp・コスト後): 前窓 16/49 か月・−2.51 bps、探索 11/33・−1.70 bps・p 0.98(閾値 4.93e-6)、OOS 8/23・−1.84 bps。5 本とも探索窓で負(USDCHF −0.39・GBPCHF −0.27・AUDCHF −3.16・NZDCHF −4.10・CADCHF −1.82 bps)。門なしも同じ(探索 −2.04 bps)。夏時間・冬時間とも負。Roll5 との日次相関は 0.34(全期間)〜0.65(OOS)だが、同じ週の Roll5 は探索 +4.16・OOS +3.26 bps。現実価格(bid 建て → ask 決済・3 本)は探索 +0.95 bps・17/33(p 0.50)でほぼゼロ。AUDCHF・NZDCHF は FXCM の 2026 年第 19〜32 週が欠け、OOS の 20 週は残り 3 本で束を作った(事前固定どおり)。Q20 の結論(円クロスに固有)を CHF 調達でも確認。CANDIDATES に入れない"
   }
  ],
  "runs": [
@@ -5116,6 +5123,15 @@
    "cells": 0,
    "cumulative_cells": 10141,
    "note": "ユーザー「登録して実行」・診断・docs/442・本口座の倍率の引き下げ候補(FTMO 50k 4.5 倍・ルビー 3.1 倍・パール 2.8 倍・トパーズ 3 倍または 4 倍 + 残す 3〜5%)・判断待ち・EA 変更なし"
+  },
+  {
+   "date": "2026-11-14",
+   "items": [
+    "Q204"
+   ],
+   "cells": 1,
+   "cumulative_cells": 10142,
+   "note": "ユーザー「実行」・週次アイデア束 #5・docs/443・棄却・EA 変更なし"
   }
  ],
  "external_checks": [
