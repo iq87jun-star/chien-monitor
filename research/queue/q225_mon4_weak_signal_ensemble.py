@@ -5,6 +5,7 @@ E1: 1 − 0.25u(下限 0.25)。E2: u ≥ 2 → 0.5。E3: (A or B) かつ (C or D
 判定 = 配備中の形(A だけ: 下 1.0・上 0.5)に対して 前窓・IS・OOS の 3 つすべてで Sharpe 改善 かつ 最悪月が悪化しない。
 使い方: cd research && python3 -W ignore queue/q225_mon4_weak_signal_ensemble.py <累積セル数>   出力: results/q225_mon4_weak_signal_ensemble.csv・_diag.csv"""
 import sys, os
+_ARGV = list(sys.argv)          # q188 の読み込みが sys.argv を書き換えるので先に控える
 from q_common import *
 from q147_roll_rate_diff_gate import stats
 from q194_mon_own_technical_state_gate import PAIRS, states
@@ -16,11 +17,11 @@ def frame():
     rows = []
     for s in PAIRS:
         h = load(s); m = db.mon_cell_h1(s); m = m[(m.index >= PRE0) & (m.index <= h.index.max())]; st = states(s).shift(1).reindex(m.index, method="ffill"); fri = pd.DatetimeIndex(m.index) - pd.Timedelta(days=3)
-        rows.append(pd.DataFrame({"r": m.values, "sym": s, "d200": st.sma200.values, "wk": st.wk.values, "skew": PRK.reindex(fri, method="ffill").values, "vix": VIX.reindex(fri, method="ffill").values}, index=m.index))
-    P = pd.concat(rows); P["A"] = (P.d200 >= 0).fillna(False); P["B"] = (P.wk > 0).fillna(False); P["C"] = (P.skew > 0.8).fillna(False); P["D"] = (P.vix > 25).fillna(False); P["u"] = P[["A", "B", "C", "D"]].sum(axis=1); return P
+        rows.append(pd.DataFrame({"r": m.values, "sym": s, "d200": st.sma200.values, "wk": st.wk.values, "skw": PRK.reindex(fri, method="ffill").values, "vix": VIX.reindex(fri, method="ffill").values}, index=m.index))
+    P = pd.concat(rows); P["A"] = (P.d200 >= 0).fillna(False); P["B"] = (P.wk > 0).fillna(False); P["C"] = (P.skw > 0.8).fillna(False); P["D"] = (P.vix > 25).fillna(False); P["u"] = P[["A", "B", "C", "D"]].sum(axis=1); return P
 def e4_factor(P):
     """取引年ごとに、前年末までのデータだけで最小二乗 → 予測が過去の中央値未満なら 0.5。3 年未満は A だけの形。"""
-    X = ["d200", "wk", "skew", "vix"]; f = np.where(P.A, 0.5, 1.0).astype(float); coefs = {}
+    X = ["d200", "wk", "skw", "vix"]; f = np.where(P.A, 0.5, 1.0).astype(float); coefs = {}
     for Y in sorted(set(P.index.year)):
         tr = P[(P.index < pd.Timestamp(f"{Y}-01-01"))].dropna(subset=X); te = P.index.year == Y
         if tr.index.year.nunique() < 3 or len(tr) < 300: continue
@@ -28,7 +29,7 @@ def e4_factor(P):
         Zt = np.c_[np.ones(int(te.sum())), ((P.loc[te, X] - mu) / sd).values]; pred = Zt @ b; ok = ~np.isnan(pred); cur = f[te]; cur[ok] = np.where(pred[ok] < med, 0.5, 1.0); f[te] = cur
     return f, coefs
 if __name__ == "__main__":
-    cum = int(sys.argv[1]); N = 4; P = frame(); f4, coefs = e4_factor(P)
+    cum = int(_ARGV[1]); N = 4; P = frame(); f4, coefs = e4_factor(P)
     FAC = {"base": np.where(P.A, 0.5, 1.0), "E1": np.maximum(1 - 0.25 * P.u.values, 0.25), "E2": np.where(P.u >= 2, 0.5, 1.0), "E3": np.where((P.A | P.B) & (P.C | P.D), 0.5, 1.0), "E4": f4}
     def comp(k): x = P.r * (FAC[k] if k else 1.0) * 0.25; return x.groupby(level=0).sum()
     RAW, B = comp(None), comp("base"); rs = {w: stats(RAW, a, b) for w, a, b in WIN}; bs = {w: stats(B, a, b) for w, a, b in WIN}; rows = []
