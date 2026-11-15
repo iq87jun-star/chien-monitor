@@ -247,7 +247,7 @@
   "compile_check_exit_v1": {
    "apply": false,
    "prepare_profile": false,
-   "terminal": "FTMO",
+   "terminal": "521100397",
    "ensure": [
     {
      "ea": "【FN_Instant20k_口座11988011】RecentFit_G_Mon2x1.5+MonUS30_JP225x0.375_v1.22.mq5",
@@ -271,7 +271,7 @@
     }
    ],
    "remove": [],
-   "note": "2026-11-16 01:55 JST(月曜未明・禁止時間帯の外): コンパイル確認だけの項目(apply:false・prepare_profile:false)。ユーザー「切替 InstantとFintokei3口座」(docs/241 §1bf)の 4 本を FTMO の端末でコンパイルして結果を見る。チャート・プロファイルは変えない。4 口座の ensure の切り替えは、コンパイル OK を確認したうえで 11/18(水)の朝・建玉なしの時間に行う。確認後にこの項目は消す。"
+   "note": "2026-11-16 01:55 JST(月曜未明・禁止時間帯の外): コンパイル確認だけの項目(apply:false・prepare_profile:false)。ユーザー「切替 InstantとFintokei3口座」(docs/241 §1bf)の 4 本を FTMO の端末でコンパイルして結果を見る。チャート・プロファイルは変えない。4 口座の ensure の切り替えは、コンパイル OK を確認したうえで 11/18(水)の朝・建玉なしの時間に行う。確認後にこの項目は消す。 【2026-11-16 02:17 JST 追記】端末の実行ファイルのパスは口座番号を含む形(deploy_status の terminal 欄)で、\"FTMO\" では一致せずコンパイルされなかったため、terminal を \"521100397\" に変更(apply:false・prepare_profile:false のまま。その端末のチャート・稼働中の EA は変えない)。"
   }
  },
  "_retired_6078225": "2026-09-28 Fintokei から挑戦終了通知(docs/241 §1q)。プロファイル生成対象から外す",
