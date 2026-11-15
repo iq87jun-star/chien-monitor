@@ -12,7 +12,7 @@ from q147_roll_rate_diff_gate import stats
 from q205_roll5_sma200_state import PAIRS, GATE, leg, bars
 from scipy import stats as sps
 PRE1 = IS0 - pd.Timedelta(hours=1); WIN = (("前窓", PRE0, PRE1), ("IS", IS0, IS1), ("OOS", OOS0, END))
-V = pd.read_csv("data_ext/VIX_History.csv"); V["d"] = pd.to_datetime(V["DATE"]); VIX = V.set_index("d")["CLOSE"].sort_index().astype(float)
+V = pd.read_csv(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data_ext", "VIX_History.csv")); V["d"] = pd.to_datetime(V["DATE"]); VIX = V.set_index("d")["CLOSE"].sort_index().astype(float)
 VZ = ((VIX - VIX.expanding(min_periods=252).mean().shift(1)) / VIX.expanding(min_periods=252).std().shift(1))          # その日より前の VIX だけで標準化
 def d200(sym, dates):
     """建て日より前の最後の確定日足の 終値 / SMA200 − 1(Q205 の below200 と同じ日足)。"""
