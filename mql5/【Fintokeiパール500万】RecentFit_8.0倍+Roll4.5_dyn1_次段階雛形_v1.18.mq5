@@ -215,7 +215,7 @@ input double InpSessMaxSpreadPips = 3.0;   // 建て時スプレッド上限(pip
 input double InpSessMinStopPips   = 15.0;  // 災害SL最小幅(21 UTC のスプレッド拡大を内側で受ける)
 input string InpSessSkipDates     = "2026.12.30,2027.03.31,2027.06.30"; // Roll を建てない日(UTC)。2026.09.30 は解除(2026-09-27 ユーザー決定・docs/308)。月末最終 JP 営業日の水曜(docs/305 Q61: 平均 −2.9 bps・n=13)。2027 下期以降は要追記
 input string InpSessDaysUTC       = "3";   // Roll を建てる曜日(UTC day_of_week: 0=日…3=水・CSV)。水曜のみ = 3 日分ロール
-input string InpRollRates         = "USD:3.75,JPY:0.75,EUR:2.00,GBP:3.75,AUD:3.60,CAD:2.25,CHF:0.00,NZD:2.25"; // 政策金利(%)・月次で手更新(docs/265 の表)
+input string InpRollRates         = "USD:4.00,JPY:1.25,EUR:2.50,GBP:4.00,AUD:4.85,CAD:2.50,CHF:0.00,NZD:2.25"; /* 2026-11-16 docs/491: 各中銀の公式値に更新(USD 4.00・JPY 1.25・EUR 2.50・GBP 4.00・AUD 4.85・CAD 2.50。NZD・CHF は未確認で据え置き)。門の開閉は更新前と同じ */ // 政策金利(%)・月次で手更新(docs/265 の表)
 input double InpRollMinCarryPp    = 2.0;   // (14166201 v1.37 と同じ・docs/378 Q147) 門: SHORT レグは carry(base−quote)≥ この pp、LONG レグは ≤ −この pp のときだけ建てる
 input group "=== 防御フィルタ(docs/148) ==="
 input bool   InpHolidayFilterEnable = true; // 12/20〜1/3は新規停止
