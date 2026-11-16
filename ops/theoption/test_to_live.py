@@ -214,7 +214,7 @@ def test_run_entries_retries_transient_216_until_feed_is_live(monkeypatch):
         buys = [c for c in calls if c[0] == "/trading/buy"]
         first_ok = next(c for c in buys if c[3] >= dt.datetime(2026, 11, 9, 7, 8, 30, tzinfo=L.JST))
         assert first_ok[3] < dt.datetime(2026, 11, 9, 7, 9, 0, tzinfo=L.JST)          # 配信開始から 15 秒以内に約定
-        assert all(2 <= s <= L.STALE_RETRY_SECS or s >= 4.0 for s in slept)             # 再試行間隔は 2 秒→15 秒、脚間は 4〜8 秒
+        assert all(s in (L.FAST_GAP, 2, L.STALE_RETRY_SECS) or 4.0 <= s <= 8.0 for s in slept)   # 2 秒 → 保留(1.2 秒おきに次の脚)→ 15 秒おきの巡回、約定後の脚間は 4〜8 秒
         rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
         assert len(rows) == 4 and all(",9,175.9," in r for r in rows[1:])            # 3 本とも約定として記録
 
@@ -237,7 +237,43 @@ def test_run_entries_gives_up_at_deadline(monkeypatch):
         L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), fake_now["t"])
         assert fake_now["t"] <= dt.datetime(2026, 11, 9, 7, 20, 30, tzinfo=L.JST) and n["buy"] >= 70   # 07:20 で打ち切り(約 80 回)
         rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
-        assert "buy 拒否 [216]" in rows[1] and ",0,,," in rows[1]
+        row = next(r for r in rows if ",EURJPY_N6," in r)
+        assert "buy 拒否 [216]" in row and ",0,,," in row
+
+def test_v114_frozen_leg_does_not_block_other_legs(monkeypatch):
+    """v1.14(追補72): 11/16(月)の実測。EURJPY が 216 で 10 分凍結している間、AUDJPY・NZDJPY は試行されなかった → 凍結中の脚は保留に回し、配信が戻った脚から建てる。"""
+    fake_now = {"t": dt.datetime(2026, 11, 16, 7, 0, 10, tzinfo=L.JST)}
+    class FakeDT(dt.datetime):
+        @classmethod
+        def now(cls, tz=None): return fake_now["t"]
+    monkeypatch.setattr(L.dt, "datetime", FakeDT)
+    monkeypatch.setattr(L.time, "sleep", lambda s: fake_now.__setitem__("t", fake_now["t"] + dt.timedelta(seconds=s))); monkeypatch.setattr(L, "sleep_until", lambda t: None)
+    T = lambda h, m, s=0: dt.datetime(2026, 11, 16, h, m, s, tzinfo=L.JST)
+    thaw = {"EURJPY": T(7, 30), "AUDJPY": T(7, 3), "NZDJPY": T(7, 0)}   # EURJPY は打ち切り(07:20)まで凍結、AUDJPY は 07:03 まで、NZDJPY は最初から配信あり
+    fills = {}; tries = {"EURJPY": 0, "AUDJPY": 0, "NZDJPY": 0}
+    def fake_rest(base, path, key, body=None, timeout=15):
+        if path == "/wallet/balance": return 200, {"status": "success", "data": {"balance": 400000}}
+        if path == "/trading/buy":
+            p = body["contract"][:6]; tries[p] += 1
+            if fake_now["t"] < thaw[p]: return 200, {"status": "fail", "errors": [{"errorCode": 216}]}
+            assert p not in fills; fills[p] = fake_now["t"]
+            return 200, {"status": "success", "data": {"trade": 7, "order_properties": {"strike": 1.0}}}
+        return 200, {"status": "success", "data": {"isActive": True}}
+    monkeypatch.setattr(L, "rest", fake_rest)
+    async def fake_scan(wss, key, secs, done=None):
+        return [upd(f"{p}|FE|23H|HIGHLOW|HIGH", "2026-11-16T21:00:00.000Z", "1.95", status="Open") for p in ("EURJPY", "AUDJPY", "NZDJPY")]
+    monkeypatch.setattr(L, "scan_contracts", fake_scan)
+    with tempfile.TemporaryDirectory() as tmp:
+        assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), fake_now["t"]) == 0
+        assert fills["NZDJPY"] < T(7, 0, 30)                          # 凍結していない脚は待たされない
+        assert T(7, 3) <= fills["AUDJPY"] < T(7, 3, 25)               # 配信が戻ってから一巡以内
+        assert "EURJPY" not in fills and fake_now["t"] <= T(7, 20, 30) and tries["EURJPY"] >= 60   # 凍結したままの脚だけ 07:20 で見送り
+        rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
+        assert len(rows) == 4 and sum(",7,1.0," in r for r in rows) == 2 and sum("buy 拒否 [216]" in r for r in rows) == 1
+        state = json.load(open(os.path.join(tmp, "_diag", "live_state.json"), encoding="utf-8"))["2026-11-16"]
+        assert state["AUDJPY_N6"]["stake"] == 22700 and state["NZDJPY_N6"]["stake"] == 18700 and state["EURJPY_N6"]["stake"] == 0
+        # 再実行しても二重発注しない
+        n0 = sum(tries.values()); L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), T(7, 0, 10)); assert sum(tries.values()) == n0
 
 def test_v16_per_leg_account_routing(monkeypatch):
     """v1.6(追補37・裁定 B): live_real でも demo_legs(既定: 月曜 3 本 + 仲値 3 本)はお試し口座、EURGBP 23:00 と AUDJPY 02:00 は実口座。"""

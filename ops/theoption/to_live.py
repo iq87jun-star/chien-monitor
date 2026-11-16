@@ -22,7 +22,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.13"
+VERSION = "1.14"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -416,6 +416,23 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     if fast: sleep_until(entry0 + dt.timedelta(seconds=FAST_BUY_DELAY))   # 定刻前にそろっていれば定刻 +1 秒まで待つ。定刻後に出たならすぐ発注
     csv_path = os.path.join(out_dir, f"live_entries_{account}.csv")
     hdr = ["date", "strategy_id", "pair", "direction", "payout_actual", "stake", "trade_id", "strike", "contract", "note"]
+    deadline = entry0 + dt.timedelta(minutes=STALE_RETRY_DEADLINE_MIN); pending = []
+    def try_buy(leg, c, stake, attempt):
+        st, resp = rest(base, "/trading/buy", key, buy_body(c["name"], c["expiration_time"], stake), timeout=8 if fast else 15)
+        log.write("buy", {"leg": leg["id"], "http": st, "req": buy_body(c["name"], c["expiration_time"], stake), "body": resp, "t_jst": dt.datetime.now(JST).strftime("%H:%M:%S.%f")[:-3], "attempt": attempt})
+        return resp or {}
+    def finalize(leg, c, stake, resp):
+        nonlocal today_total
+        if resp and resp.get("status") == "success":
+            d = resp.get("data") or {}; op = d.get("order_properties") or {}
+            rec = {"stake": stake, "trade": str(d.get("trade")), "strike": op.get("strike"), "contract": c["name"], "payout": c["payout"]}
+            today_total += stake; log.say(leg["id"], "購入", stake, "円", "trade", d.get("trade"), "strike", op.get("strike"), "倍率", c["payout"])
+            append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], stake, d.get("trade"), op.get("strike"), c["name"], ""])
+        else:
+            rec = {"stake": 0, "note": "buy 拒否 " + str(err_codes(resp))}
+            append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], 0, "", "", c["name"], rec["note"]])
+        done[leg["id"]] = rec; state[str(day)] = done
+        json.dump(state, open(state_path, "w", encoding="utf-8"), ensure_ascii=False)
     for leg in legs:
         c = pick_contract(frames, leg, day); rec = {"stake": 0, "note": ""}
         if not c:
@@ -432,11 +449,9 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
             rec["note"] = f"日次ベット上限 {DAILY_STAKE_CAP} 超過で見送り"; log.say(leg["id"], rec["note"]); log.write("skip", {"leg": leg["id"], "reason": rec["note"]})
             append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], 0, "", "", c["name"], rec["note"]])
             done[leg["id"]] = rec; continue
-        resp = None; deadline = entry0 + dt.timedelta(minutes=STALE_RETRY_DEADLINE_MIN); attempt = 0
+        resp = None; attempt = 0; park = False
         while True:
-            attempt += 1
-            st, resp = rest(base, "/trading/buy", key, buy_body(c["name"], c["expiration_time"], stake), timeout=8 if fast else 15)
-            log.write("buy", {"leg": leg["id"], "http": st, "req": buy_body(c["name"], c["expiration_time"], stake), "body": resp, "t_jst": dt.datetime.now(JST).strftime("%H:%M:%S.%f")[:-3], "attempt": attempt})
+            attempt += 1; resp = try_buy(leg, c, stake, attempt)
             if resp.get("status") == "success": break
             codes = err_codes(resp); log.say(leg["id"], "buy 拒否", codes, str(resp)[:160])
             if fast:   # 15M: 開場直後の拒否(未開場など)は 1 秒後に再試行、最大 3 回(1 分遅れると勝率が落ちる脚なので粘らない)
@@ -444,20 +459,29 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
                 time.sleep(1.0); continue
             if not (set(codes) & TRANSIENT_CODES): break   # 残高不足・契約無効などは再試行しない
             if attempt == 1: time.sleep(2); continue        # 従来どおり 2 秒後に 1 回
-            # v1.5a: 一時的な拒否(216 など)は、業者のレート配信が始まるまで STALE_RETRY_SECS おきに定刻 +STALE_RETRY_DEADLINE_MIN 分まで粘る
-            if dt.datetime.now(JST) + dt.timedelta(seconds=STALE_RETRY_SECS) > deadline:
-                log.say(leg["id"], f"定刻 +{STALE_RETRY_DEADLINE_MIN} 分まで拒否が続いたので見送り"); break
-            time.sleep(STALE_RETRY_SECS)
-        if resp and resp.get("status") == "success":
-            d = resp.get("data") or {}; op = d.get("order_properties") or {}
-            rec = {"stake": stake, "trade": str(d.get("trade")), "strike": op.get("strike"), "contract": c["name"], "payout": c["payout"]}
-            today_total += stake; log.say(leg["id"], "購入", stake, "円", "trade", d.get("trade"), "strike", op.get("strike"), "倍率", c["payout"])
-            append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], stake, d.get("trade"), op.get("strike"), c["name"], ""])
-        else:
-            rec["note"] = "buy 拒否 " + str(err_codes(resp)); append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], 0, "", "", c["name"], rec["note"]])
-        done[leg["id"]] = rec; state[str(day)] = done
-        json.dump(state, open(state_path, "w", encoding="utf-8"), ensure_ascii=False)
+            park = True; break   # v1.14: 一時的な拒否が続く脚は保留に回し、先に次の脚を試す(11/16: EURJPY の凍結 10 分の間、AUDJPY・NZDJPY は試行されなかった)
+        if park:
+            pending.append([leg, c, stake, attempt, resp]); time.sleep(FAST_GAP); continue
+        finalize(leg, c, stake, resp)
         time.sleep(FAST_GAP if fast else random.uniform(4.0, 8.0))   # v1.1a: 発注を数秒ずつ分散。v1.5 の 15M 脚は 1.2 秒間隔(1 秒 1 回の制限内で最短)
+    # v1.5a/v1.14: 保留の脚を STALE_RETRY_SECS おきに一巡ずつ再試行し、配信が戻った脚から約定させる。定刻 +STALE_RETRY_DEADLINE_MIN 分で打ち切り
+    while pending:
+        if dt.datetime.now(JST) + dt.timedelta(seconds=STALE_RETRY_SECS) > deadline:
+            for leg, c, stake, attempt, resp in pending:
+                log.say(leg["id"], f"定刻 +{STALE_RETRY_DEADLINE_MIN} 分まで拒否が続いたので見送り"); finalize(leg, c, stake, resp)
+            break
+        time.sleep(STALE_RETRY_SECS)
+        for item in list(pending):
+            leg, c, stake, attempt, resp = item
+            if today_total + stake > DAILY_STAKE_CAP:
+                note = f"日次ベット上限 {DAILY_STAKE_CAP} 超過で見送り"; log.say(leg["id"], note); log.write("skip", {"leg": leg["id"], "reason": note})
+                append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], 0, "", "", c["name"], note])
+                done[leg["id"]] = {"stake": 0, "note": note}; pending.remove(item); continue
+            item[3] = attempt + 1; item[4] = resp = try_buy(leg, c, stake, attempt + 1)
+            ok = resp.get("status") == "success"; codes = err_codes(resp)
+            if not ok: log.say(leg["id"], "buy 拒否", codes, str(resp)[:160])
+            if ok or not (set(codes) & TRANSIENT_CODES): finalize(leg, c, stake, resp); pending.remove(item)
+            if pending and item is not pending[-1]: time.sleep(FAST_GAP)
     state[str(day)] = done; json.dump(state, open(state_path, "w", encoding="utf-8"), ensure_ascii=False)
     return 0
 
