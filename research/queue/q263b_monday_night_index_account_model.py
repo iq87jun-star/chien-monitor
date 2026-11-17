@@ -3,8 +3,9 @@
 レグ単体は Q237 の A2(配備形 Mon4 1.0 に対して指数 2 本の夜を合計 0.25)で、Sharpe と累積は 3 窓とも上がるが前窓の最悪月が 0.02 ポイント深くなり不成立だった(セルは Q237 で加算済み)。
 夜のレグ = VIX > 25 の週だけ、月曜 20 UTC の始値で NAS100・US500 を買い、指数の月曜レグと同じ時刻(火曜 14 UTC 夏 / 15 UTC 冬)に決済。損切り 3.0 × ATR24。大きさ = 円クロスの合計 1.0 に対して各 0.125。
 口座モデル・場面・開始残高・乱数・判定は Q233 と同じ(本口座後 7 構成・評価中 15 場面)。決済の型は口座ごとの採用形(Fintokei 3 口座と宝くじの評価中は E1・それ以外は 24h)。
-使い方: cd research && python3 -W ignore queue/q263b_monday_night_index_account_model.py   出力: results/q263b_night_index_funded.csv・_eval.csv"""
+使い方: cd research && python3 -W ignore queue/q263b_monday_night_index_account_model.py [5](5 = Q264 A の指数 5 本・各 0.05)  出力: results/q263b_night_index_funded.csv・_eval.csv"""
 import os, sys
+_ARGV = list(sys.argv)          # Q233 の前半の読み込みが sys.argv を切り詰めるので先に控える
 HERE = os.path.dirname(os.path.abspath(__file__))
 _src = open(os.path.join(HERE, "q233_exit_switch_line_vs_vix_account_model.py"), encoding="utf-8").read().split("\n# ---------------- (A) 本口座後")[0]; n3 = {"__name__": "q233_head", "__file__": os.path.join(HERE, "q233_exit_switch_line_vs_vix_account_model.py")}; exec(compile(_src, "q233_head", "exec"), n3)
 np, pd, q = n3["np"], n3["pd"], n3["q"]; norm_items, account_items, acct, make_fac, build_full, roll_week, sim_funded, sim_eval, MODE, PM, NP, table_x, hot, paths_fac, K, MON4 = (n3[k] for k in ("norm_items", "account_items", "acct", "make_fac", "build_full", "roll_week", "sim_funded", "sim_eval", "MODE", "PM", "NP", "table_x", "hot", "paths_fac", "K", "MON4"))
@@ -27,7 +28,8 @@ def night_table(sym):
     M = pd.DataFrame(meta, columns=["date", "t", "off", "nshots"]); res = {K: dict(risk=np.array(R["risk"]), r=np.array(R["r"]), stop=np.array(R["stop"], dtype=float), mark=np.array(R["mark"]), worst=np.array(R["worst"]))}
     print(f"  [夜のレグ] {sym}: {len(M)} 週・平均 {res[K]['r'].mean() * 1e4:+.1f} bps・勝率 {100 * (res[K]['r'] > 0).mean():.0f}%・損切り {100 * (res[K]['stop'] < 10**5).mean():.0f}%", flush=True); _N[sym] = (M, res); return _N[sym]
 paths_fac.__globals__["table"] = lambda sym, idx: night_table(sym[:-2]) if sym.endswith("@N") else table_x(sym, idx)
-NIGHT = [("NAS100@N", True, 0.125), ("US500@N", True, 0.125)]
+NIGHT = [("NAS100@N", True, 0.125), ("US500@N", True, 0.125)]; SUF = ""
+if len(_ARGV) > 1 and _ARGV[1] == "5": NIGHT = [(s_ + "@N", True, 0.05) for s_ in ("NAS100", "US500", "US30", "JP225", "UK100")]; SUF = "5"          # Q264 A: 指数 5 本(各 0.05)
 def fund_ok(b, v): return bool((v.s10 >= b.s10 + 3.0 and v.p10 >= b.p10) or (v.p10 >= b.p10 + 3.0 and v.s10 >= b.s10 - 1.0 and v.w2s5 >= b.w2s5 - 1.0))
 def ev_ok(b, v): return bool(all(v[f"reach_{w}"] >= b[f"reach_{w}"] - 1.0 and v[f"fail_{w}"] <= b[f"fail_{w}"] + 1.0 for w in ("W1", "W2")) and any(v[f"reach_{w}"] >= b[f"reach_{w}"] + 2.0 or v[f"fail_{w}"] <= b[f"fail_{w}"] - 2.0 for w in ("W1", "W2")))
 # ---------------- (A) 本口座後(Q233 と同じ 7 構成・最後の列 = 採用の決済の型) ----------------
@@ -46,7 +48,7 @@ for nm, key, itov, capov, skew, trail, lo, pad, mm, rw, mode in A:
         for k in ("s10", "p10", "s5", "w2s5"): r[k] = round(min(r[f"{k}_lo"], r[f"{k}_cl"]), 1)
         rows.append(r)
     print("A done", nm, flush=True)
-DA = pd.DataFrame(rows); DA.to_csv("results/q263b_night_index_funded.csv", index=False)
+DA = pd.DataFrame(rows); DA.to_csv(f"results/q263b_night_index{SUF}_funded.csv", index=False)
 # ---------------- (B) 評価中(Q233 と同じ 15 場面) ----------------
 B = [("FTMO 0397", "521100397", "いま", 6.0, False, False, None, False, 54835 / 5e4 - 1, 0.10, 0.01, None, None), ("FTMO 7058", "531407058", "いま", 6.0, False, False, None, False, 53683 / 5e4 - 1, 0.10, 0.01, None, None),
      ("FTMO 50k", "521100397", "次", 6.0, False, True, 0.5, False, 0.0, 0.05, 0.01, None, None),
@@ -67,7 +69,7 @@ for nm, key, stage, mm, skew, tilt, smin, trail, start, target, pad0, capm, mode
             cols = np.arange(len(dates))[sel]; rr = [sim_eval(T[tag], cols, start, target, 0.10, pad0, smin, trail) for tag in ("lo", "cl")]; r[f"reach_{wn}"] = round(min(x[0] for x in rr), 1); r[f"fail_{wn}"] = round(max(x[1] for x in rr), 1); r[f"weeks_{wn}"] = max((x[2] or 0) for x in rr)
         rowsB.append(r)
     print("B done", nm, stage, flush=True)
-DB = pd.DataFrame(rowsB); DB.to_csv("results/q263b_night_index_eval.csv", index=False)
+DB = pd.DataFrame(rowsB); DB.to_csv(f"results/q263b_night_index{SUF}_eval.csv", index=False)
 pd.set_option("display.width", 320); pd.set_option("display.max_rows", 200); pd.set_option("display.max_colwidth", 40)
 print("\n== (A) 本口座後(10 年存続 % / 10 年の累計出金 % / 5 年存続 / 2016〜21 年の 5 年存続。安値・終値の悪い方) =="); print(DA[["acct", "variant", "mode", "mon", "guard_lo", "wk_mean", "s10", "p10", "s5", "w2s5"]].to_string(index=False))
 for nm, x in DA.groupby("acct", sort=False): b, v = x.iloc[0], x.iloc[1]; print(f"  {nm}: {'変更候補' if fund_ok(b, v) else '現行どおり'}(存続 {b.s10} → {v.s10}・出金 {b.p10} → {v.p10})")
