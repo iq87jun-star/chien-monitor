@@ -430,3 +430,34 @@ test("チェック式査定: スクショ読み取りの依頼文と結果の扱
   // -1(読めない)・小数・範囲外は null か上限にそろえる
   assert.deepEqual(checkValues("granblue", { rank: 250, ssr: -1, eternals: 12, evokers: 1.5, hihi: 0 }), { rank: 250, ssr: null, crystal: null, eternals: 10, evokers: null, hihi: 0, kongo: null });
 });
+
+test("査定ページのスクショは、番号と画面の sid が合う相談にだけ付けられる", async () => {
+  const { DatabaseSync } = await import("node:sqlite");
+  const { readFileSync, readdirSync } = await import("node:fs");
+  const cs = await import("../src/consign.js");
+  const db = new DatabaseSync(":memory:");
+  const dir = new URL("../migrations/", import.meta.url);
+  for (const f of readdirSync(dir).filter((f) => f.endsWith(".sql")).sort()) db.exec(readFileSync(new URL(f, dir), "utf8"));
+  const stmt = (q, a = []) => ({
+    first: async () => db.prepare(q).get(...a) ?? null,
+    run: async () => ({ meta: { changes: Number(db.prepare(q).run(...a).changes) } }),
+    all: async () => ({ results: db.prepare(q).all(...a) }),
+  });
+  const env = { DB: { prepare: (q) => ({ ...stmt(q), bind: (...a) => stmt(q, a) }) } };
+  const lead = cs.validLead({ game: "genshin-impact", sid: "s1", handle: "nico_fan", chars: [{ name: "ニコ", cons: 6 }], low: 10000, high: 20000 }, ["genshin-impact"]);
+  const { id } = await cs.createLead(env, lead);
+  const shot = { sid: "s1", mime: "image/jpeg", data: "QUJD" };
+  assert.equal(cs.validShot({ ...shot, mime: "text/html" }), null);
+  assert.equal(cs.validShot({ ...shot, sid: "" }), null);
+  assert.equal((await cs.addLeadShot(env, id, cs.validShot({ ...shot, sid: "other" }))).ok, false);
+  assert.equal((await cs.addLeadShot(env, id + 1, cs.validShot(shot))).ok, false);
+  for (let i = 0; i < cs.LEAD_SHOTS; i++) assert.equal((await cs.addLeadShot(env, id, cs.validShot(shot))).ok, true);
+  assert.equal((await cs.addLeadShot(env, id, cs.validShot(shot))).ok, false);
+  const [c] = await cs.listConsign(env);
+  assert.equal(c.shots.length, cs.LEAD_SHOTS);
+  // 同じユーザー名の2回目の相談(別の画面)は前の番号にまとまり、新しい画面からも送れる
+  const again = await cs.createLead(env, { ...lead, sid: "s2" });
+  assert.deepEqual([again.id, again.merged], [id, true]);
+  db.exec("DELETE FROM image");
+  assert.equal((await cs.addLeadShot(env, id, cs.validShot({ ...shot, sid: "s2" }))).ok, true);
+});

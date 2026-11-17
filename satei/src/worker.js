@@ -8,6 +8,7 @@
 //   GET  /api/stats(合言葉が必要)… 利用記録の集計。画面は public/admin.html
 //   POST /api/lead {game, handle?, wish?, chars, low, high, sid, detail?} … 査定ページからの相談 → 代理出品の管理に入り、管理番号を返す
 //     (detail はチェック式の査定 check.html で答えた内容。メモに残す)
+//   POST /api/lead/:no/shot {sid, mime, data, w, h} … 相談した人が「スクショも送る」を選んだとき、査定に使ったスクショを保存(1件6枚まで)
 //   /api/consign・/api/templates(合言葉が必要)… 代理出品の一覧・更新・DM の定型文(src/consign.js)
 //   /api/stock・/api/split・/api/image・/api/want・/api/follow(合言葉が必要)… 在庫・分割払い・スクショ・購入希望者・フォロー候補の管理(src/stock.js, src/follow.js)
 //   GET/POST /api/form/:token … 引き継ぎ情報フォーム(売主が1回だけ記入。public/form.html)
@@ -35,7 +36,7 @@ import { validSheet, createSheet, listSheets, getSheet, deleteSheet, formInfo, v
 import { portalToken, portalView, portalPost, adminMsgs, adminPost, unreadCounts } from "./portal.js";
 import { listCatalog, catalogImage, validCover, setCover, deleteCover, listCovers } from "./catalog.js";
 import { listFollow, importFollow, setFollowStatus } from "./follow.js";
-import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES } from "./consign.js";
+import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES, validShot, addLeadShot } from "./consign.js";
 
 const MODEL = "claude-opus-5-5";
 const MAX_IMAGES = 6;
@@ -224,6 +225,14 @@ async function handle(req, env, ctx) {
     if ((today?.n ?? 0) >= (Number(env.DAILY_LIMIT_LEADS) || 100)) return json({ ok: false, error: "混み合っています。XのDMで直接ご相談ください" }, 429);
     const { id, merged } = await createLead(env, lead);
     return json({ ok: true, no: id, merged });
+  }
+  // 相談番号を出した人が、査定に使ったスクショを1枚ずつ送る(本人が選んだときだけ。番号と画面の sid が合うものだけ)
+  const ls = /^\/api\/lead\/(\d+)\/shot$/.exec(pathname);
+  if (ls && req.method === "POST") {
+    const shot = validShot(await readJson(req, 1_500_000));
+    if (!shot) return json({ ok: false, error: "画像を確認してください" }, 400);
+    const r = await addLeadShot(env, Number(ls[1]), shot);
+    return json(r.ok ? { ok: true } : { ok: false, error: r.error }, r.ok ? 200 : r.status);
   }
   // 分割払いのお客様ページ(リンクの token を知っているお客様だけ)
   const pt = /^\/api\/portal\/([0-9a-f]{32})(\/msg)?$/.exec(pathname);

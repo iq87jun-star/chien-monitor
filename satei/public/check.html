@@ -50,6 +50,7 @@
   .opt input { accent-color: var(--accent); }
   .lead-form { text-align: left; margin-top: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; }
   .lead-form label { margin-top: 8px; }
+  .shots-opt input { display: inline !important; width: auto !important; margin: 0 4px 0 0 !important; }
   .notice { background: var(--warn-bg); color: var(--warn); border-radius: 10px; padding: 10px 12px; font-size: 14px; margin-top: 12px; }
   .result { text-align: center; }
   .result .label { color: var(--sub); margin: 0; }
@@ -123,6 +124,7 @@
         <p class="hint">相談番号を発行します。XのDMでこの番号を送っていただくと、答えた内容を見ながらご案内できます。</p>
         <label>Xのユーザー名またはお名前(任意)<input type="text" id="leadHandle" placeholder="@your_id" autocomplete="off" inputmode="latin" /></label>
         <label>ご希望の金額(任意・万円)<input type="number" id="leadWish" min="0" step="0.5" placeholder="例: 10" /></label>
+        <label class="shots-opt" id="shotsOpt" hidden><input type="checkbox" id="leadShots" checked /> <span id="shotsLabel"></span></label>
         <div class="row"><button class="btn" id="leadBtn" type="button">相談番号を発行する</button></div>
         <div class="notice" id="leadDone" hidden></div>
       </div>
@@ -146,6 +148,7 @@
 </main>
 
 <script type="module">
+import { SHOTS_LABEL, sendShots } from "./lib/shots.js";
 import { CHECK, SAFETY_Q, checkEstimate, checkDetail } from "./lib/check.js";
 import { xOf } from "./lib/games.js";
 
@@ -157,6 +160,7 @@ const store = { get: (k) => { try { return localStorage.getItem(k); } catch { re
 const man = (v) => `${(v / 10000).toFixed(1).replace(/\.0$/, "")}万`;
 const LEVEL = { ok: "◎ 安心して取引できます", check: "○ いくつか確認が要ります", ng: "× このままでは取引できません" };
 let images = [];
+let shotsSentFor = null; // スクショを送った相談番号(同じ番号に二重に送らない)
 let game = CHECK[store.get("check:game")] ? store.get("check:game") : "granblue";
 // 利用記録用。画面を開くたびに作るランダムな ID(個人は特定しない)
 const SID = (crypto.randomUUID?.() ?? String(Math.random()).slice(2) + Date.now()).replace(/[^A-Za-z0-9_-]/g, "");
@@ -284,6 +288,8 @@ $("estBtn").addEventListener("click", async () => {
   $("dmBtn").onclick = () => {
     logEvent({ kind: "dm", game, ...logged }, true);
     $("leadForm").hidden = false;
+    $("shotsOpt").hidden = images.length === 0;
+    $("shotsLabel").textContent = `${SHOTS_LABEL}(${images.length}枚)`;
     $("leadForm").scrollIntoView({ behavior: "smooth", block: "center" });
   };
   // 相談番号を発行 → 番号入りの文面を表示してコピー。X は案内のリンクから開いてもらう
@@ -311,6 +317,16 @@ $("estBtn").addEventListener("click", async () => {
         try { await navigator.clipboard.writeText(msg); $("leadCopy").textContent = "✅ コピーしました"; }
         catch { getSelection().selectAllChildren($("leadMsg")); $("leadCopy").textContent = "文面を長押しでコピーしてください"; }
       };
+      // 「スクショも送る」を選んだ人だけ、査定に使ったスクショを相談番号に付ける(同じ番号には1回だけ)
+      if (images.length && $("leadShots").checked && shotsSentFor !== out.no) {
+        shotsSentFor = out.no;
+        const note = document.createElement("p");
+        note.className = "hint";
+        note.textContent = "スクショを送っています…";
+        $("leadDone").append(note);
+        const sent = await sendShots(API, out.no, SID, images);
+        note.textContent = sent ? `スクショ${sent}枚をメルルに送りました。DMでは番号だけ送っていただければ大丈夫です。` : "スクショを送れませんでした。DMで直接お送りください。";
+      }
     } catch (err) {
       $("leadDone").textContent = `${err.message || "送信できませんでした"}。お手数ですが、この画面のスクショを添えて XのDM(@${x})で直接ご相談ください。`;
     } finally {
