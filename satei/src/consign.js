@@ -8,6 +8,7 @@
 export { STATUSES, fillTemplate } from "../public/lib/dm.js";
 import { STATUSES } from "../public/lib/dm.js";
 import { HANDOVER } from "../public/lib/stock.js";
+import { MAX_IMAGE_B64 } from "./stock.js";
 
 // 定型文の初期値。{番号} などは送る時に置き換える(fillTemplate)
 export const DEFAULT_TEMPLATES = [
@@ -113,7 +114,7 @@ export function validPatch(body) {
   return out;
 }
 
-const parse = (r) => ({ ...r, chars: JSON.parse(r.chars ?? "[]"), handover: JSON.parse(r.handover ?? "{}") });
+const parse = (r) => ({ ...r, chars: JSON.parse(r.chars ?? "[]"), handover: JSON.parse(r.handover ?? "{}"), shots: r.shots ? String(r.shots).split(",").map(Number).sort((a, b) => a - b) : [] });
 
 // 同じ人がもう一度送った相談は、新しい番号を作らず前の番号にまとめる。
 // 同じゲームで、同じ画面(sid)か同じユーザー名から、この日数のうちに来た進行中の相談を同じ人とみなす
@@ -138,9 +139,9 @@ export async function createLead(env, lead, source = "tool") {
   if (same) {
     // キャラと査定額は新しい方にする。ユーザー名・希望額は、新しく書かれた時だけ上書きする
     await env.DB.prepare(
-      "UPDATE consign SET updated_at = ?, chars = ?, low = ?, high = ?, handle = COALESCE(?, handle), name = COALESCE(?, name), wish = COALESCE(?, wish), memo = COALESCE(?, memo) WHERE id = ?",
+      "UPDATE consign SET updated_at = ?, chars = ?, low = ?, high = ?, handle = COALESCE(?, handle), name = COALESCE(?, name), wish = COALESCE(?, wish), memo = COALESCE(?, memo), sid = COALESCE(NULLIF(?, ''), sid) WHERE id = ?",
     )
-      .bind(now, JSON.stringify(lead.chars), lead.low, lead.high, lead.handle, lead.name ?? null, lead.wish, lead.memo ?? null, same.id)
+      .bind(now, JSON.stringify(lead.chars), lead.low, lead.high, lead.handle, lead.name ?? null, lead.wish, lead.memo ?? null, lead.sid ?? "", same.id)
       .run();
     return { id: same.id, merged: true };
   }
@@ -154,7 +155,8 @@ export async function createLead(env, lead, source = "tool") {
 
 export async function listConsign(env) {
   const { results } = await env.DB.prepare(
-    `SELECT c.*, (SELECT MAX(at) FROM dm_log WHERE consign_id = c.id) AS last_dm
+    `SELECT c.*, (SELECT MAX(at) FROM dm_log WHERE consign_id = c.id) AS last_dm,
+       (SELECT group_concat(id) FROM image WHERE owner = 'consign' AND owner_id = c.id) AS shots
      FROM consign c ORDER BY CASE c.status WHEN '成約' THEN 2 WHEN '見送り' THEN 3 WHEN '重複' THEN 4 ELSE 1 END, c.id DESC LIMIT 500`,
   ).all();
   return results.map(parse);
@@ -189,4 +191,26 @@ export async function saveTemplates(env, list) {
     ...items.map((t) => env.DB.prepare("INSERT INTO templates (key, title, body, sort) VALUES (?, ?, ?, ?)").bind(t.key, t.title, t.body, t.sort)),
   ]);
   return items.length;
+}
+
+// 査定ページで相談番号を出した人が、査定に使ったスクショを送る(本人が「送る」を選んだときだけ)。
+// 番号と、その画面の sid が合い、相談から2時間以内のものだけ受け付ける。1件あたり LEAD_SHOTS 枚まで
+export const LEAD_SHOTS = 6;
+const SHOT_MIMES = ["image/jpeg", "image/png", "image/webp"];
+export function validShot(body) {
+  if (!body || typeof body.sid !== "string" || !body.sid || body.sid.length > 64) return null;
+  if (!SHOT_MIMES.includes(body.mime) || typeof body.data !== "string" || !body.data || body.data.length > MAX_IMAGE_B64 || !/^[A-Za-z0-9+/=]+$/.test(body.data)) return null;
+  const n = (v) => (Number.isInteger(v) && v > 0 && v < 20000 ? v : null);
+  return { sid: body.sid, mime: body.mime, data: body.data, w: n(body.w), h: n(body.h) };
+}
+export async function addLeadShot(env, no, shot) {
+  const since = new Date(Date.now() - 2 * 3600_000).toISOString();
+  const c = await env.DB.prepare("SELECT id FROM consign WHERE id = ? AND source = 'tool' AND sid <> '' AND sid = ? AND updated_at >= ?").bind(no, shot.sid, since).first();
+  if (!c) return { ok: false, status: 404, error: "番号を確認してください" };
+  const r = await env.DB.prepare("SELECT COUNT(*) AS n FROM image WHERE owner = 'consign' AND owner_id = ?").bind(no).first();
+  if ((r?.n ?? 0) >= LEAD_SHOTS) return { ok: false, status: 400, error: `スクショは${LEAD_SHOTS}枚までです` };
+  await env.DB.prepare("INSERT INTO image (owner, owner_id, created_at, mime, w, h, data) VALUES ('consign', ?, ?, ?, ?, ?, ?)")
+    .bind(no, new Date().toISOString(), shot.mime, shot.w, shot.h, shot.data)
+    .run();
+  return { ok: true };
 }
