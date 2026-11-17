@@ -13,7 +13,7 @@ for p in (ROOT, HERE, os.path.join(ROOT, "tools"), os.path.join(ROOT, "queue")):
     if p not in sys.path: sys.path.insert(0, p)
 import recentfit_screen as base, paper_forward as pf, q_common
 WINDOW = pd.period_range("2026-10", "2027-03", freq="M"); NEED_PLUS = 4
-HOURLY = {"MonIdxIntra", "MonJpyIntra6J", "MonIdxSession0", "MonJpySession6J", "RollGateB2"}; RECOMPUTE_DAILY = {"HoldSL10"}
+HOURLY = {"MonIdxIntra", "MonJpyIntra6J", "MonIdxSession0", "MonJpySession6J", "RollGateB2", "MonNightIdxHot"}; RECOMPUTE_DAILY = {"HoldSL10"}
 DK_CODE = {"UK100": "GBRIDXGBP", "WTI": "LIGHTCMDUSD", "GER40": "DEUIDXEUR", "JP225": "JPNIDXJPY", "NAS100": "USATECHIDXUSD", "US500": "USA500IDXUSD", "US30": "USA30IDXUSD"}
 MDATA = os.path.join(ROOT, "forward", "q20_monitor_data"); os.makedirs(MDATA, exist_ok=True)
 BASE_OF = {"MonExHol": "Mon", "MonExJpTue": "Mon", "MonExAUNZ": "Mon", "HoldSL10": "Hold", "MonIdxIntra": "Mon", "MonJpyIntra6J": "Mon", "MonIdxSession0": "Mon", "MonJpySession6J": "Mon"}
@@ -92,6 +92,7 @@ def recompute(periods, fetch=True):
     for f, s, _, _ in hourly:
         if f == "RollGateB2":
             from q147_roll_rate_diff_gate import PAIRS; syms |= set(PAIRS)
+        elif f == "MonNightIdxHot": syms |= {"NAS100", "US500", "US30", "JP225", "UK100"}          # 2026-11-17: 荒れた週の月曜の夜の指数 5 本(docs/503〜505)
         else: syms.add(s)
     need = [p for p in pd.period_range("2026-09", periods[-1], freq="M")]   # 本体 H1 は 2026-08 末まで
     missing = ensure_months(sorted(syms), need, fetch=fetch, t0=t0)
