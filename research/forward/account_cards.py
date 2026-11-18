@@ -15,7 +15,7 @@ dig = {a["account"]: a for a in digest.get("accounts", [])}
 FX = 158.0; N = 6000; SEED = 44; MONTHS = 30; BLOCK = 5; YEARS = 5
 META = {  # 口座番号 → 会社・表示名・採用 EA(docs/241 §1ak 時点)
     "531466484": ("FTMO", "100k 1-Step", "EA9 A案 HoldXAU+MonGBPJPY+MonNAS100+Mon3 3.0倍 v1.06"),
-    "531343523": ("FTMO", "100k 2-Step 宝くじ", "EA10L Mon4 10.0倍+GER40ブレイク 6.0倍+HoldXAU0.9 v1.07"),
+    "531343523": ("FTMO", "100k 2-Step 宝くじ", "EA10L Mon4 8.0倍+GER40ブレイク 6.0倍+夜の指数 0.5 v1.16"),
     "14166201": ("FundedNext", "100k Stellar 2-Step", "RecentFit Hold UK100/WTI 2.22倍+Roll5 4.5倍 v1.39"),
     "6104736": ("Fintokei", "スイング ルビー 1,000万", "RecentFit B案 12.0倍 v1.07"),
     "6104739": ("Fintokei", "スイング トパーズ 3,500万", "EA11 Mon4×8.0+IdxMon1.0 dyn1 v1.20"),
@@ -23,7 +23,7 @@ META = {  # 口座番号 → 会社・表示名・採用 EA(docs/241 §1ak 時�
     "531407058": ("FTMO", "50k 2-Step 資金化済", "EA3 Mon4 6.0倍 dyn1 v1.21"),
     "6071612": ("Fintokei", "スイング パール 500万 P1 評価中", "RecentFit B案 8.0倍 v1.16"),
     "14074882": ("FundedNext", "100k 資金化済", "RecentFit Mon3×4+HoldXAU0.4 v1.13"),
-    "11988011": ("FundedNext", "Instant 20k", "RecentFit G Mon2×4+MonNAS100/US500×1 v1.17"),
+    "11988011": ("FundedNext", "Instant 20k", "RecentFit G Mon2×1.5+MonUS30/JP225×0.375 v1.22"),
 }
 RULE_JA = {"static": "静的床・月次出金", "ftmo2step": "FTMO 2-Step(全利益分配・ロール)", "ftmo1step": "FTMO 1-Step(トレーリング床・毎月全額)", "fn_instant": "FN Instant(建値ロック・+5% で 2%)"}
 def acc_id(name): return name.split()[-1]
@@ -36,7 +36,7 @@ EA_LEGS = {
     "531466484": dict(eval={"mon:GBPJPY": 0.797 * 3, "mon:EURJPY": 0.167 * 3, "mon:AUDJPY": 0.167 * 3, "mon:USDJPY": 0.167 * 3, "nas": 0.25 * 3, "hold:XAUUSD": 0.12 * 3},
                       funded={"mon:GBPJPY": 0.797 * 1.875, "mon:EURJPY": 0.167 * 1.875, "mon:AUDJPY": 0.167 * 1.875, "mon:USDJPY": 0.167 * 1.875, "nas": 0.25 * 1.875},   # 2026-11-15 切替(docs/241 §1bd): 本口座は損失枠比例の縮小(下限 0.5)を入れて 1.25 → 1.875(円クロス 2.43 倍)。2026-11-14 切替(§1ay): 金の保有を外す
                       note="帳簿 spec(a9 3.0 + mon4 2.0)は XAU 名目 1.0・NAS 1.0 だが、EA は XAU 0.36・NAS 0.75・GBPJPY 2.39(docs/400 §2d)"),
-    "531343523": dict(eval={**m4(10.0), "brk": 6.0, "hold:XAUUSD": 0.9}, funded={**m4(4.0)}, note="本口座は 2026-11-15 切替(docs/241 §1bd)で月曜 5.0 → 4.0 倍。EA は GER40 ブレイク ×6.0 を含む(帳簿 spec にない・試験運用)。Mon4 は逆ボラ加重。本口座は 2026-11-14 切替(docs/241 §1ay・docs/447)でブレイクアウト・金の保有を外す"),
+    "531343523": dict(eval={**m4(8.0), "brk": 6.0}, funded={**m4(4.0)}, note="2026-11-18 切替(docs/241 §1bj〜§1bl): v1.16 = 金の保有を外す + 決済を VIX で切り替え + 荒れた週の月曜の夜の指数(帳簿 spec に入れない・試験運用)。評価中の月曜は 2026-11-13 から 8.0 倍(§1av。ここは 10.0 のままだったので合わせた)。本口座は 2026-11-15 切替(docs/241 §1bd)で月曜 5.0 → 4.0 倍。EA は GER40 ブレイク ×6.0 を含む(帳簿 spec にない・試験運用)。Mon4 は逆ボラ加重。本口座は 2026-11-14 切替(docs/241 §1ay・docs/447)でブレイクアウト・金の保有を外す"),
     "14166201": dict(eval={"hold:UK100": 0.491 * 2.22, "hold:WTI": 0.153 * 2.22, "roll4": 4.5}, funded={**m4(3.0), "roll4": 4.5},   # 2026-11-15 切替(docs/241 §1bd): 本口座は保有を外し、月曜の円クロス 4 本 3.0 倍(2 つの縮小・SL リスク合計上限 2.4%)+ ロール 4.5 倍
                      note="Roll は金利差門 2.0pp で CADJPY が止まるため 4 本(帳簿 spec は 5 本・門なし)"),
     "6104736": dict(eval={"mon:GBPJPY": 0.374 * 12, "mon:AUDJPY": 0.322 * 12, "v4:USDJPY": 0.304 * 12}, funded={"mon:GBPJPY": 0.374 * 4.0, "mon:AUDJPY": 0.322 * 4.0}, note="評価中は帳簿 spec(bplan)と一致。本口座は 2026-11-15 切替(docs/241 §1bc): 月曜 2.78 倍(3.13 から引き下げ)・残さず全額出金。旧: 2026-11-14 切替(docs/241 §1ax・§1ay・docs/446): 月曜 3.13 倍・USDJPY の逆張りを外す(帳簿 spec の bplan は逆張り込みの近似)"),
@@ -45,7 +45,7 @@ EA_LEGS = {
     "531407058": dict(eval=m4(6.0), funded=m4(3.75), note="本口座は 2026-11-15 切替(docs/241 §1bd)で月曜 4.5 → 3.75 倍。Mon4 は逆ボラ加重(帳簿は等ウェイト)。他は一致。本口座は 2026-11-14(docs/241 §1ax)で月曜 4.5 倍"),
     "6071612": dict(eval={"mon:GBPJPY": 0.374 * 8, "mon:AUDJPY": 0.322 * 8, "v4:USDJPY": 0.304 * 8}, funded={"mon:GBPJPY": 0.374 * 4.0, "mon:AUDJPY": 0.322 * 4.0}, note="評価中は帳簿 spec(bplan)と一致。本口座は 2026-11-14 切替(docs/241 §1ax・§1ay・docs/446): 月曜 2.78 倍・USDJPY の逆張りを外す(帳簿 spec の bplan は逆張り込みの近似)"),
     "14074882": dict(eval={"mon:EURJPY": 0.333 * 4, "mon:USDJPY": 0.333 * 4, "mon:NZDJPY": 0.334 * 4, "hold:XAUUSD": 0.4}, funded={"mon:EURJPY": 0.333 * 4, "mon:USDJPY": 0.333 * 4, "mon:NZDJPY": 0.334 * 4}, note="評価中は帳簿 spec(mon3 + holdxau)と一致。本口座は 2026-11-15 切替(docs/241 §1bd): 金の保有を外し、月曜 4.0 倍に 2 つの縮小・SL リスク合計上限 2.4%"),
-    "11988011": dict(eval={"mon:GBPJPY": 0.537 * 1.5, "mon:AUDJPY": 0.463 * 1.5, "nas": 0.1875, "spx": 0.1875}, funded={"mon:GBPJPY": 0.537 * 1.5, "mon:AUDJPY": 0.463 * 1.5, "nas": 0.1875, "spx": 0.1875}, note="帳簿 spec(instG 0.375)と一致。2026-11-15(docs/241 §1ba): v1.21 = 倍率 1.5 + 2 つの縮小"),
+    "11988011": dict(eval={"mon:GBPJPY": 0.537 * 1.5, "mon:AUDJPY": 0.463 * 1.5, "nas": 0.1875, "spx": 0.1875}, funded={"mon:GBPJPY": 0.537 * 1.5, "mon:AUDJPY": 0.463 * 1.5, "nas": 0.1875, "spx": 0.1875}, note="帳簿 spec(instG 0.375)と一致。2026-11-15(docs/241 §1ba): v1.21 = 倍率 1.5 + 2 つの縮小。2026-11-18 切替(§1bf): v1.22 で指数は US30・JP225(各 0.1875)に差し替え。帳簿の系列に US30・JP225 の月曜枠が無いので、ここは NAS100・US500 のまま近似"),
 }
 _S = {}
 def S(key):
