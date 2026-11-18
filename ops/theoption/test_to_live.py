@@ -275,6 +275,28 @@ def test_v114_frozen_leg_does_not_block_other_legs(monkeypatch):
         # 再実行しても二重発注しない
         n0 = sum(tries.values()); L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), T(7, 0, 10)); assert sum(tries.values()) == n0
 
+def test_v115_monday_legs_skip_jp_holiday(monkeypatch):
+    """v1.15(追補74): 日本の祝日(振替休日・年末年始を含む)の月曜は月曜 3 本を見送る。他の脚と通常の月曜は不変。"""
+    mon = [l for l in L.MENU if l["id"].endswith("_N6")]; assert len(mon) == 3 and all(l.get("skip_jp_holiday") for l in mon)
+    assert [l["id"] for l in L.MENU if l.get("skip_jp_holiday")] == ["EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6"]
+    D = dt.date
+    for hol in (D(2026, 11, 23), D(2027, 1, 11), D(2027, 3, 22), D(2026, 5, 4), D(2029, 12, 31)):   # 勤労感謝の日・成人の日・振替休日・みどりの日・年末
+        assert hol.weekday() == 0 and not any(L.is_due_today(l, hol) for l in mon), hol
+    for normal in (D(2026, 11, 16), D(2026, 11, 30), D(2026, 12, 7)):
+        assert all(L.is_due_today(l, normal) for l in mon), normal
+    eg = next(l for l in L.MENU if l["id"] == "EURGBP_N6L"); assert L.is_due_today(eg, D(2026, 11, 23))            # 23:00 EURGBP は祝日でも建てる
+    assert L.legs_for_slot(dt.datetime(2026, 11, 23, 6, 58, tzinfo=L.JST)) == []
+    assert [l["id"] for l in L.legs_for_slot(dt.datetime(2026, 11, 23, 22, 58, tzinfo=L.JST))] == ["EURGBP_N6L"]
+    assert len(L.legs_for_slot(dt.datetime(2026, 11, 30, 6, 58, tzinfo=L.JST))) == 3
+    # 祝日の 06:58 起動: 発注も残高照会もせず、見送りを記録して終了
+    calls = []
+    monkeypatch.setattr(L, "rest", lambda *a, **k: calls.append(a) or (200, {}))
+    with tempfile.TemporaryDirectory() as tmp:
+        lp = os.path.join(tmp, "l.jsonl")
+        assert L.run_entries("real", REAL, tmp, L.Log(lp), dt.datetime(2026, 11, 23, 6, 58, tzinfo=L.JST), only_ids=set()) == 0 and calls == []
+        txt = open(lp, encoding="utf-8").read(); assert '"skip"' in txt and "EURJPY_N6" in txt and "2026-11-23" in txt
+        assert not os.path.exists(os.path.join(tmp, "live_entries_real.csv"))
+
 def test_v16_per_leg_account_routing(monkeypatch):
     """v1.6(追補37・裁定 B): live_real でも demo_legs(既定: 月曜 3 本 + 仲値 3 本)はお試し口座、EURGBP 23:00 と AUDJPY 02:00 は実口座。"""
     monkeypatch.setenv("THEOPTION_API_KEY", DEMO); monkeypatch.setenv("THEOPTION_API_KEY_REAL", REAL)

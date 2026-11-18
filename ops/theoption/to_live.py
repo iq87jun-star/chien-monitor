@@ -22,7 +22,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.14"
+VERSION = "1.15"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -37,9 +37,9 @@ MENU = [
  # v1.4 (2026-10-31 追補31裁定): 事前登録4脚(追補18・23、10年フルのミッド再判定) + AUDJPY 02:00 プール脚(追補29、曜日・ペア横断で成立する因子)。
  #   DD予算40万円換算(追補23のDD30万配分 ×1.33、100円丸め)。v1.3 の勝率上位10はウォークフォワードで実力がインサンプルの約4割と判明し、紙上追跡に降格。
  #   next=False の脚は同日 06:00 判定(深夜建て)。wds は「建てる日」の曜日(火〜金 02:00 建て = 月〜木セッション末尾)。
- dict(id="EURJPY_N6",   pair="EURJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=21300, wds=[0], months=None, kind="23H"),
- dict(id="AUDJPY_N6",   pair="AUDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=22700, wds=[0], months=None, kind="23H"),
- dict(id="NZDJPY_N6",   pair="NZDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=18700, wds=[0], months=None, kind="23H"),
+ dict(id="EURJPY_N6",   pair="EURJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=21300, wds=[0], months=None, kind="23H", skip_jp_holiday=True),
+ dict(id="AUDJPY_N6",   pair="AUDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=22700, wds=[0], months=None, kind="23H", skip_jp_holiday=True),
+ dict(id="NZDJPY_N6",   pair="NZDJPY", sel="HIGH", entry="07:00", judge="06:00", next=True,  stake=18700, wds=[0], months=None, kind="23H", skip_jp_holiday=True),
  dict(id="EURGBP_N6L",  pair="EURGBP", sel="LOW",  entry="23:00", judge="06:00", next=True,  stake=10000, wds=[0,1,2,4], months=[1,4,5,7,8,9,10,11], kind="23H"),
  dict(id="AUDJPY_02",   pair="AUDJPY", sel="HIGH", entry="02:00", judge="06:00", next=False, stake=4800,  wds=[1,2,3,4], months=None, kind="23H"),   # 火〜金 02:00 建て→同日 06:00(月〜木セッション)
  # v1.5 (2026-10-31 追補34裁定): 仲値後の反落。ゴトー日(gotobi=True: 土日・銀行休業日は直前の営業日に前倒し)の 09:55 建て→10:10 判定 LOW、15M FE 1.85。
@@ -262,17 +262,19 @@ def gotobi_kind(day):
 def gotobi_mult(leg, day):
     return GOTOBI_MULT.get(gotobi_kind(day) or "other", 1.0) if leg.get("gotobi") else 1.0
 
-def is_due_today(leg, day):
+def is_jp_holiday(day): return day in jp_bank_holidays(day.year)
+def is_due_today(leg, day, ignore_holiday=False):
     if leg.get("gotobi") and not is_gotobi(day): return False
+    if leg.get("skip_jp_holiday") and not ignore_holiday and is_jp_holiday(day): return False   # v1.15(追補74): 日本の祝日の月曜は月曜 3 本を見送る(10 年勝率 47.5% < BE 51.3%)
     return day.weekday() in leg["wds"] and (leg["months"] is None or day.month in leg["months"])
 
-def legs_for_slot(now_jst, window_min=5):
+def legs_for_slot(now_jst, window_min=5, ignore_holiday=False):
     """今から window_min 分以内に定刻が来る(または定刻から 3 分以内の)脚。日付をまたぐ定刻(23:58 起動→00:00 建て)は翌日の脚として拾う。
     返す脚には "_day"(建てる日)が付く(同じ時間帯の脚は同じ日)。"""
     out = []
     for day in (now_jst.date(), now_jst.date() + dt.timedelta(days=1)):
         for leg in MENU:
-            if not is_due_today(leg, day): continue
+            if not is_due_today(leg, day, ignore_holiday): continue
             t = jst(day, leg["entry"]); d = (t - now_jst).total_seconds()
             if -180 <= d <= window_min * 60: out.append(dict(leg, _day=day))
     return out
@@ -389,7 +391,11 @@ def sleep_until(t):
 def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     base, wss = HOSTS[account]; legs = legs_for_slot(now_jst)
     if only_ids is not None: legs = [l for l in legs if l["id"] in only_ids]   # v1.6: 脚別口座(main が口座ごとに呼ぶ)
-    if not legs: log.say("この時間帯に実行する脚は無い"); return 0
+    if not legs:
+        hs = [l for l in legs_for_slot(now_jst, ignore_holiday=True) if l.get("skip_jp_holiday") and is_jp_holiday(l["_day"]) and (only_ids is None or not only_ids or l["id"] in only_ids)]
+        if hs: log.say("日本の祝日の月曜 → 見送り:", [l["id"] for l in hs]); log.write("skip", {"legs": [l["id"] for l in hs], "reason": "日本の祝日(月曜脚は見送り)", "day": str(hs[0]["_day"])})
+        else: log.say("この時間帯に実行する脚は無い")
+        return 0
     day = legs[0]["_day"]   # v1.2: 建てる日(深夜の脚は起動日の翌日)。state/CSV/契約照合はすべてこの日で扱う
     state_path = os.path.join(out_dir, "_diag", "live_state.json"); os.makedirs(os.path.dirname(state_path), exist_ok=True)
     try: state = json.load(open(state_path, encoding="utf-8"))
