@@ -14,8 +14,10 @@ export function momentum(scores, recent = 3) {
 }
 
 // 仮に買う候補: 勢いが minRatio 以上、直近平均が minAvg 以上、価格が minPrice〜maxPrice、持っていない選手。勢いの強い順に slots 枚まで
-export function pickBuys(cands, held, { minRatio = 1.25, minAvg = 30, minPrice = 1, maxPrice = 15, slots = 3 } = {}) {
+// closed と now を渡すと、売ってから cooldownDays 日たっていない選手は買わない(売った直後の買い直し=高値つかみを防ぐ)
+export function pickBuys(cands, held, { minRatio = 1.25, minAvg = 30, minPrice = 1, maxPrice = 15, slots = 3, cooldownDays = 7, closed = [], now = Date.now() } = {}) {
   const have = new Set(held.map((p) => p.id));
+  for (const c of closed) if (c.soldAt && now - Date.parse(c.soldAt) < cooldownDays * 864e5) have.add(c.id);
   return cands
     .map((c) => ({ ...c, m: momentum(c.scores) }))
     .filter((c) => c.m && c.m.ratio >= minRatio && c.m.recentAvg >= minAvg && c.price != null && c.price >= minPrice && c.price <= maxPrice && !have.has(c.id))
