@@ -22,7 +22,7 @@ META = {  # 口座番号 → 会社・表示名・採用 EA(docs/241 §1ak 時�
     "521100397": ("FTMO", "50k 2-Step 資金化済", "EA8 Mon4 6.0倍+GER40ブレイク 2.0倍 dyn1 v1.39"),
     "531407058": ("FTMO", "50k 2-Step 資金化済", "EA3 Mon4 6.0倍+夜の指数 1.5 dyn1 v1.26"),
     "6071612": ("Fintokei", "スイング パール 500万 P1 評価中", "RecentFit B案 8.0倍+Roll4.5+夜の指数 1.39 v1.20"),
-    "14074882": ("FundedNext", "100k 資金化済", "RecentFit Mon3×4+夜の指数 1.0 v1.17(金の保有は新規停止)"),
+    "14074882": ("FundedNext", "100k 資金化済", "RecentFit Mon3×4+夜の指数 1.0 v1.18(金の保有は新規停止)"),
     "11988011": ("FundedNext", "Instant 20k", "RecentFit G Mon2×1.5+MonUS30/JP225×0.375 v1.22"),
 }
 RULE_JA = {"static": "静的床・月次出金", "ftmo2step": "FTMO 2-Step(全利益分配・ロール)", "ftmo1step": "FTMO 1-Step(トレーリング床・毎月全額)", "fn_instant": "FN Instant(建値ロック・+5% で 2%)"}
