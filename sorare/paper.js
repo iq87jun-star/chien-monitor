@@ -52,7 +52,7 @@ async function main() {
   const prices = Object.fromEntries(cands.filter((c) => c.price != null).map((c) => [c.id, c.price]));
   let next = step(paper, prices, now, pc);
   const sold = next.closed.slice(paper.closed.length);
-  const picks = pickBuys(cands, next.open, { ...pc, maxPrice: Math.min(pc.maxPrice ?? 15, next.cash) });
+  const picks = pickBuys(cands, next.open, { ...pc, maxPrice: Math.min(pc.maxPrice ?? 15, next.cash), closed: next.closed, now });
   const r = buy(next, picks, now);
   next = { ...r.paper, lastDay: today };
   save(next);

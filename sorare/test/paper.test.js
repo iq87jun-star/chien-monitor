@@ -19,6 +19,13 @@ test("pickBuys は勢い・直近平均・価格・持っていない選手で�
   assert.deepEqual(pickBuys(cands, [{ id: "f" }]).map((c) => c.id), ["e", "a"]);
 });
 
+test("pickBuys は売ってから cooldownDays 日たっていない選手を買わない", () => {
+  const s = [60, 60, 60, 30, 30, 30, 30, 30, 30, 30], now = Date.parse("2026-11-19T00:00:00Z");
+  const cands = [{ id: "a", price: 5, scores: s }, { id: "b", price: 5, scores: s }];
+  const closed = [{ id: "a", soldAt: "2026-11-15T00:00:00Z" }, { id: "b", soldAt: "2026-11-10T00:00:00Z" }];
+  assert.deepEqual(pickBuys(cands, [], { closed, now }).map((c) => c.id), ["b"]);
+});
+
 test("step は利確・下がり始め・損切り・期限で仮に売り、手数料を引いて現金に戻す", () => {
   const at = "2026-11-01T00:00:00Z", now = Date.parse("2026-11-05T00:00:00Z");
   const paper = { ...emptyPaper(100), cash: 60, open: [
