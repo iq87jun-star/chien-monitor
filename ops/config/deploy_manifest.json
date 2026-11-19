@@ -254,6 +254,19 @@
    "note": "2026-11-18 09:40 JST ユーザー「切替」(docs/241 §1bf): v1.23 → v1.24 = 月曜の円クロスの決済を前金曜の VIX で切り替え + ロールの金利の表を更新(§1bi)。指数の月曜枠は 24h のまま。コンパイル確認済み。 / 2026-11-13 ユーザー「切替」(docs/241 §1au・docs/430 Q190): v1.21 → v1.23 = 水曜ロールを再開(InpSessEnable true・InpSessMult 4.5・金利差門 2.0pp。建つのは USDJPY・GBPJPY・AUDJPY の 3 本)。Mon・指数・ガード・Magic 不変。| 2026-11-10 旧版除去の再実行(remove 末尾の .mq5 が ex5 パスに一致せず旧版が残り二重装着・docs/241 §1an)。2026-11-09 切替(docs/241 §1am・docs/412・docs/415 第 1 弾): v1.20 → v1.21 = 日銀火曜の前日 20 UTC 手仕舞い(InpBojTuesdays・2027 年まで該当なしのため空=無効)+ 再起動後の二重建て防止(同銘柄 50 分以内の建玉があれば建てない)。ロジック・倍率・Magic 不変。| 2026-11-03 ユーザー「切替」(docs/241 §1ak・docs/393 Q105): v+0.01 = InpLockArmPct を InpLockClosePct と同値(Arm=Close・滞留の解消)。取引ロジック・倍率・ガード・Magic 不変。 トパーズは v1.19(IsIdx 桁数判定・指数 Mon 不発の修正・docs/241 §1aj)を含む v1.20 へ。次の指数 Mon は 11/9 14:38 UTC。",
    "terminal": "Fintokei",
    "prepare_profile": true
+  },
+  "compile_check_v3": {
+   "apply": false,
+   "prepare_profile": false,
+   "terminal": "521100397",
+   "ensure": [
+    {
+     "ea": "【FN100k_口座14074882】RecentFit_Mon3x4+NightIdx1.0_ギャンブル_v1.18.mq5",
+     "symbol": "GBPJPY",
+     "period": "H1"
+    }
+   ],
+   "note": "2026-11-19 docs/241 §1bp: FN 14074882 v1.18(期限延長のみ)のコンパイル確認だけ(apply:false・装着しない)。確認後、切り替えの回に削除する。"
   }
  },
  "_retired_6078225": "2026-09-28 Fintokei から挑戦終了通知(docs/241 §1q)。プロファイル生成対象から外す",
