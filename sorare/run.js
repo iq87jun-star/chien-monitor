@@ -101,6 +101,7 @@ async function main() {
   }
   if (!targets.length && !results.length) return console.log("今日動く大会も、送る結果も無い。終了");
 
+  market.inSeasonOnly = true;   // 大会はどれも In-Season。今シーズン扱いでないカードは買わない(J1 は 2026 年のカードが対象外になった)
   if (env.SORARE_EMAIL && env.SORARE_PASSWORD) {
     const me = await api.signIn({ email: env.SORARE_EMAIL, password: env.SORARE_PASSWORD, otpSecret: env.SORARE_OTP_SECRET || "" });
     console.log(`ログイン: ${me}`);
@@ -216,7 +217,8 @@ async function runTarget(api, t, shared) {
   async function loadOwned() {
     all = await myCards(api.gql, t.rarity, sportOf(t));
     const bySlug = new Map();
-    for (const c of all) if (c.seasonYear === t.seasonYear && c.player && !bySlug.has(c.player)) bySlug.set(c.player, c);
+    // 今シーズン扱いでないカード(inSeasonEligible が false)は In-Season の大会に出せないので除く
+    for (const c of all) if (c.seasonYear === t.seasonYear && c.inSeason && c.player && !bySlug.has(c.player)) bySlug.set(c.player, c);
     const ps = (await pool([...bySlug.keys()], 3, getPlayer)).filter((p) => p && p.league === t.competition);
     owned = ps.map((p) => { const c = bySlug.get(p.id); return proj({ ...p, card: c.slug, cost: c.cost, since: c.since, floor: p.price, price: null }); });
     return optimize(owned.filter((c) => !swapOut.has(c.card)));

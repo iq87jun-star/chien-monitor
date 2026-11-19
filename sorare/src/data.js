@@ -2,20 +2,22 @@
 import { usd } from "./api.js";
 import { startRate } from "./model.js";
 
-const PRICE = "slug seasonYear liveSingleSaleOffer { settlementCurrencies receiverSide { amounts { usdCents eurCents wei } } }";
+const PRICE = "slug seasonYear inSeasonEligible liveSingleSaleOffer { settlementCurrencies receiverSide { amounts { usdCents eurCents wei } } }";
 
 // 自動売買の決済通貨(run.js がログイン後に入れる)。最安の出品がこの通貨で買えない時(売り手がユーロ・Solana などでしか受け取らない)は、
 // 買える出品の中の最安を探す。null なら通貨を気にしない(未ログインの提案)
-export const market = { currency: null };
+// inSeasonOnly が true なら、今シーズン扱い(inSeasonEligible)でないカードは値段なし(買わない)にする。In-Season の大会は今シーズンのカードが 4 枚以上いる
+export const market = { currency: null, inSeasonOnly: false };
 
 async function priced(gql, playerSlug, card, rarity) {
+  if (market.inSeasonOnly && card && card.inSeasonEligible === false) return { price: null, priceCard: null, notInSeason: true };
   const o = card?.liveSingleSaleOffer;
   if (!o || !market.currency || o.settlementCurrencies?.includes(market.currency)) return { price: usd(o?.receiverSide?.amounts), priceCard: card?.slug || null };
   // 出品の並びは価格順ではないので、25 件ずつ最大 100 件まで見る(APIKEY なしの complexity 500 に収まる大きさ)
   const nodes = [];
   for (let after = null, i = 0; i < 4; i++) {
     const r = (await gql(`query($p: String!, $a: String) { tokens { liveSingleSaleOffers(playerSlug: $p, first: 25, after: $a) { nodes { settlementCurrencies
-      receiverSide { amounts { usdCents eurCents wei } } senderSide { anyCards { slug rarityTyped seasonYear } } } pageInfo { endCursor hasNextPage } } } }`, { p: playerSlug, a: after })).tokens.liveSingleSaleOffers;
+      receiverSide { amounts { usdCents eurCents wei } } senderSide { anyCards { slug rarityTyped seasonYear inSeasonEligible } } } pageInfo { endCursor hasNextPage } } } }`, { p: playerSlug, a: after })).tokens.liveSingleSaleOffers;
     nodes.push(...r.nodes);
     if (!r.pageInfo.hasNextPage) break;
     after = r.pageInfo.endCursor;
@@ -23,7 +25,7 @@ async function priced(gql, playerSlug, card, rarity) {
   let best = { price: null, priceCard: null };
   for (const n of nodes) {
     const c = n.senderSide?.anyCards;
-    if (c?.length !== 1 || c[0].rarityTyped !== rarity || c[0].seasonYear !== card.seasonYear || !n.settlementCurrencies?.includes(market.currency)) continue;
+    if (c?.length !== 1 || c[0].rarityTyped !== rarity || c[0].seasonYear !== card.seasonYear || (market.inSeasonOnly && c[0].inSeasonEligible === false) || !n.settlementCurrencies?.includes(market.currency)) continue;
     const price = usd(n.receiverSide?.amounts);
     if (price != null && (best.price == null || price < best.price)) best = { price, priceCard: c[0].slug };
   }
@@ -163,11 +165,11 @@ export async function myCards(gql, rarity, sport = "FOOTBALL") {
   let after = null;
   for (;;) {
     const d = (await gql(`query($a: String) { currentUser { cards(first: 10, after: $a, rarities: [${rarity}], sport: ${sport}) {
-      nodes { slug rarityTyped seasonYear anyPlayer { slug } ownershipHistory { from amounts { usdCents eurCents wei } } } pageInfo { endCursor hasNextPage } } } }`, { a: after })).currentUser;
+      nodes { slug rarityTyped seasonYear inSeasonEligible anyPlayer { slug } ownershipHistory { from amounts { usdCents eurCents wei } } } pageInfo { endCursor hasNextPage } } } }`, { a: after })).currentUser;
     if (!d) throw new Error("ログインしていない");
     // 1 ページ 10 枚(所有履歴まで取ると、未ログイン・APIKEY なしの上限 complexity 500 に 50 枚では収まらない)
     // 買値 = 所有履歴の最後(今の持ち主になった時)の取引額。パックなど価格の無い入手は null
-    out.push(...d.cards.nodes.map((n) => ({ slug: n.slug, seasonYear: n.seasonYear, player: n.anyPlayer?.slug, cost: usd(n.ownershipHistory?.at(-1)?.amounts), since: n.ownershipHistory?.at(-1)?.from || null })));
+    out.push(...d.cards.nodes.map((n) => ({ slug: n.slug, seasonYear: n.seasonYear, inSeason: n.inSeasonEligible !== false, player: n.anyPlayer?.slug, cost: usd(n.ownershipHistory?.at(-1)?.amounts), since: n.ownershipHistory?.at(-1)?.from || null })));
     if (!d.cards.pageInfo.hasNextPage) return out;
     after = d.cards.pageInfo.endCursor;
   }
