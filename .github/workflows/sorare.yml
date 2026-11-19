@@ -89,6 +89,7 @@ jobs:
           SORARE_API_KEY: ${{ secrets.SORARE_API_KEY }}
       # 模擬売買(お金は動かさない)。1 日 1 回だけ実際に調べ、ほかの実行ではすぐ終わる。失敗しても本番の処理には影響しない
       - run: node paper.js
+        if: ${{ !cancelled() }}
         continue-on-error: true
         env:
           SORARE_FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force && '1' || '' }}
@@ -96,6 +97,7 @@ jobs:
           SORARE_API_KEY: ${{ secrets.SORARE_API_KEY }}
       # CS2 スキンの模擬売買(お金は動かさない、鍵なし)。1 日 1 回。失敗しても本番の処理には影響しない
       - run: node cs2.js
+        if: ${{ !cancelled() }}
         continue-on-error: true
         env:
           SORARE_FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force && '1' || '' }}

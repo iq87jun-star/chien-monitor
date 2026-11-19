@@ -105,10 +105,10 @@ export function createTrader(gql, { privateKey: rawKey, currency = "USD" }) {
     if (c.liveSingleSaleOffer) throw new Error("すでに出品中");
     const receiveAmount = toReceiveAmount(price, currency);
     const p = (await gql(`mutation($input: prepareOfferInput!) { prepareOffer(input: $input) { ${AUTH} errors { message } } }`,
-      { input: { type: "SINGLE_SALE_OFFER", sendAssetIds: [c.assetId], receiveAssetIds: [], receiveAmount, settlementCurrencies: [currency] } }, { retries: 0 })).prepareOffer;
+      { input: { type: "SINGLE_SALE_OFFER", sendAssetIds: [c.assetId], receiveAssetIds: [], receiveAmount } }, { retries: 0 })).prepareOffer;
     errs(p, "出品の準備");
     const o = (await gql(`mutation($input: createSingleSaleOfferInput!) { createSingleSaleOffer(input: $input) { tokenOffer { id } errors { message } } }`,
-      { input: { dealId: randomUUID(), assetId: c.assetId, receiveAmount, settlementCurrencies: [currency], approvals: await buildApprovals(p.authorizations, sig) } }, { retries: 0 })).createSingleSaleOffer;
+      { input: { dealId: randomUUID(), assetId: c.assetId, receiveAmount, approvals: await buildApprovals(p.authorizations, sig) } }, { retries: 0 })).createSingleSaleOffer;
     errs(o, "出品");
     const after = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents wei } } } } }`, { s: card })).anyCard;
     const listed = usd(after?.liveSingleSaleOffer?.receiverSide?.amounts);
