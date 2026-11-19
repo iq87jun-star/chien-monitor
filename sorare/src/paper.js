@@ -26,9 +26,10 @@ export function pickBuys(cands, held, { minRatio = 1.25, minAvg = 30, minPrice =
 }
 
 // 1 日分すすめる: 持っている仮のカードを今の最安出品で値洗いし、決まりに当てはまれば仮に売る(手数料 feePct% を引く)。
+//   minHoldDays 日たつまでは売らない(CS2 の取引保護で、買ってすぐは売れないため)
 //   利確: 手取りが買値から +takePct% 以上 / 下がり始め: 最高値から dropPct% 下がり、手取りがまだ買値以上 / 損切り: 買値から -stopPct% 以下 / 期限: maxDays 日
 // 売れたお金は cash に戻す。prices は 選手 id → 今の最安出品(無ければ値洗いしない)
-export function step(paper, prices, now, { feePct = 5, takePct = 20, dropPct = 10, stopPct = 20, maxDays = 21 } = {}) {
+export function step(paper, prices, now, { feePct = 5, takePct = 20, dropPct = 10, stopPct = 20, maxDays = 21, minHoldDays = 0 } = {}) {
   const open = [], closed = [...paper.closed];
   let cash = paper.cash;
   for (const p of paper.open) {
@@ -36,7 +37,8 @@ export function step(paper, prices, now, { feePct = 5, takePct = 20, dropPct = 1
     if (px == null) { open.push(p); continue; }
     const peak = Math.max(p.peak ?? p.buy, px), net = px * (1 - feePct / 100);
     const days = (now - Date.parse(p.at)) / 864e5;
-    const why = net >= p.buy * (1 + takePct / 100) ? "利確"
+    const why = days < minHoldDays ? null
+      : net >= p.buy * (1 + takePct / 100) ? "利確"
       : px <= peak * (1 - dropPct / 100) && net >= p.buy && peak > p.buy ? "下がり始め"
       : net <= p.buy * (1 - stopPct / 100) ? "損切り"
       : days >= maxDays ? "期限" : null;

@@ -37,6 +37,13 @@ test("step は利確・下がり始め・損切り・期限で仮に売り、手
   assert.equal(r.cash, +(60 + (13 + 12.5 + 8 + 10) * 0.95).toFixed(2));
 });
 
+test("step は minHoldDays 日たつまで売らない(値洗いだけする)", () => {
+  const paper = { ...emptyPaper(100), open: [{ id: "a", buy: 10, peak: 10, at: "2026-11-15T00:00:00Z" }] };
+  const r = step(paper, { a: 5 }, Date.parse("2026-11-19T00:00:00Z"), { minHoldDays: 7 });
+  assert.equal(r.closed.length, 0);
+  assert.equal(r.open[0].last, 5);
+});
+
 test("buy は現金の範囲で買い、summary は手取り見込みで資産と勝ち負けを出す", () => {
   const now = Date.parse("2026-11-15T00:00:00Z");
   const { paper, bought } = buy(emptyPaper(10), [{ id: "x", price: 6, m: { ratio: 1.5 } }, { id: "y", price: 6, m: { ratio: 1.4 } }], now);
