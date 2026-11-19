@@ -60,6 +60,24 @@ export function buy(paper, picks, now) {
   return { paper: { ...paper, cash: +cash.toFixed(2), open }, bought };
 }
 
+// 2 つの模擬売買をくらべる文(Discord 用)。rows は { name, paper, feePct }。増減・資産・何日目・勝ち負け・確定損益・持っている数
+export function compareText(rows, now = Date.now()) {
+  const lines = ["**くらべる**(お金は動かしていません)"];
+  for (const r of rows) {
+    if (!r.paper) { lines.push(`- ${r.name}: まだ記録なし`); continue; }
+    const s = summary(r.paper, r.feePct);
+    const first = [...r.paper.open, ...r.paper.closed].map((p) => p.at).filter(Boolean).sort()[0];
+    const days = first ? Math.max(1, Math.round((now - Date.parse(first)) / 864e5)) : 0;
+    lines.push(`- ${r.name}: ${s.pct >= 0 ? "+" : ""}${s.pct}%(資産 $${s.total.toFixed(2)}・${days} 日目)・${s.wins} 勝 ${s.losses} 敗・確定 ${s.realized >= 0 ? "+" : ""}$${s.realized.toFixed(2)}・持っている ${r.paper.open.length}`);
+  }
+  const ok = rows.filter((r) => r.paper);
+  if (ok.length === 2) {
+    const [a, b] = ok.map((r) => summary(r.paper, r.feePct).pct);
+    lines.push(a === b ? "→ 今は同じ" : `→ 今は ${a > b ? ok[0].name : ok[1].name} の方が ${Math.abs(a - b).toFixed(1)} ポイント良い`);
+  }
+  return lines.join("\n");
+}
+
 // 成績: 資産(現金 + 持っている分の手取り見込み)、始めからの増減、勝ち数・負け数
 export function summary(paper, feePct = 5) {
   const held = paper.open.reduce((s, p) => s + (p.last ?? p.buy) * (1 - feePct / 100), 0);

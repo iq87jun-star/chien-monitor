@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { emptyPaper, momentum, pickBuys, step, buy, summary } from "../src/paper.js";
+import { emptyPaper, momentum, pickBuys, step, buy, summary, compareText } from "../src/paper.js";
 
 test("momentum は出場した試合だけで、直近3試合÷直近10試合を出す(5試合未満は null)", () => {
   assert.equal(momentum([10, 10, 10, 0]), null);
@@ -51,4 +51,15 @@ test("buy は現金の範囲で買い、summary は手取り見込みで資産�
   assert.equal(paper.cash, 4);
   const s = summary({ ...paper, closed: [{ pnl: 1 }, { pnl: -0.5 }] });
   assert.deepEqual(s, { total: +(4 + 6 * 0.95).toFixed(2), pct: +(((4 + 5.7) / 10 - 1) * 100).toFixed(1), wins: 1, losses: 1, realized: 0.5 });
+});
+
+test("compareText は 2 つの模擬売買の増減をくらべ、良い方を示す", () => {
+  const now = Date.parse("2026-11-20T00:00:00Z");
+  const a = { ...emptyPaper(100), cash: 80, closed: [{ pnl: -20, at: "2026-11-15T00:00:00Z" }] };
+  const b = { ...emptyPaper(100), cash: 95, open: [{ buy: 5, last: 5, at: "2026-11-19T00:00:00Z" }] };
+  const t = compareText([{ name: "Sorare", paper: a, feePct: 5 }, { name: "CS2", paper: b, feePct: 8 }], now);
+  assert.match(t, /Sorare: -20%\(資産 \$80\.00・5 日目\)・0 勝 1 敗/);
+  assert.match(t, /CS2: -0\.4%/);
+  assert.match(t, /CS2 の方が 19\.6 ポイント良い/);
+  assert.match(compareText([{ name: "Sorare", paper: null }]), /まだ記録なし/);
 });
