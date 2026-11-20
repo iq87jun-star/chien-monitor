@@ -1,0 +1,7 @@
+family,symbol,spec,is_plus,is_n,is_rate,is_mean_bps,is_trades,p,oos_plus,oos_n,oos_mean_bps,pre_n,pre_rate,passed
+クロスアセット先行,USDJPY,USTBOND 24h変化 → USDJPY 翌24h dir=−sign(X 20 UTC・Y 21 UTC),20,39,0.513,3.86,375,0.5,5,20,-5.38,39,0.359,False
+クロスアセット先行,GBPJPY,USTBOND 24h変化 → GBPJPY 翌24h dir=−sign(X 20 UTC・Y 21 UTC),20,39,0.513,3.75,375,0.5,10,20,-3.71,39,0.436,False
+クロスアセット先行,CADJPY,WTI 24h変化 → CADJPY 翌24h dir=+sign(X 20 UTC・Y 21 UTC),20,39,0.513,5.88,376,0.5,7,12,-0.26,45,0.444,False
+クロスアセット先行,AUDJPY,US500 24h変化 → AUDJPY 翌24h dir=+sign(X 20 UTC・Y 21 UTC),19,39,0.487,-3.31,376,0.6253706876195793,8,20,-5.73,67,0.299,False
+クロスアセット先行,NZDJPY,US500 24h変化 → NZDJPY 翌24h dir=+sign(X 20 UTC・Y 21 UTC),18,39,0.462,-4.78,376,0.7388013097515795,5,12,-4.37,67,0.343,False
+クロスアセット先行,USDCAD,WTI 24h変化 → USDCAD 翌24h dir=−sign(X 20 UTC・Y 21 UTC),17,39,0.436,-3.07,376,0.8316081824050343,5,20,-4.21,45,0.444,False

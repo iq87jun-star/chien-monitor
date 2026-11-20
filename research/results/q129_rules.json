@@ -1,0 +1,18 @@
+{
+ "The5ers High Stakes 旧: 10%/5% 静的10% 日次5%": {"target": [0.10, 0.05], "mdd": 0.10, "dd_type": "static", "dll": 0.05, "weekend": true, "ea": true, "fee_100k": 545, "split": 0.8},
+ "The5ers High Stakes 新: 10%/5% 静的8% 日次4%": {"target": [0.10, 0.05], "mdd": 0.08, "dd_type": "static", "dll": 0.04, "weekend": true, "ea": true, "fee_100k": 405, "split": 0.8},
+ "E8 One: 1段階 目標6% トレーリング6%(残高基準) 日次4% swap-free": {"target": [0.06], "mdd": 0.06, "dd_type": "trail_bal_eod", "dll": 0.04, "weekend": true, "ea": true, "fee_100k": 488, "split": 0.8},
+ "E8 One(DD 10% 選択): 目標10% トレーリング10% 日次4%": {"target": [0.10], "mdd": 0.10, "dd_type": "trail_bal_eod", "dll": 0.04, "weekend": true, "ea": true, "fee_100k": 560, "split": 0.8},
+ "Blue Guardian 2-Step: 8%/4% 静的8% 日次4% +Shield 含み損2%": {"target": [0.08, 0.04], "mdd": 0.08, "dd_type": "static", "dll": 0.02, "weekend": true, "ea": true, "fee_100k": 578, "split": 0.85},
+ "Funded Trading Plus 2-Step Classic: 7%/7% 静的8% 日次4% swap-free(銘柄別3%)": {"target": [0.07, 0.07], "mdd": 0.08, "dd_type": "static", "dll": 0.04, "weekend": true, "ea": true, "fee_100k": 549, "split": 0.8},
+ "Funded Trading Plus 1-Step Express: 目標10% トレーリング6% 日次4% swap-free": {"target": [0.10], "mdd": 0.06, "dd_type": "trail_bal_eod", "dll": 0.04, "weekend": true, "ea": true, "fee_100k": 549, "split": 0.8},
+ "CTI 2-Step: 10%/5% 静的10%(残高基準) 日次5%": {"target": [0.10, 0.05], "mdd": 0.10, "dd_type": "static", "dll": 0.05, "weekend": true, "ea": true, "fee_100k": 549, "split": 0.8},
+ "CTI 1-Step: 目標8% トレーリング5% 日次なし": {"target": [0.08], "mdd": 0.05, "dd_type": "trail_bal_eod", "dll": 1.0, "weekend": true, "ea": true, "fee_100k": 449, "split": 0.8},
+ "FTUK Two-Step: 8%/8% 静的8% 日次5% +Protector 含み損2% swap-free": {"target": [0.08, 0.08], "mdd": 0.08, "dd_type": "static", "dll": 0.02, "weekend": true, "ea": true, "fee_100k": 499, "split": 0.8},
+ "FXIFY 2 Phase Classic: 5%/10% 静的10% 日次4%": {"target": [0.05, 0.10], "mdd": 0.10, "dd_type": "static", "dll": 0.04, "weekend": true, "ea": true, "fee_100k": 549, "split": 0.8},
+ "FundingPips 2-Step Standard+Swing: 8%/5% 静的10% 日次5%(Master 週末は add-on)": {"target": [0.08, 0.05], "mdd": 0.10, "dd_type": "static", "dll": 0.05, "weekend": true, "ea": true, "fee_100k": 580, "split": 0.8},
+ "Alpha Capital Swing(参照・完全自動 EA 不可): 10%/5% 静的10% 日次5%": {"target": [0.10, 0.05], "mdd": 0.10, "dd_type": "static", "dll": 0.05, "weekend": true, "ea": false, "fee_100k": 577, "split": 0.8},
+ "Maven(参照・EA 全面禁止)": {"target": [0.08, 0.05], "mdd": 0.08, "dd_type": "static", "dll": 0.04, "weekend": true, "ea": false, "fee_100k": 440, "split": 0.8},
+ "Goat(参照・VPS 禁止 2026-10-06〜)": {"target": [0.10, 0.05], "mdd": 0.10, "dd_type": "static", "dll": 0.05, "weekend": true, "ea": false, "fee_100k": 438, "split": 0.8},
+ "FTMO 2-Step Swing(参照・既存): 10%/5% 静的10% 日次5%": {"target": [0.10, 0.05], "mdd": 0.10, "dd_type": "static", "dll": 0.05, "weekend": true, "ea": true, "fee_100k": 540, "split": 0.8}
+}
