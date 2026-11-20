@@ -22,13 +22,13 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.15"
+VERSION = "1.16"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
          "real": ("https://api.theoption.com/v1", "wss://gateway.theoption.com/v1/ws")}
 MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 170000   # 1 日のベット合計の上限(v1.8: 月曜 72,700 + ゴトー日の仲値 35,000、25 日なら 52,500 = 125,200。月曜 ×1.5 と 25 日が重なる 161,550 も収める)
-FAST_PRESCAN_SECS = 25; FAST_BUY_DELAY = 1.0; FAST_GAP = 1.2   # v1.5: 15M 脚は定刻の 25 秒前から契約を先読みし、定刻 +1 秒に 1.2 秒間隔で発注
+FAST_MAX_ATTEMPTS = 3; FAST_PRESCAN_SECS = 25; FAST_BUY_DELAY = 1.0; FAST_GAP = 1.2   # v1.5: 15M 脚は定刻の 25 秒前から契約を先読みし、定刻 +1 秒に 1.2 秒間隔で発注
 FAST_LATE_SCAN_SECS = 20   # v1.6a: 枠が定刻ちょうどに出る場合に備え、定刻 +20 秒まで購読を続ける(そろった瞬間に打ち切るので通常は 1 秒以内)
 STALE_RETRY_SECS = 15; STALE_RETRY_DEADLINE_MIN = 20   # v1.5a: 週明け 07:00 は業者のレート配信が数分〜10 分以上凍結し buy が 216 で拒否される(11/2 実測)。15 秒おきに 07:20 まで再試行
 TRANSIENT_CODES = {224, 213, 214, 216, 999}   # 再試行する一時的な拒否コード(216 = Unable to process your request: レート未配信など)
@@ -422,7 +422,11 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     if fast: sleep_until(entry0 + dt.timedelta(seconds=FAST_BUY_DELAY))   # 定刻前にそろっていれば定刻 +1 秒まで待つ。定刻後に出たならすぐ発注
     csv_path = os.path.join(out_dir, f"live_entries_{account}.csv")
     hdr = ["date", "strategy_id", "pair", "direction", "payout_actual", "stake", "trade_id", "strike", "contract", "note"]
-    deadline = entry0 + dt.timedelta(minutes=STALE_RETRY_DEADLINE_MIN); pending = []
+    deadline = entry0 + dt.timedelta(minutes=STALE_RETRY_DEADLINE_MIN); pending = []; last_send = [0.0]
+    def pace():   # 15M: 送信から次の送信まで FAST_GAP 秒あける(1 秒 1 回の制限内)。応答待ちの時間は間隔に含める
+        w = FAST_GAP - (time.time() - last_send[0])
+        if w > 0: time.sleep(w)
+        last_send[0] = time.time()
     def try_buy(leg, c, stake, attempt):
         st, resp = rest(base, "/trading/buy", key, buy_body(c["name"], c["expiration_time"], stake), timeout=8 if fast else 15)
         log.write("buy", {"leg": leg["id"], "http": st, "req": buy_body(c["name"], c["expiration_time"], stake), "body": resp, "t_jst": dt.datetime.now(JST).strftime("%H:%M:%S.%f")[:-3], "attempt": attempt})
@@ -456,20 +460,30 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
             append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], 0, "", "", c["name"], rec["note"]])
             done[leg["id"]] = rec; continue
         resp = None; attempt = 0; park = False
+        if fast:   # v1.16(追補77): 15M は 1 巡目で全脚を 1 回ずつ試し、拒否された脚だけ後の巡回で再試行する(11/20: 前の脚の再試行で CADJPY の 1 回目が 09:55:22 まで遅れた)
+            pace(); resp = try_buy(leg, c, stake, 1)
+            if resp.get("status") == "success": finalize(leg, c, stake, resp)
+            else: log.say(leg["id"], "buy 拒否", err_codes(resp), str(resp)[:160]); pending.append([leg, c, stake, 1, resp])
+            continue
         while True:
             attempt += 1; resp = try_buy(leg, c, stake, attempt)
             if resp.get("status") == "success": break
             codes = err_codes(resp); log.say(leg["id"], "buy 拒否", codes, str(resp)[:160])
-            if fast:   # 15M: 開場直後の拒否(未開場など)は 1 秒後に再試行、最大 3 回(1 分遅れると勝率が落ちる脚なので粘らない)
-                if attempt >= 3: break
-                time.sleep(1.0); continue
             if not (set(codes) & TRANSIENT_CODES): break   # 残高不足・契約無効などは再試行しない
             if attempt == 1: time.sleep(2); continue        # 従来どおり 2 秒後に 1 回
             park = True; break   # v1.14: 一時的な拒否が続く脚は保留に回し、先に次の脚を試す(11/16: EURJPY の凍結 10 分の間、AUDJPY・NZDJPY は試行されなかった)
         if park:
             pending.append([leg, c, stake, attempt, resp]); time.sleep(FAST_GAP); continue
         finalize(leg, c, stake, resp)
-        time.sleep(FAST_GAP if fast else random.uniform(4.0, 8.0))   # v1.1a: 発注を数秒ずつ分散。v1.5 の 15M 脚は 1.2 秒間隔(1 秒 1 回の制限内で最短)
+        time.sleep(random.uniform(4.0, 8.0))   # v1.1a: 発注を数秒ずつ分散(15M は pace() で送信間隔 1.2 秒)
+    # v1.16: 15M の再試行。拒否された脚を 2 巡目・3 巡目で順に試す(1 脚あたり最大 FAST_MAX_ATTEMPTS 回、送信間隔は FAST_GAP)。1 分遅れると勝率が落ちる脚なので粘らない
+    while fast and pending:
+        for item in list(pending):
+            leg, c, stake, attempt, resp = item
+            pace(); item[3] = attempt + 1; item[4] = resp = try_buy(leg, c, stake, attempt + 1)
+            if resp.get("status") == "success": finalize(leg, c, stake, resp); pending.remove(item); continue
+            log.say(leg["id"], "buy 拒否", err_codes(resp), str(resp)[:160])
+            if item[3] >= FAST_MAX_ATTEMPTS: finalize(leg, c, stake, resp); pending.remove(item)
     # v1.5a/v1.14: 保留の脚を STALE_RETRY_SECS おきに一巡ずつ再試行し、配信が戻った脚から約定させる。定刻 +STALE_RETRY_DEADLINE_MIN 分で打ち切り
     while pending:
         if dt.datetime.now(JST) + dt.timedelta(seconds=STALE_RETRY_SECS) > deadline:
