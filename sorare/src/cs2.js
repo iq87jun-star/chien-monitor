@@ -1,4 +1,4 @@
-// CS2 スキンの模擬売買(お金は動かさない)の、銘柄選び。API を呼ばない純粋な関数だけ(test/cs2.test.js)。
+// ゲームのアイテム(CS2・Dota 2・Rust・TF2 など、Skinport で売買できるもの)の模擬売買(お金は動かさない)の、銘柄選び。API を呼ばない純粋な関数だけ(test/cs2.test.js)。
 // 相場は Skinport の公開 API(鍵なし): /v1/items(今の最安出品)と /v1/sales/history(直近 7・30・90 日の取引の中央値と件数)。
 // 売買の進め方(値洗い・利確・損切り)は src/paper.js の step / buy / summary をそのまま使う。
 
@@ -30,4 +30,28 @@ export function pickItems(market, held, { minVolume = 10, minPrice = 1, maxPrice
     .filter((c) => c.m.ratio >= minTrend && c.med30 >= c.med90 && c.ask <= c.med7 * maxPremium)
     .sort((a, b) => b.m.ratio - a.m.ratio)
     .slice(0, slots);
+}
+
+// ゲームの名前 → 記録のファイル名などに使う短い名前("Dota 2" → "dota-2")
+export const slug = (name) => String(name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+
+// 模擬売買するゲームの一覧。config.items の各ゲーム({ name, appId, ...上書きする決まり })を、config.cs2 の決まり(既定値)に重ねる。
+// items が無ければ CS2 だけ。記録は state/items-<短い名前>.json。CS2 は前の記録 state/cs2.json を引き継ぐ(legacyState)。
+// enabled: false のゲーム(または cs2.enabled: false で全部)は除く
+export function gameList(cfg = {}) {
+  const base = cfg.cs2 || {};
+  const list = Array.isArray(cfg.items) && cfg.items.length ? cfg.items : [{ name: "CS2", appId: 730 }];
+  return list
+    .map((g) => ({ ...base, ...g, key: slug(g.name), file: `items-${slug(g.name)}.json`, legacyState: g.legacyState ?? (g.appId === 730 ? "cs2.json" : null) }))
+    .filter((g) => g.enabled !== false && g.appId);
+}
+
+// 呼ぶ間隔を gapMs 以上あける(Skinport は 5 分に 8 回まで)。sleep・clock はテスト用に差し替えられる
+export function throttle(gapMs, sleep = (ms) => new Promise((ok) => setTimeout(ok, ms)), clock = Date.now) {
+  let last = -Infinity;
+  return async () => {
+    const wait = last + gapMs - clock();
+    if (wait > 0) await sleep(wait);
+    last = clock();
+  };
 }

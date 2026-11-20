@@ -63,3 +63,10 @@ test("compareText は 2 つの模擬売買の増減をくらべ、良い方を�
   assert.match(t, /CS2 の方が 19\.6 ポイント良い/);
   assert.match(compareText([{ name: "Sorare", paper: null }]), /まだ記録なし/);
 });
+
+test("compareText は 3 つ以上なら増減の良い順に並べる", () => {
+  const p = (cash) => ({ ...emptyPaper(100), cash });
+  const t = compareText([{ name: "Sorare", paper: p(90), feePct: 5 }, { name: "CS2", paper: p(110), feePct: 8 }, { name: "Rust", paper: null }, { name: "TF2", paper: p(100), feePct: 8 }]);
+  assert.match(t, /Rust: まだ記録なし/);
+  assert.match(t, /良い順: CS2 \+10% > TF2 \+0% > Sorare -10%/);
+});

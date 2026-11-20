@@ -60,7 +60,7 @@ export function buy(paper, picks, now) {
   return { paper: { ...paper, cash: +cash.toFixed(2), open }, bought };
 }
 
-// 2 つの模擬売買をくらべる文(Discord 用)。rows は { name, paper, feePct }。増減・資産・何日目・勝ち負け・確定損益・持っている数
+// 模擬売買をくらべる文(Discord 用。2 つなら差、3 つ以上なら良い順)。rows は { name, paper, feePct }。増減・資産・何日目・勝ち負け・確定損益・持っている数
 export function compareText(rows, now = Date.now()) {
   const lines = ["**くらべる**(お金は動かしていません)"];
   for (const r of rows) {
@@ -74,6 +74,10 @@ export function compareText(rows, now = Date.now()) {
   if (ok.length === 2) {
     const [a, b] = ok.map((r) => summary(r.paper, r.feePct).pct);
     lines.push(a === b ? "→ 今は同じ" : `→ 今は ${a > b ? ok[0].name : ok[1].name} の方が ${Math.abs(a - b).toFixed(1)} ポイント良い`);
+  } else if (ok.length > 2) {
+    // 3 つ以上: 増減の良い順に並べる
+    const rank = ok.map((r) => ({ name: r.name, pct: summary(r.paper, r.feePct).pct })).sort((x, y) => y.pct - x.pct);
+    lines.push(`→ 良い順: ${rank.map((x) => `${x.name} ${x.pct >= 0 ? "+" : ""}${x.pct}%`).join(" > ")}`);
   }
   return lines.join("\n");
 }

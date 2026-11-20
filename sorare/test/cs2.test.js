@@ -22,3 +22,21 @@ test("pickItems は取引量・価格・上昇・急騰でない・持ってい�
   assert.deepEqual(picks.map((c) => c.id), ["big", "up"]);
   assert.equal(picks[0].price, 5.5);
 });
+
+test("gameList は items の各ゲームを cs2 の決まりに重ね、記録のファイル名を決め、CS2 は前の記録を引き継ぐ", async () => {
+  const { gameList, slug } = await import("../src/cs2.js");
+  assert.equal(slug("Dota 2"), "dota-2");
+  const g = gameList({ cs2: { feePct: 8, maxPrice: 15 }, items: [{ name: "CS2", appId: 730 }, { name: "Dota 2", appId: 570, maxPrice: 5 }, { name: "TF2", appId: 440, enabled: false }] });
+  assert.deepEqual(g.map((x) => [x.name, x.file, x.legacyState, x.feePct, x.maxPrice]),
+    [["CS2", "items-cs2.json", "cs2.json", 8, 15], ["Dota 2", "items-dota-2.json", null, 8, 5]]);
+  assert.deepEqual(gameList({ cs2: {} }).map((x) => x.appId), [730]);   // items が無ければ CS2 だけ
+  assert.deepEqual(gameList({ cs2: { enabled: false }, items: [{ name: "Rust", appId: 252490 }] }), []);
+});
+
+test("throttle は呼ぶ間を gapMs 以上あける(最初は待たない)", async () => {
+  const { throttle } = await import("../src/cs2.js");
+  let t = 0; const waits = [];
+  const w = throttle(40e3, async (ms) => { waits.push(ms); t += ms; }, () => t);
+  await w(); t += 10e3; await w(); await w();
+  assert.deepEqual(waits, [30e3, 40e3]);
+});
