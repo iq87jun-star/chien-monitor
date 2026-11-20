@@ -135,7 +135,40 @@ def test_run_entries_fast_path_for_15m(monkeypatch):
         assert sleeps == [e - dt.timedelta(seconds=25), e + dt.timedelta(seconds=1)] and scans == [45]   # −25 秒から最長 +20 秒まで購読 → 定刻 +1 秒に発注
         buys = [c for c in calls if c[0] == "/trading/buy"]; assert len(buys) == 6 and all(c[2] == 8 for c in buys)   # 拒否 1 回 + 成功 5 本
         rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
-        assert len(rows) == 6 and all(",7000,7,153.21," in r for r in rows[1:]) and rows[1].startswith("2026-11-05,USDJPY_NK,USDJPY,LOW,1.85,7000")
+        assert len(rows) == 6 and all(",7000,7,153.21," in r for r in rows[1:]) and rows[-1].startswith("2026-11-05,USDJPY_NK,USDJPY,LOW,1.85,7000")   # v1.16: 拒否された USDJPY は 2 巡目で約定するので行は最後
+        assert [c[1]["contract"][:6] for c in buys] == ["USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY", "USDJPY"]   # 1 巡目で全脚 → 拒否された脚だけ再試行
+
+def test_v116_fast_path_tries_every_leg_before_retrying(monkeypatch):
+    """v1.16(追補77): 11/20 09:55 の実測。5 本とも 1 回目が 213、USDJPY・CADJPY は 3 回とも 213。前の脚の再試行が後ろの脚を待たせないこと、1 脚 3 回までで打ち切ること、送信間隔が FAST_GAP であること。"""
+    clock = {"t": 1000.0}; sends = []
+    monkeypatch.setattr(L.time, "time", lambda: clock["t"]); monkeypatch.setattr(L.time, "sleep", lambda s: clock.__setitem__("t", clock["t"] + s))
+    monkeypatch.setattr(L, "sleep_until", lambda t: None)
+    n = {}
+    def fake_rest(base, path, key, body=None, timeout=15):
+        if path == "/wallet/balance": return 200, {"status": "success", "data": {"balance": 300000}}
+        if path == "/trading/buy":
+            p = body["contract"][:6]; n[p] = n.get(p, 0) + 1; sends.append((p, clock["t"])); clock["t"] += 0.9   # 応答まで 0.9 秒
+            ok = {"EURJPY": 3, "GBPJPY": 2, "CHFJPY": 2}.get(p)
+            if ok and n[p] >= ok: return 200, {"status": "success", "data": {"trade": 5, "order_properties": {"strike": 1.5}}}
+            return 200, {"status": "fail", "data": None, "errors": [{"errorCode": 213, "description": "The rate has significantly shifted since you invested. Please try again."}]}
+        return 200, {"status": "success", "data": {"isActive": True}}
+    monkeypatch.setattr(L, "rest", fake_rest)
+    async def fake_scan(wss, key, secs, done=None):
+        return [upd(f"{p}|FE|15M|HIGHLOW|LOW", "2026-11-20T01:05:00.000Z", "1.85", status="Unknown") for p in ("USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY")]
+    monkeypatch.setattr(L, "scan_contracts", fake_scan)
+    with tempfile.TemporaryDirectory() as tmp:
+        assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), dt.datetime(2026, 11, 20, 9, 54, tzinfo=L.JST)) == 0
+        order = [p for p, _ in sends]
+        assert order[:5] == ["USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY"]                       # 1 巡目: 全脚を 1 回ずつ
+        assert order[5:10] == ["USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY"]                     # 2 巡目: 拒否された脚(今回は全部)
+        assert order[10:] == ["USDJPY", "EURJPY", "CADJPY"] and n == {"USDJPY": 3, "EURJPY": 3, "GBPJPY": 2, "CHFJPY": 2, "CADJPY": 3}   # 3 巡目で打ち切り
+        gaps = [round(b[1] - a[1], 3) for a, b in zip(sends, sends[1:])]
+        assert all(abs(g - L.FAST_GAP) < 1e-6 for g in gaps)                                         # 送信間隔は 1.2 秒(応答待ち込み)
+        assert sends[4][1] - sends[0][1] < 5.0                                                       # 5 本目の 1 回目は 1 本目の 4.8 秒後(11/20 は 20 秒後)
+        rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
+        assert len(rows) == 6 and sum(",7000,5,1.5," in r for r in rows) == 3 and sum("buy 拒否 [213]" in r for r in rows) == 2
+        state = json.load(open(os.path.join(tmp, "_diag", "live_state.json"), encoding="utf-8"))["2026-11-20"]
+        assert {k for k, v in state.items() if v["stake"] == 7000} == {"EURJPY_NK", "GBPJPY_NK", "CHFJPY_NK"} and len(state) == 5
 
 def test_payout_rule():
     leg1h = dict(id="X_1H", pair="AUDJPY", sel="HIGH", entry="08:00", judge="09:00", next=False, stake=8000, wds=[0], months=None, kind="1H")
