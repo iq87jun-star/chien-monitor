@@ -95,7 +95,7 @@ jobs:
           SORARE_FORCE: ${{ github.event_name == 'workflow_dispatch' && inputs.force && '1' || '' }}
           SORARE_DISCORD_WEBHOOK: ${{ secrets.SORARE_DISCORD_WEBHOOK }}
           SORARE_API_KEY: ${{ secrets.SORARE_API_KEY }}
-      # CS2 スキンの模擬売買(お金は動かさない、鍵なし)。1 日 1 回。失敗しても本番の処理には影響しない
+      # ゲームのアイテム(CS2・Dota 2・Rust・TF2)の模擬売買(お金は動かさない、鍵なし)。1 日 1 回。Skinport の回数制限のため約 5 分かかる。失敗しても本番の処理には影響しない
       - run: node cs2.js
         if: ${{ !cancelled() }}
         continue-on-error: true
