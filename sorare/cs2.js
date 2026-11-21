@@ -17,7 +17,14 @@ const load = (g) => readJson(new URL(g.file, STATE))
 const save = (g, p) => { mkdirSync(STATE, { recursive: true }); writeFileSync(new URL(g.file, STATE), JSON.stringify(p)); };
 
 const wait = throttle(Number(env.SKINPORT_GAP_MS ?? 40e3));
-async function get(appId, kind) {
+// 同じ appId の相場は 1 回の実行で 1 度だけ読む(CS2 と「CS2(CSFloat)」で共有し、Skinport を呼ぶ回数を増やさない)
+const cache = new Map();
+const get = (appId, kind) => {
+  const k = `${appId}-${kind}`;
+  if (!cache.has(k)) cache.set(k, fetchSkinport(appId, kind).catch((e) => { cache.delete(k); throw e; }));
+  return cache.get(k);
+};
+async function fetchSkinport(appId, kind) {
   if (env.SKINPORT_FIXTURE_DIR) return JSON.parse(readFileSync(`${env.SKINPORT_FIXTURE_DIR}/${appId}-${kind}.json`, "utf8"));
   const path = kind === "items" ? `items?app_id=${appId}&currency=USD&tradable=0` : `sales/history?app_id=${appId}&currency=USD`;
   for (let i = 0; i < 3; i++) {

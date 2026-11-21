@@ -1,5 +1,5 @@
 {
-  "_comment": "targets は毎節ラインナップを組む大会の一覧(enabled: false で止める)。各大会の項目は上の既定値に重ねる。leaderboard は so5Fixture の slug の後ろに付く部分、league は通知に出すリーグ名。 marketBudgetUsd / plusBudgetUsd は購入候補の最安プラン・プラスアルファプランの予算。sell は売却候補の条件(maxAge を超える年齢、minStartRate 未満のスタメン率、買値から gainPct% 以上の値上がり)と、出品の目安を最安出品から何 % 下げるか(undercutPct)。 trade は自動売買の設定(SORARE_TRADE=true の時だけ実行): 買うプラン(cheap / plus。大会ごとに buyPlan で上書きできる)、1枚と直近7日の購入額の上限(全大会の合計)、買ってから売らない日数、買値より下で出品しないか、決済と出品の通貨(WEI = ETH ウォレット、USD・EUR = キャッシュウォレット)。Jupiler Rare は最安でも 5 枚で $100 前後かかる(weeklyMaxUsd はそれを見込んで $250)。 sport: \"nba\" の大会は NBA(星の合計に上限、キャプテン無し、節は週 2 回)。autoBuy: false の大会は購入候補の通知だけで自動購入しない。 自動購入はウォレット残高の範囲だけで、targets の上から順に使う(安い大会を先に)。残高が足りない大会はその節は見送り、賞金やカードの売却で増えたら自動で始まる。buyPlan: auto は残高が足りればプラスアルファ、足りなければ最安。trade.reserveUsd は手数料のために残しておく額。 learn は結果からの学習: 入賞ラインの記録が minCutoffs 節以上あり、予想が skipBelowReach 割に届かない大会は購入を見送る。sellTiming は売り時(最高値から dropPct% 下がり、買値から +minGainPct% 以上ある時に売る)。 paper は模擬売買(お金は動かさない): 仮の元手 bankUsd で、勢い(直近3試合÷直近10試合)が minRatio 以上・直近平均 minAvg 以上・価格 minPrice〜maxPrice の Limited カードを 1 日 slots 枚まで仮に買い(売ってから cooldownDays 日は同じ選手を買わない)、手数料 feePct% を引いて +takePct% で利確、最高値から dropPct% で売り、-stopPct% で損切り、maxDays 日で手放す。 cs2 は CS2 スキンの模擬売買(お金は動かさない): Skinport の相場で、7 日の取引 minVolume 件以上・価格 minPrice〜maxPrice・7 日の中央値÷30 日の中央値が minTrend 以上・最安出品が 7 日の中央値の maxPremium 倍以下の品を 1 日 slots 個まで仮に買い、売る手数料 feePct% を引いて +takePct% で利確、最高値から dropPct% で売り、-stopPct% で損切り、maxDays 日で手放す。買って minHoldDays 日は売らない(取引保護)。 items はゲームのアイテムの模擬売買をするゲームの一覧(name と Skinport の appId。決まりは cs2 を既定値にし、ゲームごとに同じ名前の項目で上書きできる。enabled: false で止める)。記録はゲームごとに state/items-<名前>.json(CS2 は前の state/cs2.json を引き継ぐ)。",
+  "_comment": "targets は毎節ラインナップを組む大会の一覧(enabled: false で止める)。各大会の項目は上の既定値に重ねる。leaderboard は so5Fixture の slug の後ろに付く部分、league は通知に出すリーグ名。 marketBudgetUsd / plusBudgetUsd は購入候補の最安プラン・プラスアルファプランの予算。sell は売却候補の条件(maxAge を超える年齢、minStartRate 未満のスタメン率、買値から gainPct% 以上の値上がり)と、出品の目安を最安出品から何 % 下げるか(undercutPct)。 trade は自動売買の設定(SORARE_TRADE=true の時だけ実行): 買うプラン(cheap / plus。大会ごとに buyPlan で上書きできる)、1枚と直近7日の購入額の上限(全大会の合計)、買ってから売らない日数、買値より下で出品しないか、決済と出品の通貨(WEI = ETH ウォレット、USD・EUR = キャッシュウォレット)。Jupiler Rare は最安でも 5 枚で $100 前後かかる(weeklyMaxUsd はそれを見込んで $250)。 sport: \"nba\" の大会は NBA(星の合計に上限、キャプテン無し、節は週 2 回)。autoBuy: false の大会は購入候補の通知だけで自動購入しない。 自動購入はウォレット残高の範囲だけで、targets の上から順に使う(安い大会を先に)。残高が足りない大会はその節は見送り、賞金やカードの売却で増えたら自動で始まる。buyPlan: auto は残高が足りればプラスアルファ、足りなければ最安。trade.reserveUsd は手数料のために残しておく額。 learn は結果からの学習: 入賞ラインの記録が minCutoffs 節以上あり、予想が skipBelowReach 割に届かない大会は購入を見送る。sellTiming は売り時(最高値から dropPct% 下がり、買値から +minGainPct% 以上ある時に売る)。 paper は模擬売買(お金は動かさない): 仮の元手 bankUsd で、勢い(直近3試合÷直近10試合)が minRatio 以上・直近平均 minAvg 以上・価格 minPrice〜maxPrice の Limited カードを 1 日 slots 枚まで仮に買い(売ってから cooldownDays 日は同じ選手を買わない)、手数料 feePct% を引いて +takePct% で利確、最高値から dropPct% で売り、-stopPct% で損切り、maxDays 日で手放す。 cs2 は CS2 スキンの模擬売買(お金は動かさない): Skinport の相場で、7 日の取引 minVolume 件以上・価格 minPrice〜maxPrice・7 日の中央値÷30 日の中央値が minTrend 以上・最安出品が 7 日の中央値の maxPremium 倍以下の品を 1 日 slots 個まで仮に買い、売る手数料 feePct% を引いて +takePct% で利確、最高値から dropPct% で売り、-stopPct% で損切り、maxDays 日で手放す。買って minHoldDays 日は売らない(取引保護)。 items はゲームのアイテムの模擬売買をするゲームの一覧(name と Skinport の appId。決まりは cs2 を既定値にし、ゲームごとに同じ名前の項目で上書きできる。enabled: false で止める)。記録はゲームごとに state/items-<名前>.json(CS2 は前の state/cs2.json を引き継ぐ)。 同じ appId を手数料だけ変えて並べると、売る場所の違いを比べられる(CS2 (CSFloat) は feePct 4)。",
   "targets": [
     {
       "name": "J1 Limited",
@@ -132,6 +132,12 @@
     {
       "name": "CS2",
       "appId": 730
+    },
+    {
+      "name": "CS2 (CSFloat)",
+      "appId": 730,
+      "feePct": 4,
+      "_note": "CS2 と同じ品選びで、売る場所を CSFloat にした場合の手数料(売り 2% + 現金化 0.5〜2.5%)で比べる。相場は Skinport の値段で見積もる"
     },
     {
       "name": "Dota 2",
