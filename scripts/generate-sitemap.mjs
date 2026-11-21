@@ -13,6 +13,8 @@ for (const page of ["souba", "satei", "jisseki", "theater"]) urls.push({ loc: `$
 urls.push({ loc: `${BASE}/kaitori/`, changefreq: "weekly", priority: "0.8" });
 // お客様向けの在庫一覧(satei/public/zaiko.html)
 urls.push({ loc: `${BASE}/zaiko/`, changefreq: "daily", priority: "0.7" });
+// 購入申し込みシート(satei/public/order.html)
+urls.push({ loc: `${BASE}/kounyu/`, changefreq: "monthly", priority: "0.5" });
 // 買取のお取引ガイド(satei/public/guide.html)
 urls.push({ loc: `${BASE}/torihiki/`, changefreq: "monthly", priority: "0.6" });
 
