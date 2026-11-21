@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-7LZS5DCBSG"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-7LZS5DCBSG');</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light" />
+<title>購入申し込みシート|メルル</title>
+<meta name="description" content="メルルのアカウントを一括払い・分割払いで購入するための申し込みシートです。選んで入力すると、X の DM に貼り付ける文ができます。" />
+<meta property="og:title" content="メルル|購入申し込みシート(一括・分割)" />
+<meta property="og:description" content="選んで入力するだけで、DM に貼り付ける申し込み文ができます。分割払いもご相談ください。" />
+<meta name="twitter:card" content="summary" />
+<link rel="canonical" href="https://game-souba.com/kounyu/" />
+<meta property="og:url" content="https://game-souba.com/kounyu/" />
+<style>
+  /* 在庫一覧(zaiko.html)と同じ明るい配色 */
+  :root {
+    --bg: #fff9fc; --card: #ffffff; --ink: #2a2230; --sub: #6b5f72; --line: #f3dde8;
+    --accent: #ec4f8c; --accent-ink: #ffffff; --soft: #ffeef5; --sky: #eaf4ff; --sky-ink: #2f6fb3;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: linear-gradient(180deg, #ffeef6 0, var(--bg) 260px); color: var(--ink); font: 16px/1.7 system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  .lead { color: var(--sub); margin: 0 0 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(236, 79, 140, .06); }
+  .card h2 { font-size: 17px; margin: 0 0 10px; }
+  .card h2 small { font-weight: 400; color: var(--sub); font-size: 13px; }
+  label { display: block; font-size: 14px; margin-top: 10px; }
+  label:first-of-type { margin-top: 0; }
+  select, input, textarea { display: block; width: 100%; margin-top: 4px; padding: 10px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); font: inherit; }
+  textarea { resize: vertical; }
+  .pick { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .pick button { padding: 14px 8px; border-radius: 12px; border: 2px solid var(--line); background: #fff; color: var(--ink); font: inherit; font-weight: 700; font-size: 17px; cursor: pointer; }
+  .pick button span { display: block; font-size: 12px; font-weight: 400; color: var(--sub); }
+  .pick button[aria-pressed="true"] { border-color: var(--accent); background: var(--soft); color: var(--accent); }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; }
+  .hint { font-size: 13px; color: var(--sub); margin: 6px 0 0; }
+  .out { width: 100%; min-height: 220px; font-size: 15px; background: #fffdf5; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .btn { flex: 1 1 160px; display: inline-block; padding: 12px 14px; border-radius: 12px; border: 0; background: var(--accent); color: var(--accent-ink); font: inherit; font-weight: 700; text-align: center; text-decoration: none; cursor: pointer; }
+  .btn.sub { background: var(--soft); color: var(--ink); }
+  .info { font-size: 14px; color: var(--sub); }
+  .info a, footer a { color: var(--accent); }
+  footer { color: var(--sub); font-size: 13px; margin-top: 24px; }
+  @media (max-width: 400px) { .two { grid-template-columns: 1fr; } }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1>購入申し込みシート🌸</h1>
+  <p class="lead">選んで入力すると、X の DM に貼り付ける申し込み文ができます。一括払い・分割払いのどちらでも申し込めます。</p>
+
+  <section class="card">
+    <h2>① 欲しいアカウント</h2>
+    <label>アカウント<select id="item"><option value="">読み込み中…</option></select></label>
+    <div id="gameWrap" hidden>
+      <label>ゲーム<select id="game"></select></label>
+      <label>欲しいキャラ・条件(任意)<input id="wantChars" maxlength="100" placeholder="例: フリーナ完凸、マーヴィカ" /></label>
+    </div>
+    <p class="hint">一覧は <a href="/zaiko/">在庫一覧</a> で見られます。</p>
+  </section>
+
+  <section class="card">
+    <h2>② お支払い方法</h2>
+    <div class="pick" id="plan" role="group" aria-label="お支払い方法">
+      <button type="button" data-plan="lump" aria-pressed="true">一括払い<span>まとめて1回で</span></button>
+      <button type="button" data-plan="split" aria-pressed="false">分割払い<span>毎月少しずつ</span></button>
+    </div>
+    <div id="splitBox" hidden>
+      <div class="two">
+        <label>毎月のお支払い額<select id="monthly">
+          <option value="5000">5,000円</option><option value="10000" selected>10,000円</option><option value="15000">15,000円</option>
+          <option value="20000">20,000円</option><option value="30000">30,000円</option><option value="other">相談したい</option>
+        </select></label>
+        <label>毎月のお支払い日<select id="day"></select></label>
+      </div>
+      <label>頭金(最初に多めに払う額・任意)<input id="down" type="number" min="0" step="1000" inputmode="numeric" placeholder="例: 20000" /></label>
+      <label>1回目のお支払い<select id="start"><option>今日〜3日以内</option><option>次のお支払い日から</option><option>相談したい</option></select></label>
+      <p class="hint">分割払いでは、全額のお支払いが済んだあとにメールアドレスなどの登録情報をお渡しします。</p>
+    </div>
+    <div class="two">
+      <label>お支払いの手段<select id="method"><option>PayPay</option><option>銀行振込</option><option>どちらでも</option></select></label>
+      <label>ご予算(総額・任意)<input id="budget" type="number" min="0" step="1000" inputmode="numeric" placeholder="例: 80000" /></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>③ ご連絡先 <small>(任意)</small></h2>
+    <label>X のユーザー名<input id="handle" maxlength="30" autocomplete="off" inputmode="latin" placeholder="@your_id" /></label>
+    <label>ご質問・ご要望<textarea id="memo" rows="3" maxlength="300" placeholder="例: 武器のスクショも見たいです"></textarea></label>
+  </section>
+
+  <section class="card">
+    <h2>④ DM に貼り付ける文</h2>
+    <textarea class="out" id="out" readonly></textarea>
+    <div class="row">
+      <button class="btn" id="copy" type="button">📋 文をコピー</button>
+      <a class="btn sub" id="openX" target="_blank" rel="noopener">メルルの X を開く</a>
+    </div>
+    <p class="hint">コピーしたら「メルルの X を開く」から DM を開いて、貼り付けて送ってください。このページから自動では送られません。</p>
+  </section>
+
+  <p class="info">お支払い・お引き渡しの流れは <a href="/torihiki/">お取引ガイド</a> をご覧ください。価格は DM でご案内します。</p>
+  <footer>当サイトは各ゲームの運営会社とは関係のない非公式サイトです。アカウントの売買は各ゲームの規約で禁止されている場合があります。</footer>
+</main>
+
+<script type="module">
+import { GAMES, xOf } from "./lib/games.js";
+const $ = (id) => document.getElementById(id);
+const API = /(^localhost$|\.workers\.dev$)/.test(location.hostname) ? "" : "https://satei.iq87jun.workers.dev";
+const ORDER = ["genshin-impact", "houkaistarrail", "zzz", "wutheringwaves", "granblue", "umamusume", "identityv"];
+const yen = (n) => `${Number(n).toLocaleString("ja-JP")}円`;
+const q = new URLSearchParams(location.search);
+let items = [];
+let plan = q.get("plan") === "split" ? "split" : "lump";
+
+// 選択肢: 販売中・商談中のアカウント + 「まだ決めていない」
+const labelOf = (it) => {
+  const c6 = it.chars.filter((c) => c.cons === 6).length;
+  const size = it.chars.length ? ` ★5 ${it.chars.length}体${c6 ? `・完凸${c6}` : ""}` : "";
+  return `${it.kind === "stock" ? "在庫" : "代理出品"} No.${it.no}(${GAMES[it.game] ?? it.game}${size})`;
+};
+function fillItems() {
+  const live = items.filter((it) => it.state !== "売約済み").sort((a, b) => ORDER.indexOf(a.game) - ORDER.indexOf(b.game) || (a.kind === b.kind ? a.no - b.no : a.kind === "stock" ? -1 : 1));
+  const opt = (v, t) => `<option value="${v}">${t.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c])}</option>`;
+  $("item").innerHTML = opt("", "まだ決めていない(予算に合うものを提案してほしい)") + live.map((it) => opt(`${it.kind}-${it.no}`, labelOf(it))).join("");
+  const want = q.get("item");
+  if (want && live.some((it) => `${it.kind}-${it.no}` === want)) $("item").value = want;
+}
+$("game").innerHTML = ORDER.map((g) => `<option value="${g}">${GAMES[g]}</option>`).join("");
+if (q.get("game") && GAMES[q.get("game")]) $("game").value = q.get("game");
+$("day").innerHTML = [...Array(28)].map((_, i) => `<option value="${i + 1}"${i + 1 === 25 ? " selected" : ""}>毎月${i + 1}日</option>`).join("") + `<option value="end">毎月末</option>`;
+
+function current() {
+  return items.find((it) => `${it.kind}-${it.no}` === $("item").value) ?? null;
+}
+function build() {
+  const it = current();
+  const game = it?.game ?? $("game").value;
+  $("gameWrap").hidden = Boolean(it);
+  $("splitBox").hidden = plan !== "split";
+  document.querySelectorAll("[data-plan]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.plan === plan)));
+  const L = ["【購入申し込み】"];
+  L.push(`■ アカウント: ${it ? labelOf(it) : `まだ決めていない(${GAMES[game]})`}`);
+  if (!it && $("wantChars").value.trim()) L.push(`・欲しいキャラ・条件: ${$("wantChars").value.trim()}`);
+  L.push(`■ お支払い: ${plan === "split" ? "分割払い" : "一括払い"}`);
+  if (plan === "split") {
+    L.push(`・毎月: ${$("monthly").value === "other" ? "相談したい" : yen($("monthly").value)}`);
+    L.push(`・お支払い日: ${$("day").value === "end" ? "毎月末" : `毎月${$("day").value}日`}`);
+    const down = Number($("down").value);
+    L.push(`・頭金: ${down > 0 ? yen(down) : "なし"}`);
+    L.push(`・1回目: ${$("start").value}`);
+  }
+  L.push(`・手段: ${$("method").value}`);
+  const budget = Number($("budget").value);
+  if (budget > 0) L.push(`・ご予算(総額): ${yen(budget)}`);
+  const handle = $("handle").value.trim().replace(/^@?/, "@");
+  if (handle.length > 1) L.push(`■ X: ${handle}`);
+  if ($("memo").value.trim()) L.push(`■ ご質問: ${$("memo").value.trim()}`);
+  L.push("", "お値段と詳細を教えてください。よろしくお願いします🙇‍♀️");
+  $("out").value = L.join("\n");
+  $("openX").href = `https://x.com/${xOf(game)}`;
+}
+
+$("plan").addEventListener("click", (e) => {
+  const b = e.target.closest("[data-plan]");
+  if (!b) return;
+  plan = b.dataset.plan;
+  build();
+});
+document.querySelectorAll("select, input, textarea:not(#out)").forEach((el) => el.addEventListener("input", build));
+$("copy").addEventListener("click", async () => {
+  try { await navigator.clipboard.writeText($("out").value); $("copy").textContent = "✅ コピーしました"; }
+  catch { $("out").select(); $("copy").textContent = "文を長押ししてコピーしてください"; }
+  setTimeout(() => ($("copy").textContent = "📋 文をコピー"), 3000);
+});
+
+build();
+try {
+  const d = await (await fetch(`${API}/api/catalog`)).json();
+  if (!d.ok) throw new Error(d.error);
+  items = d.items;
+} catch {}
+fillItems();
+build();
+</script>
+</body>
+</html>
