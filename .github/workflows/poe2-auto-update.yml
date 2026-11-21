@@ -93,6 +93,10 @@ jobs:
           mkdir -p site-dist/zaiko
           cp satei/public/zaiko.html site-dist/zaiko/index.html
           cp -r satei/public/lib site-dist/zaiko/lib
+          # 購入申し込みシート(一括・分割を選んで DM に貼る文を作る。保存はしない)。game-souba.com/kounyu/
+          mkdir -p site-dist/kounyu
+          cp satei/public/order.html site-dist/kounyu/index.html
+          cp -r satei/public/lib site-dist/kounyu/lib
           # 分割払いのお客様ページ(支払い予定とチャット。Worker の /api/portal)。game-souba.com/shiharai/?t=…
           mkdir -p site-dist/shiharai
           cp satei/public/shiharai.html site-dist/shiharai/index.html

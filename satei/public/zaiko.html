@@ -87,7 +87,7 @@
   <div class="info">
     <b>ご購入について</b><br />
     ・<b>メルルの在庫</b>はメルルが買い取ったアカウント、<b>代理出品</b>は持ち主の方に代わってメルルが販売するアカウントです。<br />
-    ・価格は DM でご案内します。分割払いのご相談も受け付けています。<br />
+    ・価格は DM でご案内します。分割払いのご相談も受け付けています。<a href="/kounyu/">購入申し込みシート</a>で一括・分割を選んで、DM に貼る文を作れます。<br />
     ・お支払い・お引き渡しの流れは <a href="/torihiki/">お取引ガイド</a> をご覧ください。
   </div>
 
@@ -141,6 +141,7 @@ function card(it) {
       ${it.note ? `<p class="note">${esc(it.note)}</p>` : ""}
       ${it.state === "売約済み" ? "" : `<div class="row">
         <button class="btn" data-ask>✉️ DMで価格を聞く</button>
+        <a class="btn sub" href="/kounyu/?item=${it.kind}-${it.no}">🧾 一括・分割で申し込む</a>
         ${it.post_url ? `<a class="btn sub" href="${esc(it.post_url)}" target="_blank" rel="noopener">紹介ポスト</a>` : ""}
       </div>`}
     </div>
