@@ -70,6 +70,7 @@ Sorare の大会(In-Season)に向けて、節ごとに次の処理を行いま�
 お金は動かさずに、「ゲームのアイテム(CS2・Dota 2・Rust・TF2)の売買で、手数料を引いても増やせるか」を試します。1 日 1 回、Discord に成績を送ります。鍵やアカウントはいりません。売買の場は、ゲームが認めている取引サイトの Skinport だけです。
 
 - ゲームの一覧は `config.json` の `items`(`name` と Skinport の `appId`)です。決まりは `cs2` を既定値にし、ゲームごとに `items` の中で同じ名前の項目(例: `"minVolume": 5`)を書くと上書きできます。仮の元手はゲームごとに $100 です。
+- `CS2 (CSFloat)` は CS2 と同じ品選びで、売る場所を CSFloat にした場合の手数料 4%(売り 2% + 現金化 0.5〜2.5%)で比べる欄です。相場は Skinport の値段で見積もり、相場は CS2 と共有するので Skinport を呼ぶ回数は増えません。
 - 記録はゲームごとに `state/items-cs2.json`・`items-dota-2.json` などです。CS2 は前の `state/cs2.json` を引き継ぎます。
 - Skinport の公開 API は 5 分に 8 回までなので、呼ぶ間を 40 秒あけます(1 ゲーム 2 回、4 ゲームで約 5 分)。
 - 手元で確かめる時は、`curl --compressed` で取った JSON を `<appId>-items.json`・`<appId>-history.json` としてフォルダに置き、`SKINPORT_FIXTURE_DIR=そのフォルダ node cs2.js` で動かせます。

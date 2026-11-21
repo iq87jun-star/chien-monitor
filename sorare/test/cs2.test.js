@@ -23,12 +23,12 @@ test("pickItems は取引量・価格・上昇・急騰でない・持ってい�
   assert.equal(picks[0].price, 5.5);
 });
 
-test("gameList は items の各ゲームを cs2 の決まりに重ね、記録のファイル名を決め、CS2 は前の記録を引き継ぐ", async () => {
+test("gameList は items の各ゲームを cs2 の決まりに重ね、記録のファイル名を決め、CS2 だけが前の記録を引き継ぐ(手数料違いの CS2 は引き継がない)", async () => {
   const { gameList, slug } = await import("../src/cs2.js");
   assert.equal(slug("Dota 2"), "dota-2");
-  const g = gameList({ cs2: { feePct: 8, maxPrice: 15 }, items: [{ name: "CS2", appId: 730 }, { name: "Dota 2", appId: 570, maxPrice: 5 }, { name: "TF2", appId: 440, enabled: false }] });
+  const g = gameList({ cs2: { feePct: 8, maxPrice: 15 }, items: [{ name: "CS2", appId: 730 }, { name: "CS2 (CSFloat)", appId: 730, feePct: 4 }, { name: "Dota 2", appId: 570, maxPrice: 5 }, { name: "TF2", appId: 440, enabled: false }] });
   assert.deepEqual(g.map((x) => [x.name, x.file, x.legacyState, x.feePct, x.maxPrice]),
-    [["CS2", "items-cs2.json", "cs2.json", 8, 15], ["Dota 2", "items-dota-2.json", null, 8, 5]]);
+    [["CS2", "items-cs2.json", "cs2.json", 8, 15], ["CS2 (CSFloat)", "items-cs2-csfloat.json", null, 4, 15], ["Dota 2", "items-dota-2.json", null, 8, 5]]);
   assert.deepEqual(gameList({ cs2: {} }).map((x) => x.appId), [730]);   // items が無ければ CS2 だけ
   assert.deepEqual(gameList({ cs2: { enabled: false }, items: [{ name: "Rust", appId: 252490 }] }), []);
 });

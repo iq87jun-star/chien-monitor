@@ -36,13 +36,13 @@ export function pickItems(market, held, { minVolume = 10, minPrice = 1, maxPrice
 export const slug = (name) => String(name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
 // 模擬売買するゲームの一覧。config.items の各ゲーム({ name, appId, ...上書きする決まり })を、config.cs2 の決まり(既定値)に重ねる。
-// items が無ければ CS2 だけ。記録は state/items-<短い名前>.json。CS2 は前の記録 state/cs2.json を引き継ぐ(legacyState)。
+// 同じ appId を手数料だけ変えて並べてもよい(例: CS2 を CSFloat の手数料で)。items が無ければ CS2 だけ。記録は state/items-<短い名前>.json。CS2 は前の記録 state/cs2.json を引き継ぐ(legacyState)。
 // enabled: false のゲーム(または cs2.enabled: false で全部)は除く
 export function gameList(cfg = {}) {
   const base = cfg.cs2 || {};
   const list = Array.isArray(cfg.items) && cfg.items.length ? cfg.items : [{ name: "CS2", appId: 730 }];
   return list
-    .map((g) => ({ ...base, ...g, key: slug(g.name), file: `items-${slug(g.name)}.json`, legacyState: g.legacyState ?? (g.appId === 730 ? "cs2.json" : null) }))
+    .map((g) => ({ ...base, ...g, key: slug(g.name), file: `items-${slug(g.name)}.json`, legacyState: g.legacyState ?? (slug(g.name) === "cs2" ? "cs2.json" : null) }))
     .filter((g) => g.enabled !== false && g.appId);
 }
 
