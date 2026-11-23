@@ -20,6 +20,7 @@ test("一覧から出品を取り出す", () => {
     url: "https://gametrade.jp/genshin-impact/exhibits/200",
     image: "https://cdn.example/200.jpg",
     previousPrice: null,
+    text: "",
     info: ["冒険者ランク：60ランク", "星5キャラクターの数：30体"],
     sold: false,
   });
@@ -107,6 +108,7 @@ test("ゲームクラブの一覧から出品を取り出す(販売済みは除�
       url: "https://gameclub.jp/genshin-impact/300",
       image: "https://cdn.gameclub.jp/300.jpg",
       previousPrice: null,
+      text: "",
       info: ["種類：引退垢", "出品・更新：2026/10/03 18:19", "冒険者ランク：60"],
     },
   ]);
@@ -186,4 +188,45 @@ test("ゲームクラブ: 全ページを読めていない(complete=false)時�
   const full = await runCheck({ ...opts, state: first.state, pages: pages2, complete: true });
   assert.deepEqual(full.hits.map((h) => `${h.id}:${h.kind}`), ["101:new", "100:drop", "50:changed"]);
   assert.deepEqual(full.summary, { pages: 1, complete: true, inRange: 3, priceMin: 80000, priceMax: 140000 });
+});
+
+test("新キャラ完凸: キャラ名の後ろの凸表記・「完凸:」の見出しで判定し、別の凸数や武器の話は拾わない", async () => {
+  const { findNewC6 } = await import("../src/core.js");
+  const chars = { コロンビーナ: ["コロビーナ"], ネフェル: [], ドゥリン: [], ラウマ: [], ヴェスナ: [], 茲白: ["兹白"] };
+  const cases = [
+    ["コロンビーナ完凸餅", ["コロンビーナ"]],
+    ["コロンビーナ2凸、フリーナ完凸", []],
+    ["完凸：ネフェル、ドゥリン、フリーナ2凸", ["ネフェル", "ドゥリン"]],
+    ["ネフェルC6 ラウマC2", ["ネフェル"]],
+    ["完凸5体(フリーナ、ナヒーダ) ラウマ無凸", []],
+    ["茲白c6餅あり", ["茲白"]],
+    ["限定完凸武器4本 ヴェスナ有", []],
+    ["引退垢｜コロンビーナ(完凸)", ["コロンビーナ"]],
+  ];
+  for (const [text, want] of cases) assert.deepEqual(findNewC6(text, chars), want, text);
+});
+
+test("新キャラ完凸: 新規でも値下げでもない出品を1回だけ知らせ、新規・値下げには印を付ける", async () => {
+  const newChars = { ネフェル: [], コロンビーナ: [] };
+  const config = {
+    site: "gameclub",
+    url: "https://gameclub.jp/genshin-impact?search%5BpriceMin%5D=70000&search%5BpriceMax%5D=200000",
+  };
+  const posts = [];
+  const fetchImpl = async (url, init) => {
+    posts.push(JSON.parse(init.body));
+    return new Response(null, { status: 204 });
+  };
+  const opts = { config, webhook: "https://discord.test/hook", fetchImpl, sleep: async () => {}, newChars, complete: true };
+  // 機能を入れる前からある状態(c6seen なし)
+  const state = { maxId: "100", prices: { 100: 120000, 90: 100000 } };
+  const pages = [gcItem(101, "ネフェル完凸", 80000) + gcItem(100, "コロンビーナ完凸", 120000) + gcItem(90, "フリーナ完凸", 100000)];
+  const r1 = await runCheck({ ...opts, state, pages });
+  assert.deepEqual(r1.hits.map((h) => `${h.id}:${h.kind}:${(h.c6 ?? []).join()}`), ["101:new:ネフェル", "100:c6:コロンビーナ"]);
+  assert.deepEqual(posts[0].embeds.map((e) => e.title), ["【新規】【新キャラ完凸】ネフェル完凸", "【新キャラ完凸】コロンビーナ完凸"]);
+  assert.match(posts[0].embeds[1].description, /新キャラ完凸：コロンビーナ/);
+  assert.match(posts[0].content, /新キャラ完凸 1件/);
+  // 次の回: 同じ出品はもう知らせない
+  const r2 = await runCheck({ ...opts, state: r1.state, pages });
+  assert.deepEqual(r2.hits, []);
 });

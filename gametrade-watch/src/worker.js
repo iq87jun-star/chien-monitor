@@ -15,6 +15,7 @@
 import gametrade from "../config.json";
 import gameclub from "../config.gameclub.json";
 import targets from "../config.targets.json";
+import newChars from "../config.newchars.json";
 import { runCheck } from "./core.js";
 import { validRecords, parseSold, parseDetail, soldRecord, searchQuery } from "./sold.js";
 
@@ -59,7 +60,8 @@ async function check(env, site, pages, complete) {
   let status;
   try {
     const state = JSON.parse((await get(env, KEY)) ?? "null");
-    const r = await runCheck({ config, state, pages, complete, webhook: env.GAMETRADE_DISCORD_WEBHOOK });
+    // 新キャラ完凸: config の game(例 genshin-impact)のキャラ一覧を探す
+    const r = await runCheck({ config, state, pages, complete, newChars: newChars[config.game] ?? null, webhook: env.GAMETRADE_DISCORD_WEBHOOK });
     await put(env, KEY, JSON.stringify(r.state));
     status = {
       ok: true,

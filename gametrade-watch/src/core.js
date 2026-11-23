@@ -43,6 +43,8 @@ export function parseExhibits(html, origin) {
       price: Number(data.price),
       url: new URL(href || `exhibits/${m[1]}`, origin).href,
       image: img && !img.includes("no-image") ? img : null,
+      // 説明文(一覧に出る冒頭部分)。新キャラ完凸の判定に使う
+      text: decode((/<div class="description">([\s\S]*?)<\/div>/.exec(block)?.[1] ?? "").replace(/<[^>]+>/g, "\n")).trim(),
       // 値下げされた出品は一覧に元の価格が出る
       previousPrice: Number(/<li class="previous_price"><p>[^0-9]*([\d,]+)/.exec(block)?.[1].replace(/,/g, "")) || null,
       info,
@@ -69,6 +71,7 @@ export function parseGameclub(html, origin) {
       (m) => `${decode(m[1]).trim()}：${decode(m[2]).trim()}`,
     );
     const type = /account-type">([^<]+)</.exec(block)?.[1]?.trim();
+    const text = decode((/<div class="detail">([\s\S]*?)<\/div>/.exec(block)?.[1] ?? "").replace(/<[^>]+>/g, "\n")).trim();
     items.push({
       id,
       name: decode(name).trim(),
@@ -76,10 +79,51 @@ export function parseGameclub(html, origin) {
       url: new URL(href || `/${id}`, origin).href,
       image: img ?? null,
       previousPrice: null,
+      text,
       info: [type && `種類：${type}`, date && `出品・更新：${date}`, ...info].filter(Boolean),
     });
   }
   return items;
+}
+
+// 新キャラ完凸: タイトルと説明文から「キャラ名 + 完凸/C6/6凸」を探す。chars は { 名前: [別名...] }。
+// キャラ名の後ろ(次の区切りまで)に凸の表記があればそれで判断し(「コロンビーナ2凸」は対象外)、
+// 無ければ同じ行で前に出てきた最後の凸の表記が完凸かで判断する(「完凸: コロンビーナ、ネフェル」)
+const C6 = /完凸|フル凸|C6|6凸/;
+const CONS = /完凸|フル凸|C[0-6]|[0-6]凸|無凸/g;
+const SEP = /[、,，\/／|｜・\s　]/;
+export function findNewC6(text, chars) {
+  if (!chars || !text) return [];
+  const lines = text.normalize("NFKC").replace(/c(?=[0-6])/g, "C").split(/\n+/);
+  const found = [];
+  for (const [name, aliases] of Object.entries(chars)) {
+    const names = [name, ...aliases].map((n) => n.normalize("NFKC"));
+    hit: for (const line of lines) {
+      for (const n of names) {
+        for (let at = line.indexOf(n); at >= 0; at = line.indexOf(n, at + 1)) {
+          let after = line.slice(at + n.length);
+          const cut = after.search(SEP);
+          if (cut >= 0) after = after.slice(0, cut);
+          const own = after.match(CONS);
+          if (own) {
+            if (C6.test(own[0])) {
+              found.push(name);
+              break hit;
+            }
+            continue;
+          }
+          // 前の凸表記が「完凸: A、B」のような見出しの時だけ(間に数字・武器・餅などが挟まる時は別の話)
+          const before = [...line.slice(0, at).matchAll(CONS)].at(-1);
+          const between = before ? line.slice(before.index + before[0].length, at).replace(/^キャラ/, "") : "";
+          if (before && C6.test(before[0]) && between.length <= 30 && !/[0-9]|武器|餅|モチーフ|体|連|個|有|持/.test(between)) {
+            found.push(name);
+            break hit;
+          }
+        }
+      }
+    }
+  }
+  return found;
 }
 
 // 通知する出品を決める。
@@ -88,33 +132,47 @@ export function parseGameclub(html, origin) {
 //   価格変更: fullRange(価格帯の出品を毎回すべて見ているサイト)で、記録のない古いIDが価格帯に現れた
 //            = 価格帯の外から価格を変えて入ってきた
 // 古い出品が説明文の編集などで一覧の上に来ただけのものは通知しない
-export function pick(all, low, high, state, { fullRange = false } = {}) {
+//   新キャラ完凸: newChars のキャラの完凸と書かれた出品。上のどれにも当たらなくても、まだ知らせていなければ1回知らせる
+//            (上のどれかに当たる時は、その通知に c6 としてキャラ名を付ける)
+export function pick(all, low, high, state, { fullRange = false, newChars = null } = {}) {
   const out = [];
+  const c6seen = new Set(state.c6seen ?? []);
   for (const it of all) {
     if (it.price < low || it.price > high) continue;
+    const c6 = findNewC6(`${it.name}\n${it.text ?? ""}`, newChars);
+    const extra = c6.length ? { c6 } : {};
     const known = state.prices[it.id];
-    if (known !== undefined) {
-      if (it.price < known) out.push({ ...it, kind: "drop", before: known });
-    } else if (BigInt(it.id) > BigInt(state.maxId)) {
-      out.push({ ...it, kind: "new" });
-    } else if (it.previousPrice && it.previousPrice > it.price) {
-      out.push({ ...it, kind: "drop", before: it.previousPrice });
-    } else if (fullRange) {
-      out.push({ ...it, kind: "changed" });
+    if (known !== undefined && it.price < known) {
+      out.push({ ...it, ...extra, kind: "drop", before: known });
+    } else if (known === undefined && BigInt(it.id) > BigInt(state.maxId)) {
+      out.push({ ...it, ...extra, kind: "new" });
+    } else if (known === undefined && it.previousPrice && it.previousPrice > it.price) {
+      out.push({ ...it, ...extra, kind: "drop", before: it.previousPrice });
+    } else if (known === undefined && fullRange) {
+      out.push({ ...it, ...extra, kind: "changed" });
+    } else if (c6.length && !c6seen.has(it.id)) {
+      out.push({ ...it, c6, kind: "c6" });
     }
   }
   return out;
 }
 
 // 一覧に出た出品の現在価格を記録(価格帯外も。後で価格帯に下がってきた時に値下げと分かるように)
-export function nextState(state, all, now = new Date()) {
+// c6ids: 今回 新キャラ完凸 と判定した出品(次から c6 だけでは知らせない)
+export function nextState(state, all, now = new Date(), c6ids = []) {
   const prices = { ...(state?.prices ?? {}) };
   for (const it of all) prices[it.id] = it.price;
   const kept = Object.keys(prices)
     .sort((a, b) => (BigInt(b) > BigInt(a) ? 1 : -1))
     .slice(0, MAX_PRICES);
   const maxId = all.reduce((m, it) => (BigInt(it.id) > BigInt(m) ? it.id : m), state?.maxId ?? "0");
-  return { maxId, prices: Object.fromEntries(kept.map((id) => [id, prices[id]])), updatedAt: now.toISOString() };
+  const c6seen = [...new Set([...c6ids, ...(state?.c6seen ?? [])])].slice(0, 3000);
+  return {
+    maxId,
+    prices: Object.fromEntries(kept.map((id) => [id, prices[id]])),
+    ...(c6seen.length ? { c6seen } : {}),
+    updatedAt: now.toISOString(),
+  };
 }
 
 const yen = (n) => `¥${n.toLocaleString("ja-JP")}`;
@@ -129,6 +187,7 @@ const KINDS = {
   new: { name: "新規出品", tag: "【新規】", color: 0x2563eb },
   drop: { name: "値下げ", tag: "【値下げ】", color: 0xdc2626 },
   changed: { name: "価格変更で該当", tag: "【価格変更】", color: 0xd97706 },
+  c6: { name: "新キャラ完凸", tag: "【新キャラ完凸】", color: 0x9333ea },
 };
 
 // Discord は https 以外(相対パス・data: など)の URL を含む埋め込みを 400 で拒否する
@@ -147,9 +206,11 @@ export function discordPayloads(items, label, username = "ゲームトレード�
       allowed_mentions: { parse: [] },
       content: i === 0 ? `🆕 ${label ?? "新着"}: ${counts}` : undefined,
       embeds: items.slice(i, i + 10).map((it) => ({
-        title: `${KINDS[it.kind].tag}${it.name}`.slice(0, 250),
+        title: `${KINDS[it.kind].tag}${it.c6?.length && it.kind !== "c6" ? "【新キャラ完凸】" : ""}${it.name}`.slice(0, 250),
         url: httpsUrl(it.url),
-        description: [priceText(it), ...it.info].join("\n").slice(0, 4000),
+        description: [priceText(it), ...(it.c6?.length ? [`新キャラ完凸：${it.c6.join("・")}`] : []), ...it.info]
+          .join("\n")
+          .slice(0, 4000),
         color: KINDS[it.kind].color,
         thumbnail: httpsUrl(it.image) ? { url: it.image } : undefined,
       })),
@@ -212,7 +273,8 @@ const SITES = {
 //          skipped: Discord に拒否されて送れなかった出品 }
 // complete === false: 価格帯の全ページは読めていない(ページ数の上限で打ち切った)。fullRange の前提が崩れるので
 // 「記録のない古い出品 = 価格変更」の判定をしない
-export async function runCheck({ config, state, webhook, pages, complete, fetchImpl = fetch, sleep = wait, dryRun = false }) {
+// newChars: 新キャラ完凸として探すキャラ({ 名前: [別名] })。無ければ探さない
+export async function runCheck({ config, state, webhook, pages, complete, newChars = null, fetchImpl = fetch, sleep = wait, dryRun = false }) {
   const base = new URL(config.url);
   const site = SITES[config.site ?? "gametrade"];
   // サイト側が価格の絞り込みを無視することがあるので、こちらでも絞り込む
@@ -227,7 +289,10 @@ export async function runCheck({ config, state, webhook, pages, complete, fetchI
   const all = [...found.values()];
   const prev = state?.maxId ? state : null; // 古い形式の状態は初回扱い
   const fullRange = site.fullRange && complete !== false;
-  const hits = prev ? pick(all, low, high, prev, { fullRange }) : [];
+  const hits = prev ? pick(all, low, high, prev, { fullRange, newChars }) : [];
+  const c6ids = newChars
+    ? all.filter((it) => it.price >= low && it.price <= high && findNewC6(`${it.name}\n${it.text ?? ""}`, newChars).length).map((it) => it.id)
+    : [];
   let notified = false;
   const skipped = [];
   if (!dryRun && hits.length && webhook) {
@@ -286,5 +351,5 @@ export async function runCheck({ config, state, webhook, pages, complete, fetchI
     priceMin: Math.min(...prices),
     priceMax: Math.max(...prices),
   };
-  return { state: nextState(prev, all), hits, total: all.length, first: !prev, notified, skipped, summary };
+  return { state: nextState(prev, all, new Date(), c6ids), hits, total: all.length, first: !prev, notified, skipped, summary };
 }
