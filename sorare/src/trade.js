@@ -48,13 +48,15 @@ export function planSells(cands, { minHoldDays = 14, neverBelowCost = true } = {
   });
 }
 
-// 出品額(USD)を、出品する通貨の receiveAmount に。USD・EUR はセント、ETH は wei(gwei 単位で丸める)
+// 出品額(USD)を、出品する通貨の receiveAmount に。USD・EUR はセント、ETH は wei。
+// Sorare は ETH の出品額を 0.0001 ETH 刻みでしか受け付けない(それより細かいと "invalid wei amount")ので、0.0001 ETH 単位に切り上げる(安売りしない)
+export const WEI_STEP = 10n ** 14n;
 export function toReceiveAmount(priceUsd, currency, { eurUsd, ethUsd } = rates) {
   if (currency === "USD") return { amount: String(Math.round(priceUsd * 100)), currency };
   if (currency === "EUR") return { amount: String(Math.round((priceUsd / eurUsd) * 100)), currency };
   if (currency === "WEI") {
     if (!ethUsd) throw new Error("ETH のレートが読めない");
-    return { amount: (BigInt(Math.round((priceUsd / ethUsd) * 1e9)) * 10n ** 9n).toString(), currency };
+    return { amount: (BigInt(Math.max(1, Math.ceil(+((priceUsd / ethUsd) * 1e4).toFixed(6)))) * WEI_STEP).toString(), currency };
   }
   throw new Error(`扱わない通貨: ${currency}`);
 }
@@ -104,15 +106,17 @@ export function createTrader(gql, { privateKey: rawKey, currency = "USD" }) {
     const c = (await gql(`query($s: String!) { anyCard(slug: $s) { assetId liveSingleSaleOffer { id } } }`, { s: card })).anyCard;
     if (c.liveSingleSaleOffer) throw new Error("すでに出品中");
     const receiveAmount = toReceiveAmount(price, currency);
+    // 切り上げた後の出品額(USD)。出品後の確認はこの額とくらべる
+    const expect = currency === "WEI" ? (Number(BigInt(receiveAmount.amount) / WEI_STEP) / 1e4) * rates.ethUsd : price;
     const p = (await gql(`mutation($input: prepareOfferInput!) { prepareOffer(input: $input) { ${AUTH} errors { message } } }`,
-      { input: { type: "SINGLE_SALE_OFFER", sendAssetIds: [c.assetId], receiveAssetIds: [], receiveAmount } }, { retries: 0 })).prepareOffer;
+      { input: { sendAssetIds: [c.assetId], receiveAssetIds: [], receiveAmount, settlementCurrencies: [currency] } }, { retries: 0 })).prepareOffer;
     errs(p, "出品の準備");
     const o = (await gql(`mutation($input: createSingleSaleOfferInput!) { createSingleSaleOffer(input: $input) { tokenOffer { id } errors { message } } }`,
-      { input: { dealId: randomUUID(), assetId: c.assetId, receiveAmount, approvals: await buildApprovals(p.authorizations, sig) } }, { retries: 0 })).createSingleSaleOffer;
+      { input: { dealId: randomUUID(), assetId: c.assetId, receiveAmount, settlementCurrencies: [currency], approvals: await buildApprovals(p.authorizations, sig) } }, { retries: 0 })).createSingleSaleOffer;
     errs(o, "出品");
     const after = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents wei } } } } }`, { s: card })).anyCard;
     const listed = usd(after?.liveSingleSaleOffer?.receiverSide?.amounts);
-    if (listed == null || Math.abs(listed - price) > Math.max(0.05, price * 0.02)) throw new Error(`出品額が想定と違う(想定 $${price.toFixed(2)} / 実際 $${listed}): アプリで確認して取り消してください`);
+    if (listed == null || Math.abs(listed - expect) > Math.max(0.05, expect * 0.02)) throw new Error(`出品額が想定と違う(想定 $${expect.toFixed(2)} / 実際 $${listed}): アプリで確認して取り消してください`);
     return listed;
   }
 

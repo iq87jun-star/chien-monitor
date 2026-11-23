@@ -31,10 +31,12 @@ test("planSells はラインナップ・保有期間・買値を守る", () => {
   assert.match(r[3].why, /ラインナップ/);
 });
 
-test("toReceiveAmount は USD をセント、ETH を wei(gwei で丸め)にする", async () => {
+test("toReceiveAmount は USD をセント、ETH を wei(0.0001 ETH 単位に切り上げ)にする", async () => {
   const { toReceiveAmount } = await import("../src/trade.js");
   assert.deepEqual(toReceiveAmount(6.6, "USD", { eurUsd: 1.1, ethUsd: 2000 }), { amount: "660", currency: "USD" });
   assert.deepEqual(toReceiveAmount(5, "WEI", { eurUsd: 1.1, ethUsd: 2000 }), { amount: "2500000000000000", currency: "WEI" });   // $5 / $2000 = 0.0025 ETH
+  assert.deepEqual(toReceiveAmount(0.88, "WEI", { eurUsd: 1.1, ethUsd: 3000 }), { amount: "300000000000000", currency: "WEI" });   // 0.000293 ETH → 0.0003 ETH
+  assert.deepEqual(toReceiveAmount(0.1, "WEI", { eurUsd: 1.1, ethUsd: 3000 }), { amount: "100000000000000", currency: "WEI" });    // 最低 0.0001 ETH
   assert.throws(() => toReceiveAmount(5, "WEI", { eurUsd: 1.1, ethUsd: null }), /ETH のレート/);
 });
 
