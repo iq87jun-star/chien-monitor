@@ -28,6 +28,8 @@ const GAME = { "genshin-impact": "原神", houkaistarrail: "スタレ", zzz: "�
 const dl = (rows) => `<dl>${rows.filter(([, v]) => v != null && v !== "").map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("")}</dl>`;
 const next = (t) => `<div class='next'><b>次:</b> ${esc(t)}</div>`;
 const c6 = (chars) => chars.filter((c) => c.cons === 6);
+// X の投稿スケジュール(schedule.json)。images は投稿に使う画像の名前(作業用フォルダの中の場所)
+const schedule = JSON.parse(fs.readFileSync(new URL("./schedule.json", import.meta.url), "utf8")).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
 
 // ── 在庫 ──
 const live = st.stock.filter((s) => s.status !== "売却済み");
@@ -87,6 +89,9 @@ const consignItems = [
 
 // ── 次にやること ──
 const todos = [];
+// 今日の投稿は一番上に出す(本文はそのままコピーできるように)
+const postBody = (p) => `${p.prep ? `<div class='next'><b>準備:</b> ${esc(p.prep)}</div>` : ""}${p.text ? `<pre class='post'>${esc(p.text)}</pre>` : "<p>本文はまだありません(素材がそろったら作る)。</p>"}${p.images?.length ? `<p>🖼 画像: ${p.images.map(esc).join("・")}</p>` : ""}`;
+for (const p of schedule.filter((p) => p.date === today)) todos.push({ t: `今日の投稿 ${p.time} ${p.title}`, chip: ["info", "投稿"], body: postBody(p) });
 const lateSplits = splitItems.filter((i) => i.chip[0] === "ng");
 if (lateSplits.length) todos.push({ t: `分割の入金遅れ ${lateSplits.length}件`, chip: ["ng", "急ぎ"], body: `<ul>${lateSplits.map((i) => `<li>${esc(i.t)}</li>`).join("")}</ul>` });
 const unreadN = Object.values(unread).reduce((a, b) => a + b, 0);
@@ -111,7 +116,10 @@ const buyItems = [
 ];
 
 // ── 集客 ──
+const upcoming = schedule.filter((p) => p.date > today && p.date <= addDays(today, 7));
+const WDS = "日月火水木金土";
 const adsItems = [
+  { t: `投稿予定(7日) ${upcoming.length}件`, chip: ["info", "スケジュール"], body: upcoming.length ? dl(upcoming.map((p) => [`${md(p.date)}(${WDS[new Date(p.date + "T00:00:00Z").getUTCDay()]}) ${p.time}`, p.title])) : "<p>この7日の予定はありません。</p>" },
   { t: "X @Meruru_Genshin", body: "<p>原神・スタレの窓口。在庫・代理出品の紹介ポスト。</p>" },
   { t: "X @meruru_prop", body: "<p>グラブル・ウマ娘・第五人格の窓口。</p>" },
   { t: "Discord(他鯖)", chip: ["warn", "DM誘導NG"], body: "<p>DM・アカウント名・URLを入れずに投稿。画像はキャラと武器だけ。取り返し対策シートがあれば1行目に入れる。</p>" },
