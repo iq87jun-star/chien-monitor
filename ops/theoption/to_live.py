@@ -22,7 +22,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.16"
+VERSION = "1.17"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -109,7 +109,51 @@ def record_skew_gate(day, legs, out_dir, log):
     except Exception as e: log.write("error", repr(e))
     return st
 
-# ---- v1.12 (追補64): 仲値の run-up(09:30 → 発注直前の上げ)の「記録のみ」----
+# ---- v1.17 (追補96): 月曜 3 本の「前の金曜の騰落」の「記録のみ」----
+# 10 年検証(追補40・96): 前の金曜(木 21:00 UTC → 金 21:00 UTC)が下落だった週の月曜 HIGH は 64.8%、上昇だった週は 58.8%(年度別 10/10 で同じ向き)。
+# 配分(下落 ×1.25 / 上昇 ×0.75)に使う前に、月曜 07:00 の発注前に外部の 1 時間足から騰落を記録する。発注は変えない。取得に失敗しても error を残すだけ。
+FRI_PAIRS = {"EURJPY_N6": "EURJPY", "AUDJPY_N6": "AUDJPY", "NZDJPY_N6": "NZDJPY"}
+def fetch_hourly(pair, timeout=12):
+    """外部の 1 時間足を [(UTC の datetime, open, close)] で返す(直近 10 日)。"""
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{pair}=X?range=10d&interval=1h"
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=timeout) as r: res = json.loads(r.read().decode("utf-8", "replace"))["chart"]["result"][0]
+    q = res["indicators"]["quote"][0]
+    return [(dt.datetime.fromtimestamp(t, UTC).replace(tzinfo=None), o, c) for t, o, c in zip(res["timestamp"], q["open"], q["close"]) if o is not None and c is not None]
+def friday_state(bars, day):
+    """1 時間足と建て日(月曜)から {thu, fri, ret_bp, down}。thu = 木曜 21:00 UTC 時点、fri = 金曜 21:00 UTC 時点(その時刻の足の始値。無ければ直前 6 時間以内の最後の足の終値)。"""
+    def at(t):
+        for ts, o, c in bars:
+            if ts == t: return o
+        prev = [(ts, c) for ts, o, c in bars if t - dt.timedelta(hours=6) <= ts < t]
+        if not prev: raise ValueError(f"{t} 付近の足が無い")
+        return max(prev)[1]
+    fri = dt.datetime(day.year, day.month, day.day, 21) - dt.timedelta(days=3); thu = fri - dt.timedelta(days=1)
+    a = at(thu); b = at(fri); ret = (b / a - 1) * 10000
+    return {"thu": round(a, 5), "fri": round(b, 5), "ret_bp": round(ret, 1), "down": ret < 0}
+def record_friday(day, legs, out_dir, log):
+    out = {}
+    for l in legs:
+        pair = FRI_PAIRS.get(l["id"])
+        if not pair: continue
+        try: st = friday_state(fetch_hourly(pair), day)
+        except Exception as e: st = {"error": repr(e)[:200]}
+        out[l["id"]] = st; log.write("fri_down", dict(st, leg=l["id"], day=str(day), mode="record_only"))
+        try: append_csv(os.path.join(out_dir, "fri_down_log.csv"), ["date", "pair", "thu", "fri", "ret_bp", "down", "error"],
+                        [str(day), pair, st.get("thu", ""), st.get("fri", ""), st.get("ret_bp", ""), st.get("down", ""), st.get("error", "")])
+        except Exception as e: log.write("error", repr(e))
+    if out: log.say("金曜の騰落(記録のみ):", {k: (v.get("ret_bp"), v.get("down")) if "error" not in v else "error" for k, v in out.items()})
+    return out
+
+# ---- v1.12 (追補64): 仲値の run-up(09:30 → 発注直前の上げ)の記録。v1.17 (追補96): 配分に使う仕組みを追加(既定は OFF = 記録のみ)----
+# RUNUP_SIZING = True にすると、09:30 → 発注直前に上げた通貨は ×1.4、上げなかった通貨は ×0.4(レートが取れなかった通貨は ×1.0)。10 年: 上げ 67.3% / 他 59.0%。
+# OFF の間は発注額を変えず、「ON ならいくらだったか」(shadow)だけを記録する。ON にするのは、記録したレートが外部と合うことを 3 回確認してから(別の版)。
+RUNUP_SIZING = False; RUNUP_MULT_UP = 1.4; RUNUP_MULT_OTHER = 0.4
+def runup_mult(pair, rows):
+    """run-up の行 [(pair, r0, r1, pip, up)] から、その通貨の倍率を返す。行が無ければ 1.0。"""
+    for p, _, _, _, up in rows or []:
+        if p == pair: return RUNUP_MULT_UP if up else RUNUP_MULT_OTHER
+    return 1.0
 # ゴトー日の 09:30:00 と 09:54:50 頃に、仲値 5 通貨の業者レート(contract_data の asset.rate)を記録し、差(pip)と上げ/下げを残す。発注は変えない。
 # 10 年検証(追補64): 上げた日の LOW 68.3% / 上げなかった日 58.9%。配分に使うかは、このレートが外部ミッドと合うことを確認してから別の版で決める。
 RUNUP_PAIRS = ("USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY")
@@ -165,7 +209,7 @@ def record_runup(wss, key, day, entry0, out_dir, log):
         r1 = snap_rates_sync(wss, key, RUNUP_PAIRS, min(6.0, remain - 3))
         try: r0 = json.load(open(runup_path(out_dir), encoding="utf-8")).get(str(day))
         except Exception: r0 = None
-        rows = runup_rows(r0, r1); log.write("nk_runup", {"r0930": r0, "pre": r1, "rows": rows, "mode": "record_only"})
+        rows = runup_rows(r0, r1); log.write("nk_runup", {"r0930": r0, "pre": r1, "rows": rows, "mode": "sizing" if RUNUP_SIZING else "record_only"})
         for p, a, b, pip, up in rows: append_csv(os.path.join(out_dir, "nk_runup_log.csv"), ["date", "pair", "rate_0930", "rate_pre", "pip", "up"], [str(day), p, a, b, pip, up])
         log.say("仲値 run-up(記録のみ):", [(p, pip) for p, _, _, pip, _ in rows]); return rows
     except Exception as e:
@@ -405,10 +449,11 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     st, h = rest(base, "/trading/health", key); log.write("health", {"http": st, "body": h})
     if st != 200 or h.get("status") == "fail": log.say("health 失敗 → 発注しない"); return 1
     st, b = rest(base, "/wallet/balance", key); bal = deep_find(b, "balance"); log.write("balance", {"http": st, "body": b}); log.say("balance:", bal)
-    need = sum(l["stake"] * BOOST_MULT for l in legs)
+    need = sum(l["stake"] * BOOST_MULT * (RUNUP_MULT_UP if RUNUP_SIZING and l.get("gotobi") else 1.0) for l in legs)
     if bal is None or float(bal) < need: log.say(f"残高 {bal} < 必要 {need:.0f} → 発注しない"); log.write("guard", {"balance": bal, "need": need}); return 1
     today_total = sum(v.get("stake", 0) for v in done.values())
     record_skew_gate(day, legs, out_dir, log)   # v1.11: 記録のみ。発注は変えない
+    record_friday(day, legs, out_dir, log)      # v1.17: 記録のみ。発注は変えない
     fast = legs[0]["kind"] == "15M"; entry0 = jst(day, legs[0]["entry"])
     if fast:   # v1.5/v1.6a: 定刻 −25 秒から購読し、目的の契約が全部そろった瞬間に打ち切る(15M の枠は開場の直前〜同時にしか配信されない: 11/2 09:51 の実見で 09:55 枠は未配信)。
         sleep_until(entry0 - dt.timedelta(seconds=FAST_PRESCAN_SECS)); scan_secs = FAST_PRESCAN_SECS + FAST_LATE_SCAN_SECS
@@ -418,7 +463,7 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     try: frames = asyncio.run(scan_contracts(wss, key, scan_secs, stop_when))
     except Exception as e: frames = []; log.write("error", repr(e)); log.say("contracts 購読に失敗:", repr(e))
     log.write("scan", {"n": len(frames), "t_jst": dt.datetime.now(JST).strftime("%H:%M:%S.%f")[:-3]})
-    if fast and any(l.get("gotobi") for l in legs): record_runup(wss, key, day, entry0, out_dir, log)   # v1.12: 記録のみ(余裕が無ければ飛ばす)
+    ru_rows = record_runup(wss, key, day, entry0, out_dir, log) if fast and any(l.get("gotobi") for l in legs) else None   # v1.12: 記録(余裕が無ければ飛ばす → 倍率 1.0)
     if fast: sleep_until(entry0 + dt.timedelta(seconds=FAST_BUY_DELAY))   # 定刻前にそろっていれば定刻 +1 秒まで待つ。定刻後に出たならすぐ発注
     csv_path = os.path.join(out_dir, f"live_entries_{account}.csv")
     hdr = ["date", "strategy_id", "pair", "direction", "payout_actual", "stake", "trade_id", "strike", "contract", "note"]
@@ -450,7 +495,10 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
             append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], "", 0, "", "", "", rec["note"]])
             done[leg["id"]] = rec; continue
         stake = stake_for(leg, c["payout"], day)
-        if leg.get("gotobi"): log.write("gotobi", {"leg": leg["id"], "kind": gotobi_kind(day), "mult": gotobi_mult(leg, day), "stake": stake})
+        if leg.get("gotobi"):
+            m = runup_mult(leg["pair"], ru_rows); sized = int(min(MAX_STAKE, round(stake * m / 100) * 100))   # v1.17: run-up の配分(OFF の間は shadow として記録するだけ)
+            log.write("gotobi", {"leg": leg["id"], "kind": gotobi_kind(day), "mult": gotobi_mult(leg, day), "stake": sized if RUNUP_SIZING else stake, "runup_mult": m, "runup_sizing": RUNUP_SIZING, "stake_base": stake, "stake_if_sized": sized})
+            if RUNUP_SIZING: stake = sized
         if stake <= 0:
             rec["note"] = f"倍率 {c['payout']} が下限未満で見送り"; log.say(leg["id"], rec["note"]); log.write("skip", {"leg": leg["id"], "reason": rec["note"], "contract": c})
             append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], 0, "", "", c["name"], rec["note"]])
