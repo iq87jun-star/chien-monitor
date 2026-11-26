@@ -22,12 +22,12 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.18"
+VERSION = "1.19"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
          "real": ("https://api.theoption.com/v1", "wss://gateway.theoption.com/v1/ws")}
-MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 240000   # 1 日のベット合計の上限(v1.8: 月曜 72,700 + ゴトー日の仲値 35,000、25 日なら 52,500 = 125,200。月曜 ×1.5 と 25 日が重なる 161,550 も収める)
+MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 300000   # 1 日のベット合計の上限(v1.8: 月曜 72,700 + ゴトー日の仲値 35,000、25 日なら 52,500 = 125,200。月曜 ×1.5 と 25 日が重なる 161,550 も収める)
 FAST_MAX_ATTEMPTS = 3; FAST_PRESCAN_SECS = 25; FAST_BUY_DELAY = 1.0; FAST_GAP = 1.2   # v1.5: 15M 脚は定刻の 25 秒前から契約を先読みし、定刻 +1 秒に 1.2 秒間隔で発注
 FAST_LATE_SCAN_SECS = 20   # v1.6a: 枠が定刻ちょうどに出る場合に備え、定刻 +20 秒まで購読を続ける(そろった瞬間に打ち切るので通常は 1 秒以内)
 STALE_RETRY_SECS = 15; STALE_RETRY_DEADLINE_MIN = 20   # v1.5a: 週明け 07:00 は業者のレート配信が数分〜10 分以上凍結し buy が 216 で拒否される(11/2 実測)。15 秒おきに 07:20 まで再試行
@@ -59,7 +59,9 @@ MIN_PAYOUT = {"1H": 1.85, "15M": 1.85, "23H": 1.90}; BOOST_PAYOUT = 2.0; BOOST_M
 # v1.18 (追補102・ユーザー決定「10万円は入金するので50万円版で」): MENU の stake は基準額(10 年の最大DD 約 33.6 万円の配分)。実際の発注額 = 基準額 × STAKE_SCALE(100 円単位)。
 #   1.49 = 月末脚込み・強弱オフの形で 10 年の最大DD が 50 万円になる倍率(月期待 +163 千円、最悪月 −228 千円)。強弱(RUNUP_SIZING など)をオンにする版で見直す。
 #   1 日上限は 170,000 → 240,000(最大の日 = 月曜 93,400 + 25 日の仲値 78,000 + EURGBP 14,900、または月末の月曜 93,400 + 仲値 39,000 + EURGBP 14,900 + 月末脚 44,700 = 192,000)。
-STAKE_SCALE = 1.49
+# v1.19 (追補104・ユーザー決定「オン版で良い。本番で検証」): 強弱を 2 つともオン。オンの形は 10 年の最大DD が小さい(素で 298,274)ので、同じ DD 50 万円で倍率 1.67
+#   (月期待 +200 千円、最悪月 −238 千円)。1 日上限 300,000(最大の日 = 金曜下落の月曜 130,900 + 25 日の仲値が全通貨上げ 123,000 + EURGBP 16,700 = 270,600)。
+STAKE_SCALE = 1.67
 def base_stake(leg): return int(round(leg["stake"] * STAKE_SCALE / 100) * 100)
 # v1.18 (追補99〜102・ユーザー決定「月末は採用」): 月末の値決め脚。月の最終営業日(ロンドンの日付、土日は前倒し)のロンドン 15:00 建て → 16:00 判定の 1H(1.90)。
 #   その月の S&P500 が前営業日までプラスのときだけ EURUSD・GBPUSD・AUDUSD を HIGH(10 年 63.3%、前後半とも 63%)。マイナスの月・取得失敗の月は見送り(株安の月は 51.6% で損益分岐未満)。
@@ -141,6 +143,11 @@ def friday_state(bars, day):
     fri = dt.datetime(day.year, day.month, day.day, 21) - dt.timedelta(days=3); thu = fri - dt.timedelta(days=1)
     a = at(thu); b = at(fri); ret = (b / a - 1) * 10000
     return {"thu": round(a, 5), "fri": round(b, 5), "ret_bp": round(ret, 1), "down": ret < 0}
+# v1.19: 配分に使う。下落 ×1.25 / 上昇・変わらず ×0.75 / 取得失敗や異常値(|騰落| > 5%)は ×1.0。
+FRI_SIZING = True; FRI_MULT_DOWN = 1.25; FRI_MULT_UP = 0.75; FRI_MAX_BP = 500
+def fri_mult(st):
+    if not isinstance(st, dict) or "error" in st or st.get("ret_bp") is None or abs(st["ret_bp"]) > FRI_MAX_BP: return 1.0
+    return FRI_MULT_DOWN if st.get("down") else FRI_MULT_UP
 def record_friday(day, legs, out_dir, log):
     out = {}
     for l in legs:
@@ -148,21 +155,21 @@ def record_friday(day, legs, out_dir, log):
         if not pair: continue
         try: st = friday_state(fetch_hourly(pair), day)
         except Exception as e: st = {"error": repr(e)[:200]}
-        out[l["id"]] = st; log.write("fri_down", dict(st, leg=l["id"], day=str(day), mode="record_only"))
+        out[l["id"]] = st; log.write("fri_down", dict(st, leg=l["id"], day=str(day), mode="sizing" if FRI_SIZING else "record_only", mult=fri_mult(st)))
         try: append_csv(os.path.join(out_dir, "fri_down_log.csv"), ["date", "pair", "thu", "fri", "ret_bp", "down", "error"],
                         [str(day), pair, st.get("thu", ""), st.get("fri", ""), st.get("ret_bp", ""), st.get("down", ""), st.get("error", "")])
         except Exception as e: log.write("error", repr(e))
-    if out: log.say("金曜の騰落(記録のみ):", {k: (v.get("ret_bp"), v.get("down")) if "error" not in v else "error" for k, v in out.items()})
+    if out: log.say("金曜の騰落:", {k: (v.get("ret_bp"), v.get("down")) if "error" not in v else "error" for k, v in out.items()})
     return out
 
 # ---- v1.12 (追補64): 仲値の run-up(09:30 → 発注直前の上げ)の記録。v1.17 (追補96): 配分に使う仕組みを追加(既定は OFF = 記録のみ)----
 # RUNUP_SIZING = True にすると、09:30 → 発注直前に上げた通貨は ×1.4、上げなかった通貨は ×0.4(レートが取れなかった通貨は ×1.0)。10 年: 上げ 67.3% / 他 59.0%。
 # OFF の間は発注額を変えず、「ON ならいくらだったか」(shadow)だけを記録する。ON にするのは、記録したレートが外部と合うことを 3 回確認してから(別の版)。
-RUNUP_SIZING = False; RUNUP_MULT_UP = 1.4; RUNUP_MULT_OTHER = 0.4
+RUNUP_SIZING = True; RUNUP_MULT_UP = 1.4; RUNUP_MULT_OTHER = 0.4; RUNUP_MAX_PIP = 150   # v1.19: オン。25 分で 150pip 超の差は読み取り異常とみなして ×1.0
 def runup_mult(pair, rows):
     """run-up の行 [(pair, r0, r1, pip, up)] から、その通貨の倍率を返す。行が無ければ 1.0。"""
-    for p, _, _, _, up in rows or []:
-        if p == pair: return RUNUP_MULT_UP if up else RUNUP_MULT_OTHER
+    for p, _, _, pip, up in rows or []:
+        if p == pair: return 1.0 if abs(pip) > RUNUP_MAX_PIP else (RUNUP_MULT_UP if up else RUNUP_MULT_OTHER)
     return 1.0
 # ゴトー日の 09:30:00 と 09:54:50 頃に、仲値 5 通貨の業者レート(contract_data の asset.rate)を記録し、差(pip)と上げ/下げを残す。発注は変えない。
 # 10 年検証(追補64): 上げた日の LOW 68.3% / 上げなかった日 58.9%。配分に使うかは、このレートが外部ミッドと合うことを確認してから別の版で決める。
@@ -495,7 +502,7 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     st, h = rest(base, "/trading/health", key); log.write("health", {"http": st, "body": h})
     if st != 200 or h.get("status") == "fail": log.say("health 失敗 → 発注しない"); return 1
     st, b = rest(base, "/wallet/balance", key); bal = deep_find(b, "balance"); log.write("balance", {"http": st, "body": b}); log.say("balance:", bal)
-    need = sum(base_stake(l) * BOOST_MULT * (RUNUP_MULT_UP if RUNUP_SIZING and l.get("gotobi") else 1.0) for l in legs)
+    need = sum(base_stake(l) * BOOST_MULT * (RUNUP_MULT_UP if RUNUP_SIZING and l.get("gotobi") else 1.0) * (FRI_MULT_DOWN if FRI_SIZING and l["id"] in FRI_PAIRS else 1.0) for l in legs)
     if bal is None or float(bal) < need: log.say(f"残高 {bal} < 必要 {need:.0f} → 発注しない"); log.write("guard", {"balance": bal, "need": need}); return 1
     today_total = sum(v.get("stake", 0) for v in done.values())
     me = [l for l in legs if l.get("month_end")]
@@ -514,7 +521,7 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
             legs = [l for l in legs if not l.get("month_end")]
             if not legs: return 0
     record_skew_gate(day, legs, out_dir, log)   # v1.11: 記録のみ。発注は変えない
-    record_friday(day, legs, out_dir, log)      # v1.17: 記録のみ。発注は変えない
+    fri = record_friday(day, legs, out_dir, log) or {}   # v1.17: 記録。v1.19: 配分に使う
     fast = legs[0]["kind"] == "15M"; entry0 = jst(day, legs[0]["entry"])
     if fast:   # v1.5/v1.6a: 定刻 −25 秒から購読し、目的の契約が全部そろった瞬間に打ち切る(15M の枠は開場の直前〜同時にしか配信されない: 11/2 09:51 の実見で 09:55 枠は未配信)。
         sleep_until(entry0 - dt.timedelta(seconds=FAST_PRESCAN_SECS)); scan_secs = FAST_PRESCAN_SECS + FAST_LATE_SCAN_SECS
@@ -560,6 +567,10 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
             m = runup_mult(leg["pair"], ru_rows); sized = int(min(MAX_STAKE, round(stake * m / 100) * 100))   # v1.17: run-up の配分(OFF の間は shadow として記録するだけ)
             log.write("gotobi", {"leg": leg["id"], "kind": gotobi_kind(day), "mult": gotobi_mult(leg, day), "stake": sized if RUNUP_SIZING else stake, "runup_mult": m, "runup_sizing": RUNUP_SIZING, "stake_base": stake, "stake_if_sized": sized})
             if RUNUP_SIZING: stake = sized
+        if leg["id"] in FRI_PAIRS:
+            m = fri_mult(fri.get(leg["id"])); sized = int(min(MAX_STAKE, round(stake * m / 100) * 100))   # v1.19: 金曜の騰落の配分
+            log.write("fri_sizing", {"leg": leg["id"], "mult": m, "sizing": FRI_SIZING, "stake_base": stake, "stake": sized if FRI_SIZING else stake})
+            if FRI_SIZING: stake = sized
         if stake <= 0:
             rec["note"] = f"倍率 {c['payout']} が下限未満で見送り"; log.say(leg["id"], rec["note"]); log.write("skip", {"leg": leg["id"], "reason": rec["note"], "contract": c})
             append_csv(csv_path, hdr, [str(day), leg["id"], leg["pair"], leg["sel"], c["payout"], 0, "", "", c["name"], rec["note"]])
