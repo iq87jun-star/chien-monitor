@@ -9,6 +9,8 @@ def _no_network_skew(monkeypatch):   # v1.11: テストは CBOE へ取りに行�
     def boom(timeout=12): raise OSError("offline")
     monkeypatch.setattr(L, "fetch_skew_csv", boom)
     monkeypatch.setattr(L, "snap_rates_sync", lambda wss, key, pairs, secs: {})   # v1.12: レート記録もネットワーク無し
+    def boom2(pair, timeout=12): raise OSError("offline")
+    monkeypatch.setattr(L, "fetch_hourly", boom2)   # v1.17: 金曜の騰落の記録もネットワーク無し
 
 def jwt(payload):
     e = lambda b: base64.urlsafe_b64encode(b).decode().rstrip("=")
@@ -423,3 +425,66 @@ def test_runup_record_only(monkeypatch):
         rows = L.record_runup("wss://x", DEMO, day, dt.datetime.now(L.JST) + dt.timedelta(seconds=30), tmp, log); assert len(rows) == 3
         lines = open(os.path.join(tmp, "nk_runup_log.csv"), encoding="utf-8").read().splitlines()
         assert lines[0] == "date,pair,rate_0930,rate_pre,pip,up" and lines[1] == "2026-11-20,USDJPY,158.0,158.05,5.0,True" and len(lines) == 4
+
+def test_v117_friday_state_and_record_only(monkeypatch):
+    """v1.17(追補96): 前の金曜の騰落は記録のみ。木 21:00 UTC → 金 21:00 UTC。金曜 21:00 の足が無い(夏時間の引け)ときは直前の足の終値。取得失敗は error を残して発注は続く。"""
+    day = dt.date(2026, 11, 30)   # 月曜。金曜 = 11/27、木曜 = 11/26
+    H = lambda d, h, o, c: (dt.datetime(2026, 11, d, h), o, c)
+    bars = [H(26, 20, 174.00, 174.10), H(26, 21, 174.20, 174.25), H(27, 19, 173.90, 173.80), H(27, 20, 173.80, 173.50), H(27, 21, 173.40, 173.45)]
+    st = L.friday_state(bars, day); assert st == {"thu": 174.2, "fri": 173.4, "ret_bp": -45.9, "down": True}
+    st2 = L.friday_state(bars[:-1], day); assert st2["fri"] == 173.5 and st2["down"] is True                    # 金曜 21:00 の足なし → 20:00 の足の終値
+    up = L.friday_state([H(26, 21, 174.0, 174.0), H(27, 21, 174.0, 174.0)], day); assert up["down"] is False and up["ret_bp"] == 0.0   # 変わらず = 下落ではない
+    with pytest.raises(ValueError): L.friday_state([H(27, 21, 1.0, 1.0)], day)
+    legs = [l for l in L.MENU if l["id"] in ("EURJPY_N6", "NZDJPY_N6", "EURGBP_N6L")]
+    with tempfile.TemporaryDirectory() as tmp:
+        log = L.Log(os.path.join(tmp, "l.jsonl"))
+        out = L.record_friday(day, legs, tmp, log); assert set(out) == {"EURJPY_N6", "NZDJPY_N6"} and all("error" in v for v in out.values())   # 既定のテスト環境は offline
+        monkeypatch.setattr(L, "fetch_hourly", lambda pair, timeout=12: bars)
+        out = L.record_friday(day, legs, tmp, log); assert out["EURJPY_N6"]["down"] is True
+        lines = open(os.path.join(tmp, "fri_down_log.csv"), encoding="utf-8").read().splitlines()
+        assert lines[0] == "date,pair,thu,fri,ret_bp,down,error" and len(lines) == 5 and lines[3] == "2026-11-30,EURJPY,174.2,173.4,-45.9,True,"
+        assert L.record_friday(day, [l for l in L.MENU if l.get("gotobi")], tmp, log) == {}                      # 月曜 3 本以外では何もしない
+
+def _nk_run(monkeypatch, tmp, r0, r1):
+    """11/20(ゴトー日・倍率 1.0)の 09:55 仲値を、09:30 のレート r0・発注直前のレート r1 で 1 回走らせ、通貨ごとの発注額を返す。"""
+    clock = {"t": 1000.0}; bought = {}
+    monkeypatch.setattr(L.time, "time", lambda: clock["t"]); monkeypatch.setattr(L.time, "sleep", lambda s: clock.__setitem__("t", clock["t"] + s))
+    monkeypatch.setattr(L, "sleep_until", lambda t: None)
+    def fake_rest(base, path, key, body=None, timeout=15):
+        if path == "/wallet/balance": return 200, {"status": "success", "data": {"balance": 300000}}
+        if path == "/trading/buy": bought[body["contract"][:6]] = body["amount"]; return 200, {"status": "success", "data": {"trade": 5, "order_properties": {"strike": 1.5}}}
+        return 200, {"status": "success", "data": {"isActive": True}}
+    monkeypatch.setattr(L, "rest", fake_rest)
+    async def fake_scan(wss, key, secs, done=None):
+        return [upd(f"{p}|FE|15M|HIGHLOW|LOW", "2026-11-20T01:05:00.000Z", "1.85", status="Unknown") for p in ("USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY")]
+    monkeypatch.setattr(L, "scan_contracts", fake_scan)
+    os.makedirs(os.path.join(tmp, "_diag"), exist_ok=True); json.dump({"2026-11-20": r0}, open(L.runup_path(tmp), "w", encoding="utf-8"))
+    monkeypatch.setattr(L, "snap_rates_sync", lambda wss, key, pairs, secs: r1)
+    monkeypatch.setattr(L, "record_runup", lambda wss, key, day, entry0, out_dir, log: L.runup_rows(r0, r1))     # 残り時間の判定はテスト対象外(test_runup_record_only で確認済み)
+    assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), dt.datetime(2026, 11, 20, 9, 54, tzinfo=L.JST)) == 0
+    return bought
+
+def test_v117_runup_sizing_off_keeps_stakes_and_logs_shadow(monkeypatch):
+    """v1.17: RUNUP_SIZING は既定 OFF。発注額は変えず、ON だった場合の額(stake_if_sized)だけを記録する。"""
+    assert L.RUNUP_SIZING is False
+    r0 = {"USDJPY": {"rate": 158.00}, "EURJPY": {"rate": 177.50}, "CADJPY": {"rate": 112.00}}
+    r1 = {"USDJPY": {"rate": 158.05}, "EURJPY": {"rate": 177.44}, "CADJPY": {"rate": 112.00}, "GBPJPY": {"rate": 212.0}}
+    with tempfile.TemporaryDirectory() as tmp:
+        bought = _nk_run(monkeypatch, tmp, r0, r1)
+        assert bought == {p: 7000 for p in ("USDJPY", "EURJPY", "GBPJPY", "CHFJPY", "CADJPY")}
+        g = {j["frame"]["leg"]: j["frame"] for j in map(json.loads, open(os.path.join(tmp, "l.jsonl"), encoding="utf-8")) if j["kind"] == "gotobi"}
+        assert g["USDJPY_NK"]["stake"] == 7000 and g["USDJPY_NK"]["stake_if_sized"] == 9800 and g["USDJPY_NK"]["runup_mult"] == 1.4
+        assert g["EURJPY_NK"]["stake_if_sized"] == 2800 and g["CADJPY_NK"]["stake_if_sized"] == 2800               # 下げ・変わらずは ×0.4
+        assert g["GBPJPY_NK"]["stake_if_sized"] == 7000 and g["CHFJPY_NK"]["runup_mult"] == 1.0                    # レートが片方でも無い通貨は ×1.0
+
+def test_v117_runup_sizing_on_changes_stakes(monkeypatch):
+    """v1.17: RUNUP_SIZING を ON にした場合(将来の版)。上げ ×1.4 / 他 ×0.4 / レート無し ×1.0。ゴトー日の倍率(25 日 ×1.5 など)の後に掛け、100 円単位。"""
+    monkeypatch.setattr(L, "RUNUP_SIZING", True)
+    assert L.runup_mult("USDJPY", [("USDJPY", 1, 2, 5.0, True)]) == 1.4 and L.runup_mult("USDJPY", [("USDJPY", 1, 1, 0.0, False)]) == 0.4 and L.runup_mult("USDJPY", None) == 1.0
+    r0 = {"USDJPY": {"rate": 158.00}, "EURJPY": {"rate": 177.50}, "CADJPY": {"rate": 112.00}}
+    r1 = {"USDJPY": {"rate": 158.05}, "EURJPY": {"rate": 177.44}, "CADJPY": {"rate": 112.00}}
+    with tempfile.TemporaryDirectory() as tmp:
+        bought = _nk_run(monkeypatch, tmp, r0, r1)
+        assert bought == {"USDJPY": 9800, "EURJPY": 2800, "GBPJPY": 7000, "CHFJPY": 7000, "CADJPY": 2800}
+        rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
+        assert any(",USDJPY,LOW,1.85,9800," in r for r in rows) and any(",EURJPY,LOW,1.85,2800," in r for r in rows)
