@@ -22,12 +22,12 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.17"
+VERSION = "1.18"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
          "real": ("https://api.theoption.com/v1", "wss://gateway.theoption.com/v1/ws")}
-MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 170000   # 1 日のベット合計の上限(v1.8: 月曜 72,700 + ゴトー日の仲値 35,000、25 日なら 52,500 = 125,200。月曜 ×1.5 と 25 日が重なる 161,550 も収める)
+MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 240000   # 1 日のベット合計の上限(v1.8: 月曜 72,700 + ゴトー日の仲値 35,000、25 日なら 52,500 = 125,200。月曜 ×1.5 と 25 日が重なる 161,550 も収める)
 FAST_MAX_ATTEMPTS = 3; FAST_PRESCAN_SECS = 25; FAST_BUY_DELAY = 1.0; FAST_GAP = 1.2   # v1.5: 15M 脚は定刻の 25 秒前から契約を先読みし、定刻 +1 秒に 1.2 秒間隔で発注
 FAST_LATE_SCAN_SECS = 20   # v1.6a: 枠が定刻ちょうどに出る場合に備え、定刻 +20 秒まで購読を続ける(そろった瞬間に打ち切るので通常は 1 秒以内)
 STALE_RETRY_SECS = 15; STALE_RETRY_DEADLINE_MIN = 20   # v1.5a: 週明け 07:00 は業者のレート配信が数分〜10 分以上凍結し buy が 216 で拒否される(11/2 実測)。15 秒おきに 07:20 まで再試行
@@ -56,6 +56,16 @@ MENU = [
  dict(id="CADJPY_NK",   pair="CADJPY", sel="LOW",  entry="09:55", judge="10:05", next=False, stake=7000,  wds=[0,1,2,3,4], months=None, kind="15M", gotobi=True),
 ]
 MIN_PAYOUT = {"1H": 1.85, "15M": 1.85, "23H": 1.90}; BOOST_PAYOUT = 2.0; BOOST_MULT = 1.5
+# v1.18 (追補102・ユーザー決定「10万円は入金するので50万円版で」): MENU の stake は基準額(10 年の最大DD 約 33.6 万円の配分)。実際の発注額 = 基準額 × STAKE_SCALE(100 円単位)。
+#   1.49 = 月末脚込み・強弱オフの形で 10 年の最大DD が 50 万円になる倍率(月期待 +163 千円、最悪月 −228 千円)。強弱(RUNUP_SIZING など)をオンにする版で見直す。
+#   1 日上限は 170,000 → 240,000(最大の日 = 月曜 93,400 + 25 日の仲値 78,000 + EURGBP 14,900、または月末の月曜 93,400 + 仲値 39,000 + EURGBP 14,900 + 月末脚 44,700 = 192,000)。
+STAKE_SCALE = 1.49
+def base_stake(leg): return int(round(leg["stake"] * STAKE_SCALE / 100) * 100)
+# v1.18 (追補99〜102・ユーザー決定「月末は採用」): 月末の値決め脚。月の最終営業日(ロンドンの日付、土日は前倒し)のロンドン 15:00 建て → 16:00 判定の 1H(1.90)。
+#   その月の S&P500 が前営業日までプラスのときだけ EURUSD・GBPUSD・AUDUSD を HIGH(10 年 63.3%、前後半とも 63%)。マイナスの月・取得失敗の月は見送り(株安の月は 51.6% で損益分岐未満)。
+#   建ては JST で夏時間 23:00(同日)/ 冬時間 00:00(翌日)。向きは発注の直前に決めるので sel は None。既存 10 脚との月次相関 +0.03。
+#   戻すルール(追補102): 3 か月連続マイナス、または累計 −100,000 円、または 36 本時点で勝率 52.63% 未満 → お試し(demo_legs)へ。
+ME_LEGS = [dict(id=f"{p}_ME", pair=p, sel=None, stake=10000, wds=[0,1,2,3,4], months=None, kind="1H", month_end=True) for p in ("EURUSD", "GBPUSD", "AUDUSD")]
 
 def jwt_iss(key):
     try:
@@ -312,13 +322,49 @@ def is_due_today(leg, day, ignore_holiday=False):
     if leg.get("skip_jp_holiday") and not ignore_holiday and is_jp_holiday(day): return False   # v1.15(追補74): 日本の祝日の月曜は月曜 3 本を見送る(10 年勝率 47.5% < BE 51.3%)
     return day.weekday() in leg["wds"] and (leg["months"] is None or day.month in leg["months"])
 
+def london_bst(d):
+    """ロンドンが夏時間(3 月最終日曜 〜 10 月最終日曜の前日)か。"""
+    last_sun = lambda m: max(dt.date(d.year, m, x) for x in range(25, 32) if dt.date(d.year, m, x).weekday() == 6)
+    return last_sun(3) <= d < last_sun(10)
+def london_last_bizday(y, m):
+    import calendar
+    d = dt.date(y, m, calendar.monthrange(y, m)[1])
+    while d.weekday() >= 5: d -= dt.timedelta(days=1)
+    return d
+def month_end_legs(day):
+    """JST の day に建てる月末脚。夏時間 = ロンドンの最終営業日と同じ日の 23:00 建て(判定 翌 00:00)。冬時間 = その翌日の 00:00 建て(判定 01:00)。"_ldn" にロンドンの日付を持たせる。"""
+    out = []
+    if london_bst(day) and day == london_last_bizday(day.year, day.month):
+        out = [dict(l, entry="23:00", judge="00:00", next=True, _ldn=day) for l in ME_LEGS]
+    prev = day - dt.timedelta(days=1)
+    if not london_bst(prev) and prev == london_last_bizday(prev.year, prev.month):
+        out = [dict(l, entry="00:00", judge="01:00", next=False, _ldn=prev) for l in ME_LEGS]
+    return out
+def due_legs(day, ignore_holiday=False):
+    return [l for l in MENU if is_due_today(l, day, ignore_holiday)] + month_end_legs(day)
+
+SPX_URL = "https://query1.finance.yahoo.com/v8/finance/chart/%5EGSPC?range=3mo&interval=1d"
+def fetch_spx_daily(timeout=12):
+    """S&P500 の日足を [(米国の日付, 終値)] で返す。"""
+    req = urllib.request.Request(SPX_URL, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=timeout) as r: res = json.loads(r.read().decode("utf-8", "replace"))["chart"]["result"][0]
+    return [(dt.datetime.fromtimestamp(t, UTC).date(), c) for t, c in zip(res["timestamp"], res["indicators"]["quote"][0]["close"]) if c is not None]
+def spx_mtd_state(bars, ldn):
+    """日足とロンドンの最終営業日から {ref, base, mtd_pct, up}。ref = ldn より前の同じ月の最後の終値、base = 前月の最後の終値(当日の途中の値は使わない)。"""
+    cur = [(d, c) for d, c in bars if d < ldn and (d.year, d.month) == (ldn.year, ldn.month)]
+    prv = [(d, c) for d, c in bars if d < dt.date(ldn.year, ldn.month, 1)]
+    if not cur or not prv: raise ValueError("S&P500 の日足が足りない")
+    (rd, rc), (bd, bc) = max(cur), max(prv)
+    if (ldn - rd).days > 5 or (dt.date(ldn.year, ldn.month, 1) - bd).days > 7: raise ValueError("S&P500 の日足が古い")
+    mtd = rc / bc - 1
+    return {"ref": str(rd), "base": str(bd), "mtd_pct": round(mtd * 100, 2), "up": mtd > 0}
+
 def legs_for_slot(now_jst, window_min=5, ignore_holiday=False):
     """今から window_min 分以内に定刻が来る(または定刻から 3 分以内の)脚。日付をまたぐ定刻(23:58 起動→00:00 建て)は翌日の脚として拾う。
     返す脚には "_day"(建てる日)が付く(同じ時間帯の脚は同じ日)。"""
     out = []
     for day in (now_jst.date(), now_jst.date() + dt.timedelta(days=1)):
-        for leg in MENU:
-            if not is_due_today(leg, day, ignore_holiday): continue
+        for leg in due_legs(day, ignore_holiday):
             t = jst(day, leg["entry"]); d = (t - now_jst).total_seconds()
             if -180 <= d <= window_min * 60: out.append(dict(leg, _day=day))
     return out
@@ -328,7 +374,7 @@ def stake_for(leg, payout, day=None):
     try: p = float(payout)
     except (TypeError, ValueError): return 0
     if p < MIN_PAYOUT[leg["kind"]]: return 0
-    s = leg["stake"] * (BOOST_MULT if p >= BOOST_PAYOUT else 1.0)
+    s = base_stake(leg) * (BOOST_MULT if p >= BOOST_PAYOUT else 1.0)
     if day is not None: s = round(s * gotobi_mult(leg, day) / 100) * 100
     return int(min(MAX_STAKE, s))
 
@@ -449,9 +495,24 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     st, h = rest(base, "/trading/health", key); log.write("health", {"http": st, "body": h})
     if st != 200 or h.get("status") == "fail": log.say("health 失敗 → 発注しない"); return 1
     st, b = rest(base, "/wallet/balance", key); bal = deep_find(b, "balance"); log.write("balance", {"http": st, "body": b}); log.say("balance:", bal)
-    need = sum(l["stake"] * BOOST_MULT * (RUNUP_MULT_UP if RUNUP_SIZING and l.get("gotobi") else 1.0) for l in legs)
+    need = sum(base_stake(l) * BOOST_MULT * (RUNUP_MULT_UP if RUNUP_SIZING and l.get("gotobi") else 1.0) for l in legs)
     if bal is None or float(bal) < need: log.say(f"残高 {bal} < 必要 {need:.0f} → 発注しない"); log.write("guard", {"balance": bal, "need": need}); return 1
     today_total = sum(v.get("stake", 0) for v in done.values())
+    me = [l for l in legs if l.get("month_end")]
+    if me:   # v1.18: 月末脚の向きを決める。S&P500 が月間プラスなら HIGH、マイナス・取得失敗なら見送り(発注しない側に倒す)
+        try: sig = spx_mtd_state(fetch_spx_daily(), me[0]["_ldn"])
+        except Exception as e: sig = {"error": repr(e)[:200]}
+        log.write("month_end", dict(sig, day=str(day), ldn=str(me[0]["_ldn"]))); log.say("月末脚の信号:", sig)
+        if sig.get("up"):
+            for l in me: l["sel"] = "HIGH"
+        else:
+            note = "S&P500 の取得失敗 → 見送り" if "error" in sig else f"S&P500 が月間 {sig.get('mtd_pct')}% → 見送り(株高の月だけ建てる)"
+            for l in me:
+                done[l["id"]] = {"stake": 0, "note": note}; log.write("skip", {"leg": l["id"], "reason": note})
+                append_csv(os.path.join(out_dir, f"live_entries_{account}.csv"), ["date", "strategy_id", "pair", "direction", "payout_actual", "stake", "trade_id", "strike", "contract", "note"], [str(day), l["id"], l["pair"], "", "", 0, "", "", "", note])
+            state[str(day)] = done; json.dump(state, open(state_path, "w", encoding="utf-8"), ensure_ascii=False)
+            legs = [l for l in legs if not l.get("month_end")]
+            if not legs: return 0
     record_skew_gate(day, legs, out_dir, log)   # v1.11: 記録のみ。発注は変えない
     record_friday(day, legs, out_dir, log)      # v1.17: 記録のみ。発注は変えない
     fast = legs[0]["kind"] == "15M"; entry0 = jst(day, legs[0]["entry"])
@@ -576,8 +637,8 @@ def main(argv=None):
     now = dt.datetime.now(JST); account, key = load_account(a.out); cfg = load_config()
     if a.plan:
         day = now.date(); print(f"{day} ({'月火水木金土日'[day.weekday()]}) 口座={account} {'ゴトー日' if is_gotobi(day) else ''} お試しに残す脚={sorted(demo_leg_ids(cfg)) if account == 'real' else '(全脚お試し)'}")
-        for leg in MENU:
-            if is_due_today(leg, day): print(f"  {leg['entry']} {leg['id']:14} {leg['pair']} {leg['sel']} 判定 {leg['judge']}{'(翌日)' if leg['next'] else ''} ¥{stake_for(leg, MIN_PAYOUT[leg['kind']], day):,}{'(' + (gotobi_kind(day) or '') + ' ×' + str(gotobi_mult(leg, day)) + ')' if leg.get('gotobi') else ''} [{account_for_leg(leg, account, cfg)}]")
+        for leg in due_legs(day):
+            if True: print(f"  {leg['entry']} {leg['id']:14} {leg['pair']} {leg['sel']} 判定 {leg['judge']}{'(翌日)' if leg['next'] else ''} ¥{stake_for(leg, MIN_PAYOUT[leg['kind']], day):,}{'(' + (gotobi_kind(day) or '') + ' ×' + str(gotobi_mult(leg, day)) + ')' if leg.get('gotobi') else ''} [{account_for_leg(leg, account, cfg)}]")
         return 0
     if a.ratesnap:   # v1.12: 09:30 のレート記録(お試し口座のキーで読むだけ。発注しない)
         k = key_for("demo") or key; acc = "demo" if key_for("demo") else account

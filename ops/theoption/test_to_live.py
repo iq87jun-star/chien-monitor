@@ -11,6 +11,9 @@ def _no_network_skew(monkeypatch):   # v1.11: テストは CBOE へ取りに行�
     monkeypatch.setattr(L, "snap_rates_sync", lambda wss, key, pairs, secs: {})   # v1.12: レート記録もネットワーク無し
     def boom2(pair, timeout=12): raise OSError("offline")
     monkeypatch.setattr(L, "fetch_hourly", boom2)   # v1.17: 金曜の騰落の記録もネットワーク無し
+    monkeypatch.setattr(L, "STAKE_SCALE", 1.0)        # v1.18: 既存のテストは基準額(倍率 1.0)で確かめる。倍率は test_v118_* で確認
+    def boom3(timeout=12): raise OSError("offline")
+    monkeypatch.setattr(L, "fetch_spx_daily", boom3)  # v1.18: S&P500 もネットワーク無し(取得失敗 = 月末脚は見送り)
 
 def jwt(payload):
     e = lambda b: base64.urlsafe_b64encode(b).decode().rstrip("=")
@@ -488,3 +491,68 @@ def test_v117_runup_sizing_on_changes_stakes(monkeypatch):
         assert bought == {"USDJPY": 9800, "EURJPY": 2800, "GBPJPY": 7000, "CHFJPY": 7000, "CADJPY": 2800}
         rows = open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
         assert any(",USDJPY,LOW,1.85,9800," in r for r in rows) and any(",EURJPY,LOW,1.85,2800," in r for r in rows)
+
+def test_v118_stake_scale_and_cap(monkeypatch):
+    """v1.18(追補102): 発注額 = 基準額 × STAKE_SCALE(100 円単位)。1.49 で 50 万円版。1 日上限 240,000 に収まること。"""
+    monkeypatch.setattr(L, "STAKE_SCALE", 1.49)
+    by = {l["id"]: L.base_stake(l) for l in L.MENU + L.ME_LEGS}
+    assert by["EURJPY_N6"] == 31700 and by["AUDJPY_N6"] == 33800 and by["NZDJPY_N6"] == 27900 and by["EURGBP_N6L"] == 14900 and by["AUDJPY_02"] == 7200
+    assert by["USDJPY_NK"] == 10400 and by["EURUSD_ME"] == 14900
+    nk = next(l for l in L.MENU if l["id"] == "USDJPY_NK"); mon = next(l for l in L.MENU if l["id"] == "EURJPY_N6")
+    assert L.stake_for(nk, "1.85", dt.date(2026, 11, 25)) == 15600 and L.stake_for(nk, "1.85", dt.date(2026, 11, 30)) == 7800 and L.stake_for(mon, "1.95", dt.date(2026, 11, 30)) == 31700
+    assert L.stake_for(mon, "1.89") == 0 and L.stake_for(mon, "2.0") == 47550
+    monday = 31700 + 33800 + 27900
+    assert monday + 5 * 15600 + 14900 <= L.DAILY_STAKE_CAP and monday + 5 * 7800 + 14900 + 3 * 14900 <= L.DAILY_STAKE_CAP and L.DAILY_STAKE_CAP == 240000
+
+def test_v118_month_end_legs_calendar():
+    """v1.18: 月末脚の日付。ロンドンの最終営業日(土日は前倒し)。夏時間は同日 23:00 JST、冬時間は翌日 00:00 JST。それ以外の日は無い。"""
+    w = L.month_end_legs(dt.date(2026, 12, 1)); assert [l["id"] for l in w] == ["EURUSD_ME", "GBPUSD_ME", "AUDUSD_ME"] and w[0]["entry"] == "00:00" and w[0]["judge"] == "01:00" and w[0]["_ldn"] == dt.date(2026, 11, 30)
+    assert L.judge_utc(w[0], dt.date(2026, 12, 1)) == dt.datetime(2026, 11, 30, 16, 0, tzinfo=L.UTC)             # ロンドン 16:00(冬)
+    assert L.month_end_legs(dt.date(2026, 11, 30)) == [] and L.month_end_legs(dt.date(2026, 12, 2)) == []
+    s = L.month_end_legs(dt.date(2026, 7, 31)); assert s[0]["entry"] == "23:00" and s[0]["next"] is True and L.judge_utc(s[0], dt.date(2026, 7, 31)) == dt.datetime(2026, 7, 31, 15, 0, tzinfo=L.UTC)   # ロンドン 16:00(夏)
+    assert L.month_end_legs(dt.date(2026, 8, 1)) == []
+    o = L.month_end_legs(dt.date(2026, 10, 31)); assert o and o[0]["_ldn"] == dt.date(2026, 10, 30) and o[0]["entry"] == "00:00"   # 10/31 は土曜 → 10/30(金)。夏時間は 10/25 に終了済み
+    assert L.month_end_legs(dt.date(2026, 10, 30)) == []
+    m = L.month_end_legs(dt.date(2026, 5, 29)); assert m and m[0]["entry"] == "23:00"                              # 5/31 は日曜 → 5/29(金)
+    assert L.london_bst(dt.date(2026, 3, 29)) and not L.london_bst(dt.date(2026, 3, 27)) and not L.london_bst(dt.date(2026, 10, 25))
+    slot = L.legs_for_slot(dt.datetime(2026, 11, 30, 23, 58, tzinfo=L.JST)); assert sorted(l["id"] for l in slot) == ["AUDUSD_ME", "EURUSD_ME", "GBPUSD_ME"] and slot[0]["_day"] == dt.date(2026, 12, 1)
+    slot = L.legs_for_slot(dt.datetime(2026, 7, 31, 22, 58, tzinfo=L.JST)); assert sorted(l["id"] for l in slot) == ["AUDUSD_ME", "EURGBP_N6L", "EURUSD_ME", "GBPUSD_ME"]
+
+def test_v118_spx_state():
+    """v1.18: S&P500 の月間騰落。当日(ロンドンの最終営業日)の足は使わず、前営業日の終値と前月末の終値を比べる。足りない・古いときは例外(= 見送り)。"""
+    D = dt.date; bars = [(D(2026, 10, 29), 5000.0), (D(2026, 10, 30), 5010.0), (D(2026, 11, 2), 5050.0), (D(2026, 11, 27), 5100.0), (D(2026, 11, 30), 4000.0)]
+    st = L.spx_mtd_state(bars, D(2026, 11, 30)); assert st == {"ref": "2026-11-27", "base": "2026-10-30", "mtd_pct": 1.8, "up": True}
+    assert L.spx_mtd_state([(D(2026, 10, 30), 5010.0), (D(2026, 11, 27), 5010.0)], D(2026, 11, 30))["up"] is False       # 変わらず = 株高ではない
+    with pytest.raises(ValueError): L.spx_mtd_state([(D(2026, 11, 27), 5100.0)], D(2026, 11, 30))                         # 前月の足が無い
+    with pytest.raises(ValueError): L.spx_mtd_state([(D(2026, 10, 30), 5010.0), (D(2026, 11, 20), 5100.0)], D(2026, 11, 30))   # 直近の足が 6 日以上前
+
+def _me_run(monkeypatch, tmp, spx):
+    monkeypatch.setattr(L, "STAKE_SCALE", 1.49); monkeypatch.setattr(L, "sleep_until", lambda t: None); monkeypatch.setattr(L.time, "sleep", lambda s: None)
+    bought = []
+    def fake_rest(base, path, key, body=None, timeout=15):
+        if path == "/wallet/balance": return 200, {"status": "success", "data": {"balance": 450000}}
+        if path == "/trading/buy": bought.append((body["contract"], body["amount"])); return 200, {"status": "success", "data": {"trade": 9, "order_properties": {"strike": 1.1}}}
+        return 200, {"status": "success", "data": {"isActive": True}}
+    monkeypatch.setattr(L, "rest", fake_rest)
+    async def fake_scan(wss, key, secs, done=None):
+        return [upd(f"{p}|FE|1H|HIGHLOW|{sel}", "2026-11-30T16:00:00.000Z", "1.90") for p in ("EURUSD", "GBPUSD", "AUDUSD") for sel in ("HIGH", "LOW")]
+    monkeypatch.setattr(L, "scan_contracts", fake_scan)
+    def gone(timeout=12): raise OSError("offline")
+    monkeypatch.setattr(L, "fetch_spx_daily", (lambda timeout=12: spx) if spx is not None else gone)
+    assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), dt.datetime(2026, 11, 30, 23, 58, tzinfo=L.JST)) == 0
+    return bought, open(os.path.join(tmp, "live_entries_demo.csv"), encoding="utf-8").read().splitlines()
+
+def test_v118_month_end_buys_high_only_when_spx_up(monkeypatch):
+    """v1.18: 月末脚。S&P500 が月間プラスなら 3 通貨を HIGH で 14,900 円ずつ。マイナスの月と取得失敗の月は発注せず、見送りを記録する(同じ日に再実行しても発注しない)。"""
+    D = dt.date; up = [(D(2026, 10, 30), 5000.0), (D(2026, 11, 27), 5100.0)]; dn = [(D(2026, 10, 30), 5000.0), (D(2026, 11, 27), 4900.0)]
+    with tempfile.TemporaryDirectory() as tmp:
+        bought, rows = _me_run(monkeypatch, tmp, up)
+        assert bought == [(f"{p}|FE|1H|HIGHLOW|HIGH", 14900) for p in ("EURUSD", "GBPUSD", "AUDUSD")]
+        assert len(rows) == 4 and rows[1].startswith("2026-12-01,EURUSD_ME,EURUSD,HIGH,1.90,14900,9,1.1,EURUSD|FE|1H|HIGHLOW|HIGH")
+    for spx, word in ((dn, "月間 -2.0%"), (None, "取得失敗")):
+        with tempfile.TemporaryDirectory() as tmp:
+            bought, rows = _me_run(monkeypatch, tmp, spx)
+            assert bought == [] and len(rows) == 4 and all(",0,,,," in r and word in r for r in rows[1:])
+            state = json.load(open(os.path.join(tmp, "_diag", "live_state.json"), encoding="utf-8"))["2026-12-01"]
+            assert set(state) == {"EURUSD_ME", "GBPUSD_ME", "AUDUSD_ME"} and all(v["stake"] == 0 for v in state.values())
+            assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), dt.datetime(2026, 11, 30, 23, 59, tzinfo=L.JST)) == 0 and bought == []
