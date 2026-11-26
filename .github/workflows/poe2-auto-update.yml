@@ -101,6 +101,10 @@ jobs:
           mkdir -p site-dist/shiharai
           cp satei/public/shiharai.html site-dist/shiharai/index.html
           cp -r satei/public/lib site-dist/shiharai/lib
+          # 代理出品の売り手ページ(紹介の進み具合とチャット。Worker の /api/seller)。game-souba.com/dairi/?t=…
+          mkdir -p site-dist/dairi
+          cp satei/public/dairi.html site-dist/dairi/index.html
+          cp -r satei/public/lib site-dist/dairi/lib
           # 引き継ぎ情報フォーム(売主が記入。回答は Worker の /api/form に送る)。game-souba.com/torihiki/form/?t=…
           mkdir -p site-dist/torihiki/form
           cp satei/public/form.html site-dist/torihiki/form/index.html

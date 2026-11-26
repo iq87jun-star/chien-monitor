@@ -461,3 +461,35 @@ test("査定ページのスクショは、番号と画面の sid が合う相談
   db.exec("DELETE FROM image");
   assert.equal((await cs.addLeadShot(env, id, cs.validShot({ ...shot, sid: "s2" }))).ok, true);
 });
+
+test("代理出品の売り手ページ: リンクで見られる中身とチャット", async () => {
+  const { DatabaseSync } = await import("node:sqlite");
+  const { readFileSync, readdirSync } = await import("node:fs");
+  const cs = await import("../src/consign.js");
+  const sl = await import("../src/seller.js");
+  const db = new DatabaseSync(":memory:");
+  const dir = new URL("../migrations/", import.meta.url);
+  for (const f of readdirSync(dir).filter((f) => f.endsWith(".sql")).sort()) db.exec(readFileSync(new URL(f, dir), "utf8"));
+  const stmt = (q, a = []) => ({
+    first: async () => db.prepare(q).get(...a) ?? null,
+    run: async () => ({ meta: { changes: Number(db.prepare(q).run(...a).changes) } }),
+    all: async () => ({ results: db.prepare(q).all(...a) }),
+  });
+  const env = { DB: { prepare: (q) => ({ ...stmt(q), bind: (...a) => stmt(q, a) }) } };
+  const { id } = await cs.createLead(env, cs.validLead({ game: "genshin-impact", sid: "s1", handle: "kun", chars: [{ name: "フリーナ", cons: 6 }, { name: "ナヒーダ", cons: 2 }], low: 1, high: 2 }, ["genshin-impact"]));
+  await cs.updateConsign(env, id, cs.validPatch({ status: "出品中", wish: "150000", asks: "3", memo: "内部メモ" }));
+  const token = await sl.sellerToken(env, id);
+  assert.match(token, /^[0-9a-f]{32}$/);
+  assert.equal(await sl.sellerToken(env, id), token);
+  const v = await sl.sellerView(env, token);
+  assert.deepEqual([v.no, v.name, v.star5, v.c6, v.step, v.wish, v.asks], [id, "@kun", 2, ["フリーナ"], 2, 150000, 3]);
+  assert.equal("memo" in v || "low" in v || "sid" in v, false);
+  assert.equal(await sl.sellerView(env, "0".repeat(32)), null);
+  assert.equal((await sl.sellerPost(env, token, "  ")).ok, false);
+  assert.equal((await sl.sellerPost(env, token, "希望額を14万にします")).ok, true);
+  assert.deepEqual(await sl.sellerUnread(env), { [id]: 1 });
+  assert.equal(await sl.sellerAdminPost(env, id, "承知しました"), true);
+  assert.equal((await sl.sellerAdminMsgs(env, id)).length, 2);
+  assert.deepEqual(await sl.sellerUnread(env), {});
+  assert.equal(sl.STEP["見送り"], -1);
+});

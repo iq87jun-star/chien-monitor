@@ -255,7 +255,7 @@ function renderConsign() {
       const check = /\[チェック査定\]/.test(c.memo ?? "") ? c.memo : "";
       return `<article class="card item${due(c) ? " due" : ""}" data-id="${c.id}">
       <header><b>No.${c.id}</b>${c.name ? `<b>${esc(c.name)}</b>` : ""}${c.handle ? `<a href="https://x.com/${esc(c.handle)}" target="_blank" rel="noopener">@${esc(c.handle)}</a>` : `<span class="muted">ユーザー名なし</span>`}
-        <span class="tag">${GAME[c.game] ?? esc(c.game)}</span><span class="tag">${esc(c.status)}</span>${due(c) ? `<span class="tag dm">連絡日</span>` : ""}${cautionHit(cautions, c.handle) ? `<span class="tag warn">⚠️ 要注意リスト</span>` : ""}
+        <span class="tag">${GAME[c.game] ?? esc(c.game)}</span><span class="tag">${esc(c.status)}</span>${due(c) ? `<span class="tag dm">連絡日</span>` : ""}${cautionHit(cautions, c.handle) ? `<span class="tag warn">⚠️ 要注意リスト</span>` : ""}${sellerNew[c.id] ? `<span class="tag dm">💬 売り手から ${sellerNew[c.id]}件</span>` : ""}
         <span class="muted">${jst(c.created_at)} ${c.source === "tool" ? "査定ページから" : "手動"}${c.last_dm ? ` ・ 最後のDM ${jst(c.last_dm)}` : ""}</span></header>
       ${check ? `<p class="muted" style="margin:6px 0 0;white-space:pre-wrap">査定 ${c.low == null ? "—(取引しやすさ × のため金額なし)" : `${man(c.low)}〜${man(c.high)}`}${c.wish ? ` ・ 希望 ${man(c.wish)}` : ""}\n${esc(check)}</p>`
         : `<p class="muted" style="margin:6px 0 0">査定 ${c.low == null ? "—" : `${man(c.low)}〜${man(c.high)}`} ・ ${esc(charsText(c.chars).slice(0, 120)) || "キャラ情報なし"}</p>`}
@@ -270,9 +270,11 @@ function renderConsign() {
         <label>🌐 在庫一覧(お客様向け)<select data-f="pub"><option value="0">出さない</option><option value="1"${c.pub ? " selected" : ""}>公開する</option></select></label>
         <label>🌐 公開する価格(円・空欄なら「お問い合わせ」)<input data-f="pub_price" type="number" min="0" step="1000" value="${c.pub_price ?? ""}" /></label>
         <label>🌐 お客様向けの説明<input data-f="pub_note" value="${esc(c.pub_note)}" maxlength="300" /></label>
+        <label>📩 購入希望のお問い合わせ数(売り手ページに出る)<input data-f="asks" type="number" min="0" step="1" value="${c.asks ?? 0}" /></label>
       </div>
       ${c.shots?.length ? `<div class="shots"><span class="muted">📷 査定のスクショ ${c.shots.length}枚(タップで拡大)</span><div>${c.shots.map((i) => `<img data-shot-img="${i}" alt="スクショ" />`).join("")}</div></div>` : ""}
       ${coverField("consign", c.id, covers.find((x) => x.owner === "cover_consign" && x.owner_id === c.id)?.id)}
+      ${sellerBlock(c)}
       <div class="row"><button type="button" data-act="save">保存</button></div>
       ${c.status === "成約" || c.handed_on ? safeBlock(c) : ""}
       <div class="dms"><button type="button" data-act="sheet">📝 引き継ぎフォーム${sheetMark(c.id)}</button>${data.templates.map((t) => `<button type="button" data-act="dm" data-key="${esc(t.key)}">✉️ ${esc(t.title)}</button>`).join("")}</div>
@@ -293,6 +295,22 @@ $("items").addEventListener("click", (e) => {
   const img = e.target.closest("[data-shot-img]");
   if (img?.src) window.open(img.src, "_blank");
 });
+// 売り手ページ(game-souba.com/dairi/?t=…)のリンクとチャット
+const SELLER_URL = "https://game-souba.com/dairi/?t=";
+let sellerNew = {};
+function sellerBlock(c) {
+  if (!c.portal) return `<div class="row"><button type="button" class="sub" data-act="seller">🔗 売り手ページを作る</button><span class="muted">紹介の進み具合・お問い合わせ数・チャットを、売り手がいつでも見られるページ</span></div>`;
+  return `<div class="safe"><div class="row"><input readonly value="${SELLER_URL}${esc(c.portal)}" style="flex:1;min-width:180px" /><button type="button" class="sub" data-act="sellercopy">DM用の文をコピー</button><button type="button" class="sub" data-act="sellerchat">💬 チャット${sellerNew[c.id] ? `(新着${sellerNew[c.id]})` : ""}</button></div>
+    <div data-chat="${c.id}" hidden><div class="muted" data-chatlog style="max-height:260px;overflow:auto;white-space:pre-wrap"></div><div class="row"><textarea data-chattext rows="2" style="flex:1" placeholder="売り手へのメッセージ"></textarea><button type="button" data-act="sellersend">送信</button></div></div></div>`;
+}
+async function openSellerChat(card, id) {
+  const box = card.querySelector(`[data-chat="${id}"]`);
+  box.hidden = false;
+  const d = await api(`/api/consign/${id}/msgs`);
+  const at = (s) => new Date(s).toLocaleString("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" });
+  box.querySelector("[data-chatlog]").textContent = d.msgs.map((m) => `${m.from_me ? "メルル" : "売り手"} ${at(m.at)}\n${m.body}`).join("\n\n") || "まだメッセージはありません";
+  delete sellerNew[id];
+}
 // 引き渡し前の詐欺対策チェックと、引き渡し後の見守り(在庫の管理画面と同じ)
 function safeBlock(c) {
   const left = handoverLeft(c.handover);
@@ -383,6 +401,7 @@ $("sheetList").addEventListener("click", async (e) => {
 });
 
 async function loadConsign() {
+  sellerNew = await api("/api/consign-unread").then((d) => d.unread).catch(() => ({}));
   [data, cautions, sheets, covers] = await Promise.all([api("/api/consign"), api("/api/caution").then((d) => d.items).catch(() => []), api("/api/sheet").then((d) => d.items).catch(() => []), api("/api/cover").then((d) => d.items).catch(() => [])]);
   renderSheets();
   $("filter").innerHTML = `<option value="">すべて(終わったもの以外)</option>` + data.statuses.map((s) => `<option>${s}</option>`).join("");
@@ -415,6 +434,28 @@ $("items").addEventListener("click", async (e) => {
       renderConsign();
       showSheetLink(sheets.find((x) => x.id === d.id), c);
     } catch (err) { toast(`作れませんでした(${err.message})`); }
+    return;
+  }
+  if (btn.dataset.act === "seller") {
+    try { await api(`/api/consign/${id}/portal`, { method: "POST" }); toast("売り手ページのリンクを作りました"); await loadConsign(); }
+    catch (err) { toast(`作れませんでした(${err.message})`); }
+    return;
+  }
+  if (btn.dataset.act === "sellercopy") {
+    const who = c.name || (c.handle ? `@${c.handle}` : "");
+    const text = `${who ? `${who}様\n` : ""}代理出品(No.${id})の進み具合を、こちらのページでいつでもご確認いただけます🌸\n紹介の状況・お問い合わせの数が分かり、ページ下のメッセージ欄からご連絡もできます。\n${SELLER_URL}${c.portal}\n※このリンクは出品者様専用です。他の方には共有しないでください。`;
+    try { await navigator.clipboard.writeText(text); toast("DM用の文をコピーしました"); } catch { prompt("コピーしてください", text); }
+    return;
+  }
+  if (btn.dataset.act === "sellerchat") {
+    try { await openSellerChat(card, id); } catch (err) { toast(`読み込めませんでした(${err.message})`); }
+    return;
+  }
+  if (btn.dataset.act === "sellersend") {
+    const ta = card.querySelector("[data-chattext]");
+    if (!ta.value.trim()) return;
+    try { await api(`/api/consign/${id}/msgs`, { method: "POST", body: JSON.stringify({ body: ta.value }) }); ta.value = ""; await openSellerChat(card, id); toast("送信しました"); }
+    catch (err) { toast(`送れませんでした(${err.message})`); }
     return;
   }
   if (btn.dataset.act === "save") {
