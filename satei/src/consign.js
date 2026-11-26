@@ -110,6 +110,7 @@ export function validPatch(body) {
   if ("pub" in body) out.pub = body.pub === true || body.pub === 1 || body.pub === "1" ? 1 : 0;
   if ("pub_price" in body) out.pub_price = body.pub_price === null || body.pub_price === "" ? null : yen(Number(body.pub_price));
   if ("pub_note" in body) out.pub_note = clean(body.pub_note ?? "", 300) || null;
+  if ("asks" in body && Number.isInteger(Number(body.asks)) && Number(body.asks) >= 0 && Number(body.asks) <= 999) out.asks = Number(body.asks);
   if ("watch" in body && Number.isInteger(body.watch) && body.watch >= 0 && body.watch <= 10) out.watch = body.watch;
   return out;
 }

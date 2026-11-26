@@ -17,6 +17,8 @@
 //   /api/cover(合言葉が必要)… 在庫一覧の表紙画像(在庫・代理出品に1枚ずつ)
 //   GET /api/portal/:token・POST /api/portal/:token/msg … 分割払いのお客様ページとチャット(public/shiharai.html)
 //   /api/split/:id/portal・/api/split/:id/msgs・/api/portal-unread(合言葉が必要)… お客様ページのリンク・チャットの返信・未読数
+//   GET /api/seller/:token・POST /api/seller/:token/msg … 代理出品の売り手ページとチャット(public/dairi.html)
+//   /api/consign/:id/portal・/api/consign/:id/msgs・/api/consign-unread(合言葉が必要)… 売り手ページのリンク・チャットの返信・未読数
 //   /api/caution(合言葉が必要)… 要注意リスト。引き渡し完了は詐欺対策のチェックが全部そろってから(409 で断る)
 //
 // バインディング:
@@ -34,6 +36,7 @@ import { validEvent, record, stats } from "./events.js";
 import { validStock, validSplit, validPay, createStock, updateStock, listStock, createSplit, updateSplit, listSplit, addPay, updatePay, deletePay, validImage, addImage, listImages, getImage, replaceImage, deleteImage, validWant, createWant, updateWant, listWants, handoverMissing, listCaution, addCaution, deleteCaution, findCaution } from "./stock.js";
 import { validSheet, createSheet, listSheets, getSheet, deleteSheet, formInfo, validSubmit, submitSheet } from "./sheet.js";
 import { portalToken, portalView, portalPost, adminMsgs, adminPost, unreadCounts } from "./portal.js";
+import { sellerToken, sellerView, sellerPost, sellerAdminMsgs, sellerAdminPost, sellerUnread } from "./seller.js";
 import { listCatalog, catalogImage, validCover, setCover, deleteCover, listCovers } from "./catalog.js";
 import { listFollow, importFollow, setFollowStatus } from "./follow.js";
 import { validLead, validPatch, normHandle, createLead, listConsign, updateConsign, logDm, getTemplates, saveTemplates, STATUSES, validShot, addLeadShot } from "./consign.js";
@@ -234,6 +237,16 @@ async function handle(req, env, ctx) {
     const r = await addLeadShot(env, Number(ls[1]), shot);
     return json(r.ok ? { ok: true } : { ok: false, error: r.error }, r.ok ? 200 : r.status);
   }
+  // 代理出品の売り手ページ(リンクの token を知っている売り手だけ)
+  const sl = /^\/api\/seller\/([0-9a-f]{32})(\/msg)?$/.exec(pathname);
+  if (sl && !sl[2] && req.method === "GET") {
+    const v = await sellerView(env, sl[1]);
+    return v ? json({ ok: true, ...v }) : json({ ok: false, error: "リンクが正しくありません" }, 404);
+  }
+  if (sl && sl[2] && req.method === "POST") {
+    const r = await sellerPost(env, sl[1], (await readJson(req, 10_000))?.body);
+    return json(r, r.ok ? 200 : 400);
+  }
   // 分割払いのお客様ページ(リンクの token を知っているお客様だけ)
   const pt = /^\/api\/portal\/([0-9a-f]{32})(\/msg)?$/.exec(pathname);
   if (pt && !pt[2] && req.method === "GET") {
@@ -292,6 +305,15 @@ async function handle(req, env, ctx) {
     await updateConsign(env, id, validPatch(body));
     return json({ ok: true, no: id });
   }
+  // 売り手ページのリンク・チャット・未読数
+  if (pathname === "/api/consign-unread" && req.method === "GET") return json({ ok: true, unread: await sellerUnread(env) });
+  const cp = /^\/api\/consign\/(\d+)\/(portal|msgs)$/.exec(pathname);
+  if (cp && cp[2] === "portal" && req.method === "POST") {
+    const token = await sellerToken(env, Number(cp[1]));
+    return token ? json({ ok: true, token }) : json({ ok: false, error: "not found" }, 404);
+  }
+  if (cp && cp[2] === "msgs" && req.method === "GET") return json({ ok: true, msgs: await sellerAdminMsgs(env, Number(cp[1])) });
+  if (cp && cp[2] === "msgs" && req.method === "POST") return json({ ok: await sellerAdminPost(env, Number(cp[1]), (await readJson(req, 10_000))?.body) });
   const m = /^\/api\/consign\/(\d+)(\/dm)?$/.exec(pathname);
   if (m && req.method === "PATCH" && !m[2]) {
     const patch = validPatch(await readJson(req));

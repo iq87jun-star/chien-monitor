@@ -13,8 +13,9 @@ const get = async (path) => {
   if (!d.ok) throw new Error(`${path}: ${d.error ?? res.status}`);
   return d;
 };
-const [st, cs, stats, sheets, unread] = await Promise.all([
+const [st, cs, stats, sheets, unread, sellerUnread] = await Promise.all([
   get("/api/stock"), get("/api/consign"), get("/api/stats?days=30"), get("/api/sheet"), get("/api/portal-unread").then((d) => d.unread),
+  get("/api/consign-unread").then((d) => d.unread).catch(() => ({})),
 ]);
 
 const now = new Date(Date.now() + 9 * 3600_000); // 日本時間
@@ -96,6 +97,8 @@ const lateSplits = splitItems.filter((i) => i.chip[0] === "ng");
 if (lateSplits.length) todos.push({ t: `分割の入金遅れ ${lateSplits.length}件`, chip: ["ng", "急ぎ"], body: `<ul>${lateSplits.map((i) => `<li>${esc(i.t)}</li>`).join("")}</ul>` });
 const unreadN = Object.values(unread).reduce((a, b) => a + b, 0);
 if (unreadN) todos.push({ t: `お客様ページの新着 ${unreadN}件`, chip: ["warn", "返信"], body: "<p>在庫と分割の管理 → 分割 → 「💬 お客様ページ・チャット」</p>" });
+const sellerN = Object.values(sellerUnread).reduce((a, b) => a + b, 0);
+if (sellerN) todos.push({ t: `売り手ページの新着 ${sellerN}件`, chip: ["warn", "返信"], body: `<p>${Object.entries(sellerUnread).map(([id, n]) => `代理出品 No.${id}(${n}件)`).join("・")}</p><p>査定ツールの管理 → 代理出品 → 「💬 チャット」</p>` });
 const soon = splits.flatMap((s) => s.pays.filter((p) => !p.paid_on && p.due_on >= today && p.due_on <= addDays(today, 7)).map((p) => `${md(p.due_on)} ${s.buyer}さん ${yen(p.amount)}`));
 if (soon.length) todos.push({ t: `今週の入金予定 ${soon.length}件`, chip: ["info", "確認"], body: `<ul>${soon.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>` });
 const unlisted = live.filter((s) => s.status === "未出品");
