@@ -469,7 +469,7 @@ def _nk_run(monkeypatch, tmp, r0, r1):
 
 def test_v117_runup_sizing_off_keeps_stakes_and_logs_shadow(monkeypatch):
     """v1.17: RUNUP_SIZING は既定 OFF。発注額は変えず、ON だった場合の額(stake_if_sized)だけを記録する。"""
-    assert L.RUNUP_SIZING is False
+    monkeypatch.setattr(L, "RUNUP_SIZING", False)
     r0 = {"USDJPY": {"rate": 158.00}, "EURJPY": {"rate": 177.50}, "CADJPY": {"rate": 112.00}}
     r1 = {"USDJPY": {"rate": 158.05}, "EURJPY": {"rate": 177.44}, "CADJPY": {"rate": 112.00}, "GBPJPY": {"rate": 212.0}}
     with tempfile.TemporaryDirectory() as tmp:
@@ -502,7 +502,7 @@ def test_v118_stake_scale_and_cap(monkeypatch):
     assert L.stake_for(nk, "1.85", dt.date(2026, 11, 25)) == 15600 and L.stake_for(nk, "1.85", dt.date(2026, 11, 30)) == 7800 and L.stake_for(mon, "1.95", dt.date(2026, 11, 30)) == 31700
     assert L.stake_for(mon, "1.89") == 0 and L.stake_for(mon, "2.0") == 47550
     monday = 31700 + 33800 + 27900
-    assert monday + 5 * 15600 + 14900 <= L.DAILY_STAKE_CAP and monday + 5 * 7800 + 14900 + 3 * 14900 <= L.DAILY_STAKE_CAP and L.DAILY_STAKE_CAP == 240000
+    assert monday + 5 * 15600 + 14900 <= L.DAILY_STAKE_CAP and monday + 5 * 7800 + 14900 + 3 * 14900 <= L.DAILY_STAKE_CAP
 
 def test_v118_month_end_legs_calendar():
     """v1.18: 月末脚の日付。ロンドンの最終営業日(土日は前倒し)。夏時間は同日 23:00 JST、冬時間は翌日 00:00 JST。それ以外の日は無い。"""
@@ -556,3 +556,39 @@ def test_v118_month_end_buys_high_only_when_spx_up(monkeypatch):
             state = json.load(open(os.path.join(tmp, "_diag", "live_state.json"), encoding="utf-8"))["2026-12-01"]
             assert set(state) == {"EURUSD_ME", "GBPUSD_ME", "AUDUSD_ME"} and all(v["stake"] == 0 for v in state.values())
             assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), dt.datetime(2026, 11, 30, 23, 59, tzinfo=L.JST)) == 0 and bought == []
+
+def test_v119_sizing_is_on_and_scale(monkeypatch):
+    """v1.19(追補104): 強弱は 2 つともオン、倍率 1.67、1 日上限 300,000。最大の日(金曜下落の月曜 + 25 日の仲値が全通貨上げ + EURGBP)が上限内。"""
+    monkeypatch.setattr(L, "STAKE_SCALE", 1.67)
+    assert L.RUNUP_SIZING is True and L.FRI_SIZING is True and L.DAILY_STAKE_CAP == 300000
+    by = {l["id"]: L.base_stake(l) for l in L.MENU + L.ME_LEGS}
+    assert (by["EURJPY_N6"], by["AUDJPY_N6"], by["NZDJPY_N6"], by["EURGBP_N6L"], by["AUDJPY_02"], by["USDJPY_NK"], by["EURUSD_ME"]) == (35600, 37900, 31200, 16700, 8000, 11700, 16700)
+    mon = sum(round(by[k] * 1.25 / 100) * 100 for k in ("EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6")); nk = round(round(11700 * 1.5 / 100) * 100 * 1.4 / 100) * 100
+    assert mon == 130900 and nk == 24600 and mon + 5 * nk + by["EURGBP_N6L"] <= L.DAILY_STAKE_CAP
+    assert L.fri_mult({"ret_bp": -45.9, "down": True}) == 1.25 and L.fri_mult({"ret_bp": 12.0, "down": False}) == 0.75 and L.fri_mult({"ret_bp": 0.0, "down": False}) == 0.75
+    assert L.fri_mult({"error": "x"}) == 1.0 and L.fri_mult(None) == 1.0 and L.fri_mult({"ret_bp": -900.0, "down": True}) == 1.0     # 取得失敗・異常値は ×1.0
+    assert L.runup_mult("USDJPY", [("USDJPY", 158.0, 160.0, 200.0, True)]) == 1.0                                                    # 150pip 超は読み取り異常 → ×1.0
+
+def test_v119_monday_legs_sized_by_friday(monkeypatch):
+    """v1.19: 月曜 3 本は前の金曜が下落なら ×1.25、上昇なら ×0.75、取得失敗なら ×1.0(100 円単位)。EURGBP など他の脚は変えない。"""
+    monkeypatch.setattr(L, "STAKE_SCALE", 1.67); monkeypatch.setattr(L, "sleep_until", lambda t: None); monkeypatch.setattr(L.time, "sleep", lambda s: None)
+    H = lambda d, h, o, c: (dt.datetime(2026, 11, d, h), o, c)
+    down = [H(26, 21, 174.20, 174.25), H(27, 21, 173.40, 173.45)]; up = [H(26, 21, 174.20, 174.25), H(27, 21, 174.90, 174.95)]
+    def fetch(pair, timeout=12):
+        if pair == "EURJPY": return down
+        if pair == "AUDJPY": return up
+        raise OSError("offline")
+    monkeypatch.setattr(L, "fetch_hourly", fetch); bought = {}
+    def fake_rest(base, path, key, body=None, timeout=15):
+        if path == "/wallet/balance": return 200, {"status": "success", "data": {"balance": 450000}}
+        if path == "/trading/buy": bought[body["contract"][:6]] = body["amount"]; return 200, {"status": "success", "data": {"trade": 3, "order_properties": {"strike": 100.0}}}
+        return 200, {"status": "success", "data": {"isActive": True}}
+    monkeypatch.setattr(L, "rest", fake_rest)
+    async def fake_scan(wss, key, secs, done=None):
+        return [upd(f"{p}|FE|23H|HIGHLOW|HIGH", "2026-11-30T21:00:00.000Z") for p in ("EURJPY", "AUDJPY", "NZDJPY")]
+    monkeypatch.setattr(L, "scan_contracts", fake_scan)
+    with tempfile.TemporaryDirectory() as tmp:
+        assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), dt.datetime(2026, 11, 30, 6, 58, tzinfo=L.JST)) == 0
+        assert bought == {"EURJPY": 44500, "AUDJPY": 28400, "NZDJPY": 31200}                                   # 35,600×1.25 / 37,900×0.75 / 31,200×1.0
+        z = [json.loads(x)["frame"] for x in open(os.path.join(tmp, "l.jsonl"), encoding="utf-8") if json.loads(x)["kind"] == "fri_sizing"]
+        assert [(f["leg"], f["mult"], f["stake"]) for f in z] == [("EURJPY_N6", 1.25, 44500), ("AUDJPY_N6", 0.75, 28400), ("NZDJPY_N6", 1.0, 31200)]
