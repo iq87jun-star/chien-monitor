@@ -22,7 +22,7 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.19"
+VERSION = "1.20"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
@@ -161,6 +161,35 @@ def record_friday(day, legs, out_dir, log):
         except Exception as e: log.write("error", repr(e))
     if out: log.say("金曜の騰落:", {k: (v.get("ret_bp"), v.get("down")) if "error" not in v else "error" for k, v in out.items()})
     return out
+
+# ---- v1.20 (追補107〜109・ユーザー決定「Cでお願いします」): AUDJPY 02:00 の強弱 ----
+# 建てる直前の 4 時間(22:00 → 02:00 JST = 13:00 → 17:00 UTC)に AUDJPY が下げていた日は ×1.25、それ以外は ×0.75。
+# 10 年: 下げた日 60.2% / 他 53.2%(日単位 z 3.19、9/10 年)。外部の 1 時間足(fetch_hourly)で判定し、取得失敗・異常値(|騰落| > 3%)は ×1.0。
+AJ_SIZING = True; AJ_LEG = "AUDJPY_02"; AJ_MULT_DOWN = 1.25; AJ_MULT_OTHER = 0.75; AJ_MAX_BP = 300; AJ_HOURS = 4
+def ny_state(bars, entry_utc):
+    """1 時間足 [(UTC, open, close)] と建て時刻(UTC・tz なし)から {ref, now, ret_bp, down}。ref = 建ての AJ_HOURS 時間前の足の始値。
+    now = 建て時刻の足の始値(まだ無ければ、直前 2 時間以内の最後の足の終値)。"""
+    e = entry_utc.replace(minute=0, second=0, microsecond=0); t0 = e - dt.timedelta(hours=AJ_HOURS)
+    ref = next((o for ts, o, c in bars if ts == t0), None)
+    if ref is None: raise ValueError(f"{t0} の足が無い")
+    now = next((o for ts, o, c in bars if ts == e), None)
+    if now is None:
+        prev = [(ts, c) for ts, o, c in bars if e - dt.timedelta(hours=2) <= ts < e]
+        if not prev: raise ValueError(f"{e} 付近の足が無い")
+        now = max(prev)[1]
+    ret = (now / ref - 1) * 10000
+    return {"ref": round(ref, 5), "now": round(now, 5), "ret_bp": round(ret, 1), "down": ret < 0}
+def aj_mult(st):
+    if not isinstance(st, dict) or "error" in st or st.get("ret_bp") is None or abs(st["ret_bp"]) > AJ_MAX_BP: return 1.0
+    return AJ_MULT_DOWN if st.get("down") else AJ_MULT_OTHER
+def record_ny(day, leg, out_dir, log):
+    try: st = ny_state(fetch_hourly(leg["pair"], timeout=6), jst(day, leg["entry"]).astimezone(UTC).replace(tzinfo=None))
+    except Exception as e: st = {"error": repr(e)[:200]}
+    log.write("aj_ny", dict(st, leg=leg["id"], day=str(day), mult=aj_mult(st), sizing=AJ_SIZING)); log.say("AUDJPY 02:00 直前 4 時間:", st)
+    try: append_csv(os.path.join(out_dir, "aj_ny_log.csv"), ["date", "ref", "now", "ret_bp", "down", "mult", "error"],
+                    [str(day), st.get("ref", ""), st.get("now", ""), st.get("ret_bp", ""), st.get("down", ""), aj_mult(st), st.get("error", "")])
+    except Exception as e: log.write("error", repr(e))
+    return st
 
 # ---- v1.12 (追補64): 仲値の run-up(09:30 → 発注直前の上げ)の記録。v1.17 (追補96): 配分に使う仕組みを追加(既定は OFF = 記録のみ)----
 # RUNUP_SIZING = True にすると、09:30 → 発注直前に上げた通貨は ×1.4、上げなかった通貨は ×0.4(レートが取れなかった通貨は ×1.0)。10 年: 上げ 67.3% / 他 59.0%。
@@ -502,7 +531,7 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
     st, h = rest(base, "/trading/health", key); log.write("health", {"http": st, "body": h})
     if st != 200 or h.get("status") == "fail": log.say("health 失敗 → 発注しない"); return 1
     st, b = rest(base, "/wallet/balance", key); bal = deep_find(b, "balance"); log.write("balance", {"http": st, "body": b}); log.say("balance:", bal)
-    need = sum(base_stake(l) * BOOST_MULT * (RUNUP_MULT_UP if RUNUP_SIZING and l.get("gotobi") else 1.0) * (FRI_MULT_DOWN if FRI_SIZING and l["id"] in FRI_PAIRS else 1.0) for l in legs)
+    need = sum(base_stake(l) * BOOST_MULT * (RUNUP_MULT_UP if RUNUP_SIZING and l.get("gotobi") else 1.0) * (FRI_MULT_DOWN if FRI_SIZING and l["id"] in FRI_PAIRS else 1.0) * (AJ_MULT_DOWN if AJ_SIZING and l["id"] == AJ_LEG else 1.0) for l in legs)
     if bal is None or float(bal) < need: log.say(f"残高 {bal} < 必要 {need:.0f} → 発注しない"); log.write("guard", {"balance": bal, "need": need}); return 1
     today_total = sum(v.get("stake", 0) for v in done.values())
     me = [l for l in legs if l.get("month_end")]
@@ -567,6 +596,9 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
             m = runup_mult(leg["pair"], ru_rows); sized = int(min(MAX_STAKE, round(stake * m / 100) * 100))   # v1.17: run-up の配分(OFF の間は shadow として記録するだけ)
             log.write("gotobi", {"leg": leg["id"], "kind": gotobi_kind(day), "mult": gotobi_mult(leg, day), "stake": sized if RUNUP_SIZING else stake, "runup_mult": m, "runup_sizing": RUNUP_SIZING, "stake_base": stake, "stake_if_sized": sized})
             if RUNUP_SIZING: stake = sized
+        if leg["id"] == AJ_LEG and stake > 0:
+            m = aj_mult(record_ny(day, leg, out_dir, log)); sized = int(min(MAX_STAKE, round(stake * m / 100) * 100))   # v1.20: 直前 4 時間の騰落の配分(発注の直前に読む)
+            if AJ_SIZING: stake = sized
         if leg["id"] in FRI_PAIRS:
             m = fri_mult(fri.get(leg["id"])); sized = int(min(MAX_STAKE, round(stake * m / 100) * 100))   # v1.19: 金曜の騰落の配分
             log.write("fri_sizing", {"leg": leg["id"], "mult": m, "sizing": FRI_SIZING, "stake_base": stake, "stake": sized if FRI_SIZING else stake})
