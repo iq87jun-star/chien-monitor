@@ -61,7 +61,7 @@ export function toReceiveAmount(priceUsd, currency, { eurUsd, ethUsd } = rates) 
   throw new Error(`扱わない通貨: ${currency}`);
 }
 
-export function createTrader(gql, { privateKey: rawKey, currency = "USD" }) {
+export function createTrader(gql, { privateKey: rawKey, currency = "USD", waitMs = 5000 }) {
   // 鍵(Ethereum の秘密鍵)から署名用の鍵を 1 回だけ作る。形が違えば、最初の売買で理由を出して止まる
   let signer = null;
   const getSigner = async () => (signer ??= await createSigner(rawKey));
@@ -114,9 +114,15 @@ export function createTrader(gql, { privateKey: rawKey, currency = "USD" }) {
     const o = (await gql(`mutation($input: createSingleSaleOfferInput!) { createSingleSaleOffer(input: $input) { tokenOffer { id } errors { message } } }`,
       { input: { dealId: randomUUID(), assetId: c.assetId, receiveAmount, settlementCurrencies: [currency], approvals: await buildApprovals(p.authorizations, sig) } }, { retries: 0 })).createSingleSaleOffer;
     errs(o, "出品");
-    const after = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents wei } } } } }`, { s: card })).anyCard;
-    const listed = usd(after?.liveSingleSaleOffer?.receiverSide?.amounts);
-    if (listed == null || Math.abs(listed - expect) > Math.max(0.05, expect * 0.02)) throw new Error(`出品額が想定と違う(想定 $${expect.toFixed(2)} / 実際 $${listed}): アプリで確認して取り消してください`);
+    // 出品はすぐには反映されない(11/27 は直後に読むと null だった)。5 秒おきに最大 1 分待って、出品額を確かめる
+    let listed = null;
+    for (let i = 0; i < 12 && listed == null; i++) {
+      await new Promise((ok) => setTimeout(ok, waitMs));
+      const after = (await gql(`query($s: String!) { anyCard(slug: $s) { liveSingleSaleOffer { receiverSide { amounts { usdCents eurCents wei } } } } }`, { s: card })).anyCard;
+      listed = usd(after?.liveSingleSaleOffer?.receiverSide?.amounts);
+    }
+    if (listed == null) throw new Error(`出品は送った(オファー ${o.tokenOffer?.id ?? "id 不明"}・$${expect.toFixed(2)})が、1 分たっても出品中に出てこない。次の実行で「すでに出品中」になれば出品できている`);
+    if (Math.abs(listed - expect) > Math.max(0.05, expect * 0.02)) throw new Error(`出品額が想定と違う(想定 $${expect.toFixed(2)} / 実際 $${listed}): アプリで確認して取り消してください`);
     return listed;
   }
 
