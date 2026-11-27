@@ -5181,6 +5181,38 @@
    ],
    "note": "通過 = P1 到達 × P2 到達、失格 = P1 失格 + P1 到達 × P2 失格。選び方 = 場面ごとに改善の型をすべて挙げ(通過 − 失格)の 2 期間合計が最大。G2 × 6.0 が改善に入るかも報告。",
    "result": "改善 6・悪化 16。2 場面とも首位は G2 × 6.0(A: 通過 64.5 / 31.7 → 66.6 / 46.0・失格 5.7 / 15.0 → 3.5 / 11.5・週 39 / 45 → 31 / 31)。ガードなしの高倍率・倍率を上げないガードは悪化。Q295 の純益 3 倍は資金化後も 6 倍の計算によるもので、割り引く。"
+  },
+  {
+   "id": "Q297",
+   "slug": "fintokei_multiplier_down_after_guard_narrowing",
+   "status": "registered",
+   "cells": 18,
+   "order": 131,
+   "registered": "2026-11-28",
+   "title": "Fintokei 3 口座: ガードの幅を狭めた後の倍率を 0.9・0.8・0.7 倍に下げる形(台帳 I-8)",
+   "program": "毎朝の改良検証(research/ideas/README.md・自動登録)",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "note": "選び方 = 口座ごとに 2 場面とも悪化でなく 1 場面以上で改善の型をすべて挙げ score 合計が最大。無ければいまの倍率のまま。発動回数を併記。"
+  },
+  {
+   "id": "Q298",
+   "slug": "fn6201_hold_to_monday_ranking",
+   "status": "registered",
+   "cells": 3,
+   "order": 132,
+   "registered": "2026-11-28",
+   "title": "FN 14166201: 長期保有を月曜の円クロス + ガードに載せ替える形の順位づけ(日次の帳簿・台帳 I-9)",
+   "program": "毎朝の改良検証(research/ideas/README.md・自動登録)",
+   "sessions_planned": 1,
+   "sessions_done": 0,
+   "docs": [
+    "docs/244_morning_research_queue.md"
+   ],
+   "note": "型 = ロールのみ / 月曜 4.5 倍 + G2 + ロール / 月曜 6.0 倍 + G2 + ロール。改善の型の中で純益最大を載せ替えの候補に。"
   }
  ],
  "runs": [
