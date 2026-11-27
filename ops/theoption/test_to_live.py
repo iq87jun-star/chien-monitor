@@ -592,3 +592,39 @@ def test_v119_monday_legs_sized_by_friday(monkeypatch):
         assert bought == {"EURJPY": 44500, "AUDJPY": 28400, "NZDJPY": 31200}                                   # 35,600×1.25 / 37,900×0.75 / 31,200×1.0
         z = [json.loads(x)["frame"] for x in open(os.path.join(tmp, "l.jsonl"), encoding="utf-8") if json.loads(x)["kind"] == "fri_sizing"]
         assert [(f["leg"], f["mult"], f["stake"]) for f in z] == [("EURJPY_N6", 1.25, 44500), ("AUDJPY_N6", 0.75, 28400), ("NZDJPY_N6", 1.0, 31200)]
+
+def test_v120_ny_state_and_mult():
+    """v1.20(追補107〜109): AUDJPY 02:00 の強弱。建ての 4 時間前(13:00 UTC)の始値 → 建て時刻(17:00 UTC)の始値。17:00 の足がまだ無ければ直前の足の終値。"""
+    H = lambda h, o, c: (dt.datetime(2026, 11, 30, h), o, c); e = dt.datetime(2026, 11, 30, 17, 0, 10)
+    bars = [H(12, 105.90, 106.00), H(13, 106.00, 105.80), H(14, 105.80, 105.70), H(15, 105.70, 105.60), H(16, 105.60, 105.47), H(17, 105.47, 105.50)]
+    assert L.ny_state(bars, e) == {"ref": 106.0, "now": 105.47, "ret_bp": -50.0, "down": True}
+    assert L.ny_state(bars[:-1], e)["now"] == 105.47                                                       # 17:00 の足なし → 16:00 の足の終値
+    assert L.ny_state([H(13, 106.0, 106.0), H(17, 106.0, 106.0)], e)["down"] is False                       # 変わらず = 下げではない
+    with pytest.raises(ValueError): L.ny_state(bars[2:], e)                                                 # 13:00 の足が無い
+    with pytest.raises(ValueError): L.ny_state(bars[:2], e)                                                 # 直前 2 時間の足が無い
+    assert L.aj_mult({"ret_bp": -50.0, "down": True}) == 1.25 and L.aj_mult({"ret_bp": 10.0, "down": False}) == 0.75
+    assert L.aj_mult({"error": "x"}) == 1.0 and L.aj_mult({"ret_bp": -400.0, "down": True}) == 1.0 and L.AJ_SIZING is True
+
+def test_v120_audjpy02_sized_by_ny_session(monkeypatch):
+    """v1.20: 02:00 の AUDJPY は、直前 4 時間に下げていれば ×1.25、そうでなければ ×0.75、取得失敗なら ×1.0。記録は aj_ny_log.csv。"""
+    monkeypatch.setattr(L, "STAKE_SCALE", 1.67); monkeypatch.setattr(L, "sleep_until", lambda t: None); monkeypatch.setattr(L.time, "sleep", lambda s: None)
+    H = lambda h, o, c: (dt.datetime(2026, 12, 1, h), o, c)   # 12/2(水)02:00 JST = 12/1 17:00 UTC
+    def run(bars):
+        bought = []
+        def fake_rest(base, path, key, body=None, timeout=15):
+            if path == "/wallet/balance": return 200, {"status": "success", "data": {"balance": 450000}}
+            if path == "/trading/buy": bought.append(body["amount"]); return 200, {"status": "success", "data": {"trade": 4, "order_properties": {"strike": 105.5}}}
+            return 200, {"status": "success", "data": {"isActive": True}}
+        monkeypatch.setattr(L, "rest", fake_rest)
+        async def fake_scan(wss, key, secs, done=None): return [upd("AUDJPY|FE|23H|HIGHLOW|HIGH", "2026-12-01T21:00:00.000Z")]
+        monkeypatch.setattr(L, "scan_contracts", fake_scan)
+        if bars is None:
+            def gone(pair, timeout=12): raise OSError("offline")
+            monkeypatch.setattr(L, "fetch_hourly", gone)
+        else: monkeypatch.setattr(L, "fetch_hourly", lambda pair, timeout=12: bars)
+        with tempfile.TemporaryDirectory() as tmp:
+            assert L.run_entries("demo", DEMO, tmp, L.Log(os.path.join(tmp, "l.jsonl")), dt.datetime(2026, 12, 2, 1, 58, tzinfo=L.JST)) == 0
+            return bought, open(os.path.join(tmp, "aj_ny_log.csv"), encoding="utf-8").read().splitlines()
+    b, rows = run([H(13, 106.00, 105.9), H(16, 105.60, 105.47)]); assert b == [10000] and rows[1] == "2026-12-02,106.0,105.47,-50.0,True,1.25,"   # 8,000 × 1.25
+    b, rows = run([H(13, 105.00, 105.1), H(17, 105.40, 105.4)]); assert b == [6000] and rows[1].endswith(",False,0.75,")                        # 8,000 × 0.75
+    b, rows = run(None); assert b == [8000] and rows[1].endswith(",1.0,OSError('offline')")                                                     # 取得失敗 → 基準額
