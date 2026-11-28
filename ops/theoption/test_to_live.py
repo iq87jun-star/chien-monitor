@@ -637,6 +637,6 @@ def test_v121_scale_351_amounts_and_cap(monkeypatch):
     assert (by["EURJPY_N6"], by["AUDJPY_N6"], by["NZDJPY_N6"], by["EURGBP_N6L"], by["AUDJPY_02"], by["USDJPY_NK"], by["EURUSD_ME"]) == (74800, 79700, 65600, 35100, 16800, 24600, 35100)
     r = lambda x: round(x / 100) * 100
     mon = sum(r(by[k] * 1.25) for k in ("EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6")); nk25 = r(r(24600 * 1.5) * 1.4); nkeom = r(r(24600 * 0.75) * 1.4)
-    assert mon == 275100 and nk25 == 51700 and nkeom == 25900 and max(r(v * 1.25) for v in by.values()) <= L.MAX_STAKE
+    assert mon == 275100 and nk25 == 51700 and nkeom == 25800 and max(r(v * 1.25) for v in by.values()) <= L.MAX_STAKE
     assert mon + 5 * nk25 + by["EURGBP_N6L"] <= L.DAILY_STAKE_CAP and mon + 5 * nkeom + by["EURGBP_N6L"] + 3 * by["EURUSD_ME"] <= L.DAILY_STAKE_CAP
     need_mon = sum(by[k] for k in ("EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6")) * L.BOOST_MULT * L.FRI_MULT_DOWN; assert need_mon == 412687.5
