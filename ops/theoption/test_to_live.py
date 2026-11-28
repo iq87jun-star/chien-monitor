@@ -560,7 +560,7 @@ def test_v118_month_end_buys_high_only_when_spx_up(monkeypatch):
 def test_v119_sizing_is_on_and_scale(monkeypatch):
     """v1.19(追補104): 強弱は 2 つともオン、倍率 1.67、1 日上限 300,000。最大の日(金曜下落の月曜 + 25 日の仲値が全通貨上げ + EURGBP)が上限内。"""
     monkeypatch.setattr(L, "STAKE_SCALE", 1.67)
-    assert L.RUNUP_SIZING is True and L.FRI_SIZING is True and L.DAILY_STAKE_CAP == 300000
+    assert L.RUNUP_SIZING is True and L.FRI_SIZING is True
     by = {l["id"]: L.base_stake(l) for l in L.MENU + L.ME_LEGS}
     assert (by["EURJPY_N6"], by["AUDJPY_N6"], by["NZDJPY_N6"], by["EURGBP_N6L"], by["AUDJPY_02"], by["USDJPY_NK"], by["EURUSD_ME"]) == (35600, 37900, 31200, 16700, 8000, 11700, 16700)
     mon = sum(round(by[k] * 1.25 / 100) * 100 for k in ("EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6")); nk = round(round(11700 * 1.5 / 100) * 100 * 1.4 / 100) * 100
@@ -628,3 +628,15 @@ def test_v120_audjpy02_sized_by_ny_session(monkeypatch):
     b, rows = run([H(13, 106.00, 105.9), H(16, 105.60, 105.47)]); assert b == [10000] and rows[1] == "2026-12-02,106.0,105.47,-50.0,True,1.25,"   # 8,000 × 1.25
     b, rows = run([H(13, 105.00, 105.1), H(17, 105.40, 105.4)]); assert b == [6000] and rows[1].endswith(",False,0.75,")                        # 8,000 × 0.75
     b, rows = run(None); assert b == [8000] and rows[1].endswith(",1.0,OSError('offline')")                                                     # 取得失敗 → 基準額
+
+def test_v121_scale_351_amounts_and_cap(monkeypatch):
+    """v1.21(追補115): 100 万円版。倍率 3.51、1 日上限 600,000、1 脚の上限 200,000 以内。残高ガードの必要額(月曜 3 本 = 基準 ×1.5 ×1.25)。"""
+    assert "\nSTAKE_SCALE = 3.51\n" in open(L.__file__, encoding="utf-8").read()   # 本番の値(テストの既定は fixture で 1.0)
+    monkeypatch.setattr(L, "STAKE_SCALE", 3.51); assert L.DAILY_STAKE_CAP == 600000 and L.MAX_STAKE == 200000
+    by = {l["id"]: L.base_stake(l) for l in L.MENU + L.ME_LEGS}
+    assert (by["EURJPY_N6"], by["AUDJPY_N6"], by["NZDJPY_N6"], by["EURGBP_N6L"], by["AUDJPY_02"], by["USDJPY_NK"], by["EURUSD_ME"]) == (74800, 79700, 65600, 35100, 16800, 24600, 35100)
+    r = lambda x: round(x / 100) * 100
+    mon = sum(r(by[k] * 1.25) for k in ("EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6")); nk25 = r(r(24600 * 1.5) * 1.4); nkeom = r(r(24600 * 0.75) * 1.4)
+    assert mon == 275100 and nk25 == 51700 and nkeom == 25900 and max(r(v * 1.25) for v in by.values()) <= L.MAX_STAKE
+    assert mon + 5 * nk25 + by["EURGBP_N6L"] <= L.DAILY_STAKE_CAP and mon + 5 * nkeom + by["EURGBP_N6L"] + 3 * by["EURUSD_ME"] <= L.DAILY_STAKE_CAP
+    need_mon = sum(by[k] for k in ("EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6")) * L.BOOST_MULT * L.FRI_MULT_DOWN; assert need_mon == 412687.5

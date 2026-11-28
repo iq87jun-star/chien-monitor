@@ -22,12 +22,12 @@
         python to_live.py --plan     # 今日これから実行する脚を表示して終了(発注しない)
 """
 import argparse, asyncio, base64, csv, datetime as dt, json, os, random, sys, time, urllib.request, urllib.error
-VERSION = "1.20"
+VERSION = "1.21"
 HERE = os.path.dirname(os.path.abspath(__file__))
 UTC = dt.timezone.utc; JST = dt.timezone(dt.timedelta(hours=9))
 HOSTS = {"demo": ("https://apidemo.theoption.com/v1", "wss://gatewaydemo.theoption.com/v1/ws"),
          "real": ("https://api.theoption.com/v1", "wss://gateway.theoption.com/v1/ws")}
-MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 300000   # 1 日のベット合計の上限(v1.8: 月曜 72,700 + ゴトー日の仲値 35,000、25 日なら 52,500 = 125,200。月曜 ×1.5 と 25 日が重なる 161,550 も収める)
+MAX_STAKE = 200000; SCAN_SECS = 20; DAILY_STAKE_CAP = 600000   # 1 日のベット合計の上限(v1.8: 月曜 72,700 + ゴトー日の仲値 35,000、25 日なら 52,500 = 125,200。月曜 ×1.5 と 25 日が重なる 161,550 も収める)
 FAST_MAX_ATTEMPTS = 3; FAST_PRESCAN_SECS = 25; FAST_BUY_DELAY = 1.0; FAST_GAP = 1.2   # v1.5: 15M 脚は定刻の 25 秒前から契約を先読みし、定刻 +1 秒に 1.2 秒間隔で発注
 FAST_LATE_SCAN_SECS = 20   # v1.6a: 枠が定刻ちょうどに出る場合に備え、定刻 +20 秒まで購読を続ける(そろった瞬間に打ち切るので通常は 1 秒以内)
 STALE_RETRY_SECS = 15; STALE_RETRY_DEADLINE_MIN = 20   # v1.5a: 週明け 07:00 は業者のレート配信が数分〜10 分以上凍結し buy が 216 で拒否される(11/2 実測)。15 秒おきに 07:20 まで再試行
@@ -61,7 +61,10 @@ MIN_PAYOUT = {"1H": 1.85, "15M": 1.85, "23H": 1.90}; BOOST_PAYOUT = 2.0; BOOST_M
 #   1 日上限は 170,000 → 240,000(最大の日 = 月曜 93,400 + 25 日の仲値 78,000 + EURGBP 14,900、または月末の月曜 93,400 + 仲値 39,000 + EURGBP 14,900 + 月末脚 44,700 = 192,000)。
 # v1.19 (追補104・ユーザー決定「オン版で良い。本番で検証」): 強弱を 2 つともオン。オンの形は 10 年の最大DD が小さい(素で 298,274)ので、同じ DD 50 万円で倍率 1.67
 #   (月期待 +200 千円、最悪月 −238 千円)。1 日上限 300,000(最大の日 = 金曜下落の月曜 130,900 + 25 日の仲値が全通貨上げ 123,000 + EURGBP 16,700 = 270,600)。
-STAKE_SCALE = 1.67
+# v1.21 (追補115・ユーザー決定「100万版です」「50万円振込みました」): 100 万円版。現在の形(強弱 3 つ・月末脚)の 10 年の最大DD 285,194 → 100 万円になる倍率 3.51
+#   (月期待 +42 万円、最悪月 −52 万円)。資金は週ごとに追加する運用(1 週間の発注の最大合計 約 80 万円)。残高が足りない時間帯は残高ガードで発注が止まる。
+#   1 日上限 600,000(最大の日 = 金曜下落の月曜 274,900 + 25 日の仲値が全通貨上げ 258,500 + EURGBP 35,100 = 568,500)。1 脚の上限 MAX_STAKE 200,000 は変えない(最大 99,500)。
+STAKE_SCALE = 3.51
 def base_stake(leg): return int(round(leg["stake"] * STAKE_SCALE / 100) * 100)
 # v1.18 (追補99〜102・ユーザー決定「月末は採用」): 月末の値決め脚。月の最終営業日(ロンドンの日付、土日は前倒し)のロンドン 15:00 建て → 16:00 判定の 1H(1.90)。
 #   その月の S&P500 が前営業日までプラスのときだけ EURUSD・GBPUSD・AUDUSD を HIGH(10 年 63.3%、前後半とも 63%)。マイナスの月・取得失敗の月は見送り(株安の月は 51.6% で損益分岐未満)。
