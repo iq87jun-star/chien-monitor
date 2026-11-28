@@ -963,3 +963,14 @@ MC(docs/349 §6c): 1-Step 81 / 19%・+2σ 2027-05-19、宝くじ 48 / 52%・2027
 - **マニフェスト(09:20 JST)**: 14166201 の ensure を `【FN100k_口座14166201】Mon4_6.0倍+Roll5_4.5倍_v1.41.mq5`(チャート GBPJPY・H1)に切り替え、v1.40 を remove に追加、`compile_check_v6` を削除。
 - **config**: `research/config/portfolio_current.json` の FN 14166201 の eval を `{mon4: 6.0, roll: 4.5}` に更新(注記 `_eval_switch_note`)。資金化後の予定(月曜 3.0 倍 + 2 つの縮小 + ロール 4.5 倍)は変えていない。
 - **この後に確かめること**: (1) 装着が v1.41 の 1 本だけになること、(2) 起動ログ `[INIT v1.41]`・`[INIT BufShrink]`・`[INIT Sma200]`・`[INIT Roll]`、(3) 市場が開いた後の `[HOLD CLOSE]`(UK100・原油の 2 本)、(4) 11/30(月)13 時 JST からの月曜の建て(4 本 × 4 回)。
+
+#### §1cb の確認(2026-11-28 10:15 JST・deploy_status 10:00 JST / ea_log_extract / open_positions)
+
+- **装着**: 14166201 の端末は `【FN100k_口座14166201】Mon4_6.0倍+Roll5_4.5倍_v1.41` の 1 本だけ(expertmode=5)。v1.40 は外れている。コンパイルは `up to date`、apply のエラーなし。
+- **起動ログ(端末の時刻 09:22:38)**: `[INIT v1.41]`(月曜の円クロス 4 本 x6.0 + 200 日線 + 縮小 + ロール x4.5・Hold は停止・SKEW 門 = 無効・VIX 決済切替 = 無効)、`[INIT RecentFit]` initBal=100000 mult=6.0 Σw=0.999 Magic=943601/943602/943603、`[INIT Roll]` legs=5 mult=4.5 gate=2.0pp Magic=943605、`[INIT BalGuard]` 幅=4.0%、`[INIT BufShrink]` min=0.50 損失枠=10.0%、`[INIT Sma200]` x0.50、`[INIT JpHoliday]`。警告・エラーの行はなし。
+- **200 日線の状態(起動時)**: GBPJPY・EURJPY・AUDJPY は 200 日線の下(数量そのまま)、USDJPY は上(200 日線以上 → 月曜の数量 x0.50。判定は月曜の建ての時にやり直す)。
+- **Hold の 2 本**: UK100 0.73 lot・原油 4.07 lot(Magic 943603)は建ったまま。週末で市場が閉じているため(正常)。開いた後に `CloseHoldLeftover()` が決済する。
+- **気づいた点 2 つ(どちらも動作には影響なし)**:
+  1. 装着先のチャートは UK100・H1 のまま(マニフェストの指定は GBPJPY・H1)。配備は、外す EA が載っていたチャートの EA を入れ替える動きをした。この EA はチャートの銘柄を使わず 30 秒のタイマーで動くので、建て・決済・ガードは同じ(v1.40 も UK100 のチャートで円クロスのロールを建てていた)。違いは、ティックごとのガード判定が UK100 のティックで動くことだけ(タイマーの判定は 30 秒ごとに必ず動く)。
+  2. `[HOLD CLOSE]`・`[HOLD CLOSE RETRY]` の行は、ログ抜き出しの目印(`ops/vps/chien_ops_agent.py` の MARKERS)に入っていないので ea_log_extract には出ない。決済の確認は、月曜の `[NOTIFY]` の行(`HOLD_CLOSE …`)と open_positions / positions で行う。
+- **残りの確認(11/30 月)**: Hold 2 本の決済、13 時 JST からの月曜の建て(4 本)。
