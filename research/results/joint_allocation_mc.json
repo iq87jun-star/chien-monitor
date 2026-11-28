@@ -1,0 +1,2164 @@
+{
+ "meta": {
+  "purpose": "口座横断のセル割り付け docs/201",
+  "seed": 7,
+  "dates": [
+   "2025-09-30",
+   "2025-12-31",
+   "2026-03-31",
+   "2026-05-29",
+   "2026-06-30",
+   "2026-08-31"
+  ],
+  "order": [
+   "Fintokei_Sokkou2000_6078225",
+   "FTMO50k_531407058",
+   "FTMO50k_521100397",
+   "FN100k_14166201",
+   "Fintokei_Pearl500",
+   "FN_Instant20k_11988011"
+  ],
+  "fixed": [
+   "FTMO100k_531343523"
+  ],
+  "excluded": "FN100k_14074882(季節RG3・再構築不可)",
+  "cb_new_set": [
+   "FN100k_14166201",
+   "FTMO100k_531343523",
+   "FTMO50k_521100397",
+   "FTMO50k_531407058",
+   "Fintokei_Pearl500"
+  ]
+ },
+ "by_date": {
+  "2025-09-30": {
+   "INDEP": {
+    "P_CB_new": 11.2,
+    "P_CB_old": 49.21,
+    "E_funded": 3.358,
+    "E_failed": 2.58,
+    "funded": {
+     "FTMO100k_531343523": 35.8,
+     "Fintokei_Sokkou2000_6078225": 1.3,
+     "FTMO50k_531407058": 81.5,
+     "FTMO50k_521100397": 61.6,
+     "FN100k_14166201": 80.3,
+     "Fintokei_Pearl500": 60.1,
+     "FN_Instant20k_11988011": 15.2
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.4,
+     "Fintokei_Sokkou2000_6078225": 98.7,
+     "FTMO50k_531407058": 9.6,
+     "FTMO50k_521100397": 6.1,
+     "FN100k_14166201": 15.4,
+     "Fintokei_Pearl500": 15.0,
+     "FN_Instant20k_11988011": 84.8
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 2,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 1
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_NAS100": 0.093,
+       "Mon_US500": 0.147,
+       "v4_NZDUSD": 0.397,
+       "v4_GBPUSD": 0.363
+      },
+      "mult": 1.56
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_NAS100": 0.208,
+       "Mon_US500": 0.327,
+       "Hold_XAUUSD": 0.275,
+       "Hold_BTCUSD": 0.19
+      },
+      "mult": 1.12
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_NAS100": 0.255,
+       "Hold_XAUUSD": 0.14,
+       "Hold_US500": 0.217,
+       "Mon_UK100": 0.387
+      },
+      "mult": 1.88
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_BTCUSD": 0.186,
+       "Hold_UK100": 0.448,
+       "v4_NATGAS": 0.099,
+       "v4_FR40": 0.267
+      },
+      "mult": 1.2
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_GER40": 0.111,
+       "Mon_GBPJPY": 0.297,
+       "v4_NZDUSD": 0.306,
+       "v4_GBPUSD": 0.286
+      },
+      "mult": 5.48
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_XAUUSD": 0.232,
+       "Hold_BTCUSD": 0.115,
+       "Mon_GER40": 0.209,
+       "Mon_GBPJPY": 0.445
+      },
+      "mult": 1.48
+     }
+    }
+   },
+   "JOINT_EXCL": {
+    "P_CB_new": 5.56,
+    "P_CB_old": 22.88,
+    "E_funded": 3.447,
+    "E_failed": 1.787,
+    "funded": {
+     "FTMO100k_531343523": 35.8,
+     "Fintokei_Sokkou2000_6078225": 1.3,
+     "FTMO50k_531407058": 66.2,
+     "FTMO50k_521100397": 24.1,
+     "FN100k_14166201": 80.3,
+     "Fintokei_Pearl500": 54.4,
+     "FN_Instant20k_11988011": 82.5
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.4,
+     "Fintokei_Sokkou2000_6078225": 98.7,
+     "FTMO50k_531407058": 5.8,
+     "FTMO50k_521100397": 4.1,
+     "FN100k_14166201": 15.4,
+     "Fintokei_Pearl500": 8.9,
+     "FN_Instant20k_11988011": 17.4
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 0,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_NAS100": 0.093,
+       "Mon_US500": 0.147,
+       "v4_NZDUSD": 0.397,
+       "v4_GBPUSD": 0.363
+      },
+      "mult": 1.56
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Hold_XAUUSD": 0.194,
+       "Mon_GER40": 0.164,
+       "Hold_NAS100": 0.148,
+       "Mon_GBPJPY": 0.495
+      },
+      "mult": 2.2
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_US500": 0.345,
+       "Hold_JP225": 0.193,
+       "Mon_UK100": 0.461
+      },
+      "mult": 0.76
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_BTCUSD": 0.186,
+       "Hold_UK100": 0.448,
+       "v4_NATGAS": 0.099,
+       "v4_FR40": 0.267
+      },
+      "mult": 1.2
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_NZDJPY": 0.364,
+       "Mon_AUDJPY": 0.35,
+       "v4_USDJPY": 0.285
+      },
+      "mult": 3.52
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_GER40": 1.0
+      },
+      "mult": 0.28
+     }
+    }
+   },
+   "JOINT_EXCL_SYM": {
+    "P_CB_new": 8.55,
+    "P_CB_old": 23.44,
+    "E_funded": 2.495,
+    "E_failed": 1.716,
+    "funded": {
+     "FTMO100k_531343523": 35.8,
+     "Fintokei_Sokkou2000_6078225": 1.3,
+     "FTMO50k_531407058": 82.5,
+     "FTMO50k_521100397": 5.1,
+     "FN100k_14166201": 70.4,
+     "Fintokei_Pearl500": 54.4,
+     "FN_Instant20k_11988011": 0.0
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.4,
+     "Fintokei_Sokkou2000_6078225": 98.7,
+     "FTMO50k_531407058": 13.2,
+     "FTMO50k_521100397": 1.4,
+     "FN100k_14166201": 21.0,
+     "Fintokei_Pearl500": 8.9,
+     "FN_Instant20k_11988011": 0.0
+    },
+    "no_selection": [
+     "FN_Instant20k_11988011"
+    ],
+    "diag": {
+     "pairs_rho_gt_0_7": 0,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_NAS100": 0.093,
+       "Mon_US500": 0.147,
+       "v4_NZDUSD": 0.397,
+       "v4_GBPUSD": 0.363
+      },
+      "mult": 1.56
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Hold_XAUUSD": 0.197,
+       "Mon_GER40": 0.167,
+       "Hold_BTCUSD": 0.137,
+       "Mon_GBPJPY": 0.499
+      },
+      "mult": 1.88
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_JP225": 0.374,
+       "Mon_UK100": 0.626
+      },
+      "mult": 0.56
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_NATGAS": 0.248,
+       "Hold_ETHUSD": 0.274,
+       "v4_FR40": 0.477
+      },
+      "mult": 0.76
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_NZDJPY": 0.364,
+       "Mon_AUDJPY": 0.35,
+       "v4_USDJPY": 0.285
+      },
+      "mult": 3.52
+     },
+     "FN_Instant20k_11988011": {
+      "w": {},
+      "mult": 0.0
+     }
+    }
+   },
+   "JOINT_PEN": {
+    "P_CB_new": 5.56,
+    "P_CB_old": 22.88,
+    "E_funded": 3.447,
+    "E_failed": 1.787,
+    "funded": {
+     "FTMO100k_531343523": 35.8,
+     "Fintokei_Sokkou2000_6078225": 1.3,
+     "FTMO50k_531407058": 66.2,
+     "FTMO50k_521100397": 24.1,
+     "FN100k_14166201": 80.3,
+     "Fintokei_Pearl500": 54.4,
+     "FN_Instant20k_11988011": 82.5
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.4,
+     "Fintokei_Sokkou2000_6078225": 98.7,
+     "FTMO50k_531407058": 5.8,
+     "FTMO50k_521100397": 4.1,
+     "FN100k_14166201": 15.4,
+     "Fintokei_Pearl500": 8.9,
+     "FN_Instant20k_11988011": 17.4
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 0,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_NAS100": 0.093,
+       "Mon_US500": 0.147,
+       "v4_NZDUSD": 0.397,
+       "v4_GBPUSD": 0.363
+      },
+      "mult": 1.56
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Hold_XAUUSD": 0.194,
+       "Hold_NAS100": 0.148,
+       "Mon_GBPJPY": 0.495,
+       "Mon_GER40": 0.164
+      },
+      "mult": 2.2
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_JP225": 0.193,
+       "Mon_UK100": 0.461,
+       "Hold_US500": 0.345
+      },
+      "mult": 0.76
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_BTCUSD": 0.186,
+       "v4_NATGAS": 0.099,
+       "Hold_UK100": 0.448,
+       "v4_FR40": 0.267
+      },
+      "mult": 1.2
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_NZDJPY": 0.364,
+       "Mon_AUDJPY": 0.35,
+       "v4_USDJPY": 0.285
+      },
+      "mult": 3.52
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_GER40": 1.0
+      },
+      "mult": 0.28
+     }
+    }
+   }
+  },
+  "2025-12-31": {
+   "INDEP": {
+    "P_CB_new": 10.66,
+    "P_CB_old": 40.12,
+    "E_funded": 3.146,
+    "E_failed": 2.325,
+    "funded": {
+     "FTMO100k_531343523": 45.5,
+     "Fintokei_Sokkou2000_6078225": 0.0,
+     "FTMO50k_531407058": 52.2,
+     "FTMO50k_521100397": 43.3,
+     "FN100k_14166201": 59.5,
+     "Fintokei_Pearl500": 71.7,
+     "FN_Instant20k_11988011": 42.4
+    },
+    "failed": {
+     "FTMO100k_531343523": 33.6,
+     "Fintokei_Sokkou2000_6078225": 100.0,
+     "FTMO50k_531407058": 5.9,
+     "FTMO50k_521100397": 5.2,
+     "FN100k_14166201": 11.9,
+     "Fintokei_Pearl500": 18.2,
+     "FN_Instant20k_11988011": 57.6
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 3,
+     "pairs_identical": 1,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "v4_GBPJPY": 0.418,
+       "v4_USDJPY": 0.251,
+       "Mon_UK100": 0.254,
+       "Mon_JP225": 0.076
+      },
+      "mult": 0.8
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "v4_GBPJPY": 0.46,
+       "Hold_XAUUSD": 0.105,
+       "Hold_JP225": 0.103,
+       "v4_USDJPY": 0.331
+      },
+      "mult": 2.24
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "v4_USDJPY": 0.372,
+       "v4_GBPJPY": 0.459,
+       "Hold_XAUUSD": 0.083,
+       "Hold_JP225": 0.086
+      },
+      "mult": 2.16
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_UK100": 0.438,
+       "v4_WTI": 0.215,
+       "v4_FR40": 0.256,
+       "Hold_NATGAS": 0.09
+      },
+      "mult": 1.0
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_GBPJPY": 0.318,
+       "Mon_AUDJPY": 0.242,
+       "v4_USDJPY": 0.17,
+       "v4_GBPUSD": 0.271
+      },
+      "mult": 5.84
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_XAUUSD": 0.136,
+       "Mon_GBPJPY": 0.401,
+       "Hold_GER40": 0.157,
+       "Mon_AUDJPY": 0.307
+      },
+      "mult": 1.84
+     }
+    }
+   },
+   "JOINT_EXCL": {
+    "P_CB_new": 9.48,
+    "P_CB_old": 29.51,
+    "E_funded": 3.601,
+    "E_failed": 2.014,
+    "funded": {
+     "FTMO100k_531343523": 45.5,
+     "Fintokei_Sokkou2000_6078225": 0.0,
+     "FTMO50k_531407058": 81.7,
+     "FTMO50k_521100397": 49.5,
+     "FN100k_14166201": 59.5,
+     "Fintokei_Pearl500": 53.2,
+     "FN_Instant20k_11988011": 70.7
+    },
+    "failed": {
+     "FTMO100k_531343523": 33.6,
+     "Fintokei_Sokkou2000_6078225": 100.0,
+     "FTMO50k_531407058": 13.7,
+     "FTMO50k_521100397": 8.4,
+     "FN100k_14166201": 11.9,
+     "Fintokei_Pearl500": 4.5,
+     "FN_Instant20k_11988011": 29.3
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "v4_GBPJPY": 0.418,
+       "v4_USDJPY": 0.251,
+       "Mon_UK100": 0.254,
+       "Mon_JP225": 0.076
+      },
+      "mult": 0.8
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Hold_XAUUSD": 0.111,
+       "Hold_JP225": 0.109,
+       "Mon_GBPJPY": 0.402,
+       "Mon_AUDJPY": 0.377
+      },
+      "mult": 3.72
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_GER40": 0.5,
+       "Hold_US500": 0.5
+      },
+      "mult": 0.56
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_UK100": 0.438,
+       "v4_WTI": 0.215,
+       "v4_FR40": 0.256,
+       "Hold_NATGAS": 0.09
+      },
+      "mult": 1.0
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_US500": 0.317,
+       "Mon_NAS100": 0.209,
+       "v4_GBPUSD": 0.474
+      },
+      "mult": 1.88
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_NAS100": 1.0
+      },
+      "mult": 0.28
+     }
+    }
+   },
+   "JOINT_EXCL_SYM": {
+    "P_CB_new": 7.37,
+    "P_CB_old": 26.52,
+    "E_funded": 2.504,
+    "E_failed": 1.761,
+    "funded": {
+     "FTMO100k_531343523": 45.8,
+     "Fintokei_Sokkou2000_6078225": 0.0,
+     "FTMO50k_531407058": 67.7,
+     "FTMO50k_521100397": 52.1,
+     "FN100k_14166201": 67.4,
+     "Fintokei_Pearl500": 17.3,
+     "FN_Instant20k_11988011": 0.0
+    },
+    "failed": {
+     "FTMO100k_531343523": 33.3,
+     "Fintokei_Sokkou2000_6078225": 100.0,
+     "FTMO50k_531407058": 3.4,
+     "FTMO50k_521100397": 7.9,
+     "FN100k_14166201": 24.5,
+     "Fintokei_Pearl500": 7.0,
+     "FN_Instant20k_11988011": 0.0
+    },
+    "no_selection": [
+     "FN_Instant20k_11988011"
+    ],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "v4_GBPJPY": 0.418,
+       "v4_USDJPY": 0.251,
+       "Mon_UK100": 0.254,
+       "Mon_JP225": 0.076
+      },
+      "mult": 0.8
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Hold_XAUUSD": 0.187,
+       "Hold_US500": 0.346,
+       "Mon_AUDJPY": 0.467
+      },
+      "mult": 1.2
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_GER40": 0.5,
+       "Hold_NAS100": 0.5
+      },
+      "mult": 0.52
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_WTI": 0.406,
+       "v4_FR40": 0.424,
+       "Hold_NATGAS": 0.17
+      },
+      "mult": 1.16
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "v4_GBPUSD": 1.0
+      },
+      "mult": 1.76
+     },
+     "FN_Instant20k_11988011": {
+      "w": {},
+      "mult": 0.0
+     }
+    }
+   },
+   "JOINT_PEN": {
+    "P_CB_new": 9.48,
+    "P_CB_old": 29.51,
+    "E_funded": 3.601,
+    "E_failed": 2.014,
+    "funded": {
+     "FTMO100k_531343523": 45.5,
+     "Fintokei_Sokkou2000_6078225": 0.0,
+     "FTMO50k_531407058": 81.7,
+     "FTMO50k_521100397": 49.5,
+     "FN100k_14166201": 59.5,
+     "Fintokei_Pearl500": 53.2,
+     "FN_Instant20k_11988011": 70.7
+    },
+    "failed": {
+     "FTMO100k_531343523": 33.6,
+     "Fintokei_Sokkou2000_6078225": 100.0,
+     "FTMO50k_531407058": 13.7,
+     "FTMO50k_521100397": 8.4,
+     "FN100k_14166201": 11.9,
+     "Fintokei_Pearl500": 4.5,
+     "FN_Instant20k_11988011": 29.3
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "v4_GBPJPY": 0.418,
+       "v4_USDJPY": 0.251,
+       "Mon_UK100": 0.254,
+       "Mon_JP225": 0.076
+      },
+      "mult": 0.8
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Hold_XAUUSD": 0.111,
+       "Hold_JP225": 0.109,
+       "Mon_GBPJPY": 0.402,
+       "Mon_AUDJPY": 0.377
+      },
+      "mult": 3.72
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_US500": 0.5,
+       "Hold_GER40": 0.5
+      },
+      "mult": 0.56
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_WTI": 0.215,
+       "v4_FR40": 0.256,
+       "Hold_UK100": 0.438,
+       "Hold_NATGAS": 0.09
+      },
+      "mult": 1.0
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_US500": 0.317,
+       "Mon_NAS100": 0.209,
+       "v4_GBPUSD": 0.474
+      },
+      "mult": 1.88
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_NAS100": 1.0
+      },
+      "mult": 0.28
+     }
+    }
+   }
+  },
+  "2026-03-31": {
+   "INDEP": {
+    "P_CB_new": 11.83,
+    "P_CB_old": 29.87,
+    "E_funded": 3.866,
+    "E_failed": 2.004,
+    "funded": {
+     "FTMO100k_531343523": 44.3,
+     "Fintokei_Sokkou2000_6078225": 0.0,
+     "FTMO50k_531407058": 62.9,
+     "FTMO50k_521100397": 72.6,
+     "FN100k_14166201": 49.5,
+     "Fintokei_Pearl500": 71.7,
+     "FN_Instant20k_11988011": 85.6
+    },
+    "failed": {
+     "FTMO100k_531343523": 30.9,
+     "Fintokei_Sokkou2000_6078225": 100.0,
+     "FTMO50k_531407058": 6.5,
+     "FTMO50k_521100397": 12.0,
+     "FN100k_14166201": 26.7,
+     "Fintokei_Pearl500": 10.0,
+     "FN_Instant20k_11988011": 14.4
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 4,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "v4_USDJPY": 0.274,
+       "Mon_GBPJPY": 0.305,
+       "Mon_AUDJPY": 0.234,
+       "v4_GBPUSD": 0.187
+      },
+      "mult": 1.36
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "v4_USDJPY": 0.315,
+       "Mon_GBPJPY": 0.351,
+       "Mon_AUDJPY": 0.27,
+       "Hold_XAUUSD": 0.064
+      },
+      "mult": 3.68
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_GER40": 0.208,
+       "Mon_NAS100": 0.35,
+       "v4_GBPUSD": 0.442
+      },
+      "mult": 3.44
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_BTCUSD": 0.177,
+       "Hold_UK100": 0.433,
+       "Hold_WTI": 0.157,
+       "v4_FR40": 0.233
+      },
+      "mult": 0.96
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_AUDJPY": 0.337,
+       "Mon_NAS100": 0.116,
+       "v4_USDJPY": 0.217,
+       "v4_GBPUSD": 0.329
+      },
+      "mult": 4.64
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Mon_AUDJPY": 0.417,
+       "Mon_NAS100": 0.158,
+       "Hold_XAUUSD": 0.13,
+       "v4_USDJPY": 0.295
+      },
+      "mult": 1.68
+     }
+    }
+   },
+   "JOINT_EXCL": {
+    "P_CB_new": 10.11,
+    "P_CB_old": 52.02,
+    "E_funded": 2.872,
+    "E_failed": 2.641,
+    "funded": {
+     "FTMO100k_531343523": 44.3,
+     "Fintokei_Sokkou2000_6078225": 0.0,
+     "FTMO50k_531407058": 40.4,
+     "FTMO50k_521100397": 65.6,
+     "FN100k_14166201": 48.6,
+     "Fintokei_Pearl500": 68.6,
+     "FN_Instant20k_11988011": 19.7
+    },
+    "failed": {
+     "FTMO100k_531343523": 30.8,
+     "Fintokei_Sokkou2000_6078225": 100.0,
+     "FTMO50k_531407058": 3.5,
+     "FTMO50k_521100397": 6.8,
+     "FN100k_14166201": 26.7,
+     "Fintokei_Pearl500": 16.0,
+     "FN_Instant20k_11988011": 80.3
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 0,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "v4_USDJPY": 0.274,
+       "Mon_GBPJPY": 0.305,
+       "Mon_AUDJPY": 0.234,
+       "v4_GBPUSD": 0.187
+      },
+      "mult": 1.36
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_NZDJPY": 0.412,
+       "Mon_UK100": 0.363,
+       "Hold_XAUUSD": 0.1,
+       "Hold_JP225": 0.125
+      },
+      "mult": 1.48
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_GER40": 0.482,
+       "Mon_NAS100": 0.518
+      },
+      "mult": 1.72
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_BTCUSD": 0.177,
+       "Hold_UK100": 0.433,
+       "Hold_WTI": 0.157,
+       "v4_FR40": 0.233
+      },
+      "mult": 0.96
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_US500": 0.219,
+       "Mon_JP225": 0.145,
+       "v4_USDCHF": 0.229,
+       "v4_EURUSD": 0.407
+      },
+      "mult": 5.48
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Mon_EURJPY": 1.0
+      },
+      "mult": 3.44
+     }
+    }
+   },
+   "JOINT_EXCL_SYM": {
+    "P_CB_new": 10.02,
+    "P_CB_old": 31.79,
+    "E_funded": 2.743,
+    "E_failed": 1.919,
+    "funded": {
+     "FTMO100k_531343523": 44.3,
+     "Fintokei_Sokkou2000_6078225": 0.0,
+     "FTMO50k_531407058": 40.4,
+     "FTMO50k_521100397": 65.6,
+     "FN100k_14166201": 52.3,
+     "Fintokei_Pearl500": 71.7,
+     "FN_Instant20k_11988011": 0.0
+    },
+    "failed": {
+     "FTMO100k_531343523": 30.8,
+     "Fintokei_Sokkou2000_6078225": 100.0,
+     "FTMO50k_531407058": 3.5,
+     "FTMO50k_521100397": 6.8,
+     "FN100k_14166201": 39.1,
+     "Fintokei_Pearl500": 11.7,
+     "FN_Instant20k_11988011": 0.0
+    },
+    "no_selection": [
+     "FN_Instant20k_11988011"
+    ],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "v4_USDJPY": 0.274,
+       "Mon_GBPJPY": 0.305,
+       "Mon_AUDJPY": 0.234,
+       "v4_GBPUSD": 0.187
+      },
+      "mult": 1.36
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_NZDJPY": 0.412,
+       "Mon_UK100": 0.363,
+       "Hold_XAUUSD": 0.1,
+       "Hold_JP225": 0.125
+      },
+      "mult": 1.48
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_GER40": 0.482,
+       "Mon_NAS100": 0.518
+      },
+      "mult": 1.72
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_BTCUSD": 0.26,
+       "Hold_WTI": 0.229,
+       "v4_FR40": 0.341,
+       "Mon_ETHUSD": 0.171
+      },
+      "mult": 1.12
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_US500": 0.154,
+       "v4_USDCHF": 0.162,
+       "v4_EURUSD": 0.3,
+       "Mon_EURJPY": 0.383
+      },
+      "mult": 6.0
+     },
+     "FN_Instant20k_11988011": {
+      "w": {},
+      "mult": 0.0
+     }
+    }
+   },
+   "JOINT_PEN": {
+    "P_CB_new": 7.9,
+    "P_CB_old": 49.42,
+    "E_funded": 2.636,
+    "E_failed": 2.538,
+    "funded": {
+     "FTMO100k_531343523": 44.3,
+     "Fintokei_Sokkou2000_6078225": 0.1,
+     "FTMO50k_531407058": 6.3,
+     "FTMO50k_521100397": 66.0,
+     "FN100k_14166201": 49.1,
+     "Fintokei_Pearl500": 77.7,
+     "FN_Instant20k_11988011": 20.2
+    },
+    "failed": {
+     "FTMO100k_531343523": 30.5,
+     "Fintokei_Sokkou2000_6078225": 99.9,
+     "FTMO50k_531407058": 1.0,
+     "FTMO50k_521100397": 6.3,
+     "FN100k_14166201": 26.6,
+     "Fintokei_Pearl500": 9.6,
+     "FN_Instant20k_11988011": 79.8
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 2,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "v4_USDJPY": 0.274,
+       "Mon_GBPJPY": 0.305,
+       "Mon_AUDJPY": 0.234,
+       "v4_GBPUSD": 0.187
+      },
+      "mult": 1.36
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_UK100": 0.361,
+       "Hold_XAUUSD": 0.1,
+       "Mon_JP225": 0.137,
+       "v4_EURUSD": 0.402
+      },
+      "mult": 1.32
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_GER40": 0.482,
+       "Mon_NAS100": 0.518
+      },
+      "mult": 1.72
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_BTCUSD": 0.177,
+       "Hold_UK100": 0.433,
+       "Hold_WTI": 0.157,
+       "v4_FR40": 0.233
+      },
+      "mult": 0.96
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_NZDJPY": 0.438,
+       "Mon_US500": 0.274,
+       "v4_USDCHF": 0.288
+      },
+      "mult": 4.36
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Mon_EURJPY": 1.0
+      },
+      "mult": 3.44
+     }
+    }
+   }
+  },
+  "2026-05-29": {
+   "INDEP": {
+    "P_CB_new": 18.47,
+    "P_CB_old": 49.11,
+    "E_funded": 3.913,
+    "E_failed": 2.619,
+    "funded": {
+     "FTMO100k_531343523": 46.4,
+     "Fintokei_Sokkou2000_6078225": 18.2,
+     "FTMO50k_531407058": 78.2,
+     "FTMO50k_521100397": 79.4,
+     "FN100k_14166201": 63.6,
+     "Fintokei_Pearl500": 75.5,
+     "FN_Instant20k_11988011": 30.0
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.7,
+     "Fintokei_Sokkou2000_6078225": 81.8,
+     "FTMO50k_531407058": 15.8,
+     "FTMO50k_521100397": 15.9,
+     "FN100k_14166201": 34.8,
+     "Fintokei_Pearl500": 14.9,
+     "FN_Instant20k_11988011": 70.0
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 4,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_GBPJPY": 0.345,
+       "Mon_AUDJPY": 0.268,
+       "v4_USDCHF": 0.175,
+       "v4_GBPUSD": 0.212
+      },
+      "mult": 3.2
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_GBPJPY": 0.4,
+       "Mon_AUDJPY": 0.31,
+       "Hold_JP225": 0.087,
+       "v4_USDCHF": 0.203
+      },
+      "mult": 4.72
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_AUDJPY": 0.328,
+       "Mon_NZDJPY": 0.353,
+       "Hold_NAS100": 0.137,
+       "Hold_US500": 0.182
+      },
+      "mult": 2.56
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_UK100": 0.501,
+       "v4_BTCUSD": 0.204,
+       "Hold_WTI": 0.16,
+       "Mon_ETHUSD": 0.135
+      },
+      "mult": 1.48
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_AUDJPY": 0.261,
+       "Mon_GBPJPY": 0.3,
+       "v4_USDJPY": 0.251,
+       "v4_USDCHF": 0.187
+      },
+      "mult": 6.0
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Mon_AUDJPY": 0.32,
+       "Hold_NAS100": 0.132,
+       "Hold_US500": 0.181,
+       "Mon_GBPJPY": 0.367
+      },
+      "mult": 1.48
+     }
+    }
+   },
+   "JOINT_EXCL": {
+    "P_CB_new": 19.78,
+    "P_CB_old": 38.94,
+    "E_funded": 4.493,
+    "E_failed": 2.062,
+    "funded": {
+     "FTMO100k_531343523": 46.4,
+     "Fintokei_Sokkou2000_6078225": 18.2,
+     "FTMO50k_531407058": 78.2,
+     "FTMO50k_521100397": 76.5,
+     "FN100k_14166201": 63.6,
+     "Fintokei_Pearl500": 75.1,
+     "FN_Instant20k_11988011": 91.2
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.7,
+     "Fintokei_Sokkou2000_6078225": 81.8,
+     "FTMO50k_531407058": 17.9,
+     "FTMO50k_521100397": 17.4,
+     "FN100k_14166201": 34.8,
+     "Fintokei_Pearl500": 16.9,
+     "FN_Instant20k_11988011": 8.8
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_GBPJPY": 0.345,
+       "Mon_AUDJPY": 0.268,
+       "v4_USDCHF": 0.175,
+       "v4_GBPUSD": 0.212
+      },
+      "mult": 3.2
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_NZDJPY": 0.43,
+       "Hold_JP225": 0.145,
+       "Mon_GER40": 0.184,
+       "Hold_NAS100": 0.241
+      },
+      "mult": 2.28
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_US500": 0.177,
+       "Mon_EURJPY": 0.439,
+       "Mon_CHFJPY": 0.383
+      },
+      "mult": 4.08
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_UK100": 0.501,
+       "v4_BTCUSD": 0.204,
+       "Hold_WTI": 0.16,
+       "Mon_ETHUSD": 0.135
+      },
+      "mult": 1.48
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_NAS100": 0.158,
+       "v4_USDJPY": 0.328,
+       "Mon_US500": 0.228,
+       "v4_NZDUSD": 0.286
+      },
+      "mult": 4.92
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_XAUUSD": 0.195,
+       "Hold_GER40": 0.325,
+       "v4_EURUSD": 0.48
+      },
+      "mult": 0.56
+     }
+    }
+   },
+   "JOINT_EXCL_SYM": {
+    "P_CB_new": 20.72,
+    "P_CB_old": 40.67,
+    "E_funded": 4.387,
+    "E_failed": 2.097,
+    "funded": {
+     "FTMO100k_531343523": 46.4,
+     "Fintokei_Sokkou2000_6078225": 18.2,
+     "FTMO50k_531407058": 78.2,
+     "FTMO50k_521100397": 76.5,
+     "FN100k_14166201": 63.6,
+     "Fintokei_Pearl500": 57.2,
+     "FN_Instant20k_11988011": 98.6
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.7,
+     "Fintokei_Sokkou2000_6078225": 81.8,
+     "FTMO50k_531407058": 17.9,
+     "FTMO50k_521100397": 17.4,
+     "FN100k_14166201": 34.8,
+     "Fintokei_Pearl500": 27.8,
+     "FN_Instant20k_11988011": 1.4
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_GBPJPY": 0.345,
+       "Mon_AUDJPY": 0.268,
+       "v4_USDCHF": 0.175,
+       "v4_GBPUSD": 0.212
+      },
+      "mult": 3.2
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_NZDJPY": 0.43,
+       "Hold_JP225": 0.145,
+       "Mon_GER40": 0.184,
+       "Hold_NAS100": 0.241
+      },
+      "mult": 2.28
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_US500": 0.177,
+       "Mon_EURJPY": 0.439,
+       "Mon_CHFJPY": 0.383
+      },
+      "mult": 4.08
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_UK100": 0.501,
+       "v4_BTCUSD": 0.204,
+       "Hold_WTI": 0.16,
+       "Mon_ETHUSD": 0.135
+      },
+      "mult": 1.48
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "v4_USDJPY": 0.5,
+       "v4_NZDUSD": 0.5
+      },
+      "mult": 5.44
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_XAUUSD": 0.357,
+       "v4_EURUSD": 0.643
+      },
+      "mult": 0.52
+     }
+    }
+   },
+   "JOINT_PEN": {
+    "P_CB_new": 21.01,
+    "P_CB_old": 42.11,
+    "E_funded": 4.276,
+    "E_failed": 2.251,
+    "funded": {
+     "FTMO100k_531343523": 46.4,
+     "Fintokei_Sokkou2000_6078225": 18.2,
+     "FTMO50k_531407058": 71.9,
+     "FTMO50k_521100397": 79.9,
+     "FN100k_14166201": 63.6,
+     "Fintokei_Pearl500": 68.8,
+     "FN_Instant20k_11988011": 78.8
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.7,
+     "Fintokei_Sokkou2000_6078225": 81.8,
+     "FTMO50k_531407058": 18.5,
+     "FTMO50k_521100397": 16.8,
+     "FN100k_14166201": 34.8,
+     "Fintokei_Pearl500": 23.3,
+     "FN_Instant20k_11988011": 21.2
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 0,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_GBPJPY": 0.345,
+       "Mon_AUDJPY": 0.268,
+       "v4_USDCHF": 0.175,
+       "v4_GBPUSD": 0.212
+      },
+      "mult": 3.2
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Hold_JP225": 0.183,
+       "Mon_GER40": 0.233,
+       "Hold_NAS100": 0.304,
+       "Mon_FR40": 0.281
+      },
+      "mult": 1.52
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_NZDJPY": 0.364,
+       "Mon_EURJPY": 0.449,
+       "Hold_US500": 0.188
+      },
+      "mult": 4.2
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_BTCUSD": 0.204,
+       "Hold_UK100": 0.501,
+       "Hold_WTI": 0.16,
+       "Mon_ETHUSD": 0.135
+      },
+      "mult": 1.48
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "v4_USDJPY": 0.312,
+       "Mon_UK100": 0.265,
+       "Mon_NAS100": 0.15,
+       "v4_NZDUSD": 0.272
+      },
+      "mult": 6.0
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_XAUUSD": 0.113,
+       "Mon_US500": 0.301,
+       "Hold_GER40": 0.189,
+       "v4_EURUSD": 0.397
+      },
+      "mult": 1.12
+     }
+    }
+   }
+  },
+  "2026-06-30": {
+   "INDEP": {
+    "P_CB_new": 18.41,
+    "P_CB_old": 45.1,
+    "E_funded": 3.951,
+    "E_failed": 2.536,
+    "funded": {
+     "FTMO100k_531343523": 47.4,
+     "Fintokei_Sokkou2000_6078225": 17.8,
+     "FTMO50k_531407058": 79.2,
+     "FTMO50k_521100397": 79.4,
+     "FN100k_14166201": 60.9,
+     "Fintokei_Pearl500": 76.3,
+     "FN_Instant20k_11988011": 34.0
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.3,
+     "Fintokei_Sokkou2000_6078225": 82.2,
+     "FTMO50k_531407058": 14.9,
+     "FTMO50k_521100397": 15.8,
+     "FN100k_14166201": 32.1,
+     "Fintokei_Pearl500": 14.3,
+     "FN_Instant20k_11988011": 66.0
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 6,
+     "pairs_identical": 1,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_GBPJPY": 0.36,
+       "Mon_AUDJPY": 0.284,
+       "v4_USDCHF": 0.168,
+       "v4_NZDUSD": 0.189
+      },
+      "mult": 2.96
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_GBPJPY": 0.404,
+       "Mon_AUDJPY": 0.328,
+       "Hold_JP225": 0.074,
+       "v4_USDCHF": 0.194
+      },
+      "mult": 4.92
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_GBPJPY": 0.362,
+       "Hold_US500": 0.124,
+       "Hold_NAS100": 0.084,
+       "Mon_EURJPY": 0.431
+      },
+      "mult": 3.56
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_UK100": 0.417,
+       "v4_BTCUSD": 0.131,
+       "Hold_FR40": 0.361,
+       "Mon_ETHUSD": 0.091
+      },
+      "mult": 1.24
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_GBPJPY": 0.307,
+       "Mon_AUDJPY": 0.259,
+       "v4_USDJPY": 0.248,
+       "v4_USDCHF": 0.185
+      },
+      "mult": 6.0
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Mon_GBPJPY": 0.307,
+       "Mon_AUDJPY": 0.259,
+       "v4_USDJPY": 0.248,
+       "v4_USDCHF": 0.185
+      },
+      "mult": 4.0
+     }
+    }
+   },
+   "JOINT_EXCL": {
+    "P_CB_new": 21.78,
+    "P_CB_old": 44.23,
+    "E_funded": 3.97,
+    "E_failed": 2.473,
+    "funded": {
+     "FTMO100k_531343523": 47.4,
+     "Fintokei_Sokkou2000_6078225": 17.8,
+     "FTMO50k_531407058": 78.5,
+     "FTMO50k_521100397": 72.7,
+     "FN100k_14166201": 60.9,
+     "Fintokei_Pearl500": 65.5,
+     "FN_Instant20k_11988011": 54.1
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.3,
+     "Fintokei_Sokkou2000_6078225": 82.2,
+     "FTMO50k_531407058": 20.6,
+     "FTMO50k_521100397": 13.9,
+     "FN100k_14166201": 32.1,
+     "Fintokei_Pearl500": 24.4,
+     "FN_Instant20k_11988011": 45.9
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_GBPJPY": 0.36,
+       "Mon_AUDJPY": 0.284,
+       "v4_USDCHF": 0.168,
+       "v4_NZDUSD": 0.189
+      },
+      "mult": 2.96
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_NZDJPY": 0.429,
+       "Hold_JP225": 0.122,
+       "Mon_GER40": 0.174,
+       "Hold_US500": 0.276
+      },
+      "mult": 3.16
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_NAS100": 0.15,
+       "Mon_EURJPY": 0.547,
+       "Mon_JP225": 0.135,
+       "Hold_GER40": 0.167
+      },
+      "mult": 2.16
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_UK100": 0.417,
+       "v4_BTCUSD": 0.131,
+       "Hold_FR40": 0.361,
+       "Mon_ETHUSD": 0.091
+      },
+      "mult": 1.24
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "v4_USDJPY": 0.307,
+       "v4_GBPUSD": 0.237,
+       "Mon_UK100": 0.252,
+       "Mon_US500": 0.204
+      },
+      "mult": 6.0
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Mon_NAS100": 0.451,
+       "v4_EURUSD": 0.549
+      },
+      "mult": 1.96
+     }
+    }
+   },
+   "JOINT_EXCL_SYM": {
+    "P_CB_new": 20.97,
+    "P_CB_old": 37.35,
+    "E_funded": 3.163,
+    "E_failed": 2.058,
+    "funded": {
+     "FTMO100k_531343523": 47.4,
+     "Fintokei_Sokkou2000_6078225": 17.8,
+     "FTMO50k_531407058": 78.5,
+     "FTMO50k_521100397": 75.0,
+     "FN100k_14166201": 60.9,
+     "Fintokei_Pearl500": 36.6,
+     "FN_Instant20k_11988011": 0.0
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.3,
+     "Fintokei_Sokkou2000_6078225": 82.2,
+     "FTMO50k_531407058": 20.6,
+     "FTMO50k_521100397": 17.1,
+     "FN100k_14166201": 32.1,
+     "Fintokei_Pearl500": 25.5,
+     "FN_Instant20k_11988011": 0.0
+    },
+    "no_selection": [
+     "FN_Instant20k_11988011"
+    ],
+    "diag": {
+     "pairs_rho_gt_0_7": 0,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_GBPJPY": 0.36,
+       "Mon_AUDJPY": 0.284,
+       "v4_USDCHF": 0.168,
+       "v4_NZDUSD": 0.189
+      },
+      "mult": 2.96
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_NZDJPY": 0.429,
+       "Hold_JP225": 0.122,
+       "Mon_GER40": 0.174,
+       "Hold_US500": 0.276
+      },
+      "mult": 3.16
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_NAS100": 0.075,
+       "Mon_EURJPY": 0.457,
+       "Mon_USDJPY": 0.468
+      },
+      "mult": 5.16
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_UK100": 0.417,
+       "v4_BTCUSD": 0.131,
+       "Hold_FR40": 0.361,
+       "Mon_ETHUSD": 0.091
+      },
+      "mult": 1.24
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "v4_GBPUSD": 0.5,
+       "v4_EURUSD": 0.5
+      },
+      "mult": 4.68
+     },
+     "FN_Instant20k_11988011": {
+      "w": {},
+      "mult": 0.0
+     }
+    }
+   },
+   "JOINT_PEN": {
+    "P_CB_new": 18.58,
+    "P_CB_old": 44.29,
+    "E_funded": 3.945,
+    "E_failed": 2.428,
+    "funded": {
+     "FTMO100k_531343523": 47.4,
+     "Fintokei_Sokkou2000_6078225": 17.8,
+     "FTMO50k_531407058": 77.2,
+     "FTMO50k_521100397": 70.4,
+     "FN100k_14166201": 63.1,
+     "Fintokei_Pearl500": 64.4,
+     "FN_Instant20k_11988011": 54.1
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.3,
+     "Fintokei_Sokkou2000_6078225": 82.2,
+     "FTMO50k_531407058": 16.1,
+     "FTMO50k_521100397": 13.0,
+     "FN100k_14166201": 35.1,
+     "Fintokei_Pearl500": 22.2,
+     "FN_Instant20k_11988011": 45.9
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_GBPJPY": 0.36,
+       "Mon_AUDJPY": 0.284,
+       "v4_USDCHF": 0.168,
+       "v4_NZDUSD": 0.189
+      },
+      "mult": 2.96
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Hold_JP225": 0.148,
+       "Mon_GER40": 0.211,
+       "Mon_US500": 0.402,
+       "Hold_NAS100": 0.238
+      },
+      "mult": 1.88
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_EURJPY": 0.523,
+       "Mon_JP225": 0.123,
+       "Hold_US500": 0.202,
+       "Hold_GER40": 0.152
+      },
+      "mult": 2.04
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_BTCUSD": 0.207,
+       "Hold_UK100": 0.492,
+       "Hold_WTI": 0.158,
+       "Mon_ETHUSD": 0.143
+      },
+      "mult": 1.48
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "v4_GBPUSD": 0.215,
+       "v4_USDJPY": 0.279,
+       "Mon_UK100": 0.229,
+       "Mon_NZDJPY": 0.277
+      },
+      "mult": 6.0
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "v4_EURUSD": 0.549,
+       "Mon_NAS100": 0.451
+      },
+      "mult": 1.96
+     }
+    }
+   }
+  },
+  "2026-08-31": {
+   "INDEP": {
+    "P_CB_new": 21.35,
+    "P_CB_old": 56.65,
+    "E_funded": 3.331,
+    "E_failed": 2.947,
+    "funded": {
+     "FTMO100k_531343523": 47.1,
+     "Fintokei_Sokkou2000_6078225": 6.8,
+     "FTMO50k_531407058": 67.6,
+     "FTMO50k_521100397": 71.0,
+     "FN100k_14166201": 49.1,
+     "Fintokei_Pearl500": 75.0,
+     "FN_Instant20k_11988011": 16.4
+    },
+    "failed": {
+     "FTMO100k_531343523": 28.2,
+     "Fintokei_Sokkou2000_6078225": 93.2,
+     "FTMO50k_531407058": 17.1,
+     "FTMO50k_521100397": 19.2,
+     "FN100k_14166201": 37.5,
+     "Fintokei_Pearl500": 16.0,
+     "FN_Instant20k_11988011": 83.6
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 6,
+     "pairs_identical": 3,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_AUDJPY": 0.232,
+       "Mon_GBPJPY": 0.26,
+       "v4_NZDUSD": 0.186,
+       "v4_USDJPY": 0.322
+      },
+      "mult": 2.6
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_AUDJPY": 0.232,
+       "Mon_GBPJPY": 0.26,
+       "v4_NZDUSD": 0.186,
+       "v4_USDJPY": 0.322
+      },
+      "mult": 6.0
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "v4_GBPJPY": 0.303,
+       "Mon_USDJPY": 0.32,
+       "Mon_EURJPY": 0.277,
+       "Hold_GER40": 0.099
+      },
+      "mult": 5.24
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_BTCUSD": 0.221,
+       "Hold_WTI": 0.157,
+       "Mon_ETHUSD": 0.166,
+       "v4_FR40": 0.456
+      },
+      "mult": 1.24
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_GBPJPY": 0.278,
+       "v4_USDJPY": 0.258,
+       "Mon_AUDJPY": 0.243,
+       "v4_NZDUSD": 0.22
+      },
+      "mult": 6.0
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Mon_GBPJPY": 0.306,
+       "v4_USDJPY": 0.284,
+       "Mon_AUDJPY": 0.267,
+       "Hold_US500": 0.144
+      },
+      "mult": 3.24
+     }
+    }
+   },
+   "JOINT_EXCL": {
+    "P_CB_new": 15.75,
+    "P_CB_old": 49.99,
+    "E_funded": 3.409,
+    "E_failed": 2.7,
+    "funded": {
+     "FTMO100k_531343523": 40.3,
+     "Fintokei_Sokkou2000_6078225": 3.3,
+     "FTMO50k_531407058": 77.4,
+     "FTMO50k_521100397": 71.2,
+     "FN100k_14166201": 43.3,
+     "Fintokei_Pearl500": 73.9,
+     "FN_Instant20k_11988011": 31.6
+    },
+    "failed": {
+     "FTMO100k_531343523": 23.2,
+     "Fintokei_Sokkou2000_6078225": 96.7,
+     "FTMO50k_531407058": 16.6,
+     "FTMO50k_521100397": 13.6,
+     "FN100k_14166201": 33.1,
+     "Fintokei_Pearl500": 18.3,
+     "FN_Instant20k_11988011": 68.4
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_AUDJPY": 0.232,
+       "Mon_GBPJPY": 0.26,
+       "v4_NZDUSD": 0.186,
+       "v4_USDJPY": 0.322
+      },
+      "mult": 2.6
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "v4_GBPJPY": 0.415,
+       "Mon_GER40": 0.081,
+       "Mon_EURJPY": 0.379,
+       "Hold_US500": 0.125
+      },
+      "mult": 6.0
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_USDJPY": 0.429,
+       "Hold_GER40": 0.155,
+       "Hold_BTCUSD": 0.058,
+       "Mon_CADJPY": 0.357
+      },
+      "mult": 2.52
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_BTCUSD": 0.221,
+       "Hold_WTI": 0.157,
+       "Mon_ETHUSD": 0.166,
+       "v4_FR40": 0.456
+      },
+      "mult": 1.24
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_NZDJPY": 0.436,
+       "Mon_JP225": 0.167,
+       "v4_AUDUSD": 0.398
+      },
+      "mult": 6.0
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_NAS100": 0.488,
+       "Mon_US500": 0.512
+      },
+      "mult": 0.92
+     }
+    }
+   },
+   "JOINT_EXCL_SYM": {
+    "P_CB_new": 11.63,
+    "P_CB_old": 37.14,
+    "E_funded": 3.59,
+    "E_failed": 2.274,
+    "funded": {
+     "FTMO100k_531343523": 40.3,
+     "Fintokei_Sokkou2000_6078225": 3.3,
+     "FTMO50k_531407058": 76.9,
+     "FTMO50k_521100397": 68.2,
+     "FN100k_14166201": 48.6,
+     "Fintokei_Pearl500": 68.5,
+     "FN_Instant20k_11988011": 53.2
+    },
+    "failed": {
+     "FTMO100k_531343523": 23.2,
+     "Fintokei_Sokkou2000_6078225": 96.7,
+     "FTMO50k_531407058": 16.9,
+     "FTMO50k_521100397": 13.3,
+     "FN100k_14166201": 14.4,
+     "Fintokei_Pearl500": 16.1,
+     "FN_Instant20k_11988011": 46.8
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_AUDJPY": 0.232,
+       "Mon_GBPJPY": 0.26,
+       "v4_NZDUSD": 0.186,
+       "v4_USDJPY": 0.322
+      },
+      "mult": 2.6
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "Mon_GER40": 0.082,
+       "Mon_EURJPY": 0.384,
+       "Hold_US500": 0.126,
+       "v4_AUDUSD": 0.408
+      },
+      "mult": 6.0
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Hold_BTCUSD": 0.26,
+       "Mon_CADJPY": 0.74
+      },
+      "mult": 0.84
+     },
+     "FN100k_14166201": {
+      "w": {
+       "Hold_WTI": 0.227,
+       "Mon_ETHUSD": 0.24,
+       "v4_FR40": 0.533
+      },
+      "mult": 0.84
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_NZDJPY": 0.624,
+       "Mon_JP225": 0.376
+      },
+      "mult": 3.56
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_NAS100": 1.0
+      },
+      "mult": 0.4
+     }
+    }
+   },
+   "JOINT_PEN": {
+    "P_CB_new": 15.8,
+    "P_CB_old": 50.77,
+    "E_funded": 3.384,
+    "E_failed": 2.726,
+    "funded": {
+     "FTMO100k_531343523": 40.3,
+     "Fintokei_Sokkou2000_6078225": 3.3,
+     "FTMO50k_531407058": 74.6,
+     "FTMO50k_521100397": 76.9,
+     "FN100k_14166201": 43.3,
+     "Fintokei_Pearl500": 68.5,
+     "FN_Instant20k_11988011": 31.6
+    },
+    "failed": {
+     "FTMO100k_531343523": 23.2,
+     "Fintokei_Sokkou2000_6078225": 96.7,
+     "FTMO50k_531407058": 18.0,
+     "FTMO50k_521100397": 17.0,
+     "FN100k_14166201": 33.1,
+     "Fintokei_Pearl500": 16.1,
+     "FN_Instant20k_11988011": 68.4
+    },
+    "no_selection": [],
+    "diag": {
+     "pairs_rho_gt_0_7": 1,
+     "pairs_identical": 0,
+     "fn_symbol_violations": 0
+    },
+    "alloc": {
+     "Fintokei_Sokkou2000_6078225": {
+      "w": {
+       "Mon_AUDJPY": 0.232,
+       "Mon_GBPJPY": 0.26,
+       "v4_NZDUSD": 0.186,
+       "v4_USDJPY": 0.322
+      },
+      "mult": 2.6
+     },
+     "FTMO50k_531407058": {
+      "w": {
+       "v4_GBPJPY": 0.408,
+       "Mon_GER40": 0.077,
+       "v4_AUDUSD": 0.398,
+       "Hold_US500": 0.118
+      },
+      "mult": 6.0
+     },
+     "FTMO50k_521100397": {
+      "w": {
+       "Mon_USDJPY": 0.415,
+       "Mon_EURJPY": 0.392,
+       "Hold_GER40": 0.14,
+       "Hold_BTCUSD": 0.053
+      },
+      "mult": 3.44
+     },
+     "FN100k_14166201": {
+      "w": {
+       "v4_BTCUSD": 0.221,
+       "Hold_WTI": 0.157,
+       "Mon_ETHUSD": 0.166,
+       "v4_FR40": 0.456
+      },
+      "mult": 1.24
+     },
+     "Fintokei_Pearl500": {
+      "w": {
+       "Mon_JP225": 0.376,
+       "Mon_NZDJPY": 0.624
+      },
+      "mult": 3.56
+     },
+     "FN_Instant20k_11988011": {
+      "w": {
+       "Hold_NAS100": 0.488,
+       "Mon_US500": 0.512
+      },
+      "mult": 0.92
+     }
+    }
+   }
+  }
+ },
+ "aggregate": {
+  "INDEP": {
+   "P_CB_new": 15.32,
+   "P_CB_old": 45.01,
+   "E_funded": 3.594,
+   "E_failed": 2.502,
+   "funded": {
+    "FTMO100k_531343523": 44.4,
+    "Fintokei_Sokkou2000_6078225": 7.3,
+    "FTMO50k_531407058": 70.3,
+    "FTMO50k_521100397": 67.9,
+    "FN100k_14166201": 60.5,
+    "Fintokei_Pearl500": 71.7,
+    "FN_Instant20k_11988011": 37.3
+   },
+   "failed": {
+    "FTMO100k_531343523": 29.7,
+    "Fintokei_Sokkou2000_6078225": 92.6,
+    "FTMO50k_531407058": 11.6,
+    "FTMO50k_521100397": 12.4,
+    "FN100k_14166201": 26.4,
+    "Fintokei_Pearl500": 14.7,
+    "FN_Instant20k_11988011": 62.7
+   },
+   "diag": {
+    "pairs_rho_gt_0_7": 4.17,
+    "pairs_identical": 0.83,
+    "fn_symbol_violations": 0.17
+   },
+   "no_selection_events": 0
+  },
+  "JOINT_EXCL": {
+   "P_CB_new": 13.74,
+   "P_CB_old": 39.59,
+   "E_funded": 3.632,
+   "E_failed": 2.28,
+   "funded": {
+    "FTMO100k_531343523": 43.3,
+    "Fintokei_Sokkou2000_6078225": 6.8,
+    "FTMO50k_531407058": 70.4,
+    "FTMO50k_521100397": 59.9,
+    "FN100k_14166201": 59.4,
+    "Fintokei_Pearl500": 65.1,
+    "FN_Instant20k_11988011": 58.3
+   },
+   "failed": {
+    "FTMO100k_531343523": 28.8,
+    "Fintokei_Sokkou2000_6078225": 93.2,
+    "FTMO50k_531407058": 13.0,
+    "FTMO50k_521100397": 10.7,
+    "FN100k_14166201": 25.7,
+    "Fintokei_Pearl500": 14.8,
+    "FN_Instant20k_11988011": 41.7
+   },
+   "diag": {
+    "pairs_rho_gt_0_7": 0.67,
+    "pairs_identical": 0.0,
+    "fn_symbol_violations": 0.0
+   },
+   "no_selection_events": 0
+  },
+  "JOINT_EXCL_SYM": {
+   "P_CB_new": 13.21,
+   "P_CB_old": 32.82,
+   "E_funded": 3.147,
+   "E_failed": 1.971,
+   "funded": {
+    "FTMO100k_531343523": 43.3,
+    "Fintokei_Sokkou2000_6078225": 6.8,
+    "FTMO50k_531407058": 70.7,
+    "FTMO50k_521100397": 57.1,
+    "FN100k_14166201": 60.5,
+    "Fintokei_Pearl500": 51.0,
+    "FN_Instant20k_11988011": 25.3
+   },
+   "failed": {
+    "FTMO100k_531343523": 28.8,
+    "Fintokei_Sokkou2000_6078225": 93.2,
+    "FTMO50k_531407058": 12.6,
+    "FTMO50k_521100397": 10.7,
+    "FN100k_14166201": 27.7,
+    "Fintokei_Pearl500": 16.2,
+    "FN_Instant20k_11988011": 8.0
+   },
+   "diag": {
+    "pairs_rho_gt_0_7": 0.67,
+    "pairs_identical": 0.0,
+    "fn_symbol_violations": 0.0
+   },
+   "no_selection_events": 4
+  },
+  "JOINT_PEN": {
+   "P_CB_new": 13.05,
+   "P_CB_old": 39.83,
+   "E_funded": 3.548,
+   "E_failed": 2.291,
+   "funded": {
+    "FTMO100k_531343523": 43.3,
+    "Fintokei_Sokkou2000_6078225": 6.8,
+    "FTMO50k_531407058": 63.0,
+    "FTMO50k_521100397": 61.1,
+    "FN100k_14166201": 59.8,
+    "Fintokei_Pearl500": 64.5,
+    "FN_Instant20k_11988011": 56.3
+   },
+   "failed": {
+    "FTMO100k_531343523": 28.8,
+    "Fintokei_Sokkou2000_6078225": 93.2,
+    "FTMO50k_531407058": 12.2,
+    "FTMO50k_521100397": 10.9,
+    "FN100k_14166201": 26.2,
+    "Fintokei_Pearl500": 14.1,
+    "FN_Instant20k_11988011": 43.7
+   },
+   "diag": {
+    "pairs_rho_gt_0_7": 0.83,
+    "pairs_identical": 0.0,
+    "fn_symbol_violations": 0.0
+   },
+   "no_selection_events": 0
+  }
+ },
+ "verdict": {
+  "JOINT_EXCL": {
+   "rel_cb_new_pct": -10.3,
+   "d_E_funded": 0.038,
+   "adopt_candidate": false,
+   "tradeoff": false
+  },
+  "JOINT_EXCL_SYM": {
+   "rel_cb_new_pct": -13.8,
+   "d_E_funded": -0.447,
+   "adopt_candidate": false,
+   "tradeoff": false
+  },
+  "JOINT_PEN": {
+   "rel_cb_new_pct": -14.8,
+   "d_E_funded": -0.046,
+   "adopt_candidate": false,
+   "tradeoff": false
+  }
+ }
+}

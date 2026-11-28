@@ -1,0 +1,15 @@
+{
+ "_comment": "config.json にコピーして編集(config.json は git 管理外)。webhook_url と tradovate.* は秘密。qty は docs/336 §16(2026-10 の価格 MES≈7,860 / MNQ≈31,100 / MYM≈51,900 で ×3 名目): 50K=MES2/MNQ1/MYM1(4)、100K=3/1/3(7)、150K=5/2/5(12)。2026-10-12 Q132(docs/353): 日中ソフト停止を入れた MC では枚数を増やしても Live 到達は上がらず Live 後の失格だけ増える → 150K は 5/2/5(12)のまま(7/3/7 案は取り下げ)。NIY は TradersPost 対応待ち(qty 0)。max_contracts_total を同じ合計に",
+ "transport": "dry",
+ "webhook_url": "https://webhooks.traderspost.io/trading/webhook/<uuid>/<password>",
+ "symbols": {"MES": {"qty": 2, "cfd": "US500"}, "MNQ": {"qty": 1, "cfd": "NAS100"}, "MYM": {"qty": 2, "cfd": "US30"}, "NIY": {"qty": 0, "cfd": "JP225"}},
+ "max_contracts_total": 5,
+ "_sizing_comment": "v0.6: sizing=git(既定)なら entry/status の直前に branch の ops/futures/sizing.json を取得して上の qty / max_contracts_total を上書きする(docs/336 §24)。上書きしたくなければ sizing を local に",
+ "sizing": "git",
+ "branch": "claude/prop-trading-new-methods-a8y3l1",
+ "scaling": {"rule": "A", "mll": 4500, "lock_at": 100, "phase": "eval", "equity_override": null},
+ "holidays_csv": "C:\\chien\\research\\data_ext\\holidays_us_uk_au_nz_2016_2027.csv",
+ "log_csv": "G:\\マイドライブ\\chien_ops\\futures\\mffu_log.csv",
+ "state_json": "C:\\chien\\ops\\futures\\out\\state.json",
+ "tradovate": {"host": "https://demo.tradovateapi.com/v1", "user": "", "password": "", "cid": "", "sec": "", "device_id": "chien-vps"}
+}

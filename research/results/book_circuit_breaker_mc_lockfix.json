@@ -1,0 +1,408 @@
+{
+ "meta": {
+  "purpose": "現ブック同時失格MC docs/199",
+  "seed": 7,
+  "n_mc": 10000,
+  "horizon": 250,
+  "cb_window": 30,
+  "dates": [
+   "2025-09-30",
+   "2025-12-31",
+   "2026-03-31",
+   "2026-05-29",
+   "2026-06-30",
+   "2026-08-31"
+  ],
+  "excluded_account": "FN100k_14074882(季節RG3・再構築不可・docs/199 §6.1)",
+  "rules": {
+   "FTMO100k_531343523": {
+    "kind": "2step",
+    "p1": 0.1,
+    "p2": 0.05,
+    "dd": 0.1,
+    "guard": 0.04
+   },
+   "FTMO50k_531407058": {
+    "kind": "2step",
+    "p1": 0.1,
+    "p2": 0.05,
+    "dd": 0.1,
+    "guard": 0.04
+   },
+   "FTMO50k_521100397": {
+    "kind": "2step",
+    "p1": 0.1,
+    "p2": 0.05,
+    "dd": 0.1,
+    "guard": 0.04
+   },
+   "FN100k_14166201": {
+    "kind": "2step",
+    "p1": 0.08,
+    "p2": 0.05,
+    "dd": 0.1,
+    "guard": 0.04
+   },
+   "Fintokei_Pearl500": {
+    "kind": "2step",
+    "p1": 0.08,
+    "p2": 0.06,
+    "dd": 0.1,
+    "guard": 0.04
+   },
+   "FN_Instant20k_11988011": {
+    "kind": "trail",
+    "trail": 0.06,
+    "guard": 0.04
+   },
+   "Fintokei_Sokkou2000_6078225": {
+    "kind": "1step",
+    "p1": 0.06,
+    "dd": 0.03,
+    "guard": 0.015,
+    "deadline": 60
+   }
+  },
+  "approx": [
+   "S1/S2/Mon = 月曜o2o(実EAは12h保有・24hのものもある)",
+   "S3 = 木曜o2o SHORT(実EAは16UTC+6h)",
+   "S4/S5 = RSI(2)逆張りをD1で再現",
+   "A案は各スリーブ等リスク(1.25%/回)を等ウェイト0.2で近似",
+   "Fintokeiパール ¥500万≈$32k / 速攻プロ ¥2,000万≈$129k(155円換算)",
+   "Yahoo日足近似・実口座成績ではない"
+  ]
+ },
+ "by_date": {
+  "2025-09-30": {
+   "lambda_0": {
+    "P_circuit_breaker": 50.34,
+    "P_any_fail": 96.9,
+    "P_two_or_more": 75.0,
+    "E_failed_accounts": 2.526,
+    "per_account": {
+     "FN_Instant20k_11988011": 52.1,
+     "FTMO100k_531343523": 28.4,
+     "Fintokei_Pearl500": 11.1,
+     "FTMO50k_521100397": 19.0,
+     "FN100k_14166201": 38.5,
+     "Fintokei_Sokkou2000_6078225": 93.9,
+     "FTMO50k_531407058": 9.6
+    },
+    "selected": {
+     "Mon_NAS100": 0.208,
+     "Mon_US500": 0.327,
+     "Hold_XAUUSD": 0.275,
+     "Hold_BTCUSD": 0.19
+    },
+    "mult": 1.12,
+    "rho_C_vs_rest": -0.179
+   },
+   "lambda_05": {
+    "P_circuit_breaker": 50.34,
+    "P_any_fail": 96.9,
+    "P_two_or_more": 75.0,
+    "E_failed_accounts": 2.526,
+    "per_account": {
+     "FN_Instant20k_11988011": 52.1,
+     "FTMO100k_531343523": 28.4,
+     "Fintokei_Pearl500": 11.1,
+     "FTMO50k_521100397": 19.0,
+     "FN100k_14166201": 38.5,
+     "Fintokei_Sokkou2000_6078225": 93.9,
+     "FTMO50k_531407058": 9.6
+    },
+    "selected": {
+     "Mon_NAS100": 0.208,
+     "Mon_US500": 0.327,
+     "Hold_XAUUSD": 0.275,
+     "Hold_BTCUSD": 0.19
+    },
+    "mult": 1.12,
+    "rho_C_vs_rest": -0.179
+   }
+  },
+  "2025-12-31": {
+   "lambda_0": {
+    "P_circuit_breaker": 52.78,
+    "P_any_fail": 95.0,
+    "P_two_or_more": 74.7,
+    "E_failed_accounts": 2.557,
+    "per_account": {
+     "FN_Instant20k_11988011": 54.7,
+     "FTMO100k_531343523": 33.5,
+     "Fintokei_Pearl500": 12.6,
+     "FTMO50k_521100397": 20.1,
+     "FN100k_14166201": 39.3,
+     "Fintokei_Sokkou2000_6078225": 89.8,
+     "FTMO50k_531407058": 5.8
+    },
+    "selected": {
+     "v4_GBPJPY": 0.461,
+     "Hold_XAUUSD": 0.105,
+     "Hold_JP225": 0.103,
+     "v4_USDJPY": 0.331
+    },
+    "mult": 2.24,
+    "rho_C_vs_rest": 0.355
+   },
+   "lambda_05": {
+    "P_circuit_breaker": 52.78,
+    "P_any_fail": 95.0,
+    "P_two_or_more": 74.7,
+    "E_failed_accounts": 2.557,
+    "per_account": {
+     "FN_Instant20k_11988011": 54.7,
+     "FTMO100k_531343523": 33.5,
+     "Fintokei_Pearl500": 12.6,
+     "FTMO50k_521100397": 20.1,
+     "FN100k_14166201": 39.3,
+     "Fintokei_Sokkou2000_6078225": 89.8,
+     "FTMO50k_531407058": 5.8
+    },
+    "selected": {
+     "v4_GBPJPY": 0.461,
+     "Hold_XAUUSD": 0.105,
+     "v4_USDJPY": 0.331,
+     "Hold_JP225": 0.103
+    },
+    "mult": 2.24,
+    "rho_C_vs_rest": 0.355
+   }
+  },
+  "2026-03-31": {
+   "lambda_0": {
+    "P_circuit_breaker": 51.04,
+    "P_any_fail": 94.4,
+    "P_two_or_more": 72.2,
+    "E_failed_accounts": 2.474,
+    "per_account": {
+     "FN_Instant20k_11988011": 52.2,
+     "FTMO100k_531343523": 30.9,
+     "Fintokei_Pearl500": 11.0,
+     "FTMO50k_521100397": 21.4,
+     "FN100k_14166201": 35.9,
+     "Fintokei_Sokkou2000_6078225": 89.5,
+     "FTMO50k_531407058": 6.6
+    },
+    "selected": {
+     "v4_USDJPY": 0.315,
+     "Mon_GBPJPY": 0.351,
+     "Mon_AUDJPY": 0.27,
+     "Hold_XAUUSD": 0.064
+    },
+    "mult": 3.68,
+    "rho_C_vs_rest": 0.582
+   },
+   "lambda_05": {
+    "P_circuit_breaker": 51.11,
+    "P_any_fail": 94.4,
+    "P_two_or_more": 72.3,
+    "E_failed_accounts": 2.461,
+    "per_account": {
+     "FN_Instant20k_11988011": 52.2,
+     "FTMO100k_531343523": 30.9,
+     "Fintokei_Pearl500": 11.0,
+     "FTMO50k_521100397": 21.4,
+     "FN100k_14166201": 35.9,
+     "Fintokei_Sokkou2000_6078225": 89.5,
+     "FTMO50k_531407058": 5.3
+    },
+    "selected": {
+     "v4_USDJPY": 0.327,
+     "Mon_GBPJPY": 0.364,
+     "Mon_UK100": 0.242,
+     "Hold_XAUUSD": 0.067
+    },
+    "mult": 2.8,
+    "rho_C_vs_rest": 0.409
+   }
+  },
+  "2026-05-29": {
+   "lambda_0": {
+    "P_circuit_breaker": 49.62,
+    "P_any_fail": 94.6,
+    "P_two_or_more": 70.3,
+    "E_failed_accounts": 2.512,
+    "per_account": {
+     "FN_Instant20k_11988011": 50.8,
+     "FTMO100k_531343523": 28.7,
+     "Fintokei_Pearl500": 11.0,
+     "FTMO50k_521100397": 20.2,
+     "FN100k_14166201": 35.3,
+     "Fintokei_Sokkou2000_6078225": 89.4,
+     "FTMO50k_531407058": 15.8
+    },
+    "selected": {
+     "Mon_GBPJPY": 0.4,
+     "Mon_AUDJPY": 0.31,
+     "Hold_JP225": 0.087,
+     "v4_USDCHF": 0.203
+    },
+    "mult": 4.72,
+    "rho_C_vs_rest": 0.474
+   },
+   "lambda_05": {
+    "P_circuit_breaker": 51.0,
+    "P_any_fail": 94.8,
+    "P_two_or_more": 71.5,
+    "E_failed_accounts": 2.515,
+    "per_account": {
+     "FN_Instant20k_11988011": 50.8,
+     "FTMO100k_531343523": 28.7,
+     "Fintokei_Pearl500": 11.0,
+     "FTMO50k_521100397": 20.2,
+     "FN100k_14166201": 35.3,
+     "Fintokei_Sokkou2000_6078225": 89.4,
+     "FTMO50k_531407058": 16.2
+    },
+    "selected": {
+     "Hold_JP225": 0.159,
+     "v4_USDCHF": 0.373,
+     "Mon_GER40": 0.203,
+     "Hold_NAS100": 0.265
+    },
+    "mult": 1.88,
+    "rho_C_vs_rest": 0.204
+   }
+  },
+  "2026-06-30": {
+   "lambda_0": {
+    "P_circuit_breaker": 48.89,
+    "P_any_fail": 94.1,
+    "P_two_or_more": 70.2,
+    "E_failed_accounts": 2.482,
+    "per_account": {
+     "FN_Instant20k_11988011": 50.4,
+     "FTMO100k_531343523": 28.3,
+     "Fintokei_Pearl500": 10.3,
+     "FTMO50k_521100397": 19.9,
+     "FN100k_14166201": 35.4,
+     "Fintokei_Sokkou2000_6078225": 89.1,
+     "FTMO50k_531407058": 14.8
+    },
+    "selected": {
+     "Mon_GBPJPY": 0.404,
+     "Mon_AUDJPY": 0.328,
+     "Hold_JP225": 0.074,
+     "v4_USDCHF": 0.194
+    },
+    "mult": 4.92,
+    "rho_C_vs_rest": 0.467
+   },
+   "lambda_05": {
+    "P_circuit_breaker": 50.48,
+    "P_any_fail": 94.1,
+    "P_two_or_more": 71.0,
+    "E_failed_accounts": 2.534,
+    "per_account": {
+     "FN_Instant20k_11988011": 50.4,
+     "FTMO100k_531343523": 28.3,
+     "Fintokei_Pearl500": 10.3,
+     "FTMO50k_521100397": 19.9,
+     "FN100k_14166201": 35.4,
+     "Fintokei_Sokkou2000_6078225": 89.1,
+     "FTMO50k_531407058": 20.1
+    },
+    "selected": {
+     "Mon_GBPJPY": 0.459,
+     "Hold_JP225": 0.107,
+     "Mon_GER40": 0.153,
+     "v4_USDCHF": 0.281
+    },
+    "mult": 6.0,
+    "rho_C_vs_rest": 0.311
+   }
+  },
+  "2026-08-31": {
+   "lambda_0": {
+    "P_circuit_breaker": 48.79,
+    "P_any_fail": 93.8,
+    "P_two_or_more": 69.3,
+    "E_failed_accounts": 2.474,
+    "per_account": {
+     "FN_Instant20k_11988011": 49.3,
+     "FTMO100k_531343523": 28.2,
+     "Fintokei_Pearl500": 10.1,
+     "FTMO50k_521100397": 19.1,
+     "FN100k_14166201": 34.8,
+     "Fintokei_Sokkou2000_6078225": 88.8,
+     "FTMO50k_531407058": 17.1
+    },
+    "selected": {
+     "Mon_AUDJPY": 0.232,
+     "Mon_GBPJPY": 0.26,
+     "v4_NZDUSD": 0.186,
+     "v4_USDJPY": 0.322
+    },
+    "mult": 6.0,
+    "rho_C_vs_rest": 0.837
+   },
+   "lambda_05": {
+    "P_circuit_breaker": 49.58,
+    "P_any_fail": 93.9,
+    "P_two_or_more": 70.2,
+    "E_failed_accounts": 2.476,
+    "per_account": {
+     "FN_Instant20k_11988011": 49.3,
+     "FTMO100k_531343523": 28.2,
+     "Fintokei_Pearl500": 10.1,
+     "FTMO50k_521100397": 19.1,
+     "FN100k_14166201": 34.8,
+     "Fintokei_Sokkou2000_6078225": 88.8,
+     "FTMO50k_531407058": 17.3
+    },
+    "selected": {
+     "v4_NZDUSD": 0.213,
+     "Mon_GER40": 0.091,
+     "v4_GBPJPY": 0.43,
+     "Mon_AUDJPY": 0.266
+    },
+    "mult": 6.0,
+    "rho_C_vs_rest": 0.58
+   }
+  }
+ },
+ "aggregate": {
+  "lambda_0": {
+   "n_dates": 6,
+   "P_circuit_breaker": 50.24,
+   "P_any_fail": 94.8,
+   "P_two_or_more": 72.0,
+   "E_failed_accounts": 2.504,
+   "rho_C_vs_rest": 0.423,
+   "mult": 3.78,
+   "per_account": {
+    "FN_Instant20k_11988011": 51.6,
+    "FTMO100k_531343523": 29.7,
+    "Fintokei_Pearl500": 11.0,
+    "FTMO50k_521100397": 19.9,
+    "FN100k_14166201": 36.5,
+    "Fintokei_Sokkou2000_6078225": 90.1,
+    "FTMO50k_531407058": 11.6
+   }
+  },
+  "lambda_05": {
+   "n_dates": 6,
+   "P_circuit_breaker": 50.88,
+   "P_any_fail": 94.9,
+   "P_two_or_more": 72.5,
+   "E_failed_accounts": 2.511,
+   "rho_C_vs_rest": 0.28,
+   "mult": 3.34,
+   "per_account": {
+    "FN_Instant20k_11988011": 51.6,
+    "FTMO100k_531343523": 29.7,
+    "Fintokei_Pearl500": 11.0,
+    "FTMO50k_521100397": 19.9,
+    "FN100k_14166201": 36.5,
+    "Fintokei_Sokkou2000_6078225": 90.1,
+    "FTMO50k_531407058": 12.4
+   }
+  }
+ },
+ "verdict": {
+  "rel_cb_change_pct": 1.3,
+  "supports_lambda_05": false,
+  "d_E_failed": 0.007
+ }
+}

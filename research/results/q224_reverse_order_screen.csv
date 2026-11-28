@@ -1,0 +1,41 @@
+src,family,symbol,spec,pre_n,pre_rate,p_pre,is_rate,is_mean_bps,oos_mean_bps,post_n,post_rate,p_post,passed,stage2
+q90_hold_disaster_sl.csv,Hold 災害 SL(改良系),US500,基準 = 現行 15%(セル内で 10% / 20% / なし を比較),70,0.729,8.302091030150879e-05,0.59,4.28,4.7,58,0.586,0.11852355738135979,False,False
+q90_hold_disaster_sl.csv,Hold 災害 SL(改良系),NAS100,基準 = 現行 15%(セル内で 10% / 20% / なし を比較),70,0.714,0.00022014250325698418,0.59,4.41,8.5,58,0.586,0.11852355738135979,False,False
+q89_hold_universe_ext.csv,Hold 拡張(連続 LONG),US2000,Yahoo ^RUT・終値→終値・月初 5bps,70,0.7,0.0005466224864843065,0.462,0.96,7.44,58,0.534,0.3470020470380659,False,False
+q13_prevday_hl_break.csv,前日高安ブレイク,US500,下抜け 逆行 hold=day,69,0.667,0.003810260927512849,0.487,-0.56,21.78,59,0.559,0.21749640256107672,False,False
+q24_monthend_fix.csv,月末フィックス,GBPUSD,pre 2h L,69,0.667,0.003810260927512849,0.462,-0.89,7.48,59,0.525,0.3974218269914305,False,False
+q13_prevday_hl_break.csv,前日高安ブレイク,US500,下抜け 逆行 hold=4h,69,0.667,0.003810260927512849,0.513,0.3,2.68,59,0.525,0.3974218269914305,False,False
+q24_monthend_fix.csv,月末フィックス,GBPUSD,post 2h S,69,0.667,0.003810260927512849,0.538,-0.63,-1.1,59,0.542,0.3014616006285752,False,False
+q21_index_overnight.csv,週末,GER40,金16->月08 L,69,0.667,0.003810260927512849,0.59,-2.86,-7.91,59,0.576,0.14879760414221435,False,False
+q21_index_overnight.csv,週末,US500,金20->月14 L,68,0.662,0.00516883059684773,0.487,-2.37,13.31,59,0.542,0.3014616006285752,False,False
+q24_monthend_fix.csv,月末フィックス,GBPAUD,pre 2h L,69,0.652,0.007716148726850634,0.462,0.41,-8.44,51,0.431,0.8687812321444781,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,GBPUSD,WedS 00-08UTC cost=0.83bps,69,0.638,0.014746746765658647,0.538,1.59,-1.59,59,0.475,0.6985383993714248,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,GBPJPY,Wed 12-16UTC cost=1.26bps,69,0.638,0.014746746765658647,0.564,1.1,0.78,59,0.542,0.3014616006285752,False,False
+q89_hold_universe_ext.csv,Hold 拡張(連続 LONG),AUS200,Yahoo ^AXJO・終値→終値・月初 5bps,70,0.629,0.02069571433695773,0.538,1.39,2.66,58,0.603,0.07400290038010301,False,False
+q163_euro_index_hold.csv,Hold 欧州指数(連続 LONG),SUI20,Yahoo ^SSMI・終値→終値・月初 5bps,70,0.629,0.02069571433695773,0.513,0.06,5.83,58,0.552,0.25592115421908457,False,False
+q90_hold_disaster_sl.csv,Hold 災害 SL(改良系),JP225,基準 = 現行 15%(セル内で 10% / 20% / なし を比較),70,0.629,0.02069571433695773,0.538,4.44,12.7,58,0.586,0.11852355738135979,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,US500,Wed 12-16UTC cost=1.32bps,69,0.623,0.026644681908256824,0.462,0.45,-0.44,59,0.492,0.6025781730085695,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,EURUSD,Tue 00-04UTC cost=0.41bps,69,0.623,0.026644681908256824,0.385,-0.58,-1.53,59,0.373,0.981828410021473,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,EURUSD,Wed 16-00UTC cost=0.39bps,69,0.623,0.026644681908256824,0.615,4.2,-3.06,59,0.525,0.3974218269914305,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,GBPJPY,FriS 08-16UTC cost=1.29bps,69,0.623,0.026644681908256824,0.513,-0.84,0.81,59,0.542,0.3014616006285752,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,NZDJPY,ThuS 00-04UTC cost=1.74bps,69,0.623,0.026644681908256824,0.41,-4.9,1.75,51,0.451,0.7994690044860313,False,False
+q148_mon4_realprice_recheck.csv,Mon4 現実価格(ask 建て・bid 決済),EURJPY,Mon h10 24h LONG real,69,0.623,0.026644681908256824,0.564,6.74,5.36,59,0.542,0.3014616006285752,False,False
+q21_index_overnight.csv,夜間,US500,20->翌14 L,68,0.618,0.03405933714204988,0.487,1.94,-1.17,59,0.492,0.6025781730085695,False,False
+q89_hold_universe_ext.csv,Hold 拡張(連続 LONG),UKOIL,Yahoo BZ=F・終値→終値・月初 5bps,70,0.614,0.036118963595881286,0.513,1.7,8.92,58,0.5,0.5521583930552048,False,False
+q54_jp_flow_calendar.csv,月初3営業日 L,AUDJPY,月初3営業日 L o2o(3pip),70,0.614,0.036118963595881286,0.436,-7.92,2.67,58,0.517,0.4478416069447953,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,AUDJPY,Wed 08-16UTC cost=1.01bps,69,0.609,0.04559324528350577,0.487,1.14,0.53,59,0.475,0.6985383993714248,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,US500,Fri 08-16UTC cost=1.32bps,69,0.609,0.04559324528350577,0.513,-2.2,-4.06,59,0.525,0.3974218269914305,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,EURUSD,WedS 00-08UTC cost=0.42bps,69,0.609,0.04559324528350577,0.538,1.24,-2.17,59,0.508,0.5,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,EURJPY,Wed 16-00UTC cost=0.84bps,69,0.609,0.04559324528350577,0.59,-1.5,-4.32,59,0.508,0.5,False,False
+q122_exit_grid_intraday.csv,Mon 指数日中版 出口格子,US500,月曜 13 UTC → 同日 19 UTC 決済(配備形 20 比),69,0.609,0.04559324528350577,0.641,3.83,7.17,59,0.661,0.009168543889550993,False,False
+q138_local_calendar.csv,E. 満期週,US500,E1 満期週の前半 L,69,0.609,0.04559324528350577,0.487,-12.53,-7.52,59,0.475,0.6985383993714248,False,False
+q148_mon4_realprice_recheck.csv,Mon4 現実価格(ask 建て・bid 決済),EURJPY,Mon h4 24h LONG real,69,0.609,0.04559324528350577,0.718,11.45,7.36,59,0.695,0.0018968528176858037,False,False
+q13_prevday_hl_break.csv,前日高安ブレイク,GER40,下抜け 逆行 hold=day,69,0.609,0.04559324528350577,0.436,-0.52,8.3,59,0.458,0.7825035974389233,False,False
+q24_monthend_fix.csv,月末フィックス,NZDUSD,post 2h S,69,0.609,0.04559324528350577,0.359,-5.16,-7.49,59,0.356,0.990831456110449,False,False
+q24_monthend_fix.csv,月末フィックス,GBPJPY,pre 2h L,69,0.609,0.04559324528350577,0.41,-4.77,1.39,59,0.458,0.7825035974389233,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,EURAUD,WedS 08-12UTC cost=2.13bps,69,0.609,0.04559324528350577,0.462,-2.61,-3.27,51,0.412,0.9196101990940058,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,GBPUSD,Tue 16-00UTC cost=0.83bps,69,0.609,0.04559324528350577,0.436,-2.09,2.31,59,0.458,0.7825035974389233,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,CADJPY,Wed 16-20UTC cost=1.50bps,69,0.609,0.04559324528350577,0.436,-1.93,6.47,51,0.51,0.5,False,False
+q19_measured_cost_h1_grid.csv,実測コスト格子,US500,Mon 08-12UTC cost=1.41bps,69,0.609,0.04559324528350577,0.462,-1.57,6.91,59,0.508,0.5,False,False
+q56_participant_filters.csv,米国祝日月曜 除外(改良系),NAS100,NYSE 休場の月曜を建てない,69,0.609,0.04559324528350577,0.615,21.05,14.14,58,0.621,0.04347444986495551,False,False
+q56_participant_filters.csv,米国祝日月曜 除外(改良系),US500,NYSE 休場の月曜を建てない,69,0.609,0.04559324528350577,0.564,10.14,12.32,58,0.586,0.11852355738135979,False,False

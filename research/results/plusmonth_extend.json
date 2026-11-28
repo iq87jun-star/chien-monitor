@@ -1,0 +1,108 @@
+{
+ "keep": [
+  "MonS EURGBP",
+  "FriS NZDUSD",
+  "WedS CADCHF",
+  "TueS CADCHF",
+  "Thu XAUUSD"
+ ],
+ "weights": {
+  "Mon GBPJPY": 0.113,
+  "Mon EURJPY": 0.115,
+  "Mon USDJPY": 0.112,
+  "Mon NAS100": 0.042,
+  "Hold NAS100": 0.038,
+  "MonS EURGBP": 0.194,
+  "FriS NZDUSD": 0.074,
+  "WedS CADCHF": 0.12,
+  "TueS CADCHF": 0.13,
+  "Thu XAUUSD": 0.061
+ },
+ "mult": 4.8,
+ "steps": [
+  {
+   "n_extra": 0,
+   "last_added": "-",
+   "mult": 2.36,
+   "in_total": 75.8,
+   "in_dd": -7.3,
+   "oos_total": 7.1,
+   "oos_dd": -3.79,
+   "oos_worst_m": -2.73,
+   "oos_plus": "7/12",
+   "oos_sharpe": 1.07,
+   "mc_funded": 50.0,
+   "mc_fail": 5.5
+  },
+  {
+   "n_extra": 1,
+   "last_added": "MonS EURGBP",
+   "mult": 3.08,
+   "in_total": 81.2,
+   "in_dd": -6.52,
+   "oos_total": 11.9,
+   "oos_dd": -3.43,
+   "oos_worst_m": -2.33,
+   "oos_plus": "9/12",
+   "oos_sharpe": 1.78,
+   "mc_funded": 78.7,
+   "mc_fail": 0.6
+  },
+  {
+   "n_extra": 2,
+   "last_added": "FriS NZDUSD",
+   "mult": 3.48,
+   "in_total": 97.5,
+   "in_dd": -6.25,
+   "oos_total": 14.1,
+   "oos_dd": -3.58,
+   "oos_worst_m": -2.38,
+   "oos_plus": "8/12",
+   "oos_sharpe": 2.07,
+   "mc_funded": 86.5,
+   "mc_fail": 0.4
+  },
+  {
+   "n_extra": 3,
+   "last_added": "WedS CADCHF",
+   "mult": 4.08,
+   "in_total": 119.5,
+   "in_dd": -6.39,
+   "oos_total": 14.2,
+   "oos_dd": -3.35,
+   "oos_worst_m": -2.59,
+   "oos_plus": "8/12",
+   "oos_sharpe": 2.03,
+   "mc_funded": 86.5,
+   "mc_fail": 0.4
+  },
+  {
+   "n_extra": 4,
+   "last_added": "TueS CADCHF",
+   "mult": 4.76,
+   "in_total": 134.9,
+   "in_dd": -6.58,
+   "oos_total": 14.4,
+   "oos_dd": -3.58,
+   "oos_worst_m": -2.82,
+   "oos_plus": "8/12",
+   "oos_sharpe": 1.99,
+   "mc_funded": 86.5,
+   "mc_fail": 0.5
+  },
+  {
+   "n_extra": 5,
+   "last_added": "Thu XAUUSD",
+   "mult": 4.8,
+   "in_total": 152.3,
+   "in_dd": -6.27,
+   "oos_total": 13.1,
+   "oos_dd": -4.13,
+   "oos_worst_m": -3.01,
+   "oos_plus": "7/12",
+   "oos_sharpe": 1.66,
+   "mc_funded": 81.7,
+   "mc_fail": 2.0
+  }
+ ]
+}

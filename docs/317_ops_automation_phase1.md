@@ -1,0 +1,78 @@
+# 317 運用自動化 段階 1: VPS エージェント + Google Drive + 毎朝の取り込み(2026-09-27)
+
+ユーザー「インジケータ変更自動化や、フォワード記録の取得等、セッティングから運用まで総じて自動化したい」→「VPS 1 台に集約」「Drive で Ok」。
+
+## 0. 全体像(4 段階)
+| 段階 | 内容 | 状態 |
+|---|---|---|
+| **1** | **運用エージェント**(VPS の Python が各 MT5 端末から約定・建玉・equity・EA ログを毎時 CSV に出す)→ Google Drive → 研究側の Routine が毎朝取り込み、ダイジェスト・逸脱監視・台帳更新 | **本書・実装済み(VPS 側の初回セットアップ待ち)** |
+| 2 | **配備**(`ops/vps/chien_deploy.py` + `ops/config/deploy_manifest.json`): 毎時、端末のプロファイル(chart*.chr)を棚卸しして『どのチャートにどの EA』を記録 → manifest の ensure にある .mq5 を GitHub から取得し端末の MetaEditor でコンパイル → **apply=true の口座のみ**端末を止めて <expert> ブロックを書き換え(remove を外し ensure を付け)再起動。バックアップあり。expertmode は既存ブロックから学習 | **実装済み(2026-09-28・ユーザー「push して」で公開)**。全口座 apply=false で棚卸し・コンパイル確認から開始。適用は manifest の apply を私が書き換える(= ユーザーの「適用して」の後)|
+| 3 | EA の設定ホットリロード(`MQL5/Files/chien_config.json`): 祝日リスト・倍率・スキップ日を再アタッチ無しで反映 | 未実装(EA 8 本の改修) |
+| 4 | 日次ダイジェストの通知(プッシュ/メール) | 段階 1 の Routine 報告で代替、後で通知に拡張 |
+
+## 1. 段階 1 の構成
+```
+VPS(Windows)                                   Google Drive              研究側(このセッション)
+┌───────────────────────────┐   同期   ┌───────────────┐  MCP   ┌──────────────────────────┐
+│ MT5 端末 ×9(各業者)         │ ───▶ │ マイドライブ/  │ ───▶ │ research/ops_inbox/<acct>/ │
+│ chien_ops_agent.py(毎時)   │        │  chien_ops/    │        │ forward/ops_ingest.py       │
+│  → chien_ops/<acct>/*.csv  │        │   <acct>/*.csv │        │ forward/deviation_monitor.py│
+└───────────────────────────┘        └───────────────┘        │ 台帳ページ更新・報告          │
+                                                                └──────────────────────────┘
+```
+出力(口座ごと): `positions.csv`(決済済みポジション。MT5 履歴 xlsx と同じ列 + `magic` `sl_hit` `tp_hit`)/ `open_positions.csv` / `equity_log.csv`(毎時追記)/ `ea_log_extract.csv`(MQL5/Logs から `[HALT]` `[BAL GUARD]` `[DAILY STOP]` `[EXPIRY]` `[INIT` `[Mon ENTRY]` 等)/ `deals_raw.csv`(監査用)。ルートに `status.json`(端末ごとの成否)。
+
+研究側は `mt5_report.parse()` が `.csv` を xlsx と同じ形で返すようにしたので、`leg_forward.py`・`deviation_monitor.py`・月次スコアリングがそのまま使える(xlsx の手動送付は不要になる)。
+
+## 2. VPS 側セットアップ(ユーザー操作・初回のみ、30 分)
+**ワンクリック(v3)**: `ops/vps/chien_setup.bat` を VPS に置いてダブルクリック(UAC「はい」)。リポジトリは公開なので Git・GitHub Desktop・winget は不要: bat が `ops/vps` の 4 ファイルを GitHub から直接 `C:\chien\ops` にダウンロード(2 回目以降は自動更新)→ `setup.ps1`(Python 導入 → `--discover` で各端末に接続して口座番号を自動判定し terminals.json を生成 → 1 回実行 → 毎時タスク)まで無入力で進む。未ログイン端末があった時だけメモ帳が開く。
+**最短経路(Claude Code)**: VPS に Claude Code(Windows 版 CLI またはデスクトップ)を入れ、このリポジトリを clone して `ops/vps/setup.ps1` を管理者 PowerShell で実行させる。Python 導入・pip・端末の自動検出・terminals.json 雛形・手動 1 回実行・毎時タスク登録まで 1 コマンド(パスワードは VPS 上のメモ帳で記入し、外に出ない)。Cowork は Windows 上ではコードを隔離 Linux VM で実行するため、Windows 専用の MetaTrader5 パッケージ実行やタスクスケジューラ登録は行えない(ファイルの準備までは可)。以下は手動で行う場合の手順。
+1. Python 3.11(64bit)を入れ、`pip install MetaTrader5 pandas`。
+2. Google Drive for desktop を入れ、マイドライブに `chien_ops` フォルダを作る(同期先が `G:\マイドライブ\chien_ops` になる想定。ドライブ文字が違えば手順 4 で直す)。
+3. リポジトリの `ops/vps/` フォルダを VPS にコピー(`chien_ops_agent.py` `terminals.example.json` `install_task.ps1`)。
+4. `terminals.example.json` を `terminals.json` にコピーして編集: 端末ごとの `path`(terminal64.exe の実パス)、`account`、`login`、`server`、必要なら `password`。`out_root` を Drive の同期パスに。**terminals.json は VPS の外に出さない**(git 管理外・私にも送らない)。
+5. 手動で 1 回実行して確認: `python chien_ops_agent.py --config terminals.json`。端末ごとに `[名前] ok balance=... equity=... 建玉=... 決済済=...` と出れば成功。失敗した端末はエラー(`Authorization failed` = ログイン情報、`initialize 失敗 (-10005...)` = path)を直す。
+6. 管理者 PowerShell で `powershell -ExecutionPolicy Bypass -File install_task.ps1` → 毎時実行のタスク `chien_ops_agent` が登録される。ログは `agent.log`。
+7. Drive の `chien_ops/<口座>/` に CSV が現れたら、このチャットに「エージェント稼働」と一言。私が Routine の初回取り込みを実行して結果を確認する。
+
+注意:
+- MetaTrader5 パッケージは一度に 1 端末しか接続できないため、9 端末を順に回す(1 端末 5〜20 秒)。
+- 端末が起動していれば attach、起動していなければ `path` から起動する(初回はログイン情報が要る)。
+- FTMO/FN/Fintokei とも「自分の口座の履歴を読む」だけで発注しないので規約上の問題はない。
+- 「サーバー時刻」で記録される(MT5 履歴 xlsx と同じ)。研究側の既存パーサと整合。
+
+## 3. 研究側(実装済み)
+- `research/forward/ops_ingest.py <dir>`: ダイジェスト(口座ごとの equity・建玉・7 日/30 日損益・SL 決済率・レグ別損益・警告行・最後の INIT)→ `results/ops_digest_latest.json`。
+- `research/forward/mt5_report.parse_csv()`: `positions.csv` を xlsx と同じ tuple で返す。`deviation_monitor.latest_reports()` は `<acct>/positions.csv` も拾う。
+- Routine「運用ダイジェスト(毎朝)」(07:50 JST): Drive の `chien_ops` を `research/ops_inbox/` に落とし → `ops_ingest.py` → 異常(ガード発動・EXPIRY・エージェント失敗・24h 建て無し)があればその口座を報告、無ければ 1 行。月曜は `deviation_monitor.py` も実行。毎月 1 日は月次スコアリングに使う。
+
+## 4. 段階 2〜3 の設計メモ(次に着手する内容)
+- 配備: `ops/vps/deploy.ps1` — `git pull` → `metaeditor64.exe /compile:"<file>" /log` を EA ごとに → `.ex5` を各端末の `MQL5/Experts/chien/` へコピー → 端末の起動 ini(`[StartUp] Expert=chien\EA3 Symbol=GBPJPY Period=H1 ExpertParameters=EA3.set`)。表示インジケータ `Chien_View.mq5`(ショット時刻・SL 水準・スキップ日・指数寄り窓)を `.tpl` に同梱。
+- ホットリロード: 各 EA に `InpConfigFile="chien_config.json"` を追加し、毎時 `FileOpen` で読んで `InpJpHolidayMondays` 等の実効値を上書き(input は変更できないため実効値を別変数に持つ)。リポジトリの `ops/config/chien_config.json` を Drive 経由で各端末の `MQL5/Files/` に同期。
+- どちらもユーザーの「段階 2 に進む」で着手。
+
+## 5.【2026-09-28 判明】EA は MQL5 VPS(MetaQuotes ホスティング)で動いている
+ユーザー確認: 業者ごとに 1 つの MT5 で口座を切り替えてログインし、口座ごとに MQL5 VPS へ移行して動かしている。ローカル(手元 PC)の端末は移行時点の写しで、取引はしない(9/28 の Mon 建ては手元端末のログに ENTRY 無し・VPS 側の建玉のみ)。
+
+影響:
+- 口座記録(約定・建玉・equity)はサーバー側から取れるので **段階 1 はそのまま有効**(手元 PC の bat で毎時取得 → Drive)。
+- **配備の自動化(apply)は不可**。MQL5 VPS へ EA を送る手段は端末の「VPS → 移行」だけ(GUI 操作)。
+- 代わりに `chien_deploy.py` は、業者端末ごとに **その端末で扱う全口座の EA をコンパイルし、口座ごとのプロファイル `chien_<口座>`(正しい EA 1 本を載せたチャート)を生成**する。ユーザーの作業は口座ごとに 3 操作: ①その口座でログイン → ②ファイル→プロファイル→`chien_<口座>` → ③VPS→移行。
+- VPS 上の EA の版は直接読めないので、**挙動から推定**する(Mon の建て分・Magic・祝日日の建て有無)。9/28 時点の推定: 11988011 は建て分 :00(v1.14 以降なら :12)= 旧版、521100397 は Magic 943401(D 案)= EA8 未配備、6078225 は EA7g(版不明・祝日フィルター無しの可能性)。
+
+手元 PC の役割: 記録取得(毎時)+ コンパイル + プロファイル生成。VPS 移行は手動(3 操作/口座)。
+
+### 5a.【2026-09-28 15:08】Fintokei は銘柄接尾辞 `p`(GBPJPYp)— 生成プロファイルが空チャートになった
+ユーザーの画面: `chien_6078225` を開くと「GBPJPY,H1 / Australian Dollar vs Swiss Franc」の黒い空チャートで止まる。原因は manifest の銘柄 `GBPJPY` が Fintokei に存在しない(雛形チャートは `AUDCHFp`)ため、チャートが読み込まれず EA にティックが来ない。説明文は雛形(AUDCHF)の残り。
+対処: `chien_deploy.symbol_suffix()` が既存チャートの銘柄から接尾辞を推定し、6 文字 FX/金属コードに付ける(`GBPJPY`→`GBPJPYp`)。`description=` は空にする。agent 1.4。bat 再実行で `chien_6078225` / `chien_6071612` が作り直される。即時の代替: 気配値表示の `GBPJPYp` を黒いチャートへドラッグ(EA は付いたまま銘柄が変わる)→ VPS→移行。
+
+### 5b.【2026-10-01】停止原因の自己診断と、PC 起動時の自動再開(agent 1.6 / install_task v2)
+
+9/30〜10/1、PC 停止中は記録が止まり、起動後も毎時タスクが再開しなかった(原因は端末側の情報が無く特定できず、`schtasks` の出力と `agent.log` の貼り付けを依頼した)。これを**依頼せずに済む形**に変更:
+
+- **自己診断**: エージェントは毎回の実行末尾に `out_root/_diag/` を書く(`host.txt` = 実行時刻・python パス・電池駆動か(`battery_status` 1=電池 / 2=AC / none=デスクトップ)・Drive プロセスの有無(`drive_process`)・起動後の分数、`task.txt` = `schtasks /query /tn chien_ops_agent /v`、`agent_tail.txt` = agent.log 末尾 80 行)。研究側の毎朝 Routine は `status.json` が古いときにここを読んで原因を 1 行で書く。
+- **ログオン・トリガー**: タスクに「ログオン 3 分後から 1 時間繰り返し」を追加(従来の日付 00:00 起点の毎時は残す)。PC を起動すれば自動で再開する。
+- **電池設定**: `-AllowStartIfOnBatteries -DontStopIfGoingOnBatteries`(既定は AC 電源時のみ実行で、ノート PC が電池駆動だと毎時タスクは一切動かない)。失敗時 5 分間隔で 3 回再試行。
+- **適用**: `chien_setup.bat` をもう一度ダブルクリック(新しい `install_task.ps1` / `chien_ops_agent.py` を GitHub から取り直し、タスクを上書き登録し、1 回実行して Drive に記録と `_diag` を書く)。以後、止まったと思ったときも同じ操作でよい。
+- **【10/1 20:04 JST 判明・原因確定】** 再実行後の `_diag/task.txt`: 前回の実行時刻 2026/10/01 20:00:01・**前回の結果 1**、`agent_tail.txt`: agent.log が存在しない。つまり毎時タスクは起動していたが毎回失敗しており、9/29 以降 Drive に届いていた記録はすべて bat の手動実行分だった。原因は登録していたアクション `cmd.exe /c "python" "script" --config "cfg" >> "log" 2>&1` — cmd は `/c` の後に引用符が 3 個以上あると先頭と末尾の引用符を剥がすため、パスが壊れて exit 1 になる(電池・Drive・ログオンは無関係: battery_status=2 / drive_process=2)。**install_task v3** で python を直接起動するアクションに変え、ログは **agent 1.7** が自分で `agent.log` に追記する(`_Tee`)。適用はもう一度 `chien_setup.bat` をダブルクリック。
+- 残る限界: PC が落ちている間の記録は無い(docs/317 §0 の「VPS 1 台に集約」が最終解)。

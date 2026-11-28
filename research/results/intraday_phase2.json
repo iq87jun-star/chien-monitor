@@ -1,0 +1,404 @@
+{
+ "meta": {
+  "window": [
+   "2016-01-01",
+   "2026-08-31"
+  ],
+  "syms": [
+   "GBPJPY",
+   "AUDJPY",
+   "USDJPY",
+   "EURJPY"
+  ],
+  "alpha": 0.00625,
+  "cost_pips": 2.0
+ },
+ "candidates": {
+  "A_早朝/12h": {
+   "window": "A_早朝",
+   "hours": [
+    0,
+    2,
+    4,
+    6
+   ],
+   "hold": 12,
+   "n": 553,
+   "mean_bps": 3.47,
+   "cum_pct": 20.78,
+   "t": 2.46,
+   "p": 0.01391,
+   "sig_bonf": false,
+   "win_rate": 56.4,
+   "is_bps": 1.15,
+   "oos_bps": 5.51,
+   "is_t": 0.54,
+   "oos_t": 2.95,
+   "maxdd_pct": -4.36,
+   "placebo": {
+    "Tue": {
+     "mean_bps": -1.0,
+     "t": -0.64,
+     "p": 0.525
+    },
+    "Wed": {
+     "mean_bps": 0.07,
+     "t": 0.05,
+     "p": 0.957
+    },
+    "Thu": {
+     "mean_bps": -3.3,
+     "t": -1.93,
+     "p": 0.054
+    },
+    "Fri": {
+     "mean_bps": -4.21,
+     "t": -2.64,
+     "p": 0.008
+    }
+   },
+   "monday_only": false
+  },
+  "A_早朝/24h": {
+   "window": "A_早朝",
+   "hours": [
+    0,
+    2,
+    4,
+    6
+   ],
+   "hold": 24,
+   "n": 553,
+   "mean_bps": 6.24,
+   "cum_pct": 40.48,
+   "t": 3.34,
+   "p": 0.00083,
+   "sig_bonf": true,
+   "win_rate": 58.2,
+   "is_bps": 2.82,
+   "oos_bps": 9.26,
+   "is_t": 0.94,
+   "oos_t": 4.03,
+   "maxdd_pct": -5.55,
+   "placebo": {
+    "Tue": {
+     "mean_bps": 1.13,
+     "t": 0.54,
+     "p": 0.589
+    },
+    "Wed": {
+     "mean_bps": -1.79,
+     "t": -0.85,
+     "p": 0.395
+    },
+    "Thu": {
+     "mean_bps": -3.28,
+     "t": -1.45,
+     "p": 0.148
+    },
+    "Fri": {
+     "mean_bps": NaN,
+     "t": 0.0,
+     "p": 1.0
+    }
+   },
+   "monday_only": true
+  },
+  "B_配備/12h": {
+   "window": "B_配備",
+   "hours": [
+    4,
+    6,
+    8,
+    10
+   ],
+   "hold": 12,
+   "n": 553,
+   "mean_bps": 3.45,
+   "cum_pct": 20.7,
+   "t": 2.59,
+   "p": 0.0097,
+   "sig_bonf": false,
+   "win_rate": 56.1,
+   "is_bps": 0.24,
+   "oos_bps": 6.28,
+   "is_t": 0.11,
+   "oos_t": 3.83,
+   "maxdd_pct": -6.47,
+   "placebo": {
+    "Tue": {
+     "mean_bps": -0.7,
+     "t": -0.46,
+     "p": 0.646
+    },
+    "Wed": {
+     "mean_bps": 0.96,
+     "t": 0.63,
+     "p": 0.527
+    },
+    "Thu": {
+     "mean_bps": -3.37,
+     "t": -2.0,
+     "p": 0.045
+    },
+    "Fri": {
+     "mean_bps": -5.01,
+     "t": -2.97,
+     "p": 0.003
+    }
+   },
+   "monday_only": false
+  },
+  "B_配備/24h": {
+   "window": "B_配備",
+   "hours": [
+    4,
+    6,
+    8,
+    10
+   ],
+   "hold": 24,
+   "n": 553,
+   "mean_bps": 5.48,
+   "cum_pct": 34.6,
+   "t": 2.76,
+   "p": 0.00576,
+   "sig_bonf": true,
+   "win_rate": 58.4,
+   "is_bps": 2.37,
+   "oos_bps": 8.23,
+   "is_t": 0.75,
+   "oos_t": 3.29,
+   "maxdd_pct": -5.53,
+   "placebo": {
+    "Tue": {
+     "mean_bps": 1.33,
+     "t": 0.65,
+     "p": 0.515
+    },
+    "Wed": {
+     "mean_bps": -2.35,
+     "t": -1.06,
+     "p": 0.288
+    },
+    "Thu": {
+     "mean_bps": -3.43,
+     "t": -1.45,
+     "p": 0.147
+    },
+    "Fri": {
+     "mean_bps": NaN,
+     "t": 0.0,
+     "p": 1.0
+    }
+   },
+   "monday_only": true
+  },
+  "C_欧州/12h": {
+   "window": "C_欧州",
+   "hours": [
+    8,
+    10,
+    12,
+    14
+   ],
+   "hold": 12,
+   "n": 553,
+   "mean_bps": 2.07,
+   "cum_pct": 11.9,
+   "t": 1.86,
+   "p": 0.06303,
+   "sig_bonf": false,
+   "win_rate": 54.4,
+   "is_bps": -0.46,
+   "oos_bps": 4.29,
+   "is_t": -0.26,
+   "oos_t": 3.09,
+   "maxdd_pct": -6.16,
+   "placebo": {
+    "Tue": {
+     "mean_bps": 0.11,
+     "t": 0.08,
+     "p": 0.933
+    },
+    "Wed": {
+     "mean_bps": -0.43,
+     "t": -0.3,
+     "p": 0.763
+    },
+    "Thu": {
+     "mean_bps": -2.7,
+     "t": -1.92,
+     "p": 0.055
+    },
+    "Fri": {
+     "mean_bps": -5.22,
+     "t": -3.13,
+     "p": 0.002
+    }
+   },
+   "monday_only": false
+  },
+  "C_欧州/24h": {
+   "window": "C_欧州",
+   "hours": [
+    8,
+    10,
+    12,
+    14
+   ],
+   "hold": 24,
+   "n": 550,
+   "mean_bps": 3.55,
+   "cum_pct": 20.84,
+   "t": 1.77,
+   "p": 0.07618,
+   "sig_bonf": false,
+   "win_rate": 53.6,
+   "is_bps": 2.23,
+   "oos_bps": 4.72,
+   "is_t": 0.72,
+   "oos_t": 1.8,
+   "maxdd_pct": -5.51,
+   "placebo": {
+    "Tue": {
+     "mean_bps": 1.4,
+     "t": 0.68,
+     "p": 0.499
+    },
+    "Wed": {
+     "mean_bps": -2.88,
+     "t": -1.27,
+     "p": 0.206
+    },
+    "Thu": {
+     "mean_bps": -3.64,
+     "t": -1.55,
+     "p": 0.122
+    },
+    "Fri": {
+     "mean_bps": NaN,
+     "t": 0.0,
+     "p": 1.0
+    }
+   },
+   "monday_only": false
+  },
+  "D_米国/12h": {
+   "window": "D_米国",
+   "hours": [
+    12,
+    14,
+    16,
+    18
+   ],
+   "hold": 12,
+   "n": 551,
+   "mean_bps": 1.0,
+   "cum_pct": 5.5,
+   "t": 0.93,
+   "p": 0.35449,
+   "sig_bonf": false,
+   "win_rate": 53.5,
+   "is_bps": -0.34,
+   "oos_bps": 2.19,
+   "is_t": -0.21,
+   "oos_t": 1.53,
+   "maxdd_pct": -4.75,
+   "placebo": {
+    "Tue": {
+     "mean_bps": 0.5,
+     "t": 0.43,
+     "p": 0.666
+    },
+    "Wed": {
+     "mean_bps": -3.6,
+     "t": -2.7,
+     "p": 0.007
+    },
+    "Thu": {
+     "mean_bps": -1.67,
+     "t": -1.14,
+     "p": 0.254
+    },
+    "Fri": {
+     "mean_bps": NaN,
+     "t": 0.0,
+     "p": 1.0
+    }
+   },
+   "monday_only": false
+  },
+  "D_米国/24h": {
+   "window": "D_米国",
+   "hours": [
+    12,
+    14,
+    16,
+    18
+   ],
+   "hold": 24,
+   "n": 550,
+   "mean_bps": 1.79,
+   "cum_pct": 9.67,
+   "t": 0.88,
+   "p": 0.38104,
+   "sig_bonf": false,
+   "win_rate": 52.5,
+   "is_bps": 1.84,
+   "oos_bps": 1.76,
+   "is_t": 0.6,
+   "oos_t": 0.63,
+   "maxdd_pct": -6.95,
+   "placebo": {
+    "Tue": {
+     "mean_bps": 2.39,
+     "t": 1.22,
+     "p": 0.224
+    },
+    "Wed": {
+     "mean_bps": -5.14,
+     "t": -2.21,
+     "p": 0.027
+    },
+    "Thu": {
+     "mean_bps": -4.23,
+     "t": -1.78,
+     "p": 0.076
+    },
+    "Fri": {
+     "mean_bps": NaN,
+     "t": 0.0,
+     "p": 1.0
+    }
+   },
+   "monday_only": false
+  }
+ },
+ "gbpusd": {
+  "B/12h": {
+   "n": 553,
+   "mean_bps": -0.18,
+   "t": -0.11,
+   "p": 0.9095
+  },
+  "B/24h": {
+   "n": 553,
+   "mean_bps": 1.36,
+   "t": 0.72,
+   "p": 0.4702
+  }
+ },
+ "best": "A_早朝/24h",
+ "best_vs_B": {
+  "diff_bps": 0.76,
+  "t": 0.87,
+  "p": 0.3817
+ },
+ "B_12h_minus_24h": {
+  "diff_bps": -1.89,
+  "t": -1.39,
+  "p": 0.1659,
+  "n": 551
+ }
+}

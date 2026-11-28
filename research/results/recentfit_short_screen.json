@@ -1,0 +1,398 @@
+{
+ "meta": {
+  "purpose": "直近6ヶ月/3ヶ月トラック(docs/180)の事前固定スクリーニング",
+  "seed": 7,
+  "n_mc": 10000,
+  "mc_rule": "FTMO P1+10%→P2+5%・静的−10%・−4%クリップ・5日ブロックBS",
+  "mult_rule": "0.8×min(m*[選抜窓], m*[12ヶ月])・上限6.0",
+  "caveat": "選抜窓で選び選抜窓で測る=構造的に楽観。窓が短いほどノイズ大。full_historyが正直な悲観バウンド。",
+  "inputs": {
+   "AUDJPY": "ae2f2247bf976119",
+   "AUDUSD": "1815bca3a8a727f1",
+   "BTCUSD": "beab1e3efb6d7b73",
+   "CADJPY": "886580c86b5b9b25",
+   "CHFJPY": "0496f02040119976",
+   "ETHUSD": "a956dfae91e715c9",
+   "EURJPY": "7a264d2787846519",
+   "EURUSD": "9347baf5682358de",
+   "FR40": "f16a81d9b464de59",
+   "GBPJPY": "afc26f25c8bca781",
+   "GBPUSD": "53df814b42f0f1ef",
+   "GER40": "d2476ca1f5b343b8",
+   "JP225": "d96e6f6d8ebe86c8",
+   "NAS100": "e427ee86ca01f672",
+   "NZDJPY": "92e04cc76f2c76ce",
+   "NZDUSD": "8792d9fd11a93cd0",
+   "UK100": "ea8f3658cb8a1d0c",
+   "US500": "85acf153b2ca8a78",
+   "USDCAD": "53ab678e8cb1ac83",
+   "USDCHF": "adb6c93f49988e60",
+   "USDJPY": "ac1696c7a59fedd8",
+   "XAUUSD": "80d276843e0a0f8a"
+  }
+ },
+ "tracks": {
+  "C_6m": {
+   "selected": {
+    "Mon_AUDJPY": 0.269,
+    "Mon_GBPJPY": 0.323,
+    "v4_NZDUSD": 0.207,
+    "v4_AUDUSD": 0.201
+   },
+   "mult": 6.0,
+   "m_star_sel": 8.0,
+   "m_star_12m": 8.0,
+   "expiry": "2026-09-30",
+   "worst_day_sel": -2.13,
+   "intramonth_dd_sel": -2.39,
+   "worst_day_12m": -2.91,
+   "intramonth_dd_12m": -5.35,
+   "mc_sel_window": {
+    "p1_pass": 100.0,
+    "funded": 100.0,
+    "fail": 0.0,
+    "p1_days_med": 15,
+    "funded_days_med": 24,
+    "funded_days_p90": 34
+   },
+   "mc_12m": {
+    "p1_pass": 99.9,
+    "funded": 99.7,
+    "fail": 0.3,
+    "p1_days_med": 27,
+    "funded_days_med": 45,
+    "funded_days_p90": 78
+   },
+   "mc_full": {
+    "p1_pass": 83.8,
+    "funded": 73.2,
+    "fail": 26.5,
+    "p1_days_med": 34,
+    "funded_days_med": 57,
+    "funded_days_p90": 123
+   },
+   "monthly_12m": {
+    "2026-01": -1.03,
+    "2026-02": 5.64,
+    "2026-03": 4.14,
+    "2026-04": 8.08,
+    "2026-05": 3.16,
+    "2026-06": 1.08,
+    "2026-07": 4.29
+   },
+   "ranking_top10": {
+    "Mon_AUDJPY": {
+     "family": "Mon",
+     "symbol": "AUDJPY",
+     "stats": {
+      "n_active": 26,
+      "cum_sel": 5.51,
+      "cum_conf": 1.17,
+      "cum_12m": 7.68,
+      "score": 2.42,
+      "std_active": 0.436,
+      "cum_full": 53.2
+     }
+    },
+    "Mon_GBPJPY": {
+     "family": "Mon",
+     "symbol": "GBPJPY",
+     "stats": {
+      "n_active": 26,
+      "cum_sel": 4.35,
+      "cum_conf": 2.27,
+      "cum_12m": 6.71,
+      "score": 2.31,
+      "std_active": 0.364,
+      "cum_full": 33.0
+     }
+    },
+    "v4_NZDUSD": {
+     "family": "v4",
+     "symbol": "NZDUSD",
+     "stats": {
+      "n_active": 16,
+      "cum_sel": 4.91,
+      "cum_conf": 1.01,
+      "cum_12m": 3.07,
+      "score": 2.12,
+      "std_active": 0.568,
+      "cum_full": 11.5
+     }
+    },
+    "Mon_GER40": {
+     "family": "Mon",
+     "symbol": "GER40",
+     "stats": {
+      "n_active": 25,
+      "cum_sel": 10.7,
+      "cum_conf": 0.87,
+      "cum_12m": 7.07,
+      "score": 1.48,
+      "std_active": 1.407,
+      "cum_full": 75.9
+     }
+    },
+    "v4_USDCHF": {
+     "family": "v4",
+     "symbol": "USDCHF",
+     "stats": {
+      "n_active": 8,
+      "cum_sel": 3.48,
+      "cum_conf": 0.0,
+      "cum_12m": 3.28,
+      "score": 1.45,
+      "std_active": 0.839,
+      "cum_full": 15.7
+     }
+    },
+    "Mon_NZDJPY": {
+     "family": "Mon",
+     "symbol": "NZDJPY",
+     "stats": {
+      "n_active": 26,
+      "cum_sel": 3.39,
+      "cum_conf": -0.01,
+      "cum_12m": 5.06,
+      "score": 1.42,
+      "std_active": 0.467,
+      "cum_full": 42.7
+     }
+    },
+    "v4_AUDUSD": {
+     "family": "v4",
+     "symbol": "AUDUSD",
+     "stats": {
+      "n_active": 10,
+      "cum_sel": 2.61,
+      "cum_conf": 0.83,
+      "cum_12m": 1.17,
+      "score": 1.41,
+      "std_active": 0.583,
+      "cum_full": 18.3
+     }
+    },
+    "Mon_EURJPY": {
+     "family": "Mon",
+     "symbol": "EURJPY",
+     "stats": {
+      "n_active": 26,
+      "cum_sel": 1.73,
+      "cum_conf": 0.96,
+      "cum_12m": 1.54,
+      "score": 1.27,
+      "std_active": 0.266,
+      "cum_full": 29.1
+     }
+    },
+    "Mon_FR40": {
+     "family": "Mon",
+     "symbol": "FR40",
+     "stats": {
+      "n_active": 25,
+      "cum_sel": 5.13,
+      "cum_conf": -2.44,
+      "cum_12m": -3.84,
+      "score": 0.86,
+      "std_active": 1.199,
+      "cum_full": 9.9
+     }
+    },
+    "Hold_JP225": {
+     "family": "Hold",
+     "symbol": "JP225",
+     "stats": {
+      "n_active": 120,
+      "cum_sel": 14.87,
+      "cum_conf": 3.47,
+      "cum_12m": 48.69,
+      "score": 0.71,
+      "std_active": 2.135,
+      "cum_full": 212.5
+     }
+    }
+   }
+  },
+  "D_3m": {
+   "selected": {
+    "Mon_USDJPY": 0.374,
+    "v4_NZDUSD": 0.287,
+    "Mon_GBPJPY": 0.139,
+    "v4_AUDUSD": 0.2
+   },
+   "mult": 5.52,
+   "m_star_sel": 8.0,
+   "m_star_12m": 6.9,
+   "expiry": "2026-08-31",
+   "worst_day_sel": -0.33,
+   "intramonth_dd_sel": -0.33,
+   "worst_day_12m": -3.19,
+   "intramonth_dd_12m": -5.49,
+   "mc_sel_window": {
+    "p1_pass": 100.0,
+    "funded": 100.0,
+    "fail": 0.0,
+    "p1_days_med": 25,
+    "funded_days_med": 38,
+    "funded_days_p90": 49
+   },
+   "mc_12m": {
+    "p1_pass": 85.0,
+    "funded": 73.5,
+    "fail": 19.6,
+    "p1_days_med": 65,
+    "funded_days_med": 107,
+    "funded_days_p90": 202
+   },
+   "mc_full": {
+    "p1_pass": 76.1,
+    "funded": 62.2,
+    "fail": 34.4,
+    "p1_days_med": 52,
+    "funded_days_med": 86,
+    "funded_days_p90": 179
+   },
+   "monthly_12m": {
+    "2026-01": -4.42,
+    "2026-02": 5.49,
+    "2026-03": -1.4,
+    "2026-04": 2.48,
+    "2026-05": 1.68,
+    "2026-06": 1.41,
+    "2026-07": 4.37
+   },
+   "ranking_top10": {
+    "Mon_USDJPY": {
+     "family": "Mon",
+     "symbol": "USDJPY",
+     "stats": {
+      "n_active": 13,
+      "cum_sel": 1.53,
+      "cum_conf": 0.9,
+      "cum_12m": -1.3,
+      "score": 3.03,
+      "std_active": 0.139,
+      "cum_full": 10.4
+     }
+    },
+    "v4_NZDUSD": {
+     "family": "v4",
+     "symbol": "NZDUSD",
+     "stats": {
+      "n_active": 9,
+      "cum_sel": 1.01,
+      "cum_conf": 1.01,
+      "cum_12m": 3.07,
+      "score": 1.86,
+      "std_active": 0.181,
+      "cum_full": 11.5
+     }
+    },
+    "Mon_GBPJPY": {
+     "family": "Mon",
+     "symbol": "GBPJPY",
+     "stats": {
+      "n_active": 13,
+      "cum_sel": 2.27,
+      "cum_conf": 1.11,
+      "cum_12m": 6.71,
+      "score": 1.67,
+      "std_active": 0.375,
+      "cum_full": 33.0
+     }
+    },
+    "Mon_EURJPY": {
+     "family": "Mon",
+     "symbol": "EURJPY",
+     "stats": {
+      "n_active": 13,
+      "cum_sel": 0.96,
+      "cum_conf": 0.41,
+      "cum_12m": 1.54,
+      "score": 1.17,
+      "std_active": 0.229,
+      "cum_full": 29.1
+     }
+    },
+    "v4_GBPJPY": {
+     "family": "v4",
+     "symbol": "GBPJPY",
+     "stats": {
+      "n_active": 9,
+      "cum_sel": 0.51,
+      "cum_conf": 0.51,
+      "cum_12m": 0.32,
+      "score": 1.16,
+      "std_active": 0.147,
+      "cum_full": 12.4
+     }
+    },
+    "Mon_AUDJPY": {
+     "family": "Mon",
+     "symbol": "AUDJPY",
+     "stats": {
+      "n_active": 13,
+      "cum_sel": 1.17,
+      "cum_conf": 0.68,
+      "cum_12m": 7.68,
+      "score": 1.07,
+      "std_active": 0.301,
+      "cum_full": 53.2
+     }
+    },
+    "v4_AUDUSD": {
+     "family": "v4",
+     "symbol": "AUDUSD",
+     "stats": {
+      "n_active": 9,
+      "cum_sel": 0.83,
+      "cum_conf": 0.83,
+      "cum_12m": 1.17,
+      "score": 1.07,
+      "std_active": 0.26,
+      "cum_full": 18.3
+     }
+    },
+    "TSMOM_BTCUSD": {
+     "family": "TSMOM",
+     "symbol": "BTCUSD",
+     "stats": {
+      "n_active": 90,
+      "cum_sel": 15.73,
+      "cum_conf": -0.34,
+      "cum_12m": 15.72,
+      "score": 0.93,
+      "std_active": 1.816,
+      "cum_full": 1620.2
+     }
+    },
+    "Hold_GER40": {
+     "family": "Hold",
+     "symbol": "GER40",
+     "stats": {
+      "n_active": 63,
+      "cum_sel": 4.65,
+      "cum_conf": 2.06,
+      "cum_12m": 5.16,
+      "score": 0.59,
+      "std_active": 1.042,
+      "cum_full": 132.4
+     }
+    },
+    "TSMOM_GER40": {
+     "family": "TSMOM",
+     "symbol": "GER40",
+     "stats": {
+      "n_active": 63,
+      "cum_sel": 4.65,
+      "cum_conf": 2.06,
+      "cum_12m": -13.82,
+      "score": 0.59,
+      "std_active": 1.042,
+      "cum_full": -25.5
+     }
+    }
+   }
+  }
+ }
+}

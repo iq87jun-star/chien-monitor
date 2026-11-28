@@ -1,0 +1,4 @@
+family,symbol,spec,is_plus,is_n,is_rate,is_mean_bps,is_trades,p,oos_plus,oos_n,oos_mean_bps,pre_n,pre_rate,passed
+H1 リードラグ,USDCAD,WTI 直前1h 符号×-1 → 次1h,0,39,0.0,-2.21,17985,1.0,0,20,-2.22,46,0.0,False
+H1 リードラグ,AUDUSD,XAUUSD 直前1h 符号×+1 → 次1h,0,39,0.0,-4.57,19448,1.0,0,12,-4.57,10,0.0,False
+H1 リードラグ,USDJPY,USTBOND 直前1h 符号×-1 → 次1h,0,39,0.0,-1.92,17841,1.0,0,20,-1.77,40,0.0,False
