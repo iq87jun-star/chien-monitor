@@ -640,3 +640,17 @@ def test_v121_scale_351_amounts_and_cap(monkeypatch):
     assert mon == 275100 and nk25 == 51700 and nkeom == 25800 and max(r(v * 1.25) for v in by.values()) <= L.MAX_STAKE
     assert mon + 5 * nk25 + by["EURGBP_N6L"] <= L.DAILY_STAKE_CAP and mon + 5 * nkeom + by["EURGBP_N6L"] + 3 * by["EURUSD_ME"] <= L.DAILY_STAKE_CAP
     need_mon = sum(by[k] for k in ("EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6")) * L.BOOST_MULT * L.FRI_MULT_DOWN; assert need_mon == 412687.5
+
+def test_v121_no_legs_run_still_logs_balance(monkeypatch):
+    """v1.21: 実行する脚が無い時間帯の起動でも、残高だけは記録する(発注・health の確認はしない)。取得に失敗しても正常終了。"""
+    calls = []
+    def fake_rest(base, path, key, body=None, timeout=15): calls.append(path); return 200, {"status": "success", "data": {"balance": 849595}}
+    monkeypatch.setattr(L, "rest", fake_rest)
+    with tempfile.TemporaryDirectory() as tmp:
+        assert L.run_entries("real", REAL, tmp, L.Log(os.path.join(tmp, "l.jsonl")), dt.datetime(2026, 11, 28, 22, 58, tzinfo=L.JST)) == 0   # 土曜 22:58: 脚なし
+        rows = [json.loads(x) for x in open(os.path.join(tmp, "l.jsonl"), encoding="utf-8")]
+        assert calls == ["/wallet/balance"] and rows[-1]["kind"] == "balance" and rows[-1]["frame"]["body"]["data"]["balance"] == 849595 and rows[-1]["frame"]["note"] == "no_legs"
+    def boom(base, path, key, body=None, timeout=15): raise OSError("offline")
+    monkeypatch.setattr(L, "rest", boom)
+    with tempfile.TemporaryDirectory() as tmp:
+        assert L.run_entries("real", REAL, tmp, L.Log(os.path.join(tmp, "l.jsonl")), dt.datetime(2026, 11, 28, 22, 58, tzinfo=L.JST)) == 0

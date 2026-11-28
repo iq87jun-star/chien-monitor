@@ -524,6 +524,9 @@ def run_entries(account, key, out_dir, log, now_jst, only_ids=None):
         hs = [l for l in legs_for_slot(now_jst, ignore_holiday=True) if l.get("skip_jp_holiday") and is_jp_holiday(l["_day"]) and (only_ids is None or not only_ids or l["id"] in only_ids)]
         if hs: log.say("日本の祝日の月曜 → 見送り:", [l["id"] for l in hs]); log.write("skip", {"legs": [l["id"] for l in hs], "reason": "日本の祝日(月曜脚は見送り)", "day": str(hs[0]["_day"])})
         else: log.say("この時間帯に実行する脚は無い")
+        try:   # v1.21: 脚が無い起動でも残高だけ記録する(入金の反映を Drive の記録で確認できるように。発注はしない)
+            st, b = rest(base, "/wallet/balance", key); log.write("balance", {"http": st, "body": b, "note": "no_legs"}); log.say("balance:", deep_find(b, "balance"))
+        except Exception as e: log.write("error", repr(e))
         return 0
     day = legs[0]["_day"]   # v1.2: 建てる日(深夜の脚は起動日の翌日)。state/CSV/契約照合はすべてこの日で扱う
     state_path = os.path.join(out_dir, "_diag", "live_state.json"); os.makedirs(os.path.dirname(state_path), exist_ok=True)
