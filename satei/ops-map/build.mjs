@@ -64,14 +64,18 @@ const splitItems = splits.map((s) => {
   const nx = open[0];
   const chip = late.length ? ["ng", `${late.length}回遅れ`] : unread[s.id] ? ["warn", `新着 ${unread[s.id]}`] : nx && nx.due_on <= addDays(today, 3) ? ["warn", `${md(nx.due_on)} 支払日`] : ["ok", "支払い中"];
   const todo = late.length ? `${md(late[0].due_on)}分の入金を確認・連絡` : unread[s.id] ? "お客様ページのメッセージに返信" : !s.portal ? "お客様ページのリンクを作って送る" : "";
-  const mediated = /^【仲介】/.test(s.memo ?? "");
+  const mediated = Boolean(s.escrow) || /^【仲介】/.test(s.memo ?? "");
   // 予定表(済み・遅れ・次回が分かるように)
   const table = `<table class='sched'>${s.pays.map((p, k) => `<tr class='${p.paid_on ? "paid" : p.due_on < today ? "late" : p === nx ? "nx" : ""}'><td>${k + 1}回目</td><td>${md(p.due_on)}</td><td class='r'>${yen(p.amount)}</td><td class='r'>${p.paid_on ? `済 ${md(p.paid_on)}` : p.due_on < today ? "遅れ" : p === nx ? "次回" : "予定"}</td></tr>`).join("")}</table>`;
   return {
     t: `No.${s.id} ${s.buyer}さん${mediated ? "(仲介)" : ""} ${nx ? `${md(nx.due_on)} ${(nx.amount / 10000).toLocaleString("ja-JP", { maximumFractionDigits: 1 })}万` : "完済"}`, chip, pay: [paid, s.total],
-    body: table + dl([["次回", nx ? `${md(nx.due_on)} ${yen(nx.amount)}` : "なし"], ["残り回数", `${open.length}回`], ["最終回", open.length ? md(open[open.length - 1].due_on) : "—"], ["お客様ページ", s.portal ? "作成済み" : "未作成"]]) + (todo ? next(todo) : ""),
+    body: table + dl([["次回", nx ? `${md(nx.due_on)} ${yen(nx.amount)}` : "なし"], ["残り回数", `${open.length}回`], ["最終回", open.length ? md(open[open.length - 1].due_on) : "—"], ["お客様ページ", s.portal ? "作成済み" : "未作成"], ...(s.escrow ? [["預かり中", yen(paid)], ["売り手へ", `${yen(Math.max(0, paid - (s.fee ?? 0)))}(手数料 ${yen(s.fee ?? 0)})`]] : [])]) + (todo ? next(todo) : ""),
   };
 });
+// 仲介の預かり金(支払い中・完済・引き渡し済みで、売り手にまだ払っていないもの)
+const escrows = st.split.filter((s) => s.escrow && !s.payout_on).map((s) => ({ s, paid: s.pays.filter((p) => p.paid_on).reduce((n, p) => n + p.amount, 0) }));
+const heldTotal = escrows.reduce((n, e) => n + e.paid, 0);
+const payoutDue = escrows.filter(({ s }) => s.handed_on && addDays(s.handed_on, 7) <= today && s.status !== "中止");
 const splitLeft = splits.reduce((n, s) => n + s.total - s.pays.filter((p) => p.paid_on).reduce((a, p) => a + p.amount, 0), 0);
 
 // ── 代理出品 ──
@@ -97,6 +101,7 @@ const lateSplits = splitItems.filter((i) => i.chip[0] === "ng");
 if (lateSplits.length) todos.push({ t: `分割の入金遅れ ${lateSplits.length}件`, chip: ["ng", "急ぎ"], body: `<ul>${lateSplits.map((i) => `<li>${esc(i.t)}</li>`).join("")}</ul>` });
 const unreadN = Object.values(unread).reduce((a, b) => a + b, 0);
 if (unreadN) todos.push({ t: `お客様ページの新着 ${unreadN}件`, chip: ["warn", "返信"], body: "<p>在庫と分割の管理 → 分割 → 「💬 お客様ページ・チャット」</p>" });
+if (payoutDue.length) todos.push({ t: `売り手への支払い ${payoutDue.length}件`, chip: ["ng", "支払う"], body: `<ul>${payoutDue.map(({ s, paid }) => `<li>仲介 No.${s.id}:売り手へ ${yen(Math.max(0, paid - (s.fee ?? 0)))}(預かり ${yen(paid)} − 手数料 ${yen(s.fee ?? 0)})</li>`).join("")}</ul><p>支払ったら、在庫と分割の管理 → 分割 → 「売り手へ支払った日」を入れる。</p>` });
 const sellerN = Object.values(sellerUnread).reduce((a, b) => a + b, 0);
 if (sellerN) todos.push({ t: `売り手ページの新着 ${sellerN}件`, chip: ["warn", "返信"], body: `<p>${Object.entries(sellerUnread).map(([id, n]) => `代理出品 No.${id}(${n}件)`).join("・")}</p><p>査定ツールの管理 → 代理出品 → 「💬 チャット」</p>` });
 const soon = splits.flatMap((s) => s.pays.filter((p) => !p.paid_on && p.due_on >= today && p.due_on <= addDays(today, 7)).map((p) => `${md(p.due_on)} ${s.buyer}さん ${yen(p.amount)}`));
@@ -158,6 +163,7 @@ const BRANCHES = [
 const KPIS = [
   ["在庫", `${live.length}件${unlisted.length ? `(未出品${unlisted.length})` : ""}`],
   ["分割の残り", man(splitLeft)],
+  ...(heldTotal ? [["預かり金", man(heldTotal)]] : []),
   ["代理出品", `販売中 ${selling.length}件`],
   ["要返信", `${reply}件`],
 ];
