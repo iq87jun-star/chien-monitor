@@ -200,7 +200,7 @@
 import { parseRoster } from "./lib/features.js";
 import { FOLLOW_RULES, dueForCheck } from "./lib/follow.js";
 import { estimate } from "./lib/estimate.js";
-import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER, WATCH_DAYS, handoverLeft, cautionHit, RULES, monthly, splitState, priceDown, staleListings, todos, days, matchOf, matchesFor } from "./lib/stock.js";
+import { STOCK_STATUSES, SPLIT_STATUSES, WANT_STATUSES, SITES, HANDOVER, WATCH_DAYS, handoverLeft, cautionHit, RULES, monthly, splitState, escrowState, priceDown, staleListings, todos, days, matchOf, matchesFor } from "./lib/stock.js";
 import { GAMES as GAME, ACCOUNTS, accountOf, gamesOf } from "./lib/games.js";
 import { CHARS } from "./lib/chars.js";
 import { coverField, bindCovers, loadCoverImages } from "./lib/cover.js";
@@ -654,6 +654,13 @@ const payTable = (pays) => `<div class="wrap"><table><thead><tr><th>予定日</t
         <td class="${!p.paid_on && p.due_on < today ? "late" : ""}">${md(p.due_on)}</td><td>${yen(p.amount)}</td><td>${p.paid_on ? `✅ ${md(p.paid_on)}` : "—"}${p.memo ? ` <span class="muted">${esc(p.memo)}</span>` : ""}</td>
         <td>${p.paid_on ? `<button type="button" class="sub" data-act="unpay">取り消し</button>` : `<button type="button" data-act="pay">入金あり</button>`} <button type="button" class="sub" data-act="delpay">削除</button></td></tr>`).join("")}</tbody></table></div>`;
 
+// 仲介の預かり金の行(預かっている額・売り手に払う額・払う日)
+function escrowLine(s) {
+  const es = escrowState(s, s.pays, today);
+  if (!es) return "";
+  const when = es.phase === "支払い済み" ? `売り手へ支払い済み ${md(s.payout_on)}` : es.phase === "精算待ち" ? "中止:返金・精算してください" : es.phase === "預かり中" ? "完済したら引き渡し" : es.phase === "引き渡し待ち" ? "完済。引き渡しを進める" : es.phase === "見守り中" ? `見守り中。${md(es.payDay)} に売り手へ支払い` : `今日、売り手へ支払う`;
+  return `<p class="muted" style="margin:6px 0 0">🏦 預かり中 <b>${yen(es.held)}</b> ・ 売り手へ ${yen(es.toSeller)}(手数料 ${yen(es.fee)}) ・ <span class="tag${es.phase === "支払う日" || es.phase === "精算待ち" ? " warn" : ""}">${esc(when)}</span></p>`;
+}
 function renderSplit() {
   $("splitList").innerHTML = data.split.map((s) => {
     const st = splitState(s, s.pays, today);
@@ -663,6 +670,7 @@ function renderSplit() {
         <span class="muted">${esc(s.contact)}${s.middle ? ` ・ 間: ${esc(s.middle)}` : ""}</span>${cautionHit(data.caution, s.contact) ? `<span class="tag warn">⚠️ 要注意リスト</span>` : ""}</header>
       <p style="margin:6px 0 0"><b>${yen(st.paid)}</b> / ${yen(s.total)} ・ 残り ${yen(st.remaining)} ・ ${st.count[0]} / ${st.count[1]}回 ${st.next ? `・ 次は <b>${md(st.next.due_on)} ${yen(st.next.amount)}</b>` : ""}${st.mismatch ? ` <span class="tag warn">予定の合計が総額と違います</span>` : ""}</p>
       <div class="bar"><i style="width:${pct}%"></i></div>
+      ${escrowLine(s)}
       <p class="muted" style="margin:6px 0 0">${esc(charsText(s.chars)).slice(0, 200)}</p>
       ${payTable(s.pays.slice(0, shown(s.pays)))}${s.pays.length > shown(s.pays) ? `<details><summary class="muted">この先の予定 ${s.pays.length - shown(s.pays)}回を表示</summary>${payTable(s.pays.slice(shown(s.pays)))}</details>` : ""}
       <details style="margin-top:6px"><summary class="muted">+ 予定を追加 / 詳細を編集</summary>
@@ -674,6 +682,9 @@ function renderSplit() {
           <label>仲介・間に入る人<input data-f="middle" value="${esc(s.middle)}" /></label>
           <label>総額(円)<input data-f="total" type="number" step="1000" value="${s.total}" /></label>
           <label>毎月の支払日<input data-f="due_day" type="number" min="1" max="31" value="${s.due_day ?? ""}" /></label>
+          <label>🏦 仲介(お金を預かる)<select data-f="escrow"><option value="0">しない</option><option value="1"${s.escrow ? " selected" : ""}>預かる</option></select></label>
+          <label>仲介手数料(円)<input data-f="fee" type="number" step="1000" min="0" value="${s.fee ?? ""}" /></label>
+          <label>売り手へ支払った日(精算日)<input data-f="payout_on" type="date" value="${esc(s.payout_on)}" /></label>
         </div>
         <label class="muted">メモ<textarea data-f="memo">${esc(s.memo)}</textarea></label>
         <div class="row"><button type="button" data-act="save">保存</button></div>

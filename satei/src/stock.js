@@ -73,6 +73,9 @@ export function validSplit(body, games) {
     handed_on: date,
     watch,
     memo: text(2000),
+    escrow: (v) => (v === true || v === 1 || v === "1" ? 1 : v === false || v === 0 || v === "0" ? 0 : undefined),
+    fee: (v) => (v === "" || v == null ? null : yen(v) ?? undefined),
+    payout_on: date,
   });
 }
 

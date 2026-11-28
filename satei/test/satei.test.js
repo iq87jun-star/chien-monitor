@@ -493,3 +493,21 @@ test("代理出品の売り手ページ: リンクで見られる中身とチャ
   assert.deepEqual(await sl.sellerUnread(env), {});
   assert.equal(sl.STEP["見送り"], -1);
 });
+
+test("仲介の預かり金: 完済→引き渡し→見守り7日のあとに売り手へ支払う", async () => {
+  const { escrowState } = await import("../public/lib/stock.js");
+  const { validSplit } = await import("../src/stock.js");
+  const pays = [{ due_on: "2026-11-11", amount: 50000, paid_on: "2026-11-12" }, { due_on: "2026-12-25", amount: 40000, paid_on: null }];
+  const sp = { escrow: 1, fee: 5000, total: 90000, status: "支払い中", handed_on: null, payout_on: null };
+  assert.equal(escrowState({ ...sp, escrow: 0 }, pays, "2026-11-20"), null);
+  assert.deepEqual(escrowState(sp, pays, "2026-11-20"), { held: 50000, fee: 5000, toSeller: 45000, payDay: null, phase: "預かり中" });
+  const all = pays.map((p) => ({ ...p, paid_on: p.paid_on ?? "2026-12-25" }));
+  assert.equal(escrowState(sp, all, "2026-12-26").phase, "引き渡し待ち");
+  const handed = { ...sp, handed_on: "2026-12-27", status: "引き渡し済み" };
+  assert.deepEqual([escrowState(handed, all, "2027-01-02").phase, escrowState(handed, all, "2027-01-02").payDay], ["見守り中", "2027-01-03"]);
+  assert.equal(escrowState(handed, all, "2027-01-03").phase, "支払う日");
+  assert.deepEqual([escrowState({ ...handed, payout_on: "2027-01-03" }, all, "2027-01-04").phase, escrowState({ ...handed, payout_on: "2027-01-03" }, all, "2027-01-04").held], ["支払い済み", 0]);
+  assert.equal(escrowState({ ...sp, status: "中止" }, pays, "2026-12-01").phase, "精算待ち");
+  assert.deepEqual(validSplit({ escrow: "1", fee: "5000", payout_on: "2027-01-03" }, ["genshin-impact"]), { escrow: 1, fee: 5000, payout_on: "2027-01-03" });
+  assert.deepEqual(validSplit({ fee: "" }, ["genshin-impact"]), { fee: null });
+});
