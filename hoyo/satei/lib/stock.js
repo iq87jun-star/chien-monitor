@@ -52,6 +52,23 @@ export function splitState(split, pays, today) {
   };
 }
 
+// 仲介の預かり金。escrow でない分割は null。
+//   held: いま預かっている額 / toSeller: 売り手に払う額(入金済み − 手数料) / payDay: 売り手に払う日(引き渡し + 見守り最終日)
+//   phase: 預かり中(完済待ち)・引き渡し待ち・見守り中・支払う日・支払い済み・精算待ち(中止)
+export function escrowState(split, pays, today) {
+  if (!split.escrow) return null;
+  const paid = pays.filter((p) => p.paid_on).reduce((n, p) => n + p.amount, 0);
+  const fee = split.fee ?? 0;
+  const toSeller = Math.max(0, paid - fee);
+  const payDay = split.handed_on ? addDays(split.handed_on, WATCH_DAYS[WATCH_DAYS.length - 1]) : null;
+  const phase = split.payout_on ? "支払い済み"
+    : split.status === "中止" ? "精算待ち"
+    : paid < split.total ? "預かり中"
+    : !split.handed_on ? "引き渡し待ち"
+    : today < payDay ? "見守り中" : "支払う日";
+  return { held: split.payout_on ? 0 : paid, fee, toSeller, payDay, phase };
+}
+
 // 値下げの目安: 出品中で、価格を決めてから priceDays 日たったら priceRate 下げる(千円単位・下限まで)
 export function priceDown(s, today, r = RULES) {
   if (s.status !== "出品中" || !s.price || !s.price_at || days(s.price_at, today) < r.priceDays) return null;
@@ -121,6 +138,9 @@ export function todos(stocks, splits, today, r = RULES, wants = [], consigns = [
   }
   for (const sp of splits) {
     watch("split", "分割", sp);
+    const es = escrowState(sp, sp.pays ?? [], today);
+    if (es?.phase === "支払う日") out.push({ kind: "split", id: sp.id, level: 3, text: `仲介 No.${sp.id} 見守りが終わりました。売り手に ${es.toSeller.toLocaleString()}円 を支払い、「売り手へ支払った日」を入れてください` });
+    if (es?.phase === "精算待ち" && es.held) out.push({ kind: "split", id: sp.id, level: 2, text: `仲介 No.${sp.id} は中止です。預かっている ${es.held.toLocaleString()}円 の返金・精算をして、「売り手へ支払った日」に精算日を入れてください` });
     if (sp.status === "支払い中") warn("split", "分割", sp, sp.contact);
     if (sp.status !== "支払い中") {
       if (sp.status === "完済") out.push({ kind: "split", id: sp.id, level: 2, text: `分割 No.${sp.id} ${sp.buyer}さんが完済しました。引き渡しを進めてください` });
