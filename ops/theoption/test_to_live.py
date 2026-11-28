@@ -641,8 +641,8 @@ def test_v121_scale_351_amounts_and_cap(monkeypatch):
     assert mon + 5 * nk25 + by["EURGBP_N6L"] <= L.DAILY_STAKE_CAP and mon + 5 * nkeom + by["EURGBP_N6L"] + 3 * by["EURUSD_ME"] <= L.DAILY_STAKE_CAP
     need_mon = sum(by[k] for k in ("EURJPY_N6", "AUDJPY_N6", "NZDJPY_N6")) * L.BOOST_MULT * L.FRI_MULT_DOWN; assert need_mon == 412687.5
 
-def test_v121_no_legs_run_still_logs_balance(monkeypatch):
-    """v1.21: 実行する脚が無い時間帯の起動でも、残高だけは記録する(発注・health の確認はしない)。取得に失敗しても正常終了。"""
+def test_v122_no_legs_run_still_logs_balance(monkeypatch):
+    """v1.22: 実行する脚が無い時間帯の起動でも、残高だけは記録する(発注・health の確認はしない)。取得に失敗しても正常終了。"""
     calls = []
     def fake_rest(base, path, key, body=None, timeout=15): calls.append(path); return 200, {"status": "success", "data": {"balance": 849595}}
     monkeypatch.setattr(L, "rest", fake_rest)
